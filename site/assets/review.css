@@ -72,6 +72,28 @@ body { margin-top: 36px !important; }
   font-size: 11px; line-height: 1.4; color: #5f594e;
 }
 
+/* Highlight-range editor: visually grouped so it reads as one unit, with a
+   "Use selection" affordance inline in the legend. */
+#wlr-panel .wlr-anchor-set {
+  border: 1px solid #d8d0bd; border-radius: 6px; padding: 8px 12px 10px;
+  margin: 8px 0 4px; background: #fffdf9;
+}
+#wlr-panel .wlr-anchor-set legend {
+  font-weight: 600; color: #444; padding: 0 4px; font-size: .92em;
+  display: flex; align-items: center; gap: 10px;
+}
+#wlr-panel #wlr-f-anchor-pick {
+  font: inherit; font-size: 11px; padding: 2px 8px;
+  border: 1px solid #1a4b8c; color: #1a4b8c; background: #fffdf9;
+  border-radius: 4px; cursor: pointer;
+}
+#wlr-panel #wlr-f-anchor-pick[disabled] { opacity: .55; cursor: not-allowed; }
+#wlr-panel #wlr-f-anchor-pick:hover:not([disabled]) { background: rgba(26,75,140,.06); }
+#wlr-panel #wlr-f-anchor-snippet { min-height: 46px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+#wlr-panel #wlr-f-anchor-section { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+#wlr-panel .wlr-anchor-locked-msg { color: #7d5a10; }
+#wlr-panel #wlr-f-anchor-type { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+
 /* Per-field help line shown under each label. Short, conventions + examples. */
 #wlr-panel .wlr-help {
   display: block;

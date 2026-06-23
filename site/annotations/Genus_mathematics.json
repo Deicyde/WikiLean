@@ -18,7 +18,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No topological notion of genus (number of handles) is defined anywhere in Mathlib.",
+      "note": "No topological notion of genus (number of handles) is defined anywhere in Mathlib (grep for 'genus' in Mathlib returns no files).",
       "provenance": "ai",
       "id": "c8f49cb829e7"
     },
@@ -57,6 +57,22 @@
       "id": "d8be9b373619"
     },
     {
+      "kind": "proposition",
+      "label": "Genus–Euler-characteristic relation for closed surfaces",
+      "anchor": {
+        "section": "Orientable surfaces",
+        "snippet": "Alternatively, it can be defined in terms of the Euler characteristic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Euler characteristic of topological surfaces (only an algebraic eulerChar on homological complexes), so the relation χ = 2 − 2g cannot be stated.",
+      "provenance": "ai"
+    },
+    {
       "kind": "example",
       "label": "Genus of sphere, disc, torus, mug",
       "anchor": {
@@ -86,9 +102,25 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Non-orientable genus and cross-caps are not formalized in Mathlib (a grep for crossCap/Klein bottle finds only the KleinFour group).",
+      "note": "Non-orientable genus and cross-caps are not formalized in Mathlib (grep for crossCap and Klein bottle finds nothing topological).",
       "provenance": "ai",
       "id": "66c68de063ec"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-orientable genus–Euler-characteristic relation",
+      "anchor": {
+        "section": "Non-orientable surfaces",
+        "snippet": "via the relationship χ = 2 − k , where k is the non-orientable genus"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Euler characteristic for non-orientable surfaces is formalized in Mathlib, so the relation χ = 2 − k cannot be stated.",
+      "provenance": "ai"
     },
     {
       "kind": "example",
@@ -103,7 +135,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib has no projective-plane or Klein-bottle surface with an associated genus.",
+      "note": "Mathlib's only ProjectivePlane is the combinatorial incidence-geometry one (Mathlib.Combinatorics.Configuration), with no Klein-bottle surface or genus.",
       "provenance": "ai",
       "id": "454105842a98"
     },
@@ -120,7 +152,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib contains no knot theory, Seifert surfaces, or knot genus.",
+      "note": "Mathlib contains no knot theory, Seifert surfaces, or knot genus (grep for Seifert finds nothing).",
       "provenance": "ai",
       "id": "dca586227972"
     },
@@ -137,7 +169,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Handlebodies and their genus are absent from Mathlib.",
+      "note": "Handlebodies and their genus are absent from Mathlib (grep for handlebody finds nothing).",
       "provenance": "ai",
       "id": "dfefa8d075ec"
     },
@@ -290,7 +322,7 @@
         "module": "Mathlib.AlgebraicGeometry.EllipticCurve.Weierstrass",
         "match_kind": null
       },
-      "note": "Mathlib formalizes elliptic curves as Weierstrass curves with invertible discriminant (WeierstrassCurve.IsElliptic), not via the genus-1-with-rational-point characterization.",
+      "note": "Mathlib formalizes elliptic curves as Weierstrass curves with invertible discriminant (WeierstrassCurve.IsElliptic, confirmed), not via the genus-1-with-rational-point characterization.",
       "provenance": "ai",
       "id": "e30a2fdac04f"
     },
@@ -307,7 +339,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib has no Riemann–Roch theorem for curves and no degree-genus formula.",
+      "note": "Mathlib has no Riemann–Roch theorem for curves and no degree-genus formula (grep for RiemannRoch finds nothing).",
       "provenance": "ai",
       "id": "72c066e9e266"
     },
@@ -324,7 +356,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Cobordism and genera in the sense of cobordism invariants are not present in Mathlib.",
+      "note": "Cobordism and genera in the sense of cobordism invariants are not present in Mathlib (the only 'cobord' matches are 'coborder' of immersions).",
       "provenance": "ai",
       "id": "54b0fb838565"
     },
@@ -375,7 +407,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib has an algebraic Euler characteristic (HomologicalComplex.eulerChar) but no cobordism framework in which to state that it fails to be a genus.",
+      "note": "Mathlib has an algebraic Euler characteristic (in Mathlib.Algebra.Homology.EulerCharacteristic) but no cobordism framework in which to state that it fails to be a genus.",
       "provenance": "ai",
       "id": "17ee0df37990"
     },

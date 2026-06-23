@@ -3,6 +3,7 @@
   "wikipedia_title": "Projective plane",
   "display_title": "Projective plane",
   "schema_version": 3,
+  "annotation_style": "theorem_article",
   "annotations": [
     {
       "kind": "definition",
@@ -11,6 +12,13 @@
         "section": "(Lead)",
         "snippet": "A projective plane can be thought of as an ordinary plane equipped with additional"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Configuration.ProjectivePlane",
+        "module": "Mathlib.Combinatorics.Configuration",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines `Configuration.ProjectivePlane P L` axiomatically as a nondegenerate configuration with `HasPoints`, `HasLines`, and a three-points-in-general-position witness.",
       "provenance": "ai-agent1",
       "id": "272aded857ec"
     },
@@ -21,6 +29,13 @@
         "section": "Definition",
         "snippet": "consisting of a set of points"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Configuration.ProjectivePlane",
+        "module": "Mathlib.Combinatorics.Configuration",
+        "match_kind": "exact"
+      },
+      "note": "The class `Configuration.ProjectivePlane` packages exactly the incidence axioms (any two points on a unique line, any two lines meet, three-point configuration).",
       "provenance": "ai-agent1",
       "id": "3ce758e63f2c"
     },
@@ -31,6 +46,13 @@
         "section": "Definition",
         "snippet": "is called order of the plane"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Configuration.ProjectivePlane.order",
+        "module": "Mathlib.Combinatorics.Configuration",
+        "match_kind": "exact"
+      },
+      "note": "`Configuration.ProjectivePlane.order P L` is defined as `lineCount L p - 1` for the chosen configuration point, with `lineCount_eq` showing it is one less than the number of lines through any point.",
       "provenance": "ai-agent1",
       "id": "ef4eac632731"
     },
@@ -41,6 +63,13 @@
         "section": "The extended Euclidean plane",
         "snippet": "To turn the ordinary Euclidean plane into a projective plane, proceed as follows"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formal construction of the projective completion of the Euclidean plane (with points-at-infinity / line-at-infinity) was found.",
       "provenance": "ai-agent1",
       "id": "161091fd27a7"
     },
@@ -51,6 +80,13 @@
         "section": "Projective Moulton plane",
         "snippet": "The points of the Moulton plane are the points of the Euclidean plane"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `Moulton` returns no Mathlib match; the Moulton plane is not formalized.",
       "provenance": "ai-agent1",
       "id": "a488f61f8d73"
     },
@@ -61,6 +97,13 @@
         "section": "A finite example",
         "snippet": "This example has just thirteen points and thirteen lines"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Configuration.ofField.instProjectivePlaneProjectivizationForallFinOfNatNatOfDecidableEq",
+        "module": "Mathlib.Combinatorics.Configuration",
+        "match_kind": "generalization"
+      },
+      "note": "PG(2, ZMod 3) arises by specializing the general `Projectivization K (Fin 3 → K)` projective-plane instance to `K = ZMod 3`, but no dedicated decl for the thirteen-point plane exists.",
       "provenance": "ai-agent1",
       "id": "9331249737aa"
     },
@@ -71,6 +114,13 @@
         "section": "Vector space construction",
         "snippet": "has a set of points consisting of all the 1-dimensional subspaces"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Configuration.ofField.instProjectivePlaneProjectivizationForallFinOfNatNatOfDecidableEq",
+        "module": "Mathlib.Combinatorics.Configuration",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib provides `ProjectivePlane (ℙ K (Fin 3 → K)) (ℙ K (Fin 3 → K))` only for `K` a field (with `DecidableEq`), not for a general division ring.",
       "provenance": "ai-agent1",
       "id": "c5f0ff1a0eef"
     },
@@ -81,6 +131,13 @@
         "section": "Vector space construction",
         "snippet": "are called homogeneous coordinates"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Projectivization",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`Projectivization K V` is the quotient of nonzero vectors by scalar action — exactly homogeneous coordinates — but the name `homogeneous coordinates` is not used.",
       "provenance": "ai-agent1",
       "id": "a20c4d8d42f5"
     },
@@ -91,6 +148,13 @@
         "section": "Classical examples",
         "snippet": "The real projective plane RP 2 arises when K is taken to be the real numbers"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Projectivization",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`Projectivization ℝ (Fin 3 → ℝ)` realizes RP² and inherits the ProjectivePlane instance, but no dedicated `RP^2` abbreviation/decl exists in Mathlib.",
       "provenance": "ai-agent1",
       "id": "b65ae0dd03bc"
     },
@@ -101,6 +165,13 @@
         "section": "Classical examples",
         "snippet": "The complex projective plane CP 2 arises when K is taken to be the complex numbers"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Projectivization",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Same as RP²: `Projectivization ℂ (Fin 3 → ℂ)` instantiates CP² as a projective plane, but Mathlib has no dedicated `CP^2` decl.",
       "provenance": "ai-agent1",
       "id": "479d1c2bca2e"
     },
@@ -111,6 +182,13 @@
         "section": "Classical examples",
         "snippet": "The quaternionic projective plane HP 2 is also of independent interest"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `Configuration.ofField` projective-plane instance requires a field, so `Projectivization` over the (non-commutative) quaternions is not equipped as a projective plane.",
       "provenance": "ai-agent1",
       "id": "80dd12ca7cc7"
     },
@@ -121,8 +199,31 @@
         "section": "Finite field planes",
         "snippet": "Taking K to be the finite field of q"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Configuration.ofField.instProjectivePlaneProjectivizationForallFinOfNatNatOfDecidableEq",
+        "module": "Mathlib.Combinatorics.Configuration",
+        "match_kind": "generalization"
+      },
+      "note": "The PG(2, F_q) instance is obtained as a specialization of Mathlib's general `Projectivization K (Fin 3 → K)` projective-plane instance for any field K.",
       "provenance": "ai-agent1",
       "id": "7aeec8e4399f"
+    },
+    {
+      "kind": "theorem",
+      "label": "Wedderburn's theorem (finite division ring is a field)",
+      "anchor": {
+        "section": "Finite field planes",
+        "snippet": "By Wedderburn's Theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "littleWedderburn",
+        "module": "Mathlib.RingTheory.LittleWedderburn",
+        "match_kind": "exact"
+      },
+      "note": "`littleWedderburn` is an instance turning every `[DivisionRing D] [Finite D]` into a `Field D`.",
+      "provenance": "ai"
     },
     {
       "kind": "example",
@@ -131,6 +232,13 @@
         "section": "Finite field planes",
         "snippet": "The Fano plane is the projective plane arising from the field of two elements"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Configuration.ofField.instProjectivePlaneProjectivizationForallFinOfNatNatOfDecidableEq",
+        "module": "Mathlib.Combinatorics.Configuration",
+        "match_kind": "generalization"
+      },
+      "note": "Grep for `Fano` returns no match; the Fano plane is only obtainable as the special case `K = ZMod 2` of the PG(2,K) instance.",
       "provenance": "ai-agent1",
       "id": "0f8e3a147bcb"
     },
@@ -141,6 +249,13 @@
         "section": "Desargues' theorem and Desarguesian planes",
         "snippet": "The theorem of Desargues is universally valid in a projective plane if and only if the plane can be constructed"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No occurrences of `Desargues` in Mathlib; neither Desargues' theorem nor the characterization of Desarguesian planes is formalized.",
       "provenance": "ai-agent1",
       "id": "12d73b3da0c6"
     },
@@ -151,6 +266,13 @@
         "section": "Non-Desarguesian planes",
         "snippet": "The projective planes that can not be constructed in the preceding manner are called non-Desarguesian planes"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib match for non-Desarguesian planes.",
       "provenance": "ai-agent1",
       "id": "67bceb464755"
     },
@@ -161,6 +283,13 @@
         "section": "Subplanes",
         "snippet": "A subplane of a projective plane"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `subplane`/`Subplane` returns no matches in Mathlib.",
       "provenance": "ai-agent1",
       "id": "7591ced3e5bf"
     },
@@ -171,6 +300,13 @@
         "section": "Subplanes",
         "snippet": "Let Π be a finite projective plane of order N with a proper subplane"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of subplane in Mathlib, so Bruck's theorem cannot be stated.",
       "provenance": "ai-agent1",
       "id": "f3cf58501072"
     },
@@ -181,6 +317,13 @@
         "section": "Subplanes",
         "snippet": "is a Baer subplane if every line in"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Baer` subplane in Mathlib.",
       "provenance": "ai-agent1",
       "id": "b5facf1442c8"
     },
@@ -191,6 +334,13 @@
         "section": "Subplanes",
         "snippet": "admits Baer subplanes (all necessarily Desarguesian) if and only if"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Baer subplane existence is not formalized.",
       "provenance": "ai-agent1",
       "id": "e59ae1457cbf"
     },
@@ -201,6 +351,13 @@
         "section": "Fano subplanes",
         "snippet": "A Fano subplane is a subplane isomorphic to PG(2, 2)"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of Fano subplane in Mathlib.",
       "provenance": "ai-agent1",
       "id": "28bead8dfa21"
     },
@@ -211,6 +368,13 @@
         "section": "Fano subplanes",
         "snippet": "Fano subplanes exist if and only if q is even"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
       "provenance": "ai-agent1",
       "id": "181a1cb2dfa7"
     },
@@ -221,6 +385,13 @@
         "section": "Fano subplanes",
         "snippet": "If every quadrangle in a finite projective plane has collinear diagonal points"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gleason's theorem on Fano subplanes is absent from Mathlib.",
       "provenance": "ai-agent1",
       "id": "43f79aa624cf"
     },
@@ -231,6 +402,13 @@
         "section": "Definition (2)",
         "snippet": "More formally an affine plane consists of a set of lines and a set of points"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `AffineSpace`/`AffineMap` but no axiomatic incidence-geometric `AffinePlane` class.",
       "provenance": "ai-agent1",
       "id": "8d8ca3e6c970"
     },
@@ -241,6 +419,13 @@
         "section": "Definition (2)",
         "snippet": "The order of a finite affine plane is the number of points on any of its lines"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Absent because the underlying affine-plane definition is missing.",
       "provenance": "ai-agent1",
       "id": "799a771cc6fc"
     },
@@ -251,6 +436,13 @@
         "section": "Definition (2)",
         "snippet": "There is a projective plane of order N if and only if there is an affine plane of order N"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Requires the missing AffinePlane axiomatic side; not formalized.",
       "provenance": "ai-agent1",
       "id": "1283fab58902"
     },
@@ -261,6 +453,13 @@
         "section": "Construction of projective planes from affine planes",
         "snippet": "The affine plane K 2 over K embeds into K P 2"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formal embedding `K^2 ↪ ℙ K (Fin 3 → K)` recorded as an incidence-geometric construction.",
       "provenance": "ai-agent1",
       "id": "6fc225b8380d"
     },
@@ -271,8 +470,31 @@
         "section": "Generalized coordinates",
         "snippet": "One can construct a coordinate \"ring\"—a so-called planar ternary ring"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `PlanarTernaryRing`/`ternaryRing` returns no matches.",
       "provenance": "ai-agent1",
       "id": "629d3ae42363"
+    },
+    {
+      "kind": "example",
+      "label": "Cayley plane (octonionic projective plane)",
+      "anchor": {
+        "section": "Generalized coordinates",
+        "snippet": "The Cayley plane"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Cayley plane (OP²) is not in Mathlib; octonions exist (`Octonion`) but no associated projective plane.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -281,6 +503,13 @@
         "section": "Generalized coordinates",
         "snippet": "A projective plane satisfying Pappus's theorem universally is called a Pappian plane"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither Pappus' theorem in projective planes nor Pappian planes are formalized.",
       "provenance": "ai-agent1",
       "id": "880499636de9"
     },
@@ -291,6 +520,13 @@
         "section": "Generalized coordinates",
         "snippet": "division algebras like the octonions correspond to Moufang planes"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Moufang` plane in Mathlib.",
       "provenance": "ai-agent1",
       "id": "a4ac5406b34c"
     },
@@ -301,6 +537,13 @@
         "section": "Generalized coordinates",
         "snippet": "To describe a finite projective plane of order N"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized — PTR construction is absent.",
       "provenance": "ai-agent1",
       "id": "04cceb56c245"
     },
@@ -311,6 +554,13 @@
         "section": "Degenerate planes",
         "snippet": "Degenerate planes do not fulfill the third condition in the definition of a projective plane"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Configuration.Nondegenerate",
+        "module": "Mathlib.Combinatorics.Configuration",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `Configuration.Nondegenerate` class captures the negation, but there is no dedicated `Degenerate plane` decl enumerating the seven classes.",
       "provenance": "ai-agent1",
       "id": "558759f1f26c"
     },
@@ -321,6 +571,13 @@
         "section": "Collineations",
         "snippet": "A collineation of a projective plane is a bijective map of the plane to itself"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Collineation` decl in Mathlib for projective planes.",
       "provenance": "ai-agent1",
       "id": "58603862397c"
     },
@@ -331,6 +588,13 @@
         "section": "Collineations",
         "snippet": "is called a fixed point of"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without `Collineation`, fixed-point/fixed-line concepts for collineations are unformalized.",
       "provenance": "ai-agent1",
       "id": "12a0c3eb76ed"
     },
@@ -341,6 +605,13 @@
         "section": "Homography",
         "snippet": "A homography (or projective transformation ) of PG(2, K ) is a collineation of this type"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep finds no `Homography` in Mathlib (the projective-linear group is the closest, but it is not formalized as a homography of PG(2,K)).",
       "provenance": "ai-agent1",
       "id": "a5351fb4affd"
     },
@@ -351,6 +622,13 @@
         "section": "Homography",
         "snippet": "these are called automorphic collineations"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
       "provenance": "ai-agent1",
       "id": "81e8b179419b"
     },
@@ -361,6 +639,13 @@
         "section": "Homography",
         "snippet": "The fundamental theorem of projective geometry says that all the collineations"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formal statement of the fundamental theorem of projective geometry.",
       "provenance": "ai-agent1",
       "id": "86204eb5e58a"
     },
@@ -371,6 +656,13 @@
         "section": "Plane duality",
         "snippet": "we obtain the dual structure"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Configuration.Dual",
+        "module": "Mathlib.Combinatorics.Configuration",
+        "match_kind": "exact"
+      },
+      "note": "`Configuration.Dual` provides the type synonym swapping points and lines, with membership defined as `Function.swap`.",
       "provenance": "ai-agent1",
       "id": "7e68353cf65b"
     },
@@ -381,6 +673,13 @@
         "section": "Plane duality",
         "snippet": "is called the plane dual statement of the first"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no meta-level operation in Mathlib for forming the syntactic dual of a statement.",
       "provenance": "ai-agent1",
       "id": "0c908d797d09"
     },
@@ -391,6 +690,13 @@
         "section": "Plane duality",
         "snippet": "Dualizing this theorem and the first two axioms in the definition of a projective plane shows that the plane dual structure"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Configuration.ProjectivePlane.instProjectivePlaneDual",
+        "module": "Mathlib.Combinatorics.Configuration",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib provides `instance : ProjectivePlane (Dual L) (Dual P)`, witnessing that the dual of a projective plane is a projective plane.",
       "provenance": "ai-agent1",
       "id": "71e74246f4a2"
     },
@@ -401,6 +707,13 @@
         "section": "Plane duality",
         "snippet": "is called self-dual"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `SelfDual` projective plane definition in Mathlib.",
       "provenance": "ai-agent1",
       "id": "0fab3bd55899"
     },
@@ -411,6 +724,13 @@
         "section": "Plane duality",
         "snippet": "The Principle of plane duality says that dualizing any theorem in a self-dual projective plane"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The metatheorem isn't formalized; only the structural duality instance exists.",
       "provenance": "ai-agent1",
       "id": "1939042e6453"
     },
@@ -421,6 +741,13 @@
         "section": "Correlations",
         "snippet": "A duality is a map from a projective plane"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Duality`/`Correlation` map between a projective plane and its dual is defined in Mathlib.",
       "provenance": "ai-agent1",
       "id": "da3cedd2dd19"
     },
@@ -431,6 +758,13 @@
         "section": "Correlations",
         "snippet": "a duality is called a reciprocity"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`Reciprocity` in the projective-plane sense is not in Mathlib (the matches refer to quadratic reciprocity).",
       "provenance": "ai-agent1",
       "id": "5c33bcfa788b"
     },
@@ -441,6 +775,13 @@
         "section": "Correlations",
         "snippet": "A correlation of order two (an involution ) is called a polarity"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No projective-geometric `Polarity` in Mathlib.",
       "provenance": "ai-agent1",
       "id": "4c7358ecd99e"
     },
@@ -451,6 +792,13 @@
         "section": "Finite projective planes",
         "snippet": "It can be shown that a projective plane has the same number of lines as it has points"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Configuration.ProjectivePlane.card_points_eq_card_lines",
+        "module": "Mathlib.Combinatorics.Configuration",
+        "match_kind": "exact"
+      },
+      "note": "`card_points_eq_card_lines`, `card_points`, `card_lines`, `lineCount_eq`, and `pointCount_eq` together formalize the standard `N² + N + 1` counting in finite projective planes.",
       "provenance": "ai-agent1",
       "id": "c7ddb799bb66"
     },
@@ -461,6 +809,13 @@
         "section": "Finite projective planes",
         "snippet": "the Bruck–Ryser–Chowla theorem that if the order N is congruent to 1 or 2 mod 4"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bruck–Ryser–Chowla is not formalized in Mathlib.",
       "provenance": "ai-agent1",
       "id": "9f4da4039102"
     },
@@ -471,6 +826,13 @@
         "section": "Finite projective planes",
         "snippet": "A projective plane of order N is a Steiner"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no `SteinerSystem`/`SteinerTripleSystem` definition.",
       "provenance": "ai-agent1",
       "id": "e49c3135bc85"
     },
@@ -481,6 +843,13 @@
         "section": "Finite projective planes",
         "snippet": "The number of mutually orthogonal Latin squares of order N is at most"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No MOLS / Latin-square infrastructure in Mathlib.",
       "provenance": "ai-agent1",
       "id": "3a668ff16a1c"
     },
@@ -491,6 +860,13 @@
         "section": "Projective planes in higher-dimensional projective spaces",
         "snippet": "the extra degrees of freedom permit Desargues' theorem to be proved geometrically"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Desargues' theorem itself isn't formalized, so this consequence isn't either.",
       "provenance": "ai-agent1",
       "id": "13ca22f7e83e"
     },
@@ -501,6 +877,13 @@
         "section": "Projective planes in higher-dimensional projective spaces",
         "snippet": "It can be shown that if Desargues' theorem holds in a projective space of dimension greater than two"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Depends on Desargues' theorem, which is absent from Mathlib.",
       "provenance": "ai-agent1",
       "id": "37c151477dc0"
     }

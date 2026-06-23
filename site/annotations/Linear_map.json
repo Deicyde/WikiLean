@@ -49,10 +49,10 @@
       "status": "formalized",
       "mathlib": {
         "decl": "map_sum",
-        "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+        "module": "Mathlib.Algebra.BigOperators.Group.Finset.Defs",
         "match_kind": "generalization"
       },
-      "note": "Linear maps preserve finite sums (via `map_sum`) and scalar multiples (`map_smul`), hence preserve linear combinations.",
+      "note": "Linear maps preserve finite sums (via `map_sum`) and scalar multiples (`LinearMap.map_smul`), hence preserve linear combinations.",
       "provenance": "ai",
       "id": "ee03229d3d5e"
     },
@@ -100,7 +100,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "LinearMap.smulRight",
-        "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+        "module": "Mathlib.Algebra.Module.LinearMap.End",
         "match_kind": "special_case"
       },
       "note": "Mathlib has scaling-style linear maps like `LinearMap.smulRight`/`lsmul`, but no result phrased as 'unique map of the form x ↦ cx'.",
@@ -117,7 +117,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "LinearMap.lsmul",
-        "module": "Mathlib.Algebra.Algebra.Bilinear",
+        "module": "Mathlib.LinearAlgebra.BilinearMap",
         "match_kind": "special_case"
       },
       "note": "Multiplication-by-a-constant maps on ℝ exist via `LinearMap.lsmul`, but no Mathlib statement specifically about 'lines through the origin' as the prototypical example.",
@@ -134,7 +134,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "LinearMap.lsmul",
-        "module": "Mathlib.Algebra.Algebra.Bilinear",
+        "module": "Mathlib.LinearAlgebra.BilinearMap",
         "match_kind": "exact"
       },
       "note": "`LinearMap.lsmul R M c : M →ₗ[R] M` is the homothety (scalar multiplication) packaged as a linear map.",
@@ -233,14 +233,14 @@
         "section": "Examples",
         "snippet": "is an isometry between real normed spaces"
       },
-      "status": "formalized",
+      "status": "partial",
       "mathlib": {
         "decl": "LinearIsometry",
         "module": "Mathlib.Analysis.Normed.Operator.LinearIsometry",
-        "match_kind": "generalization"
+        "match_kind": "special_case"
       },
-      "note": "`LinearIsometry` formalizes norm-preserving linear maps between normed spaces.",
-      "provenance": "ai",
+      "note": "`LinearIsometry` bundles norm-preserving linear maps, but the Wikipedia claim is the Mazur–Ulam-style converse ('an isometry sending 0 to 0 is linear'), which is the relevant direction here.",
+      "provenance": "ai-moderated",
       "id": "8a22b9781597"
     },
     {
@@ -270,7 +270,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "intervalIntegral.integral_add",
-        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic",
         "match_kind": "invocation"
       },
       "note": "Linearity of the definite interval integral is proved via `intervalIntegral.integral_add` and `integral_smul`, but the integral is not bundled as a single `LinearMap`.",
@@ -338,7 +338,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "LinearMap.smulRight",
-        "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+        "module": "Mathlib.Algebra.Module.LinearMap.End",
         "match_kind": "special_case"
       },
       "note": "Component-scaling maps are special cases of `Pi.basisFun` combined with diagonal/`LinearMap.smulRight`-style constructions; no Mathlib lemma exactly named for the Wikipedia example.",
@@ -405,11 +405,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Basis.constr",
+        "decl": "Module.Basis.constr",
         "module": "Mathlib.LinearAlgebra.Basis.Defs",
         "match_kind": "special_case"
       },
-      "note": "Mathlib has `Basis.constr` to extend a function on a basis to a linear map, but no general 'linear extension of a function on a subset' definition matching the Wikipedia notion.",
+      "note": "Mathlib has `Module.Basis.constr` to extend a function on a basis to a linear map, but no general 'linear extension of a function on a subset' definition matching the Wikipedia notion.",
       "provenance": "ai",
       "id": "7061b172a30f"
     },
@@ -456,11 +456,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Basis.constr",
+        "decl": "Module.Basis.constr",
         "module": "Mathlib.LinearAlgebra.Basis.Defs",
         "match_kind": "generalization"
       },
-      "note": "`Basis.constr` lets any function on a basis be linearly extended; together with extension of a linearly independent set to a basis, this gives the Wikipedia statement.",
+      "note": "`Module.Basis.constr` lets any function on a basis be linearly extended; together with extension of a linearly independent set to a basis, this gives the Wikipedia statement.",
       "provenance": "ai",
       "id": "c6faabcd79f7"
     },
@@ -525,7 +525,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "Matrix.planeConformalMatrix",
-        "module": "Mathlib.Analysis.Complex.Isometry",
+        "module": "Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Basic",
         "match_kind": "special_case"
       },
       "note": "Mathlib has 2D rotation matrices via `Matrix.planeConformalMatrix`, but no dedicated `rotation_by_90` example.",
@@ -542,7 +542,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Matrix.planeConformalMatrix",
-        "module": "Mathlib.Analysis.Complex.Isometry",
+        "module": "Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Basic",
         "match_kind": "generalization"
       },
       "note": "`Matrix.planeConformalMatrix` gives the 2D rotation/conformal-scaling matrix; rotations are a special case.",
@@ -610,7 +610,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "LinearMap.lsmul",
-        "module": "Mathlib.Algebra.Algebra.Bilinear",
+        "module": "Mathlib.LinearAlgebra.BilinearMap",
         "match_kind": "special_case"
       },
       "note": "Scaling by a constant is `LinearMap.lsmul` applied to that scalar.",
@@ -779,11 +779,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "LinearMap.instModule",
+        "decl": "LinearMap.module",
         "module": "Mathlib.Algebra.Module.LinearMap.Defs",
         "match_kind": "exact"
       },
-      "note": "Mathlib gives `M →ₛₗ[σ] N` a `Module` instance, making `Hom(V,W)` a vector space.",
+      "note": "Mathlib gives `M →ₛₗ[σ] N` a `Module` instance via `LinearMap.module`, making `Hom(V,W)` a vector space.",
       "provenance": "ai",
       "id": "52fa55b31782"
     },
@@ -814,7 +814,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "LinearMap.GeneralLinearGroup",
-        "module": "Mathlib.Algebra.Module.LinearMap.GeneralLinearGroup",
+        "module": "Mathlib.LinearAlgebra.GeneralLinearGroup.Basic",
         "match_kind": "exact"
       },
       "note": "`LinearMap.GeneralLinearGroup R M` is the group of linear automorphisms of `M`.",
@@ -882,7 +882,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "LinearMap.rank",
-        "module": "Mathlib.LinearAlgebra.Dimension.Constructions",
+        "module": "Mathlib.LinearAlgebra.Dimension.LinearMap",
         "match_kind": "exact"
       },
       "note": "`LinearMap.rank` (and `finrank` of `ker`/`range`) define rank and nullity of a linear map.",
@@ -898,11 +898,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Submodule.Quotient",
-        "module": "Mathlib.LinearAlgebra.Quotient.Basic",
+        "decl": "Submodule.hasQuotient",
+        "module": "Mathlib.LinearAlgebra.Quotient.Defs",
         "match_kind": "exact"
       },
-      "note": "The cokernel is `M₂ ⧸ LinearMap.range f`, expressed using `Submodule` quotients; explicitly used in `Mathlib.Algebra.Module.Presentation.Cokernel`.",
+      "note": "The cokernel is `M₂ ⧸ LinearMap.range f`, expressed using the `Submodule.hasQuotient` quotient construction.",
       "provenance": "ai",
       "id": "2c4ad85ceed0"
     },
@@ -915,11 +915,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "ShortComplex.cokernelSequence",
+        "decl": "CategoryTheory.ShortComplex.Exact",
         "module": "Mathlib.Algebra.Homology.ShortComplex.Exact",
         "match_kind": "generalization"
       },
-      "note": "Exact-sequence formalism (e.g., `ShortComplex`/`cokernelSequence`) covers this in general categorical setting; no direct Wikipedia-style statement for modules.",
+      "note": "Exact-sequence formalism via `CategoryTheory.ShortComplex.Exact` covers this in the general categorical setting; no direct Wikipedia-style statement for modules.",
       "provenance": "ai",
       "id": "6274bb1c4c62"
     },
@@ -1086,7 +1086,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "IsNilpotent",
-        "module": "Mathlib.RingTheory.Nilpotent.Defs",
+        "module": "Mathlib.Algebra.GroupWithZero.Basic",
         "match_kind": "exact"
       },
       "note": "`IsNilpotent` and `IsIdempotentElem` apply to `Module.End`; scalar-multiplication endomorphisms are `LinearMap.lsmul`.",
@@ -1136,11 +1136,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "LinearMap.continuous_iff_isBounded",
+        "decl": "IsBoundedLinearMap.isLinearMap_and_continuous_iff_isBoundedLinearMap",
         "module": "Mathlib.Analysis.Normed.Operator.BoundedLinearMaps",
         "match_kind": "exact"
       },
-      "note": "Mathlib's `isLinearMap_and_continuous_iff_isBoundedLinearMap` (and related `LinearMap.continuous_of_bound`) state continuity equivalent to boundedness.",
+      "note": "`IsBoundedLinearMap.isLinearMap_and_continuous_iff_isBoundedLinearMap` states that a function is linear and continuous iff it is a bounded linear map.",
       "provenance": "ai",
       "id": "c6f5d628daad"
     },
@@ -1160,6 +1160,70 @@
       "note": "No explicit Mathlib example showing differentiation as an unbounded/discontinuous linear operator on a function space.",
       "provenance": "ai",
       "id": "4be4ce930b06"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linear maps send subspaces to subspaces",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "linear subspaces of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.map",
+        "module": "Mathlib.Algebra.Module.Submodule.Map",
+        "match_kind": "exact"
+      },
+      "note": "`Submodule.map f` sends a submodule of the domain to a submodule of the codomain under a linear map.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Category of vector spaces / modules",
+      "anchor": {
+        "section": "Vector space of linear maps",
+        "snippet": "together with K -linear maps as morphisms , forms a category"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ModuleCat",
+        "module": "Mathlib.Algebra.Category.ModuleCat.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ModuleCat R` is the category of `R`-modules with `R`-linear maps as morphisms; for fields this gives the category of vector spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Automorphism group as units of endomorphism ring",
+      "anchor": {
+        "section": "Endomorphisms and automorphisms",
+        "snippet": "is the group of units in the ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.GeneralLinearGroup.generalLinearEquiv",
+        "module": "Mathlib.LinearAlgebra.GeneralLinearGroup.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib identifies the automorphism group `GL(R, M)` with the units of `Module.End R M` via `LinearMap.GeneralLinearGroup`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Automorphism group isomorphic to GLₙ",
+      "anchor": {
+        "section": "Endomorphisms and automorphisms",
+        "snippet": "is isomorphic to the general linear group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.GeneralLinearGroup",
+        "module": "Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.GeneralLinearGroup n R` is the group of invertible n×n matrices; via `LinearMap.toMatrix` it is isomorphic to the automorphism group of a finite-dimensional V.",
+      "provenance": "ai"
     }
   ]
 }

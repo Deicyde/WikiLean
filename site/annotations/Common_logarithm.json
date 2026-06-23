@@ -3,6 +3,7 @@
   "wikipedia_title": "Common logarithm",
   "display_title": "Common logarithm",
   "schema_version": 3,
+  "annotation_style": "theorem_article",
   "annotations": [
     {
       "kind": "definition",
@@ -11,8 +12,31 @@
         "section": "(Lead)",
         "snippet": "the common logarithm (aka \"standard logarithm\") is the logarithm with base 10"
       },
+      "id": "32acaa19837a",
       "provenance": "ai-agent1",
-      "id": "32acaa19837a"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.logb",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Base",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines the general base-b logarithm `Real.logb`; the common logarithm is the specialization `Real.logb 10`, with no dedicated `log10` wrapper."
+    },
+    {
+      "kind": "proposition",
+      "label": "Mantissa property of base-10 logarithms",
+      "anchor": {
+        "section": "Mantissa and characteristic",
+        "snippet": "the logarithm of numbers greater than 1 that differ by a factor of a power of 10 all have the same fractional part"
+      },
+      "provenance": "ai",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.logb_mul",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Base",
+        "match_kind": null
+      },
+      "note": "Mathlib has `Real.logb_mul` and `Real.logb_pow` from which `logb 10 (10^k * x) = k + logb 10 x` follows, but the fractional-part invariance is not stated as a lemma."
     },
     {
       "kind": "definition",
@@ -21,8 +45,15 @@
         "section": "Mantissa and characteristic",
         "snippet": "The fractional part is known as the mantissa"
       },
+      "id": "3e1bd4e26681",
       "provenance": "ai-agent1",
-      "id": "3e1bd4e26681"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no definition of the mantissa of a base-10 logarithm; one would form `Int.fract (Real.logb 10 x)` ad hoc."
     },
     {
       "kind": "definition",
@@ -31,8 +62,15 @@
         "section": "Mantissa and characteristic",
         "snippet": "The integer part, called the characteristic , can be computed by simply counting how many places the decimal point must be moved"
       },
+      "id": "3e316566e291",
       "provenance": "ai-agent1",
-      "id": "3e316566e291"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define the characteristic (integer part) of a base-10 logarithm as a named concept."
     },
     {
       "kind": "example",
@@ -41,8 +79,15 @@
         "section": "Mantissa and characteristic",
         "snippet": "the logarithm of 120 is given by the following calculation"
       },
+      "id": "a0a1befc9a62",
       "provenance": "ai-agent1",
-      "id": "a0a1befc9a62"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Concrete numeric demonstration; no specific worked-example lemma exists in Mathlib."
     },
     {
       "kind": "proposition",
@@ -51,8 +96,15 @@
         "section": "Negative logarithms",
         "snippet": "Positive numbers less than 1 have negative logarithms"
       },
+      "id": "a14dd1fd2617",
       "provenance": "ai-agent1",
-      "id": "a14dd1fd2617"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.logb_neg",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Base",
+        "match_kind": "generalization"
+      },
+      "note": "`Real.logb_neg` states that for `1 < b` and `0 < x < 1`, `Real.logb b x < 0`, generalizing the base-10 claim."
     },
     {
       "kind": "definition",
@@ -61,8 +113,15 @@
         "section": "Negative logarithms",
         "snippet": "a special notation, called bar notation, is used"
       },
+      "id": "b12d0c29ddd4",
       "provenance": "ai-agent1",
-      "id": "b12d0c29ddd4"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bar notation is a historical typographic convention for log tables; Mathlib has no such formalization."
     },
     {
       "kind": "example",
@@ -71,8 +130,15 @@
         "section": "Negative logarithms",
         "snippet": "The following example uses the bar notation to calculate 0.012 × 0.85 = 0.0102"
       },
+      "id": "e1d044bd91ab",
       "provenance": "ai-agent1",
-      "id": "e1d044bd91ab"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Worked numeric example with a non-formalized notation; not represented in Mathlib."
     },
     {
       "kind": "proposition",
@@ -81,8 +147,15 @@
         "section": "Negative logarithms",
         "snippet": "Note that the mantissa is common to all of the 5 × 10 i"
       },
+      "id": "cc1ee651ea9e",
       "provenance": "ai-agent1",
-      "id": "cc1ee651ea9e"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.logb_mul",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Base",
+        "match_kind": null
+      },
+      "note": "Derivable from `Real.logb_mul` and `Real.logb_pow`/`Real.logb_zpow`, but the explicit mantissa-invariance statement is not in Mathlib."
     },
     {
       "kind": "proposition",
@@ -91,8 +164,15 @@
         "section": "Numeric value",
         "snippet": "The numerical value for logarithm to the base 10 can be calculated with the following identities"
       },
+      "id": "76f8d520bdea",
       "provenance": "ai-agent1",
-      "id": "76f8d520bdea"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.log_div_log",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Base",
+        "match_kind": "generalization"
+      },
+      "note": "`Real.log_div_log` gives `Real.log x / Real.log b = Real.logb b x`, the change-of-base identity that underlies computing `log₁₀` from natural log."
     },
     {
       "kind": "proposition",
@@ -101,8 +181,15 @@
         "section": "Derivative",
         "snippet": "The derivative of a logarithm with a base b is such that"
       },
+      "id": "c2e26258e654",
       "provenance": "ai-agent1",
-      "id": "c2e26258e654"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.deriv_log",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Deriv",
+        "match_kind": null
+      },
+      "note": "Mathlib has `Real.deriv_log` (`deriv Real.log x = x⁻¹`) but no dedicated derivative lemma for `Real.logb`; the base-b form must be obtained by combining `Real.log_div_log` with `Real.deriv_log`."
     }
   ]
 }

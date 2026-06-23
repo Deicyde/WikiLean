@@ -3,6 +3,7 @@
   "wikipedia_title": "Tree (graph theory)",
   "display_title": "Tree (graph theory)",
   "schema_version": 3,
+  "annotation_style": "theorem_article",
   "annotations": [
     {
       "kind": "definition",
@@ -11,6 +12,13 @@
         "section": "(Lead)",
         "snippet": "a tree is an undirected graph in which every pair of distinct vertices is connected by exactly one path"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.isTree_iff_existsUnique_path",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Acyclic",
+        "match_kind": "exact"
+      },
+      "note": "`isTree_iff_existsUnique_path` states a graph is a tree iff the vertex type is nonempty and every pair of vertices is joined by a unique path.",
       "provenance": "ai-agent1",
       "id": "f92004116533"
     },
@@ -21,6 +29,13 @@
         "section": "(Lead)",
         "snippet": "A forest is an undirected graph in which any two vertices are connected by at most one path"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.isAcyclic_iff_path_unique",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Acyclic",
+        "match_kind": "exact"
+      },
+      "note": "`IsAcyclic` is defined as having no cycles, and `isAcyclic_iff_path_unique` characterizes a forest as having at most one path between any two vertices.",
       "provenance": "ai-agent1",
       "id": "d1928f7c8c68"
     },
@@ -31,6 +46,13 @@
         "section": "(Lead)",
         "snippet": "A directed tree,"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Quiver.Arborescence",
+        "module": "Mathlib.Combinatorics.Quiver.Arborescence",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib formalizes the rooted directed-tree (arborescence) variant via `Quiver.Arborescence`, but not the general polytree (DAG whose underlying graph is a tree).",
       "provenance": "ai-agent1",
       "id": "06769a282cd3"
     },
@@ -41,6 +63,13 @@
         "section": "(Lead)",
         "snippet": "A polyforest (or directed forest or oriented forest) is a directed acyclic graph whose underlying undirected graph is a forest."
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of a polyforest (DAG whose underlying graph is a forest) was found in Mathlib.",
       "provenance": "ai-agent1",
       "id": "155825ccd046"
     },
@@ -51,6 +80,13 @@
         "section": "(Lead)",
         "snippet": "such data structures are generally rooted trees"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Quiver.Arborescence",
+        "module": "Mathlib.Combinatorics.Quiver.Arborescence",
+        "match_kind": "special_case"
+      },
+      "note": "`Quiver.Arborescence` formalizes an arborescence (unique path from root to every vertex), but anti-arborescences and the general undirected-rooted-tree notion are not formalized.",
       "provenance": "ai-agent1",
       "id": "7cc541e20dd0"
     },
@@ -61,6 +97,13 @@
         "section": "(Lead)",
         "snippet": "A rooted forest is a disjoint union of rooted trees."
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of rooted forest, branching, or anti-branching was found in Mathlib.",
       "provenance": "ai-agent1",
       "id": "4ea4bed8eab7"
     },
@@ -71,6 +114,13 @@
         "section": "Tree",
         "snippet": "A tree is an undirected graph G that satisfies any of the following equivalent conditions"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.isTree_iff_existsUnique_path",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Acyclic",
+        "match_kind": "exact"
+      },
+      "note": "Several equivalences are proved: `isTree_iff_existsUnique_path`, `isTree_iff_minimal_connected`, `maximal_isAcyclic_iff_isTree`, and `isTree_iff_maximal_isAcyclic`.",
       "provenance": "ai-agent1",
       "id": "3ff3d03ab674"
     },
@@ -81,6 +131,13 @@
         "section": "Tree",
         "snippet": "If G has finitely many vertices, say n of them, then the above statements are also equivalent to any of the following conditions"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.isTree_iff_connected_and_card",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Acyclic",
+        "match_kind": "exact"
+      },
+      "note": "`isTree_iff_connected_and_card` proves that, over a finite vertex type, a graph is a tree iff it is connected and has exactly `n - 1` edges.",
       "provenance": "ai-agent1",
       "id": "0fd33a883db2"
     },
@@ -91,6 +148,13 @@
         "section": "Tree",
         "snippet": "the order-zero graph (graph with no vertices) is generally not considered to be a tree"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SimpleGraph.isAcyclic_bot",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Acyclic",
+        "match_kind": "special_case"
+      },
+      "note": "`isAcyclic_bot` shows the empty graph is acyclic, and `IsTree` requires `Connected` (hence Nonempty V), so the convention is implicitly captured but not articulated as such.",
       "provenance": "ai-agent1",
       "id": "fd7b0a00ed3a"
     },
@@ -101,6 +165,13 @@
         "section": "Tree",
         "snippet": "An internal vertex (or inner vertex) is a vertex of degree at least 2."
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `SimpleGraph.degree` but no named predicates for internal/external/branch vertices.",
       "provenance": "ai-agent1",
       "id": "e63e4a78d7b7"
     },
@@ -111,6 +182,13 @@
         "section": "Tree",
         "snippet": "An irreducible tree (or series-reduced tree) is a tree in which there is no vertex of degree 2"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of irreducible/series-reduced tree was found in Mathlib.",
       "provenance": "ai-agent1",
       "id": "94d0291b7d53"
     },
@@ -121,6 +199,13 @@
         "section": "Forest",
         "snippet": "A forest is an undirected acyclic graph or equivalently a disjoint union of trees."
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.IsAcyclic",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Acyclic",
+        "match_kind": "exact"
+      },
+      "note": "`IsAcyclic` is defined directly as having no cyclic walk; `IsAcyclic.isTree_connectedComponent` shows the disjoint-union-of-trees view.",
       "provenance": "ai-agent1",
       "id": "567260d4d42c"
     },
@@ -131,6 +216,13 @@
         "section": "Forest",
         "snippet": "we can easily count the number of trees that are within a forest by subtracting the difference between total vertices and total edges"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `IsTree.card_edgeFinset` (n = m+1 for a tree) but no theorem expressing #components = #vertices − #edges for a forest.",
       "provenance": "ai-agent1",
       "id": "845dd46f0eff"
     },
@@ -141,6 +233,13 @@
         "section": "Polytree",
         "snippet": "is a directed acyclic graph (DAG) whose underlying undirected graph is a tree"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Quiver.Arborescence",
+        "module": "Mathlib.Combinatorics.Quiver.Arborescence",
+        "match_kind": "special_case"
+      },
+      "note": "Only the rooted/arborescence special case appears in Mathlib; the general polytree (DAG whose underlying graph is a tree) is not formalized.",
       "provenance": "ai-agent1",
       "id": "448aea9d1cf4"
     },
@@ -151,6 +250,13 @@
         "section": "Polyforest",
         "snippet": "A polyforest (or directed forest or oriented forest) is a directed acyclic graph whose underlying undirected graph is a forest."
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of polyforest was found in Mathlib.",
       "provenance": "ai-agent1",
       "id": "bf86be210ebf"
     },
@@ -161,6 +267,13 @@
         "section": "Rooted tree",
         "snippet": "A rooted tree is a tree in which one vertex has been designated the root."
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Quiver.Arborescence",
+        "module": "Mathlib.Combinatorics.Quiver.Arborescence",
+        "match_kind": "special_case"
+      },
+      "note": "`Quiver.Arborescence` covers out-arborescences from a root; in-trees and a generic undirected-graph + designated-root rooted tree are not formalized.",
       "provenance": "ai-agent1",
       "id": "a59cfd24f796"
     },
@@ -171,6 +284,13 @@
         "section": "Rooted tree",
         "snippet": "The tree-order is the partial ordering on the vertices of a tree"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsPredArchimedean.findAtom",
+        "module": "Mathlib.Order.SuccPred.Tree",
+        "match_kind": "generalization"
+      },
+      "note": "`Mathlib.Order.SuccPred.Tree` models a rooted tree as a `PartialOrder` with `PredOrder`+`IsPredArchimedean`+`OrderBot`, encoding the tree-order, but it is not connected to `SimpleGraph` trees.",
       "provenance": "ai-agent1",
       "id": "7be5b5222189"
     },
@@ -181,6 +301,13 @@
         "section": "Rooted tree",
         "snippet": "is a normal tree if the ends of every"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of normal tree was found in Mathlib.",
       "provenance": "ai-agent1",
       "id": "ec52a7a1a5cf"
     },
@@ -191,6 +318,13 @@
         "section": "Rooted tree",
         "snippet": "a tree without any designated root is called a free tree"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.IsTree",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Acyclic",
+        "match_kind": "exact"
+      },
+      "note": "`SimpleGraph.IsTree` is a connected acyclic graph with no designated root, matching the notion of a free tree.",
       "provenance": "ai-agent1",
       "id": "e5326b5ba439"
     },
@@ -201,6 +335,13 @@
         "section": "Rooted tree",
         "snippet": "A labeled tree is a tree in which each vertex is given a unique label."
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No labeled-tree concept beyond the implicit vertex-type indexing was found in Mathlib.",
       "provenance": "ai-agent1",
       "id": "aa1d1fb3cd7e"
     },
@@ -211,6 +352,13 @@
         "section": "Rooted tree",
         "snippet": "A recursive tree is a labeled rooted tree where the vertex labels respect the tree order"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No recursive-tree definition was found in Mathlib.",
       "provenance": "ai-agent1",
       "id": "ab371879bca1"
     },
@@ -221,6 +369,13 @@
         "section": "Rooted tree",
         "snippet": "In a rooted tree, the parent of a vertex"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "BinaryTree",
+        "module": "Mathlib.Data.Tree.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`BinaryTree` (and `Order.SuccPred.Tree` via `Order.pred`) encode parent/child relations in their respective settings, but Mathlib has no graph-theoretic parent/child/leaf API for `SimpleGraph` rooted trees.",
       "provenance": "ai-agent1",
       "id": "931f529346ba"
     },
@@ -231,6 +386,13 @@
         "section": "Rooted tree",
         "snippet": "The height of a vertex in a rooted tree is the length of the longest downward path to a leaf from that vertex."
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "BinaryTree.height",
+        "module": "Mathlib.Data.Tree.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`BinaryTree.height` defines tree height for the binary-tree datatype only; no graph-theoretic height/depth on `SimpleGraph` rooted trees was found.",
       "provenance": "ai-agent1",
       "id": "c7a8dedde557"
     },
@@ -241,6 +403,13 @@
         "section": "Rooted tree",
         "snippet": "is a rooted tree in which each vertex has at most"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "BinaryTree",
+        "module": "Mathlib.Data.Tree.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib formalizes `BinaryTree` as a recursive datatype, but no general k-ary or ternary tree predicate over graphs is provided.",
       "provenance": "ai-agent1",
       "id": "681c7cb7342f"
     },
@@ -251,6 +420,13 @@
         "section": "Ordered tree",
         "snippet": "An ordered tree (alternatively, plane tree or positional tree"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No ordered/plane-tree definition was found in Mathlib.",
       "provenance": "ai-agent1",
       "id": "c1118fd1c822"
     },
@@ -261,6 +437,13 @@
         "section": "Properties",
         "snippet": "Every tree is a bipartite graph"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.IsTree.isBipartite",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Acyclic",
+        "match_kind": "exact"
+      },
+      "note": "`IsTree.isBipartite` (via the explicit two-coloring `IsTree.coloringTwo`) proves every tree is bipartite.",
       "provenance": "ai-agent1",
       "id": "363dc88d5d12"
     },
@@ -271,6 +454,13 @@
         "section": "Properties",
         "snippet": "Every tree with only countably many vertices is a planar graph"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Planarity of graphs is not formalized in Mathlib (only mentioned in a docstring).",
       "provenance": "ai-agent1",
       "id": "1f28cc7bf663"
     },
@@ -281,8 +471,31 @@
         "section": "Properties",
         "snippet": "Every connected graph G admits a spanning tree"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.Connected.exists_isTree_le",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Acyclic",
+        "match_kind": "exact"
+      },
+      "note": "`Connected.exists_isTree_le` proves every connected graph has a spanning subgraph that is a tree.",
       "provenance": "ai-agent1",
       "id": "dd2801e07a61"
+    },
+    {
+      "kind": "proposition",
+      "label": "Trémaux tree existence",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "every connected graph with only countably many vertices has a Trémaux tree"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Trémaux/DFS tree existence result was found in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -291,6 +504,13 @@
         "section": "Properties",
         "snippet": "Every finite tree with n vertices, with n > 1 , has at least two terminal vertices (leaves)."
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SimpleGraph.IsTree.exists_vert_degree_one_of_nontrivial",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Acyclic",
+        "match_kind": "special_case"
+      },
+      "note": "`IsTree.exists_vert_degree_one_of_nontrivial` gives the existence of one degree-1 vertex (one leaf), but the stronger \"at least two leaves\" statement was not found.",
       "provenance": "ai-agent1",
       "id": "b7d62b1cb34b"
     },
@@ -301,6 +521,13 @@
         "section": "Properties",
         "snippet": "For any three vertices in a tree, the three paths between them have exactly one vertex in common."
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No median-graph or Steiner-point property of trees was found in Mathlib.",
       "provenance": "ai-agent1",
       "id": "40b6b756ad01"
     },
@@ -311,6 +538,13 @@
         "section": "Properties",
         "snippet": "Every tree has a center consisting of one vertex or two adjacent vertices."
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of graph center/centroid for trees was found in Mathlib.",
       "provenance": "ai-agent1",
       "id": "ca06104a4649"
     },
@@ -321,6 +555,13 @@
         "section": "Properties",
         "snippet": "The maximal cliques of a tree are precisely its edges"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Although Mathlib has `SimpleGraph.IsClique`, the specific characterization of maximal cliques of a tree was not found.",
       "provenance": "ai-agent1",
       "id": "0ce0261d2217"
     },
@@ -331,6 +572,13 @@
         "section": "Labeled trees",
         "snippet": "Cayley's formula states that there are"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cayley's formula counting labeled trees by n^{n-2} was not found in Mathlib.",
       "provenance": "ai-agent1",
       "id": "cc548c4e205a"
     },
@@ -341,6 +589,13 @@
         "section": "Labeled trees",
         "snippet": "A more general problem is to count spanning trees in an undirected graph , which is addressed by the matrix tree theorem ."
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`LapMatrix` defines the graph Laplacian and proves rank-related results, but Kirchhoff's matrix-tree theorem (cofactor counts spanning trees) was not found.",
       "provenance": "ai-agent1",
       "id": "575bf00db0bc"
     },
@@ -351,6 +606,13 @@
         "section": "Unlabeled trees",
         "snippet": "Otter (1948) proved the asymptotic estimate"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No asymptotic count of unlabeled trees (Otter's theorem) was found in Mathlib.",
       "provenance": "ai-agent1",
       "id": "79684904bdaf"
     },
@@ -361,6 +623,13 @@
         "section": "Unlabeled trees",
         "snippet": "This is a consequence of his asymptotic estimate for the number"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No asymptotic count of rooted unlabeled trees was found in Mathlib.",
       "provenance": "ai-agent1",
       "id": "97aab062df30"
     },
@@ -371,6 +640,13 @@
         "section": "Types of trees",
         "snippet": "A path graph (or linear graph ) consists of"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.pathGraph",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Hasse",
+        "match_kind": "exact"
+      },
+      "note": "`SimpleGraph.pathGraph n` is the path graph on `Fin n`, with adjacency and connectedness lemmas.",
       "provenance": "ai-agent1",
       "id": "6489402948b9"
     },
@@ -381,6 +657,13 @@
         "section": "Types of trees",
         "snippet": "A starlike tree consists of a central vertex called root and several path graphs attached to it."
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No starlike-tree definition was found in Mathlib.",
       "provenance": "ai-agent1",
       "id": "bd1471703b39"
     },
@@ -391,6 +674,13 @@
         "section": "Types of trees",
         "snippet": "A star tree is a tree which consists of a single internal vertex"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.starGraph",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Star",
+        "match_kind": "exact"
+      },
+      "note": "`SimpleGraph.starGraph r` is the star graph centered at `r`, and `isTree_starGraph` proves it is a tree.",
       "provenance": "ai-agent1",
       "id": "6deb175514f2"
     },
@@ -401,6 +691,13 @@
         "section": "Types of trees",
         "snippet": "A caterpillar tree is a tree in which all vertices are within distance 1 of a central path subgraph."
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No caterpillar-tree definition was found in Mathlib.",
       "provenance": "ai-agent1",
       "id": "eaf6a613a0a0"
     },
@@ -411,6 +708,13 @@
         "section": "Types of trees",
         "snippet": "A lobster tree is a tree in which all vertices are within distance 2 of a central path subgraph."
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lobster-tree definition was found in Mathlib.",
       "provenance": "ai-agent1",
       "id": "c8833899be06"
     },
@@ -421,6 +725,13 @@
         "section": "Types of trees",
         "snippet": "A regular tree of degree"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No regular-tree or Bethe-lattice definition was found in Mathlib.",
       "provenance": "ai-agent1",
       "id": "873f5be5a3bc"
     }

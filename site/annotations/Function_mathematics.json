@@ -35,7 +35,7 @@
         "module": "Mathlib.Data.Rel",
         "match_kind": "exact"
       },
-      "note": "`Function.graph f = {(a, b) | f a = b}` matches the graph definition, and `graph_injective` shows the representation is unique.",
+      "note": "`Function.graph f = {(a, b) | f a = b}` matches the graph definition.",
       "provenance": "ai",
       "id": "152466608f49"
     },
@@ -66,7 +66,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Set.range",
-        "module": "Mathlib.Data.Set.Image",
+        "module": "Mathlib.Data.Set.Operations",
         "match_kind": "exact"
       },
       "note": "`Set.range f` is the set of images of all elements of the domain.",
@@ -108,6 +108,22 @@
       "id": "117a0e7734df"
     },
     {
+      "kind": "example",
+      "label": "Square function",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "the square function is the function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "sq",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The square function `x ↦ x^2` is `sq` / `· ^ 2` in Mathlib.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Binary relation",
       "anchor": {
@@ -123,6 +139,22 @@
       "note": "`Rel α β := α → β → Prop` formalizes a binary relation between `α` and `β`.",
       "provenance": "ai",
       "id": "e5470a8b1c57"
+    },
+    {
+      "kind": "definition",
+      "label": "Cartesian product of two sets",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "The set of all these pairs is called the Cartesian product of X and Y and denoted"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.prod",
+        "module": "Mathlib.Data.Set.Operations",
+        "match_kind": "exact"
+      },
+      "note": "`Set.prod s t = {p | p.1 ∈ s ∧ p.2 ∈ t}` realizes the binary Cartesian product; on types it is `Prod`.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -227,6 +259,22 @@
       "id": "cc17682d0bb5"
     },
     {
+      "kind": "example",
+      "label": "Riemann zeta function and Riemann hypothesis",
+      "anchor": {
+        "section": "Partial functions",
+        "snippet": "the multiplicative inverse of the Riemann zeta function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "riemannZeta",
+        "module": "Mathlib.NumberTheory.LSeries.RiemannZeta",
+        "match_kind": "exact"
+      },
+      "note": "`riemannZeta : ℂ → ℂ` is the Riemann zeta function; the Riemann hypothesis itself is not yet a theorem in Mathlib.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "General recursive function",
       "anchor": {
@@ -252,11 +300,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Computability.halting_problem",
+        "decl": "ComputablePred.halting_problem",
         "module": "Mathlib.Computability.Halting",
         "match_kind": "exact"
       },
-      "note": "`halting_problem` proves `¬ComputablePred fun c => (eval c n).Dom`, the undecidability of the halting predicate.",
+      "note": "`ComputablePred.halting_problem` proves `¬ComputablePred fun c => (c.eval n).Dom`, the undecidability of the halting predicate.",
       "provenance": "ai",
       "id": "21d5cc3509bd"
     },
@@ -304,10 +352,10 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Int.mul",
-        "module": "Mathlib.Data.Int.Defs",
+        "module": "Init.Data.Int.Basic",
         "match_kind": "exact"
       },
-      "note": "Integer multiplication is realized as a binary function via the `Mul ℤ` instance.",
+      "note": "Integer multiplication is realized as a binary function via `Int.mul` (and the `Mul ℤ` instance).",
       "provenance": "ai",
       "id": "98914ee1e68a"
     },
@@ -321,7 +369,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Set.prod",
-        "module": "Mathlib.Data.Set.Prod",
+        "module": "Mathlib.Data.Set.Operations",
         "match_kind": "exact"
       },
       "note": "`Set.prod` provides binary Cartesian product of sets; `Set.pi` provides the n-ary version.",
@@ -550,6 +598,38 @@
       "id": "10fb6ab624a1"
     },
     {
+      "kind": "example",
+      "label": "Natural logarithm as bijection; exponential as inverse",
+      "anchor": {
+        "section": "Inverse and implicit functions",
+        "snippet": "the natural logarithm is a bijective function from the positive real numbers to the real numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.log_injOn_pos",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Real.log_injOn_pos` and `Real.exp_log` together give that `Real.log` is a bijection `(0, ∞) → ℝ` with inverse `Real.exp`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Arccosine as inverse of restricted cosine",
+      "anchor": {
+        "section": "Inverse and implicit functions",
+        "snippet": "its inverse function, called arccosine"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.arccos",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Inverse",
+        "match_kind": "exact"
+      },
+      "note": "`Real.arccos : ℝ → ℝ` is the inverse cosine, with `Real.cos_arccos` proving the inversion on `[-1, 1]`.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Implicit function (from a relation)",
       "anchor": {
@@ -613,7 +693,7 @@
         "module": "Mathlib.Analysis.Calculus.Implicit",
         "match_kind": "exact"
       },
-      "note": "`HasStrictFDerivAt.implicitFunction` and its `prodFun_implicitFunction` equation provide the implicit function theorem in Banach spaces.",
+      "note": "`HasStrictFDerivAt.implicitFunction` provides the implicit function theorem in Banach spaces.",
       "provenance": "ai",
       "id": "c725fd684d05"
     },
@@ -627,7 +707,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "intervalIntegral",
-        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic",
         "match_kind": "generalization"
       },
       "note": "Antiderivatives are not packaged as a named operator, but `intervalIntegral` and `FTC` lemmas realize the antiderivative construction.",
@@ -644,7 +724,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Real.exp",
-        "module": "Mathlib.Analysis.SpecialFunctions.Exp",
+        "module": "Mathlib.Analysis.Complex.Exponential",
         "match_kind": "special_case"
       },
       "note": "`Real.exp` is defined via its power series (not as ODE solution), but its derivative property `Real.hasDerivAt_exp` is proved.",
@@ -780,7 +860,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "isEmptyElim",
-        "module": "Mathlib.Logic.IsEmpty.Basic",
+        "module": "Mathlib.Logic.IsEmpty.Defs",
         "match_kind": "exact"
       },
       "note": "`isEmptyElim` produces a unique function out of any empty type; `isEmpty_fun` characterizes when `α → β` is empty.",
@@ -797,7 +877,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Set.rangeFactorization",
-        "module": "Mathlib.Data.Set.Image",
+        "module": "Mathlib.Data.Set.Operations",
         "match_kind": "exact"
       },
       "note": "`Set.rangeFactorization f : α → range f` is the canonical surjection onto the image; `coe_comp_rangeFactorization` shows it factors `f`.",
@@ -899,7 +979,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Function.id_comp",
-        "module": "Mathlib.Logic.Function.Defs",
+        "module": "Init.Core",
         "match_kind": "exact"
       },
       "note": "`Function.id_comp` and `Function.comp_id` express that `id` is a two-sided identity for composition.",
@@ -970,7 +1050,7 @@
         "module": "Mathlib.Data.Set.Operations",
         "match_kind": "exact"
       },
-      "note": "The fiber of `y` under `f` is `f ⁻¹' {y}`; `Function.fiber` in Mathlib.Logic.Function.FiberPartition packages this for partitioning.",
+      "note": "The fiber of `y` under `f` is `f ⁻¹' {y}`, a special case of `Set.preimage`.",
       "provenance": "ai",
       "id": "46e51dd712df"
     },
@@ -1072,7 +1152,7 @@
         "module": "Mathlib.Logic.Function.Basic",
         "match_kind": "exact"
       },
-      "note": "Mathlib proves bijective is equivalent to having a two-sided inverse (`leftInverse_surjInv`/`rightInverse_surjInv`), and `Equiv.ofBijective` packages the inverse.",
+      "note": "`Function.bijective_iff_has_inverse` proves that bijective is equivalent to having a two-sided inverse.",
       "provenance": "ai",
       "id": "44255e872fc5"
     },
@@ -1086,7 +1166,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "Set.rangeFactorization",
-        "module": "Mathlib.Data.Set.Image",
+        "module": "Mathlib.Data.Set.Operations",
         "match_kind": "special_case"
       },
       "note": "`Set.rangeFactorization` and `coe_comp_rangeFactorization` give the surjection-injection factorization through the image, but the full quotient/image/inclusion three-factor decomposition is not packaged as a single theorem.",
@@ -1126,6 +1206,22 @@
       "note": "`Function.extend f g g₀` extends `g` along an injection `f` (with default `g₀`).",
       "provenance": "ai",
       "id": "dc48f9e59413"
+    },
+    {
+      "kind": "definition",
+      "label": "Analytic continuation",
+      "anchor": {
+        "section": "Restriction and extension",
+        "snippet": "A typical use of this concept is the process of analytic continuation , that allows extending functions whose domain is a small part of the complex plane to functions whose domain is almost the whole complex plane"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AnalyticOnNhd.eqOn_of_preconnected_of_eventuallyEq",
+        "module": "Mathlib.Analysis.Analytic.Uniqueness",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib formalizes the uniqueness of analytic continuation (identity theorem) on preconnected sets, the principal ingredient enabling extension of analytic functions.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -1171,7 +1267,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Pi.instAdd",
-        "module": "Mathlib.Algebra.Group.Pi.Basic",
+        "module": "Mathlib.Algebra.Notation.Pi.Defs",
         "match_kind": "exact"
       },
       "note": "`Pi.instAdd`/`Pi.instMul`/etc. equip function spaces with pointwise algebraic operations.",
@@ -1222,7 +1318,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Monotone",
-        "module": "Mathlib.Order.Defs",
+        "module": "Mathlib.Order.Monotone.Defs",
         "match_kind": "exact"
       },
       "note": "`Monotone`, `StrictMono`, `MonotoneOn`, `StrictMonoOn` formalize various notions of monotonicity.",
@@ -1245,6 +1341,22 @@
       "note": "`StrictMonoOn.orderIso` builds an order isomorphism between a set and its image for a strictly monotone function on that set.",
       "provenance": "ai",
       "id": "8b32795c3313"
+    },
+    {
+      "kind": "example",
+      "label": "Sine and cosine as solutions of the linear ODE y'' = -y",
+      "anchor": {
+        "section": "Real function",
+        "snippet": "the sine and the cosine functions are the solutions of the linear differential equation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.sin",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "special_case"
+      },
+      "note": "`Real.sin`/`Real.cos` are defined via complex exponentials; their second-derivative identities (`Real.cos_neg_sin`-style) realize the ODE `y'' = -y`.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -1290,7 +1402,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "ContinuousMap",
-        "module": "Mathlib.Topology.ContinuousMap.Basic",
+        "module": "Mathlib.Topology.ContinuousMap.Defs",
         "match_kind": "special_case"
       },
       "note": "Mathlib has many specific function spaces (`ContinuousMap`, `Lp`, `BoundedContinuousFunction`, `Schwartz`, …) but no overarching `def FunctionSpace`.",
@@ -1374,11 +1486,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Turing.Partrec.to_TM2",
+        "decl": "Turing.PartrecToTM2.tr_eval",
         "module": "Mathlib.Computability.TuringMachine.ToPartrec",
         "match_kind": "special_case"
       },
-      "note": "Mathlib formalizes equivalences between partial-recursive functions and Turing machine models in `Computability/TuringMachine/ToPartrec`, but a comprehensive Church-Turing equivalence covering all standard models is not packaged.",
+      "note": "`Turing.PartrecToTM2.tr_eval` formalizes that a TM2 machine simulates partial-recursive evaluation, but a comprehensive Church-Turing equivalence covering all standard models is not packaged.",
       "provenance": "ai",
       "id": "1a6110c6ac64"
     },

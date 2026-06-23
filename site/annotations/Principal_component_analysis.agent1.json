@@ -11,7 +11,15 @@
         "section": "(Lead)",
         "snippet": "Principal component analysis ( PCA ) is a linear dimensionality reduction technique"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of PCA as a dimensionality-reduction procedure appears anywhere in Mathlib4.",
+      "provenance": "ai-agent1",
+      "id": "0f2b30a334d7"
     },
     {
       "kind": "definition",
@@ -20,7 +28,15 @@
         "section": "(Lead)",
         "snippet": "The principal components of a collection of points in a real coordinate space are a sequence"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of principal components of a point cloud is defined in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "7918053a7bfb"
     },
     {
       "kind": "definition",
@@ -29,7 +45,15 @@
         "section": "(Lead)",
         "snippet": "a best-fitting line is defined as one that minimizes the average squared perpendicular distance"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no formalization of least-squares best-fitting affine subspaces.",
+      "provenance": "ai-agent1",
+      "id": "24bc9aabe75b"
     },
     {
       "kind": "definition",
@@ -38,7 +62,15 @@
         "section": "Overview",
         "snippet": "the first principal component of a set of"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of first or k-th principal components is present in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "23e610dec28b"
     },
     {
       "kind": "proposition",
@@ -47,7 +79,15 @@
         "section": "Overview",
         "snippet": "it can be shown that the principal components are eigenvectors of the data's covariance matrix"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.IsHermitian.spectral_theorem",
+        "module": "Mathlib.Analysis.Matrix.Spectrum",
+        "match_kind": "generalization"
+      },
+      "note": "The general spectral theorem for Hermitian matrices is available, but its specialization to a sample covariance matrix interpreted as PCA is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "19d8930332de"
     },
     {
       "kind": "definition",
@@ -56,7 +96,15 @@
         "section": "Details",
         "snippet": "PCA is defined as an orthogonal linear transformation on a real inner product space"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formal definition of PCA as an orthogonal change-of-basis exists in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "d4c4630f2e54"
     },
     {
       "kind": "proposition",
@@ -65,7 +113,15 @@
         "section": "First component",
         "snippet": "A standard result for a positive semidefinite matrix such as X T X is that the quotient's maximum possible value is the largest eigenvalue"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.IsSymmetric.hasEigenvalue_iSup_of_finiteDimensional",
+        "module": "Mathlib.Analysis.InnerProductSpace.Rayleigh",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves the supremum of the Rayleigh quotient of a self-adjoint operator on a finite-dimensional inner product space is attained as its largest eigenvalue.",
+      "provenance": "ai-agent1",
+      "id": "229772689e40"
     },
     {
       "kind": "definition",
@@ -74,7 +130,15 @@
         "section": "First component",
         "snippet": "the first principal component of a data vector x ( i ) can then be given as a score"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "PCA scores are not defined in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "4ed79cec0b3f"
     },
     {
       "kind": "definition",
@@ -83,7 +147,15 @@
         "section": "Further components",
         "snippet": "The k -th component can be found by subtracting the first k − 1 principal components"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The deflation construction of successive principal components is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "f4960e8e8ddc"
     },
     {
       "kind": "proposition",
@@ -92,7 +164,15 @@
         "section": "Further components",
         "snippet": "It turns out that this gives the remaining eigenvectors of X T X"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.IsHermitian.spectral_theorem",
+        "module": "Mathlib.Analysis.Matrix.Spectrum",
+        "match_kind": "generalization"
+      },
+      "note": "The general spectral decomposition of Hermitian matrices is in Mathlib, but the identification of PCA weight vectors with eigenvectors of XᵀX is not.",
+      "provenance": "ai-agent1",
+      "id": "10cf844bd65c"
     },
     {
       "kind": "definition",
@@ -101,7 +181,15 @@
         "section": "Further components",
         "snippet": "Columns of W multiplied by the square root of corresponding eigenvalues"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "PCA loadings are not defined in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "cf528e800919"
     },
     {
       "kind": "proposition",
@@ -110,7 +198,15 @@
         "section": "Covariances",
         "snippet": "there is no sample covariance between different principal components over the dataset"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not state uncorrelatedness of principal components.",
+      "provenance": "ai-agent1",
+      "id": "6bf78d3abdd1"
     },
     {
       "kind": "proposition",
@@ -119,6 +215,30 @@
         "section": "Covariances",
         "snippet": "Another way to characterise the principal components transformation is therefore as the transformation to coordinates which diagonalise the empirical sample covariance matrix"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.IsHermitian.spectral_theorem",
+        "module": "Mathlib.Analysis.Matrix.Spectrum",
+        "match_kind": "generalization"
+      },
+      "note": "The spectral theorem provides orthogonal diagonalization of Hermitian matrices, but no statement about empirical covariance matrices appears in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "e1fab3f094b4"
+    },
+    {
+      "kind": "proposition",
+      "label": "Eigenvalue equals sum of squared component scores",
+      "anchor": {
+        "section": "Covariances",
+        "snippet": "is equal to the sum of the squares over the dataset associated with each component"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement equating the k-th eigenvalue of XᵀX with the sum of squared k-th principal-component scores appears in Mathlib.",
       "provenance": "ai-agent1"
     },
     {
@@ -128,7 +248,15 @@
         "section": "Singular value decomposition",
         "snippet": "the singular value decomposition (SVD) of X"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.singularValues",
+        "module": "Mathlib.Analysis.InnerProductSpace.SingularValues",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines the singular values of a linear map between finite-dimensional inner product spaces, but does not provide the full UΣVᵀ matrix-factorization form of SVD.",
+      "provenance": "ai-agent1",
+      "id": "6736b5135bc4"
     },
     {
       "kind": "proposition",
@@ -137,6 +265,30 @@
         "section": "Singular value decomposition",
         "snippet": "Comparison with the eigenvector factorization of X T X establishes that the right singular vectors W of X are equivalent to the eigenvectors of X T X"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.sq_singularValues_fin",
+        "module": "Mathlib.Analysis.InnerProductSpace.SingularValues",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib shows the squared singular values are the eigenvalues of T*∘T but does not name right singular vectors or identify them with the eigenvectors of XᵀX explicitly.",
+      "provenance": "ai-agent1",
+      "id": "402c80dc8d5e"
+    },
+    {
+      "kind": "proposition",
+      "label": "Score matrix as polar decomposition",
+      "anchor": {
+        "section": "Singular value decomposition",
+        "snippet": "This form is also the polar decomposition of T"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no matrix polar decomposition lemma identifying the PCA score matrix with the polar form.",
       "provenance": "ai-agent1"
     },
     {
@@ -146,7 +298,15 @@
         "section": "Singular value decomposition",
         "snippet": "produces a truncated matrix that is the nearest possible matrix of rank L to the original matrix"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Eckart–Young low-rank approximation theorem is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "a93cd7b0b008"
     },
     {
       "kind": "theorem",
@@ -155,6 +315,30 @@
         "section": "Singular value decomposition",
         "snippet": "Theorem (Optimal k‑dimensional fit)"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The PCA-formulation of the optimal k-dimensional fit theorem is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "811c95926d55"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum of eigenvalues equals total squared deviation from mean",
+      "anchor": {
+        "section": "Further considerations",
+        "snippet": "The sum of all the eigenvalues is equal to the sum of the squared distances of the points from their multidimensional mean"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement equating the trace of the empirical covariance matrix with total squared deviation from the centroid appears in Mathlib.",
       "provenance": "ai-agent1"
     },
     {
@@ -164,7 +348,15 @@
         "section": "Further considerations",
         "snippet": "PCA is sensitive to the scaling of the variables"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Scaling-sensitivity of PCA is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "96e247d35483"
     },
     {
       "kind": "proposition",
@@ -173,7 +365,15 @@
         "section": "Further considerations",
         "snippet": "Classical PCA assumes the cloud of points has already been translated so its centroid is at the origin"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no statement about effects of skipping mean-centering in PCA.",
+      "provenance": "ai-agent1",
+      "id": "9f98b6fa4f3e"
     },
     {
       "kind": "proposition",
@@ -182,7 +382,15 @@
         "section": "Further considerations",
         "snippet": "a PCA based on the correlation matrix of X is equal to a PCA based on the covariance matrix of Z"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Equivalence of correlation-PCA and standardized-data covariance-PCA is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "3d7f9df37105"
     },
     {
       "kind": "proposition",
@@ -191,7 +399,15 @@
         "section": "Properties",
         "snippet": "Property 1"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Ky Fan-style trace-maximization characterization of PCA is not present in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "bdc0c616036d"
     },
     {
       "kind": "proposition",
@@ -200,7 +416,15 @@
         "section": "Properties",
         "snippet": "Property 2"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The dual trace-minimization property of trailing eigenvectors is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "1125f8f1d252"
     },
     {
       "kind": "proposition",
@@ -209,7 +433,15 @@
         "section": "Properties",
         "snippet": "Property 3"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.IsHermitian.spectral_theorem",
+        "module": "Mathlib.Analysis.Matrix.Spectrum",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves the spectral decomposition of Hermitian matrices, which subsumes the spectral decomposition of a covariance matrix Σ.",
+      "provenance": "ai-agent1",
+      "id": "a64de23da134"
     },
     {
       "kind": "proposition",
@@ -218,7 +450,15 @@
         "section": "PCA and information theory",
         "snippet": "Linsker showed that if"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Linsker's information-maximization result for PCA is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "d7955782198e"
     },
     {
       "kind": "proposition",
@@ -227,7 +467,15 @@
         "section": "PCA and information theory",
         "snippet": "PCA at least minimizes an upper bound on the information loss"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No information-loss upper bound for PCA appears in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "5f2eec30349b"
     },
     {
       "kind": "definition",
@@ -236,7 +484,15 @@
         "section": "Computation using the covariance method",
         "snippet": "where Y is the Karhunen–Loève transform (KLT) of matrix X"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep finds no occurrences of Karhunen–Loève in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "b76b246c1ceb"
     },
     {
       "kind": "proposition",
@@ -245,6 +501,30 @@
         "section": "Derivation using the covariance method",
         "snippet": "cov( X ) is guaranteed to be a non-negative definite matrix and thus is guaranteed to be diagonalisable by some unitary matrix"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.IsHermitian.spectral_theorem",
+        "module": "Mathlib.Analysis.Matrix.Spectrum",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's Hermitian spectral theorem gives unitary diagonalization, generalizing the statement for non-negative-definite covariance matrices.",
+      "provenance": "ai-agent1",
+      "id": "070fa31d8b9c"
+    },
+    {
+      "kind": "proposition",
+      "label": "Power iteration converges to leading principal component",
+      "anchor": {
+        "section": "Iterative computation",
+        "snippet": "the vector r gets close to the first principal component of X within the number of iterations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no convergence theorem for the power-iteration algorithm applied to XᵀX.",
       "provenance": "ai-agent1"
     },
     {
@@ -254,7 +534,15 @@
         "section": "Further considerations",
         "snippet": "If we have just two variables and they have the same sample variance and are completely correlated, then the PCA will entail a rotation by 45°"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This worked example is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "77a5a6ffde43"
     },
     {
       "kind": "example",
@@ -263,7 +551,15 @@
         "section": "Market research and indexes of attitude",
         "snippet": "the Oxford Internet Survey in 2013 asked 2000 people about their attitudes"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib contains no empirical-research applications of PCA.",
+      "provenance": "ai-agent1",
+      "id": "3ae2c13a0669"
     },
     {
       "kind": "example",
@@ -272,7 +568,15 @@
         "section": "Neuroscience",
         "snippet": "This technique is known as spike-triggered covariance analysis"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Spike-triggered covariance analysis is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "ceb50ba0998c"
     }
   ]
 }

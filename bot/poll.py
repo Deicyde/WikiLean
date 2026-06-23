@@ -116,24 +116,29 @@ def resolve_conflicts(pr, branch, mathlib, dry):
     print(f"  RESOLVE-CONFLICT #{pr}: rebuild off fresh master with {len(green['tags'])} green tags")
     if dry:
         return
-    gpath = HERE / "state" / "reapply_green.json"
-    gpath.write_text(json.dumps(green, indent=1))
     sh(["git", "-C", str(mathlib), "fetch", "origin", branch], check=True)       # --force-with-lease base
     sh(["git", "-C", str(mathlib), "fetch", "upstream", "master"], check=True)   # FETCH_HEAD = current master
     rebuilt = subprocess.run(["git", "-C", str(mathlib), "rev-parse", "FETCH_HEAD"],
                              capture_output=True, text=True).stdout.strip()
-    # Record the master we rebuild ONTO *before* the fallible build/push, so a failed
-    # rebuild doesn't re-loop every tick at the same master — it retries only when master
-    # actually advances. This (not a success-only write in tick) is the real loop-guard.
+    # Carry over the import set from the EXISTING branch so the rebuild needs NO build:
+    # a `lake build` off the latest, partly-uncached master cold-cascades for HOURS on
+    # foundational modules (it ran 80m+ on #40861 before timing out). The original build
+    # already proved which files need the CrossRefAttribute import; re-add exactly those
+    # and let mathlib CI do the compile check.
+    green_files = {t["file"] for t in green["tags"]}
+    gr = subprocess.run(["git", "-C", str(mathlib), "grep", "-l", "Mathlib.Tactic.CrossRefAttribute",
+                         f"origin/{branch}", "--", "Mathlib"], capture_output=True, text=True).stdout.split()
+    green["import_files"] = sorted({f.split(":", 1)[1] for f in gr if ":" in f} & green_files)
+    # Record the master we rebuild ONTO *before* the fallible push, so a failed rebuild
+    # doesn't re-loop every tick at the same master — it retries only when master advances.
     stt = json.loads(STATE.read_text()); stt["conflict_sha"] = rebuilt; stt.pop("retriggered_pr", None)
     STATE.write_text(json.dumps(stt, indent=1))
+    gpath = HERE / "state" / "reapply_green.json"
+    gpath.write_text(json.dumps(green, indent=1))
     sh(["git", "-C", str(mathlib), "checkout", "-B", branch, "FETCH_HEAD"], check=True)
-    cg = sh(["lake", "exe", "cache", "get"], cwd=str(mathlib))
-    if cg.returncode != 0:
-        sys.exit("lake exe cache get failed in resolve — not cold-building; retry next tick")
     sh([sys.executable, str(HERE / "open_batch_pr.py"), "--approved", str(gpath),
         "--mathlib", str(mathlib), "--repo", REPO, "--base", "master",
-        "--apply", "--check", "--build", "--reapply"], check=True)
+        "--apply", "--check", "--reapply"], check=True)   # NO --build — CI compile-checks
 
 
 def do_open(mathlib, dry):

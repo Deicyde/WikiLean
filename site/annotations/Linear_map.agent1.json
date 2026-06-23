@@ -11,7 +11,15 @@
         "section": "(Lead)",
         "snippet": "a linear map (or linear mapping ) is a particular kind of function between vector spaces"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap",
+        "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`LinearMap` is the bundled structure of (semi)linear maps between modules, generalizing linear maps between vector spaces.",
+      "provenance": "ai-agent1",
+      "id": "ba4a80802572"
     },
     {
       "kind": "definition",
@@ -20,7 +28,15 @@
         "section": "Definition and first consequences",
         "snippet": "A function"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLinearMap",
+        "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsLinearMap` packages the two axioms `map_add` and `map_smul` exactly as in the Wikipedia formal definition.",
+      "provenance": "ai-agent1",
+      "id": "ab41b403f3da"
     },
     {
       "kind": "proposition",
@@ -29,7 +45,15 @@
         "section": "Definition and first consequences",
         "snippet": "Thus a linear map is one which preserves linear combinations"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "map_sum",
+        "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Linear maps preserve finite sums (via `map_sum`) and scalar multiples (`map_smul`), hence preserve linear combinations.",
+      "provenance": "ai-agent1",
+      "id": "ee03229d3d5e"
     },
     {
       "kind": "proposition",
@@ -38,7 +62,15 @@
         "section": "Definition and first consequences",
         "snippet": "Denoting the zero elements of the vector spaces"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.map_zero",
+        "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.map_zero` (via the `ZeroHomClass` instance for `LinearMap`) states that any linear map sends 0 to 0.",
+      "provenance": "ai-agent1",
+      "id": "4e986ee55078"
     },
     {
       "kind": "definition",
@@ -47,7 +79,15 @@
         "section": "Definition and first consequences",
         "snippet": "viewed as a one-dimensional vector space over itself is called a linear functional"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Dual",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Module.Dual R M = M →ₗ[R] R` is exactly the space of linear functionals.",
+      "provenance": "ai-agent1",
+      "id": "165c1bcc69b2"
     },
     {
       "kind": "example",
@@ -56,7 +96,15 @@
         "section": "Examples",
         "snippet": "The unique map of the form"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.smulRight",
+        "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has scaling-style linear maps like `LinearMap.smulRight`/`lsmul`, but no result phrased as 'unique map of the form x ↦ cx'.",
+      "provenance": "ai-agent1",
+      "id": "6d8e2926fb03"
     },
     {
       "kind": "example",
@@ -65,7 +113,15 @@
         "section": "Examples",
         "snippet": "A prototypical example that gives linear maps their name"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.lsmul",
+        "module": "Mathlib.Algebra.Algebra.Bilinear",
+        "match_kind": "special_case"
+      },
+      "note": "Multiplication-by-a-constant maps on ℝ exist via `LinearMap.lsmul`, but no Mathlib statement specifically about 'lines through the origin' as the prototypical example.",
+      "provenance": "ai-agent1",
+      "id": "faa2c189d173"
     },
     {
       "kind": "example",
@@ -74,7 +130,15 @@
         "section": "Examples",
         "snippet": "any homothety"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.lsmul",
+        "module": "Mathlib.Algebra.Algebra.Bilinear",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.lsmul R M c : M →ₗ[R] M` is the homothety (scalar multiplication) packaged as a linear map.",
+      "provenance": "ai-agent1",
+      "id": "f9915710617e"
     },
     {
       "kind": "example",
@@ -83,7 +147,15 @@
         "section": "Examples",
         "snippet": "The zero map"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.instZero",
+        "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib gives `LinearMap` a `Zero` instance making the zero function a linear map.",
+      "provenance": "ai-agent1",
+      "id": "9ba4462c7a1c"
     },
     {
       "kind": "example",
@@ -92,7 +164,15 @@
         "section": "Examples",
         "snippet": "The identity map on any module is a linear operator"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.id",
+        "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.id : M →ₗ[R] M` is the identity packaged as a linear map.",
+      "provenance": "ai-agent1",
+      "id": "9b78f6e2175e"
     },
     {
       "kind": "example",
@@ -101,7 +181,15 @@
         "section": "Examples",
         "snippet": "For real numbers, the map"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific example in Mathlib stating that some particular function (e.g., x ↦ x²) fails to be linear.",
+      "provenance": "ai-agent1",
+      "id": "cc43711109d3"
     },
     {
       "kind": "example",
@@ -110,7 +198,15 @@
         "section": "Examples",
         "snippet": "but is an affine transformation"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "AffineMap",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineMap",
+        "match_kind": "generalization"
+      },
+      "note": "`AffineMap` formalizes affine transformations, but no explicit Mathlib statement that x ↦ x+c is affine but not linear.",
+      "provenance": "ai-agent1",
+      "id": "391e3b940445"
     },
     {
       "kind": "example",
@@ -119,7 +215,15 @@
         "section": "Examples",
         "snippet": "real matrix"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.toLin'",
+        "module": "Mathlib.LinearAlgebra.Matrix.ToLin",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.toLin'` converts a matrix to a linear map between coordinate spaces.",
+      "provenance": "ai-agent1",
+      "id": "f0a0096a8e42"
     },
     {
       "kind": "example",
@@ -128,7 +232,15 @@
         "section": "Examples",
         "snippet": "is an isometry between real normed spaces"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearIsometry",
+        "module": "Mathlib.Analysis.Normed.Operator.LinearIsometry",
+        "match_kind": "special_case"
+      },
+      "note": "`LinearIsometry` bundles norm-preserving linear maps, but the Wikipedia claim is the Mazur–Ulam-style converse ('an isometry sending 0 to 0 is linear'), which is the relevant direction here.",
+      "provenance": "ai-agent1",
+      "id": "8a22b9781597"
     },
     {
       "kind": "example",
@@ -137,7 +249,15 @@
         "section": "Examples",
         "snippet": "Differentiation defines a linear map from the space of all differentiable functions"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.derivative",
+        "module": "Mathlib.Algebra.Polynomial.Derivative",
+        "match_kind": "special_case"
+      },
+      "note": "`Polynomial.derivative : R[X] →ₗ[R] R[X]` is differentiation as a linear map (on polynomials); analogous `fderiv`/`deriv` exist but are not bundled.",
+      "provenance": "ai-agent1",
+      "id": "0e9076b97df9"
     },
     {
       "kind": "example",
@@ -146,7 +266,15 @@
         "section": "Examples",
         "snippet": "A definite integral over some interval I is a linear map"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "intervalIntegral.integral_add",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral",
+        "match_kind": "invocation"
+      },
+      "note": "Linearity of the definite interval integral is proved via `intervalIntegral.integral_add` and `integral_smul`, but the integral is not bundled as a single `LinearMap`.",
+      "provenance": "ai-agent1",
+      "id": "5af80902be1f"
     },
     {
       "kind": "example",
@@ -155,7 +283,15 @@
         "section": "Examples",
         "snippet": "An indefinite integral (or antiderivative ) with a fixed integration starting point"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No bundled linear-map version of the indefinite integral (antiderivative with fixed base point) in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "dca17ac4616d"
     },
     {
       "kind": "example",
@@ -164,7 +300,15 @@
         "section": "Examples",
         "snippet": "are finite-dimensional vector spaces over a field F"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.toMatrix",
+        "module": "Mathlib.LinearAlgebra.Matrix.ToLin",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.toMatrix` is the linear equivalence between linear maps and matrices given bases.",
+      "provenance": "ai-agent1",
+      "id": "59f35dd25d7b"
     },
     {
       "kind": "example",
@@ -173,7 +317,15 @@
         "section": "Examples",
         "snippet": "The expected value of a random variable is a linear function"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_add",
+        "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Linearity of expectation follows from `integral_add`/`integral_smul`, but is not packaged as a single `LinearMap`.",
+      "provenance": "ai-agent1",
+      "id": "c746755213c9"
     },
     {
       "kind": "example",
@@ -182,7 +334,15 @@
         "section": "Examples",
         "snippet": "This function scales the"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.smulRight",
+        "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "Component-scaling maps are special cases of `Pi.basisFun` combined with diagonal/`LinearMap.smulRight`-style constructions; no Mathlib lemma exactly named for the Wikipedia example.",
+      "provenance": "ai-agent1",
+      "id": "c36c4c4526d4"
     },
     {
       "kind": "example",
@@ -191,7 +351,15 @@
         "section": "Examples",
         "snippet": "is additive: It does not matter whether vectors are first added and then mapped"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.map_add",
+        "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.map_add` (via `AddHomClass`) states that linear maps are additive.",
+      "provenance": "ai-agent1",
+      "id": "c488a55d33a0"
     },
     {
       "kind": "example",
@@ -200,7 +368,15 @@
         "section": "Examples",
         "snippet": "is homogeneous: It does not matter whether a vector is first scaled and then mapped"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.map_smul",
+        "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.map_smul` states that linear maps commute with scalar multiplication (homogeneity).",
+      "provenance": "ai-agent1",
+      "id": "706211a1036d"
     },
     {
       "kind": "definition",
@@ -209,7 +385,15 @@
         "section": "Linear endomorphisms and isomorphisms",
         "snippet": "If a linear map is a bijection then it is called a linear isomorphism"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearEquiv",
+        "module": "Mathlib.Algebra.Module.Equiv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`LinearEquiv` and `Module.End` formalize linear isomorphisms and endomorphisms respectively.",
+      "provenance": "ai-agent1",
+      "id": "d08e1b87e612"
     },
     {
       "kind": "definition",
@@ -218,7 +402,15 @@
         "section": "Linear extensions",
         "snippet": "Then a linear extension of"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Basis.constr",
+        "module": "Mathlib.LinearAlgebra.Basis.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has `Basis.constr` to extend a function on a basis to a linear map, but no general 'linear extension of a function on a subset' definition matching the Wikipedia notion.",
+      "provenance": "ai-agent1",
+      "id": "7061b172a30f"
     },
     {
       "kind": "proposition",
@@ -227,7 +419,15 @@
         "section": "Linear extensions",
         "snippet": "can be extended to a linear map"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib statement of the existence criterion (consistency on linear-relations) for extending a partial function to a linear map.",
+      "provenance": "ai-agent1",
+      "id": "0476448421c2"
     },
     {
       "kind": "proposition",
@@ -236,7 +436,15 @@
         "section": "Linear extensions",
         "snippet": "If a linear extension of"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.ext_on",
+        "module": "Mathlib.LinearAlgebra.Span.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`LinearMap.ext_on` / `Submodule.span_induction`-style results give uniqueness of linear maps agreeing on a spanning set, capturing the uniqueness claim.",
+      "provenance": "ai-agent1",
+      "id": "9fcae95ac8f9"
     },
     {
       "kind": "proposition",
@@ -245,7 +453,15 @@
         "section": "Linear extensions",
         "snippet": "is linearly independent then every function"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Basis.constr",
+        "module": "Mathlib.LinearAlgebra.Basis.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Basis.constr` lets any function on a basis be linearly extended; together with extension of a linearly independent set to a basis, this gives the Wikipedia statement.",
+      "provenance": "ai-agent1",
+      "id": "c6faabcd79f7"
     },
     {
       "kind": "example",
@@ -254,7 +470,15 @@
         "section": "Linear extensions",
         "snippet": "can be linearly extended from the linearly independent set of vectors"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific worked example of this form is present in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "1e0222ca54d8"
     },
     {
       "kind": "theorem",
@@ -263,7 +487,15 @@
         "section": "Linear extensions",
         "snippet": "the Hahn–Banach dominated extension theorem even guarantees"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_extension_of_le_sublinear",
+        "module": "Mathlib.Analysis.Convex.Cone.Extension",
+        "match_kind": "exact"
+      },
+      "note": "`exists_extension_of_le_sublinear` is the Hahn–Banach extension theorem for sublinear-dominated linear functionals.",
+      "provenance": "ai-agent1",
+      "id": "6c50a38ee0d8"
     },
     {
       "kind": "theorem",
@@ -272,7 +504,15 @@
         "section": "Matrices",
         "snippet": "every linear map from"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.toMatrix",
+        "module": "Mathlib.LinearAlgebra.Matrix.ToLin",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.toMatrix` provides the bijection between linear maps and matrices for finite-dimensional spaces.",
+      "provenance": "ai-agent1",
+      "id": "385797c19d9e"
     },
     {
       "kind": "example",
@@ -281,7 +521,15 @@
         "section": "Examples in two dimensions",
         "snippet": "rotation by 90 degrees counterclockwise"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.planeConformalMatrix",
+        "module": "Mathlib.Analysis.Complex.Isometry",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has 2D rotation matrices via `Matrix.planeConformalMatrix`, but no dedicated `rotation_by_90` example.",
+      "provenance": "ai-agent1",
+      "id": "8ebedc52c522"
     },
     {
       "kind": "example",
@@ -290,7 +538,15 @@
         "section": "Examples in two dimensions",
         "snippet": "by an angle θ counterclockwise"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.planeConformalMatrix",
+        "module": "Mathlib.Analysis.Complex.Isometry",
+        "match_kind": "generalization"
+      },
+      "note": "`Matrix.planeConformalMatrix` gives the 2D rotation/conformal-scaling matrix; rotations are a special case.",
+      "provenance": "ai-agent1",
+      "id": "53e1390769b9"
     },
     {
       "kind": "example",
@@ -299,7 +555,15 @@
         "section": "Examples in two dimensions",
         "snippet": "reflection through the x axis"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.reflection",
+        "module": "Mathlib.LinearAlgebra.Reflection",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib's `Module.reflection` is the general involution-reflection construction; the specific x-axis reflection is not separately stated.",
+      "provenance": "ai-agent1",
+      "id": "188827db672f"
     },
     {
       "kind": "example",
@@ -308,7 +572,15 @@
         "section": "Examples in two dimensions",
         "snippet": "through the y axis"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.reflection",
+        "module": "Mathlib.LinearAlgebra.Reflection",
+        "match_kind": "special_case"
+      },
+      "note": "`Module.reflection` covers this in general; no x/y-axis-specific lemma.",
+      "provenance": "ai-agent1",
+      "id": "863f306bf0fd"
     },
     {
       "kind": "example",
@@ -317,7 +589,15 @@
         "section": "Examples in two dimensions",
         "snippet": "through a line making an angle θ with the origin"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.reflection",
+        "module": "Mathlib.LinearAlgebra.Reflection",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has the general `Module.reflection`, but no concrete 'reflection through a line at angle θ' example.",
+      "provenance": "ai-agent1",
+      "id": "b45a08ed7592"
     },
     {
       "kind": "example",
@@ -326,7 +606,15 @@
         "section": "Examples in two dimensions",
         "snippet": "scaling by 2 in all directions"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.lsmul",
+        "module": "Mathlib.Algebra.Algebra.Bilinear",
+        "match_kind": "special_case"
+      },
+      "note": "Scaling by a constant is `LinearMap.lsmul` applied to that scalar.",
+      "provenance": "ai-agent1",
+      "id": "6ff186352fa7"
     },
     {
       "kind": "example",
@@ -335,7 +623,15 @@
         "section": "Examples in two dimensions",
         "snippet": "horizontal shear mapping"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define a shear mapping as a named linear map.",
+      "provenance": "ai-agent1",
+      "id": "841f3b1678c5"
     },
     {
       "kind": "example",
@@ -344,7 +640,15 @@
         "section": "Examples in two dimensions",
         "snippet": "skew of the y axis by an angle θ"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No skew/shear-by-angle named construction in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "d8311e63fa75"
     },
     {
       "kind": "example",
@@ -353,7 +657,15 @@
         "section": "Examples in two dimensions",
         "snippet": "squeeze mapping"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define a squeeze mapping as a named transformation.",
+      "provenance": "ai-agent1",
+      "id": "30796025e936"
     },
     {
       "kind": "example",
@@ -362,7 +674,15 @@
         "section": "Examples in two dimensions",
         "snippet": "projection onto the y axis"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.proj",
+        "module": "Mathlib.LinearAlgebra.Pi",
+        "match_kind": "special_case"
+      },
+      "note": "`LinearMap.proj` projects onto coordinate components of a Pi type; coordinate-axis projection is a special case.",
+      "provenance": "ai-agent1",
+      "id": "c8e1b18910b1"
     },
     {
       "kind": "definition",
@@ -371,7 +691,15 @@
         "section": "Examples in two dimensions",
         "snippet": "then the linear map is a conformal linear transformation"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsConformalMap",
+        "module": "Mathlib.Analysis.Normed.Operator.Conformal",
+        "match_kind": "exact"
+      },
+      "note": "`IsConformalMap` is the definition of a conformal linear map.",
+      "provenance": "ai-agent1",
+      "id": "bf1da9983224"
     },
     {
       "kind": "proposition",
@@ -380,7 +708,15 @@
         "section": "Vector space of linear maps",
         "snippet": "The composition of linear maps is linear"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.comp",
+        "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.comp` packages the composition of linear maps as a linear map.",
+      "provenance": "ai-agent1",
+      "id": "180f707aa606"
     },
     {
       "kind": "proposition",
@@ -389,7 +725,15 @@
         "section": "Vector space of linear maps",
         "snippet": "The inverse of a linear map, when defined, is again a linear map"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearEquiv.symm",
+        "module": "Mathlib.Algebra.Module.Equiv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`LinearEquiv.symm` exhibits the inverse of an invertible linear map as a linear map.",
+      "provenance": "ai-agent1",
+      "id": "01457c09144d"
     },
     {
       "kind": "proposition",
@@ -398,7 +742,15 @@
         "section": "Vector space of linear maps",
         "snippet": "then so is their pointwise sum"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.instAdd",
+        "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib equips `M →ₛₗ[σ] N` with an `Add` instance, so the pointwise sum of linear maps is a linear map.",
+      "provenance": "ai-agent1",
+      "id": "7919c3e866a0"
     },
     {
       "kind": "proposition",
@@ -407,7 +759,15 @@
         "section": "Vector space of linear maps",
         "snippet": "is an element of the ground field"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.instSMul",
+        "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib provides an `SMul` instance on `LinearMap`, making scalar multiples of linear maps linear.",
+      "provenance": "ai-agent1",
+      "id": "74e5937f7bc1"
     },
     {
       "kind": "proposition",
@@ -416,7 +776,15 @@
         "section": "Vector space of linear maps",
         "snippet": "of linear maps from"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.instModule",
+        "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib gives `M →ₛₗ[σ] N` a `Module` instance, making `Hom(V,W)` a vector space.",
+      "provenance": "ai-agent1",
+      "id": "52fa55b31782"
     },
     {
       "kind": "proposition",
@@ -425,7 +793,15 @@
         "section": "Endomorphisms and automorphisms",
         "snippet": "is an endomorphism of"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.End.instSemiring",
+        "module": "Mathlib.Algebra.Module.LinearMap.End",
+        "match_kind": "exact"
+      },
+      "note": "`Module.End` is given `Semiring`/`Ring`/`Algebra` instances making it an associative algebra of endomorphisms.",
+      "provenance": "ai-agent1",
+      "id": "0fe1c06cd21b"
     },
     {
       "kind": "definition",
@@ -434,7 +810,15 @@
         "section": "Endomorphisms and automorphisms",
         "snippet": "An endomorphism of"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.GeneralLinearGroup",
+        "module": "Mathlib.Algebra.Module.LinearMap.GeneralLinearGroup",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.GeneralLinearGroup R M` is the group of linear automorphisms of `M`.",
+      "provenance": "ai-agent1",
+      "id": "a6b9771c4fd9"
     },
     {
       "kind": "proposition",
@@ -443,7 +827,15 @@
         "section": "Endomorphisms and automorphisms",
         "snippet": "has finite dimension"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.toMatrixAlgEquiv",
+        "module": "Mathlib.LinearAlgebra.Matrix.ToLin",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.toMatrixAlgEquiv` is the algebra isomorphism between `End M` and the matrix algebra given a basis.",
+      "provenance": "ai-agent1",
+      "id": "c9c0ef9fca4b"
     },
     {
       "kind": "definition",
@@ -452,7 +844,15 @@
         "section": "Kernel, image and the rank–nullity theorem",
         "snippet": "we define the kernel and the image or range of"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.ker",
+        "module": "Mathlib.Algebra.Module.Submodule.Ker",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.ker` and `LinearMap.range` define the kernel and image as submodules.",
+      "provenance": "ai-agent1",
+      "id": "0ac7dda7d031"
     },
     {
       "kind": "theorem",
@@ -461,7 +861,15 @@
         "section": "Kernel, image and the rank–nullity theorem",
         "snippet": "The following dimension formula is known as the rank–nullity theorem"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.finrank_range_add_finrank_ker",
+        "module": "Mathlib.LinearAlgebra.FiniteDimensional.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.finrank_range_add_finrank_ker` is the rank–nullity formula `finrank(range) + finrank(ker) = finrank(V)`.",
+      "provenance": "ai-agent1",
+      "id": "9abccaa030ee"
     },
     {
       "kind": "definition",
@@ -470,7 +878,15 @@
         "section": "Kernel, image and the rank–nullity theorem",
         "snippet": "is also called the rank of"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.rank",
+        "module": "Mathlib.LinearAlgebra.Dimension.Constructions",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.rank` (and `finrank` of `ker`/`range`) define rank and nullity of a linear map.",
+      "provenance": "ai-agent1",
+      "id": "cd17badeb70e"
     },
     {
       "kind": "definition",
@@ -479,7 +895,15 @@
         "section": "Cokernel",
         "snippet": "A subtler invariant of a linear transformation"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.Quotient",
+        "module": "Mathlib.LinearAlgebra.Quotient.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The cokernel is `M₂ ⧸ LinearMap.range f`, expressed using `Submodule` quotients; explicitly used in `Mathlib.Algebra.Module.Presentation.Cokernel`.",
+      "provenance": "ai-agent1",
+      "id": "2c4ad85ceed0"
     },
     {
       "kind": "proposition",
@@ -488,7 +912,15 @@
         "section": "Cokernel",
         "snippet": "Formally, one has the exact sequence"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "ShortComplex.cokernelSequence",
+        "module": "Mathlib.Algebra.Homology.ShortComplex.Exact",
+        "match_kind": "generalization"
+      },
+      "note": "Exact-sequence formalism (e.g., `ShortComplex`/`cokernelSequence`) covers this in general categorical setting; no direct Wikipedia-style statement for modules.",
+      "provenance": "ai-agent1",
+      "id": "6274bb1c4c62"
     },
     {
       "kind": "proposition",
@@ -497,7 +929,15 @@
         "section": "Cokernel",
         "snippet": "The dimension of the co-kernel and the dimension of the image"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit `finrank(range) + finrank(coker) = finrank(W)` lemma found in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "8c294028c35f"
     },
     {
       "kind": "example",
@@ -506,7 +946,15 @@
         "section": "Cokernel",
         "snippet": "As a simple example, consider the map"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No worked example of this specific cokernel computation in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "53b7eef802f5"
     },
     {
       "kind": "example",
@@ -515,7 +963,15 @@
         "section": "Cokernel",
         "snippet": "An example illustrating the infinite-dimensional case"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No infinite-dimensional cokernel example of this type appears in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "16415a175fc5"
     },
     {
       "kind": "definition",
@@ -524,7 +980,15 @@
         "section": "Index",
         "snippet": "For a linear operator with finite-dimensional kernel and co-kernel, one may define index"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general 'index = dim ker − dim coker' definition found for linear operators in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "309a6f94d959"
     },
     {
       "kind": "proposition",
@@ -533,7 +997,15 @@
         "section": "Index",
         "snippet": "For a transformation between finite-dimensional vector spaces"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement that the index of a linear map between finite-dimensional spaces is `dim V − dim W` in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "3bb77ebcf6ed"
     },
     {
       "kind": "proposition",
@@ -542,7 +1014,15 @@
         "section": "Index",
         "snippet": "The index of an operator is precisely the Euler characteristic"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib statement connecting linear-operator index to the Euler characteristic of the associated complex.",
+      "provenance": "ai-agent1",
+      "id": "ed5af58f2f3e"
     },
     {
       "kind": "definition",
@@ -551,7 +1031,15 @@
         "section": "Monomorphism",
         "snippet": "is said to be injective or a monomorphism"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.ker_eq_bot",
+        "module": "Mathlib.Algebra.Module.Submodule.Ker",
+        "match_kind": "exact"
+      },
+      "note": "Injectivity of a linear map is characterized by `LinearMap.ker_eq_bot` (kernel trivial iff injective).",
+      "provenance": "ai-agent1",
+      "id": "022524e1f13b"
     },
     {
       "kind": "definition",
@@ -560,7 +1048,15 @@
         "section": "Epimorphism",
         "snippet": "is said to be surjective or an epimorphism"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.range_eq_top",
+        "module": "Mathlib.Algebra.Module.Submodule.Range",
+        "match_kind": "exact"
+      },
+      "note": "Surjectivity is characterized by `LinearMap.range_eq_top`.",
+      "provenance": "ai-agent1",
+      "id": "786ff96cda7c"
     },
     {
       "kind": "definition",
@@ -569,7 +1065,15 @@
         "section": "Isomorphism",
         "snippet": "is said to be an isomorphism if it is both left- and right-invertible"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearEquiv",
+        "module": "Mathlib.Algebra.Module.Equiv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`LinearEquiv` is exactly the type of (two-sided invertible) linear isomorphisms.",
+      "provenance": "ai-agent1",
+      "id": "5e5551d22ce1"
     },
     {
       "kind": "definition",
@@ -578,7 +1082,15 @@
         "section": "Isomorphism",
         "snippet": "is an endomorphism, then"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsNilpotent",
+        "module": "Mathlib.RingTheory.Nilpotent.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsNilpotent` and `IsIdempotentElem` apply to `Module.End`; scalar-multiplication endomorphisms are `LinearMap.lsmul`.",
+      "provenance": "ai-agent1",
+      "id": "38e860ccbb11"
     },
     {
       "kind": "proposition",
@@ -587,7 +1099,15 @@
         "section": "Change of basis",
         "snippet": "Therefore, the matrix in the new basis"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "basis_toMatrix_mul_linearMap_toMatrix_mul_basis_toMatrix",
+        "module": "Mathlib.LinearAlgebra.Matrix.Basis",
+        "match_kind": "exact"
+      },
+      "note": "`basis_toMatrix_mul_linearMap_toMatrix_mul_basis_toMatrix` is the change-of-basis formula for a linear map's matrix.",
+      "provenance": "ai-agent1",
+      "id": "4b8c9c4154af"
     },
     {
       "kind": "proposition",
@@ -596,7 +1116,15 @@
         "section": "Change of basis",
         "snippet": "linear maps are said to be 1-co- 1-contra- variant objects"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "dualTensorHomEquiv",
+        "module": "Mathlib.LinearAlgebra.Contraction",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has `dualTensorHomEquiv : M* ⊗ N ≃ₗ Hom(M,N)`, expressing linear maps as (1,1)-tensors; tensor-variance language itself is informal.",
+      "provenance": "ai-agent1",
+      "id": "4b9208569bd2"
     },
     {
       "kind": "proposition",
@@ -605,7 +1133,15 @@
         "section": "Continuity",
         "snippet": "A linear operator on a normed linear space is continuous if and only if it is bounded"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.continuous_iff_isBounded",
+        "module": "Mathlib.Analysis.Normed.Operator.BoundedLinearMaps",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `isLinearMap_and_continuous_iff_isBoundedLinearMap` (and related `LinearMap.continuous_of_bound`) state continuity equivalent to boundedness.",
+      "provenance": "ai-agent1",
+      "id": "c6f5d628daad"
     },
     {
       "kind": "example",
@@ -614,6 +1150,78 @@
         "section": "Continuity",
         "snippet": "An example of an unbounded, hence discontinuous, linear transformation is differentiation"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit Mathlib example showing differentiation as an unbounded/discontinuous linear operator on a function space.",
+      "provenance": "ai-agent1",
+      "id": "4be4ce930b06"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linear maps send subspaces to subspaces",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "linear subspaces of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.map",
+        "module": "Mathlib.Algebra.Module.Submodule.Map",
+        "match_kind": "exact"
+      },
+      "note": "`Submodule.map f` sends a submodule of the domain to a submodule of the codomain under a linear map.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Category of vector spaces / modules",
+      "anchor": {
+        "section": "Vector space of linear maps",
+        "snippet": "together with K -linear maps as morphisms , forms a category"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ModuleCat",
+        "module": "Mathlib.Algebra.Category.ModuleCat.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ModuleCat R` is the category of `R`-modules with `R`-linear maps as morphisms; for fields this gives the category of vector spaces.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Automorphism group as units of endomorphism ring",
+      "anchor": {
+        "section": "Endomorphisms and automorphisms",
+        "snippet": "is the group of units in the ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.GeneralLinearGroup.generalLinearEquiv",
+        "module": "Mathlib.Algebra.Module.LinearMap.GeneralLinearGroup",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib identifies the automorphism group `GL(R, M)` with the units of `Module.End R M` via `LinearMap.GeneralLinearGroup`.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Automorphism group isomorphic to GLₙ",
+      "anchor": {
+        "section": "Endomorphisms and automorphisms",
+        "snippet": "is isomorphic to the general linear group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.GeneralLinearGroup",
+        "module": "Mathlib.LinearAlgebra.GeneralLinearGroup",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.GeneralLinearGroup n R` is the group of invertible n×n matrices; via `LinearMap.toMatrix` it is isomorphic to the automorphism group of a finite-dimensional V.",
       "provenance": "ai-agent1"
     }
   ]

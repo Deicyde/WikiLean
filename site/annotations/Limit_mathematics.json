@@ -134,7 +134,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "BddAbove",
-        "module": "Mathlib.Order.Bounds.Basic",
+        "module": "Mathlib.Order.Bounds.Defs",
         "match_kind": "generalization"
       },
       "note": "`BddAbove`, `BddBelow`, and `Bornology.IsBounded` capture the bounded/unbounded notions, valid in particular for sequences (range).",
@@ -168,7 +168,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "EuclideanSpace",
-        "module": "Mathlib.Analysis.InnerProductSpace.EuclideanDist",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
         "match_kind": "exact"
       },
       "note": "`EuclideanSpace ℝ (Fin n)` (a `PiLp 2`) realizes ℝⁿ with the Euclidean metric.",
@@ -312,6 +312,22 @@
       "id": "0779bf919128"
     },
     {
+      "kind": "definition",
+      "label": "One-sided (left/right) limit",
+      "anchor": {
+        "section": "One-sided limit",
+        "snippet": "It is possible to define the notion of having a"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.Tendsto",
+        "module": "Mathlib.Order.Filter.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Left/right limits are `Tendsto f (𝓝[<] c) (𝓝 L)` / `Tendsto f (𝓝[>] c) (𝓝 L)` using the `nhdsWithin` neighborhood-within filters.",
+      "provenance": "ai"
+    },
+    {
       "kind": "example",
       "label": "Left and right limits of the positive indicator function",
       "anchor": {
@@ -371,11 +387,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Hyperreal.stdPart",
+        "decl": "Hyperreal.st",
         "module": "Mathlib.Analysis.Real.Hyperreal",
         "match_kind": "exact"
       },
-      "note": "The standard part on `ℝ*` (and its connection to ordinary limits) is developed in `Mathlib.Analysis.Real.Hyperreal`.",
+      "note": "The standard part on `ℝ*` is `Hyperreal.st : ℝ* → ℝ` (defined in `Mathlib.Analysis.Real.Hyperreal`).",
       "provenance": "ai",
       "id": "48aa8c795216"
     },
@@ -392,7 +408,7 @@
         "module": "Mathlib.Analysis.Real.Hyperreal",
         "match_kind": "exact"
       },
-      "note": "`stdPart_of_tendsto` proves the standard part of a hyperreal equals the limit when one exists.",
+      "note": "`Hyperreal.stdPart_of_tendsto` proves the standard part of a hyperreal equals the limit when one exists.",
       "provenance": "ai",
       "id": "65c5a95d7cde"
     },
@@ -406,7 +422,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "MapClusterPt",
-        "module": "Mathlib.Topology.ClusterPt",
+        "module": "Mathlib.Topology.Defs.Filter",
         "match_kind": "generalization"
       },
       "note": "Mathlib has `MapClusterPt`/`ClusterPt` for accumulation points along a filter, but no named decl for the set of subsequential limits of a sequence.",
@@ -542,7 +558,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "FormalMultilinearSeries.radius",
-        "module": "Mathlib.Analysis.Analytic.Basic",
+        "module": "Mathlib.Analysis.Analytic.ConvergenceRadius",
         "match_kind": "generalization"
       },
       "note": "The radius of convergence of a (formal multilinear) power series is `FormalMultilinearSeries.radius`.",
@@ -610,7 +626,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Continuous.tendsto",
-        "module": "Mathlib.Topology.ContinuousOn",
+        "module": "Mathlib.Topology.Continuous",
         "match_kind": "exact"
       },
       "note": "`Continuous.tendsto` states a continuous function maps neighborhood limits to limits.",
@@ -661,7 +677,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "IsClosed.mem_of_tendsto",
-        "module": "Mathlib.Topology.Order.OrderClosed",
+        "module": "Mathlib.Topology.Neighborhoods",
         "match_kind": "exact"
       },
       "note": "`IsClosed.mem_of_tendsto` shows the limit of a sequence in a closed set lies in the closed set.",
@@ -695,7 +711,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Filter.Tendsto.add",
-        "module": "Mathlib.Topology.Algebra.Monoid",
+        "module": "Mathlib.Topology.Algebra.Monoid.Defs",
         "match_kind": "exact"
       },
       "note": "`Filter.Tendsto.add` proves limits commute with addition in a topological additive group/monoid.",
@@ -712,7 +728,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Filter.Tendsto.mul",
-        "module": "Mathlib.Topology.Algebra.Monoid",
+        "module": "Mathlib.Topology.Algebra.Monoid.Defs",
         "match_kind": "exact"
       },
       "note": "`Filter.Tendsto.mul` proves limits commute with multiplication.",
@@ -729,7 +745,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Filter.Tendsto.inv",
-        "module": "Mathlib.Topology.Algebra.Group.Basic",
+        "module": "Mathlib.Topology.Algebra.Group.Defs",
         "match_kind": "exact"
       },
       "note": "`Filter.Tendsto.inv` proves limits commute with the (group/field) inverse where defined.",
@@ -766,7 +782,7 @@
         "module": "Mathlib.Topology.UniformSpace.Cauchy",
         "match_kind": "exact"
       },
-      "note": "A convergent sequence is Cauchy: lemma at `Mathlib/Topology/UniformSpace/Cauchy.lean:202` builds a `CauchySeq` from a `Tendsto … atTop (𝓝 x)`.",
+      "note": "`Filter.Tendsto.cauchySeq` builds a `CauchySeq` from a sequence converging in the neighborhood filter.",
       "provenance": "ai",
       "id": "a9a0dd1ef10a"
     },
@@ -854,6 +870,38 @@
       "note": "Shoenfield's limit lemma is not formalized in `Mathlib.Computability`.",
       "provenance": "ai",
       "id": "10755f854f2f"
+    },
+    {
+      "kind": "theorem",
+      "label": "Squeeze theorem",
+      "anchor": {
+        "section": "Computability",
+        "snippet": "Examples include the ratio test and the squeeze theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tendsto_of_tendsto_of_tendsto_of_le_of_le",
+        "module": "Mathlib.Topology.Order.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The squeeze (sandwich) theorem is `tendsto_of_tendsto_of_tendsto_of_le_of_le` for filter limits in an order-topology setting.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Ratio test for series convergence",
+      "anchor": {
+        "section": "Computability",
+        "snippet": "Examples include the ratio test"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "summable_of_ratio_test_tendsto_lt_one",
+        "module": "Mathlib.Analysis.SpecificLimits.Normed",
+        "match_kind": "exact"
+      },
+      "note": "The ratio test for absolutely convergent series is `summable_of_ratio_test_tendsto_lt_one` (in `Mathlib.Analysis.SpecificLimits.Normed`).",
+      "provenance": "ai"
     }
   ]
 }

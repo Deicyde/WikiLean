@@ -11,7 +11,15 @@
         "section": "(Lead)",
         "snippet": "a partial function f from a set X to a set Y is a function from a subset S of X"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PFun",
+        "module": "Mathlib.Data.PFun",
+        "match_kind": "exact"
+      },
+      "note": "`PFun α β` is defined as `α → Part β`, directly modeling a partial function from `α` to `β`.",
+      "provenance": "ai-agent1",
+      "id": "bbb3ba8f1661"
     },
     {
       "kind": "definition",
@@ -20,7 +28,15 @@
         "section": "(Lead)",
         "snippet": "is called the domain of definition or natural domain of f"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PFun.Dom",
+        "module": "Mathlib.Data.PFun",
+        "match_kind": "exact"
+      },
+      "note": "`PFun.Dom f` is defined as the set `{a | (f a).Dom}`, the set of inputs on which `f` is defined.",
+      "provenance": "ai-agent1",
+      "id": "fd1dbaccfc21"
     },
     {
       "kind": "definition",
@@ -29,7 +45,15 @@
         "section": "(Lead)",
         "snippet": "then [MATH] is said to be a total function"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "PFun.lift",
+        "module": "Mathlib.Data.PFun",
+        "match_kind": "invocation"
+      },
+      "note": "Total functions are the ordinary `α → β`; `PFun.lift` coerces them into partial functions with `PFun.dom_coe` showing the domain is `Set.univ`, but no separate `Total` predicate is defined.",
+      "provenance": "ai-agent1",
+      "id": "68271ac06626"
     },
     {
       "kind": "definition",
@@ -38,7 +62,15 @@
         "section": "(Lead)",
         "snippet": "a partial function is a binary relation over two sets that associates to every element of the first set at most one element of the second set"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "PFun.graph'",
+        "module": "Mathlib.Data.PFun",
+        "match_kind": "invocation"
+      },
+      "note": "`PFun.graph'` turns a partial function into a `SetRel`, but the converse characterization (univalent relations correspond to partial functions) is not formalized as such.",
+      "provenance": "ai-agent1",
+      "id": "bd10b97bf4d7"
     },
     {
       "kind": "definition",
@@ -47,7 +79,15 @@
         "section": "(Lead)",
         "snippet": "a general recursive function is a partial function from the integers to the integers"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Partrec",
+        "module": "Mathlib.Computability.Partrec",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.Partrec` is defined as the inductive predicate on `ℕ →. ℕ` capturing partial recursive functions.",
+      "provenance": "ai-agent1",
+      "id": "74bf54122daa"
     },
     {
       "kind": "example",
@@ -56,7 +96,15 @@
         "section": "(Lead)",
         "snippet": "is the square root function restricted to the integers"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit partial function for integer square root restricted to perfect squares is present; `Nat.sqrt` is total.",
+      "provenance": "ai-agent1",
+      "id": "4f25debd0141"
     },
     {
       "kind": "example",
@@ -65,7 +113,15 @@
         "section": "Basic concepts",
         "snippet": "because negative real numbers do not have real square roots, the operation can be viewed as a partial function"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": "Real.sqrt",
+        "module": "Mathlib.Analysis.SpecialFunctions.Pow.Real",
+        "match_kind": null
+      },
+      "note": "`Real.sqrt` is total in Mathlib (returns 0 on negatives) rather than encoded as a partial function on ℝ.",
+      "provenance": "ai-agent1",
+      "id": "6fc611f94528"
     },
     {
       "kind": "definition",
@@ -74,7 +130,15 @@
         "section": "Basic concepts",
         "snippet": "The domain of definition of a partial function is the subset S of X on which the partial function is defined"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PFun.Dom",
+        "module": "Mathlib.Data.PFun",
+        "match_kind": "exact"
+      },
+      "note": "Same as the `PFun.Dom` declaration above, a `Set α` subset on which `f` is defined.",
+      "provenance": "ai-agent1",
+      "id": "589f57fe1ce3"
     },
     {
       "kind": "definition",
@@ -83,7 +147,15 @@
         "section": "Basic concepts",
         "snippet": "In case the domain of definition S is equal to the whole set X , the partial function is said to be total"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "PFun.dom_coe",
+        "module": "Mathlib.Data.PFun",
+        "match_kind": "invocation"
+      },
+      "note": "`PFun.dom_coe` shows lifted (total) functions have `Dom = Set.univ`, but there is no standalone `PFun.Total` predicate.",
+      "provenance": "ai-agent1",
+      "id": "02b5021ea31f"
     },
     {
       "kind": "definition",
@@ -92,7 +164,15 @@
         "section": "Basic concepts",
         "snippet": "A partial function is said to be injective , surjective , or bijective when the function given by the restriction of the partial function to its domain of definition is injective, surjective, or bijective, respectively"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `PFun.Injective`/`PFun.Surjective`/`PFun.Bijective` predicate exists; `PFun.asSubtype` lets one state these via `Function.Injective` etc., but the named predicates are absent.",
+      "provenance": "ai-agent1",
+      "id": "0b018bdca7bc"
     },
     {
       "kind": "definition",
@@ -101,7 +181,15 @@
         "section": "Basic concepts",
         "snippet": "the term partial bijection denotes a partial function which is injective"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "PEquiv",
+        "module": "Mathlib.Data.PEquiv",
+        "match_kind": "generalization"
+      },
+      "note": "`PEquiv α β` represents a bijection between subsets of `α` and `β` via `Option`-valued partial functions, capturing the partial-bijection notion.",
+      "provenance": "ai-agent1",
+      "id": "ef4f0e4783ea"
     },
     {
       "kind": "proposition",
@@ -110,6 +198,30 @@
         "section": "Basic concepts",
         "snippet": "An injective partial function may be inverted to an injective partial function"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PEquiv.symm",
+        "module": "Mathlib.Data.PEquiv",
+        "match_kind": "special_case"
+      },
+      "note": "`PEquiv.symm` inverts a partial bijection to another partial bijection, but no general inversion theorem for injective `PFun`s is stated.",
+      "provenance": "ai-agent1",
+      "id": "67f30b65f18a"
+    },
+    {
+      "kind": "proposition",
+      "label": "Injection invertible to bijective partial function",
+      "anchor": {
+        "section": "Basic concepts",
+        "snippet": "a function which is injective may be inverted to a bijective partial function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not state an explicit theorem inverting an injective total `α → β` to a bijective `PFun β α`; one can build this via `Function.invFun` plus `PFun`/`PEquiv`, but it is not packaged.",
       "provenance": "ai-agent1"
     },
     {
@@ -119,7 +231,15 @@
         "section": "Basic concepts",
         "snippet": "A partial transformation is a function"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "PFun",
+        "module": "Mathlib.Data.PFun",
+        "match_kind": "generalization"
+      },
+      "note": "A partial transformation `α →. α` is a special case of `PFun α α`, but there is no dedicated `PartialTransformation` name.",
+      "provenance": "ai-agent1",
+      "id": "eacf64da45f2"
     },
     {
       "kind": "definition",
@@ -128,7 +248,15 @@
         "section": "Function spaces",
         "snippet": "denote the set of all partial functions"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "PFun",
+        "module": "Mathlib.Data.PFun",
+        "match_kind": "invocation"
+      },
+      "note": "The type `PFun α β` itself plays the role of the set of all partial functions from `α` to `β`.",
+      "provenance": "ai-agent1",
+      "id": "1fdcebf92d6d"
     },
     {
       "kind": "proposition",
@@ -137,7 +265,15 @@
         "section": "Function spaces",
         "snippet": "In finite case, its cardinality is"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No cardinality formula `|Y∪{∗}|^|X|` for `PFun X Y` is stated in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "0e027bef483e"
     },
     {
       "kind": "example",
@@ -146,7 +282,15 @@
         "section": "Discussion and examples",
         "snippet": "The first diagram at the top of the article represents a partial function that is not a function"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Pictorial example with no formal counterpart.",
+      "provenance": "ai-agent1",
+      "id": "0cb98b2efeff"
     },
     {
       "kind": "example",
@@ -155,7 +299,15 @@
         "section": "Natural logarithm",
         "snippet": "The natural logarithm function mapping the real numbers to themselves is a partial function"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": "Real.log",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "match_kind": null
+      },
+      "note": "`Real.log` is defined as a total function (zero on non-positives) rather than a `PFun`.",
+      "provenance": "ai-agent1",
+      "id": "d7bf496e5ef3"
     },
     {
       "kind": "example",
@@ -164,7 +316,15 @@
         "section": "Subtraction of natural numbers",
         "snippet": "Subtraction of natural numbers"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`Nat.sub` is a total truncated subtraction in Mathlib/core, not modeled as a `PFun`.",
+      "provenance": "ai-agent1",
+      "id": "d7299690a7e5"
     },
     {
       "kind": "definition",
@@ -173,7 +333,15 @@
         "section": "Bottom element",
         "snippet": "In denotational semantics a partial function is considered as returning the bottom element when it is undefined"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Part.none",
+        "module": "Mathlib.Data.Part",
+        "match_kind": "invocation"
+      },
+      "note": "`Part.none` plays the role of the bottom/undefined value for `Part`-valued partial functions, but no explicit denotational `⊥` semantics is developed.",
+      "provenance": "ai-agent1",
+      "id": "79c0299cfbcd"
     },
     {
       "kind": "example",
@@ -182,7 +350,15 @@
         "section": "Bottom element",
         "snippet": "In computer science a partial function corresponds to a subroutine that raises an exception or loops forever"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Informal CS analogy, not a Mathlib statement.",
+      "provenance": "ai-agent1",
+      "id": "9258472c47a3"
     },
     {
       "kind": "proposition",
@@ -191,7 +367,15 @@
         "section": "In category theory",
         "snippet": "the composition operation [MATH] is a total function if and only if"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This characterization of when composition is total in the partial-function category is not stated in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "fdfa76f4a090"
     },
     {
       "kind": "proposition",
@@ -200,7 +384,15 @@
         "section": "In category theory",
         "snippet": "The category of sets and partial functions is equivalent to but not isomorphic with the category of pointed sets"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "partialFunEquivPointed",
+        "module": "Mathlib.CategoryTheory.Category.PartialFun",
+        "match_kind": "exact"
+      },
+      "note": "`partialFunEquivPointed : PartialFun ≌ Pointed` gives the (noncomputable, classical) equivalence between the categories.",
+      "provenance": "ai-agent1",
+      "id": "966293386136"
     },
     {
       "kind": "proposition",
@@ -209,7 +401,15 @@
         "section": "In category theory",
         "snippet": "The category of sets and partial bijections is equivalent to its dual"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No category of sets-with-partial-bijections nor its self-duality is formalized.",
+      "provenance": "ai-agent1",
+      "id": "e2bcb29d02dc"
     },
     {
       "kind": "definition",
@@ -218,7 +418,15 @@
         "section": "In abstract algebra",
         "snippet": "Partial algebra generalizes the notion of universal algebra to partial operations"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `PartialAlgebra` or analogous notion was found in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "8d269cfca5cf"
     },
     {
       "kind": "example",
@@ -227,7 +435,15 @@
         "section": "In abstract algebra",
         "snippet": "An example would be a field , in which the multiplicative inversion is the only proper partial operation"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `Field` uses total inversion with `0⁻¹ = 0`, not a partial operation; no partial-algebra view of fields is recorded.",
+      "provenance": "ai-agent1",
+      "id": "3a652c9946d0"
     },
     {
       "kind": "definition",
@@ -236,7 +452,15 @@
         "section": "In abstract algebra",
         "snippet": "forms a regular semigroup called the semigroup of all partial transformations"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No semigroup-of-partial-transformations construction is present in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "28e1dbb81060"
     },
     {
       "kind": "definition",
@@ -245,7 +469,15 @@
         "section": "In abstract algebra",
         "snippet": "The set of all partial bijections on [MATH] forms the symmetric inverse semigroup"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize the symmetric inverse semigroup on a set.",
+      "provenance": "ai-agent1",
+      "id": "1eb9d7d725ff"
     },
     {
       "kind": "example",
@@ -254,6 +486,30 @@
         "section": "Charts and atlases for manifolds and fiber bundles",
         "snippet": "Charts in the atlases which specify the structure of manifolds and fiber bundles are partial functions"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ChartedSpace",
+        "module": "Mathlib.Geometry.Manifold.ChartedSpace",
+        "match_kind": "special_case"
+      },
+      "note": "`ChartedSpace H M` has an atlas of `OpenPartialHomeomorph`s (partial homeomorphisms with open source/target), which embodies the chart-as-partial-function idea but uses `PartialHomeomorph`/`PartialEquiv` rather than `PFun`.",
+      "provenance": "ai-agent1",
+      "id": "a1111b20c7af"
+    },
+    {
+      "kind": "definition",
+      "label": "Transition map",
+      "anchor": {
+        "section": "Charts and atlases for manifolds and fiber bundles",
+        "snippet": "the most important construction is the transition map , which is the composite of one chart with the inverse of another"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PartialHomeomorph.trans",
+        "module": "Mathlib.Topology.PartialHomeomorph",
+        "match_kind": "exact"
+      },
+      "note": "Transition maps between charts are realized in Mathlib as `PartialHomeomorph.trans` (composition of a chart with the symm of another), used throughout `Mathlib.Geometry.Manifold`.",
       "provenance": "ai-agent1"
     }
   ]

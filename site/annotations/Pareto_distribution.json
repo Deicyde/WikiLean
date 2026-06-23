@@ -3,6 +3,7 @@
   "wikipedia_title": "Pareto distribution",
   "display_title": "Pareto distribution",
   "schema_version": 3,
+  "annotation_style": "theorem_article",
   "annotations": [
     {
       "kind": "definition",
@@ -12,7 +13,14 @@
         "snippet": "If X is a random variable with a Pareto (Type I) distribution"
       },
       "provenance": "ai-agent1",
-      "id": "e781440bdada"
+      "id": "e781440bdada",
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.paretoMeasure",
+        "module": "Mathlib.Probability.Distributions.Pareto",
+        "match_kind": null
+      },
+      "note": "The Pareto measure is defined, so the survival function `1 - cdf` is derivable, but no explicit closed-form `(xm/x)^α` survival statement is present."
     },
     {
       "kind": "definition",
@@ -22,7 +30,14 @@
         "snippet": "The type I Pareto distribution is characterized by a scale parameter"
       },
       "provenance": "ai-agent1",
-      "id": "876e9553f85e"
+      "id": "876e9553f85e",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.paretoPDFReal",
+        "module": "Mathlib.Probability.Distributions.Pareto",
+        "match_kind": "exact"
+      },
+      "note": "`paretoPDFReal t r x` is parametrized by scale `t` and shape `r`, matching the Wikipedia parameters `x_m` and `α`."
     },
     {
       "kind": "definition",
@@ -32,7 +47,14 @@
         "snippet": "the cumulative distribution function of a Pareto random variable"
       },
       "provenance": "ai-agent1",
-      "id": "e74a41da5d08"
+      "id": "e74a41da5d08",
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.cdf_paretoMeasure_eq_integral",
+        "module": "Mathlib.Probability.Distributions.Pareto",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib states the CDF as the integral of the PDF, but the closed-form `1 - (x_m/x)^α` for `x ≥ x_m` is not separately proved."
     },
     {
       "kind": "definition",
@@ -42,7 +64,14 @@
         "snippet": "It follows (by differentiation ) that the probability density function is"
       },
       "provenance": "ai-agent1",
-      "id": "2ac0677375ef"
+      "id": "2ac0677375ef",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.paretoPDFReal",
+        "module": "Mathlib.Probability.Distributions.Pareto",
+        "match_kind": "exact"
+      },
+      "note": "`paretoPDFReal t r x = r * t^r * x^(-(r+1))` for `t ≤ x` is exactly the Wikipedia PDF formula."
     },
     {
       "kind": "proposition",
@@ -52,7 +81,14 @@
         "snippet": "The expected value of a random variable following a Pareto distribution is"
       },
       "provenance": "ai-agent1",
-      "id": "59a2a8c14307"
+      "id": "59a2a8c14307",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No expected-value / mean statement for `paretoMeasure` exists in Mathlib."
     },
     {
       "kind": "proposition",
@@ -62,7 +98,14 @@
         "snippet": "The variance of a random variable following a Pareto distribution is"
       },
       "provenance": "ai-agent1",
-      "id": "357211fb9c8a"
+      "id": "357211fb9c8a",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No variance statement for the Pareto distribution exists in Mathlib."
     },
     {
       "kind": "proposition",
@@ -72,7 +115,14 @@
         "snippet": "The raw moments are"
       },
       "provenance": "ai-agent1",
-      "id": "777923de858e"
+      "id": "777923de858e",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No raw-moment formula for the Pareto distribution exists in Mathlib."
     },
     {
       "kind": "proposition",
@@ -82,7 +132,14 @@
         "snippet": "The moment generating function is only defined for non-positive values"
       },
       "provenance": "ai-agent1",
-      "id": "c70c33b8b5ac"
+      "id": "c70c33b8b5ac",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Generic `mgf` exists in Mathlib's `Probability/Moments`, but no specialization to Pareto is proved."
     },
     {
       "kind": "proposition",
@@ -92,7 +149,14 @@
         "snippet": "The characteristic function is given by"
       },
       "provenance": "ai-agent1",
-      "id": "1e75ec77f54b"
+      "id": "1e75ec77f54b",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Generic `charFun` exists, but no Pareto characteristic-function formula is proved in Mathlib."
     },
     {
       "kind": "proposition",
@@ -102,7 +166,14 @@
         "snippet": "The conditional probability distribution of a Pareto-distributed random variable"
       },
       "provenance": "ai-agent1",
-      "id": "2ddb65d81b28"
+      "id": "2ddb65d81b28",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No conditional-distribution statement for Pareto is present in Mathlib."
     },
     {
       "kind": "proposition",
@@ -112,7 +183,14 @@
         "snippet": "This implies that the conditional expected value"
       },
       "provenance": "ai-agent1",
-      "id": "105bfda47f8b"
+      "id": "105bfda47f8b",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No conditional-expectation formula for Pareto is present in Mathlib."
     },
     {
       "kind": "theorem",
@@ -122,7 +200,14 @@
         "snippet": "Suppose that for all"
       },
       "provenance": "ai-agent1",
-      "id": "4db9b4e2f1ba"
+      "id": "4db9b4e2f1ba",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No characterization theorem (conditional-mean linear in threshold ⇒ Pareto) is present in Mathlib."
     },
     {
       "kind": "proposition",
@@ -132,7 +217,14 @@
         "snippet": "The geometric mean ( G ) is"
       },
       "provenance": "ai-agent1",
-      "id": "988c80e56b22"
+      "id": "988c80e56b22",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No geometric-mean formula for Pareto is present in Mathlib."
     },
     {
       "kind": "proposition",
@@ -142,7 +234,14 @@
         "snippet": "The harmonic mean ( H ) is"
       },
       "provenance": "ai-agent1",
-      "id": "4b16b2008d88"
+      "id": "4b16b2008d88",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No harmonic-mean formula for Pareto is present in Mathlib."
     },
     {
       "kind": "proposition",
@@ -152,7 +251,14 @@
         "snippet": "It follows from the formula for the probability density function that for"
       },
       "provenance": "ai-agent1",
-      "id": "88463ad12708"
+      "id": "88463ad12708",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement about the log-log linearity of the Pareto PDF appears in Mathlib."
     },
     {
       "kind": "definition",
@@ -162,7 +268,14 @@
         "snippet": "There is a hierarchy"
       },
       "provenance": "ai-agent1",
-      "id": "ebe9308406d6"
+      "id": "ebe9308406d6",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Only the Type I Pareto distribution is in Mathlib; no Pareto hierarchy is defined."
     },
     {
       "kind": "definition",
@@ -172,7 +285,14 @@
         "snippet": "The Pareto distribution hierarchy is summarized in the next table"
       },
       "provenance": "ai-agent1",
-      "id": "05b2a0ed6d4f"
+      "id": "05b2a0ed6d4f",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Only the Type I Pareto distribution is in Mathlib; Types II–IV are absent."
     },
     {
       "kind": "definition",
@@ -182,17 +302,31 @@
         "snippet": "When μ = 0, the Pareto distribution Type II is also known as the Lomax distribution"
       },
       "provenance": "ai-agent1",
-      "id": "0c1cef37b61f"
+      "id": "0c1cef37b61f",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Lomax distribution is defined in Mathlib (grep returned no matches)."
     },
     {
       "kind": "definition",
       "label": "Feller–Pareto distribution",
       "anchor": {
         "section": "Feller–Pareto distribution",
-        "snippet": "Feller"
+        "snippet": "defines a Pareto variable by transformation"
       },
-      "provenance": "ai-agent1",
-      "id": "d53a5489418e"
+      "provenance": "ai-moderated",
+      "id": "d53a5489418e",
+      "note": "Tightened snippet from the too-generic 'Feller' to a unique phrase from the same sentence.",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      }
     },
     {
       "kind": "definition",
@@ -202,7 +336,14 @@
         "snippet": "are independent Gamma variables , another construction of a Feller–Pareto"
       },
       "provenance": "ai-agent1",
-      "id": "29ee7a104667"
+      "id": "29ee7a104667",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Feller–Pareto construction from Gamma variables is present in Mathlib."
     },
     {
       "kind": "proposition",
@@ -212,7 +353,14 @@
         "snippet": "When a random variable"
       },
       "provenance": "ai-agent1",
-      "id": "b814b12d4dc7"
+      "id": "b814b12d4dc7",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No inverse-Pareto / power distribution is defined in Mathlib."
     },
     {
       "kind": "proposition",
@@ -222,7 +370,14 @@
         "snippet": "The Pareto distribution is related to the exponential distribution as follows"
       },
       "provenance": "ai-agent1",
-      "id": "65fbe4b28ef0"
+      "id": "65fbe4b28ef0",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Both `paretoMeasure` and `exponentialPDF` exist, but no lemma relating them via `Y = x_m exp(X/α)` is present."
     },
     {
       "kind": "proposition",
@@ -232,7 +387,14 @@
         "snippet": "Pareto distribution can be constructed by hierarchical exponential distributions"
       },
       "provenance": "ai-agent1",
-      "id": "25edd92fcd2e"
+      "id": "25edd92fcd2e",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No hierarchical/mixture construction of Pareto from exponentials is in Mathlib."
     },
     {
       "kind": "proposition",
@@ -242,7 +404,14 @@
         "snippet": "The Pareto distribution with scale"
       },
       "provenance": "ai-agent1",
-      "id": "71ce6d5f7583"
+      "id": "71ce6d5f7583",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The generalized Pareto distribution is not in Mathlib, so the equivalence is unstated."
     },
     {
       "kind": "definition",
@@ -252,7 +421,14 @@
         "snippet": "The bounded (or truncated) Pareto distribution has three parameters"
       },
       "provenance": "ai-agent1",
-      "id": "158e58d3257e"
+      "id": "158e58d3257e",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No bounded/truncated Pareto distribution is defined in Mathlib."
     },
     {
       "kind": "definition",
@@ -262,7 +438,14 @@
         "snippet": "The probability density function is"
       },
       "provenance": "ai-agent1",
-      "id": "9c956135f3d7"
+      "id": "9c956135f3d7",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No bounded-Pareto PDF formula is present in Mathlib."
     },
     {
       "kind": "proposition",
@@ -272,7 +455,14 @@
         "snippet": "If U is uniformly distributed on (0, 1), then applying inverse-transform method"
       },
       "provenance": "ai-agent1",
-      "id": "2961894c3ec1"
+      "id": "2961894c3ec1",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No inverse-transform sampling formula for bounded Pareto is present in Mathlib."
     },
     {
       "kind": "definition",
@@ -282,7 +472,14 @@
         "snippet": "The Cumulative distribution function (CDF) of Symmetric Pareto distribution is defined as following"
       },
       "provenance": "ai-agent1",
-      "id": "8a8f3650637a"
+      "id": "8a8f3650637a",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No symmetric Pareto CDF is defined in Mathlib."
     },
     {
       "kind": "definition",
@@ -292,7 +489,14 @@
         "snippet": "The corresponding probability density function (PDF) is"
       },
       "provenance": "ai-agent1",
-      "id": "7609b8e7b63d"
+      "id": "7609b8e7b63d",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No symmetric Pareto PDF is defined in Mathlib."
     },
     {
       "kind": "proposition",
@@ -302,7 +506,14 @@
         "snippet": "Then the mathematic expectation is b"
       },
       "provenance": "ai-agent1",
-      "id": "9101f41272b5"
+      "id": "9101f41272b5",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No variance statement for the symmetric Pareto distribution is in Mathlib."
     },
     {
       "kind": "definition",
@@ -312,7 +523,14 @@
         "snippet": "The CDF of Zero Symmetric Pareto (ZSP) distribution is defined as following"
       },
       "provenance": "ai-agent1",
-      "id": "ffb97e24804d"
+      "id": "ffb97e24804d",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No zero-symmetric Pareto CDF is defined in Mathlib."
     },
     {
       "kind": "definition",
@@ -322,7 +540,14 @@
         "snippet": "The corresponding PDF is"
       },
       "provenance": "ai-agent1",
-      "id": "82536a86631f"
+      "id": "82536a86631f",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No zero-symmetric Pareto PDF is defined in Mathlib."
     },
     {
       "kind": "definition",
@@ -332,7 +557,14 @@
         "snippet": "The likelihood function for the Pareto distribution parameters"
       },
       "provenance": "ai-agent1",
-      "id": "96111a5f9fab"
+      "id": "96111a5f9fab",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No likelihood function for the Pareto distribution is defined in Mathlib."
     },
     {
       "kind": "definition",
@@ -342,7 +574,14 @@
         "snippet": "Therefore, the logarithmic likelihood function is"
       },
       "provenance": "ai-agent1",
-      "id": "d327e36ec6c7"
+      "id": "d327e36ec6c7",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No log-likelihood for the Pareto distribution is defined in Mathlib."
     },
     {
       "kind": "proposition",
@@ -352,7 +591,14 @@
         "snippet": "Thus the maximum likelihood estimator for"
       },
       "provenance": "ai-agent1",
-      "id": "12774c549a9f"
+      "id": "12774c549a9f",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No MLE for the Pareto shape parameter is proved in Mathlib."
     },
     {
       "kind": "proposition",
@@ -362,7 +608,14 @@
         "snippet": "gives the exact joint distribution of"
       },
       "provenance": "ai-agent1",
-      "id": "eb2377cad27f"
+      "id": "eb2377cad27f",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No joint distribution of the Pareto MLEs is stated in Mathlib."
     },
     {
       "kind": "proposition",
@@ -372,7 +625,14 @@
         "snippet": "Zipf's can be derived from the Pareto distribution"
       },
       "provenance": "ai-agent1",
-      "id": "fd8ec428c1e4"
+      "id": "fd8ec428c1e4",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Zipf's law is not present in Mathlib (no `Zipf` declarations found)."
     },
     {
       "kind": "proposition",
@@ -382,7 +642,14 @@
         "snippet": "holds precisely when the Pareto index is"
       },
       "provenance": "ai-agent1",
-      "id": "6f7b6b21423a"
+      "id": "6f7b6b21423a",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The 80/20 ⇔ α = log_4 5 equivalence is not formalized in Mathlib."
     },
     {
       "kind": "definition",
@@ -392,7 +659,14 @@
         "snippet": "For any distribution, the Lorenz curve"
       },
       "provenance": "ai-agent1",
-      "id": "e8634262ee85"
+      "id": "e8634262ee85",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Lorenz curve is not defined in Mathlib (no `Lorenz` declarations found)."
     },
     {
       "kind": "proposition",
@@ -402,7 +676,14 @@
         "snippet": "and the Lorenz curve is calculated to be"
       },
       "provenance": "ai-agent1",
-      "id": "3a78476170d9"
+      "id": "3a78476170d9",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Lorenz curve for the Pareto distribution is formalized in Mathlib."
     },
     {
       "kind": "proposition",
@@ -412,7 +693,14 @@
         "snippet": "The Gini coefficient for the Pareto distribution is then calculated"
       },
       "provenance": "ai-agent1",
-      "id": "bfbc66148180"
+      "id": "bfbc66148180",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Gini coefficient is not defined in Mathlib, so its Pareto value is not formalized."
     },
     {
       "kind": "proposition",
@@ -422,7 +710,14 @@
         "snippet": "Random samples can be generated using inverse transform sampling"
       },
       "provenance": "ai-agent1",
-      "id": "8b778d888d55"
+      "id": "8b778d888d55",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No inverse-transform sampling lemma for Pareto is present in Mathlib."
     },
     {
       "kind": "example",
@@ -432,7 +727,78 @@
         "snippet": "the richest 62 people have as much wealth as the poorest half"
       },
       "provenance": "ai-agent1",
-      "id": "7c60226a78c8"
+      "id": "7c60226a78c8",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an applied empirical example, not formalizable in Mathlib."
+    },
+    {
+      "kind": "proposition",
+      "label": "MLE for x_m",
+      "anchor": {
+        "section": "Estimation of parameters",
+        "snippet": "is monotonically increasing with"
+      },
+      "provenance": "ai",
+      "note": "The MLE for the scale parameter x_m is the sample minimum, derived from monotonicity of the log-likelihood in x_m.",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      }
+    },
+    {
+      "kind": "proposition",
+      "label": "Expected statistical error of α̂",
+      "anchor": {
+        "section": "Estimation of parameters",
+        "snippet": "The expected statistical error is"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement about the standard error of the Pareto MLE is present in Mathlib."
+    },
+    {
+      "kind": "proposition",
+      "label": "Lindy effect (life expectancy ∝ age)",
+      "anchor": {
+        "section": "Conditional distributions",
+        "snippet": "life expectancy is proportional to age, and is called the Lindy effect"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the Lindy effect / conditional-mean linearity is present in Mathlib."
+    },
+    {
+      "kind": "proposition",
+      "label": "Pareto principle exponent log_4 5",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Pareto distributions with a shape value"
+      },
+      "provenance": "ai",
+      "note": "States the specific shape α = log_4 5 ≈ 1.16 that realises the 80:20 Pareto principle.",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      }
     }
   ]
 }

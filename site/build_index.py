@@ -86,11 +86,51 @@ def main() -> None:
         pct_p=pct_p,
         n_untagged=n_untagged,
         cards="\n".join(cards),
+        seo_head=SEO_HEAD,
     )
     (OUT_DIR / "index.html").write_text(page)
     print(f"Wrote out/index.html — {len(rows)} articles ({n_untagged} untagged), "
           f"{grand} results ({pct_f}% formalized, {pct_p}% partial)")
 
+
+# Brand/SEO head for the homepage. Kept as a plain string (not subject to
+# str.format) so the JSON-LD braces don't need escaping. This is the page that
+# should own the "WikiLean" brand query, so it carries the canonical, Open Graph,
+# and a WebSite + Person structured-data graph naming the entity explicitly.
+SEO_HEAD = """<link rel="canonical" href="https://wikilean.jackmccarthy.org/">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="WikiLean">
+<meta property="og:title" content="WikiLean — Wikipedia mathematics, mapped to Lean">
+<meta property="og:description" content="WikiLean is a mirror of WikiProject Mathematics articles annotated with links into Mathlib4, color-coded by formalization coverage in Lean.">
+<meta property="og:url" content="https://wikilean.jackmccarthy.org/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="WikiLean — Wikipedia mathematics, mapped to Lean">
+<meta name="twitter:description" content="A mirror of WikiProject Mathematics articles annotated with links into Mathlib4, color-coded by formalization coverage in Lean.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://wikilean.jackmccarthy.org/#website",
+      "url": "https://wikilean.jackmccarthy.org/",
+      "name": "WikiLean",
+      "alternateName": "WikiLean \\u2014 Wikipedia mathematics, mapped to Lean",
+      "description": "WikiLean is a mirror of WikiProject Mathematics articles annotated inline with links into Mathlib4, color-coded by whether each definition, theorem, and proof has been formalized in Lean.",
+      "inLanguage": "en",
+      "sameAs": ["https://github.com/Deicyde/WikiLean"],
+      "publisher": {"@id": "https://wikilean.jackmccarthy.org/#person"}
+    },
+    {
+      "@type": "Person",
+      "@id": "https://wikilean.jackmccarthy.org/#person",
+      "name": "Jack McCarthy",
+      "url": "https://jackmccarthy.org"
+    }
+  ]
+}
+</script>"""
 
 TEMPLATE = """<!doctype html>
 <html lang="en">
@@ -98,7 +138,8 @@ TEMPLATE = """<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>WikiLean — Wikipedia mathematics, mapped to Lean</title>
-<meta name="description" content="A mirror of WikiProject Mathematics articles annotated with links into Mathlib, color-coded by formalization coverage.">
+<meta name="description" content="WikiLean is a mirror of WikiProject Mathematics articles annotated with links into Mathlib4, color-coded by formalization coverage in Lean.">
+{seo_head}
 <style>
 :root {{
   --green:#2da44e; --yellow:#d29922; --red:#cf222e;
@@ -161,9 +202,9 @@ footer a {{ color:#0969da; text-decoration:none; }}
   </nav>
 </header>
 <div class="wrap">
-  <h1>Wikipedia mathematics, mapped to Lean</h1>
+  <h1>WikiLean — Wikipedia mathematics, mapped to Lean</h1>
   <p class="lead">
-    A mirror of <a href="https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Mathematics">WikiProject
+    <strong>WikiLean</strong> is a mirror of <a href="https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Mathematics">WikiProject
     Mathematics</a> articles, annotated inline with links into
     <a href="https://leanprover-community.github.io/mathlib4_docs/">Mathlib4</a> and color-coded by
     whether each definition, theorem, and proof has been formalized in Lean. Built by
