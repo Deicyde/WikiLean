@@ -118,7 +118,11 @@ def freshen_branch_and_push(branch: str, mathlib: Path) -> bool:
     new merge commit was pushed (False if already up to date, or a conflict
     blocked it — caller can then fall back to a plain CI re-trigger)."""
     run(["git", "fetch", "origin", branch], cwd=mathlib)
-    run(["git", "reset", "--hard", f"origin/{branch}"], cwd=mathlib)
+    # checkout -B (NOT reset --hard): a fresh Actions clone is on master with no local
+    # <branch>, so the later `git push origin <branch>` would die "src refspec … does
+    # not match any" — the same bug as the settle path. Create the local branch. Without
+    # this the CI self-heal crashes the tick AND never sets retriggered_pr, looping.
+    run(["git", "checkout", "-B", branch, "FETCH_HEAD"], cwd=mathlib)
     before = run(["git", "rev-parse", "HEAD"], cwd=mathlib).stdout.strip()
     if not freshen_master(mathlib):
         return False

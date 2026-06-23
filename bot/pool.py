@@ -32,7 +32,7 @@ def field_of_math(qids):
         url = (f"{WD_API}?action=wbgetentities&ids={'|'.join(chunk)}"
                f"&props=claims&format=json&origin=*")
         try:
-            out = subprocess.run(["curl", "-s", "-H", "User-Agent: WikiLean-bot/1.0", url],
+            out = subprocess.run(["curl", "-s", "--retry", "3", "--retry-delay", "2", "-H", "User-Agent: WikiLean-bot/1.0", url],
                                  capture_output=True, text=True, timeout=40).stdout
             ents = json.loads(out).get("entities", {})
         except Exception:

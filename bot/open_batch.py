@@ -97,7 +97,13 @@ def main():
     # Branch the new batch off fresh upstream master.
     sh(["git", "-C", str(args.mathlib), "fetch", "https://github.com/leanprover-community/mathlib4", "master"])
     sh(["git", "-C", str(args.mathlib), "checkout", "-B", approved["branch"], "FETCH_HEAD"])
-    sh(["lake", "exe", "cache", "get"], cwd=str(args.mathlib))  # prebuilt oleans for the new master
+    cg = sh(["lake", "exe", "cache", "get"], cwd=str(args.mathlib))  # prebuilt oleans for the new master
+    if cg.returncode != 0:
+        # A failed cache-get on the stateless runner leaves `lake build` to cold-compile
+        # Mathlib's whole transitive closure (multi-hour, blows the CI cap). Bail so the
+        # next tick retries against a warm cache instead of burning the budget.
+        print("lake exe cache get FAILED — not cold-building all of Mathlib; retry next tick")
+        sys.exit(1)
     r = sh(["python3", str(HERE / "open_batch_pr.py"), "--approved", str(apath),
             "--mathlib", str(args.mathlib), "--repo", REPO, "--base", "master",
             "--apply", "--check", "--build", "--open-pr"])

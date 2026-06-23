@@ -126,7 +126,7 @@ jobs:
         run: |
           git config user.name  "wikilean-bot"
           git config user.email "bot@wikilean.jackmccarthy.org"
-          git add bot/state/ 2>/dev/null || true   # all non-ignored state (pool_candidates stays ignored)
+          git add bot/state/ bot/data/ 2>/dev/null || true   # advanced state + the harvested feedback corpus (pool_candidates stays ignored)
           if git diff --cached --quiet; then
             echo "no state change"
           else
