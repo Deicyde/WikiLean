@@ -1,83 +1,150 @@
 [
  {
-  "qid": "Q125977",
+  "qid": "Q1206110",
   "file": "Mathlib/Algebra/Module/Defs.lean",
   "verdicts": {
-   "Deicyde": "approve",
-   "faenuccio": "revise"
+   "Deicyde": "reject",
+   "jcommelin": "reject"
   },
-  "reason": "objection (reject/revise)",
-  "notes": [
-   {
-    "login": "Deicyde",
-    "status": "approve",
-    "text": "It isn't a perfect match, but since `[Module V]` is the canonical way to write \"vector space\" in Mathlib I think this tag is worth adding."
-   },
-   {
-    "login": "faenuccio",
-    "status": "revise",
-    "text": "I think we should rather point to https://en.wikipedia.org/wiki/Module_(mathematics)"
-   }
-  ],
+  "reason": "maintainer rejected/revised",
+  "notes": [],
   "decl": "Module",
   "triage": {
    "decision": "requeue",
-   "reason": "Reviewer faenuccio identifies the concrete fix: Mathlib's `Module` formalizes Module (mathematics), not vector space (Q125977 is strictly narrower), so retarget the QID while keeping the declaration.",
+   "reason": "Q1206110 is 'program operator' (computer programming), a completely unrelated concept; the correct QID for the algebraic module formalized by Mathlib's `Module` class is Q18848 ('module — generalization of vector space, with scalars in a ring').",
    "suggested_decl": "Module",
-   "suggested_qid": "Q1206110",
-   "fix_hint": "Retarget QID from Q125977 (vector space) to the Wikidata item for Module (mathematics) — Mathlib's `Module` is over a semiring, strictly more general than a vector space.",
+   "suggested_qid": "Q18848",
+   "fix_hint": "Replace Q1206110 with Q18848 on declaration Module in Mathlib/Algebra/Module/Defs.lean; the declaration itself is correct.",
    "decl_exists": true,
    "qid_exists": true
   }
  },
  {
-  "qid": "Q187235",
-  "file": "Mathlib/NumberTheory/LSeries/RiemannZeta.lean",
+  "qid": "Q1365258",
+  "file": "Mathlib/Analysis/Fourier/FourierTransform.lean",
   "verdicts": {
-   "Deicyde": "approve",
-   "faenuccio": "reject"
+   "Deicyde": "reject",
+   "jcommelin": "reject"
   },
-  "reason": "objection (reject/revise)",
+  "reason": "maintainer rejected/revised",
   "notes": [
    {
-    "login": "faenuccio",
+    "login": "jcommelin",
     "status": "reject",
-    "text": "This should rather point to https://leanprover-community.github.io/mathlib4_docs/Mathlib/NumberTheory/LSeries/RiemannZeta.html#riemannZeta"
+    "text": "This QID refers to a whole subfield of maths, not to one specific concept."
    }
   ],
-  "decl": "completedRiemannZeta",
+  "decl": "VectorFourier.fourierIntegral",
   "triage": {
    "decision": "requeue",
-   "reason": "Reviewer points to the concrete fix: tag riemannZeta (the Riemann zeta function itself) instead of completedRiemannZeta (the completed/symmetrized version).",
-   "suggested_decl": "riemannZeta",
-   "suggested_qid": "",
-   "fix_hint": "Retag Q187235 (Riemann zeta function) onto `riemannZeta` in Mathlib/NumberTheory/LSeries/RiemannZeta.lean; `completedRiemannZeta` is the completed variant and should get its own (different) QID if any.",
-   "decl_exists": true
+   "reason": "Q1365258 is 'Fourier analysis' (the whole subfield); Q6520159 is 'Fourier transform' (the specific operation that VectorFourier.fourierIntegral directly formalizes), making this a straightforward QID swap with no declaration change needed.",
+   "suggested_decl": "VectorFourier.fourierIntegral",
+   "suggested_qid": "Q6520159",
+   "fix_hint": "Replace Q1365258 (Fourier analysis) with Q6520159 (Fourier transform); the declaration VectorFourier.fourierIntegral is Mathlib's most general Fourier integral def and is the correct tagging target.",
+   "decl_exists": true,
+   "qid_exists": true
   }
  },
  {
-  "qid": "Q756747",
-  "file": "Mathlib/RingTheory/RootsOfUnity/Basic.lean",
+  "qid": "Q938102",
+  "file": "Mathlib/Analysis/SpecialFunctions/Elliptic/Weierstrass.lean",
   "verdicts": {
-   "Deicyde": "approve",
-   "faenuccio": "revise"
+   "Deicyde": "reject",
+   "jcommelin": "reject"
+  },
+  "reason": "maintainer rejected/revised",
+  "notes": [],
+  "decl": "PeriodPair.weierstrassP",
+  "triage": {
+   "decision": "requeue",
+   "reason": "Q938102 is the broad 'elliptic function' class (too general); PeriodPair.weierstrassP formalizes the specific Weierstrass ℘-function, which maps to Q2343600 ('Weierstrass's elliptic functions') whose defining formula, MathWorld, and nLab refs all match.",
+   "suggested_decl": "PeriodPair.weierstrassP",
+   "suggested_qid": "Q2343600",
+   "fix_hint": "Replace Q938102 with Q2343600; the declaration is correct — PeriodPair.weierstrassP is exactly the ℘-function defined by the double sum in Q2343600's P2534 formula.",
+   "decl_exists": true,
+   "qid_exists": true
+  }
+ },
+ {
+  "qid": "Q163310",
+  "file": "Mathlib/Computability/TuringMachine/PostTuringMachine.lean",
+  "verdicts": {
+   "Deicyde": "reject",
+   "jcommelin": "(note)"
   },
   "reason": "objection (reject/revise)",
   "notes": [
    {
-    "login": "faenuccio",
-    "status": "revise",
-    "text": "The wikipedia article is completely focused on complex ones, so I would add this tag to https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/RootsOfUnity/Complex.html#Complex.mem_rootsOfUnity or any of its friends."
+    "login": "Deicyde",
+    "status": "reject",
+    "text": "We should use Pot-Turing Machine (Q2574032) instead"
+   },
+   {
+    "login": "jcommelin",
+    "status": "(note)",
+    "text": "The \"this\" in \"this is a deliberate addition, see comment\" refers to the `unusedArguments` attribute. This should now be clarified."
    }
   ],
-  "decl": "rootsOfUnity",
+  "decl": "Turing.TM0.Machine",
   "triage": {
    "decision": "requeue",
-   "reason": "Reviewer points to a concrete retargeting: the Wikipedia article focuses on complex roots of unity, so tag the complex-specific declaration instead.",
-   "suggested_decl": "Complex.mem_rootsOfUnity",
-   "suggested_qid": "",
-   "fix_hint": "Move the @[wikidata Q756747] tag from rootsOfUnity to Complex.mem_rootsOfUnity (or a sibling in Mathlib/RingTheory/RootsOfUnity/Complex.lean) since the Wikipedia article is complex-specific.",
-   "decl_exists": true
+   "reason": "Deicyde explicitly identified a more specific QID (Q2574032, Post-Turing Machine) that directly matches the declaration in PostTuringMachine.lean — the QID is too broad, not the declaration.",
+   "suggested_decl": "Turing.TM0.Machine",
+   "suggested_qid": "Q2574032",
+   "fix_hint": "Replace Q163310 (Turing machine, too broad) with Q2574032 (Post-Turing Machine) on the same declaration Turing.TM0.Machine.",
+   "decl_exists": true,
+   "qid_exists": true
+  }
+ },
+ {
+  "qid": "Q1412905",
+  "file": "Mathlib/Logic/Equiv/Defs.lean",
+  "verdicts": {
+   "Deicyde": "reject",
+   "jcommelin": "reject"
+  },
+  "reason": "maintainer rejected/revised",
+  "notes": [
+   {
+    "login": "Deicyde",
+    "status": "reject",
+    "text": "Use Q161519 instead"
+   }
+  ],
+  "decl": "Equiv.Perm",
+  "triage": {
+   "decision": "requeue",
+   "reason": "Reviewer Deicyde explicitly named the correct replacement QID (Q161519, 'permutation') — the declaration Equiv.Perm is right, only the QID needs updating from the too-broad/wrong concept Q1412905.",
+   "suggested_decl": "Equiv.Perm",
+   "suggested_qid": "Q161519",
+   "fix_hint": "Replace the @[wikidata Q1412905] tag on Equiv.Perm with @[wikidata Q161519] (permutation); no change to the declaration.",
+   "decl_exists": true,
+   "qid_exists": true
+  }
+ },
+ {
+  "qid": "Q176737",
+  "file": "Mathlib/Probability/Process/Filtration.lean",
+  "verdicts": {
+   "Deicyde": "reject"
+  },
+  "reason": "objection (reject/revise)",
+  "notes": [
+   {
+    "login": "Deicyde",
+    "status": "reject",
+    "text": "\"Stochastic process\" is too broad. Instead we want filtration (Q55647796)"
+   }
+  ],
+  "decl": "MeasureTheory.Filtration",
+  "triage": {
+   "decision": "requeue",
+   "reason": "The declaration is correct but Q176737 (stochastic process) is too broad; the reviewer explicitly identified Q55647796 (filtration) as the right QID for MeasureTheory.Filtration.",
+   "suggested_decl": "MeasureTheory.Filtration",
+   "suggested_qid": "Q55647796",
+   "fix_hint": "Replace QID Q176737 (stochastic process) with Q55647796 (filtration); keep the declaration MeasureTheory.Filtration unchanged.",
+   "decl_exists": true,
+   "qid_exists": true
   }
  },
  {

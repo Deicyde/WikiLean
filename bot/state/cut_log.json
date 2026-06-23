@@ -187,5 +187,86 @@
    "suggested_qid": "",
    "fix_hint": ""
   }
+ },
+ {
+  "qid": "Q582659",
+  "file": "Mathlib/Analysis/Asymptotics/ExpGrowth.lean",
+  "verdicts": {
+   "Deicyde": "reject",
+   "jcommelin": "reject"
+  },
+  "reason": "maintainer rejected/revised",
+  "notes": [],
+  "decl": "ExpGrowth.expGrowthSup",
+  "triage": {
+   "decision": "cut",
+   "reason": "Q582659 ('Exponential growth', elementary concept x_t = x_0(1+r)^t) is fundamentally too broad for ExpGrowth.expGrowthSup, which is a specific asymptotic limsup-of-growth-exponents construction in Mathlib's Asymptotics library \u2014 no reviewer note points toward a fixable retarget, and no Wikidata QID for this precise asymptotic object exists.",
+   "suggested_decl": "",
+   "suggested_qid": "",
+   "fix_hint": ""
+  }
+ },
+ {
+  "qid": "Q175199",
+  "file": "Mathlib/Probability/Moments/Variance.lean",
+  "verdicts": {
+   "Deicyde": "reject"
+  },
+  "reason": "objection (reject/revise)",
+  "notes": [
+   {
+    "login": "Deicyde",
+    "status": "reject",
+    "text": "Already exists. I will fix the script."
+   }
+  ],
+  "decl": null,
+  "triage": {
+   "decision": "cut",
+   "reason": "Reviewer notes the tag already exists in Mathlib; this is a duplicate produced by the tagging script, not a wrong declaration or wrong QID, so there is nothing to fix by requeuing.",
+   "suggested_decl": "",
+   "suggested_qid": "",
+   "fix_hint": ""
+  }
+ },
+ {
+  "qid": "Q756747",
+  "file": "Mathlib/RingTheory/RootsOfUnity/Basic.lean",
+  "verdicts": {
+   "Deicyde": "reject"
+  },
+  "reason": "objection (reject/revise)",
+  "notes": [
+   {
+    "login": "Deicyde",
+    "status": "reject",
+    "text": "Also make sure we are tagging the **complex** roots of unity, since that is what is described in the Wikidata item"
+   }
+  ],
+  "decl": "Complex.mem_rootsOfUnity",
+  "triage": {
+   "decision": "cut",
+   "reason": "The reviewer's only stated concern (ensuring the declaration targets the complex case) is already satisfied \u2014 Complex.mem_rootsOfUnity lives in Mathlib.RingTheory.RootsOfUnity.Complex and Q756747's own description reads 'a complex number whose positive integer power equals one' \u2014 leaving no concrete change to apply, making a valid requeue impossible under the must-change-something rule.",
+   "suggested_decl": "",
+   "suggested_qid": "",
+   "fix_hint": ""
+  }
+ },
+ {
+  "qid": "Q163875",
+  "file": "Mathlib/SetTheory/Cardinal/Defs.lean",
+  "verdicts": {
+   "Deicyde": "reject"
+  },
+  "reason": "objection (reject/revise)",
+  "notes": [],
+  "decl": null,
+  "triage": {
+   "decision": "cut",
+   "reason": "Q163875 ('Cardinal number') is the broader parent of Q4049983 ('Cardinality'), which is already correctly tagged on `Cardinal`; no specific retargeting is possible without creating a redundant or too-broad tag on the same declaration.",
+   "suggested_decl": "",
+   "suggested_qid": "",
+   "fix_hint": ""
+  }
  }
 ]
