@@ -8,7 +8,7 @@ no judgement: same PR in → same table out.
 
   pr_table.py <pr> [--repo owner/name] [--header "…"]
 """
-import argparse, json, subprocess, sys
+import argparse, json, re, subprocess, sys
 import settle
 
 WIKI = "https://wikilean.jackmccarthy.org"
@@ -85,6 +85,42 @@ def post(pr, repo, body):
     return action, p.returncode, (p.stderr or p.stdout)[:200]
 
 
+def sync_body_count(pr, repo, n=None):
+    """Keep the PR body's 'adds a batch of N `@[wikidata]` attributes' line in sync with
+    the tags ACTUALLY in the PR's current diff. That line is written once at open; the
+    settle-trim (split.py) and the conflict-rebuild (poll.resolve_conflicts) both shrink
+    the diff but never touch the body, so without this it overstates after a trim.
+
+    n defaults to a fresh count of @[wikidata] attribute occurrences in `gh pr diff`:
+    anchored to `@[` so a QID mentioned in added prose isn't counted, and via findall so a
+    co-located `@[wikidata Q1, wikidata Q2]` counts as 2 — matching the ENTRY counts the
+    explicit-n callers pass. Callers that already know the exact post-edit count (settle,
+    conflict-resolver) pass it to skip the fetch AND any GitHub diff-recompute lag right
+    after a force-push. Idempotent; best-effort (never raises), but a real `gh pr edit`
+    failure is surfaced loudly — it would otherwise leave a settled PR's body wrong with no
+    later re-sync (refresh_table skips settled PRs)."""
+    try:
+        if n is None:
+            diff = subprocess.run(["gh", "pr", "diff", str(pr), "--repo", repo],
+                                  capture_output=True, text=True).stdout
+            n = sum(len(re.findall(r"wikidata\s+Q\d+", l)) for l in diff.splitlines()
+                    if l.startswith("+") and not l.startswith("+++") and "@[" in l)
+        if not n:
+            return  # empty / failed diff — don't clobber the body with "batch of 0"
+        body = subprocess.run(["gh", "pr", "view", str(pr), "--repo", repo, "--json", "body", "--jq", ".body"],
+                              capture_output=True, text=True).stdout
+        new = re.sub(r"adds a batch of \d+", f"adds a batch of {n}", body, count=1)
+        if new != body and "adds a batch of" in body:
+            r = subprocess.run(["gh", "pr", "edit", str(pr), "--repo", repo, "--body", new],
+                               capture_output=True, text=True)
+            if r.returncode == 0:
+                print(f"  synced PR body tag count -> {n}")
+            else:
+                print(f"  WARNING: PR body count sync to {n} failed: {(r.stderr or r.stdout).strip()[:150]}")
+    except Exception as e:
+        print(f"  (body-count sync skipped: {e})")
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("pr", type=int)
@@ -92,10 +128,18 @@ if __name__ == "__main__":
     ap.add_argument("--header", default=None)
     ap.add_argument("--fresh", action="store_true", help="freshly-opened batch header (adds N tags)")
     ap.add_argument("--post", action="store_true", help="post/update the comment on the PR (idempotent)")
+    ap.add_argument("--no-body-sync", action="store_true",
+                    help="skip the PR-body 'batch of N' count sync (caller syncs it with an exact count)")
     args = ap.parse_args()
     md = table(args.pr, args.repo, args.header, args.fresh)
     if args.post:
         action, rc, msg = post(args.pr, args.repo, md)
         print(f"{action} tag-table comment on #{args.pr}" + (f" (error: {msg})" if rc else ""))
+        # Re-sync the PR body's tag count on every table post (open / every tick), so a trim
+        # that shrinks the diff can't leave the body overstating. Callers that JUST
+        # force-pushed (settle, conflict-resolve) pass --no-body-sync and sync the exact
+        # count themselves, to avoid recounting a possibly-lagged post-push `gh pr diff`.
+        if not args.no_body_sync:
+            sync_body_count(args.pr, args.repo)
     else:
         print(md)

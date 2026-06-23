@@ -117,13 +117,12 @@ def main():
     # Branch the new batch off fresh upstream master.
     sh(["git", "-C", str(args.mathlib), "fetch", "https://github.com/leanprover-community/mathlib4", "master"])
     sh(["git", "-C", str(args.mathlib), "checkout", "-B", approved["branch"], "FETCH_HEAD"])
-    cg = sh(["lake", "exe", "cache", "get"], cwd=str(args.mathlib))  # prebuilt oleans for the new master
-    if cg.returncode != 0:
-        # A failed cache-get on the stateless runner leaves `lake build` to cold-compile
-        # Mathlib's whole transitive closure (multi-hour, blows the CI cap). Bail so the
-        # next tick retries against a warm cache instead of burning the budget.
-        print("lake exe cache get FAILED — not cold-building all of Mathlib; retry next tick")
-        sys.exit(1)
+    # No `lake exe cache get` + `lake build` on the open path. A @[wikidata] doc-attribute
+    # can only fail one way — the missing CrossRefAttribute import — which open_batch_pr
+    # adds deterministically (--build now means "add the import", not compile). A local
+    # build just cold-recompiles the edited high-fan-out modules for ~1h45m (the edit
+    # invalidates their oleans no matter how warm the cache) before trusting CI anyway;
+    # mathlib's PR CI runs the authoritative compile. So cache get is pure waste here.
     r = sh(["python3", str(HERE / "open_batch_pr.py"), "--approved", str(apath),
             "--mathlib", str(args.mathlib), "--repo", REPO, "--base", "master",
             "--apply", "--check", "--build", "--open-pr"])
