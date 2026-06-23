@@ -17,6 +17,7 @@ MAINTAINERS = {"jcommelin"}          # allowlist seed (always treated as maintai
 ORG_ROLES = {"OWNER", "MEMBER", "COLLABORATOR"}
 OBJECT = ("reject", "revise", "flag")  # hard objections (a note is NOT one)
 BOTS = {"github-actions[bot]"}
+REACTION_VERDICT = {"+1": "approve", "-1": "reject"}  # 👍 = approve, 👎 = reject (REST content names)
 
 
 def gh_list(repo, path):
@@ -38,6 +39,30 @@ def gh_list(repo, path):
 def gh_obj(repo, path):
     return json.loads(subprocess.run(["gh", "api", f"repos/{repo}/{path}"],
                                      capture_output=True, text=True).stdout)
+
+
+def gh_reactions(repo, comment_id):
+    """Reactions on an inline PR review comment. [] on error — reactions are an
+    additive verdict source, so a fetch hiccup must never fail the settle."""
+    try:
+        return gh_list(repo, f"pulls/comments/{comment_id}/reactions")
+    except RuntimeError:
+        return []
+
+
+_ORG_MEMBER = {}
+def is_org_member(repo, login):
+    """Is `login` a PUBLIC member of the repo's org? Reaction objects carry no
+    author_association, so this is how a react-only reviewer is recognised as a
+    maintainer (private members 404 — they fall back to the MAINTAINERS seed).
+    Cached per run so N reactions by one maintainer cost one API call."""
+    org = repo.split("/")[0]
+    k = (org, login)
+    if k not in _ORG_MEMBER:
+        r = subprocess.run(["gh", "api", f"orgs/{org}/members/{login}", "--silent"],
+                           capture_output=True, text=True)
+        _ORG_MEMBER[k] = (r.returncode == 0)  # 204 -> 0 (member), 404 -> nonzero
+    return _ORG_MEMBER[k]
 
 
 def is_merged(pr, repo="leanprover-community/mathlib4"):
@@ -134,6 +159,23 @@ def classify(pr, repo="leanprover-community/mathlib4"):
         if m:
             note_explicit(m.group(1), u, status_of(b) or "(note)", c.get("created_at", ""),
                           note_text_inline(b))
+        # 👍/👎 reactions on the crossref bot's per-tag comment count as approve/reject
+        # by the REACTOR, for that tag — a lightweight alternative to a written verdict.
+        # Latest-wins (note_explicit keys by ts), so a reaction can overturn an earlier
+        # comment by the same login and vice-versa. Only the crossref per-tag comment
+        # (`crossref-bot:Q…`) is harvested — reacting to a verdict note would be ambiguous.
+        cr = re.search(r"crossref-bot:(Q\d+)", b)
+        rx = c.get("reactions") or {}
+        if cr and (rx.get("+1", 0) + rx.get("-1", 0)) > 0:
+            qid = cr.group(1)
+            for r in gh_reactions(repo, c.get("id")):
+                v = REACTION_VERDICT.get(r.get("content"))
+                ru = (r.get("user") or {}).get("login", "")
+                if not v or not ru or ru in BOTS:
+                    continue
+                if ru not in maint and is_org_member(repo, ru):
+                    maint.add(ru)  # a maintainer's reaction trumps, like a maintainer comment
+                note_explicit(qid, ru, v, r.get("created_at", ""))
     for c in gh_list(repo, f"issues/{pr}/comments"):
         u = (c.get("user") or {}).get("login", "")
         record_assoc(u, c.get("author_association"))
