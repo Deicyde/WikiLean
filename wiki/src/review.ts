@@ -211,6 +211,20 @@ interface GhReviewComment {
   user: { login: string } | null;
   html_url: string;
   created_at: string;
+  reactions?: { "+1"?: number; "-1"?: number }; // free summary on the list payload
+}
+
+interface GhReaction {
+  content: string; // "+1" | "-1" | laugh | confused | heart | hooray | rocket | eyes
+  user: { login: string } | null;
+  created_at: string;
+}
+
+// A 👍/👎 reaction on the crossref per-tag comment = approve/reject by the reactor.
+export interface ReactionVerdict {
+  user: string;
+  verdict: "approve" | "reject";
+  created_at: string;
 }
 
 export interface ReviewComment {
@@ -220,6 +234,7 @@ export interface ReviewComment {
   bodyHtml: string | null; // GitHub-rendered (sanitized) markdown, or null on fallback
   html_url: string;
   created_at: string;
+  reactionVerdicts?: ReactionVerdict[]; // 👍/👎 on this comment (crossref per-tag comments only)
 }
 
 async function sha256Hex(s: string): Promise<string> {
@@ -759,6 +774,35 @@ async function buildReviewPayload(
     );
     for (const [id, html] of rendered) if (html !== null) htmlById.set(id, html);
   }
+  // 👍/👎 reactions on the crossref per-tag comments = approve/reject by the reactor.
+  // Page mode only, and only for comments the free list-summary says actually have a
+  // thumbs reaction — so we add at most one /reactions call per reacted crossref comment.
+  const reactionsById = new Map<number, ReactionVerdict[]>();
+  if (renderMarkdown) {
+    const withThumbs = comments.filter(
+      (c) =>
+        /crossref-bot:Q\d+/.test(c.body || "") &&
+        c.reactions &&
+        ((c.reactions["+1"] ?? 0) + (c.reactions["-1"] ?? 0)) > 0,
+    );
+    await Promise.all(
+      withThumbs.map(async (c) => {
+        const rs = await ghPaginate<GhReaction>(
+          `${GH_API}/repos/${full}/pulls/comments/${c.id}/reactions`,
+          token,
+        ).catch(() => [] as GhReaction[]);
+        const v = rs
+          .filter((r) => r.content === "+1" || r.content === "-1")
+          .map((r) => ({
+            user: r.user?.login ?? "",
+            verdict: (r.content === "+1" ? "approve" : "reject") as "approve" | "reject",
+            created_at: r.created_at,
+          }))
+          .filter((r) => r.user);
+        if (v.length) reactionsById.set(c.id, v);
+      }),
+    );
+  }
   const byLine = new Map<string, ReviewComment[]>();
   for (const c of comments) {
     // Index under every anchor line a comment carries. Multi-line comments (the
@@ -776,6 +820,7 @@ async function buildReviewPayload(
       bodyHtml: htmlById.get(c.id) ?? null,
       html_url: c.html_url,
       created_at: c.created_at,
+      reactionVerdicts: reactionsById.get(c.id) ?? [],
     };
     for (const ln of anchors) {
       const k = keyOf(c.path, ln);
@@ -1514,10 +1559,36 @@ function commentHtml(c){
     (c.bodyHtml ? '<div class="body md">'+c.bodyHtml+'</div>' : '<div class="body">'+esc(c.body)+'</div>')+'</div>';
 }
 
+// All verdicts for a decl, per reviewer — combining wikilean-review comments AND
+// 👍/👎 reactions on the crossref per-tag comment, latest-wins per login (a reaction
+// can overturn an earlier comment by the same person, and vice-versa).
+function declVerdicts(d){
+  const by = {}; // login -> {status, at, note, reaction}
+  (d.comments||[]).forEach(c => {
+    if(/wikilean-review:Q/.test(c.body||"")){
+      let s=""; if(/Deletion candidate/.test(c.body)) s="flag";
+      else { const m=c.body.match(/\((approve|revise|reject)\)/); if(m) s=m[1]; }
+      const login=c.user||"", at=c.created_at||"";
+      if(s && login){ const p=by[login]; if(!p||at>p.at) by[login]={status:s, at, note:reviewNote(c), reaction:false}; }
+    }
+    (c.reactionVerdicts||[]).forEach(rv => {
+      const p=by[rv.user];
+      if(rv.user && (!p || (rv.created_at||"")>(p.at||""))) by[rv.user]={status:rv.verdict, at:rv.created_at||"", note:"", reaction:true};
+    });
+  });
+  return by;
+}
+// The decl's headline status = the most recent verdict across all reviewers/sources.
+function declStatus(d){
+  let best=null; const v=declVerdicts(d);
+  Object.keys(v).forEach(login => { const x=v[login]; if(!best || (x.at||"")>(best.at||"")) best={status:x.status, by:login, at:x.at}; });
+  return best ? {status:best.status, by:best.by} : {status:"", by:""};
+}
+
 function render(data){
   DATA = data;
-  // Per-decl existing status.
-  const cur = data.decls.map(d => parseStatus(d.comments));
+  // Per-decl existing status (latest verdict — comment OR reaction).
+  const cur = data.decls.map(declStatus);
   // Distribution across ALL decls.
   const dist = {approve:0,revise:0,reject:0,flag:0,none:0};
   cur.forEach(c => dist[c.status||"none"]++);
@@ -1541,17 +1612,20 @@ function render(data){
     // block, status + note together) vs. other discussion. Johan's crossref-bot
     // comments are dropped from "Other comments" — they just restate the
     // Wikidata label/description already shown in the card's Wikidata pane.
-    const reviewCmts = d.comments.filter(c => /wikilean-review:Q/.test(c.body||""));
     const otherCmts = d.comments.filter(c =>
       !/wikilean-review:Q/.test(c.body||"") && !/crossref-bot:Q/.test(c.body||""));
     const otherHtml = otherCmts.map(commentHtml).filter(Boolean).join("");
+    // Reviews block: one row per reviewer, written verdicts AND 👍/👎 reactions, newest first.
+    const verds = declVerdicts(d);
+    const verdLogins = Object.keys(verds).sort((a,b) => (verds[b].at||"").localeCompare(verds[a].at||""));
     let reviewBlock;
-    if(reviewCmts.length){
+    if(verdLogins.length){
       reviewBlock = '<div class="cur"><span class="cur-label">Reviews</span>' +
-        reviewCmts.map(c => { const ps = parseStatus([c]); const note = reviewNote(c);
-          return '<div class="rev-item">' + statusBadge(ps.status) +
-            (ps.by ? ' <span class="by">@' + esc(ps.by) + '</span>' : '') +
-            (note ? '<div class="rev-note md">' + note + '</div>' : '') + '</div>';
+        verdLogins.map(login => { const x = verds[login];
+          return '<div class="rev-item">' + statusBadge(x.status) +
+            ' <span class="by">@' + esc(login) + '</span>' +
+            (x.reaction ? ' <span class="by" title="via 👍/👎 reaction">(reacted)</span>' : '') +
+            (x.note ? '<div class="rev-note md">' + x.note + '</div>' : '') + '</div>';
         }).join("") + '</div>';
     } else {
       reviewBlock = '<div class="cur"><span class="cur-label">Reviews</span> ' + statusBadge("") + '</div>';
