@@ -59,6 +59,26 @@ def assemble(batch_num):
             "source": "requeued retargets + most_used pool", "tags": tags}, len(requeued), len(fresh)
 
 
+def fill_review_link(prn):
+    """Fill the blank `?pr=` in the freshly-opened PR body now that the PR exists (the
+    `gh pr list` above confirmed it). Retries + VERIFIES (re-reads the body) because a
+    brand-new cross-fork PR isn't editable for a while — the immediate post-create edit
+    raced and left #40861/#40970 with a blank link. Best-effort: warns, never aborts."""
+    import time
+    for _ in range(8):
+        body = subprocess.run(["gh", "pr", "view", str(prn), "--repo", REPO, "--json", "body", "--jq", ".body"],
+                              capture_output=True, text=True).stdout
+        if f"/review?pr={prn}" in body:
+            print(f"  reviewer-UI link filled (?pr={prn})"); return
+        if "/review?pr=" not in body:
+            return  # no placeholder to fill
+        new = body.replace("/review?pr=", f"/review?pr={prn}")
+        subprocess.run(["gh", "pr", "edit", str(prn), "--repo", REPO, "--body", new],
+                       capture_output=True, text=True)
+        time.sleep(5)
+    print(f"  WARNING: reviewer-UI link still blank on #{prn} after retries")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--mathlib", type=Path, required=True)
@@ -117,6 +137,7 @@ def main():
     if not prn:
         print("could not find the new PR (did gh pr create fail?) — stopping before finalize."); sys.exit(1)
     print(f"\nopened PR #{prn}. finalizing…")
+    fill_review_link(prn)
     # Deterministic reviewer table (per-tag reviews; idempotent).
     sh([sys.executable, str(HERE / "pr_table.py"), prn, "--repo", REPO, "--post", "--fresh"])
     # Advance state FIRST so a re-run no-ops even if finalize stumbles.
