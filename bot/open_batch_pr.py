@@ -299,7 +299,12 @@ def open_pr(approved: dict, mathlib: Path, repo: str, base: str, create: bool = 
         print(f"[git] force-pushed rebuilt {branch} (--reapply, no PR create)")
         return
     fo = fork_owner(mathlib) or repo.split('/')[0]
-    n = len(approved["tags"])
+    # Count tags ACTUALLY applied (from the pushed commit) — apply_all skips decls already
+    # tagged on master or no longer present, so this is usually < the approved count; the
+    # body must say what's in the diff (#40970's body said 25, the diff had 21).
+    shown = run(["git", "show", "HEAD", "--unified=0"], cwd=mathlib).stdout
+    n = sum(1 for l in shown.splitlines()
+            if l.startswith("+") and not l.startswith("+++") and "wikidata Q" in l) or len(approved["tags"])
     print(f"[gh] pr create (head {fo}:{branch} -> {repo}:{base})")
     r = run(["gh", "pr", "create", "--repo", repo, "--base", base,
              "--head", f"{fo}:{branch}",
@@ -307,26 +312,10 @@ def open_pr(approved: dict, mathlib: Path, repo: str, base: str, create: bool = 
     print((r.stdout + r.stderr).strip())
     if r.returncode != 0:
         sys.exit(1)
-    # Fill the reviewer-UI link now that the PR number is known. Editing the body
-    # IMMEDIATELY after create races GitHub — the PR isn't editable for ~1-2s and the
-    # edit silently 404s (run() doesn't check rc), which left #40861's body with a
-    # blank `?pr=`. Retry with a short backoff and VERIFY, warning loudly if it never
-    # takes (a blank link is bad reviewer UX, but shouldn't abort an otherwise-good PR).
-    m = re.search(r"/pull/(\d+)", r.stdout)
-    if not m:
-        print("[gh] WARNING: couldn't parse the new PR number — reviewer-UI link left blank")
-        return
-    prn = m.group(1)
-    body = PR_BODY_TMPL.format(n=n, pr=prn)
-    for attempt in range(1, 5):
-        er = run(["gh", "pr", "edit", prn, "--repo", repo, "--body", body], cwd=mathlib)
-        if er.returncode == 0:
-            print(f"[gh] filled reviewer-UI link (?pr={prn})")
-            return
-        print(f"[gh] pr edit attempt {attempt} failed (rc={er.returncode}): "
-              f"{(er.stderr or er.stdout).strip()[:150]}")
-        time.sleep(3)
-    print(f"[gh] WARNING: could not fill the reviewer-UI link after retries — body keeps blank ?pr=")
+    # The blank ?pr= in the body is filled by open_batch.py AFTER it confirms the PR
+    # number via `gh pr list` (with a verified retry) — editing the body immediately here
+    # races GitHub: a fresh cross-fork PR isn't editable for a while, which left
+    # #40861/#40970 with a blank link even with a short in-place retry.
 
 # --- LLM-generated disclosure + label -------------------------------------
 
