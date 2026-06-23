@@ -41,6 +41,38 @@
     },
     {
       "kind": "proposition",
+      "label": "Triangle inequality for a metric",
+      "anchor": {
+        "section": "Metric spaces",
+        "snippet": "( triangle inequality )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dist_triangle",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`dist_triangle : dist x z ≤ dist x y + dist y z` is one of the axioms bundled into Mathlib's `PseudoMetricSpace`/`MetricSpace`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Symmetry of a metric",
+      "anchor": {
+        "section": "Metric spaces",
+        "snippet": "( symmetry )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dist_comm",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`dist_comm : dist x y = dist y x` is Mathlib's symmetry axiom for a (pseudo)metric.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
       "label": "Non-negativity of a metric",
       "anchor": {
         "section": "Metric spaces",
@@ -52,7 +84,7 @@
         "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
         "match_kind": "exact"
       },
-      "note": "`dist_nonneg : 0 ≤ dist x y` is proved at line 251 of `Mathlib/Topology/MetricSpace/Pseudo/Defs.lean`.",
+      "note": "`dist_nonneg : 0 ≤ dist x y` is a basic consequence of the (pseudo)metric axioms in `Mathlib/Topology/MetricSpace/Pseudo/Defs.lean`.",
       "provenance": "ai",
       "id": "f1743900b2c5"
     },
@@ -83,7 +115,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Filter.Tendsto",
-        "module": "Mathlib.Order.Filter.Basic",
+        "module": "Mathlib.Order.Filter.Defs",
         "match_kind": "generalization"
       },
       "note": "Sequence convergence is expressed via `Filter.Tendsto u Filter.atTop (𝓝 x)` using Mathlib's filter-based limits.",
@@ -106,6 +138,22 @@
       "note": "`ContinuousAt f x` is defined in Mathlib as `Filter.Tendsto f (𝓝 x) (𝓝 (f x))`.",
       "provenance": "ai",
       "id": "eac2f76703df"
+    },
+    {
+      "kind": "definition",
+      "label": "Continuous function on topological spaces",
+      "anchor": {
+        "section": "Continuous functions",
+        "snippet": "The notion of a continuous function can be generalized to topological spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Continuous",
+        "module": "Mathlib.Topology.Defs.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `Continuous f` predicate generalizes continuity to arbitrary topological spaces via the preimage-of-open characterization.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -202,10 +250,10 @@
       "status": "partial",
       "mathlib": {
         "decl": "ODE_solution_unique",
-        "module": "Mathlib.Analysis.ODE.Gronwall",
+        "module": "Mathlib.Analysis.ODE.ExistUnique",
         "match_kind": "special_case"
       },
-      "note": "Mathlib's `Mathlib/Analysis/ODE/` formalizes ODE solutions (e.g., Picard–Lindelöf, Gronwall), but there is no general `DifferentialEquation` definition.",
+      "note": "Mathlib's `Mathlib/Analysis/ODE/` formalizes ODE solutions (e.g., Picard–Lindelöf uniqueness), but there is no general `DifferentialEquation` definition.",
       "provenance": "ai",
       "id": "a5fbefa41023"
     },
@@ -228,6 +276,22 @@
     },
     {
       "kind": "definition",
+      "label": "Lebesgue measure on Euclidean space",
+      "anchor": {
+        "section": "Measure theory",
+        "snippet": "Lebesgue measure on a Euclidean space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.measureSpace",
+        "module": "Mathlib.MeasureTheory.Measure.Haar.OfBasis",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib formalizes Lebesgue measure on `ℝ` via the `Real.measureSpace` instance providing `volume : Measure ℝ`, and lifts to `ℝⁿ` via the product Lebesgue measure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Technical definition of a measure",
       "anchor": {
         "section": "Measure theory",
@@ -242,6 +306,38 @@
       "note": "Mathlib's `MeasureTheory.Measure` encodes the countably-additive non-negative set function with the standard axioms.",
       "provenance": "ai",
       "id": "5b1ae0bc219d"
+    },
+    {
+      "kind": "definition",
+      "label": "σ-algebra of measurable subsets",
+      "anchor": {
+        "section": "Measure theory",
+        "snippet": "the so-called measurable subsets, which are required to form a"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasurableSpace",
+        "module": "Mathlib.MeasureTheory.MeasurableSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `MeasurableSpace` encodes a σ-algebra: closure of the measurable sets under complements and countable unions/intersections.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Counting measure",
+      "anchor": {
+        "section": "Measure theory",
+        "snippet": "trivial examples like the counting measure"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.count",
+        "module": "Mathlib.MeasureTheory.Measure.Count",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureTheory.Measure.count` is Mathlib's formalization of the counting measure on an arbitrary measurable space.",
+      "provenance": "ai"
     },
     {
       "kind": "example",

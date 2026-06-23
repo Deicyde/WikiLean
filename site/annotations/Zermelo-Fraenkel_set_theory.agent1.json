@@ -11,7 +11,15 @@
         "section": "Axiom of extensionality - 1",
         "snippet": "Two sets are equal (are the same set) if they have the same elements."
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZFSet.ext",
+        "module": "Mathlib.SetTheory.ZFC.Basic",
+        "match_kind": "exact"
+      },
+      "note": "ZFSet.ext is the `@[ext]` lemma stating two ZFC sets are equal iff they have the same elements.",
+      "provenance": "ai-agent1",
+      "id": "11f735094c41"
     },
     {
       "kind": "definition",
@@ -20,7 +28,15 @@
         "section": "Axiom of regularity (also called the axiom of foundation) - 2",
         "snippet": "Every non-empty set"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZFSet.regularity",
+        "module": "Mathlib.SetTheory.ZFC.Basic",
+        "match_kind": "exact"
+      },
+      "note": "ZFSet.regularity states every nonempty ZFSet has an element disjoint from it.",
+      "provenance": "ai-agent1",
+      "id": "41feeea3b7f6"
     },
     {
       "kind": "proposition",
@@ -29,7 +45,15 @@
         "section": "Axiom of regularity (also called the axiom of foundation) - 2",
         "snippet": "With the axioms of pairing and union, this implies that no set is an element of itself."
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZFSet.mem_irrefl",
+        "module": "Mathlib.SetTheory.ZFC.Basic",
+        "match_kind": "exact"
+      },
+      "note": "ZFSet.mem_irrefl proves x ∉ x for any ZFSet x.",
+      "provenance": "ai-agent1",
+      "id": "df813ebbfb3d"
     },
     {
       "kind": "proposition",
@@ -38,7 +62,15 @@
         "section": "Axiom of regularity (also called the axiom of foundation) - 2",
         "snippet": "this implies that every set has an ordinal rank"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZFSet.rank",
+        "module": "Mathlib.SetTheory.ZFC.Rank",
+        "match_kind": "exact"
+      },
+      "note": "ZFSet.rank assigns an Ordinal to every ZFSet, with rank_lt_of_mem witnessing its monotonicity.",
+      "provenance": "ai-agent1",
+      "id": "030b06284905"
     },
     {
       "kind": "definition",
@@ -47,7 +79,15 @@
         "section": "Axiom schema of specification (or of separation, or of restricted comprehension) - 3",
         "snippet": "The axiom schema of specification states that this subset always exists"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZFSet.sep",
+        "module": "Mathlib.SetTheory.ZFC.Basic",
+        "match_kind": "exact"
+      },
+      "note": "ZFSet.sep with mem_sep gives `{y ∈ x | p y}` for any predicate, realizing separation.",
+      "provenance": "ai-agent1",
+      "id": "55795a5a02c8"
     },
     {
       "kind": "example",
@@ -56,7 +96,15 @@
         "section": "Axiom schema of specification (or of separation, or of restricted comprehension) - 3",
         "snippet": "the even integers can be constructed as the subset of the integers"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This illustrative ZFC example of separating even integers from integers has no Mathlib counterpart at the ZFSet level.",
+      "provenance": "ai-agent1",
+      "id": "907fadc9cc94"
     },
     {
       "kind": "proposition",
@@ -65,7 +113,15 @@
         "section": "Axiom schema of specification (or of separation, or of restricted comprehension) - 3",
         "snippet": "the axiom schema of specification can be used to prove the existence of the empty set"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZFSet.empty",
+        "module": "Mathlib.SetTheory.ZFC.Basic",
+        "match_kind": "exact"
+      },
+      "note": "ZFSet.empty defines ∅ : ZFSet with notMem_empty witnessing emptiness.",
+      "provenance": "ai-agent1",
+      "id": "bff042e2d431"
     },
     {
       "kind": "proposition",
@@ -74,7 +130,15 @@
         "section": "Axiom schema of specification (or of separation, or of restricted comprehension) - 3",
         "snippet": "The axiom of extensionality implies the empty set is unique"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "ZFSet.eq_empty",
+        "module": "Mathlib.SetTheory.ZFC.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "ZFSet.eq_empty characterizes ∅ by `x = ∅ ↔ ∀ y, y ∉ x`, implying uniqueness via ext, though no standalone uniqueness theorem is stated.",
+      "provenance": "ai-agent1",
+      "id": "e63365e62fea"
     },
     {
       "kind": "definition",
@@ -83,7 +147,15 @@
         "section": "Axiom of pairing - 4",
         "snippet": "there exists a set which contains"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZFSet.mem_pair",
+        "module": "Mathlib.SetTheory.ZFC.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Pairing is realized by the Insert instance on ZFSet, with ZFSet.mem_pair characterizing membership in `{y, z}`.",
+      "provenance": "ai-agent1",
+      "id": "a8619a3256f4"
     },
     {
       "kind": "definition",
@@ -92,7 +164,15 @@
         "section": "Axiom of union - 5",
         "snippet": "The axiom of union states that for any set of sets"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZFSet.sUnion",
+        "module": "Mathlib.SetTheory.ZFC.Basic",
+        "match_kind": "exact"
+      },
+      "note": "ZFSet.sUnion (⋃₀) with mem_sUnion realizes the axiom of union.",
+      "provenance": "ai-agent1",
+      "id": "d46ef43aefbb"
     },
     {
       "kind": "definition",
@@ -101,7 +181,15 @@
         "section": "Axiom schema of replacement - 6",
         "snippet": "The axiom schema of replacement asserts that the image of a set under any definable function will also fall inside a set."
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZFSet.image",
+        "module": "Mathlib.SetTheory.ZFC.Basic",
+        "match_kind": "exact"
+      },
+      "note": "ZFSet.image with the Definable₁ typeclass takes the image of a definable function, realizing replacement.",
+      "provenance": "ai-agent1",
+      "id": "891f788e6672"
     },
     {
       "kind": "definition",
@@ -110,7 +198,15 @@
         "section": "Axiom of infinity - 7",
         "snippet": "Then there exists a set X such that the empty set"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZFSet.omega",
+        "module": "Mathlib.SetTheory.ZFC.Basic",
+        "match_kind": "exact"
+      },
+      "note": "ZFSet.omega together with omega_zero and omega_succ exhibits a set containing ∅ and closed under successor.",
+      "provenance": "ai-agent1",
+      "id": "2b6e0c781fdf"
     },
     {
       "kind": "definition",
@@ -119,7 +215,15 @@
         "section": "Axiom of power set - 8",
         "snippet": "By definition, a set"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZFSet.subset_def",
+        "module": "Mathlib.SetTheory.ZFC.Basic",
+        "match_kind": "exact"
+      },
+      "note": "ZFSet.Subset / HasSubset instance with subset_def gives the standard `∀ z ∈ x, z ∈ y` characterization.",
+      "provenance": "ai-agent1",
+      "id": "96bd3bfe4a53"
     },
     {
       "kind": "definition",
@@ -128,7 +232,15 @@
         "section": "Axiom of power set - 8",
         "snippet": "The Axiom of power set states that for any set"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZFSet.powerset",
+        "module": "Mathlib.SetTheory.ZFC.Basic",
+        "match_kind": "exact"
+      },
+      "note": "ZFSet.powerset with mem_powerset realizes the power-set axiom.",
+      "provenance": "ai-agent1",
+      "id": "1f9a17527566"
     },
     {
       "kind": "definition",
@@ -137,7 +249,15 @@
         "section": "Axiom of well-ordering (choice) - 9",
         "snippet": "there exists a binary relation"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "exists_wellFoundedLT",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "generalization"
+      },
+      "note": "exists_wellFoundedLT (Zermelo's well-ordering theorem) is proven on arbitrary types but not stated internally on ZFSet.",
+      "provenance": "ai-agent1",
+      "id": "24e6ea7ef25c"
     },
     {
       "kind": "theorem",
@@ -146,6 +266,30 @@
         "section": "Axiom of well-ordering (choice) - 9",
         "snippet": "Let [MATH] be a set whose members are all nonempty."
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZFSet.choice_mem",
+        "module": "Mathlib.SetTheory.ZFC.Class",
+        "match_kind": "exact"
+      },
+      "note": "ZFSet.choice with choice_isFunc and choice_mem provides a choice function on any ZFSet of nonempty sets.",
+      "provenance": "ai-agent1",
+      "id": "496c62605d44"
+    },
+    {
+      "kind": "theorem",
+      "label": "Zorn's lemma equivalent to choice",
+      "anchor": {
+        "section": "Axiom of well-ordering (choice) - 9",
+        "snippet": "A third version of the axiom, also equivalent, is Zorn's lemma"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "zorn_le",
+        "module": "Mathlib.Order.Zorn",
+        "match_kind": "generalization"
+      },
+      "note": "Zorn's lemma is formalized in Mathlib at the level of arbitrary types (zorn_le, zorn_partialOrder, etc.), equivalent to choice in Lean's foundations.",
       "provenance": "ai-agent1"
     },
     {
@@ -155,7 +299,15 @@
         "section": "Axiom of well-ordering (choice) - 9",
         "snippet": "Since the existence of a choice function when"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No ZFSet-level statement that choice on finite sets is provable from the other axioms is in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "293e53e54faf"
     },
     {
       "kind": "theorem",
@@ -164,7 +316,15 @@
         "section": "Motivation via the cumulative hierarchy",
         "snippet": "It is provable that a set is in V if and only if the set is pure and well-founded."
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not state a 'pure and well-founded ↔ in V' characterization (no IsPure predicate on ZFSet).",
+      "provenance": "ai-agent1",
+      "id": "90d2cb614428"
     },
     {
       "kind": "theorem",
@@ -173,7 +333,15 @@
         "section": "Finite axiomatization",
         "snippet": "if ZFC is consistent, it is impossible to axiomatize ZFC using only finitely many axioms."
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Montague's non-finite-axiomatizability of ZFC is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "f54e0d6e35d1"
     },
     {
       "kind": "theorem",
@@ -182,7 +350,15 @@
         "section": "Finite axiomatization",
         "snippet": "NBG and ZFC are equivalent set theories in the sense that any theorem not mentioning classes and provable in one theory can be proved in the other."
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no formal NBG theory or conservativity result of NBG over ZFC.",
+      "provenance": "ai-agent1",
+      "id": "8758f7ed9bb4"
     },
     {
       "kind": "theorem",
@@ -191,7 +367,15 @@
         "section": "Consistency",
         "snippet": "says that a recursively axiomatizable system that can interpret Robinson arithmetic can prove its own consistency only if it is inconsistent."
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gödel's second incompleteness theorem is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "3bd284ae7e03"
     },
     {
       "kind": "theorem",
@@ -200,7 +384,15 @@
         "section": "Consistency",
         "snippet": "Hence the consistency of ZFC cannot be proved within ZFC itself"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no meta-theoretic statement about the unprovability of Con(ZFC) inside ZFC.",
+      "provenance": "ai-agent1",
+      "id": "ec28d2ab4d7d"
     },
     {
       "kind": "theorem",
@@ -209,7 +401,15 @@
         "section": "Consistency",
         "snippet": "The consistency of ZFC does follow from the existence of a weakly inaccessible cardinal"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines Cardinal.IsInaccessible but does not derive Con(ZFC) from inaccessible cardinals.",
+      "provenance": "ai-agent1",
+      "id": "619f7f36e319"
     },
     {
       "kind": "theorem",
@@ -218,7 +418,15 @@
         "section": "Consistency",
         "snippet": "they proved this subtheory consistent, and proved that each of the axioms of extensionality, replacement, and power set is independent of the four remaining axioms of this subtheory."
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Abian–LaMacchia independence of extensionality, replacement, and power set is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "c1459225c9cf"
     },
     {
       "kind": "theorem",
@@ -227,7 +435,15 @@
         "section": "Consistency",
         "snippet": "Because there are non-well-founded models that satisfy each axiom of ZFC except the axiom of regularity, that axiom is independent of the other ZFC axioms."
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize non-well-founded set models or the independence of regularity.",
+      "provenance": "ai-agent1",
+      "id": "7de8fd4587e2"
     },
     {
       "kind": "theorem",
@@ -236,7 +452,15 @@
         "section": "Consistency",
         "snippet": "Assuming that axiom turns the axioms of infinity"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Tarski's axiom and its consequences for ZFC axioms are not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "9594342a0c49"
     },
     {
       "kind": "theorem",
@@ -245,7 +469,15 @@
         "section": "Independence",
         "snippet": "Forcing proves that the following statements are independent of ZFC"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no formalization of Cohen's forcing or independence results derived from it.",
+      "provenance": "ai-agent1",
+      "id": "cbacbf68fc4e"
     },
     {
       "kind": "theorem",
@@ -254,7 +486,15 @@
         "section": "Independence",
         "snippet": "The diamond principle implies the continuum hypothesis and the negation of the Suslin hypothesis."
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The diamond principle, CH, and the Suslin hypothesis are not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "316a8f8c318f"
     },
     {
       "kind": "theorem",
@@ -263,7 +503,15 @@
         "section": "Independence",
         "snippet": "Martin's axiom plus the negation of the continuum hypothesis implies the Suslin hypothesis."
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Martin's axiom and the Suslin hypothesis are not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "916fe2e6489a"
     },
     {
       "kind": "theorem",
@@ -272,7 +520,15 @@
         "section": "Independence",
         "snippet": "The constructible universe satisfies the generalized continuum hypothesis"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no constructible universe L or proof that L satisfies GCH/AC.",
+      "provenance": "ai-agent1",
+      "id": "e38d8284381a"
     },
     {
       "kind": "theorem",
@@ -281,7 +537,15 @@
         "section": "Independence",
         "snippet": "The failure of the Kurepa hypothesis is equiconsistent with the existence of a strongly inaccessible cardinal"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Kurepa hypothesis and its equiconsistency with inaccessibles are not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "893359da71e5"
     },
     {
       "kind": "theorem",
@@ -290,7 +554,15 @@
         "section": "Independence",
         "snippet": "A variation on the method of forcing can also be used to demonstrate the consistency and unprovability of the axiom of choice"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cohen's independence-of-choice result is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "a004c09bc9c6"
     },
     {
       "kind": "theorem",
@@ -299,7 +571,15 @@
         "section": "Independence",
         "snippet": "Thus every model of ZF contains a submodel of ZFC, so that Con(ZF) implies Con(ZFC)."
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gödel's L-based proof that Con(ZF) → Con(ZFC) is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "4dde56c471b5"
     }
   ]
 }

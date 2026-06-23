@@ -3,6 +3,7 @@
   "wikipedia_title": "On-Line Encyclopedia of Integer Sequences",
   "display_title": "On-Line Encyclopedia of Integer Sequences",
   "schema_version": 3,
+  "annotation_style": "theorem_article",
   "annotations": [
     {
       "kind": "example",
@@ -11,6 +12,13 @@
         "section": "Non-integers",
         "snippet": "the fifth-order Farey sequence"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Farey sequence definition found in Mathlib via grep or loogle.",
       "provenance": "ai-agent1",
       "id": "3ae57e2e7291"
     },
@@ -21,6 +29,13 @@
         "section": "Non-integers",
         "snippet": "Important irrational numbers such as"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.pi",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "match_kind": null
+      },
+      "note": "Real.pi is defined in Mathlib but no decimal-digits sequence of pi is formalized.",
       "provenance": "ai-agent1",
       "id": "2e434a63d8b2"
     },
@@ -31,6 +46,13 @@
         "section": "Special meaning of zero",
         "snippet": "the totient valence function"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.totient",
+        "module": "Mathlib.Data.Nat.Totient",
+        "match_kind": null
+      },
+      "note": "Nat.totient is in Mathlib but the inverse-counting totient valence function is not.",
       "provenance": "ai-agent1",
       "id": "2527574aa197"
     },
@@ -41,6 +63,13 @@
         "section": "Lexicographical ordering",
         "snippet": "consider: the prime numbers"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an editorial ordering of OEIS sample sequences with no Mathlib counterpart.",
       "provenance": "ai-agent1",
       "id": "63b308bc29c8"
     },
@@ -51,6 +80,13 @@
         "section": "Self-referential sequences",
         "snippet": "One of the earliest self-referential sequences"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This particular OEIS self-referential sequence is not in Mathlib.",
       "provenance": "ai-agent1",
       "id": "330356895b16"
     },
@@ -61,6 +97,13 @@
         "section": "Self-referential sequences",
         "snippet": "It can be proved that 53169 both is and is not a member"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "OEIS-meta paradox of sequence A053169 has no Mathlib formalization.",
       "provenance": "ai-agent1",
       "id": "a2c26ef68c55"
     },
@@ -71,6 +114,13 @@
         "section": "Entry fields",
         "snippet": "named \"The cubes"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HPow.hPow",
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The function n ↦ n^3 is expressible via standard power but no named A000578 sequence exists in Mathlib.",
       "provenance": "ai-agent1",
       "id": "a5f96e395a9d"
     },
@@ -81,6 +131,13 @@
         "section": "Entry fields",
         "snippet": "The sequence corresponds to a multiplicative function"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ArithmeticFunction.IsMultiplicative",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines ArithmeticFunction.IsMultiplicative matching the OEIS multiplicative-function notion.",
       "provenance": "ai-agent1",
       "id": "aa88d4d1a1fd"
     },
@@ -91,6 +148,13 @@
         "section": "Entry fields",
         "snippet": "In the case of the lazy caterer's sequence"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lazy-caterer or pancake-cut sequence found in Mathlib.",
       "provenance": "ai-agent1",
       "id": "91008b182688"
     },
@@ -101,8 +165,95 @@
         "section": "Sloane's gap",
         "snippet": "a clear \"gap\" between two distinct point clouds"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Sloane's gap is an empirical OEIS observation with no Mathlib formalization.",
       "provenance": "ai-agent1",
       "id": "a0a7054684fe"
+    },
+    {
+      "kind": "example",
+      "label": "Mersenne primes A000668",
+      "anchor": {
+        "section": "Entry fields",
+        "snippet": "the Mersenne primes 3, 7, 31, 127, 8191, 131071"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "mersenne",
+        "module": "Mathlib.NumberTheory.LucasLehmer",
+        "match_kind": null
+      },
+      "note": "Mathlib defines mersenne p = 2^p - 1 but not the filtered sequence of Mersenne primes A000668 itself.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exactly fifteen supersingular primes",
+      "anchor": {
+        "section": "Entry fields",
+        "snippet": "the supersingular primes A002267 , of which there are precisely fifteen"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of supersingular prime (in the monstrous-moonshine sense) found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Pascal's triangle A007318",
+      "anchor": {
+        "section": "Entry fields",
+        "snippet": "Pascal's triangle read by rows, A007318"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.choose",
+        "module": "Mathlib.Data.Nat.Choose.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Nat.choose encodes the binomial coefficients that form Pascal's triangle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Magic square smallest prime sequence A104157",
+      "anchor": {
+        "section": "Special meaning of zero",
+        "snippet": "A104157 enumerates the \"smallest prime of n"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This OEIS sequence about magic squares of primes has no Mathlib analogue.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Multiplicative computation in A046970",
+      "anchor": {
+        "section": "Entry fields",
+        "snippet": "a (12) = a (3) a (4) = −8 × −3"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ArithmeticFunction.IsMultiplicative",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Defs",
+        "match_kind": null
+      },
+      "note": "The general multiplicative-function machinery exists in Mathlib but A046970 itself is not formalized.",
+      "provenance": "ai"
     }
   ]
 }

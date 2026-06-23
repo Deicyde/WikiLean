@@ -3,6 +3,7 @@
   "wikipedia_title": "Uniform convergence",
   "display_title": "Uniform convergence",
   "schema_version": 3,
+  "annotation_style": "theorem_article",
   "annotations": [
     {
       "kind": "definition",
@@ -11,6 +12,13 @@
         "section": "(Lead)",
         "snippet": "converges uniformly to a limiting function"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TendstoUniformly",
+        "module": "Mathlib.Topology.UniformSpace.UniformConvergence",
+        "match_kind": "exact"
+      },
+      "note": "`TendstoUniformly F f p` captures the lead's informal notion of a sequence/filter of functions converging uniformly to a limit.",
       "provenance": "ai-agent1",
       "id": "a451c210f517"
     },
@@ -21,6 +29,13 @@
         "section": "Definition",
         "snippet": "is uniformly convergent on"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TendstoUniformlyOn",
+        "module": "Mathlib.Topology.UniformSpace.UniformConvergence",
+        "match_kind": "exact"
+      },
+      "note": "Uniform convergence on a set is `TendstoUniformlyOn F f p s`, the on-set version of the article's ε–N definition.",
       "provenance": "ai-agent1",
       "id": "1162d5c9ccad"
     },
@@ -31,6 +46,13 @@
         "section": "Definition",
         "snippet": "the Cauchy criterion can be used to give an equivalent alternative formulation for uniform convergence"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "UniformCauchySeqOn.tendstoUniformlyOn_of_tendsto",
+        "module": "Mathlib.Topology.UniformSpace.UniformConvergence",
+        "match_kind": "exact"
+      },
+      "note": "The equivalence is captured by `TendstoUniformlyOn.uniformCauchySeqOn` together with `UniformCauchySeqOn.tendstoUniformlyOn_of_tendsto`.",
       "provenance": "ai-agent1",
       "id": "999a66f593f9"
     },
@@ -41,6 +63,13 @@
         "section": "Definition",
         "snippet": "we can characterize uniform convergence of"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.tendstoUniformlyOn_iff",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Metric.tendstoUniformlyOn_iff` restates uniform convergence using the metric (sup) characterization on a metric target.",
       "provenance": "ai-agent1",
       "id": "8f8d8ee7fd69"
     },
@@ -51,6 +80,13 @@
         "section": "Definition",
         "snippet": "is said to be locally uniformly convergent with limit"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TendstoLocallyUniformly",
+        "module": "Mathlib.Topology.UniformSpace.LocallyUniformConvergence",
+        "match_kind": "exact"
+      },
+      "note": "Local uniform convergence is `TendstoLocallyUniformly` (with the on-set variant `TendstoLocallyUniformlyOn`).",
       "provenance": "ai-agent1",
       "id": "c79965136075"
     },
@@ -61,6 +97,13 @@
         "section": "Generalizations",
         "snippet": "One may straightforwardly extend the concept to functions"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TendstoUniformly",
+        "module": "Mathlib.Topology.UniformSpace.UniformConvergence",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines `TendstoUniformly` in a `UniformSpace` codomain, which subsumes the metric-space generalization stated in the article.",
       "provenance": "ai-agent1",
       "id": "e38eca57182d"
     },
@@ -71,6 +114,13 @@
         "section": "Generalizations",
         "snippet": "The most general setting is the uniform convergence of nets of functions"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TendstoUniformly",
+        "module": "Mathlib.Topology.UniformSpace.UniformConvergence",
+        "match_kind": "exact"
+      },
+      "note": "`TendstoUniformly F f p` is filter-indexed (nets via their tail filter) into a `UniformSpace`, the most general form described.",
       "provenance": "ai-agent1",
       "id": "7c905323c2f9"
     },
@@ -81,6 +131,13 @@
         "section": "Definition in a hyperreal setting",
         "snippet": "Uniform convergence admits a simplified definition in a hyperreal setting"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No nonstandard/hyperreal characterization of uniform convergence was found in Mathlib.",
       "provenance": "ai-agent1",
       "id": "025a6c41ea09"
     },
@@ -91,6 +148,13 @@
         "section": "Examples",
         "snippet": "a basic example of uniform convergence can be illustrated as follows"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No worked example of the sequence x^n on [0,1] as a uniform-convergence illustration is recorded in Mathlib.",
       "provenance": "ai-agent1",
       "id": "7281552eb8a3"
     },
@@ -101,6 +165,13 @@
         "section": "Examples",
         "snippet": "is a classic example of a sequence of functions that converges to a function"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalized counterexample sequence demonstrating pointwise but not uniform convergence was found in Mathlib.",
       "provenance": "ai-agent1",
       "id": "d370beec15cb"
     },
@@ -111,6 +182,13 @@
         "section": "Exponential function",
         "snippet": "The series expansion of the exponential function can be shown to be uniformly convergent"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TendstoUniformlyOn.comp_cexp",
+        "module": "Mathlib.Analysis.Normed.Module.MultipliableUniformlyOn",
+        "match_kind": "invocation"
+      },
+      "note": "No direct lemma states the exp power series converges uniformly on bounded sets; only auxiliary results like `TendstoUniformlyOn.comp_cexp` exist (the Weierstrass M-test gives it as an invocation).",
       "provenance": "ai-agent1",
       "id": "205b6da70a1e"
     },
@@ -121,6 +199,13 @@
         "section": "Exponential function",
         "snippet": "Theorem (Weierstrass M-test)"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tendstoUniformlyOn_tsum",
+        "module": "Mathlib.Analysis.Normed.Group.FunctionSeries",
+        "match_kind": "exact"
+      },
+      "note": "`tendstoUniformlyOn_tsum` is the Weierstrass M-test: a summable majorant `u` with ‖f n x‖ ≤ u n forces uniform convergence of the partial sums.",
       "provenance": "ai-agent1",
       "id": "6546c7045759"
     },
@@ -131,6 +216,13 @@
         "section": "Properties",
         "snippet": "Every uniformly convergent sequence is locally uniformly convergent."
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TendstoUniformly.tendstoLocallyUniformly",
+        "module": "Mathlib.Topology.UniformSpace.LocallyUniformConvergence",
+        "match_kind": "exact"
+      },
+      "note": "`TendstoUniformly.tendstoLocallyUniformly` is exactly the implication uniform ⇒ locally uniform.",
       "provenance": "ai-agent1",
       "id": "8bff702f0e2c"
     },
@@ -141,6 +233,13 @@
         "section": "Properties",
         "snippet": "Every locally uniformly convergent sequence is compactly convergent"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tendstoLocallyUniformlyOn_iff_tendstoUniformlyOn_of_compact",
+        "module": "Mathlib.Topology.UniformSpace.LocallyUniformConvergence",
+        "match_kind": "special_case"
+      },
+      "note": "The forward direction of `tendstoLocallyUniformlyOn_iff_tendstoUniformlyOn_of_compact` (and `tendstoLocallyUniformly_iff_forall_isCompact` on locally compact spaces) gives uniform convergence on each compact set.",
       "provenance": "ai-agent1",
       "id": "08e7ea54aff3"
     },
@@ -151,6 +250,13 @@
         "section": "Properties",
         "snippet": "For locally compact spaces local uniform convergence and compact convergence coincide."
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tendstoLocallyUniformly_iff_forall_isCompact",
+        "module": "Mathlib.Topology.UniformSpace.LocallyUniformConvergence",
+        "match_kind": "exact"
+      },
+      "note": "`tendstoLocallyUniformly_iff_forall_isCompact` proves the equivalence under `LocallyCompactSpace`.",
       "provenance": "ai-agent1",
       "id": "608886e21f84"
     },
@@ -161,6 +267,13 @@
         "section": "Properties",
         "snippet": "is uniformly convergent if and only if it is uniformly Cauchy"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "UniformCauchySeqOn.tendstoUniformlyOn_of_tendsto",
+        "module": "Mathlib.Topology.UniformSpace.UniformConvergence",
+        "match_kind": "exact"
+      },
+      "note": "Together with `TendstoUniformlyOn.uniformCauchySeqOn`, this gives the uniform-Cauchy ⇔ uniformly-convergent equivalence.",
       "provenance": "ai-agent1",
       "id": "862cbd50d50b"
     },
@@ -171,6 +284,13 @@
         "section": "Properties",
         "snippet": "is a monotone increasing sequence"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Monotone.tendstoUniformlyOn_of_forall_tendsto",
+        "module": "Mathlib.Topology.UniformSpace.Dini",
+        "match_kind": "exact"
+      },
+      "note": "`Monotone.tendstoUniformlyOn_of_forall_tendsto` is Dini's theorem: monotone pointwise convergence to a continuous limit on a compact set is uniform.",
       "provenance": "ai-agent1",
       "id": "c4620b77a0f2"
     },
@@ -181,6 +301,13 @@
         "section": "Properties",
         "snippet": "Uniform convergence is also guaranteed if"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equicontinuous.tendsto_uniformFun_iff_pi",
+        "module": "Mathlib.Topology.UniformSpace.Ascoli",
+        "match_kind": "exact"
+      },
+      "note": "`Equicontinuous.tendsto_uniformFun_iff_pi` (and `EquicontinuousOn.tendsto_uniformOnFun_iff_pi`) gives uniform = pointwise convergence for equicontinuous families on a compact (resp. compact-covered) space.",
       "provenance": "ai-agent1",
       "id": "8a9a69eefee3"
     },
@@ -188,10 +315,17 @@
       "kind": "theorem",
       "label": "Uniform limit theorem",
       "anchor": {
-        "type": "theorem_box",
-        "value": "Uniform limit theorem — Suppose [MATH] i"
+        "section": "To continuity",
+        "snippet": "Uniform limit theorem — Suppose"
       },
-      "provenance": "ai-agent1",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TendstoUniformlyOn.continuousOn",
+        "module": "Mathlib.Topology.UniformSpace.UniformApproximation",
+        "match_kind": "exact"
+      },
+      "note": "`TendstoUniformlyOn.continuousOn` (and `TendstoUniformly.continuous`) prove that a uniform limit of continuous functions is continuous.",
+      "provenance": "ai-moderated",
       "id": "dbadc716fcd8"
     },
     {
@@ -201,6 +335,13 @@
         "section": "To differentiability",
         "snippet": "is a sequence of differentiable functions on"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "hasFDerivAt_of_tendstoUniformly",
+        "module": "Mathlib.Analysis.Calculus.UniformLimitsDeriv",
+        "match_kind": "exact"
+      },
+      "note": "`hasFDerivAt_of_tendstoUniformly` (and `hasDerivAt_of_tendstoUniformly`) give the article's differentiation-under-uniform-limit theorem.",
       "provenance": "ai-agent1",
       "id": "6705ee4500e1"
     },
@@ -211,6 +352,13 @@
         "section": "To integrability",
         "snippet": "is a sequence of Riemann integrable functions defined on a compact interval"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TendstoUniformlyOn.tendsto_intervalIntegral_of_continuousOn",
+        "module": "Mathlib.MeasureTheory.Integral.DominatedConvergence",
+        "match_kind": "exact"
+      },
+      "note": "`TendstoUniformlyOn.tendsto_intervalIntegral_of_continuousOn` shows uniform convergence on `[a,b]` lets one swap limit and integral.",
       "provenance": "ai-agent1",
       "id": "1ef6ebaad468"
     },
@@ -221,6 +369,13 @@
         "section": "To analyticity",
         "snippet": "Using Morera's Theorem"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TendstoLocallyUniformlyOn.differentiableOn",
+        "module": "Mathlib.Analysis.Complex.LocallyUniformLimit",
+        "match_kind": "exact"
+      },
+      "note": "`TendstoLocallyUniformlyOn.differentiableOn` formalizes the result that a locally uniform limit of holomorphic (= complex-analytic) functions on an open set is holomorphic.",
       "provenance": "ai-agent1",
       "id": "d7587a7d7f36"
     },
@@ -231,6 +386,13 @@
         "section": "To series",
         "snippet": "converges: pointwise on E if and only if the sequence of partial sums"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HasSumUniformlyOn",
+        "module": "Mathlib.Topology.Algebra.InfiniteSum.TsumUniformlyOn",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines `Summable`/`HasSum` for pointwise and `HasSumUniformlyOn` for uniform series convergence, but bundles them via filters rather than the article's three-way pointwise/uniform/absolute definition.",
       "provenance": "ai-agent1",
       "id": "b269ebe278b0"
     },
@@ -241,6 +403,13 @@
         "section": "To series",
         "snippet": "be contained in the set E and each f n be continuous"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TendstoUniformlyOn.continuousOn",
+        "module": "Mathlib.Topology.UniformSpace.UniformApproximation",
+        "match_kind": "invocation"
+      },
+      "note": "Continuity of the sum follows by composing `tendstoUniformlyOn_tsum` with `TendstoUniformlyOn.continuousOn`; no single dedicated lemma was found.",
       "provenance": "ai-agent1",
       "id": "fb8c5409886e"
     },
@@ -251,6 +420,13 @@
         "section": "To series",
         "snippet": "each f n is integrable on E"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TendstoUniformlyOn.tendsto_intervalIntegral_of_continuousOn",
+        "module": "Mathlib.MeasureTheory.Integral.DominatedConvergence",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has uniform-limit interchange with the integral but no single named term-by-term-integration-of-a-series result; it must be assembled via `tendstoUniformlyOn_tsum` plus the integral swap.",
       "provenance": "ai-agent1",
       "id": "693732e0db08"
     },
@@ -261,6 +437,13 @@
         "section": "Function spaces",
         "snippet": "denote the space of real-valued or complex-valued continuous functions on the unit interval"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BoundedContinuousFunction.instCompleteSpace",
+        "module": "Mathlib.Topology.ContinuousMap.Bounded.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Specializing `BoundedContinuousFunction.instCompleteSpace` to `α = [0,1]`, `β = ℝ` or `ℂ` gives that C[0,1] with the sup norm is a Banach space.",
       "provenance": "ai-agent1",
       "id": "329ea2516644"
     },
@@ -271,6 +454,13 @@
         "section": "Function spaces",
         "snippet": "follows from the completeness of the real or complex numbers"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BoundedContinuousFunction.instCompleteSpace",
+        "module": "Mathlib.Topology.ContinuousMap.Bounded.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Completeness of C[0,1] specializes `BoundedContinuousFunction.instCompleteSpace`, which itself requires only completeness of the codomain.",
       "provenance": "ai-agent1",
       "id": "a2fb24296a08"
     },
@@ -281,6 +471,13 @@
         "section": "Function spaces",
         "snippet": "is a compact Hausdorff space"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BoundedContinuousFunction.instCompleteSpace",
+        "module": "Mathlib.Topology.ContinuousMap.Bounded.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "For compact X, continuous functions are automatically bounded, so `BoundedContinuousFunction.instCompleteSpace` gives the Banach-space structure on C(X).",
       "provenance": "ai-agent1",
       "id": "e687c19a7f5d"
     },
@@ -291,6 +488,13 @@
         "section": "Function spaces",
         "snippet": "of all bounded real-valued or complex-valued functions on"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "UniformOnFun.instCompleteSpace",
+        "module": "Mathlib.Topology.UniformSpace.UniformConvergenceTopology",
+        "match_kind": "generalization"
+      },
+      "note": "`UniformOnFun.instCompleteSpace` (and `BoundedContinuousFunction.instCompleteSpace` for the continuous bounded sub-Banach space) covers uniform completeness, but Mathlib does not single out the space of *all* bounded functions with the sup norm as a named Banach space.",
       "provenance": "ai-agent1",
       "id": "ea53adce13b6"
     },
@@ -301,6 +505,13 @@
         "section": "Function spaces",
         "snippet": "essentially bounded measurable functions on"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Lp",
+        "module": "Mathlib.MeasureTheory.Function.LpSpace.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`MeasureTheory.Lp f ⊤ μ` is the L^∞ space of essentially bounded measurable functions; the link to uniform convergence (norm = essential sup) is implicit in the L^∞ norm definition.",
       "provenance": "ai-agent1",
       "id": "2bc93e4844ec"
     },
@@ -311,6 +522,13 @@
         "section": "Almost uniform convergence",
         "snippet": "converges almost uniformly on E if"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no named definition of `almost uniform convergence`; only Egorov-style statements that produce the conclusion are present.",
       "provenance": "ai-agent1",
       "id": "7ba7a0f9a766"
     },
@@ -321,6 +539,13 @@
         "section": "Almost uniform convergence",
         "snippet": "Egorov's theorem does guarantee that on a finite measure space"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.tendstoUniformlyOn_of_ae_tendsto",
+        "module": "Mathlib.MeasureTheory.Function.Egorov",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureTheory.tendstoUniformlyOn_of_ae_tendsto` is Egorov's theorem on finite measure sets.",
       "provenance": "ai-agent1",
       "id": "9970088b7a8f"
     },
@@ -331,8 +556,49 @@
         "section": "Almost uniform convergence",
         "snippet": "Almost uniform convergence implies almost everywhere convergence"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.tendstoInMeasure_of_tendsto_ae_of_measurable_edist",
+        "module": "Mathlib.MeasureTheory.Function.ConvergenceInMeasure",
+        "match_kind": "invocation"
+      },
+      "note": "Without a named `almost uniform convergence`, the two implications are not packaged; Mathlib does have a.e. ⇒ in-measure (`MeasureTheory.tendstoInMeasure_of_tendsto_ae_of_measurable_edist`) which gives the harder half once the definition is unfolded.",
       "provenance": "ai-agent1",
       "id": "3f3766791a76"
+    },
+    {
+      "kind": "definition",
+      "label": "Uniform metric on bounded functions",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "we can equip the space of bounded real or complex"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BoundedContinuousFunction",
+        "module": "Mathlib.Topology.ContinuousMap.Bounded.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`BoundedContinuousFunction` carries the sup-norm/uniform metric, and `UniformFun`/`UniformOnFun` provide the metric on general bounded function spaces.",
+      "provenance": "ai",
+      "id": null
+    },
+    {
+      "kind": "proposition",
+      "label": "Compact-open topology on C(Y) for σ-compact locally compact Hausdorff Y",
+      "anchor": {
+        "section": "Function spaces",
+        "snippet": "this topology is generated by the seminorms"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousMap.compactOpen",
+        "module": "Mathlib.Topology.CompactOpen",
+        "match_kind": "generalization"
+      },
+      "note": "`ContinuousMap.compactOpen` defines the compact-open topology on `C(X, Y)`; under σ-compact locally compact Hausdorff X this is the Fréchet seminorm topology, though the σ-compact-Fréchet packaging itself is not a separate named decl.",
+      "provenance": "ai",
+      "id": null
     }
   ]
 }

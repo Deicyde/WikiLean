@@ -11,7 +11,15 @@
         "section": "(Lead)",
         "snippet": "are the inverse functions of the trigonometric functions , under suitably restricted domains"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.arcsin",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Inverse",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines Real.arcsin, Real.arccos and Real.arctan as inverses of sin/cos/tan on the standard restricted domains.",
+      "provenance": "ai-agent1",
+      "id": "feaf6dbd21e6"
     },
     {
       "kind": "definition",
@@ -20,7 +28,15 @@
         "section": "Notation",
         "snippet": "The most common convention is to name inverse trigonometric functions using an arc- prefix"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib uses the arc- prefix convention but the notational convention itself is not a formalizable statement.",
+      "provenance": "ai-agent1",
+      "id": "225e6e7ca0d3"
     },
     {
       "kind": "definition",
@@ -29,7 +45,15 @@
         "section": "Notation",
         "snippet": "as introduced by John Herschel in 1813"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Historical notational convention; nothing to formalize in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "02ff442232a5"
     },
     {
       "kind": "definition",
@@ -38,7 +62,15 @@
         "section": "Principal values",
         "snippet": "the function may be restricted to its principal branch"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.arcsin_mem_Icc",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Inverse",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib's arcsin/arccos/arctan are defined on their principal branches (e.g. range_arctan = Ioo (-(π/2)) (π/2)) but 'principal value' as a general concept is not separately introduced.",
+      "provenance": "ai-agent1",
+      "id": "adb5c23aa7c3"
     },
     {
       "kind": "definition",
@@ -47,7 +79,15 @@
         "section": "Principal values",
         "snippet": "Some authors define the range of arcsecant to be"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no arcsec/arccsc definitions, so alternative ranges of arcsec are not in scope.",
+      "provenance": "ai-agent1",
+      "id": "27a14224c149"
     },
     {
       "kind": "definition",
@@ -56,7 +96,15 @@
         "section": "Domains",
         "snippet": "Domain of cotangent"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no arccot/arccsc definitions and no explicit principal-domain statement for cot/csc.",
+      "provenance": "ai-agent1",
+      "id": "2738a7b7c05f"
     },
     {
       "kind": "definition",
@@ -65,7 +113,15 @@
         "section": "Domains",
         "snippet": "Domain of tangent"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no arcsec definition and no explicit principal-domain construct combining sec and tan.",
+      "provenance": "ai-agent1",
+      "id": "c1a3c51b6f64"
     },
     {
       "kind": "proposition",
@@ -74,7 +130,15 @@
         "section": "Solutions to elementary trigonometric equations",
         "snippet": "Each of the trigonometric functions is periodic in the real part of its argument"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.sin_periodic",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Real.sin_periodic, Real.cos_periodic, Real.tan_periodic are all stated as Function.Periodic instances.",
+      "provenance": "ai-agent1",
+      "id": "83e11eeade73"
     },
     {
       "kind": "proposition",
@@ -83,7 +147,15 @@
         "section": "Solutions to elementary trigonometric equations",
         "snippet": "The following table shows how inverse trigonometric functions may be used to solve equalities"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.arcsin_sin",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Inverse",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has arcsin_sin/arccos_cos/arctan_tan inversion lemmas on restricted domains, but does not state the general-solution-set parameterization.",
+      "provenance": "ai-agent1",
+      "id": "ec384dc5f7f4"
     },
     {
       "kind": "proposition",
@@ -92,7 +164,25 @@
         "section": "Solutions to elementary trigonometric equations",
         "snippet": "With the help of integer parity"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib lemma encoding the integer-parity reformulation of the cos x = a solution set.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Solutions to elementary trigonometric equations",
+          "snippet": "With the help of integer parity"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Parity} (h)={\\begin{cases}0&amp;{\\text{if }}h{\\text{ is even }}\\\\1&amp;{\\text{if }}h{\\text{ is odd }}\\\\\\end{cases}}}"
+        }
+      ],
+      "id": "8a864fa186db"
     },
     {
       "kind": "example",
@@ -101,7 +191,25 @@
         "section": "Detailed example and explanation of the \"plus or minus\" symbol ±",
         "snippet": "whose meaning is now clarified"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Expository clarification, not a formalizable statement.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Detailed example and explanation of the \"plus or minus\" symbol ±",
+          "snippet": "whose meaning is now clarified"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\,\\theta =\\pm \\arccos x+2\\pi k\\,\\quad {\\text{ for some }}k\\in \\mathbb {Z} }"
+        }
+      ],
+      "id": "c8282cd996f6"
     },
     {
       "kind": "proposition",
@@ -110,7 +218,15 @@
         "section": "Equal identical trigonometric functions",
         "snippet": "The table below shows how two angles"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.sin_eq_sin_iff",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Some sin_eq_sin_iff style lemmas exist for periodic identification, but the full table of equality conditions is not assembled.",
+      "provenance": "ai-agent1",
+      "id": "4c2e4ec0d1ed"
     },
     {
       "kind": "proposition",
@@ -119,7 +235,15 @@
         "section": "Transforming equations",
         "snippet": "The equations above can be transformed by using the reflection and shift identities"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.sin_add_pi",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Reflection and shift identities like sin_neg, sin_add_pi, cos_pi_sub exist in Mathlib but the meta-transformation of equation solutions is not stated.",
+      "provenance": "ai-agent1",
+      "id": "e5eb69caf58e"
     },
     {
       "kind": "proposition",
@@ -128,7 +252,15 @@
         "section": "Relationships between trigonometric functions and inverse trigonometric functions",
         "snippet": "Trigonometric functions of inverse trigonometric functions are tabulated below"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.cos_arcsin",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Inverse",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib has sin_arcsin, cos_arcsin, sin_arccos, cos_arccos, tan_arctan, sin_arctan, cos_arctan giving the standard composition formulas.",
+      "provenance": "ai-agent1",
+      "id": "89acba7bf24f"
     },
     {
       "kind": "proposition",
@@ -137,7 +269,15 @@
         "section": "Relationships among the inverse trigonometric functions",
         "snippet": "Complementary angles"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.arccos_eq_pi_div_two_sub_arcsin",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Inverse",
+        "match_kind": "exact"
+      },
+      "note": "Real.arccos_eq_pi_div_two_sub_arcsin states arccos x = π/2 - arcsin x exactly.",
+      "provenance": "ai-agent1",
+      "id": "ed8b2402469f"
     },
     {
       "kind": "proposition",
@@ -146,7 +286,15 @@
         "section": "Relationships among the inverse trigonometric functions",
         "snippet": "Negative arguments"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.arcsin_neg",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Inverse",
+        "match_kind": "exact"
+      },
+      "note": "Real.arcsin_neg, Real.arccos_neg, and Real.arctan_neg give the odd/reflection identities for negative inputs.",
+      "provenance": "ai-agent1",
+      "id": "a57a84a9a0ce"
     },
     {
       "kind": "proposition",
@@ -155,7 +303,15 @@
         "section": "Relationships among the inverse trigonometric functions",
         "snippet": "Reciprocal arguments"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.arctan_inv_of_pos",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Arctan",
+        "match_kind": "exact"
+      },
+      "note": "Real.arctan_inv_of_pos and arctan_inv_of_neg formalize the arctan reciprocal identity; arcsec/arccsc reciprocal forms are absent.",
+      "provenance": "ai-agent1",
+      "id": "1633b91caac1"
     },
     {
       "kind": "proposition",
@@ -164,7 +320,15 @@
         "section": "Relationships among the inverse trigonometric functions",
         "snippet": "From the half-angle formula"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit Mathlib lemma deriving inverse-trig half-angle identities like arctan x = 2·arctan(x/(1+√(1+x²))).",
+      "provenance": "ai-agent1",
+      "id": "d8e39a4414a4"
     },
     {
       "kind": "theorem",
@@ -173,7 +337,15 @@
         "section": "Arctangent addition formula",
         "snippet": "This is derived from the tangent addition formula"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.arctan_add",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Arctan",
+        "match_kind": "exact"
+      },
+      "note": "Real.arctan_add with the x*y<1 hypothesis, plus arctan_add_eq_add_pi/sub_pi for the other cases.",
+      "provenance": "ai-agent1",
+      "id": "2f3d39e23b05"
     },
     {
       "kind": "proposition",
@@ -182,7 +354,15 @@
         "section": "Derivatives of inverse trigonometric functions",
         "snippet": "The derivatives for complex values of z are as follows"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.hasDerivAt_arctan",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.ArctanDeriv",
+        "match_kind": "exact"
+      },
+      "note": "Real.hasDerivAt_arctan, Real.deriv_arcsin (in InverseDeriv) and related lemmas formalize the standard derivative formulas; complex versions for arctan exist but arcsin/arccos derivatives are real-only.",
+      "provenance": "ai-agent1",
+      "id": "9f2ada8fe5a8"
     },
     {
       "kind": "proposition",
@@ -191,7 +371,15 @@
         "section": "Expression as definite integrals",
         "snippet": "Integrating the derivative and fixing the value at one point gives an expression for the inverse trigonometric function as a definite integral"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "integral_one_div_one_add_sq",
+        "module": "Mathlib.Analysis.SpecialFunctions.Integrals.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib evaluates ∫ 1/(1+x²) dx via Real.deriv_arctan and has improper integrals of 1/(1+x²) over Ioi/Iic, but does not package the result as 'arctan x = ∫₀ˣ dt/(1+t²)'.",
+      "provenance": "ai-agent1",
+      "id": "a901e787b0d2"
     },
     {
       "kind": "theorem",
@@ -200,7 +388,15 @@
         "section": "Infinite series",
         "snippet": "For arcsine, the series can be derived by expanding its derivative"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib lemma states the arcsin Taylor series ∑ (2n choose n)/(4ⁿ(2n+1)) · x^(2n+1).",
+      "provenance": "ai-agent1",
+      "id": "559ebbafb710"
     },
     {
       "kind": "theorem",
@@ -209,7 +405,29 @@
         "section": "Infinite series",
         "snippet": "The Taylor series for arctangent is also known as the arctangent series or Gregory's series"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.hasSum_arctan",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Arctan",
+        "match_kind": "exact"
+      },
+      "note": "Real.hasSum_arctan and Complex.hasSum_arctan give the Gregory/Leibniz power series for arctan on the open unit disk.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Infinite series",
+          "snippet": "The Taylor series for arctangent is also known as the arctangent series or Gregory's series"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\arcsin(z)&amp;=z+\\left({\\frac {1}{2}}\\right){\\frac {z^{3}}{3}}+\\left({\\frac {1\\cdot 3}{2\\cdot 4}}\\right){\\frac {z^{5}}{5}}+\\left({\\frac {1\\cdot 3\\cdot 5}{2\\cdot 4\\cdot 6}}\\right){\\frac {z^{7}}{7}}+\\cdots \\\\[5pt]&amp;=\\sum _{n=0}^{\\infty }{\\frac {(2n-1)!!}{(2n)!!}}{\\frac {z^{2n+1}}{2n+1}}\\\\[5pt]&amp;=\\sum _{n=0}^{\\infty }{\\frac {(2n)!}{(2^{n}n!)^{2}}}{\\frac {z^{2n+1}}{2n+1}}\\,;\\qquad |z|\\leq 1\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\arctan(z)=z-{\\frac {z^{3}}{3}}+{\\frac {z^{5}}{5}}-{\\frac {z^{7}}{7}}+\\cdots =\\sum _{n=0}^{\\infty }{\\frac {(-1)^{n}z^{2n+1}}{2n+1}}\\,;\\qquad |z|\\leq 1\\qquad z\\neq i,-i}"
+        }
+      ],
+      "id": "7fa84c7e12b1"
     },
     {
       "kind": "theorem",
@@ -218,7 +436,15 @@
         "section": "Infinite series",
         "snippet": "Leonhard Euler found a series for the arctangent that converges more quickly than its Taylor series"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Euler's accelerated arctangent series is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "6b77d7230691"
     },
     {
       "kind": "theorem",
@@ -227,7 +453,15 @@
         "section": "Continued fractions for arctangent",
         "snippet": "Two alternatives to the power series for arctangent are these generalized continued fractions"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No generalized continued fraction expansion of arctan is formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "f78f8f36db93"
     },
     {
       "kind": "proposition",
@@ -236,7 +470,15 @@
         "section": "Indefinite integrals of inverse trigonometric functions",
         "snippet": "For real and complex values of z"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general antiderivative formulas like ∫ arcsin z dz = z·arcsin z + √(1-z²) are in Mathlib (only a special definite integral appears in an Archive file).",
+      "provenance": "ai-agent1",
+      "id": "b34e7a5fc86e"
     },
     {
       "kind": "example",
@@ -245,7 +487,15 @@
         "section": "Example",
         "snippet": "i.e. integration by parts"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Worked example, not a separate theorem; not formalized.",
+      "provenance": "ai-agent1",
+      "id": "55549bc2914d"
     },
     {
       "kind": "definition",
@@ -254,7 +504,15 @@
         "section": "Extension to the complex plane",
         "snippet": "One possible way of defining the extension is"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.arctan",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Arctan",
+        "match_kind": "exact"
+      },
+      "note": "Complex.arctan is defined in Mathlib, but Complex.arcsin and Complex.arccos are not.",
+      "provenance": "ai-agent1",
+      "id": "fe1fa7370c7b"
     },
     {
       "kind": "definition",
@@ -263,7 +521,15 @@
         "section": "Logarithmic forms",
         "snippet": "These functions may also be expressed using complex logarithms"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.arctan",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Arctan",
+        "match_kind": "exact"
+      },
+      "note": "Complex.arctan is defined directly as -I/2 · log((1+zI)/(1-zI)); logarithmic forms for arcsin/arccos are not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "ac90b8bd69a3"
     },
     {
       "kind": "theorem",
@@ -272,7 +538,15 @@
         "section": "Generalization",
         "snippet": "they can be generalized by using Euler's formula to form a right triangle in the complex plane"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The generalized 'Euler-formula right triangle' construction for inverse trig in the complex plane is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "b7d32825500f"
     },
     {
       "kind": "example",
@@ -281,7 +555,15 @@
         "section": "Example proof",
         "snippet": "Using the exponential definition of sine"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Expository derivation, not a separate theorem in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "8f6068e1a177"
     },
     {
       "kind": "example",
@@ -290,7 +572,15 @@
         "section": "Finding the angle of a right triangle",
         "snippet": "suppose a roof drops 8 feet as it runs out 20 feet"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Numerical example; not a formal statement.",
+      "provenance": "ai-agent1",
+      "id": "48a0b49958fa"
     },
     {
       "kind": "definition",
@@ -299,7 +589,15 @@
         "section": "Two-argument variant of arctangent",
         "snippet": "The two-argument atan2 function computes the arctangent of y / x given y and x"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.arg",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Arg",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has Complex.arg, which plays the role of atan2 on the complex plane, but no standalone Real atan2 function.",
+      "provenance": "ai-agent1",
+      "id": "13f914578da2"
     },
     {
       "kind": "definition",
@@ -308,7 +606,15 @@
         "section": "Arctangent function with location parameter",
         "snippet": "The adequate solution is produced by the parameter modified arctangent function"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No location-parameter arctan variant in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "ce36cd4f1e49"
     },
     {
       "kind": "proposition",
@@ -317,6 +623,46 @@
         "section": "Numerical accuracy",
         "snippet": "For angles near 0 and π , arccosine is ill-conditioned"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Numerical conditioning analysis is outside Mathlib's symbolic scope.",
+      "provenance": "ai-agent1",
+      "id": "33235da1b03e"
+    },
+    {
+      "kind": "proposition",
+      "label": "Trigonometric functions are not one-to-one",
+      "anchor": {
+        "section": "Principal values",
+        "snippet": "Since none of the six trigonometric functions are one-to-one"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.sin_periodic",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Non-injectivity of the six trig functions follows from their periodicity in Mathlib, but a packaged 'not Injective' statement for each is not a single named lemma.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "atan2 as principal argument of complex number",
+      "anchor": {
+        "section": "Two-argument variant of arctangent",
+        "snippet": "It also equals the principal value of the argument of the complex number x + iy"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.arg",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Arg",
+        "match_kind": "exact"
+      },
+      "note": "Complex.arg returns the principal argument in (-π, π], matching the atan2(y, x) interpretation as the argument of x + iy.",
       "provenance": "ai-agent1"
     }
   ]

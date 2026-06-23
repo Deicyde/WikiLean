@@ -145,6 +145,28 @@ def module_name(rel: str) -> str:
 def run(cmd, cwd=None):
     return subprocess.run(cmd, cwd=cwd, text=True, capture_output=True)
 
+def add_crossref_import(path: Path) -> bool:
+    """Insert `public import Mathlib.Tactic.CrossRefAttribute` in alpha order among the
+    file's existing `public import` lines. No-op (False) if already present or there is
+    no public-import block to anchor to. Used by --reapply to re-add imports WITHOUT a
+    build (we already know which files need it)."""
+    txt = path.read_text(encoding="utf-8")
+    if "Mathlib.Tactic.CrossRefAttribute" in txt:
+        return False
+    lines = txt.splitlines()
+    imp = "public import Mathlib.Tactic.CrossRefAttribute"
+    idxs = [i for i, l in enumerate(lines) if l.startswith("public import ")]
+    if not idxs:
+        return False
+    insert_at = idxs[-1] + 1
+    for i in idxs:
+        if lines[i] > imp:
+            insert_at = i; break
+    lines.insert(insert_at, imp)
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return True
+
+
 def build_and_fix_imports(approved: dict, mathlib: Path, max_passes: int = 2) -> bool:
     mods = sorted({module_name(t["file"]) for t in approved["tags"]})
     for attempt in range(1, max_passes + 1):
@@ -379,6 +401,14 @@ def main():
                 sys.exit("REAPPLY: %d approved tag(s) no longer apply on master (decl moved?) — "
                          "refusing to drop: %s" % (len(dropped),
                          ", ".join(f"{r['qid']}({r['decl']})" for r in dropped)))
+            # Re-add the CrossRefAttribute import to the files that carried it on the old
+            # branch (import_files) WITHOUT a build. A full `lake build` off the latest,
+            # partly-uncached master cold-cascades for HOURS (observed 80m+ on #40861's
+            # foundational modules); the original build already proved which files need the
+            # import, and mathlib CI re-verifies the result.
+            for f in approved.get("import_files", []):
+                if add_crossref_import(args.mathlib / f):
+                    print(f"  [import] re-added CrossRefAttribute to {f}")
     if args.check or args.all:
         print("\n=== git diff --stat ===")
         print(run(["git", "diff", "--stat"], cwd=args.mathlib).stdout)

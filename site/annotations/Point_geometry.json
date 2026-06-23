@@ -3,6 +3,7 @@
   "wikipedia_title": "Point (geometry)",
   "display_title": "Point (geometry)",
   "schema_version": 3,
+  "annotation_style": "theorem_article",
   "annotations": [
     {
       "kind": "definition",
@@ -11,6 +12,13 @@
         "section": "(Lead)",
         "snippet": "a point is an abstract idealization of an exact position"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An informal abstract idealization, not a single Mathlib declaration; Mathlib uses elements of various spaces (sets, affine spaces, etc.) but has no overarching `Point` definition.",
       "provenance": "ai-agent1",
       "id": "9bfab7e06a9c"
     },
@@ -21,6 +29,13 @@
         "section": "(Lead)",
         "snippet": "a point is a primitive notion , defined as \"that which has no part\""
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Philosophical/Euclidean primitive notion with no direct Mathlib counterpart.",
       "provenance": "ai-agent1",
       "id": "50f1c83a09ac"
     },
@@ -31,8 +46,31 @@
         "section": "(Lead)",
         "snippet": "A point can also be determined by the intersection of two curves or three surfaces, called a vertex or corner"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general intersection-vertex/corner definition exists in Mathlib at this informal level.",
       "provenance": "ai-agent1",
       "id": "b19fed792bf2"
+    },
+    {
+      "kind": "definition",
+      "label": "Point set",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "In modern mathematics, a space of points is typically treated as a set , a point set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set",
+        "module": "Mathlib.Init.Set",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `Set` type captures a point set as a set of elements.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -41,6 +79,13 @@
         "section": "(Lead)",
         "snippet": "An isolated point is an element of some subset of points which has some neighborhood containing no other points of the subset"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PerfectSpace.not_isolated",
+        "module": "Mathlib.Topology.Perfect",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib expresses isolation via `Filter.NeBot (𝓝[≠] x)` (perfect-space context) rather than a standalone `IsIsolatedPoint` predicate.",
       "provenance": "ai-agent1",
       "id": "bcb87c0b99bb"
     },
@@ -51,6 +96,13 @@
         "section": "Points in Euclidean geometry",
         "snippet": "a point is represented by an ordered pair ( x , y ) of numbers"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "generalization"
+      },
+      "note": "Points in the Euclidean plane are elements of `EuclideanSpace ℝ (Fin 2)`.",
       "provenance": "ai-agent1",
       "id": "a594aff141b5"
     },
@@ -61,6 +113,13 @@
         "section": "Points in Euclidean geometry",
         "snippet": "Further generalizations are represented by an ordered tuplet of n terms"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "exact"
+      },
+      "note": "`EuclideanSpace 𝕜 (Fin n)` realizes points as ordered n-tuples.",
       "provenance": "ai-agent1",
       "id": "5e2556077994"
     },
@@ -71,6 +130,13 @@
         "section": "Points in Euclidean geometry",
         "snippet": "a line is an infinite set of points of the form"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AffineSubspace",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineSubspace.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes lines as one-dimensional affine subspaces (a special case of `AffineSubspace`).",
       "provenance": "ai-agent1",
       "id": "a29ffb0cdc15"
     },
@@ -81,6 +147,13 @@
         "section": "Points in Euclidean geometry",
         "snippet": "A line segment consisting of only a single point is called a degenerate line segment"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `DegenerateSegment` predicate; degenerate segments are not given a dedicated name in Mathlib.",
       "provenance": "ai-agent1",
       "id": "086329903ab9"
     },
@@ -91,6 +164,13 @@
         "section": "Points in Euclidean geometry",
         "snippet": "any two points can be connected by a straight line"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AffineSubspace.affineSpan_pair",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineSubspace.Defs",
+        "match_kind": null
+      },
+      "note": "Mathlib has `affineSpan` of two points but no single canonical statement equivalent to Euclid's `two points determine a line` axiom.",
       "provenance": "ai-agent1",
       "id": "b75be0476504"
     },
@@ -101,6 +181,13 @@
         "section": "Dimension of a point",
         "snippet": "In all of the common definitions, a point is 0-dimensional"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "dimH_singleton",
+        "module": "Mathlib.Topology.MetricSpace.HausdorffDimension",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves dimension zero for a point under the Hausdorff-dimension and rank notions, but not a single unified `point is 0-dimensional` statement covering all dimension theories.",
       "provenance": "ai-agent1",
       "id": "2f760b3b34ab"
     },
@@ -111,6 +198,13 @@
         "section": "Vector space dimension",
         "snippet": "The dimension of a vector space is the maximum size of a linearly independent subset"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.rank",
+        "module": "Mathlib.LinearAlgebra.Dimension.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Module.rank` (and its finite cousin `Module.finrank`) is the dimension of a module/vector space.",
       "provenance": "ai-agent1",
       "id": "f48553117597"
     },
@@ -121,6 +215,13 @@
         "section": "Vector space dimension",
         "snippet": "In a vector space consisting of a single point"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "rank_subsingleton'",
+        "module": "Mathlib.LinearAlgebra.Dimension.Subsingleton",
+        "match_kind": "exact"
+      },
+      "note": "`rank_subsingleton'` proves `Module.rank R M = 0` whenever `M` is subsingleton, e.g. the trivial vector space.",
       "provenance": "ai-agent1",
       "id": "b85b75a2130d"
     },
@@ -131,8 +232,31 @@
         "section": "Topological dimension",
         "snippet": "The topological dimension of a topological space"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lebesgue covering dimension is not defined in Mathlib (no `topologicalDimension`/`coveringDimension`).",
       "provenance": "ai-agent1",
       "id": "f4e49e335c37"
+    },
+    {
+      "kind": "definition",
+      "label": "Infinite covering dimension",
+      "anchor": {
+        "section": "Topological dimension",
+        "snippet": "If no such minimal n exists, the space is said to be of infinite covering dimension"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Depends on covering dimension, which is itself not formalized in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -141,6 +265,13 @@
         "section": "Topological dimension",
         "snippet": "A point is zero-dimensional with respect to the covering dimension"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No covering dimension is defined in Mathlib, so this statement is not stated there.",
       "provenance": "ai-agent1",
       "id": "09e4a691b0a3"
     },
@@ -151,6 +282,13 @@
         "section": "Hausdorff dimension",
         "snippet": "the d -dimensional Hausdorff content of S is the infimum of the set of numbers"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.hausdorffMeasure",
+        "module": "Mathlib.MeasureTheory.Measure.Hausdorff",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines the Hausdorff measure `μH[d]` (built via `mkMetric`); the unrestricted-diameter Hausdorff content is not separately named.",
       "provenance": "ai-agent1",
       "id": "b77ab4a23442"
     },
@@ -161,6 +299,13 @@
         "section": "Hausdorff dimension",
         "snippet": "The Hausdorff dimension of X is defined by"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dimH",
+        "module": "Mathlib.Topology.MetricSpace.HausdorffDimension",
+        "match_kind": "exact"
+      },
+      "note": "`dimH` is the Hausdorff dimension of a set in a (pseudo-)e-metric space.",
       "provenance": "ai-agent1",
       "id": "1b6e6529e88a"
     },
@@ -171,6 +316,13 @@
         "section": "Hausdorff dimension",
         "snippet": "A point has Hausdorff dimension 0 because it can be covered by a single ball of arbitrarily small radius"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dimH_singleton",
+        "module": "Mathlib.Topology.MetricSpace.HausdorffDimension",
+        "match_kind": "exact"
+      },
+      "note": "`dimH_singleton` states `dimH {x} = 0`.",
       "provenance": "ai-agent1",
       "id": "5ca2ad208d83"
     },
@@ -181,6 +333,13 @@
         "section": "Geometry without points",
         "snippet": "A \"pointless\" or \"pointfree\" space is defined not as a set"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has frames/locales-adjacent material (e.g. `Order.Frame`) but no `Pointless`/`Pointfree` space construct as a standalone concept.",
       "provenance": "ai-agent1",
       "id": "fd7d733d3660"
     },
@@ -191,6 +350,13 @@
         "section": "Point masses and the Dirac delta function",
         "snippet": "is (informally) a generalized function on the real number line that is zero everywhere except at zero, with an integral of one over the entire real line"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.dirac",
+        "module": "Mathlib.MeasureTheory.Measure.Dirac",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes the Dirac delta as the Dirac measure `Measure.dirac a` (and as a tempered distribution in `Analysis.Distribution.TemperedDistribution`).",
       "provenance": "ai-agent1",
       "id": "fd7930228bc9"
     },
@@ -201,6 +367,13 @@
         "section": "Point masses and the Dirac delta function",
         "snippet": "Its discrete analog is the Kronecker delta function which is usually defined on a finite domain and takes values 0 and 1"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has Kronecker matrix products but no dedicated `kroneckerDelta` function; uses `if i = j then 1 else 0` (e.g. via `Matrix.one_apply`) ad hoc.",
       "provenance": "ai-agent1",
       "id": "96350f6d36b5"
     }

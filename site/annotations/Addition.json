@@ -52,7 +52,7 @@
         "module": "Mathlib.Algebra.Group.Defs",
         "match_kind": "exact"
       },
-      "note": "Encoded as the `AddCommSemigroup.add_comm` field (class declared at Defs.lean:251).",
+      "note": "`add_comm : a + b = b + a` is the `AddCommSemigroup` axiom.",
       "provenance": "ai",
       "id": "55fee75937b2"
     },
@@ -69,7 +69,7 @@
         "module": "Mathlib.Algebra.Group.Defs",
         "match_kind": "exact"
       },
-      "note": "Encoded as the `AddSemigroup.add_assoc` field (class declared at Defs.lean:182).",
+      "note": "`add_assoc : (a + b) + c = a + (b + c)` is the `AddSemigroup` axiom.",
       "provenance": "ai",
       "id": "e06c18d27e4c"
     },
@@ -83,10 +83,10 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Nat.succ_eq_add_one",
-        "module": "Mathlib",
+        "module": "Init.Data.Nat.Basic",
         "match_kind": "exact"
       },
-      "note": "`Nat.succ_eq_add_one` states `n.succ = n + 1` (inherited from core).",
+      "note": "`Nat.succ_eq_add_one : n.succ = n + 1` is inherited from core.",
       "provenance": "ai",
       "id": "2f15c45d9224"
     },
@@ -103,7 +103,7 @@
         "module": "Mathlib.Algebra.Group.Defs",
         "match_kind": "exact"
       },
-      "note": "`AddZeroClass.add_zero` (class at Defs.lean:384) is the identity axiom for additive monoids.",
+      "note": "`add_zero : a + 0 = a` from `AddZeroClass`.",
       "provenance": "ai",
       "id": "64b21c3870dc"
     },
@@ -120,18 +120,8 @@
         "module": "Mathlib.Algebra.Group.Defs",
         "match_kind": "exact"
       },
-      "note": "The `+` notation is the standard `HAdd.hAdd` infix in Lean/Mathlib.",
+      "note": "The `+` infix notation is `HAdd.hAdd` (declared in core, used throughout Mathlib).",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Notation and terminology",
-          "snippet": "Addition is written using the plus sign"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle 3{\\frac {1}{2}}=3+{\\frac {1}{2}}=3.5.}"
-        }
-      ],
       "id": "37f987d03092"
     },
     {
@@ -149,16 +139,6 @@
       },
       "note": "Mixed-number notation is a typographic convention not present in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Notation and terminology",
-          "snippet": "a whole number followed immediately by a fraction indicates the sum of the two, called a mixed number"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle 3{\\frac {1}{2}}=3+{\\frac {1}{2}}=3.5.}"
-        }
-      ],
       "id": "60dd82ccde19"
     },
     {
@@ -210,16 +190,6 @@
       },
       "note": "Iterated finite sums are `Finset.sum`, written `∑ i ∈ s, f i`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definition and interpretations",
-          "snippet": "An arbitrary number of addition operations is called a summation"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\sum _{k=1}^{5}k^{2}=1^{2}+2^{2}+3^{2}+4^{2}+5^{2}=55.}"
-        }
-      ],
       "id": "d5332e24daec"
     },
     {
@@ -235,18 +205,8 @@
         "module": "Mathlib.Topology.Algebra.InfiniteSum.Defs",
         "match_kind": "generalization"
       },
-      "note": "Infinite sums are `tsum` (notation `∑' i, f i`) in topological add monoids.",
+      "note": "Infinite sums are `tsum` (notation `∑' i, f i`) in topological additive monoids.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definition and interpretations",
-          "snippet": "An infinite summation is a delicate procedure known as a series"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\sum _{k=1}^{5}k^{2}=1^{2}+2^{2}+3^{2}+4^{2}+5^{2}=55.}"
-        }
-      ],
       "id": "63d15d476026"
     },
     {
@@ -264,16 +224,6 @@
       },
       "note": "Mathlib provides the `∑ i ∈ s, f i` capital-sigma notation via `Finset.sum`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definition and interpretations",
-          "snippet": "it can be expressed through capital sigma notation"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\sum _{k=1}^{5}k^{2}=1^{2}+2^{2}+3^{2}+4^{2}+5^{2}=55.}"
-        }
-      ],
       "id": "227b76e1c087"
     },
     {
@@ -289,7 +239,7 @@
         "module": "Mathlib.SetTheory.Cardinal.Defs",
         "match_kind": "exact"
       },
-      "note": "`Cardinal.add_def : #α + #β = #(α ⊕ β)` (Defs.lean:249) formalizes disjoint-union cardinality.",
+      "note": "`Cardinal.add_def : #α + #β = #(α ⊕ β)` formalizes disjoint-union cardinality.",
       "provenance": "ai",
       "id": "206526f2d2b8"
     },
@@ -315,7 +265,7 @@
       "label": "Unary addition operation",
       "anchor": {
         "section": "Extending a length",
-        "snippet": "the operation"
+        "snippet": "applying the unary operation"
       },
       "status": "partial",
       "mathlib": {
@@ -323,8 +273,8 @@
         "module": "Mathlib.Algebra.Group.Defs",
         "match_kind": "generalization"
       },
-      "note": "Mathlib uses the binary `Add` class; one-sided addition corresponds to left/right add classes but is not separately defined.",
-      "provenance": "ai",
+      "note": "Mathlib uses the binary `Add` class; one-sided addition corresponds to left/right add-cancel classes but is not separately defined.",
+      "provenance": "ai-moderated",
       "id": "ec446a811e58"
     },
     {
@@ -340,18 +290,8 @@
         "module": "Mathlib.Algebra.Group.Defs",
         "match_kind": "exact"
       },
-      "note": "`AddCommSemigroup.add_comm : a + b = b + a`.",
+      "note": "`add_comm : a + b = b + a`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Commutativity",
-          "snippet": "Addition is commutative , meaning that one can change the order of the terms in a sum, but still get the same result."
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle a+b=b+a.}"
-        }
-      ],
       "id": "3dd2e7530748"
     },
     {
@@ -367,18 +307,8 @@
         "module": "Mathlib.Algebra.Group.Defs",
         "match_kind": "exact"
       },
-      "note": "`AddSemigroup.add_assoc : a + b + c = a + (b + c)`.",
+      "note": "`add_assoc : (a + b) + c = a + (b + c)`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Associativity",
-          "snippet": "Addition is associative , which means that when three or more numbers are added together, the order of operations does not change the result."
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle (a+b)+c=a+(b+c).}"
-        }
-      ],
       "id": "07a2eb381f07"
     },
     {
@@ -394,18 +324,8 @@
         "module": "Mathlib.Algebra.Group.Defs",
         "match_kind": "exact"
       },
-      "note": "`AddZeroClass.add_zero` together with `zero_add` give zero as additive identity.",
+      "note": "`add_zero` together with `zero_add` give zero as additive identity.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Identity element",
-          "snippet": "Adding zero to any number does not change the number."
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle a+0=0+a=a.}"
-        }
-      ],
       "id": "dfcc42108002"
     },
     {
@@ -421,7 +341,7 @@
         "module": "Mathlib.Algebra.Group.Defs",
         "match_kind": "exact"
       },
-      "note": "`nsmul_succ : nsmul (n+1) x = nsmul n x + x` (Defs.lean:648) formalizes iterated addition of 1/successor.",
+      "note": "`AddMonoid.nsmul_succ : nsmul (n+1) x = nsmul n x + x` formalizes iterated addition/successor.",
       "provenance": "ai",
       "id": "3a275b15180d"
     },
@@ -435,7 +355,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Nat.succ_eq_add_one",
-        "module": "Mathlib",
+        "module": "Init.Data.Nat.Basic",
         "match_kind": "invocation"
       },
       "note": "Numeric identity provable by `decide`/`rfl`; underlying lemma is `Nat.succ_eq_add_one`.",
@@ -455,7 +375,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib has no formalization of physical units arithmetic.",
+      "note": "Mathlib has no formalization of physical-units arithmetic.",
       "provenance": "ai",
       "id": "985d662eb636"
     },
@@ -498,7 +418,7 @@
       "label": "Carry example 59 + 27",
       "anchor": {
         "section": "Carry",
-        "snippet": "in the ones in the addition of 59 + 27 is 9 + 7 = 16, and the digit 1 is the carry"
+        "snippet": "the ones in the addition of 59 + 27 is 9 + 7 = 16, and the digit 1 is the carry"
       },
       "status": "not_formalized",
       "mathlib": {
@@ -507,7 +427,7 @@
         "match_kind": null
       },
       "note": "Pedagogical illustration of the carry algorithm; no Mathlib analogue.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "1e28fe0918b8"
     },
     {
@@ -591,22 +511,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib's `Nat`/`Num` addition is defined semantically rather than as a binary-carry algorithm.",
+      "note": "Mathlib's `Nat` addition is defined semantically rather than as a binary-carry algorithm.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Non-decimal",
-          "snippet": "Adding two single-digit binary numbers is relatively simple, using a form of carrying"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}0+0&amp;\\to 0\\\\0+1&amp;\\to 1\\\\1+0&amp;\\to 1\\\\1+1&amp;\\to 0,\\qquad {\\text{carry 1 since }}1+1=2=0+1\\times 2^{1}\\end{aligned}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}5+5&amp;\\to 0,\\qquad {\\text{carry 1 since }}5+5=10=0+1\\times 10^{1}\\\\7+9&amp;\\to 6,\\qquad {\\text{carry 1 since }}7+9=16=6+1\\times 10^{1}\\end{aligned}}}"
-        }
-      ],
       "id": "74a789c786bc"
     },
     {
@@ -627,11 +533,27 @@
       "id": "dd768d739f45"
     },
     {
+      "kind": "proposition",
+      "label": "Floating-point addition is non-associative",
+      "anchor": {
+        "section": "Computers",
+        "snippet": "This makes floating-point addition non-associative in general."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not model IEEE floating-point arithmetic; non-associativity is not stated as a lemma.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Addition by cardinality of disjoint union",
       "anchor": {
         "section": "Natural numbers",
-        "snippet": "Let"
+        "snippet": "Take two disjoint sets"
       },
       "status": "formalized",
       "mathlib": {
@@ -640,7 +562,7 @@
         "match_kind": "exact"
       },
       "note": "`Cardinal.add_def : #α + #β = #(α ⊕ β)` realizes the disjoint-union definition.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "8a5bde68f62b"
     },
     {
@@ -653,10 +575,10 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Nat.add",
-        "module": "Mathlib",
+        "module": "Init.Prelude",
         "match_kind": "exact"
       },
-      "note": "`Nat.add` is defined by primitive recursion in core Lean and reused in Mathlib.",
+      "note": "`Nat.add` is defined by primitive recursion in core Lean and used throughout Mathlib.",
       "provenance": "ai",
       "id": "21a31ee30973"
     },
@@ -670,7 +592,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Nat.add_assoc",
-        "module": "Mathlib",
+        "module": "Init.Data.Nat.Basic",
         "match_kind": "exact"
       },
       "note": "`Nat.add_assoc` and `Nat.add_comm` are proved by induction in core/Mathlib.",
@@ -687,7 +609,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Int.add",
-        "module": "Mathlib",
+        "module": "Init.Data.Int.Basic",
         "match_kind": "exact"
       },
       "note": "`Int.add` is defined by case analysis on the sign-magnitude representation (in core, reused by Mathlib).",
@@ -704,7 +626,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Int.add",
-        "module": "Mathlib",
+        "module": "Init.Data.Int.Basic",
         "match_kind": "invocation"
       },
       "note": "A specific numeric instance of `Int.add`, provable by `decide`/`rfl`.",
@@ -738,21 +660,11 @@
       "status": "partial",
       "mathlib": {
         "decl": "Prod.instAdd",
-        "module": "Mathlib.Algebra.Group.Prod",
+        "module": "Mathlib.Algebra.Notation.Prod",
         "match_kind": "generalization"
       },
       "note": "General `Prod` componentwise addition exists; the specific ℕ×ℕ Grothendieck construction for ℤ is not used.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Integers",
-          "snippet": "The addition of ordered pairs is done component-wise"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle (a,b)+(c,d)=(a+c,b+d).}"
-        }
-      ],
       "id": "3d8fb80a1380"
     },
     {
@@ -765,21 +677,11 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Rat.add",
-        "module": "Mathlib",
+        "module": "Init.Data.Rat.Basic",
         "match_kind": "exact"
       },
       "note": "`Rat.add` defines rational addition using common-denominator formulas (in core, reused by Mathlib).",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Rational numbers (fractions)",
-          "snippet": "Addition of rational numbers involves the fractions"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {a}{b}}+{\\frac {c}{d}}={\\frac {ad+bc}{bd}}.}"
-        }
-      ],
       "id": "1bd655e3647d"
     },
     {
@@ -795,18 +697,8 @@
         "module": "Mathlib.Algebra.Field.Basic",
         "match_kind": "exact"
       },
-      "note": "`add_div : (a + b)/c = a/c + b/c` (Field/Basic.lean:36) gives the equal-denominator sum; `div_add_div_same` exists only on ENNReal.",
+      "note": "`add_div : (a + b)/c = a/c + b/c` gives the equal-denominator sum in any division ring.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Rational numbers (fractions)",
-          "snippet": "Addition of fractions is much simpler when the denominators are the same"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {a}{c}}+{\\frac {b}{c}}={\\frac {a+b}{c}},}"
-        }
-      ],
       "id": "5a694ce7510f"
     },
     {
@@ -818,11 +710,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Rat.add_comm",
-        "module": "Mathlib",
+        "decl": "add_comm",
+        "module": "Mathlib.Algebra.Group.Defs",
         "match_kind": "exact"
       },
-      "note": "ℚ is a `CommRing`/`Field` instance, giving `add_comm` and `add_assoc`.",
+      "note": "ℚ is a `CommRing`/`Field` instance, giving `add_comm` and `add_assoc` for rationals.",
       "provenance": "ai",
       "id": "76a4a04646e5"
     },
@@ -841,16 +733,6 @@
       },
       "note": "Mathlib constructs ℝ via Cauchy sequences, not Dedekind cuts.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Real numbers",
-          "snippet": "The sum of real numbers a and b is defined element by element"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle a+b=\\{q+r\\mid q\\in a,r\\in b\\}.}"
-        }
-      ],
       "id": "494ef5045d20"
     },
     {
@@ -862,23 +744,29 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Real.add",
+        "decl": "Real.instAdd",
         "module": "Mathlib.Data.Real.Basic",
         "match_kind": "exact"
       },
-      "note": "`Real.add` (irreducible_def at Basic.lean:79) implements pointwise CauSeq addition on ℝ.",
+      "note": "`Real.instAdd` implements pointwise CauSeq addition on ℝ.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Real numbers",
-          "snippet": "A real number is essentially defined to be the limit of a Cauchy sequence of rationals"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\lim _{n}a_{n}+\\lim _{n}b_{n}=\\lim _{n}(a_{n}+b_{n}).}"
-        }
-      ],
       "id": "1f85e35e1fe8"
+    },
+    {
+      "kind": "definition",
+      "label": "Additive inverses on the reals",
+      "anchor": {
+        "section": "Real numbers",
+        "snippet": "Probably the trickiest part of this construction pertaining to addition is the definition of additive inverses."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.instNeg",
+        "module": "Mathlib.Data.Real.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Additive inverses on ℝ are provided by the `Real.instNeg` instance through the `AddGroup` structure.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -893,7 +781,7 @@
         "module": "Mathlib.Data.Complex.Basic",
         "match_kind": "exact"
       },
-      "note": "`Complex.add_re`/`Complex.add_im` (Basic.lean:169,173) express componentwise addition on ℂ.",
+      "note": "`Complex.add_re`/`Complex.add_im` express componentwise addition on ℂ.",
       "provenance": "ai",
       "id": "c43ba5babb2a"
     },
@@ -927,7 +815,7 @@
         "module": "Mathlib.Algebra.Group.Defs",
         "match_kind": "exact"
       },
-      "note": "`AddCommGroup` (Defs.lean:1275) is Mathlib's class for abelian groups written additively.",
+      "note": "`AddCommGroup` is Mathlib's class for abelian groups written additively.",
       "provenance": "ai",
       "id": "4e577d2e86ad"
     },
@@ -941,21 +829,11 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Pi.instAdd",
-        "module": "Mathlib.Algebra.Group.Pi.Basic",
+        "module": "Mathlib.Algebra.Notation.Pi.Defs",
         "match_kind": "exact"
       },
       "note": "Componentwise addition on function/coordinate spaces is `Pi.instAdd` (i.e. `(f+g) i = f i + g i`).",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Linear algebra",
-          "snippet": "The sum of two vectors is obtained by adding their individual coordinates"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle (a,b)+(c,d)=(a+c,b+d).}"
-        }
-      ],
       "id": "be8e82b9cbf0"
     },
     {
@@ -967,22 +845,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Matrix.instAdd",
-        "module": "Mathlib.Data.Matrix.Basic",
+        "decl": "Matrix.add_apply",
+        "module": "Mathlib.LinearAlgebra.Matrix.Defs",
         "match_kind": "exact"
       },
-      "note": "`Matrix m n α` inherits an entrywise `Add` instance via `Pi`.",
+      "note": "`Matrix m n α` inherits an entrywise `Add` instance via `Pi`; `Matrix.add_apply` states `(A+B) i j = A i j + B i j`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Linear algebra",
-          "snippet": "Matrix addition is defined for two matrices of the same dimensions."
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}\\mathbf {A} +\\mathbf {B} &amp;={\\begin{bmatrix}a_{11}&amp;a_{12}&amp;\\cdots &amp;a_{1n}\\\\a_{21}&amp;a_{22}&amp;\\cdots &amp;a_{2n}\\\\\\vdots &amp;\\vdots &amp;\\ddots &amp;\\vdots \\\\a_{m1}&amp;a_{m2}&amp;\\cdots &amp;a_{mn}\\\\\\end{bmatrix}}+{\\begin{bmatrix}b_{11}&amp;b_{12}&amp;\\cdots &amp;b_{1n}\\\\b_{21}&amp;b_{22}&amp;\\cdots &amp;b_{2n}\\\\\\vdots &amp;\\vdots &amp;\\ddots &amp;\\vdots \\\\b_{m1}&amp;b_{m2}&amp;\\cdots &amp;b_{mn}\\\\\\end{bmatrix}}\\\\[8mu]&amp;={\\begin{bmatrix}a_{11}+b_{11}&amp;a_{12}+b_{12}&amp;\\cdots &amp;a_{1n}+b_{1n}\\\\a_{21}+b_{21}&amp;a_{22}+b_{22}&amp;\\cdots &amp;a_{2n}+b_{2n}\\\\\\vdots &amp;\\vdots &amp;\\ddots &amp;\\vdots \\\\a_{m1}+b_{m1}&amp;a_{m2}+b_{m2}&amp;\\cdots &amp;a_{mn}+b_{mn}\\\\\\end{bmatrix}}\\\\\\end{aligned}}}"
-        }
-      ],
       "id": "8c575dce48ac"
     },
     {
@@ -995,7 +863,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "ZMod",
-        "module": "Mathlib.Data.ZMod.Basic",
+        "module": "Mathlib.Data.ZMod.Defs",
         "match_kind": "exact"
       },
       "note": "`ZMod n` is Mathlib's ring of integers mod n with its `Add` instance.",
@@ -1012,7 +880,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "ZMod",
-        "module": "Mathlib.Data.ZMod.Basic",
+        "module": "Mathlib.Data.ZMod.Defs",
         "match_kind": "special_case"
       },
       "note": "`ZMod 2` realizes ℤ/2 with addition equal to XOR; the XOR identification itself is not a named lemma.",
@@ -1032,7 +900,7 @@
         "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Angle",
         "match_kind": "exact"
       },
-      "note": "`Real.Angle` (Angle.lean:31) is ℝ/(2π ℤ) with its additive group structure.",
+      "note": "`Real.Angle` is ℝ/(2π ℤ) with its additive group structure.",
       "provenance": "ai",
       "id": "391baeb85826"
     },
@@ -1049,7 +917,7 @@
         "module": "Mathlib.Algebra.Group.Defs",
         "match_kind": "exact"
       },
-      "note": "`AddCommSemigroup` (Defs.lean:251) captures arbitrary associative+commutative addition operations.",
+      "note": "`AddCommSemigroup` captures arbitrary associative+commutative addition operations.",
       "provenance": "ai",
       "id": "5f4a64791765"
     },
@@ -1066,7 +934,7 @@
         "module": "Mathlib.LinearAlgebra.Finsupp.LinearCombination",
         "match_kind": "exact"
       },
-      "note": "`Finsupp.linearCombination` (LinearCombination.lean:54) constructs general linear combinations as a linear map.",
+      "note": "`Finsupp.linearCombination` constructs general linear combinations as a linear map.",
       "provenance": "ai",
       "id": "72a5f140af75"
     },
@@ -1100,7 +968,7 @@
         "module": "Mathlib.SetTheory.Ordinal.Arithmetic",
         "match_kind": "generalization"
       },
-      "note": "`Ordinal.one_add_omega0 : 1 + ω = ω` (Arithmetic.lean:1084) gives an explicit witness of non-commutativity, but no named `¬ add_comm` lemma exists.",
+      "note": "`Ordinal.one_add_omega0 : 1 + ω = ω` provides an explicit witness of non-commutativity, but no named `¬ add_comm` lemma exists.",
       "provenance": "ai",
       "id": "f4c0410d562b"
     },
@@ -1117,7 +985,7 @@
         "module": "Mathlib.SetTheory.Cardinal.Order",
         "match_kind": "exact"
       },
-      "note": "`Cardinal.commSemiring : CommSemiring Cardinal` (Order.lean:218) yields `add_comm` for cardinal sums.",
+      "note": "`Cardinal.commSemiring : CommSemiring Cardinal` yields `add_comm` for cardinal sums.",
       "provenance": "ai",
       "id": "3d54ed29280b"
     },
@@ -1134,7 +1002,7 @@
         "module": "Mathlib.CategoryTheory.Limits.Shapes.BinaryProducts",
         "match_kind": "exact"
       },
-      "note": "Binary coproducts `X ⨿ Y` are defined in `CategoryTheory.Limits` (BinaryProducts.lean has `coprod.desc`, `coprod.map`, etc.).",
+      "note": "Binary coproducts `X ⨿ Y` are defined as `CategoryTheory.Limits.coprod` in BinaryProducts.",
       "provenance": "ai",
       "id": "f715a6ecc146"
     },
@@ -1151,7 +1019,7 @@
         "module": "Mathlib.Algebra.Group.Defs",
         "match_kind": "exact"
       },
-      "note": "`SubNegMonoid.sub_eq_add_neg : a - b = a + -b` (Defs.lean:1006).",
+      "note": "`sub_eq_add_neg : a - b = a + -b` from `SubNegMonoid`.",
       "provenance": "ai",
       "id": "561ca32f59ac"
     },
@@ -1182,21 +1050,11 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Real.exp_add",
-        "module": "Mathlib.Analysis.SpecialFunctions.Exp",
+        "module": "Mathlib.Analysis.Complex.Exponential",
         "match_kind": "exact"
       },
-      "note": "`Real.exp_add` and `Complex.exp_add` give `exp (x+y) = exp x * exp y` (used pervasively, e.g. SpecialFunctions/Exp.lean:42).",
+      "note": "`Real.exp_add` and `Complex.exp_add` give `exp (x+y) = exp x * exp y`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Arithmetic",
-          "snippet": "In the real and complex numbers, addition and multiplication can be interchanged by the exponential function"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle e^{a+b}=e^{a}e^{b}.}"
-        }
-      ],
       "id": "25f98c941077"
     },
     {
@@ -1212,7 +1070,7 @@
         "module": "Mathlib.Algebra.Ring.Defs",
         "match_kind": "exact"
       },
-      "note": "`Distrib` (Ring/Defs.lean:64) builds `left_distrib`/`right_distrib` into the ring axioms.",
+      "note": "`Distrib` builds `left_distrib`/`right_distrib` into the ring axioms.",
       "provenance": "ai",
       "id": "46eab2c4e3d7"
     },
@@ -1229,7 +1087,7 @@
         "module": "Mathlib.Algebra.Field.Basic",
         "match_kind": "exact"
       },
-      "note": "`add_div : (a + b) / c = a/c + b/c` in any division ring (Field/Basic.lean:36).",
+      "note": "`add_div : (a + b) / c = a/c + b/c` in any division ring.",
       "provenance": "ai",
       "id": "e3bbb2ac478a"
     },
@@ -1272,7 +1130,7 @@
       "label": "Cardinal sum equals greater of two infinite cardinals",
       "anchor": {
         "section": "Ordering",
-        "snippet": "if either"
+        "snippet": "is an infinite cardinal number , their cardinal sum is exactly equal to the greater of the two"
       },
       "status": "formalized",
       "mathlib": {
@@ -1280,8 +1138,8 @@
         "module": "Mathlib.SetTheory.Cardinal.Arithmetic",
         "match_kind": "exact"
       },
-      "note": "`Cardinal.add_eq_max : ℵ₀ ≤ a → a + b = max a b` (Arithmetic.lean:233).",
-      "provenance": "ai",
+      "note": "`Cardinal.add_eq_max : ℵ₀ ≤ a → a + b = max a b`.",
+      "provenance": "ai-moderated",
       "id": "4fec564209ab"
     },
     {
@@ -1294,21 +1152,11 @@
       "status": "formalized",
       "mathlib": {
         "decl": "max_add_add_left",
-        "module": "Mathlib.Algebra.Order.Group.MinMax",
+        "module": "Mathlib.Algebra.Order.Monoid.Unbundled.MinMax",
         "match_kind": "exact"
       },
-      "note": "`max_add_add_left` / `max_add_add_right` give `a + max b c = max (a+b) (a+c)` in ordered (cancel) add monoids.",
+      "note": "`max_add_add_left` (and the right-handed variant) give `a + max b c = max (a+b) (a+c)` in ordered cancel monoids.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Ordering",
-          "snippet": "addition distributes over \"max\" in the same way that multiplication distributes over addition"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle a+\\max(b,c)=\\max(a+b,a+c).}"
-        }
-      ],
       "id": "7da60a30d030"
     },
     {
@@ -1324,18 +1172,8 @@
         "module": "Mathlib.Algebra.Tropical.Basic",
         "match_kind": "exact"
       },
-      "note": "`Tropical α` (Basic.lean:58) defines the tropical semiring with `min` as addition and `+` as multiplication.",
+      "note": "`Tropical α` defines the tropical semiring with `min` as addition and `+` as multiplication.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Ordering",
-          "snippet": "in tropical geometry one replaces multiplication with addition and addition with maximization"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle a+\\max(b,c)=\\max(a+b,a+c).}"
-        }
-      ],
       "id": "d721b5a42ff2"
     },
     {
@@ -1353,20 +1191,6 @@
       },
       "note": "The log-sum-exp/Maslov-dequantization tropicalization limit is not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Ordering",
-          "snippet": "tropical addition is approximately related to regular addition through the logarithm"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\log(a+b)\\approx \\max(\\log a,\\log b),}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\max(a,b)=\\lim _{h\\to 0}h\\log(e^{a/h}+e^{b/h}).}"
-        }
-      ],
       "id": "f97b9fa6c491"
     },
     {
@@ -1382,7 +1206,7 @@
         "module": "Mathlib.Probability.Independence.Basic",
         "match_kind": "generalization"
       },
-      "note": "`IndepFun` (Independence/Basic.lean:144) defines independence; the law of `X+Y` as convolution of laws is encoded via `Measure.conv` / pushforward but not as a single named lemma here.",
+      "note": "`IndepFun` defines independence; the law of `X+Y` as convolution of laws exists via `Measure` pushforwards but not as a single named convolution-of-distributions lemma here.",
       "provenance": "ai",
       "id": "26fa627b4879"
     }

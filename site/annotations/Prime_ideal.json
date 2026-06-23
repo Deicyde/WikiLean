@@ -473,11 +473,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "PrimeSpectrum.instIsEmpty",
+        "decl": "PrimeSpectrum.isEmpty_iff_subsingleton",
         "module": "Mathlib.RingTheory.Spectrum.Prime.Basic",
-        "match_kind": "related"
+        "match_kind": "exact"
       },
-      "note": "The prime spectrum of the zero ring is empty (`IsEmpty (PrimeSpectrum R)` for a `Subsingleton` ring): any prime needs `I ≠ ⊤`, but `⊤ = ⊥` there.",
+      "note": "`PrimeSpectrum.isEmpty_iff_subsingleton : IsEmpty (PrimeSpectrum R) ↔ Subsingleton R` (with a Subsingleton instance giving `IsEmpty (PrimeSpectrum R)`) exactly says the zero ring has no prime ideals.",
       "provenance": "ai",
       "id": "bf5a6c30f242"
     },
@@ -543,7 +543,7 @@
       "mathlib": {
         "decl": "Submonoid.powers",
         "module": "Mathlib.Algebra.Group.Submonoid.Membership",
-        "match_kind": "related"
+        "match_kind": "special_case"
       },
       "note": "Powers of an element are `Submonoid.powers` (a multiplicatively closed set); disjointness from a prime relates to non-nilpotency (`disjoint_powers_iff_notMem`). The m-system framing is not formalized.",
       "provenance": "ai",
@@ -662,7 +662,7 @@
       "mathlib": {
         "decl": "Ring.not_isField_iff_exists_prime",
         "module": "Mathlib.RingTheory.Ideal.Basic",
-        "match_kind": "related"
+        "match_kind": "special_case"
       },
       "note": "Related characterizations exist (`isField_iff_maximal_bot`, `not_isField_iff_exists_prime`), but the exact statement `every proper ideal prime ⇒ field` is not a stated lemma.",
       "provenance": "ai",
@@ -1104,7 +1104,7 @@
       "mathlib": {
         "decl": "Submonoid.powers",
         "module": "Mathlib.Algebra.Group.Submonoid.Membership",
-        "match_kind": "related"
+        "match_kind": "special_case"
       },
       "note": "Powers of an element form `Submonoid.powers`; disjointness from a prime relates to non-nilpotency (`disjoint_powers_iff_notMem`). The m-system framing itself is not formalized.",
       "provenance": "ai",

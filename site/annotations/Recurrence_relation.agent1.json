@@ -11,7 +11,15 @@
         "section": "(Lead)",
         "snippet": "a recurrence relation is an equation according to which the"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearRecurrence",
+        "module": "Mathlib.Algebra.LinearRecurrence",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has no general recurrence-relation definition; only the linear case is formalized as `LinearRecurrence`.",
+      "provenance": "ai-agent1",
+      "id": "d13be601f487"
     },
     {
       "kind": "definition",
@@ -20,7 +28,15 @@
         "section": "(Lead)",
         "snippet": "this number [MATH] is called the order of the relation"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearRecurrence.order",
+        "module": "Mathlib.Algebra.LinearRecurrence",
+        "match_kind": "special_case"
+      },
+      "note": "The order is captured as a field of `LinearRecurrence`, but only for linear recurrences.",
+      "provenance": "ai-agent1",
+      "id": "82c18607b853"
     },
     {
       "kind": "definition",
@@ -29,7 +45,15 @@
         "section": "(Lead)",
         "snippet": "In linear recurrences , the n th term is equated to a linear function of the"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearRecurrence",
+        "module": "Mathlib.Algebra.LinearRecurrence",
+        "match_kind": "special_case"
+      },
+      "note": "`LinearRecurrence` formalizes linear recurrences (with constant coefficients) over a commutative semiring.",
+      "provenance": "ai-agent1",
+      "id": "4d294e92c93f"
     },
     {
       "kind": "definition",
@@ -38,7 +62,15 @@
         "section": "(Lead)",
         "snippet": "This example is a linear recurrence with constant coefficients"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearRecurrence",
+        "module": "Mathlib.Algebra.LinearRecurrence",
+        "match_kind": "exact"
+      },
+      "note": "`LinearRecurrence` is exactly the structure of a linear recurrence with constant coefficients.",
+      "provenance": "ai-agent1",
+      "id": "a70883c5c8cb"
     },
     {
       "kind": "definition",
@@ -47,7 +79,15 @@
         "section": "(Lead)",
         "snippet": "Solving a recurrence relation means obtaining a closed-form solution"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearRecurrence.mkSol",
+        "module": "Mathlib.Algebra.LinearRecurrence",
+        "match_kind": "special_case"
+      },
+      "note": "`mkSol` produces the unique solution from initial data inductively, but closed-form solutions are not formalized (see file docstring).",
+      "provenance": "ai-agent1",
+      "id": "2a051bd20e53"
     },
     {
       "kind": "definition",
@@ -56,7 +96,15 @@
         "section": "(Lead)",
         "snippet": "The concept of a recurrence relation can be extended to multidimensional arrays"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No multidimensional recurrence relation concept is formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "3e62af2cbdf3"
     },
     {
       "kind": "definition",
@@ -65,7 +113,15 @@
         "section": "Definition",
         "snippet": "A recurrence relation is an equation that expresses each element of a sequence as a function of the preceding ones"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearRecurrence",
+        "module": "Mathlib.Algebra.LinearRecurrence",
+        "match_kind": "special_case"
+      },
+      "note": "Only linear first-order recurrences are covered (as `LinearRecurrence` with order = 1); general first-order recurrences are not defined.",
+      "provenance": "ai-agent1",
+      "id": "2ac3dca8e0e8"
     },
     {
       "kind": "definition",
@@ -74,7 +130,15 @@
         "section": "Definition",
         "snippet": "A recurrence relation of order k has the form"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearRecurrence",
+        "module": "Mathlib.Algebra.LinearRecurrence",
+        "match_kind": "special_case"
+      },
+      "note": "Only the linear order-k case is formalized via `LinearRecurrence`; general (nonlinear) order-k recurrences are not.",
+      "provenance": "ai-agent1",
+      "id": "29352f9a62d0"
     },
     {
       "kind": "example",
@@ -83,7 +147,15 @@
         "section": "Factorial",
         "snippet": "The factorial is defined by the recurrence relation"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.factorial_succ",
+        "module": "Mathlib.Data.Nat.Factorial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.factorial` is defined by the recurrence and `factorial_succ` states `(n+1)! = (n+1) * n!`.",
+      "provenance": "ai-agent1",
+      "id": "f62d6e99873b"
     },
     {
       "kind": "example",
@@ -92,7 +164,15 @@
         "section": "Logistic map",
         "snippet": "An example of a recurrence relation is the logistic map defined by"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The logistic map is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "e1729e2709e7"
     },
     {
       "kind": "example",
@@ -101,7 +181,15 @@
         "section": "Fibonacci numbers",
         "snippet": "The Fibonacci sequence is defined using the recurrence"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.fib_add_two",
+        "module": "Mathlib.Data.Nat.Fib.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.fib_add_two` states `fib (n+2) = fib n + fib (n+1)`, exactly the Fibonacci recurrence.",
+      "provenance": "ai-agent1",
+      "id": "22928b5ff492"
     },
     {
       "kind": "example",
@@ -110,6 +198,30 @@
         "section": "Binomial coefficients",
         "snippet": "A simple example of a multidimensional recurrence relation is given by the binomial coefficients"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.choose_succ_succ",
+        "module": "Mathlib.Data.Nat.Choose.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.choose_succ_succ` gives Pascal's rule `choose (n+1) (k+1) = choose n k + choose n (k+1)`.",
+      "provenance": "ai-agent1",
+      "id": "6adb90543d87"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closed-form formula for binomial coefficients",
+      "anchor": {
+        "section": "Binomial coefficients",
+        "snippet": "uses factorials , multiplication and division"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.choose_eq_factorial_div_factorial",
+        "module": "Mathlib.Data.Nat.Choose.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.choose_eq_factorial_div_factorial` gives the closed-form `n.choose k = n! / (k! * (n-k)!)` (for `k ≤ n`).",
       "provenance": "ai-agent1"
     },
     {
@@ -119,7 +231,15 @@
         "section": "Difference operator and difference equations",
         "snippet": "The difference operator is an operator that maps sequences to sequences"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fwdDiff",
+        "module": "Mathlib.Algebra.Group.ForwardDiff",
+        "match_kind": "exact"
+      },
+      "note": "`fwdDiff h f n = f (n + h) - f n` formalizes the forward difference operator.",
+      "provenance": "ai-agent1",
+      "id": "4d04bb9acc41"
     },
     {
       "kind": "definition",
@@ -128,7 +248,15 @@
         "section": "Difference operator and difference equations",
         "snippet": "Given sequence [MATH] the first difference of a is"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fwdDiff",
+        "module": "Mathlib.Algebra.Group.ForwardDiff",
+        "match_kind": "exact"
+      },
+      "note": "The first difference is `fwdDiff 1 a n = a (n+1) - a n`.",
+      "provenance": "ai-agent1",
+      "id": "0c997cfd6bd4"
     },
     {
       "kind": "definition",
@@ -137,7 +265,15 @@
         "section": "Difference operator and difference equations",
         "snippet": "The second difference is"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "fwdDiff",
+        "module": "Mathlib.Algebra.Group.ForwardDiff",
+        "match_kind": "generalization"
+      },
+      "note": "The second difference is obtained by iterating `fwdDiff` twice (`fwdDiff h^[2]`); no dedicated name exists.",
+      "provenance": "ai-agent1",
+      "id": "2654bb1357d4"
     },
     {
       "kind": "definition",
@@ -146,7 +282,15 @@
         "section": "Difference operator and difference equations",
         "snippet": "the k th difference is defined recursively as"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "fwdDiff",
+        "module": "Mathlib.Algebra.Group.ForwardDiff",
+        "match_kind": "generalization"
+      },
+      "note": "The k-th difference appears as `Function.iterate (fwdDiff h) k` (e.g. in `fwdDiff_iter_eq_sum_shift`) but is not separately defined.",
+      "provenance": "ai-agent1",
+      "id": "b96666c533ab"
     },
     {
       "kind": "definition",
@@ -155,7 +299,15 @@
         "section": "Difference operator and difference equations",
         "snippet": "A difference equation of order k is an equation that involves the k first differences of a sequence or a function"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Difference equations are not formalized as a distinct concept in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "d160819bdca2"
     },
     {
       "kind": "proposition",
@@ -164,7 +316,15 @@
         "section": "Difference operator and difference equations",
         "snippet": "The two above relations allow transforming a recurrence relation of order k into a difference equation of order k"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The equivalence between order-k difference equations and order-k recurrences is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "43fd5f4ac21f"
     },
     {
       "kind": "definition",
@@ -173,7 +333,15 @@
         "section": "From sequences to grids",
         "snippet": "Multi-variable or n-dimensional recurrence relations are about"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Multi-variable / n-dimensional recurrences are not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "9cb1dea3f04d"
     },
     {
       "kind": "proposition",
@@ -182,7 +350,15 @@
         "section": "Solving first-order non-homogeneous recurrence relations with variable coefficients",
         "snippet": "for the general first-order non-homogeneous linear recurrence relation with variable coefficients"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No closed-form solution for first-order non-homogeneous linear recurrences with variable coefficients is in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "03fc4c92e7db"
     },
     {
       "kind": "proposition",
@@ -191,7 +367,15 @@
         "section": "Solving general homogeneous linear recurrence relations",
         "snippet": "Many homogeneous linear recurrence relations may be solved by means of the generalized hypergeometric series"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The connection between homogeneous linear recurrences and generalized hypergeometric series is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "be4218197e02"
     },
     {
       "kind": "definition",
@@ -200,7 +384,15 @@
         "section": "Solving general homogeneous linear recurrence relations",
         "snippet": "Sequences which are the solutions of linear difference equations with polynomial coefficients are called P-recursive"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "P-recursive (holonomic) sequences are not defined in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "14c30c0e0c61"
     },
     {
       "kind": "proposition",
@@ -209,7 +401,15 @@
         "section": "Solving general non-homogeneous linear recurrence relations with constant coefficients",
         "snippet": "for the general non-homogeneous linear recurrence relation with constant coefficients, one can solve it based on variation of parameter"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize variation-of-parameter solutions for non-homogeneous linear recurrences.",
+      "provenance": "ai-agent1",
+      "id": "2c50070ef708"
     },
     {
       "kind": "proposition",
@@ -218,6 +418,30 @@
         "section": "Solving first-order rational difference equations",
         "snippet": "A first order rational difference equation has the form"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "First-order rational difference equations and their solutions are not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "a6876293e47e"
+    },
+    {
+      "kind": "definition",
+      "label": "Characteristic equation of a linear recurrence",
+      "anchor": {
+        "section": "Stability of linear higher-order recurrences",
+        "snippet": "has the characteristic equation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearRecurrence.charPoly",
+        "module": "Mathlib.Algebra.LinearRecurrence",
+        "match_kind": "exact"
+      },
+      "note": "`LinearRecurrence.charPoly` defines the characteristic polynomial of a linear recurrence; its roots are the eigenvalues referenced in the stability criterion.",
       "provenance": "ai-agent1"
     },
     {
@@ -227,7 +451,15 @@
         "section": "Stability of linear higher-order recurrences",
         "snippet": "The recurrence is stable , meaning that the iterates converge asymptotically to a fixed value"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Stability criteria for higher-order linear recurrences are not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "fa50f6ff1490"
     },
     {
       "kind": "theorem",
@@ -236,7 +468,15 @@
         "section": "Stability of linear first-order matrix recurrences",
         "snippet": "converges asymptotically to the steady state vector"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of convergence/stability of linear first-order matrix recurrences to a steady state.",
+      "provenance": "ai-agent1",
+      "id": "7f346c582389"
     },
     {
       "kind": "theorem",
@@ -245,7 +485,15 @@
         "section": "Stability of nonlinear first-order recurrences",
         "snippet": "This recurrence is locally stable , meaning that it converges to a fixed point"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Local stability of nonlinear first-order recurrences (e.g. via derivative at fixed point) is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "d47c2db1abcf"
     },
     {
       "kind": "proposition",
@@ -254,7 +502,15 @@
         "section": "Stability of nonlinear first-order recurrences",
         "snippet": "A nonlinear recurrence relation could also have a cycle of period"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cycle-stability criteria for nonlinear recurrences are not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "06c0684be89f"
     },
     {
       "kind": "definition",
@@ -263,7 +519,15 @@
         "section": "Stability of nonlinear first-order recurrences",
         "snippet": "In a chaotic recurrence relation, the variable [MATH] stays in a bounded region but never converges to a fixed point"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Chaotic recurrences are not defined in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "1b897261cd3e"
     },
     {
       "kind": "example",
@@ -272,7 +536,15 @@
         "section": "Relationship to differential equations",
         "snippet": "when solving the initial value problem"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Euler's method is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "c255f87a042a"
     },
     {
       "kind": "example",
@@ -281,7 +553,15 @@
         "section": "Mathematical biology",
         "snippet": "the Nicholson–Bailey model for a host- parasite interaction is given by"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Nicholson–Bailey host-parasite model is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "81f27fe584db"
     },
     {
       "kind": "example",
@@ -290,7 +570,15 @@
         "section": "Computer science",
         "snippet": "A better algorithm is called binary search"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The binary-search recurrence T(n) = T(n/2) + O(1) is not formalized as such in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "cd545ac16d89"
     },
     {
       "kind": "example",
@@ -299,7 +587,15 @@
         "section": "Digital signal processing",
         "snippet": "the equation for a \"feedforward\" IIR comb filter of delay"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "IIR comb filters are not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "01f2d590cdbe"
     }
   ]
 }

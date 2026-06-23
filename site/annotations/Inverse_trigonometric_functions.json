@@ -69,7 +69,7 @@
         "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Inverse",
         "match_kind": "invocation"
       },
-      "note": "Mathlib's arcsin/arccos/arctan are defined on their principal branches (e.g. range_arctan = Ioo (-(π/2)) (π/2)) but 'principal value' as a general concept is not separately introduced.",
+      "note": "Mathlib's arcsin/arccos/arctan are defined on their principal branches (e.g. Real.arcsin_mem_Icc) but 'principal value' as a general concept is not separately introduced.",
       "provenance": "ai",
       "id": "adb5c23aa7c3"
     },
@@ -173,16 +173,6 @@
       },
       "note": "No Mathlib lemma encoding the integer-parity reformulation of the cos x = a solution set.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Solutions to elementary trigonometric equations",
-          "snippet": "With the help of integer parity"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\operatorname {Parity} (h)={\\begin{cases}0&amp;{\\text{if }}h{\\text{ is even }}\\\\1&amp;{\\text{if }}h{\\text{ is odd }}\\\\\\end{cases}}}"
-        }
-      ],
       "id": "8a864fa186db"
     },
     {
@@ -200,16 +190,6 @@
       },
       "note": "Expository clarification, not a formalizable statement.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Detailed example and explanation of the \"plus or minus\" symbol ±",
-          "snippet": "whose meaning is now clarified"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\,\\theta =\\pm \\arccos x+2\\pi k\\,\\quad {\\text{ for some }}k\\in \\mathbb {Z} }"
-        }
-      ],
       "id": "c8282cd996f6"
     },
     {
@@ -222,10 +202,10 @@
       "status": "partial",
       "mathlib": {
         "decl": "Real.sin_eq_sin_iff",
-        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Complex",
         "match_kind": "invocation"
       },
-      "note": "Some sin_eq_sin_iff style lemmas exist for periodic identification, but the full table of equality conditions is not assembled.",
+      "note": "Real.sin_eq_sin_iff (in the Complex module) gives the periodic identification, but the full table of equality conditions across all six functions is not assembled.",
       "provenance": "ai",
       "id": "4c2e4ec0d1ed"
     },
@@ -344,7 +324,7 @@
         "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Arctan",
         "match_kind": "exact"
       },
-      "note": "Real.arctan_add with the x*y<1 hypothesis, plus arctan_add_eq_add_pi/sub_pi for the other cases.",
+      "note": "Real.arctan_add with the x*y<1 hypothesis, plus arctan_add_eq_add_pi for the other cases.",
       "provenance": "ai",
       "id": "2f3d39e23b05"
     },
@@ -414,20 +394,6 @@
       },
       "note": "Real.hasSum_arctan and Complex.hasSum_arctan give the Gregory/Leibniz power series for arctan on the open unit disk.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Infinite series",
-          "snippet": "The Taylor series for arctangent is also known as the arctangent series or Gregory's series"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}\\arcsin(z)&amp;=z+\\left({\\frac {1}{2}}\\right){\\frac {z^{3}}{3}}+\\left({\\frac {1\\cdot 3}{2\\cdot 4}}\\right){\\frac {z^{5}}{5}}+\\left({\\frac {1\\cdot 3\\cdot 5}{2\\cdot 4\\cdot 6}}\\right){\\frac {z^{7}}{7}}+\\cdots \\\\[5pt]&amp;=\\sum _{n=0}^{\\infty }{\\frac {(2n-1)!!}{(2n)!!}}{\\frac {z^{2n+1}}{2n+1}}\\\\[5pt]&amp;=\\sum _{n=0}^{\\infty }{\\frac {(2n)!}{(2^{n}n!)^{2}}}{\\frac {z^{2n+1}}{2n+1}}\\,;\\qquad |z|\\leq 1\\end{aligned}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\arctan(z)=z-{\\frac {z^{3}}{3}}+{\\frac {z^{5}}{5}}-{\\frac {z^{7}}{7}}+\\cdots =\\sum _{n=0}^{\\infty }{\\frac {(-1)^{n}z^{2n+1}}{2n+1}}\\,;\\qquad |z|\\leq 1\\qquad z\\neq i,-i}"
-        }
-      ],
       "id": "7fa84c7e12b1"
     },
     {
@@ -633,6 +599,38 @@
       "note": "Numerical conditioning analysis is outside Mathlib's symbolic scope.",
       "provenance": "ai",
       "id": "33235da1b03e"
+    },
+    {
+      "kind": "proposition",
+      "label": "Trigonometric functions are not one-to-one",
+      "anchor": {
+        "section": "Principal values",
+        "snippet": "Since none of the six trigonometric functions are one-to-one"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.sin_periodic",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Non-injectivity of the six trig functions follows from their periodicity in Mathlib, but a packaged 'not Injective' statement for each is not a single named lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "atan2 as principal argument of complex number",
+      "anchor": {
+        "section": "Two-argument variant of arctangent",
+        "snippet": "It also equals the principal value of the argument of the complex number x + iy"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.arg",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Arg",
+        "match_kind": "exact"
+      },
+      "note": "Complex.arg returns the principal argument in (-π, π], matching the atan2(y, x) interpretation as the argument of x + iy.",
+      "provenance": "ai"
     }
   ]
 }

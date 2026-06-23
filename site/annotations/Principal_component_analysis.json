@@ -179,7 +179,7 @@
       "kind": "definition",
       "label": "Loadings in PCA",
       "anchor": {
-        "section": "Further considerations",
+        "section": "Further components",
         "snippet": "Columns of W multiplied by the square root of corresponding eigenvalues"
       },
       "status": "not_formalized",
@@ -189,7 +189,7 @@
         "match_kind": null
       },
       "note": "PCA loadings are not defined in Mathlib.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "cf528e800919"
     },
     {
@@ -227,6 +227,22 @@
       "id": "e1fab3f094b4"
     },
     {
+      "kind": "proposition",
+      "label": "Eigenvalue equals sum of squared component scores",
+      "anchor": {
+        "section": "Covariances",
+        "snippet": "is equal to the sum of the squares over the dataset associated with each component"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement equating the k-th eigenvalue of XᵀX with the sum of squared k-th principal-component scores appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Singular value decomposition of X",
       "anchor": {
@@ -261,6 +277,22 @@
       "id": "402c80dc8d5e"
     },
     {
+      "kind": "proposition",
+      "label": "Score matrix as polar decomposition",
+      "anchor": {
+        "section": "Singular value decomposition",
+        "snippet": "This form is also the polar decomposition of T"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no matrix polar decomposition lemma identifying the PCA score matrix with the polar form.",
+      "provenance": "ai"
+    },
+    {
       "kind": "theorem",
       "label": "Eckart–Young theorem (truncated SVD is best rank-L approximation)",
       "anchor": {
@@ -293,6 +325,22 @@
       "note": "The PCA-formulation of the optimal k-dimensional fit theorem is not formalized in Mathlib.",
       "provenance": "ai",
       "id": "811c95926d55"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum of eigenvalues equals total squared deviation from mean",
+      "anchor": {
+        "section": "Further considerations",
+        "snippet": "The sum of all the eigenvalues is equal to the sum of the squared distances of the points from their multidimensional mean"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement equating the trace of the empirical covariance matrix with total squared deviation from the centroid appears in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -463,6 +511,22 @@
       "note": "Mathlib's Hermitian spectral theorem gives unitary diagonalization, generalizing the statement for non-negative-definite covariance matrices.",
       "provenance": "ai",
       "id": "070fa31d8b9c"
+    },
+    {
+      "kind": "proposition",
+      "label": "Power iteration converges to leading principal component",
+      "anchor": {
+        "section": "Iterative computation",
+        "snippet": "the vector r gets close to the first principal component of X within the number of iterations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no convergence theorem for the power-iteration algorithm applied to XᵀX.",
+      "provenance": "ai"
     },
     {
       "kind": "example",

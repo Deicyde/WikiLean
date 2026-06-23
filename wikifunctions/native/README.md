@@ -34,6 +34,52 @@ those dirs + the two wrappers (Dafny), and the verus dir + wrapper (Verus;
 
 - `Z13701_coprime.dfy` — Dafny proof that the Euclidean coprimality loop returns `Gcd(a,b) == 1`.
 - `z13701_coprime.rs` — the same algorithm verified in Verus (Rust).
+- `rustpython_int_floordiv.rs` — **a different, more faithful kind of proof** (see below): it certifies the *leaf integer semantics* RustPython actually uses, not a re-implemented algorithm.
+
+## Verifying the real interpreter's leaf, not a re-implementation (`rustpython_int_floordiv.rs`)
+
+The two files above verify a *re-implementation* of the gcd algorithm — the
+weaker claim the box at the top warns about. `rustpython_int_floordiv.rs` attacks
+the gap from the other end: it grounds a proof in **RustPython's actual deployed
+code path** at the granularity of a single operation (the `%` / `//` leaf the
+Lean embedding's `Imp.Expr.mod` assumes).
+
+The deployed chain is real and citable — in RustPython
+`crates/vm/src/builtins/int.rs`:
+
+```rust
+fn inner_mod(a, b)      { if b.is_zero() {err} else { a.mod_floor(b) } }      // Python  %
+fn inner_floordiv(a, b) { ...                         a.div_floor(b)   }      // Python  //
+fn inner_divmod(a, b)   { ...                  a.div_mod_floor(b)      }      // divmod
+```
+
+So Python `%`/`//` on `int` are exactly `num_integer`'s **floored** division on
+`num_bigint::BigInt`, which is realized as "truncated div/rem, then adjust toward
+−∞." The Verus file proves that adjustment refines Python's exact floored
+contract — `a == q·b + r`, remainder takes the **divisor's** sign, `|r| < |b|` —
+for **all integers** (arbitrary precision, no range bound), and cross-checks the
+output against CPython's actual results in all four sign quadrants.
+
+```bash
+verus rustpython_int_floordiv.rs    # → 5 verified, 0 errors
+```
+
+**Trust boundary (minimal and explicit).** The one assumed primitive is
+`is_trunc_divmod`: that `BigInt`'s truncated `/`,`%` (num-bigint) meet the
+standard truncation contract — the same bignum primitive `difftest.py` + `leanpy`
+exercise empirically. *Not* proved: num-bigint's internal bignum algorithms, or
+the compiled WASM. What *is* proved is the Python-floored-semantics logic
+RustPython layers on top — the part where bugs would actually live.
+
+**How it slots in.** Under the Lean embedding, `Imp.Expr.mod a b` currently uses
+Lean's `Nat.mod`, *assumed* to match Python. This makes that leaf assumption a
+*theorem about RustPython's real delegation chain* instead. For Z13701's loop
+(`a % b` on non-negatives, where floored = truncated = ordinary remainder) the
+corollary `coprime_loop_leaf_is_nat_mod` shows the leaf is exactly `Nat.mod`.
+The `*` leaf (factorial Z13667) and comparisons are pure pass-throughs to
+num-bigint (`int1 * int2`, `cmp`) with **no** Python-specific logic — nothing to
+verify there beyond the same num-bigint trust assumption, so they're documented,
+not re-proved.
 
 Both mirror the deployed Wikifunctions Python for `Z13701`:
 
