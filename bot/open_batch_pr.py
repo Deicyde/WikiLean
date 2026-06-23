@@ -5,9 +5,9 @@ open the PR. NO LLM in the loop — pure mechanical transformation of a fixed in
 Pipeline phases (run individually or via --all):
   --apply        insert @[wikidata Qxxx] above each approved decl (idempotent)
   --check        print the resulting git diff --stat
-  --build        lake build the touched modules; on attribute-resolution failure,
-                 add `public import Mathlib.Tactic.CrossRefAttribute` and rebuild
-                 (deterministic fixpoint, max 2 passes)
+  --build        add `public import Mathlib.Tactic.CrossRefAttribute` to the tagged
+                 files (the only error a @[wikidata] doc-attribute can cause); NO local
+                 compile — mathlib CI verifies (see add_crossref_imports for why)
   --open-pr      git branch/commit/push to the fork + gh pr create
   --all          apply → build → open-pr
 
@@ -137,10 +137,7 @@ def apply_all(approved: dict, mathlib: Path) -> list[dict]:
         results.append({**t, "ok": True, "msg": desc})
     return results
 
-# --- build + deterministic import fix -------------------------------------
-
-def module_name(rel: str) -> str:
-    return rel[:-5].replace("/", ".")
+# --- deterministic import fix ---------------------------------------------
 
 def run(cmd, cwd=None):
     return subprocess.run(cmd, cwd=cwd, text=True, capture_output=True)
@@ -167,50 +164,41 @@ def add_crossref_import(path: Path) -> bool:
     return True
 
 
-def build_and_fix_imports(approved: dict, mathlib: Path, max_passes: int = 2) -> bool:
-    mods = sorted({module_name(t["file"]) for t in approved["tags"]})
-    for attempt in range(1, max_passes + 1):
-        print(f"[build] pass {attempt}: lake build {len(mods)} modules")
-        r = run(["lake", "build", *mods], cwd=mathlib)
-        out = r.stdout + r.stderr
-        if r.returncode == 0:
-            print("[build] success"); return True
-        # Deterministic rule: any module whose build failed AND whose error mentions
-        # the wikidata attribute → add the CrossRefAttribute import.
-        failed = set(re.findall(r"error: .*?(\bMathlib\.[\w.]+)", out))
-        fixed_any = False
-        for t in approved["tags"]:
-            mod = module_name(t["file"])
-            if ("wikidata" in out or "CrossRefAttribute" in out):
-                p = mathlib / t["file"]
-                txt = p.read_text(encoding="utf-8")
-                if "Mathlib.Tactic.CrossRefAttribute" in txt:
-                    continue
-                # insert import in alpha order among existing `public import` lines
-                lines = txt.splitlines()
-                imp = "public import Mathlib.Tactic.CrossRefAttribute"
-                idxs = [i for i, l in enumerate(lines) if l.startswith("public import ")]
-                if not idxs:
-                    continue
-                insert_at = idxs[-1] + 1
-                for i in idxs:
-                    if lines[i] > imp:
-                        insert_at = i; break
-                lines.insert(insert_at, imp)
-                p.write_text("\n".join(lines) + "\n", encoding="utf-8")
-                print(f"[build] added CrossRefAttribute import to {t['file']}")
-                fixed_any = True
-        if not fixed_any:
-            print("[build] FAILED, no import fix applicable:\n" + out[-3000:])
-            return False
-        # SINGLE PASS: a second cold build of ~22 modules just to RE-verify the import
-        # fix is what blew the 120m Actions cap (two passes). The CrossRefAttribute
-        # import deterministically resolves the only error a @[wikidata] doc-attribute
-        # can cause, so open now and let the PR's mathlib CI run the authoritative
-        # compile check rather than paying for a second cold rebuild here.
-        print("[build] imports added — skipping the re-verify rebuild; mathlib CI verifies")
-        return True
-    return False  # unreachable (single pass returns above); kept as a safety net
+def add_crossref_imports(approved: dict, mathlib: Path) -> None:
+    """Add `public import Mathlib.Tactic.CrossRefAttribute` to every tagged file that
+    lacks it — the ONLY error a @[wikidata] doc-attribute can introduce — and do NOT run
+    a local `lake build`.
+
+    Why no build: a @[wikidata] attribute changes the tagged file's source, which
+    invalidates its olean the instant we edit it — so NO cached olean (on any master
+    commit, old or new) matches, and `lake build` cold-recompiles the edited modules from
+    source. #40970 spent 1h41m here against a 100%-cached master; the cost was the edited
+    high-fan-out modules themselves (BorelSpace, PiL2, ModelTheory, Bochner), not a cache
+    miss. And the build only ever surfaced the one foregone "unknown attribute" error
+    before adding this exact import and skipping the re-verify anyway (single-pass). So we
+    add the import directly and let the PR's mathlib CI run the authoritative compile —
+    the same trust model the proven --reapply path already uses (add_crossref_import, no
+    build). The conflict-resolver re-derives its import set via `git grep` on the pushed
+    branch, so it needs no record from here."""
+    files = sorted({t["file"] for t in approved["tags"]})
+    added = [f for f in files if add_crossref_import(mathlib / f)]
+    for f in added:
+        print(f"  [import] added CrossRefAttribute to {f}")
+    # Loud-surface any tagged file left WITHOUT the import that has no `public import` block
+    # to anchor one (bare-`import` / `public meta import` files — ~0.2% of Mathlib). The
+    # dropped local build used to expose this; now it would surface only as a red "unknown
+    # attribute" CI check — unless the file already transitively imports CrossRefAttribute.
+    noanchor = []
+    for f in files:
+        txt = (mathlib / f).read_text(encoding="utf-8")
+        if "Mathlib.Tactic.CrossRefAttribute" not in txt and \
+           not any(l.startswith("public import ") for l in txt.splitlines()):
+            noanchor.append(f)
+    if noanchor:
+        print("[import] WARNING: no `public import` anchor — import NOT added, CI may fail on "
+              "the unknown @[wikidata] attribute:\n    " + "\n    ".join(noanchor))
+    print(f"[import] CrossRefAttribute import added to {len(added)}/{len(files)} tagged "
+          f"file(s); no local compile — mathlib CI verifies")
 
 # --- git + gh -------------------------------------------------------------
 
@@ -303,8 +291,8 @@ def open_pr(approved: dict, mathlib: Path, repo: str, base: str, create: bool = 
     # tagged on master or no longer present, so this is usually < the approved count; the
     # body must say what's in the diff (#40970's body said 25, the diff had 21).
     shown = run(["git", "show", "HEAD", "--unified=0"], cwd=mathlib).stdout
-    n = sum(1 for l in shown.splitlines()
-            if l.startswith("+") and not l.startswith("+++") and "wikidata Q" in l) or len(approved["tags"])
+    n = sum(len(re.findall(r"wikidata\s+Q\d+", l)) for l in shown.splitlines()
+            if l.startswith("+") and not l.startswith("+++") and "@[" in l) or len(approved["tags"])
     print(f"[gh] pr create (head {fo}:{branch} -> {repo}:{base})")
     r = run(["gh", "pr", "create", "--repo", repo, "--base", base,
              "--head", f"{fo}:{branch}",
@@ -402,8 +390,10 @@ def main():
         print("\n=== git diff --stat ===")
         print(run(["git", "diff", "--stat"], cwd=args.mathlib).stdout)
     if args.build or args.all:
-        if not build_and_fix_imports(approved, args.mathlib):
-            print("BUILD FAILED — not opening PR"); sys.exit(1)
+        # NB: --build no longer compiles — it deterministically adds the CrossRefAttribute
+        # import and trusts mathlib CI to compile (see add_crossref_imports). Kept the flag
+        # name so existing callers (open_batch.py) are unchanged.
+        add_crossref_imports(approved, args.mathlib)
     if args.open_pr or args.all:
         open_pr(approved, args.mathlib, args.repo, args.base)
     if args.reapply:

@@ -83,7 +83,13 @@ def do_settle(pr, branch, mathlib, cls, dry):
               f"by ≥2 reviewers (incl. a maintainer) — **ready to merge**."
               + (f" {len(recycle)} recycled to the next batch." if recycle else "")
               + " <!-- wikilean-bot-ready -->")
-    sh([sys.executable, str(HERE / "pr_table.py"), str(pr), "--repo", REPO, "--post", "--header", header])
+    sh([sys.executable, str(HERE / "pr_table.py"), str(pr), "--repo", REPO, "--post", "--header", header,
+        "--no-body-sync"])
+    # The trim shrank the diff to the green set; re-sync the PR body's count to match.
+    # Use the KNOWN green count, not a `gh pr diff` recount — GitHub can still serve the
+    # pre-trim diff for a moment after split's push, and a settled PR never re-syncs.
+    import pr_table
+    pr_table.sync_body_count(pr, REPO, n=green)
     fresh = pool.candidates(20, exclude=set(cls["tags"]) | {e["qid"] for e in recycle})
     CANDS.write_text(json.dumps(fresh))
     sh([sys.executable, str(HERE / "publish_queue.py"), "--recycle", str(QUEUE), "--candidates", str(CANDS)])
@@ -139,6 +145,13 @@ def resolve_conflicts(pr, branch, mathlib, dry):
     sh([sys.executable, str(HERE / "open_batch_pr.py"), "--approved", str(gpath),
         "--mathlib", str(mathlib), "--repo", REPO, "--base", "master",
         "--apply", "--check", "--reapply"], check=True)   # NO --build — CI compile-checks
+    # The force-push shrank the diff to the green set; this path otherwise never re-runs
+    # pr_table, so the table comment AND the body count would both go stale. Refresh the
+    # trimmed table, then sync the body to the KNOWN green count (passed explicitly, so no
+    # `gh pr diff` and no GitHub diff-recompute lag right after the force-push).
+    import pr_table
+    sh([sys.executable, str(HERE / "pr_table.py"), str(pr), "--repo", REPO, "--post", "--no-body-sync"], check=False)
+    pr_table.sync_body_count(pr, REPO, n=len(green["tags"]))
 
 
 def do_open(mathlib, dry):
