@@ -50,11 +50,11 @@ concurrency:
 jobs:
   poll:
     runs-on: ubuntu-latest
-    # The open path's `lake build` of the freshly-tagged modules is slow on a cold
-    # 2-core runner (batches 1-3 were opened on a warm laptop). 45m timed out mid-
-    # build; 120m gives it room. Only the (rare) open/settle ticks do heavy work —
-    # no-op ticks exit in ~12s — so this doesn't change steady-state billing.
-    timeout-minutes: 120
+    # Heavy ticks (open / settle / conflict-resolve) do NO Lean build anymore — the open
+    # adds the CrossRefAttribute import deterministically and lets mathlib CI compile
+    # (commit 80a4741), so a heavy tick is git-clone + apply + gh + the triage LLM =
+    # minutes. 30m is generous headroom; no-op (decide=wait) ticks still exit in ~12s.
+    timeout-minutes: 30
     env:
       PYTHONUNBUFFERED: "1"        # stream poll/open_batch print()s live (no 40m of silence)
       REPO: leanprover-community/mathlib4
@@ -86,13 +86,9 @@ jobs:
           fi
 
       # ---- heavy setup + the real tick, only when acting ----
-      - name: Install Lean toolchain (elan/lake)
-        if: steps.decide.outputs.act == 'true'
-        run: |
-          curl -fsSL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
-            | sh -s -- -y --default-toolchain none
-          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
-
+      # No Lean toolchain step: the live path runs no `lake` (open adds the import + trusts
+      # mathlib CI; settle uses split.py --no-build; conflict-resolve uses --reapply, no
+      # build). Re-add an elan install here if a local build is ever reintroduced.
       - uses: actions/setup-node@v4
         if: steps.decide.outputs.act == 'true'
         with: { node-version: '20' }
