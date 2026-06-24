@@ -15,6 +15,7 @@ ROOT = Path(__file__).resolve().parent.parent
 # Later files win on a QID collision — refresh_tagged.jsonl holds re-tags from the
 # improved agent (verified decls + tightest primary_qid) and overrides the originals.
 CATALOG = [ROOT / "catalog/data/pilot_tagged.jsonl", ROOT / "catalog/data/tier2_tagged.jsonl",
+           ROOT / "catalog/data/generated_candidates.jsonl",   # agent-generated, human-verified
            ROOT / "catalog/data/refresh_tagged.jsonl"]
 MOST_USED = ROOT / "bot/data/most_used_qids.json"
 TAGGED = ROOT / "bot/data/tagged_in_master.txt"
