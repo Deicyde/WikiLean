@@ -298,5 +298,124 @@
    "suggested_qid": "",
    "fix_hint": ""
   }
+ },
+ {
+  "qid": "Q186475",
+  "file": "Mathlib/Algebra/MvPolynomial/PDeriv.lean",
+  "verdicts": {
+   "wwylele": "reject",
+   "Deicyde": "reject"
+  },
+  "reason": "maintainer rejected/revised",
+  "notes": [],
+  "decl": "MvPolynomial.pderiv",
+  "triage": {
+   "decision": "cut",
+   "reason": "Q186475 (partial derivative) is the analytic/calculus concept, but MvPolynomial.pderiv formalizes the purely algebraic formal polynomial derivative as a bundled Derivation morphism \u2014 a structural QID mismatch with no reviewer-supplied fix target.",
+   "suggested_decl": "",
+   "suggested_qid": "",
+   "fix_hint": ""
+  }
+ },
+ {
+  "qid": "Q892585",
+  "file": "Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean",
+  "verdicts": {
+   "Deicyde": "reject"
+  },
+  "reason": "objection (reject/revise)",
+  "notes": [
+   {
+    "login": "Deicyde",
+    "status": "reject",
+    "text": "Close but not quite. A Borel measure is a measure defined on a `BorelSpace`, which I'm not sure is explicitly defined in Mathlib"
+   }
+  ],
+  "decl": "BorelSpace",
+  "triage": {
+   "decision": "cut",
+   "reason": "Q892585 is Borel measure while BorelSpace formalizes the underlying measurable space structure; no clean replacement QID for the general 'Borel space' concept (distinct from the more restrictive 'standard Borel space') can be identified, and the reviewer flagged uncertainty about Mathlib coverage of Borel measure itself.",
+   "suggested_decl": "",
+   "suggested_qid": "",
+   "fix_hint": ""
+  }
+ },
+ {
+  "qid": "Q274506",
+  "file": "Mathlib/Probability/Distributions/Uniform.lean",
+  "verdicts": {
+   "Deicyde": "reject"
+  },
+  "reason": "objection (reject/revise)",
+  "notes": [
+   {
+    "login": "Deicyde",
+    "status": "reject",
+    "text": "Mathlib is a strict generalization. It does not require the distribution to be continuous."
+   }
+  ],
+  "decl": "MeasureTheory.pdf.IsUniform",
+  "triage": {
+   "decision": "cut",
+   "reason": "MeasureTheory.pdf.IsUniform is parametric over any reference measure \u03bc on any measurable space (discrete counting measure works just as well as Lebesgue), so it strictly generalizes Q274506's continuous uniform distribution on a real interval, and no continuous-only Mathlib declaration exists in the file to retarget the tag to.",
+   "suggested_decl": "",
+   "suggested_qid": "",
+   "fix_hint": ""
+  }
+ },
+ {
+  "qid": "Q200694",
+  "file": "Mathlib/Tactic/ITauto.lean",
+  "verdicts": {
+   "wwylele": "reject",
+   "Deicyde": "reject"
+  },
+  "reason": "maintainer rejected/revised",
+  "notes": [
+   {
+    "login": "wwylele",
+    "status": "reject",
+    "text": "This is the internal of the itauto tactic, and not considered as public API of Mathlib, right? I don't think we should tag anything in the Tactic folder"
+   }
+  ],
+  "decl": "Mathlib.Tactic.ITauto.IProp",
+  "triage": {
+   "decision": "cut",
+   "reason": "Both reviewers rejected on categorical grounds \u2014 Mathlib.Tactic.ITauto.IProp is an internal tactic implementation type, not a formalized mathematical concept, and neither reviewer suggested a concrete alternative declaration to retarget to.",
+   "suggested_decl": "",
+   "suggested_qid": "",
+   "fix_hint": ""
+  }
+ },
+ {
+  "qid": "Q1412452",
+  "file": "Mathlib/Topology/MetricSpace/HausdorffDimension.lean",
+  "verdicts": {
+   "wwylele": "(note)",
+   "Deicyde": "reject"
+  },
+  "reason": "objection (reject/revise)",
+  "notes": [
+   {
+    "login": "wwylele",
+    "status": "(note)",
+    "text": "Pedantically speaking, this should be Q565186 (Hausdorff dimension), which is just one type of fractal dimension (possibly the most used one)"
+   },
+   {
+    "login": "Deicyde",
+    "status": "reject",
+    "text": "Retarget to `Hausdorff dimension (Q565186)`"
+   }
+  ],
+  "decl": "MeasureTheory.dimH",
+  "triage": {
+   "decision": "cut",
+   "reason": "Both reviewers agree the fix is concrete: retarget from Q1412452 (fractal dimension, too broad) to Q565186 (Hausdorff dimension), which exactly matches what MeasureTheory.dimH formalizes. [auto-cut: suggested decl `MeasureTheory.dimH` not found in Mathlib]",
+   "suggested_decl": "MeasureTheory.dimH",
+   "suggested_qid": "Q565186",
+   "fix_hint": "Replace QID Q1412452 (fractal dimension) with Q565186 (Hausdorff dimension); keep declaration MeasureTheory.dimH unchanged.",
+   "decl_exists": false,
+   "qid_exists": true
+  }
  }
 ]

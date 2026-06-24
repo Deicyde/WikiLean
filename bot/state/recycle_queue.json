@@ -1,5 +1,195 @@
 [
  {
+  "qid": "Q1324364",
+  "file": "Mathlib/Algebra/Group/Action/Pretransitive.lean",
+  "verdicts": {
+   "Deicyde": "reject"
+  },
+  "reason": "objection (reject/revise)",
+  "notes": [],
+  "decl": "MulAction.IsPretransitive",
+  "triage": {
+   "decision": "requeue",
+   "reason": "Q1324364 is 'homogeneous space' (a coset-space construction G/H), which is wrong — MulAction.IsPretransitive formalizes the *property* of an action having a single orbit, which maps directly to Q121074938 ('Transitive group action', 'group action with only one orbit').",
+   "suggested_decl": "MulAction.IsPretransitive",
+   "suggested_qid": "Q121074938",
+   "fix_hint": "Replace Q1324364 (homogeneous space) with Q121074938 (Transitive group action) on the same declaration MulAction.IsPretransitive.",
+   "decl_exists": true,
+   "qid_exists": true
+  }
+ },
+ {
+  "qid": "Q852973",
+  "file": "Mathlib/Algebra/Homology/EulerCharacteristic.lean",
+  "verdicts": {
+   "Deicyde": "reject"
+  },
+  "reason": "objection (reject/revise)",
+  "notes": [
+   {
+    "login": "Deicyde",
+    "status": "reject",
+    "text": "Incorrect. This is a generalization of the Euler Charactaristic. The actual Euler Characteristic is the specialization of this definition to the singular homology complex."
+   }
+  ],
+  "decl": "HomologicalComplex.eulerChar",
+  "triage": {
+   "decision": "requeue",
+   "reason": "Q852973's defining formula χ = b₀ − b₁ + b₂ − ⋯ uses Betti numbers (ranks of homology groups), which HomologicalComplex.homologyEulerChar directly formalizes; the rejected tag mistakenly pointed at HomologicalComplex.eulerChar, which sums chain-group ranks instead.",
+   "suggested_decl": "HomologicalComplex.homologyEulerChar",
+   "suggested_qid": "",
+   "fix_hint": "Retag Q852973 to HomologicalComplex.homologyEulerChar (defined in the same file), whose type is the alternating finsum of rank(C.homology i) — the Betti-number formula that matches Wikidata's χ = b₀ − b₁ + b₂ − ⋯ exactly.",
+   "decl_exists": true
+  }
+ },
+ {
+  "qid": "Q131187",
+  "file": "Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+  "verdicts": {
+   "Deicyde": "reject"
+  },
+  "reason": "objection (reject/revise)",
+  "notes": [
+   {
+    "login": "Deicyde",
+    "status": "reject",
+    "text": "Let's re-target this to `HasFTaylorSeriesUpTo`"
+   }
+  ],
+  "decl": "ftaylorSeries",
+  "triage": {
+   "decision": "requeue",
+   "reason": "Reviewer gave a concrete replacement declaration: the tag should be on `HasFTaylorSeriesUpTo` (the predicate formalizing Taylor series existence) rather than `ftaylorSeries` (the bare data constructor).",
+   "suggested_decl": "HasFTaylorSeriesUpTo",
+   "suggested_qid": "",
+   "fix_hint": "Move the @[wikidata Q131187] tag from `ftaylorSeries` to `HasFTaylorSeriesUpTo` in Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean.",
+   "decl_exists": true
+  }
+ },
+ {
+  "qid": "Q1047080",
+  "file": "Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+  "verdicts": {
+   "Deicyde": "reject"
+  },
+  "reason": "objection (reject/revise)",
+  "notes": [
+   {
+    "login": "Deicyde",
+    "status": "reject",
+    "text": "Differential forms are not yet in Mathlib (coming soon)"
+   }
+  ],
+  "decl": "extDeriv",
+  "triage": {
+   "decision": "requeue",
+   "reason": "The rejection was purely a timing issue — extDeriv is now defined in Mathlib.Analysis.Calculus.DifferentialForm.Basic and directly formalizes the exterior derivative; Q1047080 is the correct concept.",
+   "suggested_decl": "extDeriv",
+   "suggested_qid": "",
+   "fix_hint": "Re-submit unchanged; extDeriv now exists in Mathlib and Q1047080 (Exterior derivative) is the accurate mapping.",
+   "decl_exists": true
+  }
+ },
+ {
+  "qid": "Q599027",
+  "file": "Mathlib/Analysis/InnerProductSpace/Harmonic/Basic.lean",
+  "verdicts": {
+   "Deicyde": "reject"
+  },
+  "reason": "objection (reject/revise)",
+  "notes": [
+   {
+    "login": "Deicyde",
+    "status": "reject",
+    "text": "Retarget to `HarmonicOnNhd` since the Wikipedia article specifically says the function should be harmonic on an entire open set, not just at a point."
+   }
+  ],
+  "decl": "InnerProductSpace.HarmonicAt",
+  "triage": {
+   "decision": "requeue",
+   "reason": "Reviewer gave a concrete, verifiable fix: InnerProductSpace.HarmonicOnNhd (∀ x ∈ s, HarmonicAt f x) matches the Wikipedia definition of harmonic on an open set, while HarmonicAt only captures harmonicity at a single point.",
+   "suggested_decl": "InnerProductSpace.HarmonicOnNhd",
+   "suggested_qid": "",
+   "fix_hint": "Retarget the @[wikidata Q599027] tag from InnerProductSpace.HarmonicAt to InnerProductSpace.HarmonicOnNhd; the QID is correct and needs no change.",
+   "decl_exists": true
+  }
+ },
+ {
+  "qid": "Q200125",
+  "file": "Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+  "verdicts": {
+   "Deicyde": "reject"
+  },
+  "reason": "objection (reject/revise)",
+  "notes": [
+   {
+    "login": "Deicyde",
+    "status": "reject",
+    "text": "Retarget to Bochner integral (Q889019)"
+   }
+  ],
+  "decl": "MeasureTheory.integral",
+  "triage": {
+   "decision": "requeue",
+   "reason": "Reviewer identified a concrete, specific fix: Q200125 (likely Lebesgue integral) is the wrong concept; the declaration MeasureTheory.integral in Bochner/Basic.lean formalizes the Bochner integral, so the QID should be Q889019.",
+   "suggested_decl": "MeasureTheory.integral",
+   "suggested_qid": "Q889019",
+   "fix_hint": "Replace QID Q200125 with Q889019 (Bochner integral); keep the declaration MeasureTheory.integral unchanged.",
+   "decl_exists": true,
+   "qid_exists": true
+  }
+ },
+ {
+  "qid": "Q623472",
+  "file": "Mathlib/MeasureTheory/Measure/Typeclasses/Probability.lean",
+  "verdicts": {
+   "Deicyde": "reject"
+  },
+  "reason": "objection (reject/revise)",
+  "notes": [
+   {
+    "login": "Deicyde",
+    "status": "reject",
+    "text": "Instead tag probability measure (Q355020)"
+   }
+  ],
+  "decl": "MeasureTheory.IsProbabilityMeasure",
+  "triage": {
+   "decision": "requeue",
+   "reason": "The declaration is correct but the QID is wrong; the reviewer explicitly named the right QID Q355020 (probability measure), which directly matches what MeasureTheory.IsProbabilityMeasure formalizes.",
+   "suggested_decl": "MeasureTheory.IsProbabilityMeasure",
+   "suggested_qid": "Q355020",
+   "fix_hint": "Replace QID Q623472 with Q355020 (probability measure) on MeasureTheory.IsProbabilityMeasure.",
+   "decl_exists": true,
+   "qid_exists": true
+  }
+ },
+ {
+  "qid": "Q4055684",
+  "file": "Mathlib/ModelTheory/Basic.lean",
+  "verdicts": {
+   "Deicyde": "reject"
+  },
+  "reason": "objection (reject/revise)",
+  "notes": [
+   {
+    "login": "Deicyde",
+    "status": "reject",
+    "text": "Retarget to `first-order language (Q131350632)`"
+   }
+  ],
+  "decl": "FirstOrder.Language",
+  "triage": {
+   "decision": "requeue",
+   "reason": "The reviewer identified a concrete, more specific QID (Q131350632, 'first-order language') that precisely matches FirstOrder.Language; only the QID needs to change.",
+   "suggested_decl": "FirstOrder.Language",
+   "suggested_qid": "Q131350632",
+   "fix_hint": "Keep the tag on FirstOrder.Language but replace QID Q4055684 with Q131350632 (first-order language).",
+   "decl_exists": true,
+   "qid_exists": true
+  }
+ },
+ {
   "qid": "Q752718",
   "file": "Mathlib/Analysis/Asymptotics/Defs.lean",
   "decl": null,
@@ -62,6 +252,19 @@
    "suggested_qid": "Q605807",
    "suggested_decl": null,
    "fix_hint": "\"Random graph\" is too broad. We should instead tag with Q605807 (Erdős–Rényi model) since this is the `G(V,p)` model described by `binomialRandom`. See: https://en.wikipedia.org/wiki/Erd%C5%91s%E2%80%"
+  }
+ },
+ {
+  "qid": "Q1412452",
+  "file": "Mathlib/Topology/MetricSpace/HausdorffDimension.lean",
+  "decl": null,
+  "from_corrections": true,
+  "triage": {
+   "decision": "requeue",
+   "reason": "reviewer named a more specific QID (Q565186)",
+   "suggested_qid": "Q565186",
+   "suggested_decl": null,
+   "fix_hint": "Retarget to `Hausdorff dimension (Q565186)`"
   }
  }
 ]
