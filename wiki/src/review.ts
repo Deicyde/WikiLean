@@ -1091,11 +1091,41 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
 
   // ---- dedicated review-posting OAuth flow (separate GitHub app) ----
 
-  // Whether the current browser is connected for posting (+ the GitHub login).
+  // Whether the current browser is connected for posting (+ the GitHub login), and —
+  // when ?owner= is given — whether an in-app Submit to that org would ACTUALLY land.
+  // canPost is true two ways: (1) the connected user IS the personal-PAT owner (a classic
+  // PAT posts to any public repo), or (2) the WikiLean App is installed on `owner`'s org
+  // (an org-owner action) so the user's user-to-server token can write there. Everyone
+  // else is blocked by GitHub, so the client steers them to Copy review instead of a
+  // Submit button that would 403. Per-request + uncached (it depends on this session).
   app.get("/api/review/connected", async (c) => {
     const configured = !!(c.env.REVIEW_GITHUB_CLIENT_ID && c.env.REVIEW_GITHUB_CLIENT_SECRET);
-    const { login } = await reviewToken(c);
-    return c.json({ configured, connected: !!login, login: login ?? null });
+    const { token, login } = await reviewToken(c);
+    const owner = (c.req.query("owner") || "").toLowerCase();
+    let canPost = false;
+    let postVia = "none";
+    if (login && owner) {
+      const patLogin = c.env.REVIEW_POSTING_PAT ? (await ghLogin(c.env.REVIEW_POSTING_PAT))?.toLowerCase() : null;
+      if (patLogin && patLogin === login.toLowerCase()) {
+        canPost = true;
+        postVia = "pat";
+      } else if (token) {
+        // A GitHub-App user-to-server token lists only THIS app's installations the user
+        // can see; an install on `owner`'s org means their token can write PR comments there.
+        const r = await fetch(`${GH_API}/user/installations`, { headers: ghHeaders(token) });
+        if (r.ok) {
+          const j = (await r.json().catch(() => ({}))) as { installations?: Array<{ account?: { login?: string } }> };
+          if ((j.installations || []).some((i) => (i.account?.login || "").toLowerCase() === owner)) {
+            canPost = true;
+            postVia = "app";
+          }
+        }
+      }
+    }
+    const installUrl = c.env.REVIEW_GITHUB_APP_SLUG
+      ? `https://github.com/apps/${c.env.REVIEW_GITHUB_APP_SLUG}/installations/new`
+      : null;
+    return c.json({ configured, connected: !!login, login: login ?? null, canPost, postVia, installUrl });
   });
 
   // Step 1: redirect to GitHub to authorize the review GitHub App (user-to-server).
@@ -1485,6 +1515,7 @@ async function loadPR(){
     const data = await r.json();
     if(!data.ok){ $("#status").textContent = "Error: " + data.error; return; }
     render(data);
+    refreshConnected();   // re-check canPost now that the PR's org is known
   } catch(e){ $("#status").textContent = "Fetch failed: " + e; }
 }
 
@@ -1802,17 +1833,38 @@ async function copyReview(){
 }
 
 // --- dedicated review-posting connection state (separate from wiki login) ---
-let GH_CONFIGURED=false, GH_CONNECTED=false, GH_LOGIN="";
+let GH_CONFIGURED=false, GH_CONNECTED=false, GH_LOGIN="", GH_CANPOST=false, GH_INSTALL_URL="";
 async function refreshConnected(){
-  try { const r = await fetch("/api/review/connected"); const j = await r.json();
-    GH_CONFIGURED=!!j.configured; GH_CONNECTED=!!j.connected; GH_LOGIN=j.login||""; } catch(e){}
+  try {
+    const owner = DATA ? DATA.repo.split("/")[0] : "";   // canPost is per-org
+    const r = await fetch("/api/review/connected" + (owner ? "?owner="+encodeURIComponent(owner) : ""));
+    const j = await r.json();
+    GH_CONFIGURED=!!j.configured; GH_CONNECTED=!!j.connected; GH_LOGIN=j.login||"";
+    GH_CANPOST=!!j.canPost; GH_INSTALL_URL=j.installUrl||"";
+  } catch(e){}
   updateSubmitBtn();
 }
 function updateSubmitBtn(){
   const b = $("#submit-gh"); if(!b) return;
-  if(GH_CONFIGURED && GH_CONNECTED){ b.textContent = "✅ Submit as @"+GH_LOGIN; b.title="Post your review as inline PR comments"; }
-  else if(GH_CONFIGURED){ b.textContent = "🔗 Connect GitHub to post"; b.title="Authorize the review app to post on your behalf"; }
-  else { b.textContent = "✅ Submit to GitHub"; b.title="In-app posting isn’t set up yet — use Copy review"; }
+  b.disabled=false; b.style.opacity=""; b.style.cursor="";
+  const note = document.getElementById("submit-note");
+  if(GH_CONFIGURED && GH_CONNECTED && GH_CANPOST){
+    b.textContent = "✅ Submit as @"+GH_LOGIN; b.title="Post your review as inline PR comments";
+  } else if(GH_CONFIGURED && GH_CONNECTED){
+    // Connected, but GitHub will block a post here (not the configured poster AND the app
+    // isn't installed on this org). Don't offer a Submit that 403s — disable it and steer
+    // to Copy review, which posts as the reviewer in-browser with no install.
+    const org = DATA ? DATA.repo.split("/")[0] : "this org";
+    b.textContent = "🔒 Submit unavailable here";
+    b.title = "GitHub blocks in-app posting for @"+GH_LOGIN+" on "+org+" — the WikiLean review app isn’t installed there. Use “📋 Copy review” (it posts as you).";
+    b.disabled=true; b.style.opacity=".5"; b.style.cursor="not-allowed";
+    if(note) note.innerHTML = "In-app Submit isn’t available for <b>@"+esc(GH_LOGIN)+"</b> on "+esc(org)+" — use <b>📋 Copy review</b> (posts as you, no install needed)."
+      + (GH_INSTALL_URL ? " An org owner can enable it by <a href=\""+GH_INSTALL_URL+"\" target=\"_blank\" rel=\"noopener\">installing the app</a>." : "");
+  } else if(GH_CONFIGURED){
+    b.textContent = "🔗 Connect GitHub to post"; b.title="Authorize the review app to post on your behalf";
+  } else {
+    b.textContent = "✅ Submit to GitHub"; b.title="In-app posting isn’t set up yet — use Copy review";
+  }
 }
 function connectGitHub(){
   // Carry the loaded PR in returnTo so the page re-loads it after the OAuth
@@ -1826,6 +1878,10 @@ function connectGitHub(){
 async function submitToGitHub(){
   if(!DATA) return;
   if(GH_CONFIGURED && !GH_CONNECTED){ connectGitHub(); return; }
+  if(GH_CONFIGURED && GH_CONNECTED && !GH_CANPOST){   // GitHub would 403 — go straight to Copy review
+    $("#submit-note").textContent = "In-app posting isn’t available for @"+GH_LOGIN+" on this org — copy the review and paste it (it posts as you).";
+    copyReview(); return;
+  }
   const parts = DATA.repo.split("/"); const owner=parts[0], repo=parts[1];
   const wasByQid = {}; DATA.decls.forEach(d => { wasByQid[d.qid] = parseStatus(d.comments).status; });
   const decisions = {};
