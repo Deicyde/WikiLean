@@ -121,6 +121,24 @@ def sync_body_count(pr, repo, n=None):
         print(f"  (body-count sync skipped: {e})")
 
 
+def sync_review_link(pr, repo):
+    """Self-heal a blank reviewer-UI `?pr=` in the PR body: the open-time fill
+    (open_batch.fill_review_link) can lose the fresh cross-fork editability race, so run
+    this on every table post — a later tick fills any link the open missed. Idempotent;
+    best-effort (never raises)."""
+    try:
+        body = subprocess.run(["gh", "pr", "view", str(pr), "--repo", repo, "--json", "body", "--jq", ".body"],
+                              capture_output=True, text=True).stdout
+        if "/review?pr=" in body and f"/review?pr={pr}" not in body:
+            new = body.replace("/review?pr=", f"/review?pr={pr}")
+            r = subprocess.run(["gh", "pr", "edit", str(pr), "--repo", repo, "--body", new],
+                               capture_output=True, text=True)
+            if r.returncode == 0:
+                print(f"  filled reviewer-UI link (?pr={pr})")
+    except Exception as e:
+        print(f"  (review-link sync skipped: {e})")
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("pr", type=int)
@@ -141,5 +159,6 @@ if __name__ == "__main__":
         # count themselves, to avoid recounting a possibly-lagged post-push `gh pr diff`.
         if not args.no_body_sync:
             sync_body_count(args.pr, args.repo)
+        sync_review_link(args.pr, args.repo)   # self-heal a blank ?pr= the open-time fill missed
     else:
         print(md)
