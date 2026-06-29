@@ -60,12 +60,15 @@ def assemble(batch_num):
 
 
 def fill_review_link(prn):
-    """Fill the blank `?pr=` in the freshly-opened PR body now that the PR exists (the
-    `gh pr list` above confirmed it). Retries + VERIFIES (re-reads the body) because a
-    brand-new cross-fork PR isn't editable for a while — the immediate post-create edit
-    raced and left #40861/#40970 with a blank link. Best-effort: warns, never aborts."""
+    """Fill the blank `?pr=` in the freshly-opened PR body. Retries + VERIFIES (re-reads
+    the body) because a brand-new cross-fork PR isn't body-editable for ~1-2 min — the
+    edit fails until GitHub propagates the PR, which left #40861/#40970/#41139 blank (the
+    SAME edit succeeds minutes later). ~2-min window (caller also runs this AFTER finalize,
+    so the PR has already aged); logs the gh error if it never takes. pr_table's
+    sync_review_link self-heals any still-blank link on a later tick. Never aborts."""
     import time
-    for _ in range(8):
+    last = ""
+    for _ in range(12):
         body = subprocess.run(["gh", "pr", "view", str(prn), "--repo", REPO, "--json", "body", "--jq", ".body"],
                               capture_output=True, text=True).stdout
         if f"/review?pr={prn}" in body:
@@ -73,10 +76,11 @@ def fill_review_link(prn):
         if "/review?pr=" not in body:
             return  # no placeholder to fill
         new = body.replace("/review?pr=", f"/review?pr={prn}")
-        subprocess.run(["gh", "pr", "edit", str(prn), "--repo", REPO, "--body", new],
-                       capture_output=True, text=True)
-        time.sleep(5)
-    print(f"  WARNING: reviewer-UI link still blank on #{prn} after retries")
+        r = subprocess.run(["gh", "pr", "edit", str(prn), "--repo", REPO, "--body", new],
+                           capture_output=True, text=True)
+        last = (r.stderr or r.stdout).strip()
+        time.sleep(10)
+    print(f"  WARNING: reviewer-UI link still blank on #{prn} after retries (last gh: {last[:150]})")
 
 
 def main():
@@ -136,7 +140,6 @@ def main():
     if not prn:
         print("could not find the new PR (did gh pr create fail?) — stopping before finalize."); sys.exit(1)
     print(f"\nopened PR #{prn}. finalizing…")
-    fill_review_link(prn)
     # Deterministic reviewer table (per-tag reviews; idempotent).
     sh([sys.executable, str(HERE / "pr_table.py"), prn, "--repo", REPO, "--post", "--fresh"])
     # Advance state FIRST so a re-run no-ops even if finalize stumbles.
@@ -146,6 +149,11 @@ def main():
     # the REQUIRED LLM-generated label + crossref inline comments + /queue publish.
     sh([sys.executable, str(HERE / "finalize.py"), "--pr", prn,
         "--mathlib", str(args.mathlib), "--approved", str(apath)])
+    # Fill the reviewer-UI link LAST: a brand-new cross-fork PR isn't body-editable for
+    # ~1-2 min (the edit fails until GitHub propagates it — #40861/#40970/#41139 all
+    # shipped blank), so doing it after the table + finalize lets the PR age first. If it
+    # still loses the race, pr_table's sync_review_link self-heals it on a later tick.
+    fill_review_link(prn)
 
 
 if __name__ == "__main__":
