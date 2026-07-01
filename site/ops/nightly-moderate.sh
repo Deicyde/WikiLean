@@ -29,6 +29,12 @@ WPUPDATE_LIMIT="${WIKILEAN_WPUPDATE_LIMIT:-300}"
 REVIEW_LIMIT="${WIKILEAN_REVIEW_LIMIT:-15}"
 CONCURRENCY="${WIKILEAN_CONCURRENCY:-2}"
 BUDGET_TOKENS="${WIKILEAN_BUDGET_TOKENS:-700000}"
+# Formalize backlog: Agent-2 the extracted (Agent-1-only) articles the manage/
+# control plane surfaces, which the /api/work ladder can't see. Runs before the
+# general review so the backlog gets first claim. Set WIKILEAN_FORMALIZE_LIMIT=0
+# to disable. NB: nightly agent spend ≈ FORMALIZE_BUDGET + BUDGET_TOKENS.
+FORMALIZE_LIMIT="${WIKILEAN_FORMALIZE_LIMIT:-6}"
+FORMALIZE_BUDGET="${WIKILEAN_FORMALIZE_BUDGET:-300000}"
 
 LOGDIR="$REPO/site/cache/cron"
 mkdir -p "$LOGDIR"
@@ -68,6 +74,21 @@ cd "$REPO/site" || exit 1
   echo "--- drift sweep: wp-update (zero agent tokens) ---"
   "$PY" moderate.py wp-update --limit "$WPUPDATE_LIMIT" || echo "(wp-update returned $?)"
   echo
+  if [ "$FORMALIZE_LIMIT" -gt 0 ]; then
+    echo "--- formalize backlog: verify vs live D1, then Agent-2 the extracted articles ---"
+    # Run the reviewer ONLY if the verifier succeeded AND wrote a non-empty list
+    # this run — never trust a possibly-stale file from a prior run (it would
+    # burn tokens re-reviewing already-formalized articles).
+    if python3 "$REPO/manage/formalize_backlog.py" --limit "$FORMALIZE_LIMIT" \
+         && [ -s "$REPO/manage/data/formalize_slugs.txt" ]; then
+      "$PY" moderate.py review --slugs "$REPO/manage/data/formalize_slugs.txt" \
+            --limit "$FORMALIZE_LIMIT" --concurrency "$CONCURRENCY" \
+            --budget-tokens "$FORMALIZE_BUDGET" || echo "(formalize review returned $?)"
+    else
+      echo "(no fresh verified backlog — skipping formalize review)"
+    fi
+    echo
+  fi
   echo "--- review batch (search-verified) ---"
   "$PY" moderate.py review --limit "$REVIEW_LIMIT" --concurrency "$CONCURRENCY" \
         --budget-tokens "$BUDGET_TOKENS" || echo "(review returned $?)"
