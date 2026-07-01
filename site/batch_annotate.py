@@ -290,6 +290,26 @@ try:
 except Exception:
     _SEARCH_SERVER, _SEARCH_TOOLS, AGENT2_TOOLS_GUIDANCE = None, [], ""
 
+# Step 2 (propose-then-approve): when WIKILEAN_PROPOSALS=1, Agent 2 (moderation
+# mode) may attach a SEARCH-VERIFIED `moderation_proposal` to a human annotation it
+# believes is wrong. `_preserve_human` harvests these into the ladder → meta.ladder
+# .proposals → moderation_state.proposal, where the human approves/rejects on the
+# site. Gated because the added prompt text bumps prompt_sha (research comparability).
+_PROPOSALS = os.environ.get("WIKILEAN_PROPOSALS") == "1"
+AGENT2_PROPOSAL_GUIDANCE = """
+
+PROPOSING corrections to human annotations (moderation mode only):
+A `provenance:"human"` annotation is authoritative — echo its status and mathlib
+UNCHANGED. But when your Mathlib search VERIFIES its mapping is now wrong — it says
+`not_formalized` yet you confirmed a real decl, or it cites a decl your search shows
+does not exist — attach a `moderation_proposal` to that annotation (a suggestion for
+a human to approve; do NOT change the annotation itself):
+  "moderation_proposal": {"fields": {"status": "…", "mathlib": {"decl": "…",
+  "module": "…", "match_kind": "…"}}, "reason": "one sentence citing the verified decl"}
+Rules: propose ONLY fields you search-verified THIS pass; omit `moderation_proposal`
+entirely if unsure; never attach it to a non-human annotation (fix those directly);
+leave the human annotation's own status/mathlib exactly as given."""
+
 
 # ---------------------------------------------------------------------------
 # Per-article pipeline
@@ -373,6 +393,19 @@ def _preserve_human(existing: list[dict], produced: list[dict],
             flag = out[idx].get("moderation_flag")            # F14: harvest dissent
             if isinstance(flag, str) and flag:
                 stats["flags"].append([hid if isinstance(hid, str) else None, flag])
+            # Step 2: harvest a search-verified proposed change to this human
+            # annotation. Needs a live string id (the store validates ids) and a
+            # non-empty fields dict; the restore below strips moderation_proposal.
+            prop = out[idx].get("moderation_proposal")
+            if (isinstance(hid, str) and hid and isinstance(prop, dict)
+                    and isinstance(prop.get("fields"), dict) and prop["fields"]):
+                # setdefault (not a fixed key): a proposal-free pass keeps the
+                # historical stats shape {restored,reinserted,flags} — the
+                # cross-language parity fixture + goldens assert it byte-for-byte.
+                stats.setdefault("proposals", []).append({
+                    "annotationId": hid, "fields": prop["fields"],
+                    "reason": prop["reason"] if isinstance(prop.get("reason"), str) else "",
+                })
             restored = {**h, "provenance": "human"}           # restore original
             if out[idx] != restored:
                 stats["restored"] += 1
@@ -381,7 +414,23 @@ def _preserve_human(existing: list[dict], produced: list[dict],
             out.append({**h, "provenance": "human",
                         "moderation_note": "re-inserted by moderator (agent omitted it)"})
             stats["reinserted"] += 1
+    # Defensive: `moderation_proposal` is a transient harvest field — never let it
+    # ride into a stored annotation (a matched-human copy is already replaced by
+    # the clean restore above; this strips any on an unmatched/AI annotation).
+    for a in out:
+        if isinstance(a, dict) and "moderation_proposal" in a:
+            a.pop("moderation_proposal", None)
     return out, stats
+
+
+def _merge_proposals(ladder: dict, proposals: list) -> None:
+    """Add step-2 proposals to the ladder, deduped — but create the `proposals`
+    key ONLY when there is something to add, so a proposal-free / gated-off pass
+    keeps the historical ladder shape (the eval + build_meta goldens assert it)."""
+    if not proposals:
+        return
+    lp = ladder.setdefault("proposals", [])
+    lp += [p for p in proposals if p not in lp]
 
 
 async def annotate_one(article: dict, sem: asyncio.Semaphore, seed_decls: dict,
@@ -461,6 +510,9 @@ async def annotate_one(article: dict, sem: asyncio.Semaphore, seed_decls: dict,
                 # F14: agent dissent on human annotations survives in the ladder.
                 ladder["moderation_flags"] += [f for f in ph1["flags"]
                                                if f not in ladder["moderation_flags"]]
+                # Step 2: proposals ride the ladder ONLY when found — a gated-off /
+                # proposal-free pass keeps the historical ladder shape byte-for-byte.
+                _merge_proposals(ladder, ph1.get("proposals"))
             envelope = {
                 "slug": slug, "wikipedia_title": title, "display_title": title,
                 "schema_version": 3, "annotations": [
@@ -487,7 +539,8 @@ async def annotate_one(article: dict, sem: asyncio.Semaphore, seed_decls: dict,
                 "Classify each against Mathlib4 per the system prompt. "
                 "Reply with ONLY the JSON object."
             )
-            a2_system = AGENT2_SYSTEM + (AGENT2_TOOLS_GUIDANCE if _SEARCH_TOOLS else "")
+            a2_system = (AGENT2_SYSTEM + (AGENT2_TOOLS_GUIDANCE if _SEARCH_TOOLS else "")
+                         + (AGENT2_PROPOSAL_GUIDANCE if (_PROPOSALS and do_moderate) else ""))
             a2, a2_meta = await run_agent(
                 a2_system, a2_prompt, MATHLIB,
                 ["Read", "Grep", "Glob"] + _SEARCH_TOOLS, 60,
@@ -505,6 +558,7 @@ async def annotate_one(article: dict, sem: asyncio.Semaphore, seed_decls: dict,
                 ladder["reinserted"] += ph2["reinserted"]
                 ladder["moderation_flags"] += [f for f in ph2["flags"]
                                                if f not in ladder["moderation_flags"]]
+                _merge_proposals(ladder, ph2.get("proposals"))
                 # Deterministic provenance carry-through. Agent 2 must not be
                 # able to DOWNGRADE Agent 1's review marks: if the pre-Agent-2
                 # state had "ai-moderated" or "human" for this anchor, that

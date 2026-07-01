@@ -994,7 +994,8 @@ def test_preserve_human_stats():
                 {**h2, "note": "agent rewrote"},  # altered → restored
                 ann(label="ai-one")]              # h3 dropped → reinserted
     out, stats = ba._preserve_human(existing, produced)
-    # 'flags' key added by fix F14 (harvested moderation_flag dissent)
+    # 'flags' key added by fix F14; step-2 'proposals' appears ONLY when a proposal
+    # is harvested (none here), so the historical stats shape is preserved.
     assert stats == {"restored": 1, "reinserted": 1, "flags": []}
     assert out[1] == {**h2, "provenance": "human"}
     assert out[-1]["moderation_note"].startswith("re-inserted")
@@ -1029,6 +1030,31 @@ def test_preserve_human_harvests_moderation_flag():
     assert out == [h]  # the flag itself never reaches the output copy
     assert stats == {"restored": 1, "reinserted": 0,
                      "flags": [["aabbccddeeff", "decl looks wrong"]]}
+
+
+def test_preserve_human_harvests_moderation_proposal():
+    if ba is None:
+        raise unittest.SkipTest("claude-agent-sdk not installed")
+    # Step 2: a search-verified moderation_proposal the agent attached to its copy
+    # of a human annotation is harvested into stats['proposals'] as
+    # {annotationId, fields, reason} (the mergeProposals wire contract), then the
+    # restore strips it — the stored human annotation is unchanged.
+    h = ann(label="h", id="aabbccddeeff", provenance="human", status="not_formalized")
+    proposed = {**h, "moderation_proposal": {
+        "fields": {"status": "formalized", "mathlib": {"decl": "Foo.bar"}},
+        "reason": "found Foo.bar"}}
+    out, stats = ba._preserve_human([h], [proposed])
+    assert out == [h] and "moderation_proposal" not in out[0]
+    assert stats["proposals"] == [{"annotationId": "aabbccddeeff",
+                                   "fields": {"status": "formalized", "mathlib": {"decl": "Foo.bar"}},
+                                   "reason": "found Foo.bar"}]
+    # a stray proposal on an UNMATCHED annotation is neither harvested nor stored
+    stray = {**ann(label="ai", id="ffeeddccbbaa"),
+             "anchor": {"section": "Other", "snippet": "elsewhere"},
+             "moderation_proposal": {"fields": {"status": "partial"}}}
+    out2, stats2 = ba._preserve_human([h], [dict(h), stray])
+    # no proposal harvested → the key is absent (historical shape preserved)
+    assert stats2.get("proposals", []) == [] and all("moderation_proposal" not in a for a in out2)
 
 
 # ---------------------------------------------------------------------------
