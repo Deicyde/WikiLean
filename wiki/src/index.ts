@@ -1334,8 +1334,14 @@ app.post("/api/article/:slug", async (c) => {
       now: pnow,
       runId: (posted.meta as { run_id?: unknown }).run_id as string | undefined,
       model: (posted.meta as { model?: unknown }).model as string | undefined,
+      // Exclude tombstones: a `rejected` annotation is a human veto and must
+      // never be a proposal target (else an approved proposal could resurrect a
+      // veto). mergeProposals drops any proposal whose id isn't in this set.
       validIds: new Set(
-        finalAnnotations.map((a) => a.id).filter((x): x is string => typeof x === "string"),
+        finalAnnotations
+          .filter((a) => a.status !== "rejected")
+          .map((a) => a.id)
+          .filter((x): x is string => typeof x === "string"),
       ),
     });
     if (merged.length > existingPending.length) {
