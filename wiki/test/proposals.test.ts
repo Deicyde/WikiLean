@@ -144,6 +144,21 @@ describe("POST /api/article/:slug (proposals)", () => {
     expect(pending(db)).toHaveLength(0);
   });
 
+  it("drops a proposal targeting a tombstoned (rejected) human annotation", async () => {
+    const { db, env } = setup();
+    // Tombstone HUMAN_ID via a human save (status rejected → provenance human).
+    const anns = storedAnnotations(db).map(echo);
+    const i = anns.findIndex((a) => a.id === HUMAN_ID);
+    anns[i] = { ...anns[i], status: "rejected" };
+    const t = await save(env, { annotations: anns, base_version: 1 }, { user: "u-human" });
+    expect(t.status).toBe(200);
+    expect(storedAnnotations(db).find((a) => a.id === HUMAN_ID)!.status).toBe("rejected");
+    // A bot proposal against the now-tombstoned id must be dropped — a human veto
+    // is never a proposal target (else approve could resurrect it).
+    await storeProposal(env, db, articleRow(db)!.version);
+    expect(pending(db)).toHaveLength(0);
+  });
+
   it("reject drops the proposal, remembers the delta, and suppresses a re-proposal", async () => {
     const { db, env } = setup();
     await seedProposal(env);
