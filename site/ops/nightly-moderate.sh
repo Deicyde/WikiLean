@@ -114,6 +114,16 @@ cd "$REPO/site" || exit 1
     else
       echo "(graph build failed — keeping the last KV copy)"
     fi
+    # /decl/:name reverse citations — same success-gated KV pattern.
+    if python3 "$REPO/site/build_decl_citations.py"; then
+      if [ "${WIKILEAN_GRAPH_DEPLOY:-1}" = "1" ]; then
+        ( cd "$REPO/wiki" && npx wrangler kv key put --binding=RENDER_CACHE --remote \
+            declcites:v1 --path="$REPO/site/out/decl_citations.json" ) \
+          || echo "(declcites kv put returned $?)"
+      fi
+    else
+      echo "(decl-citations build failed — keeping the last KV copy)"
+    fi
     echo
   fi
   echo "=== done $(date +%Y%m%dT%H%M%S) ==="

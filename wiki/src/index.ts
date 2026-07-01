@@ -36,6 +36,7 @@ import { homePage, sitemapXml } from "./home.js";
 import { wikifunctionsPage } from "./wikifunctions.js";
 import { wikifunctionsVerifyPage } from "./wikifunctions-verify.js";
 import { registerReviewRoutes } from "./review.js";
+import { registerDeclRoutes } from "./decl.js";
 import { registerQueueRoutes } from "./queue.js";
 import type { Annotation } from "./engine/types.js";
 import type { Env } from "./env.js";
@@ -86,11 +87,13 @@ const RESERVED = new Set([
   "review",
   "queue",
   "u",
+  "decl",
 ]);
 
 const app = new Hono<{ Bindings: Env }>();
 registerAuthRoutes(app);
 registerReviewRoutes(app);
+registerDeclRoutes(app);
 registerQueueRoutes(app);
 
 // Renders (and KV-caches) the anonymous base page for an article. Takes the

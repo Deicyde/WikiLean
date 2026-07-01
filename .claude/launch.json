@@ -6,6 +6,12 @@
       "runtimeExecutable": "python3",
       "runtimeArgs": ["-m", "http.server", "8899", "--directory", "site/out"],
       "port": 8899
+    },
+    {
+      "name": "wiki-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "wiki", "--", "--port", "8787"],
+      "port": 8787
     }
   ]
 }
