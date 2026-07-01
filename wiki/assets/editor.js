@@ -59,6 +59,120 @@
   // Prepend (not append): on ≤640px review.css positions the bar sticky, which
   // only works from the top of the document flow (fix #5).
   document.body.prepend(bar);
+
+  // ---- propose-then-approve: inline banner of pending AI proposals ----------
+  // The AI may propose an update to a human annotation (docs/propose-then-
+  // approve.md); the human approves/rejects here. Approve applies the delta
+  // (keeping provenance:human); reject remembers it so it isn't re-proposed.
+  renderProposalsBanner();
+  function renderProposalsBanner() {
+    var proposals = window.__WL_PROPOSALS__ || [];
+    if (!proposals.length) return;
+    injectProposalStyle();
+    var byId = {};
+    annos.forEach(function (a) { if (a && a.id) byId[a.id] = a; });
+    var banner = document.createElement("div");
+    banner.id = "wlr-proposals";
+    banner.setAttribute("role", "region");
+    banner.setAttribute("aria-label", "AI proposals to review");
+    var head = document.createElement("div");
+    head.className = "wlr-prop-head";
+    head.textContent = "⚡ " + proposals.length + " AI proposal" + (proposals.length === 1 ? "" : "s") +
+      " to update your annotations";
+    banner.appendChild(head);
+    proposals.forEach(function (p) {
+      var target = byId[p.annotationId];
+      var label = target && target.label ? target.label : p.annotationId;
+      var row = document.createElement("div");
+      row.className = "wlr-prop";
+      row.dataset.pid = p.proposalId;
+      row.innerHTML =
+        '<div class="wlr-prop-body"><b>' + escapeHtml(String(label)) + "</b>: " +
+          describeDelta(p.fields, target) +
+          (p.reason ? '<div class="wlr-prop-reason">' + escapeHtml(String(p.reason)) + "</div>" : "") +
+        "</div>" +
+        '<div class="wlr-prop-actions">' +
+          '<button type="button" class="wlr-prop-approve">✓ Approve</button>' +
+          '<button type="button" class="wlr-prop-reject">✗ Reject</button>' +
+        "</div>";
+      row.querySelector(".wlr-prop-approve").addEventListener("click", function () {
+        actProposal(row, p.proposalId, "approve_proposal");
+      });
+      row.querySelector(".wlr-prop-reject").addEventListener("click", function () {
+        actProposal(row, p.proposalId, "reject_proposal");
+      });
+      banner.appendChild(row);
+    });
+    bar.insertAdjacentElement("afterend", banner);
+  }
+  function describeDelta(fields, current) {
+    return Object.keys(fields || {}).map(function (k) {
+      var from = current ? current[k] : undefined;
+      var fromStr = from !== undefined && from !== null && typeof from !== "object"
+        ? escapeHtml(String(from)) + " → " : "→ ";
+      return "<code>" + escapeHtml(k) + "</code> " + fromStr + "<b>" + escapeHtml(fmtVal(fields[k])) + "</b>";
+    }).join(" · ");
+  }
+  function fmtVal(v) {
+    if (v === null || v === undefined) return "∅";
+    if (typeof v === "object") return v.decl ? String(v.decl) : JSON.stringify(v);
+    return String(v);
+  }
+  function actProposal(row, pid, action) {
+    var btns = row.querySelectorAll("button");
+    btns.forEach(function (b) { b.disabled = true; });
+    var body = { action: action, proposal_id: pid };
+    if (action === "approve_proposal") body.base_version = window.__WL_VERSION__;
+    fetch("/api/article/" + encodeURIComponent(slug), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    })
+      .then(function (res) { return res.json().then(function (j) { return { status: res.status, j: j }; }); })
+      .then(function (r) {
+        if (r.status === 200) {
+          if (action === "approve_proposal") {
+            window.location.reload(); // annotation content changed — show it applied
+          } else {
+            row.remove();
+            var b = document.getElementById("wlr-proposals");
+            if (b && !b.querySelector(".wlr-prop")) b.remove();
+          }
+        } else if (r.status === 409) {
+          alert("This article changed since the page loaded — reloading.");
+          window.location.reload();
+        } else {
+          alert("Could not " + (action === "approve_proposal" ? "approve" : "reject") +
+            ": " + (r.j && r.j.error ? r.j.error : r.status));
+          btns.forEach(function (b) { b.disabled = false; });
+        }
+      })
+      .catch(function () {
+        alert("Network error — try again.");
+        btns.forEach(function (b) { b.disabled = false; });
+      });
+  }
+  function injectProposalStyle() {
+    if (document.getElementById("wlr-prop-style")) return;
+    var st = document.createElement("style");
+    st.id = "wlr-prop-style";
+    st.textContent =
+      "#wlr-proposals{background:#fbf3e0;border-bottom:1px solid #e6d5a8;padding:8px 16px;" +
+        "font:14px -apple-system,BlinkMacSystemFont,sans-serif;color:#3d3223}" +
+      "#wlr-proposals .wlr-prop-head{font-weight:600;margin-bottom:6px;color:#8a6d1f}" +
+      "#wlr-proposals .wlr-prop{display:flex;align-items:flex-start;gap:12px;padding:6px 0;" +
+        "border-top:1px solid #efe3c4}" +
+      "#wlr-proposals .wlr-prop-body{flex:1;line-height:1.5}" +
+      "#wlr-proposals .wlr-prop-reason{color:#6b5b3a;font-size:.85em;margin-top:2px}" +
+      "#wlr-proposals code{background:#efe3c4;padding:1px 5px;border-radius:3px;font-size:.85em}" +
+      "#wlr-proposals .wlr-prop-actions{display:flex;gap:6px;flex-shrink:0}" +
+      "#wlr-proposals button{border:1px solid #d9c489;background:#fff;border-radius:6px;" +
+        "padding:4px 10px;cursor:pointer;font:inherit}" +
+      "#wlr-proposals .wlr-prop-approve{background:#2da44e;color:#fff;border-color:#238636}" +
+      "#wlr-proposals .wlr-prop-reject{color:#a4432b}" +
+      "#wlr-proposals button:disabled{opacity:.5;cursor:default}";
+    document.head.appendChild(st);
+  }
   if (rejectedIdxs.length) {
     // Each click opens the next hidden annotation in the editor panel,
     // cycling through all of them (fix #2).

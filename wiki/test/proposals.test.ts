@@ -88,6 +88,26 @@ describe("proposals — pure logic", () => {
   });
 });
 
+describe("proposals — inline banner injection", () => {
+  it("injectAuthAndEditor emits __WL_PROPOSALS__ for a logged-in user, not for anon", async () => {
+    const { injectAuthAndEditor } = await import("../src/pages.js");
+    const proposals = [{ proposalId: "abc123abc123", annotationId: HUMAN_ID, fields: { status: "formalized" }, reason: "r", createdAt: 1 }];
+    const html = injectAuthAndEditor("<main></main>", {
+      slug: "Foo",
+      user: { id: "u", name: "U", role: "user" } as never,
+      annotations: [],
+      version: 3,
+      proposals,
+    });
+    expect(html).toContain("window.__WL_PROPOSALS__=");
+    expect(html).toContain("abc123abc123");
+    expect(html).toContain("editor.js?v=15");
+
+    const anon = injectAuthAndEditor("<main></main>", { slug: "Foo", user: null, annotations: [], proposals });
+    expect(anon).not.toContain("__WL_PROPOSALS__");
+  });
+});
+
 describe("POST /api/article/:slug (proposals)", () => {
   it("stores a bot proposal inert (no annotation change), then approve applies it and keeps provenance human", async () => {
     const { db, env } = setup();

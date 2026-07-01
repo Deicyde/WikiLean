@@ -43,6 +43,9 @@ export function injectAuthAndEditor(
     // P3: is the logged-in viewer watching this article? Drives the
     // ★ Watch / ★ Watching toggle state in the editor bar.
     isWatching?: boolean;
+    // Propose-then-approve: pending AI proposals to update this article's human
+    // annotations (PendingProposal[]). Rendered as an inline banner by editor.js.
+    proposals?: unknown[];
   },
 ): string {
   const ret = encodeURIComponent("/" + opts.slug);
@@ -56,6 +59,7 @@ export function injectAuthAndEditor(
       // the server can 409 if the article was edited since this page loaded.
       `window.__WL_VERSION__=${safeJson(opts.version ?? 0)};` +
       `window.__WL_WATCHING__=${safeJson(Boolean(opts.isWatching))};` +
+      `window.__WL_PROPOSALS__=${safeJson(opts.proposals ?? [])};` +
       `window.__WL_FULL_ANNOS__=${safeJson({ annotations: opts.annotations })};</script>\n` +
       // v=4: warm-palette editor chrome + sticky bar offsets (W3 fixes #5/#6d).
       // v=5: anchor-editing fieldset styles (highlight-range box + Use-selection btn).
@@ -64,7 +68,8 @@ export function injectAuthAndEditor(
       // cache key; without this, returning users see the stale editor / CSS).
       // v=14: highlight-range editing — Section + Snippet are now exposed in
       // the panel with a "Use selection" button (typed anchors stay locked).
-      `<script src="/assets/editor.js?v=14"></script>\n`;
+      // v=15: propose-then-approve inline banner (window.__WL_PROPOSALS__).
+      `<script src="/assets/editor.js?v=15"></script>\n`;
   } else {
     inject =
       `<a id="wl-signin" href="/login?returnTo=${ret}" ` +
