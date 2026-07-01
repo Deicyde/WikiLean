@@ -70,6 +70,35 @@ export const moderationState = sqliteTable(
   (t) => [index("idx_moderation_state_reviewed").on(t.lastReviewedAt)],
 );
 
+// Propose-then-approve lifecycle log + queue read model (migration 0009).
+// DUAL-WRITE: moderation_state.proposal stays the operational pending blob;
+// this table records every proposal from creation to decision (incl. silent
+// expiries → 'stale') and feeds /proposals + /stats. Telemetry-only — writes
+// here never bump articles.version.
+export const proposals = sqliteTable(
+  "proposals",
+  {
+    id: text("id").primaryKey(), // proposalId (12 hex; shared with the blob)
+    slug: text("slug").notNull(),
+    annotationId: text("annotation_id").notNull(),
+    fields: text("fields").notNull(), // JSON delta
+    fieldsSig: text("fields_sig").notNull(),
+    reason: text("reason"),
+    runId: text("run_id"),
+    model: text("model"),
+    status: text("status").notNull().default("pending"), // pending | approved | rejected | stale
+    rejectReason: text("reject_reason"), // human's enum on reject
+    createdAt: integer("created_at").notNull(), // ms
+    decidedAt: integer("decided_at"), // ms
+    decidedBy: text("decided_by"), // users.id
+  },
+  (t) => [
+    index("idx_proposals_status_created").on(t.status, t.createdAt),
+    index("idx_proposals_slug_status").on(t.slug, t.status),
+  ],
+);
+export type ProposalRow = typeof proposals.$inferSelect;
+
 // Annotation-level change log (the experiment's primary instrument): one row
 // per annotation that changed in a write, diffed BY ID (stored vs persisted)
 // server-side. Emitted on every write path — session save, bot save, create,
