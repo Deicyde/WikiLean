@@ -61,7 +61,11 @@ def load_decl_modules() -> dict[str, str]:
 
 
 def load_existing() -> dict[str, str]:
-    """wikidata_qid → primary_decl across the current catalog files."""
+    """wikidata_qid → primary_decl across the current catalog files.
+    LAST file wins on a QID collision — the catalog's real semantics
+    (bot/pool.py CATALOG: refresh_tagged.jsonl overrides the originals), so
+    conflict/skip decisions compare against the decl the pool actually uses,
+    not a stale overridden row."""
     seen: dict[str, str] = {}
     for f in EXISTING:
         if not f.exists():
@@ -72,7 +76,7 @@ def load_existing() -> dict[str, str]:
             r = json.loads(line)
             q, pd = r.get("wikidata_qid"), r.get("primary_decl")
             if isinstance(q, str) and isinstance(pd, str) and pd:
-                seen.setdefault(q, pd)
+                seen[q] = pd
     return seen
 
 
