@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parent.parent
 # improved agent (verified decls + tightest primary_qid) and overrides the originals.
 CATALOG = [ROOT / "catalog/data/pilot_tagged.jsonl", ROOT / "catalog/data/tier2_tagged.jsonl",
            ROOT / "catalog/data/generated_candidates.jsonl",   # agent-generated, human-verified
+           ROOT / "catalog/data/mathlib_yaml_tagged.jsonl",    # mathlib docs/1000.yaml, maintainer-reviewed (ingest_mathlib_yaml.py; new QIDs only, conflicts go to review)
            ROOT / "catalog/data/refresh_tagged.jsonl"]
 MOST_USED = ROOT / "bot/data/most_used_qids.json"
 TAGGED = ROOT / "bot/data/tagged_in_master.txt"
@@ -114,12 +115,20 @@ def load_catalog():
     return cat
 
 
-def candidates(n=25, exclude=(), require_high=True, p31_filter=True):
+def candidates(n=25, exclude=(), require_high=True, p31_filter=True, offlist=False):
+    """offlist=True: after the most_used ranked walk, also walk catalog QIDs that
+    are NOT in the ranking (e.g. mathlib 1000.yaml theorem QIDs — maintainer-
+    reviewed but theorem-level, so absent from the concept-wikilink ranking), in
+    catalog order. Off by default: including them changes batch composition,
+    which is a reviewer-facing policy choice."""
     cat = load_catalog()
     excl = set(exclude) | seen_qids()           # never re-surface already-reviewed concepts
     if TAGGED.exists():
         excl |= {l.strip() for l in TAGGED.read_text().splitlines() if l.strip().startswith("Q")}
     order = list(json.loads(MOST_USED.read_text()).keys())
+    if offlist:
+        ranked = set(order)
+        order += [q for q in cat if q not in ranked]
     eligible, seen_tag = [], set()
     for q in order:
         if q in excl or q not in cat:
@@ -150,9 +159,11 @@ if __name__ == "__main__":
     ap.add_argument("--exclude", default="", help="comma-separated qids to skip (in-flight)")
     ap.add_argument("--json", action="store_true")
     ap.add_argument("--no-p31", action="store_true", help="skip the Wikidata field-of-math filter (offline)")
+    ap.add_argument("--offlist", action="store_true",
+                    help="also draw catalog QIDs outside the most_used ranking (e.g. 1000.yaml theorems)")
     args = ap.parse_args()
     cands = candidates(args.n, [q.strip() for q in args.exclude.split(",") if q.strip()],
-                       p31_filter=not args.no_p31)
+                       p31_filter=not args.no_p31, offlist=args.offlist)
     if args.json:
         print(json.dumps(cands, indent=1))
     else:
