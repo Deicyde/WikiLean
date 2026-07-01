@@ -2313,6 +2313,7 @@ async function serveArticle(c: Context<{ Bindings: Env }>, slug: string) {
   // P3: look up the viewer's watch state for this slug so the ★ Watch toggle
   // renders with the correct initial state (no client roundtrip on first paint).
   let isWatching = false;
+  let proposals: unknown[] = [];
   if (user) {
     const w = await db
       .select({ slug: watchlist.slug })
@@ -2320,6 +2321,13 @@ async function serveArticle(c: Context<{ Bindings: Env }>, slug: string) {
       .where(and(eq(watchlist.userId, user.id), eq(watchlist.slug, slug)))
       .limit(1);
     isWatching = w.length > 0;
+    // Propose-then-approve: pending AI proposals to update this article's human
+    // annotations, surfaced to logged-in users as an inline banner (per-request,
+    // never in the cached base page). Empty for anonymous readers.
+    const ms = (
+      await db.select({ proposal: moderationState.proposal }).from(moderationState).where(eq(moderationState.slug, slug)).limit(1)
+    )[0];
+    proposals = parsePending(ms?.proposal);
   }
   // latestRevid/revid feed the per-request staleness banner (rendered by
   // injectAuthAndEditor — never baked into the cached base page).
@@ -2331,6 +2339,7 @@ async function serveArticle(c: Context<{ Bindings: Env }>, slug: string) {
     latestRevid: row.latestRevid,
     revid: row.revid,
     isWatching,
+    proposals,
   });
   return c.html(page);
 }
