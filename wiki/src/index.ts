@@ -406,6 +406,23 @@ app.get("/sitemap.xml", async (c) => {
   return c.body(xml, 200, headers);
 });
 
+// ---- /graph_data.json — concept-graph data, KV-first so the nightly can
+// refresh it (verified @[wikidata] tags + live Mathlib coverage) via
+// `wrangler kv key put`, with NO Worker deploy. run_worker_first (wrangler.jsonc)
+// routes this path to the Worker; ./public/graph_data.json is the fallback on a
+// KV miss (never-seeded or evicted). ------------------------------------------
+app.get("/graph_data.json", async (c) => {
+  const headers = {
+    "Content-Type": "application/json; charset=utf-8",
+    "Cache-Control": "public, max-age=600",
+  };
+  const kv = await c.env.RENDER_CACHE.get("graph:data:v1");
+  if (kv) return c.body(kv, 200, headers);
+  // ASSETS.fetch bypasses run_worker_first, so this serves the static file
+  // (no recursion) — the last-deployed graph_data.json as a safety net.
+  return c.env.ASSETS.fetch(new Request(new URL("/graph_data.json", c.req.url)));
+});
+
 // ---- /wikifunctions — Wikifunctions-formalization tracker (static; public) --
 // A self-contained status page rendered from the embedded verified corpus
 // (wikifunctions-data.ts) — no D1, no migrations. Pure-function output, so it
