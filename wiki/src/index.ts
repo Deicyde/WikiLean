@@ -57,6 +57,14 @@ import {
   type AnnotationChange,
   type AnnRecord,
 } from "./validation.js";
+import {
+  applyProposalFields,
+  fieldsSig,
+  isProposalId,
+  mergeProposals,
+  parsePending,
+  parseRejected,
+} from "./proposals.js";
 
 const RESERVED = new Set([
   "assets",
@@ -1050,6 +1058,7 @@ app.post("/api/article/:slug", async (c) => {
     meta?: unknown;
     action?: unknown;
     annotation_id?: unknown;
+    proposal_id?: unknown;
   };
   try {
     posted = await c.req.json();
@@ -1063,8 +1072,102 @@ app.post("/api/article/:slug", async (c) => {
   // endorsing itself would be meaningless (403). This replaces the editor's
   // old provenance-flip-and-save, which stampProvenance reverts by design.
   if (posted.action !== undefined) {
-    if (posted.action !== "endorse") return c.json({ ok: false, error: "unknown action" }, 400);
+    // endorse / approve / reject are session-only human actions — a bot may
+    // never approve its own proposal (same 403 as endorse).
     if (isBot) return c.json({ ok: false, error: "forbidden" }, 403);
+
+    // ---- approve/reject a pending AI proposal (docs/propose-then-approve.md) --
+    // Proposals live inert in moderation_state. Approving applies the delta to
+    // the target human annotation IN PLACE and keeps provenance:'human' (Jack
+    // owns it now — findLostHuman keeps protecting it). Rejecting remembers the
+    // delta so the agent won't re-propose it. The agent never mutates here.
+    if (posted.action === "approve_proposal" || posted.action === "reject_proposal") {
+      if (!isProposalId(posted.proposal_id)) return c.json({ ok: false, error: "bad proposal_id" }, 400);
+      const proposalId = posted.proposal_id;
+      const ms = (await db.select().from(moderationState).where(eq(moderationState.slug, slug)).limit(1))[0];
+      const pending = parsePending(ms?.proposal);
+      const prop = pending.find((p) => p.proposalId === proposalId);
+      if (!prop) return c.json({ ok: false, error: "proposal not found" }, 404);
+      const now = Date.now();
+      const remaining = pending.filter((p) => p.proposalId !== proposalId);
+      const remainingJson = remaining.length ? JSON.stringify(remaining) : null;
+
+      if (posted.action === "reject_proposal") {
+        const rejected = parseRejected(ms?.rejectedProposals);
+        rejected.push({ annotationId: prop.annotationId, fieldsSig: fieldsSig(prop.fields) });
+        await db
+          .update(moderationState)
+          .set({ proposal: remainingJson, rejectedProposals: JSON.stringify(rejected.slice(-500)), updatedAt: now })
+          .where(eq(moderationState.slug, slug));
+        console.log(JSON.stringify({ event: "proposal-reject", slug, user_id: user.id, proposal_id: proposalId, t: now }));
+        return c.json({ ok: true, rejected: true });
+      }
+
+      // approve_proposal — mutates the annotation, so CAS on version.
+      if (typeof posted.base_version !== "number") return c.json({ ok: false, error: "base_version required" }, 400);
+      if (posted.base_version !== row.version) {
+        return c.json({ error: "stale", version: row.version, annotations: JSON.parse(row.annotations) }, 409);
+      }
+      const stored = JSON.parse(row.annotations) as AnnRecord[];
+      const idx = stored.findIndex((a) => a.id === prop.annotationId);
+      if (idx === -1) {
+        // Target annotation gone — drop the stale proposal, no content write.
+        await db.update(moderationState).set({ proposal: remainingJson, updatedAt: now }).where(eq(moderationState.slug, slug));
+        return c.json({ ok: false, error: "annotation gone", dropped: true }, 409);
+      }
+      const { next, changed } = applyProposalFields(stored[idx], prop.fields);
+      if (changed.length === 0) {
+        // Already matches (e.g. applied by an earlier edit) — just clear it.
+        await db.update(moderationState).set({ proposal: remainingJson, updatedAt: now }).where(eq(moderationState.slug, slug));
+        return c.json({ ok: true, noop: true, version: row.version });
+      }
+      next.provenance = "human"; // Jack approved it; keep it human-protected
+      const finals = stored.slice();
+      finals[idx] = next;
+      const finalsJson = JSON.stringify(finals);
+      const validationErr = validateAnnotations(c, finals, finalsJson);
+      if (validationErr) return validationErr;
+      const newVersion = row.version + 1;
+      const updated = await db
+        .update(articles)
+        .set({ annotations: finalsJson, version: newVersion, updatedAt: now, ...statusCounts(finals) })
+        .where(and(eq(articles.slug, slug), eq(articles.version, row.version)));
+      if (updated.meta.changes === 0) {
+        const fresh = (await db.select().from(articles).where(eq(articles.slug, slug)).limit(1))[0];
+        return c.json({ error: "stale", version: fresh ? fresh.version : row.version, annotations: fresh ? JSON.parse(fresh.annotations) : [] }, 409);
+      }
+      const prior = (
+        await db.select({ id: revisions.id }).from(revisions).where(eq(revisions.slug, slug)).orderBy(desc(revisions.id)).limit(1)
+      )[0];
+      await db.batch([
+        db.insert(revisions).values({
+          slug,
+          userId: user.id,
+          annotations: finalsJson,
+          comment: `proposal-approved:${proposalId}`,
+          kind: "proposal-approved",
+          parentId: prior?.id ?? null,
+          createdAt: now,
+        }),
+        ...eventInsertStatements(db, [
+          {
+            revisionId: newRevisionId(slug),
+            slug,
+            annotationId: prop.annotationId,
+            eventType: "modify",
+            actorType: "human",
+            userId: user.id,
+            fieldChanges: serializeFieldChanges(changed),
+            createdAt: now,
+          },
+        ]),
+        db.update(moderationState).set({ proposal: remainingJson, updatedAt: now }).where(eq(moderationState.slug, slug)),
+      ]);
+      console.log(JSON.stringify({ event: "proposal-approve", slug, user_id: user.id, proposal_id: proposalId, version: newVersion, t: now }));
+      return c.json({ ok: true, version: newVersion });
+    }
+
+    if (posted.action !== "endorse") return c.json({ ok: false, error: "unknown action" }, 400);
     const annotationId = posted.annotation_id;
     if (typeof annotationId !== "string" || !ANNOTATION_ID_RE.test(annotationId)) {
       return c.json({ ok: false, error: "bad annotation_id" }, 400);
@@ -1211,6 +1314,38 @@ app.post("/api/article/:slug", async (c) => {
   // the helpers above (they match posted-without-id to stored-by-signature)
   // and before persisting, so every save converges on full id coverage.
   finalAnnotations = healAnnotationIds(stored, finalAnnotations);
+
+  // Propose-then-approve: a bot review may carry proposals to update human
+  // annotations it could NOT change (findLostHuman preserved them verbatim).
+  // Merge any into moderation_state.proposal — inert advisory data until Jack
+  // approves — deduped vs already-pending / previously-rejected deltas, and only
+  // for proposals that target a currently-live annotation id. Runs before the
+  // no-op short-circuit so a "reviewed, changed nothing but proposed X" pass is
+  // captured. Never touches articles.annotations.
+  const incomingProposals =
+    isBot && posted.meta && typeof posted.meta === "object"
+      ? (posted.meta as { ladder?: { proposals?: unknown } }).ladder?.proposals
+      : undefined;
+  if (isBot && Array.isArray(incomingProposals) && incomingProposals.length > 0) {
+    const pnow = Date.now();
+    const ms = (await db.select().from(moderationState).where(eq(moderationState.slug, slug)).limit(1))[0];
+    const existingPending = parsePending(ms?.proposal);
+    const merged = mergeProposals(existingPending, parseRejected(ms?.rejectedProposals), incomingProposals, {
+      now: pnow,
+      runId: (posted.meta as { run_id?: unknown }).run_id as string | undefined,
+      model: (posted.meta as { model?: unknown }).model as string | undefined,
+      validIds: new Set(
+        finalAnnotations.map((a) => a.id).filter((x): x is string => typeof x === "string"),
+      ),
+    });
+    if (merged.length > existingPending.length) {
+      const proposalJson = JSON.stringify(merged);
+      await db
+        .insert(moderationState)
+        .values({ slug, proposal: proposalJson, updatedAt: pnow })
+        .onConflictDoUpdate({ target: moderationState.slug, set: { proposal: proposalJson, updatedAt: pnow } });
+    }
+  }
 
   // TESTAGENT#2: short-circuit no-op saves. If post-heal annotations are
   // deep-equal to what's stored and the save doesn't move the revid pin,

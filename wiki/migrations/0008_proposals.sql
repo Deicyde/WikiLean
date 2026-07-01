@@ -1,0 +1,11 @@
+-- Propose-then-approve (docs/propose-then-approve.md): the AI may PROPOSE an
+-- update to a human annotation; Jack approves/rejects it. Proposals are inert
+-- advisory data — they live in moderation_state, never in articles.annotations,
+-- so they never reach a reader. findLostHuman stays the floor (the agent still
+-- can't mutate a human annotation).
+--
+-- moderation_state.proposal (existing column) now also holds a JSON list of
+-- PENDING proposals: [{proposalId, annotationId, fields, reason, runId, model,
+-- createdAt}]. This migration adds the anti-spam memory so a rejected delta is
+-- not re-proposed: a JSON list of {annotationId, fieldsSig}.
+ALTER TABLE moderation_state ADD COLUMN rejected_proposals TEXT;

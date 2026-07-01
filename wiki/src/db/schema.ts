@@ -63,7 +63,8 @@ export const moderationState = sqliteTable(
     wpDrifted: integer("wp_drifted", { mode: "boolean" }).notNull().default(false), // upstream moved past pinned revid
     flagCount: integer("flag_count").notNull().default(0),
     state: text("state"), // null = normal; update-flow: 'needs_human' | 'moved' | 'deleted'
-    proposal: text("proposal"), // JSON: pending re-anchor payload awaiting review
+    proposal: text("proposal"), // JSON: PendingProposal[] awaiting human approve/reject
+    rejectedProposals: text("rejected_proposals"), // JSON: {annotationId, fieldsSig}[] anti-spam memory
     updatedAt: integer("updated_at"), // ms
   },
   (t) => [index("idx_moderation_state_reviewed").on(t.lastReviewedAt)],
