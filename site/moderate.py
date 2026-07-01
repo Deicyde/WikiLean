@@ -315,7 +315,7 @@ def build_meta(ctx, rec: dict, wire_stats: dict) -> dict:
     duration_ms = ((a1.get("duration_ms") or 0) + (a2.get("duration_ms") or 0)
                    or int((rec.get("elapsed_s") or 0) * 1000))
     ladder = {"restored": 0, "reinserted": 0, "downgrades_blocked": 0,
-              "moderation_flags": []}  # F14: harvested agent dissent rides meta
+              "moderation_flags": []}  # F14 dissent (+ step-2 proposals when present) ride meta
     ladder.update(rec.get("ladder") or {})
     return {
         "run_id": ctx.run_id,
@@ -639,8 +639,12 @@ def get_prompt_sha(ba_mod, mode: str) -> str:
     if ba_mod is None:
         return "unavailable"
     a1 = ba_mod.MODERATE_AGENT1_SYSTEM if mode == "review" else ba_mod.AGENT1_SYSTEM
-    return hashlib.sha256((a1 + "\n" + ba_mod.AGENT2_SYSTEM)
-                          .encode("utf-8")).hexdigest()[:12]
+    parts = a1 + "\n" + ba_mod.AGENT2_SYSTEM
+    # Step 2: the proposal guidance changes Agent 2's review-mode prompt, so it must
+    # move prompt_sha when enabled (else the two cohorts look identical in research).
+    if mode == "review" and getattr(ba_mod, "_PROPOSALS", False):
+        parts += "\n" + getattr(ba_mod, "AGENT2_PROPOSAL_GUIDANCE", "")
+    return hashlib.sha256(parts.encode("utf-8")).hexdigest()[:12]
 
 
 # ---------------------------------------------------------------------------
