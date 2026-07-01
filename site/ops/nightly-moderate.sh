@@ -55,6 +55,13 @@ cd "$REPO/site" || exit 1
   echo "=== WikiLean nightly moderation $TS ==="
   echo "PY=$PY  wp=$WPUPDATE_LIMIT review=$REVIEW_LIMIT conc=$CONCURRENCY budget=$BUDGET_TOKENS"
   echo
+  echo "--- refresh control plane: centrality + coverage + worklists (zero agent tokens) ---"
+  # Offline by default (computes from disk). Set WIKILEAN_MANAGE_PULL=1 to pull
+  # the live D1 annotation layer first (needs wrangler auth in this env — verify
+  # before enabling, or it fails soft and refresh falls back to disk).
+  MANAGE_PULL=""; [ "${WIKILEAN_MANAGE_PULL:-0}" = "1" ] && MANAGE_PULL="--pull"
+  python3 "$REPO/manage/refresh.py" $MANAGE_PULL || echo "(manage refresh returned $?)"
+  echo
   echo "--- flush prior checkpoints (zero agent tokens) ---"
   "$PY" moderate.py flush || echo "(flush returned $?)"
   echo
