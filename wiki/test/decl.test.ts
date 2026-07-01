@@ -24,8 +24,24 @@ describe("declShardFor", () => {
     expect(declShardFor(MANIFEST, "Cauchy")).toBe("ca");
     expect(declShardFor(MANIFEST, "Nat.Prime")).toBe("na");
   });
+  it("retries upward for names shorter than their padded leaf key", () => {
+    // Name "se" (2 chars) whose range split to 3-char keys: leaf is "se_".
+    const m = { scheme: { min_len: 2, max_len: 4, pad: "_" }, shards: { se_: 1, set_: 1 } as Record<string, number> };
+    expect(declShardFor(m, "Se")).toBe("se_");
+    expect(declShardFor(m, "Set")).toBe("set_");
+  });
   it("returns null when no shard matches", () => {
     expect(declShardFor(MANIFEST, "Zorn.lemma")).toBeNull();
+  });
+});
+
+describe("declShardFor against the REAL manifest", () => {
+  it("resolves every decl the review found missing (padded-leaf names)", async () => {
+    const { readFileSync } = await import("node:fs");
+    const manifest = JSON.parse(readFileSync(new URL("../public/assets/decl-index/manifest.json", import.meta.url), "utf8"));
+    for (const name of ["Set", "Int", "Fin", "Add", "LE", "Algebra", "Continuous", "CategoryTheory.Functor", "Group", "Real"]) {
+      expect(declShardFor(manifest, name), `shard for ${name}`).not.toBeNull();
+    }
   });
 });
 

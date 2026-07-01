@@ -162,9 +162,9 @@ describe("staleness banner (injectAuthAndEditor)", () => {
     const user = { id: "u1", name: "U", role: "user" } as never;
     const html = injectAuthAndEditor(PAGE, { ...base, user, revid: 1, latestRevid: 2, version: 7 });
     expect(html).toContain("wl-stale-banner");
-    // v=14: highlight-range editing (Section + Snippet anchors editable via a
-    // "Use selection" button) — keep in lockstep with pages.ts.
-    expect(html).toContain("/assets/editor.js?v=14");
+    // v=15: propose-then-approve inline banner (__WL_PROPOSALS__) — keep in
+    // lockstep with pages.ts.
+    expect(html).toContain("/assets/editor.js?v=15");
     expect(html).not.toContain("editor.js?v=10");
   });
 });

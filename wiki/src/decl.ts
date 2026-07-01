@@ -42,10 +42,17 @@ export function declShardKey(name: string, len: number): string {
 }
 
 // Longest manifest key that prefixes the padded normalized name (leaf keys are
-// prefix-free, so at most one length matches).
+// prefix-free, so at most one length matches). Mirrors editor.js declShardFor
+// INCLUDING the upward padded retry: names shorter than every key under them
+// pad upward (e.g. "Set" lives in a shard like "set_" when "set" split), so a
+// descending-only probe silently misses them.
 export function declShardFor(m: Manifest, name: string): string | null {
   const maxLen = m.scheme?.max_len || 2;
   for (let len = Math.min(maxLen, Math.max(name.length, 2)); len >= 2; len--) {
+    const k = declShardKey(name, len);
+    if (m.shards[k] !== undefined) return k;
+  }
+  for (let len = Math.max(name.length, 2) + 1; len <= maxLen; len++) {
     const k = declShardKey(name, len);
     if (m.shards[k] !== undefined) return k;
   }

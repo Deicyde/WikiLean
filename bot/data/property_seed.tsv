@@ -1,13 +1,13 @@
 qid	label	decl	module	batch	pr	status
-Q167	Pi	Real.pi	Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic	1	https://github.com/leanprover-community/mathlib4/pull/40440	catalog-only(unverified)
-Q11197	Logarithm	Real.log	Mathlib.Analysis.SpecialFunctions.Log.Basic	1	https://github.com/leanprover-community/mathlib4/pull/40440	catalog-only(unverified)
+Q167	Pi	Real.pi	Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic	1	https://github.com/leanprover-community/mathlib4/pull/40440	bot+catalog-settled
+Q11197	Logarithm	Real.log	Mathlib.Analysis.SpecialFunctions.Log.Basic	1	https://github.com/leanprover-community/mathlib4/pull/40440	bot+catalog-settled
 Q11352	Angle	InnerProductGeometry.angle	Mathlib.Geometry.Euclidean.Angle.Unoriented.Basic	1	https://github.com/leanprover-community/mathlib4/pull/40440	bot
 Q11567	Complex number	Complex	Mathlib.Data.Complex.Basic			external
 Q12916	Real number	Real	Mathlib.Data.Real.Basic			external
 Q17295	Euclidean space	EuclideanSpace	Mathlib.Analysis.InnerProductSpace.PiL2	4	https://github.com/leanprover-community/mathlib4/pull/40861	bot
 Q43260	Polynomial	Polynomial	Mathlib.Algebra.Polynomial.Basic	1	https://github.com/leanprover-community/mathlib4/pull/40440	bot
 Q44337	Matrix (mathematics)	Matrix	Mathlib.LinearAlgebra.Matrix.Defs	2	https://github.com/leanprover-community/mathlib4/pull/40682	bot
-Q44382		IsPrincipal	Mathlib.LinearAlgebra.Span.Defs			unresolved
+Q44382		Module.IsPrincipal | Submodule.IsPrincipal	Mathlib.LinearAlgebra.Span.Defs			ambiguous
 Q45715	complete graph	SimpleGraph.completeGraph	Mathlib.Combinatorics.SimpleGraph.Basic	3	https://github.com/leanprover-community/mathlib4/pull/40747	bot
 Q49008	Prime number	Nat.Prime	Mathlib.Data.Nat.Prime.Defs	1	https://github.com/leanprover-community/mathlib4/pull/40440	bot
 Q53875	parallelism	AffineSubspace.Parallel	Mathlib.LinearAlgebra.AffineSpace.AffineSubspace.Basic	3	https://github.com/leanprover-community/mathlib4/pull/40747	bot
@@ -18,7 +18,7 @@ Q133871	Normal distribution	ProbabilityTheory.gaussianReal	Mathlib.Probability.D
 Q141488	Graph (discrete mathematics)	SimpleGraph	Mathlib.Combinatorics.SimpleGraph.Basic	2	https://github.com/leanprover-community/mathlib4/pull/40682	bot
 Q161172	Ring (mathematics)	Ring	Mathlib.Algebra.Ring.Defs			external
 Q163875	Cardinal number	Cardinal	Mathlib.SetTheory.Cardinal.Defs	1	https://github.com/leanprover-community/mathlib4/pull/40440	bot
-Q168698	Exponential function	Real.exp	Mathlib.Analysis.Complex.Exponential	1	https://github.com/leanprover-community/mathlib4/pull/40440	catalog-only(unverified)
+Q168698	Exponential function	Real.exp	Mathlib.Analysis.Complex.Exponential	1	https://github.com/leanprover-community/mathlib4/pull/40440	bot+catalog-settled
 Q170058	Continuous function	Continuous	Mathlib.Topology.Defs.Basic	2	https://github.com/leanprover-community/mathlib4/pull/40682	bot
 Q175199	Variance	ProbabilityTheory.variance	Mathlib.Probability.Moments.Variance	1	https://github.com/leanprover-community/mathlib4/pull/40440	bot
 Q178546	Determinant	Matrix.det	Mathlib.LinearAlgebra.Matrix.Determinant.Basic	1	https://github.com/leanprover-community/mathlib4/pull/40440	bot
@@ -31,7 +31,8 @@ Q189112	Isomorphism	CategoryTheory.Iso	Mathlib.CategoryTheory.Iso			external+cat
 Q189136	Mean value theorem	exists_ratio_deriv_eq_ratio_slope	Mathlib.Analysis.Calculus.Deriv.MeanValue			external+catalog-mismatch
 Q189569	Basis (linear algebra)	Module.Basis	Mathlib.LinearAlgebra.Basis.Defs	4	https://github.com/leanprover-community/mathlib4/pull/40861	bot+catalog-mismatch
 Q190391	central limit theorem	ProbabilityTheory.tendstoInDistribution_inv_sqrt_mul_sum_sub	Mathlib.Probability.CentralLimitTheorem	3	https://github.com/leanprover-community/mathlib4/pull/40747	bot
-Q190546	Cauchy–Schwarz inequality	inner_mul_inner_self_le	Mathlib.Analysis.InnerProductSpace.Basic			external+catalog-mismatch
+Q190546	Cauchy–Schwarz inequality	inner_mul_inner_self_le	Mathlib.Analysis.InnerProductSpace.Basic			external+catalog-mismatch+multi-site
+Q190546	Cauchy–Schwarz inequality	LinearMap.BilinForm.apply_mul_apply_le_of_forall_zero_le	Mathlib.LinearAlgebra.SesquilinearForm.Basic			external+catalog-mismatch+multi-site
 Q191780	Ordinal number	Ordinal	Mathlib.SetTheory.Ordinal.Basic	1	https://github.com/leanprover-community/mathlib4/pull/40440	bot
 Q192760	Fundamental theorem of algebra	Complex.isAlgClosed	Mathlib.Analysis.Complex.Polynomial.Basic			external+catalog-mismatch
 Q193286	Rolle's theorem	exists_deriv_eq_zero	Mathlib.Analysis.Calculus.LocalExtr.Rolle			external
@@ -74,7 +75,7 @@ Q746083	Homotopy	ContinuousMap.Homotopy	Mathlib.Topology.Homotopy.Basic	1	https:
 Q746550	Tangent bundle	TangentBundle	Mathlib.Geometry.Manifold.IsManifold.Basic	2	https://github.com/leanprover-community/mathlib4/pull/40682	bot
 Q752487	Dual space	Module.Dual	Mathlib.LinearAlgebra.Dual.Defs	4	https://github.com/leanprover-community/mathlib4/pull/40861	bot
 Q759832	Solvable group	IsSolvable	Mathlib.GroupTheory.Solvable	2	https://github.com/leanprover-community/mathlib4/pull/40682	bot
-Q772232	Conditional expectation	MeasureTheory.condExp	Mathlib.MeasureTheory.Function.ConditionalExpectation.Basic	4	https://github.com/leanprover-community/mathlib4/pull/40861	catalog-only(unverified)
+Q772232	Conditional expectation	MeasureTheory.condExp	Mathlib.MeasureTheory.Function.ConditionalExpectation.Basic	4	https://github.com/leanprover-community/mathlib4/pull/40861	bot+catalog-settled
 Q833293		trapezoidal_integral	Mathlib.MeasureTheory.Integral.IntervalIntegral.TrapezoidalRule	4	https://github.com/leanprover-community/mathlib4/pull/40861	bot
 Q838611	Ball (mathematics)	Metric.ball	Mathlib.Topology.MetricSpace.Pseudo.Defs	2	https://github.com/leanprover-community/mathlib4/pull/40682	bot
 Q845060	maxima and minima	IsExtrOn	Mathlib.Order.Filter.Extr	4	https://github.com/leanprover-community/mathlib4/pull/40861	bot
@@ -105,11 +106,11 @@ Q1283623	Cofinality	Order.cof	Mathlib.SetTheory.Cardinal.Cofinality.Basic	1	http
 Q1330377		MulAction.sum_card_fixedBy_eq_card_orbits_mul_card_group	Mathlib.GroupTheory.GroupAction.Quotient			external
 Q1411887	Uniform convergence	TendstoUniformly	Mathlib.Topology.UniformSpace.UniformConvergence	2	https://github.com/leanprover-community/mathlib4/pull/40682	bot
 Q1442189	Natural transformation	CategoryTheory.NatTrans	Mathlib.CategoryTheory.NatTrans			external
-Q1464168		index	Mathlib.GroupTheory.Index			unresolved
+Q1464168		Subgroup.index | AddSubgroup.index	Mathlib.GroupTheory.Index			ambiguous
 Q1491995	Connected space	ConnectedSpace	Mathlib.Topology.Connected.Basic	1	https://github.com/leanprover-community/mathlib4/pull/40440	bot
 Q1497184		FractionalIdeal	Mathlib.RingTheory.FractionalIdeal.Basic			external
 Q1572357	Locally convex topological vector space	LocallyConvexSpace	Mathlib.Topology.Algebra.Module.LocallyConvex	4	https://github.com/leanprover-community/mathlib4/pull/40861	bot
-Q1755242	Nilpotent group	IsNilpotent	Mathlib.Algebra.GroupWithZero.Basic			external+catalog-mismatch
+Q1755242	Nilpotent group	Group.IsNilpotent	Mathlib.GroupTheory.Nilpotent			external+catalog-settled
 Q1780005		CategoryTheory.Comma	Mathlib.CategoryTheory.Comma.Basic			external
 Q1780743	compact operator	IsCompactOperator	Mathlib.Analysis.Normed.Operator.Compact.Basic	5	https://github.com/leanprover-community/mathlib4/pull/40970	bot
 Q1816967		exists_continuous_zero_one_of_isClosed	Mathlib.Topology.UrysohnsLemma			external

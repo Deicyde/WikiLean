@@ -114,7 +114,13 @@ cd "$REPO/site" || exit 1
     else
       echo "(graph build failed — keeping the last KV copy)"
     fi
-    # /decl/:name reverse citations — same success-gated KV pattern.
+    echo
+  fi
+  # /decl/:name reverse citations — same success-gated KV pattern, but under
+  # its OWN gate: pausing the graph refresh must not silently stop the /decl
+  # cited_by refresh (they share nothing but the pattern).
+  if [ "${WIKILEAN_DECLCITES_REFRESH:-1}" = "1" ]; then
+    echo "--- refresh /decl reverse citations (KV declcites:v1) ---"
     if python3 "$REPO/site/build_decl_citations.py"; then
       if [ "${WIKILEAN_GRAPH_DEPLOY:-1}" = "1" ]; then
         ( cd "$REPO/wiki" && npx wrangler kv key put --binding=RENDER_CACHE --remote \
