@@ -101,20 +101,24 @@ cd "$REPO/site" || exit 1
   if [ "${WIKILEAN_GRAPH_REFRESH:-1}" = "1" ]; then
     echo "--- refresh + deploy concept graph (verified @[wikidata] tags + live Mathlib coverage) ---"
     # Coverage now reflects tonight's formalization (moderate.py rewrites the disk
-    # artifacts it posts), so recompute it, then rebuild the graph page + assets.
-    python3 "$REPO/manage/coverage.py" || echo "(coverage refresh returned $?)"
-    python3 "$REPO/site/build_graph_page.py" || echo "(graph build returned $?)"
-    ( cd "$REPO/wiki" && node --experimental-strip-types scripts/build-public.ts ) \
-      || echo "(build-public returned $?)"
-    # Deploy ONLY when wiki/src is clean — an unattended run must never ship
-    # uncommitted Worker WIP. Gated + fail-soft; wrangler uses the user's OAuth
-    # session (accessible under launchd).
-    if [ "${WIKILEAN_GRAPH_DEPLOY:-1}" = "1" ]; then
-      if [ -z "$(cd "$REPO" && git status --porcelain wiki/src wiki/assets)" ]; then
-        ( cd "$REPO/wiki" && npm run deploy ) || echo "(graph deploy returned $?)"
-      else
-        echo "(wiki/src dirty — skipping graph deploy; run 'cd wiki && npm run deploy' by hand)"
+    # artifacts it posts). Chain the builds with && so a FAILED build SKIPS the
+    # deploy — never ship a partial/stale wiki/public; production keeps the last
+    # good /graph. (A crash mid-build_graph_page.py or build-public.ts would
+    # otherwise leave a mismatched graph.html/graph_data.json pair.)
+    if python3 "$REPO/manage/coverage.py" \
+         && python3 "$REPO/site/build_graph_page.py" \
+         && ( cd "$REPO/wiki" && node --experimental-strip-types scripts/build-public.ts ); then
+      # Deploy ONLY when wiki/src is clean — an unattended run must never ship
+      # uncommitted Worker WIP. wrangler uses the user's OAuth session (launchd).
+      if [ "${WIKILEAN_GRAPH_DEPLOY:-1}" = "1" ]; then
+        if [ -z "$(cd "$REPO" && git status --porcelain wiki/src wiki/assets)" ]; then
+          ( cd "$REPO/wiki" && npm run deploy ) || echo "(graph deploy returned $?)"
+        else
+          echo "(wiki/src dirty — skipping graph deploy; run 'cd wiki && npm run deploy' by hand)"
+        fi
       fi
+    else
+      echo "(graph build failed — skipping deploy; production keeps the last good /graph)"
     fi
     echo
   fi

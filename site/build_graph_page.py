@@ -478,9 +478,15 @@ def load_verified_qids() -> set[str]:
 
 
 def load_coverage() -> dict:
+    # Coverage is optional enrichment — a missing/empty/corrupt file must degrade
+    # to "no coverage", never crash the graph build (the verified subgraph and the
+    # rest of the graph don't depend on it).
     if not COVERAGE.exists():
         return {}
-    return json.loads(COVERAGE.read_text()).get("by_slug", {})
+    try:
+        return json.loads(COVERAGE.read_text()).get("by_slug", {})
+    except (ValueError, OSError):
+        return {}
 
 
 def main() -> None:
