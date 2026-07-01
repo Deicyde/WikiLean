@@ -11,8 +11,18 @@ The field layout below matches the Metamath proposal so it can be pasted into
 the `{{Property proposal}}` template with minimal editing.
 
 > **Pre-submission checklist** (do these before posting on-wiki):
-> - [ ] **Human-review the seed mappings** (or a representative sample) — they are
->   currently AI-generated; do not present them as verified until reviewed.
+> - [ ] **Human-review the seed mappings** — REFRAMED 2026-07-02: the seed batch is
+>   now the ~126 tags already **merged into mathlib master** (each passed ≥2 human
+>   reviewers incl. a maintainer, plus CI) rather than the 815 AI mappings.
+>   Sign-off artifacts (from `bot/export_property_seed.py`):
+>   `bot/data/property_seed.tsv` (126 rows with PR provenance),
+>   `property_seed_quickstatements.csv` (119 ready rows, `PXXXX` placeholder),
+>   `property_seed_flags.tsv` (17 rows needing hand review). The 815-mapping
+>   import can follow later via mix'n'match as phase 2.
+> - [x] **Formatter URL is LIVE** (2026-07-02): `https://wikilean.jackmccarthy.org/decl/$1`
+>   resolves the decl name to its current module (doc-gen4 index) and 302s to the
+>   mathlib4_docs page; unknown names fall back to docs search; JSON (with reverse
+>   WikiLean citations) on `Accept: application/json`. Code: `wiki/src/decl.ts`.
 > - [x] Property doesn't already exist / wasn't already proposed (checked).
 > - [x] Datatype chosen (external identifier); value scheme decided (Option A).
 > - [x] Name decided ("Mathlib declaration").
