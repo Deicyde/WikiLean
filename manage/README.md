@@ -29,6 +29,13 @@ python3 manage/coverage.py     # site/annotations/*.json -> data/coverage.json
 python3 manage/worklists.py    # join                  -> data/{moderation,pipeline}_worklist.json
 ```
 
+Session snapshot + backlog feed:
+
+```bash
+python3 manage/status.py [--live]         # ground-truth snapshot (session-start hook runs this)
+python3 manage/formalize_backlog.py       # verify the formalize worklist vs live D1 -> data/formalize_slugs.txt
+```
+
 ## Artifacts (`manage/data/`, git-tracked — this is the control-plane state)
 
 | File | What |
@@ -65,6 +72,25 @@ python3 manage/worklists.py    # join                  -> data/{moderation,pipel
 - `pipeline_worklist` → what the `@[wikidata]` bot should tag next, ordered by
   structural importance instead of the frozen wikilink count in
   `bot/data/most_used_qids.json`.
+
+## Moderation integration (the formalize backlog)
+
+The `/api/work` ladder sorts by `lastReviewedAt`/`version` — it has no notion of
+"has Agent-1 statements but no Agent-2 formalization," so the extracted backlog
+is invisible to the runner. The fix, wired into the nightly job:
+
+1. `formalize_backlog.py` reads the `formalize` worklist and verifies each slug
+   against **live D1** (the on-disk layer lags D1 — an article can already be
+   formalized in D1 while disk still shows Agent-1 only). It emits only the
+   genuinely-still-extracted slugs to `data/formalize_slugs.txt`.
+2. `moderate.py review --slugs data/formalize_slugs.txt` reviews exactly those
+   (a new, general `--slugs` option on the runner — process_review GETs each
+   article's live state, so only the slug is needed), running Agent-2 over the
+   Agent-1 statements.
+3. `site/ops/nightly-moderate.sh` runs both after wp-update and before the
+   general review, bounded by `WIKILEAN_FORMALIZE_LIMIT` (default 6) and
+   `WIKILEAN_FORMALIZE_BUDGET` (default 300k tokens). Set the limit to 0 to
+   disable. Nightly agent spend ≈ FORMALIZE_BUDGET + BUDGET_TOKENS.
 
 ## Known limitations (documented, not hidden)
 
