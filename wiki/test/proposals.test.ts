@@ -8,6 +8,7 @@ import {
   setup,
   save,
   botSave,
+  get,
   articleRow,
   storedAnnotations,
   latestRevision,
@@ -142,6 +143,84 @@ describe("POST /api/article/:slug (proposals)", () => {
 
     // Proposal consumed.
     expect(pending(db)).toHaveLength(0);
+  });
+
+  it("dual-writes the lifecycle table: pending on store, approved/rejected(+reason) on decision", async () => {
+    const { db, env } = setup();
+    await seedProposal(env);
+    await storeProposal(env, db, 2);
+    const prow = () =>
+      db.prepare("SELECT * FROM proposals WHERE annotation_id = ?").get(HUMAN_ID) as Record<string, unknown>;
+    expect(prow()).toMatchObject({ slug: SLUG, status: "pending", run_id: "run-abc", model: "test-model" });
+    expect(prow()).toHaveProperty("created_at");
+
+    // Reject with a reason enum → rejected + reason recorded.
+    const p = pending(db)[0];
+    const rej = await save(
+      env,
+      { action: "reject_proposal", proposal_id: p.proposalId, reject_reason: "incorrect" },
+      { user: "u-human" },
+    );
+    expect(rej.status).toBe(200);
+    expect(prow()).toMatchObject({ status: "rejected", reject_reason: "incorrect", decided_by: "u-human" });
+
+    // A different delta → new pending row; approve it → approved, no reason.
+    const current = storedAnnotations(db).map(echo);
+    const res = await botSave(env, {
+      annotations: current,
+      base_version: 2,
+      meta: { ladder: { proposals: [{ annotationId: HUMAN_ID, fields: { note: "better note" }, reason: "r2" }] } },
+    });
+    expect(res.status).toBe(200);
+    const p2 = pending(db)[0];
+    const app = await save(env, { action: "approve_proposal", proposal_id: p2.proposalId, base_version: 2 }, { user: "u-human" });
+    expect(app.status).toBe(200);
+    const row2 = db.prepare("SELECT * FROM proposals WHERE id = ?").get(p2.proposalId) as Record<string, unknown>;
+    expect(row2).toMatchObject({ status: "approved", reject_reason: null, decided_by: "u-human" });
+    // An invalid reject_reason would have been nulled: enum-only (validRejectReason).
+  });
+
+  it("marks a pending proposal stale when a later bot save shows its target gone", async () => {
+    const { db, env } = setup();
+    await seedProposal(env);
+    await storeProposal(env, db, 2); // pending targets HUMAN_ID
+    // Human tombstones the target (version 3).
+    const anns = storedAnnotations(db).map(echo);
+    const i = anns.findIndex((a) => a.id === HUMAN_ID);
+    anns[i] = { ...anns[i], status: "rejected" };
+    const t = await save(env, { annotations: anns, base_version: 2 }, { user: "u-human" });
+    expect(t.status).toBe(200);
+    // Next bot save (echo, no new proposals) sweeps the dead-target pending.
+    const res = await botSave(env, {
+      annotations: storedAnnotations(db).map(echo),
+      base_version: 3,
+      meta: { ladder: { proposals: [] } },
+    });
+    expect(res.status).toBe(200);
+    expect(pending(db)).toHaveLength(0); // blob cleared
+    const row = db.prepare("SELECT status, decided_at FROM proposals WHERE annotation_id = ?").get(HUMAN_ID) as {
+      status: string;
+      decided_at: number | null;
+    };
+    expect(row.status).toBe("stale");
+    expect(row.decided_at).not.toBeNull();
+  });
+
+  it("GET /proposals: anon redirects to login; logged-in sees the pending queue", async () => {
+    const { db, env } = setup();
+    await seedProposal(env);
+    await storeProposal(env, db, 2);
+    const anon = await get(env, "/proposals");
+    expect(anon.status).toBe(302);
+    expect(anon.headers.get("Location")).toContain("/login");
+    const page = await get(env, "/proposals", { user: "u-human" });
+    expect(page.status).toBe(200);
+    const html = await page.text();
+    expect(html).toContain("AI proposals");
+    expect(html).toContain(pending(db)[0].proposalId);
+    expect(html).toContain("wl-prop-approve");
+    expect(html).toContain("reject: why?");
+    expect(html).toContain('data-ver="2"'); // base_version for the approve POST
   });
 
   it("drops a proposal targeting a tombstoned (rejected) human annotation", async () => {

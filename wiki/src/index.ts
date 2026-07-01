@@ -8,6 +8,7 @@ import {
   revisions,
   users,
   moderationState,
+  proposals,
   annotationEvents,
   flags,
   pipelineRuns,
@@ -25,6 +26,8 @@ import {
   historyPage,
   recentChangesPage,
   flagsPage,
+  proposalsQueuePage,
+  type ProposalQueueRow,
   diffPage,
   statsPage,
   userProfilePage,
@@ -65,6 +68,7 @@ import {
   mergeProposals,
   parsePending,
   parseRejected,
+  validRejectReason,
 } from "./proposals.js";
 
 const RESERVED = new Set([
@@ -88,6 +92,7 @@ const RESERVED = new Set([
   "queue",
   "u",
   "decl",
+  "proposals",
 ]);
 
 const app = new Hono<{ Bindings: Env }>();
@@ -468,7 +473,7 @@ app.get("/wikifunctions/verify", async (c) => {
 // Annotation blobs are never parsed here. KV-cached with TTL-only
 // invalidation (a write can be up to 5 minutes stale — fine for a dashboard).
 app.get("/stats", async (c) => {
-  const cacheKey = "page:stats:v2";  // v2: dark-mode theme script + toggle
+  const cacheKey = "page:stats:v3"; // v3: proposals lifecycle section + Proposals navlink
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const db = drizzle(c.env.DB);
@@ -553,6 +558,21 @@ app.get("/stats", async (c) => {
     .groupBy(pipelineRuns.kind)
     .orderBy(pipelineRuns.kind);
 
+  // Propose-then-approve outcomes (the AI-precision measure): counts by
+  // status, acceptance rate, and mean time-to-decision — from the proposals
+  // lifecycle table. Zero-denominator guards live in statsPage.
+  const proposalAgg = (
+    await db
+      .select({
+        pending: sql<number>`COALESCE(SUM(CASE WHEN ${proposals.status} = 'pending' THEN 1 ELSE 0 END), 0)`,
+        approved: sql<number>`COALESCE(SUM(CASE WHEN ${proposals.status} = 'approved' THEN 1 ELSE 0 END), 0)`,
+        rejected: sql<number>`COALESCE(SUM(CASE WHEN ${proposals.status} = 'rejected' THEN 1 ELSE 0 END), 0)`,
+        stale: sql<number>`COALESCE(SUM(CASE WHEN ${proposals.status} = 'stale' THEN 1 ELSE 0 END), 0)`,
+        meanDecisionMs: sql<number | null>`AVG(CASE WHEN ${proposals.decidedAt} IS NOT NULL AND ${proposals.status} IN ('approved','rejected') THEN ${proposals.decidedAt} - ${proposals.createdAt} END)`,
+      })
+      .from(proposals)
+  )[0];
+
   const html = statsPage({
     articles: review,
     annotations: ann,
@@ -561,6 +581,7 @@ app.get("/stats", async (c) => {
     revisions: revByKind,
     patrol,
     runs,
+    proposals: proposalAgg,
   });
   await c.env.RENDER_CACHE.put(cacheKey, html, { expirationTtl: 300 });
   return c.html(html);
@@ -759,6 +780,78 @@ app.delete("/api/watch/:slug", async (c) => {
 // endpoint enforces the same gate server-side.
 // NB: the bot bearer also gets 200 here — intentional: a harmless read
 // (getUser treats the bearer as logged-in), and resolving stays role-gated.
+// ---- /proposals — cross-article propose-then-approve review queue ----------
+// Before this page, a proposal on an unvisited article was invisible forever;
+// approval throughput is the bottleneck of the whole experiment. Reads the
+// proposals lifecycle table (pending only) + each target's CURRENT values so
+// the reviewer can decide in place. Logged-in humans only (the POST contract
+// it drives is session-only anyway — bots 403).
+app.get("/proposals", async (c) => {
+  const user = await getUser(c);
+  if (!user) return c.redirect("/login?returnTo=%2Fproposals");
+  const db = drizzle(c.env.DB);
+  const pending = await db
+    .select({
+      proposalId: proposals.id,
+      slug: proposals.slug,
+      annotationId: proposals.annotationId,
+      fields: proposals.fields,
+      reason: proposals.reason,
+      model: proposals.model,
+      createdAt: proposals.createdAt,
+      displayTitle: articles.displayTitle,
+      version: articles.version,
+      annotations: articles.annotations,
+    })
+    .from(proposals)
+    .innerJoin(articles, eq(articles.slug, proposals.slug))
+    .where(eq(proposals.status, "pending"))
+    .orderBy(desc(proposals.createdAt))
+    .limit(200);
+  // Pull each target annotation's current approvable fields (same slug may
+  // repeat; the row already carries the blob — parse per row, cheap at ≤200).
+  const rows: ProposalQueueRow[] = pending.map((p) => {
+    let label = "";
+    let current: Record<string, unknown> | null = null;
+    try {
+      const anns = JSON.parse(p.annotations) as AnnRecord[];
+      const target = anns.find((a) => a.id === p.annotationId);
+      if (target) {
+        label = typeof target.label === "string" ? target.label : "";
+        current = {
+          status: target.status,
+          mathlib: target.mathlib,
+          note: target.note,
+          label: target.label,
+          kind: target.kind,
+        };
+      }
+    } catch {
+      /* render with unknown current values rather than 500 */
+    }
+    let fields: Record<string, unknown> = {};
+    try {
+      fields = JSON.parse(p.fields) as Record<string, unknown>;
+    } catch {
+      /* leave empty */
+    }
+    return {
+      proposalId: p.proposalId,
+      slug: p.slug,
+      displayTitle: p.displayTitle ?? p.slug,
+      version: p.version,
+      annotationId: p.annotationId,
+      label,
+      current,
+      fields,
+      reason: p.reason ?? "",
+      model: p.model,
+      createdAt: p.createdAt,
+    };
+  });
+  return c.html(proposalsQueuePage(rows));
+});
+
 app.get("/flags", async (c) => {
   const user = await getUser(c);
   if (!user) return c.redirect("/login?returnTo=%2Fflags");
@@ -1098,11 +1191,19 @@ app.post("/api/article/:slug", async (c) => {
       if (posted.action === "reject_proposal") {
         const rejected = parseRejected(ms?.rejectedProposals);
         rejected.push({ annotationId: prop.annotationId, fieldsSig: fieldsSig(prop.fields) });
-        await db
-          .update(moderationState)
-          .set({ proposal: remainingJson, rejectedProposals: JSON.stringify(rejected.slice(-500)), updatedAt: now })
-          .where(eq(moderationState.slug, slug));
-        console.log(JSON.stringify({ event: "proposal-reject", slug, user_id: user.id, proposal_id: proposalId, t: now }));
+        const rejectReason = validRejectReason((posted as { reject_reason?: unknown }).reject_reason);
+        await db.batch([
+          db
+            .update(moderationState)
+            .set({ proposal: remainingJson, rejectedProposals: JSON.stringify(rejected.slice(-500)), updatedAt: now })
+            .where(eq(moderationState.slug, slug)),
+          // Lifecycle log (dual-write): the decision + the human's reason enum.
+          db
+            .update(proposals)
+            .set({ status: "rejected", rejectReason, decidedAt: now, decidedBy: user.id })
+            .where(and(eq(proposals.id, proposalId), eq(proposals.status, "pending"))),
+        ]);
+        console.log(JSON.stringify({ event: "proposal-reject", slug, user_id: user.id, proposal_id: proposalId, reject_reason: rejectReason, t: now }));
         return c.json({ ok: true, rejected: true });
       }
 
@@ -1115,13 +1216,26 @@ app.post("/api/article/:slug", async (c) => {
       const idx = stored.findIndex((a) => a.id === prop.annotationId);
       if (idx === -1) {
         // Target annotation gone — drop the stale proposal, no content write.
-        await db.update(moderationState).set({ proposal: remainingJson, updatedAt: now }).where(eq(moderationState.slug, slug));
+        await db.batch([
+          db.update(moderationState).set({ proposal: remainingJson, updatedAt: now }).where(eq(moderationState.slug, slug)),
+          db
+            .update(proposals)
+            .set({ status: "stale", decidedAt: now, decidedBy: user.id })
+            .where(and(eq(proposals.id, proposalId), eq(proposals.status, "pending"))),
+        ]);
         return c.json({ ok: false, error: "annotation gone", dropped: true }, 409);
       }
       const { next, changed } = applyProposalFields(stored[idx], prop.fields);
       if (changed.length === 0) {
         // Already matches (e.g. applied by an earlier edit) — just clear it.
-        await db.update(moderationState).set({ proposal: remainingJson, updatedAt: now }).where(eq(moderationState.slug, slug));
+        // Lifecycle: approved (the human accepted it; the delta is in effect).
+        await db.batch([
+          db.update(moderationState).set({ proposal: remainingJson, updatedAt: now }).where(eq(moderationState.slug, slug)),
+          db
+            .update(proposals)
+            .set({ status: "approved", decidedAt: now, decidedBy: user.id })
+            .where(and(eq(proposals.id, proposalId), eq(proposals.status, "pending"))),
+        ]);
         return c.json({ ok: true, noop: true, version: row.version });
       }
       next.provenance = "human"; // Jack approved it; keep it human-protected
@@ -1165,6 +1279,10 @@ app.post("/api/article/:slug", async (c) => {
           },
         ]),
         db.update(moderationState).set({ proposal: remainingJson, updatedAt: now }).where(eq(moderationState.slug, slug)),
+        db
+          .update(proposals)
+          .set({ status: "approved", decidedAt: now, decidedBy: user.id })
+          .where(and(eq(proposals.id, proposalId), eq(proposals.status, "pending"))),
       ]);
       console.log(JSON.stringify({ event: "proposal-approve", slug, user_id: user.id, proposal_id: proposalId, version: newVersion, t: now }));
       return c.json({ ok: true, version: newVersion });
@@ -1329,30 +1447,69 @@ app.post("/api/article/:slug", async (c) => {
     isBot && posted.meta && typeof posted.meta === "object"
       ? (posted.meta as { ladder?: { proposals?: unknown } }).ladder?.proposals
       : undefined;
-  if (isBot && Array.isArray(incomingProposals) && incomingProposals.length > 0) {
+  // Runs on EVERY bot save (not only ones carrying new proposals): the
+  // staleness sweep below must fire even when meta.ladder.proposals is empty,
+  // or a dead-target pending proposal survives until someone clicks approve.
+  if (isBot) {
     const pnow = Date.now();
     const ms = (await db.select().from(moderationState).where(eq(moderationState.slug, slug)).limit(1))[0];
     const existingPending = parsePending(ms?.proposal);
-    const merged = mergeProposals(existingPending, parseRejected(ms?.rejectedProposals), incomingProposals, {
+    // Exclude tombstones: a `rejected` annotation is a human veto and must
+    // never be a proposal target (else an approved proposal could resurrect a
+    // veto). mergeProposals drops any proposal whose id isn't in this set.
+    const liveIds = new Set(
+      finalAnnotations
+        .filter((a) => a.status !== "rejected")
+        .map((a) => a.id)
+        .filter((x): x is string => typeof x === "string"),
+    );
+    // Staleness sweep: pending proposals whose target no longer exists (or was
+    // tombstoned since) can never be approved — drop them from the hot blob and
+    // record the silent expiry in the lifecycle log instead of losing it.
+    const staleNow = existingPending.filter((p) => !liveIds.has(p.annotationId));
+    const stillPending = staleNow.length ? existingPending.filter((p) => liveIds.has(p.annotationId)) : existingPending;
+    // posted.meta may be absent entirely (the sweep runs on every bot save).
+    const postedMeta = (posted.meta && typeof posted.meta === "object" ? posted.meta : {}) as {
+      run_id?: unknown;
+      model?: unknown;
+    };
+    const merged = mergeProposals(stillPending, parseRejected(ms?.rejectedProposals), incomingProposals, {
       now: pnow,
-      runId: (posted.meta as { run_id?: unknown }).run_id as string | undefined,
-      model: (posted.meta as { model?: unknown }).model as string | undefined,
-      // Exclude tombstones: a `rejected` annotation is a human veto and must
-      // never be a proposal target (else an approved proposal could resurrect a
-      // veto). mergeProposals drops any proposal whose id isn't in this set.
-      validIds: new Set(
-        finalAnnotations
-          .filter((a) => a.status !== "rejected")
-          .map((a) => a.id)
-          .filter((x): x is string => typeof x === "string"),
-      ),
+      runId: typeof postedMeta.run_id === "string" ? postedMeta.run_id : undefined,
+      model: typeof postedMeta.model === "string" ? postedMeta.model : undefined,
+      validIds: liveIds,
     });
-    if (merged.length > existingPending.length) {
-      const proposalJson = JSON.stringify(merged);
-      await db
-        .insert(moderationState)
-        .values({ slug, proposal: proposalJson, updatedAt: pnow })
-        .onConflictDoUpdate({ target: moderationState.slug, set: { proposal: proposalJson, updatedAt: pnow } });
+    if (merged.length > stillPending.length || staleNow.length > 0) {
+      const proposalJson = merged.length ? JSON.stringify(merged) : null;
+      const newOnes = merged.slice(stillPending.length);
+      await db.batch([
+        db
+          .insert(moderationState)
+          .values({ slug, proposal: proposalJson, updatedAt: pnow })
+          .onConflictDoUpdate({ target: moderationState.slug, set: { proposal: proposalJson, updatedAt: pnow } }),
+        // Lifecycle log (dual-write): one row per NEW proposal…
+        ...newOnes.map((p) =>
+          db.insert(proposals).values({
+            id: p.proposalId,
+            slug,
+            annotationId: p.annotationId,
+            fields: JSON.stringify(p.fields),
+            fieldsSig: fieldsSig(p.fields),
+            reason: p.reason || null,
+            runId: p.runId ?? null,
+            model: p.model ?? null,
+            status: "pending",
+            createdAt: p.createdAt,
+          }),
+        ),
+        // …and the silent expiries.
+        ...staleNow.map((p) =>
+          db
+            .update(proposals)
+            .set({ status: "stale", decidedAt: pnow })
+            .where(and(eq(proposals.id, p.proposalId), eq(proposals.status, "pending"))),
+        ),
+      ]);
     }
   }
 

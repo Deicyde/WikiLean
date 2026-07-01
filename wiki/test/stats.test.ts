@@ -194,10 +194,10 @@ describe("GET /stats", () => {
     expect(html).toContain('<span class="muted">—</span>');
   });
 
-  it("is KV-cached under page:stats:v1 for 300s (TTL-only invalidation)", async () => {
+  it("is KV-cached under page:stats:v3 for 300s (TTL-only invalidation)", async () => {
     const h = setup();
     const first = await (await get(h.env, "/stats")).text();
-    expect(h.renderCache.store.has("page:stats:v1")).toBe(true);
+    expect(h.renderCache.store.has("page:stats:v3")).toBe(true);
     // Mutate the DB; the cached page must still serve unchanged.
     insertArticle(h.db, "After_Cache");
     const second = await (await get(h.env, "/stats")).text();
