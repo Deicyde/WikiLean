@@ -9,12 +9,16 @@ Run alongside build_index.py / export_wikidata_rdf.py / build_static_pages.py.
 """
 from __future__ import annotations
 
-import shutil
+import json
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 OUT_DIR = HERE / "out"
 DATA_SRC = HERE.parent / "catalog" / "data" / "concept_graph.json"
+# QIDs whose Wikidata↔Mathlib mapping is a merged @[wikidata] tag in Mathlib
+# master — the deterministic, human-reviewed ground truth. The bot keeps this
+# list current as batches land.
+BOT_TAGGED = HERE.parent / "bot" / "data" / "tagged_in_master.txt"
 
 
 HTML = """<!doctype html>
@@ -117,6 +121,10 @@ input[type="text"]:focus { outline:none; border-color:#0969da; box-shadow:0 0 0 
     <label class="row"><input type="checkbox" id="show-wikidata" checked><span class="swatch" style="background:#c78420"></span> Wikidata only</label>
     <label class="row"><input type="checkbox" id="show-both" checked><span class="swatch" style="background:#2da44e"></span> Both (overlap)</label>
 
+    <h2>Human-reviewed</h2>
+    <label class="row"><input type="checkbox" id="verified-only"><span class="swatch" style="width:11px;height:11px;border-radius:50%;background:transparent;border:2px solid #8250df"></span> Only merged <code>@[wikidata]</code> tags <span class="hint" id="verified-count" style="margin-left:auto"></span></label>
+    <p class="hint">The deterministic subset — Wikidata↔Mathlib links a maintainer merged into Mathlib (ringed ○). Everything else is an AI-proposed mapping.</p>
+
     <h2>Search</h2>
     <input type="text" id="search" placeholder="Concept label…" autocomplete="off">
 
@@ -141,6 +149,7 @@ const COLORS = {
   wikidata: '#c78420',
   both: '#2da44e',
   highlight: '#cf222e',
+  verified: '#8250df',
   nodeFormalized: '#2da44e',
   nodeUnformalized: '#d0d7de',
   nodeDefault: '#57606a',
@@ -168,14 +177,20 @@ function labelColor() { return isDark() ? '#ebe5d8' : '#1f2328'; }
     validEdges.push(e);
   }
 
-  const nodeById = new Map();
-  for (const n of data.nodes) nodeById.set(n.qid, { ...n, id: n.qid });
-  const nodes = [...nodeById.values()];
-  const edges = validEdges.filter(e => nodeById.has(e.source) && nodeById.has(e.target));
+  const allNodesById = new Map();
+  for (const n of data.nodes) allNodesById.set(n.qid, { ...n, id: n.qid });
+  const allNodes = [...allNodesById.values()];
+  const allEdges = validEdges.filter(e => allNodesById.has(e.source) && allNodesById.has(e.target));
+  const nVerified = allNodes.reduce((a, n) => a + (n.verified ? 1 : 0), 0);
 
-  // Pre-bucket edges by category so each draw pass iterates only its own slice.
-  const edgesByCat = { mathlib: [], wikidata: [], both: [] };
-  for (const e of edges) edgesByCat[e.cat].push(e);
+  // Active set — swapped by the human-reviewed filter, so these are reassignable.
+  let nodes = allNodes, edges = allEdges, nodeById = allNodesById;
+  let edgesByCat = { mathlib: [], wikidata: [], both: [] };
+  function bucketEdges() {
+    edgesByCat = { mathlib: [], wikidata: [], both: [] };
+    for (const e of edges) edgesByCat[e.cat].push(e);
+  }
+  bucketEdges();
 
   const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
@@ -203,6 +218,30 @@ function labelColor() { return isDark() ? '#ebe5d8' : '#1f2328'; }
   const show = { mathlib: false, wikidata: true, both: true };
   let highlighted = null;
   let searchTerm = '';
+  let verifiedOnly = false;
+
+  const endpointId = x => (x && typeof x === 'object') ? x.id : x;
+  // Swap the active node/edge set to the human-reviewed subgraph (or back) and
+  // re-run the layout so the ~97 verified nodes cluster instead of scattering.
+  function applyFilter() {
+    if (verifiedOnly) {
+      nodeById = new Map([...allNodesById].filter(([, n]) => n.verified));
+      nodes = [...nodeById.values()];
+      edges = allEdges.filter(e => nodeById.has(endpointId(e.source)) && nodeById.has(endpointId(e.target)));
+      // The verified subgraph is mostly Mathlib edges (few, and meaningful here),
+      // so surface them even though they're hidden on the full graph by default.
+      if (!show.mathlib) { show.mathlib = true; document.getElementById('show-mathlib').checked = true; }
+    } else {
+      nodeById = allNodesById; nodes = allNodes; edges = allEdges;
+    }
+    bucketEdges();
+    if (highlighted && !nodeById.has(highlighted.id)) { highlighted = null; renderInfo(); }
+    sim.nodes(nodes);
+    sim.force('link').links(edges);
+    sim.alpha(0.9).restart();
+    renderStats();
+    scheduleDraw();
+  }
 
   function nodeColor(n, matched) {
     if (matched) return COLORS.highlight;
@@ -277,6 +316,14 @@ function labelColor() { return isDark() ? '#ebe5d8' : '#1f2328'; }
       ctx.beginPath();
       ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
       ctx.fill();
+      // Ring the human-reviewed nodes so they're identifiable even unfiltered.
+      if (n.verified && !isHl && !matched) {
+        ctx.strokeStyle = COLORS.verified;
+        ctx.lineWidth = 1.2 * inv;
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, r + 1.7 * inv, 0, Math.PI * 2);
+        ctx.stroke();
+      }
     }
 
     if (highlighted) {
@@ -347,6 +394,7 @@ function labelColor() { return isDark() ? '#ebe5d8' : '#1f2328'; }
     const parts = [];
     parts.push(`<h3>${esc(n.label || n.qid)}</h3>`);
     parts.push(`<div class="qid">${n.qid}${n.importance ? ' · ' + esc(n.importance) : ''}${n.status ? ' · ' + esc(n.status) : ''}</div>`);
+    if (n.verified) parts.push(`<div class="field" style="color:${COLORS.verified}"><b style="color:${COLORS.verified}">✓ Human-reviewed</b> · merged <code>@[wikidata ${esc(n.qid)}]</code> in Mathlib</div>`);
     if (n.primary_decl) parts.push(`<div class="field"><b>Decl</b> · <code>${esc(n.primary_decl)}</code></div>`);
     if (n.module) parts.push(`<div class="field"><b>Module</b> · <code>${esc(n.module)}</code></div>`);
     parts.push(`<div class="field" style="margin-top:10px"><b>Edges</b> · <span style="color:${COLORS.mathlib}">${counts.mathlib} mathlib</span> · <span style="color:${COLORS.wikidata}">${counts.wikidata} wikidata</span> · <span style="color:${COLORS.both}">${counts.both} both</span></div>`);
@@ -365,19 +413,25 @@ function labelColor() { return isDark() ? '#ebe5d8' : '#1f2328'; }
   document.getElementById('show-mathlib').addEventListener('change', e => { show.mathlib = e.target.checked; scheduleDraw(); });
   document.getElementById('show-wikidata').addEventListener('change', e => { show.wikidata = e.target.checked; scheduleDraw(); });
   document.getElementById('show-both').addEventListener('change', e => { show.both = e.target.checked; scheduleDraw(); });
+  document.getElementById('verified-only').addEventListener('change', e => { verifiedOnly = e.target.checked; applyFilter(); });
   document.getElementById('search').addEventListener('input', e => {
     searchTerm = e.target.value.toLowerCase().trim();
     scheduleDraw();
   });
 
   const statsEl = document.getElementById('stats');
-  const counts = { mathlib: 0, wikidata: 0, both: 0 };
-  for (const e of edges) counts[e.cat]++;
-  statsEl.innerHTML = `
-    <div class="stat"><span>Nodes</span><span class="v">${nodes.length.toLocaleString()}</span></div>
-    <div class="stat"><span>Mathlib only</span><span class="v">${counts.mathlib.toLocaleString()}</span></div>
-    <div class="stat"><span>Wikidata only</span><span class="v">${counts.wikidata.toLocaleString()}</span></div>
-    <div class="stat"><span>Both</span><span class="v">${counts.both.toLocaleString()}</span></div>`;
+  function renderStats() {
+    const counts = { mathlib: 0, wikidata: 0, both: 0 };
+    for (const e of edges) counts[e.cat]++;
+    statsEl.innerHTML = `
+      <div class="stat"><span>Nodes</span><span class="v">${nodes.length.toLocaleString()}</span></div>
+      <div class="stat"><span>Mathlib only</span><span class="v">${counts.mathlib.toLocaleString()}</span></div>
+      <div class="stat"><span>Wikidata only</span><span class="v">${counts.wikidata.toLocaleString()}</span></div>
+      <div class="stat"><span>Both</span><span class="v">${counts.both.toLocaleString()}</span></div>`;
+  }
+  renderStats();
+  const vcEl = document.getElementById('verified-count');
+  if (vcEl) vcEl.textContent = nVerified.toLocaleString();
 
   resize();
   window.addEventListener('resize', resize);
@@ -399,12 +453,28 @@ function labelColor() { return isDark() ? '#ebe5d8' : '#1f2328'; }
 """
 
 
+def load_verified_qids() -> set[str]:
+    if not BOT_TAGGED.exists():
+        return set()
+    return {l.strip() for l in BOT_TAGGED.read_text().splitlines() if l.strip().startswith("Q")}
+
+
 def main() -> None:
     OUT_DIR.mkdir(exist_ok=True)
     (OUT_DIR / "graph.html").write_text(HTML)
-    shutil.copyfile(DATA_SRC, OUT_DIR / "graph_data.json")
-    n = (OUT_DIR / "graph_data.json").stat().st_size
-    print(f"Wrote out/graph.html and out/graph_data.json ({n / 1024 / 1024:.1f} MB)")
+    # Stamp `verified` on nodes backed by a merged @[wikidata] tag, so the viewer
+    # can filter to the human-reviewed subgraph.
+    verified = load_verified_qids()
+    data = json.loads(DATA_SRC.read_text())
+    nv = 0
+    for node in data.get("nodes", []):
+        if node.get("qid") in verified:
+            node["verified"] = True
+            nv += 1
+    (OUT_DIR / "graph_data.json").write_text(json.dumps(data, ensure_ascii=False))
+    size = (OUT_DIR / "graph_data.json").stat().st_size
+    print(f"Wrote out/graph.html and out/graph_data.json ({size / 1024 / 1024:.1f} MB); "
+          f"{nv} human-reviewed nodes (@[wikidata] merged in master)")
 
 
 if __name__ == "__main__":
