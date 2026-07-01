@@ -88,9 +88,11 @@ is invisible to the runner. The fix, wired into the nightly job:
    article's live state, so only the slug is needed), running Agent-2 over the
    Agent-1 statements.
 3. `site/ops/nightly-moderate.sh` runs both after wp-update and before the
-   general review, bounded by `WIKILEAN_FORMALIZE_LIMIT` (default 6) and
-   `WIKILEAN_FORMALIZE_BUDGET` (default 300k tokens). Set the limit to 0 to
-   disable. Nightly agent spend ≈ FORMALIZE_BUDGET + BUDGET_TOKENS.
+   general review. **Tune the rate in `site/ops/nightly.env`** — one file, one
+   line: `WIKILEAN_FORMALIZE_LIMIT` (articles/night, default 12; 0 to pause) and
+   `WIKILEAN_FORMALIZE_BUDGET` (token cap, default 600k). A one-off env override
+   still wins (`WIKILEAN_FORMALIZE_LIMIT=25 bash site/ops/run-now.sh`). Nightly
+   agent spend ≈ FORMALIZE_BUDGET + BUDGET_TOKENS.
 
 ## Known limitations (documented, not hidden)
 

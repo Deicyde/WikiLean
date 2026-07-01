@@ -24,15 +24,20 @@ export WIKILEAN_API_TOKEN="$(sed -n 's/^PIPELINE_TOKEN=//p' "$REPO/wiki/.dev.var
 # Scrub it so both launch paths use the Max login.
 unset ANTHROPIC_API_KEY ANTHROPIC_AUTH_TOKEN
 
-# Tunables (production defaults; overridden in the smoke test).
+# Editable tunables live in site/ops/nightly.env (the one place to change the
+# nightly rate/budgets). Sourced with ":=" so an env override still wins and the
+# run-now.sh smoke-test env survives. Missing file → the inline defaults below.
+[ -f "$REPO/site/ops/nightly.env" ] && . "$REPO/site/ops/nightly.env"
+
+# Tunables (fallback defaults if nightly.env is absent; overridden in the smoke test).
 WPUPDATE_LIMIT="${WIKILEAN_WPUPDATE_LIMIT:-300}"
 REVIEW_LIMIT="${WIKILEAN_REVIEW_LIMIT:-15}"
 CONCURRENCY="${WIKILEAN_CONCURRENCY:-2}"
 BUDGET_TOKENS="${WIKILEAN_BUDGET_TOKENS:-700000}"
 # Formalize backlog: Agent-2 the extracted (Agent-1-only) articles the manage/
 # control plane surfaces, which the /api/work ladder can't see. Runs before the
-# general review so the backlog gets first claim. Set WIKILEAN_FORMALIZE_LIMIT=0
-# to disable. NB: nightly agent spend ≈ FORMALIZE_BUDGET + BUDGET_TOKENS.
+# general review so the backlog gets first claim. Adjust the rate in nightly.env
+# (WIKILEAN_FORMALIZE_LIMIT; 0 disables). NB: nightly spend ≈ FORMALIZE_BUDGET + BUDGET_TOKENS.
 FORMALIZE_LIMIT="${WIKILEAN_FORMALIZE_LIMIT:-6}"
 FORMALIZE_BUDGET="${WIKILEAN_FORMALIZE_BUDGET:-300000}"
 
