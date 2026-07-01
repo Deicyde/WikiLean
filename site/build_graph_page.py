@@ -19,6 +19,10 @@ DATA_SRC = HERE.parent / "catalog" / "data" / "concept_graph.json"
 # master — the deterministic, human-reviewed ground truth. The bot keeps this
 # list current as batches land.
 BOT_TAGGED = HERE.parent / "bot" / "data" / "tagged_in_master.txt"
+# Live per-article formalization coverage (the manage/ control plane computes it
+# from the annotation layer; grows nightly as moderation formalizes). Optional —
+# the graph still builds without it.
+COVERAGE = HERE.parent / "manage" / "data" / "coverage.json"
 
 
 HTML = """<!doctype html>
@@ -125,6 +129,10 @@ input[type="text"]:focus { outline:none; border-color:#0969da; box-shadow:0 0 0 
     <label class="row"><input type="checkbox" id="verified-only"><span class="swatch" style="width:11px;height:11px;border-radius:50%;background:transparent;border:2px solid #8250df"></span> Only merged <code>@[wikidata]</code> tags <span class="hint" id="verified-count" style="margin-left:auto"></span></label>
     <p class="hint">The deterministic subset — Wikidata↔Mathlib links a maintainer merged into Mathlib (ringed ○). Everything else is an AI-proposed mapping.</p>
 
+    <h2>Node colour</h2>
+    <label class="row"><input type="checkbox" id="color-coverage"> Colour by Mathlib coverage</label>
+    <p class="hint">Nodes shade <span style="color:#d1242f">red</span>→<span style="color:#d4a72c">amber</span>→<span style="color:#2da44e">green</span> by the share of the concept's Wikipedia statements formalized in Mathlib. Refreshed nightly.</p>
+
     <h2>Search</h2>
     <input type="text" id="search" placeholder="Concept label…" autocomplete="off">
 
@@ -219,6 +227,7 @@ function labelColor() { return isDark() ? '#ebe5d8' : '#1f2328'; }
   let highlighted = null;
   let searchTerm = '';
   let verifiedOnly = false;
+  let colorByCoverage = false;
 
   const endpointId = x => (x && typeof x === 'object') ? x.id : x;
   // Swap the active node/edge set to the human-reviewed subgraph (or back) and
@@ -243,8 +252,15 @@ function labelColor() { return isDark() ? '#ebe5d8' : '#1f2328'; }
     scheduleDraw();
   }
 
+  const covStops = [[209, 36, 47], [212, 167, 44], [45, 164, 78]]; // red → amber → green
+  function coverageColor(c) {
+    const x = Math.max(0, Math.min(1, c)) * 2, i = Math.min(1, Math.floor(x)), t = x - i;
+    const A = covStops[i], B = covStops[i + 1], l = k => Math.round(A[k] + (B[k] - A[k]) * t);
+    return `rgb(${l(0)},${l(1)},${l(2)})`;
+  }
   function nodeColor(n, matched) {
     if (matched) return COLORS.highlight;
+    if (colorByCoverage && n.coverage != null) return coverageColor(n.coverage);
     if (n.status === 'formalized') return COLORS.nodeFormalized;
     if (!n.primary_decl) return nodeUnformalizedColor();
     return nodeDefaultColor();
@@ -397,6 +413,7 @@ function labelColor() { return isDark() ? '#ebe5d8' : '#1f2328'; }
     if (n.verified) parts.push(`<div class="field" style="color:${COLORS.verified}"><b style="color:${COLORS.verified}">✓ Human-reviewed</b> · merged <code>@[wikidata ${esc(n.qid)}]</code> in Mathlib</div>`);
     if (n.primary_decl) parts.push(`<div class="field"><b>Decl</b> · <code>${esc(n.primary_decl)}</code></div>`);
     if (n.module) parts.push(`<div class="field"><b>Module</b> · <code>${esc(n.module)}</code></div>`);
+    if (n.coverage != null) parts.push(`<div class="field"><b>Coverage</b> · ${Math.round(n.coverage * 100)}% formalized <span style="color:#57606a">(${n.n_formalized}/${n.n_status} statements)</span></div>`);
     parts.push(`<div class="field" style="margin-top:10px"><b>Edges</b> · <span style="color:${COLORS.mathlib}">${counts.mathlib} mathlib</span> · <span style="color:${COLORS.wikidata}">${counts.wikidata} wikidata</span> · <span style="color:${COLORS.both}">${counts.both} both</span></div>`);
     parts.push('<div class="links">');
     if (wlUrl) parts.push(`<a href="${wlUrl}">WikiLean article →</a>`);
@@ -414,6 +431,7 @@ function labelColor() { return isDark() ? '#ebe5d8' : '#1f2328'; }
   document.getElementById('show-wikidata').addEventListener('change', e => { show.wikidata = e.target.checked; scheduleDraw(); });
   document.getElementById('show-both').addEventListener('change', e => { show.both = e.target.checked; scheduleDraw(); });
   document.getElementById('verified-only').addEventListener('change', e => { verifiedOnly = e.target.checked; applyFilter(); });
+  document.getElementById('color-coverage').addEventListener('change', e => { colorByCoverage = e.target.checked; scheduleDraw(); });
   document.getElementById('search').addEventListener('input', e => {
     searchTerm = e.target.value.toLowerCase().trim();
     scheduleDraw();
@@ -459,22 +477,36 @@ def load_verified_qids() -> set[str]:
     return {l.strip() for l in BOT_TAGGED.read_text().splitlines() if l.strip().startswith("Q")}
 
 
+def load_coverage() -> dict:
+    if not COVERAGE.exists():
+        return {}
+    return json.loads(COVERAGE.read_text()).get("by_slug", {})
+
+
 def main() -> None:
     OUT_DIR.mkdir(exist_ok=True)
     (OUT_DIR / "graph.html").write_text(HTML)
-    # Stamp `verified` on nodes backed by a merged @[wikidata] tag, so the viewer
-    # can filter to the human-reviewed subgraph.
+    # Stamp `verified` on nodes backed by a merged @[wikidata] tag, and `coverage`
+    # (live formalized share of the concept's article) where we have it, so the
+    # viewer can filter to the human-reviewed subgraph and colour by coverage.
     verified = load_verified_qids()
+    coverage = load_coverage()
     data = json.loads(DATA_SRC.read_text())
-    nv = 0
+    nv = ncov = 0
     for node in data.get("nodes", []):
         if node.get("qid") in verified:
             node["verified"] = True
             nv += 1
+        c = coverage.get(node.get("slug"))
+        if c and c.get("n_status", 0) > 0:
+            node["coverage"] = c["coverage"]
+            node["n_status"] = c["n_status"]
+            node["n_formalized"] = c["n_formalized"]
+            ncov += 1
     (OUT_DIR / "graph_data.json").write_text(json.dumps(data, ensure_ascii=False))
     size = (OUT_DIR / "graph_data.json").stat().st_size
     print(f"Wrote out/graph.html and out/graph_data.json ({size / 1024 / 1024:.1f} MB); "
-          f"{nv} human-reviewed nodes (@[wikidata] merged in master)")
+          f"{nv} human-reviewed nodes, {ncov} nodes with live coverage")
 
 
 if __name__ == "__main__":

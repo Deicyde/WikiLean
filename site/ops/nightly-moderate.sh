@@ -98,6 +98,26 @@ cd "$REPO/site" || exit 1
   "$PY" moderate.py review --limit "$REVIEW_LIMIT" --concurrency "$CONCURRENCY" \
         --budget-tokens "$BUDGET_TOKENS" || echo "(review returned $?)"
   echo
+  if [ "${WIKILEAN_GRAPH_REFRESH:-1}" = "1" ]; then
+    echo "--- refresh + deploy concept graph (verified @[wikidata] tags + live Mathlib coverage) ---"
+    # Coverage now reflects tonight's formalization (moderate.py rewrites the disk
+    # artifacts it posts), so recompute it, then rebuild the graph page + assets.
+    python3 "$REPO/manage/coverage.py" || echo "(coverage refresh returned $?)"
+    python3 "$REPO/site/build_graph_page.py" || echo "(graph build returned $?)"
+    ( cd "$REPO/wiki" && node --experimental-strip-types scripts/build-public.ts ) \
+      || echo "(build-public returned $?)"
+    # Deploy ONLY when wiki/src is clean — an unattended run must never ship
+    # uncommitted Worker WIP. Gated + fail-soft; wrangler uses the user's OAuth
+    # session (accessible under launchd).
+    if [ "${WIKILEAN_GRAPH_DEPLOY:-1}" = "1" ]; then
+      if [ -z "$(cd "$REPO" && git status --porcelain wiki/src wiki/assets)" ]; then
+        ( cd "$REPO/wiki" && npm run deploy ) || echo "(graph deploy returned $?)"
+      else
+        echo "(wiki/src dirty — skipping graph deploy; run 'cd wiki && npm run deploy' by hand)"
+      fi
+    fi
+    echo
+  fi
   echo "=== done $(date +%Y%m%dT%H%M%S) ==="
 } >>"$LOG" 2>&1
 
