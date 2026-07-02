@@ -9,7 +9,7 @@ Two phases per run:
   SETTLE the current PR (deterministic): if the gate is open, split it down to
     its green tags (force-push), then LLM-triage the recycled tags into the queue
     and post a ready-to-merge comment.
-  OPEN the next batch: requeued (retargeted) tags + fresh pool tags -> 25 ->
+  OPEN the next batch: requeued (retargeted) tags + fresh pool tags -> pool.BATCH_SIZE (10) ->
     open_batch_pr.py.
 
 Determinism boundary (Jack's rule): everything here is deterministic EXCEPT the
@@ -100,12 +100,12 @@ def main():
     requeued = json.loads(QUEUE.read_text()) if QUEUE.exists() else []  # triage output
     inflight = set(r["tags"]) if pr else set()
     inflight |= {e["qid"] for e in requeued}
-    need = max(0, 25 - len(requeued))
+    need = max(0, pool.BATCH_SIZE - len(requeued))
     if not dry:  # keep the live tagged-set current before selecting (skips in dry-run)
         sh([sys.executable, str(HERE / "refresh_tagged.py"), "--mathlib", str(args.mathlib)])
     fresh = pool.candidates(need, exclude=inflight)  # deterministic pool selector (+ P31 field filter)
     print(f"\n{tag}NEXT BATCH: {len(requeued)} requeued (retargeted) + {len(fresh)} fresh = "
-          f"{len(requeued) + len(fresh)}/25")
+          f"{len(requeued) + len(fresh)}/{pool.BATCH_SIZE}")
     for e in requeued:
         t = e.get("triage", {})
         print(f"  requeue {e['qid']} -> {t.get('suggested_decl','?')}")

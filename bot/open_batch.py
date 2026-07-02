@@ -35,7 +35,7 @@ def merged(pr):
 
 
 def assemble(batch_num):
-    """approved JSON for the next batch: requeued retargets + fresh, to 25."""
+    """approved JSON for the next batch: requeued retargets + fresh, to pool.BATCH_SIZE (10)."""
     requeued = json.loads(QUEUE.read_text()) if QUEUE.exists() else []
     cut = {e["qid"] for e in (json.loads(CUTLOG.read_text()) if CUTLOG.exists() else [])}
     # A requeued tag may correct the declaration, the QID (too-broad concept), or
@@ -52,7 +52,10 @@ def assemble(batch_num):
         tags.append({"qid": tr.get("suggested_qid") or e["qid"], "file": e["file"], "decl": decl})
     # Exclude both the original and corrected QIDs so the pool fill never re-proposes them.
     exclude = {t["qid"] for t in tags} | {e["qid"] for e in requeued} | cut
-    fresh = pool.candidates(25 - len(tags), exclude=exclude)
+    # max(0, …): a big carried-over requeue (e.g. from a pre-shrink 25-tag batch)
+    # must never make the fresh count negative — pool.candidates()'s eligible[:n]
+    # would then slice from the end and pull a huge fresh set instead of none.
+    fresh = pool.candidates(max(0, pool.BATCH_SIZE - len(tags)), exclude=exclude)
     tags += [{"qid": c["qid"], "file": c["file"], "decl": c["decl"]} for c in fresh]
     branch = f"wikilean/wikidata-batch-{batch_num}"
     return {"batch": batch_num, "title": TITLE, "branch": branch,
