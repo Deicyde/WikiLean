@@ -42,6 +42,11 @@ PROPS = {
     "P3285": "msc",             # MSC 2020 classification (~377)
     "P11497": "dlmf",           # DLMF (~199)
     "P14534": "mathlib",        # Mathlib Declaration ID (Jack's property)
+    # Google Knowledge Graph bridge — kgmids sourced from Wikidata (CC0), NEVER
+    # from Google's API (ToS §5.e forbids building databases from it). P646 is
+    # the Freebase-heritage form (4.5M uses); P2671 the /g/ form (8.2M uses).
+    "P2671": "kgmid",
+    "P646": "kgmid",
 }
 CHUNK = 250
 RETRIES = 3
