@@ -1099,7 +1099,13 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
   // else is blocked by GitHub, so the client steers them to Copy review instead of a
   // Submit button that would 403. Per-request + uncached (it depends on this session).
   app.get("/api/review/connected", async (c) => {
-    const configured = !!(c.env.REVIEW_GITHUB_CLIENT_ID && c.env.REVIEW_GITHUB_CLIENT_SECRET);
+    const cid = c.env.REVIEW_GITHUB_CLIENT_ID;
+    const configured = !!(cid && c.env.REVIEW_GITHUB_CLIENT_SECRET);
+    // GitHub App client IDs start with "Iv" (Iv1./Iv23…); a classic OAuth app's don't.
+    // The two post very differently: an OAuth app's public_repo token can comment on ANY
+    // public repo, while a GitHub-App user-to-server token can only write where the app
+    // is installed. So canPost is derived differently per app type (below).
+    const isGitHubApp = !!cid && cid.startsWith("Iv");
     const { token, login } = await reviewToken(c);
     const owner = (c.req.query("owner") || "").toLowerCase();
     let canPost = false;
@@ -1109,6 +1115,14 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
       if (patLogin && patLogin === login.toLowerCase()) {
         canPost = true;
         postVia = "pat";
+      } else if (!isGitHubApp && token) {
+        // Classic OAuth app: the reviewer's own public_repo token can comment on any
+        // public PR (posting AS them, so settle.py's maintainer-by-author gate still
+        // holds). Allow optimistically — an org that restricts third-party OAuth apps
+        // returns a 403 on POST, which the client already collapses into the "use Copy
+        // review" nudge. Copy review stays the guaranteed, no-approval path either way.
+        canPost = true;
+        postVia = "oauth";
       } else if (token) {
         // A GitHub-App user-to-server token lists only THIS app's installations the user
         // can see; an install on `owner`'s org means their token can write PR comments there.
@@ -1850,6 +1864,10 @@ function updateSubmitBtn(){
   const note = document.getElementById("submit-note");
   if(GH_CONFIGURED && GH_CONNECTED && GH_CANPOST){
     b.textContent = "✅ Submit as @"+GH_LOGIN; b.title="Post your review as inline PR comments";
+    // Keep Copy review visible as the reliable path (a Submit can still 403 on an
+    // org that restricts the app/OAuth). Only fill when idle — never stomp a
+    // transient "Posting…/✓ Posted" message that submitToGitHub owns.
+    if(note && !note.textContent.trim()) note.innerHTML = "Posts as <b>@"+esc(GH_LOGIN)+"</b> — or <b>📋 Copy review</b> to paste it yourself.";
   } else if(GH_CONFIGURED && GH_CONNECTED){
     // Connected, but GitHub will block a post here (not the configured poster AND the app
     // isn't installed on this org). Don't offer a Submit that 403s — disable it and steer
