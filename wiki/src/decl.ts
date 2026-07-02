@@ -101,6 +101,39 @@ export interface DeclCitation {
   status: string;
 }
 
+// ---- multi-library fabric (Phase 1.4 of the math-DB unification) ------------
+// Beyond Mathlib (the sharded asset index), other Lean libraries' own decls
+// live in one KV blob refreshed nightly from each library's doc-gen4
+// declaration-data (site/build_library_decls.py + catalog/data/libraries.json).
+// The blob carries each library's docs_base, so library URL churn (Physlib has
+// renamed twice) is a data update, never a Worker deploy.
+export const LIBDECLS_KV_KEY = "libdecls:v1";
+
+interface LibDeclsBlob {
+  libraries: Record<string, { label: string; docs_base: string; aliases: string[] }>;
+  decls: Record<string, Record<string, string>>; // library → name → module
+}
+
+export async function resolveInLibraries(
+  blob: LibDeclsBlob | null,
+  name: string,
+): Promise<{ library: string; label: string; module: string; docs_url: string } | null> {
+  if (!blob?.decls) return null;
+  for (const [key, decls] of Object.entries(blob.decls)) {
+    const module = decls[name];
+    if (!module) continue;
+    const lib = blob.libraries[key];
+    if (!lib?.docs_base) continue;
+    return {
+      library: key,
+      label: lib.label,
+      module,
+      docs_url: `${lib.docs_base}${module.replace(/\./g, "/")}.html#${encodeURIComponent(name)}`,
+    };
+  }
+  return null;
+}
+
 async function citationsFor(c: Context<{ Bindings: Env }>, name: string): Promise<DeclCitation[]> {
   try {
     const blob = await c.env.RENDER_CACHE.get(CITES_KV_KEY, { cacheTtl: 300 });
@@ -119,6 +152,28 @@ export function registerDeclRoutes(app: Hono<{ Bindings: Env }>): void {
     const wantsJson = (c.req.header("Accept") || "").includes("application/json");
     const module = await resolveModule(c, name);
     if (!module) {
+      // Not in Mathlib — try the other Lean libraries (CSLib, Physlib,
+      // Formal Conjectures, …) via the nightly KV blob. Membership is exact
+      // (existence oracle), never string-guessing.
+      let libBlob: LibDeclsBlob | null = null;
+      try {
+        const raw = await c.env.RENDER_CACHE.get(LIBDECLS_KV_KEY, { cacheTtl: 300 });
+        libBlob = raw ? (JSON.parse(raw) as LibDeclsBlob) : null;
+      } catch {
+        libBlob = null; // fabric is additive; a bad blob must not break /decl
+      }
+      const hit = await resolveInLibraries(libBlob, name);
+      if (hit) {
+        if (wantsJson) {
+          return c.json(
+            { ok: true, decl: name, library: hit.library, library_label: hit.label,
+              module: hit.module, docs_url: hit.docs_url, cited_by: await citationsFor(c, name) },
+            200,
+            { "Cache-Control": "public, max-age=3600" },
+          );
+        }
+        return c.redirect(hit.docs_url, 302);
+      }
       if (wantsJson) return c.json({ ok: false, error: "unknown declaration", decl: name }, 404);
       // Human fallback: the docs search page, which handles renames gracefully.
       return c.redirect(`${MATHLIB_DOCS}search.html?q=${encodeURIComponent(name)}`, 302);
@@ -126,7 +181,7 @@ export function registerDeclRoutes(app: Hono<{ Bindings: Env }>): void {
     const docs = docsUrlFor(module, name);
     if (wantsJson) {
       return c.json(
-        { ok: true, decl: name, module, docs_url: docs, cited_by: await citationsFor(c, name) },
+        { ok: true, decl: name, library: "mathlib", module, docs_url: docs, cited_by: await citationsFor(c, name) },
         200,
         // Module moves only across docs builds; citations refresh nightly.
         { "Cache-Control": "public, max-age=3600" },

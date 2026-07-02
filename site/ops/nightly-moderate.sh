@@ -135,6 +135,22 @@ cd "$REPO/site" || exit 1
     fi
     echo
   fi
+  # Multi-library decl fabric (CSLib / Physlib / Formal Conjectures own-decl
+  # indexes → KV libdecls:v1). Same success-gated pattern; per-library
+  # fail-soft lives inside the builder (a dead docs site keeps its last blob).
+  if [ "${WIKILEAN_LIBDECLS_REFRESH:-1}" = "1" ]; then
+    echo "--- refresh multi-library decl fabric (KV libdecls:v1) ---"
+    if python3 "$REPO/site/build_library_decls.py"; then
+      if [ "${WIKILEAN_GRAPH_DEPLOY:-1}" = "1" ]; then
+        ( cd "$REPO/wiki" && npx wrangler kv key put --binding=RENDER_CACHE --remote \
+            libdecls:v1 --path="$REPO/site/out/library_decls.json" ) \
+          || echo "(libdecls kv put returned $?)"
+      fi
+    else
+      echo "(library-decls build failed — keeping the last KV copy)"
+    fi
+    echo
+  fi
   echo "=== done $(date +%Y%m%dT%H%M%S) ==="
 } >>"$LOG" 2>&1
 
