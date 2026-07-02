@@ -287,11 +287,24 @@ def main() -> int:
           f"# References per statement: S854 = source permalink @ {sha[:12]}, S813 = retrieved.",
           "# Excluded: ambiguous / catalog-mismatch / multi-site rows — see property_seed_flags.tsv.",
           "# Submit as Mynus grey after human review (Jack's standing rule)."]
-    qs += [f'{r["qid"]}\tP14534\t"{r["decl"]}"'
-           f'\tS854\t"https://github.com/leanprover-community/mathlib4/blob/{sha}/{r["path"]}#L{r["lineno"]}"'
-           f"\tS813\t{retrieved}"
-           for r in rows if r["status"] in QS_OK]
+    def qs_line(r):
+        return (f'{r["qid"]}\tP14534\t"{r["decl"]}"'
+                f'\tS854\t"https://github.com/leanprover-community/mathlib4/blob/{sha}/{r["path"]}#L{r["lineno"]}"'
+                f"\tS813\t{retrieved}")
+    qs += [qs_line(r) for r in rows if r["status"] in QS_OK]
     (DATA / "property_seed_quickstatements.csv").write_text("\n".join(qs) + "\n")
+
+    # Auto-push subset (bot/push_property.py): ONLY pure source-verified rows —
+    # the decl was read straight from the merged @[wikidata] tag site, with NO
+    # catalog involvement. The catalog-settled tiebreaks (which pick between
+    # to_additive twins) are DELIBERATELY excluded from the automated path; they
+    # need a human which-decl decision and stay in the manual QS file only.
+    AUTO_OK = {"bot", "external"}
+    auto = [f"# P14534 auto-push subset — pure source-verified rows only (no catalog "
+            "tiebreaks). Consumed by bot/push_property.py; net-new is diffed live "
+            f"against Wikidata before submit. Source permalinks @ {sha[:12]}."]
+    auto += [qs_line(r) for r in rows if r["status"] in AUTO_OK]
+    (DATA / "property_seed_autopush.csv").write_text("\n".join(auto) + "\n")
 
     # ALWAYS write the flags file (empty = just the header) — a re-run must
     # never leave a stale flags file sitting next to fresh TSV/QS artifacts.
