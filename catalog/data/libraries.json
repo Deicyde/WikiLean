@@ -1,0 +1,52 @@
+{
+  "_comment": "Lean library registry — the (library, decl) pair is the universal L1 join key (docs/research/mathdb-unification-research.json). Every doc-gen4 site serves declarations/declaration-data.bmp (JSON despite the extension, CORS *). module_roots filters each site's index to the library's OWN decls (each site bundles Mathlib+core: cslib's index is 231k decls of which 3.2k are its own). aliases record renames (Physlib was HEPLean then PhysLean) so old references stay resolvable. enabled=false keeps a library registered but unfetched (lean-pool: 52k decls of mixed-tier student projects — listed, not yet served).",
+  "libraries": [
+    {
+      "key": "mathlib",
+      "label": "Mathlib",
+      "docs_base": "https://leanprover-community.github.io/mathlib4_docs/",
+      "declaration_data": "https://leanprover-community.github.io/mathlib4_docs/declarations/declaration-data.bmp",
+      "module_roots": ["Mathlib"],
+      "aliases": [],
+      "enabled": false,
+      "note": "primary — served by the sharded decl-index asset, not the KV blob"
+    },
+    {
+      "key": "cslib",
+      "label": "CSLib",
+      "docs_base": "https://api.cslib.io/docs/",
+      "declaration_data": "https://api.cslib.io/docs/declarations/declaration-data.bmp",
+      "module_roots": ["Cslib"],
+      "aliases": [],
+      "enabled": true
+    },
+    {
+      "key": "physlib",
+      "label": "Physlib",
+      "docs_base": "https://physlib.io/docs/",
+      "declaration_data": "https://physlib.io/docs/declarations/declaration-data.bmp",
+      "module_roots": ["Physlib"],
+      "aliases": ["PhysLean", "HEPLean"],
+      "enabled": true
+    },
+    {
+      "key": "formal-conjectures",
+      "label": "Formal Conjectures",
+      "docs_base": "https://google-deepmind.github.io/formal-conjectures/doc/",
+      "declaration_data": "https://google-deepmind.github.io/formal-conjectures/doc/declarations/declaration-data.bmp",
+      "module_roots": ["FormalConjectures", "FormalConjecturesForMathlib"],
+      "aliases": [],
+      "enabled": true
+    },
+    {
+      "key": "lean-pool",
+      "label": "lean-pool",
+      "docs_base": "https://vilin97.github.io/lean-pool/",
+      "declaration_data": "https://vilin97.github.io/lean-pool/declarations/declaration-data.bmp",
+      "module_roots": [],
+      "aliases": [],
+      "enabled": false,
+      "note": "student-project tier; enable after per-project quality gating is designed"
+    }
+  ]
+}
