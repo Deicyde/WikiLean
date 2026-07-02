@@ -23,6 +23,10 @@ BOT_TAGGED = HERE.parent / "bot" / "data" / "tagged_in_master.txt"
 # from the annotation layer; grows nightly as moderation formalizes). Optional —
 # the graph still builds without it.
 COVERAGE = HERE.parent / "manage" / "data" / "coverage.json"
+# External-database crossrefs per QID (MathWorld, nLab, ProofWiki, Metamath,
+# LMFDB knowl, OEIS, …) — the one-SPARQL backfill from the Wikidata hub
+# (catalog/mathlib_deps/fetch_crossrefs.py, refreshed nightly). Optional.
+CROSSREFS = HERE.parent / "catalog" / "data" / "wikidata_crossrefs.json"
 
 
 HTML = """<!doctype html>
@@ -78,6 +82,9 @@ input[type="text"]:focus { outline:none; border-color:#0969da; box-shadow:0 0 0 
 #info a:hover { text-decoration:underline; }
 #info .field { margin:4px 0; font-size:.9rem; }
 #info .field b { color:#57606a; font-weight:600; }
+#info .xref-chip { display:inline-block; padding:1px 8px; margin:1px 2px; border:1px solid #d0d7de;
+  border-radius:10px; font-size:.75rem; text-decoration:none; color:#0969da; background:#f6f8fa; }
+#info .xref-chip:hover { border-color:#0969da; }
 #info .links { display:flex; flex-direction:column; gap:4px; margin-top:14px; padding-top:14px; border-top:1px solid #d0d7de; }
 .empty { color:#8c959f; font-style:italic; }
 
@@ -252,6 +259,22 @@ function labelColor() { return isDark() ? '#ebe5d8' : '#1f2328'; }
     scheduleDraw();
   }
 
+  // External-database mirrors (from the Wikidata crossref backfill). Formatter
+  // URLs match the Wikidata property formatters; 'mathlib' (P14534) routes
+  // through our own resolver so reverse citations ride along.
+  const XREF_DBS = {
+    mathlib:     { label: 'Mathlib',    url: 'https://wikilean.jackmccarthy.org/decl/$1' },
+    mathworld:   { label: 'MathWorld',  url: 'https://mathworld.wolfram.com/$1.html' },
+    nlab:        { label: 'nLab',       url: 'https://ncatlab.org/nlab/show/$1' },
+    proofwiki:   { label: 'ProofWiki',  url: 'https://proofwiki.org/wiki/$1' },
+    metamath:    { label: 'Metamath',   url: 'https://us.metamath.org/mpeuni/$1.html' },
+    lmfdb_knowl: { label: 'LMFDB',      url: 'https://www.lmfdb.org/knowledge/show/$1' },
+    oeis:        { label: 'OEIS',       url: 'https://oeis.org/$1' },
+    eom:         { label: 'EoM',        url: 'https://encyclopediaofmath.org/wiki/$1' },
+    planetmath:  { label: 'PlanetMath', url: 'https://planetmath.org/$1' },
+    dlmf:        { label: 'DLMF',       url: 'https://dlmf.nist.gov/$1' },
+    msc:         { label: 'MSC',        url: 'https://zbmath.org/classification/?q=cc%3A$1' },
+  };
   const covStops = [[209, 36, 47], [212, 167, 44], [45, 164, 78]]; // red → amber → green
   function coverageColor(c) {
     const x = Math.max(0, Math.min(1, c)) * 2, i = Math.min(1, Math.floor(x)), t = x - i;
@@ -414,6 +437,12 @@ function labelColor() { return isDark() ? '#ebe5d8' : '#1f2328'; }
     if (n.primary_decl) parts.push(`<div class="field"><b>Decl</b> · <code>${esc(n.primary_decl)}</code></div>`);
     if (n.module) parts.push(`<div class="field"><b>Module</b> · <code>${esc(n.module)}</code></div>`);
     if (n.coverage != null) parts.push(`<div class="field"><b>Coverage</b> · ${Math.round(n.coverage * 100)}% formalized <span style="color:#57606a">(${n.n_formalized}/${n.n_status} statements)</span></div>`);
+    if (n.xrefs) {
+      const chips = Object.entries(XREF_DBS).flatMap(([key, db]) =>
+        (n.xrefs[key] || []).slice(0, 3).map(id =>
+          `<a class="xref-chip" href="${db.url.replace('$1', encodeURIComponent(id))}" target="_blank" rel="noopener" title="${db.label}: ${esc(id)}">${db.label}</a>`));
+      if (chips.length) parts.push(`<div class="field"><b>Also in</b> · ${chips.join(' ')}</div>`);
+    }
     parts.push(`<div class="field" style="margin-top:10px"><b>Edges</b> · <span style="color:${COLORS.mathlib}">${counts.mathlib} mathlib</span> · <span style="color:${COLORS.wikidata}">${counts.wikidata} wikidata</span> · <span style="color:${COLORS.both}">${counts.both} both</span></div>`);
     parts.push('<div class="links">');
     if (wlUrl) parts.push(`<a href="${wlUrl}">WikiLean article →</a>`);
@@ -489,16 +518,29 @@ def load_coverage() -> dict:
         return {}
 
 
+def load_crossrefs() -> dict:
+    # Same optional-enrichment contract as coverage: absent/corrupt → no chips.
+    if not CROSSREFS.exists():
+        return {}
+    try:
+        return json.loads(CROSSREFS.read_text()).get("xrefs", {})
+    except (ValueError, OSError):
+        return {}
+
+
 def main() -> None:
     OUT_DIR.mkdir(exist_ok=True)
     (OUT_DIR / "graph.html").write_text(HTML)
-    # Stamp `verified` on nodes backed by a merged @[wikidata] tag, and `coverage`
-    # (live formalized share of the concept's article) where we have it, so the
-    # viewer can filter to the human-reviewed subgraph and colour by coverage.
+    # Stamp `verified` on nodes backed by a merged @[wikidata] tag, `coverage`
+    # (live formalized share of the concept's article), and `xrefs` (external-
+    # database ids from the Wikidata hub) — so the viewer can filter to the
+    # human-reviewed subgraph, colour by coverage, and deep-link each concept's
+    # mirrors across the math-database ecosystem.
     verified = load_verified_qids()
     coverage = load_coverage()
+    crossrefs = load_crossrefs()
     data = json.loads(DATA_SRC.read_text())
-    nv = ncov = 0
+    nv = ncov = nx = 0
     for node in data.get("nodes", []):
         if node.get("qid") in verified:
             node["verified"] = True
@@ -509,10 +551,14 @@ def main() -> None:
             node["n_status"] = c["n_status"]
             node["n_formalized"] = c["n_formalized"]
             ncov += 1
+        x = crossrefs.get(node.get("qid"))
+        if x:
+            node["xrefs"] = x
+            nx += 1
     (OUT_DIR / "graph_data.json").write_text(json.dumps(data, ensure_ascii=False))
     size = (OUT_DIR / "graph_data.json").stat().st_size
     print(f"Wrote out/graph.html and out/graph_data.json ({size / 1024 / 1024:.1f} MB); "
-          f"{nv} human-reviewed nodes, {ncov} nodes with live coverage")
+          f"{nv} human-reviewed nodes, {ncov} with live coverage, {nx} with crossrefs")
 
 
 if __name__ == "__main__":

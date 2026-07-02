@@ -105,6 +105,9 @@ cd "$REPO/site" || exit 1
     # Worker serves /graph_data.json from KV (run_worker_first in wrangler.jsonc),
     # so NO Worker deploy happens here and nothing can ship uncommitted wiki/src.
     # && so a failed build keeps the last good KV copy (production is unaffected).
+    # Crossref backfill first (fail-soft: atomic write keeps the last good file,
+    # and the graph builds fine without it) — then coverage + the page build.
+    python3 "$REPO/catalog/mathlib_deps/fetch_crossrefs.py" || echo "(crossrefs fetch returned $? — using last good file)"
     if python3 "$REPO/manage/coverage.py" && python3 "$REPO/site/build_graph_page.py"; then
       if [ "${WIKILEAN_GRAPH_DEPLOY:-1}" = "1" ]; then
         ( cd "$REPO/wiki" && npx wrangler kv key put --binding=RENDER_CACHE --remote \
