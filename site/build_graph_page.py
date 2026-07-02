@@ -274,6 +274,7 @@ function labelColor() { return isDark() ? '#ebe5d8' : '#1f2328'; }
     planetmath:  { label: 'PlanetMath', url: 'https://planetmath.org/$1' },
     dlmf:        { label: 'DLMF',       url: 'https://dlmf.nist.gov/$1' },
     msc:         { label: 'MSC',        url: 'https://zbmath.org/classification/?q=cc%3A$1' },
+    kgmid:       { label: 'Google',     url: 'https://www.google.com/search?kgmid=$1' },
   };
   const covStops = [[209, 36, 47], [212, 167, 44], [45, 164, 78]]; // red → amber → green
   function coverageColor(c) {
