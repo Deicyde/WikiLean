@@ -68,3 +68,32 @@ describe("docsUrlFor", () => {
     );
   });
 });
+
+describe("multi-library fabric (resolveInLibraries)", () => {
+  const BLOB = {
+    libraries: {
+      cslib: { label: "CSLib", docs_base: "https://api.cslib.io/docs/", aliases: [] },
+      "formal-conjectures": { label: "Formal Conjectures", docs_base: "https://google-deepmind.github.io/formal-conjectures/doc/", aliases: [] },
+    },
+    decls: {
+      cslib: { "Cslib.Automata.DA": "Cslib.Automata.DA.Basic" },
+      "formal-conjectures": { "CollatzConjecture.collatz_conjecture": "FormalConjectures.Wikipedia.CollatzConjecture" },
+    },
+  };
+  it("resolves a CSLib decl to its docs URL", async () => {
+    const { resolveInLibraries } = await import("../src/decl.js");
+    const hit = await resolveInLibraries(BLOB as never, "Cslib.Automata.DA");
+    expect(hit).toMatchObject({ library: "cslib", label: "CSLib" });
+    expect(hit!.docs_url).toBe("https://api.cslib.io/docs/Cslib/Automata/DA/Basic.html#Cslib.Automata.DA");
+  });
+  it("resolves an FC decl whose namespace differs from its module", async () => {
+    const { resolveInLibraries } = await import("../src/decl.js");
+    const hit = await resolveInLibraries(BLOB as never, "CollatzConjecture.collatz_conjecture");
+    expect(hit!.docs_url).toContain("/doc/FormalConjectures/Wikipedia/CollatzConjecture.html#CollatzConjecture.collatz_conjecture");
+  });
+  it("misses cleanly on unknown names and null blobs", async () => {
+    const { resolveInLibraries } = await import("../src/decl.js");
+    expect(await resolveInLibraries(BLOB as never, "Nope.nope")).toBeNull();
+    expect(await resolveInLibraries(null, "Cslib.Automata.DA")).toBeNull();
+  });
+});
