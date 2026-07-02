@@ -32,6 +32,7 @@ import json
 import re
 import subprocess
 import sys
+from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -259,7 +260,8 @@ def main() -> int:
                 flags.append((qid, path, lineno, decl, "multi-site: see sibling rows"))
             rows.append({"qid": qid, "label": (c or {}).get("label") or "",
                          "decl": decl, "module": module, "batch": batch or "",
-                         "pr": f"{UPSTREAM}/pull/{pr}" if pr else "", "status": status})
+                         "pr": f"{UPSTREAM}/pull/{pr}" if pr else "", "status": status,
+                         "path": path, "lineno": lineno})
 
     tsv = ["qid\tlabel\tdecl\tmodule\tbatch\tpr\tstatus"]
     tsv += [f"{r['qid']}\t{r['label']}\t{r['decl']}\t{r['module']}\t{r['batch']}\t{r['pr']}\t{r['status']}"
@@ -271,12 +273,24 @@ def main() -> int:
     # Mismatches/ambiguous/multi-site are REVIEW material — Jack can promote
     # them into the batch after deciding, never before.
     QS_OK = {"bot", "external", "bot+catalog-settled", "external+catalog-settled"}
-    qs = ["# QuickStatements v1 — REPLACE PXXXX with the property id once created.",
+    # P14534 "Mathlib Declaration ID" — Jack's own property (created 2026-06-17
+    # from his proposal, account Mynus grey). Each statement carries references:
+    # S854 (reference URL) = the mathlib source permalink at the exact commit we
+    # grepped (FETCH_HEAD), S813 (retrieved). The permalink pins file#line, so a
+    # future rename is auditable even after master moves.
+    sha = sh(["git", "-C", str(args.mathlib), "rev-parse", "FETCH_HEAD"]).strip()
+    retrieved = "+" + date.today().isoformat() + "T00:00:00Z/11"
+    qs = ["# QuickStatements v1 — P14534 (Mathlib Declaration ID) seed batch.",
           "# Value = fully-qualified Mathlib declaration name (proposal Option A).",
           "# Source: @[wikidata] tags merged into leanprover-community/mathlib4 master,",
           "# each reviewed by >=2 humans incl. a maintainer (PR provenance in property_seed.tsv).",
-          "# Excluded: ambiguous / catalog-mismatch / multi-site rows — see property_seed_flags.tsv."]
-    qs += [f'{r["qid"]}\tPXXXX\t"{r["decl"]}"' for r in rows if r["status"] in QS_OK]
+          f"# References per statement: S854 = source permalink @ {sha[:12]}, S813 = retrieved.",
+          "# Excluded: ambiguous / catalog-mismatch / multi-site rows — see property_seed_flags.tsv.",
+          "# Submit as Mynus grey after human review (Jack's standing rule)."]
+    qs += [f'{r["qid"]}\tP14534\t"{r["decl"]}"'
+           f'\tS854\t"https://github.com/leanprover-community/mathlib4/blob/{sha}/{r["path"]}#L{r["lineno"]}"'
+           f"\tS813\t{retrieved}"
+           for r in rows if r["status"] in QS_OK]
     (DATA / "property_seed_quickstatements.csv").write_text("\n".join(qs) + "\n")
 
     # ALWAYS write the flags file (empty = just the header) — a re-run must
