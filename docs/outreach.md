@@ -115,3 +115,76 @@ Stacks → Mathlib backlinks.
 > Glad to send a sample of the tag→decl export whenever you'd like to see the shape.
 >
 > — Jack
+
+---
+
+## 4 — Mathlib maintainers (Lean/Mathlib Zulip, #general) — a shared Mix'n'match catalog
+
+**The gift:** a ready-to-import, CC0 catalog of concept → Mathlib-declaration mappings, so
+the crowd (not any one of us) can confirm them into Wikidata — the exact pattern LMFDB
+already runs, reused for Mathlib instead of rebuilt.
+
+**Why Mix'n'match, in one paragraph.** Mix'n'match (Magnus Manske's Wikidata tool) turns a
+flat list of external-database entries into a public matching game: contributors confirm
+"this entry = this Wikidata item," and each confirmation is written straight to Wikidata as
+a statement on the external-identifier property. It needs exactly two things to exist first:
+(1) that external-ID property — for us that's **Mathlib Declaration ID (P14534)**, now live —
+and (2) a seed list. LMFDB already does this: **catalog 6447 syncs to LMFDB knowl ID
+(P12987)**, ~1,246 knowls with ~109 confirmed onto Wikidata so far. Same machinery, a
+different property, is all a Mathlib catalog is.
+
+**What I can hand over today (CC0, no ask attached):** the WikiLean *join fabric* —
+**1,025 (Wikidata-QID → Mathlib-decl) mappings** over **864 distinct declarations**, each row
+carrying a provenance tier so you can trust-filter before importing:
+
+| tier | rows | what it means |
+|---|---|---|
+| `merged` | 108 | the `@[wikidata]` tag is reviewed *and merged into mathlib master* (≥2 human reviewers incl. a maintainer + CI) |
+| `mathlib-maintainer` | 150 | drawn from mathlib's own `docs/1000.yaml` |
+| `ai-verified` | 61 | catalog mapping, second-pass checked |
+| `ai` | 706 | catalog mapping, candidate only |
+
+So **258 rows are already maintainer-blessed** (a clean pre-confirmed import) and ~767 are
+candidates the crowd would vet in the game. It's a single diffable file (the same
+"tag→decl dictionary" shape Mathlib already accepted for `@[stacks]`), rebuilt nightly, and
+it round-trips through WikiLean's live `/decl/$1` resolver so a decl name never rots to the
+wrong module.
+
+> Subject: A community-matching catalog for Mathlib ↔ Wikidata (reusing LMFDB's setup)
+>
+> Hi all,
+>
+> The *Mathlib Declaration ID* property (P14534) recently went live on Wikidata. I'd like to
+> stand up a Mix'n'match catalog against it — the same crowd-matching tool LMFDB already uses
+> (catalog 6447 → LMFDB knowl ID, P12987) — so anyone can confirm which Wikidata concept a
+> Mathlib declaration formalizes, one click at a time. I'll build and maintain it; I'm asking
+> for a blessing and a little eyeballing, not labour.
+>
+> The seed already exists and is CC0: a 1,025-row (QID → decl) table over 864 declarations, with
+> a provenance tier on every row. 258 of those are already maintainer-grade — 108 are
+> `@[wikidata]` tags that reviewers and CI merged into master, 150 come from your own
+> `docs/1000.yaml` — so that slice imports pre-confirmed, and the remaining ~767 candidates
+> become a matching game the community can chip away at (each confirmation writes a P14534
+> statement; each rejection is recorded, so nobody re-checks the same pair twice).
+>
+> Why it composes with what you already have:
+> - It's **crowd-sourced curation of the concept↔decl map**, off the mathlib4 git path entirely —
+>   no PRs, no CI load. The `@[wikidata]` tag pipeline stays exactly as is; this just gives the
+>   *rest* of the mapping a public place to be verified.
+> - **LMFDB is heading into Mathlib too** (the LeanBridge `mathlib=` knowls). If both databases
+>   confirm against the same Wikidata hub with the same tool, "is this the same object?" becomes a
+>   join instead of an argument — shared infrastructure rather than two parallel silos, which is
+>   where I'd want to take it, with the LMFDB folks as the natural first partner.
+> - Every confirmed row makes P14534 more useful to *everyone* downstream (search, doc backlinks,
+>   the 1000-theorems list), not just WikiLean.
+>
+> What I'd want from you: a sanity check that a Mix'n'match catalog synced to P14534 is welcome and
+> not stepping on anything, and a pointer if there's a Wikidata-side convention for Mathlib I should
+> follow. I'll handle the import, the nightly refresh, and the scraper wiring. (If a maintainer later
+> wants to bulk-confirm the 258 already-blessed rows to give the catalog a trustworthy core, that's a
+> bonus — not something I'm asking for.)
+>
+> Happy to post the seed file and a screenshot of the catalog shape first if you'd rather see it
+> before it's public.
+>
+> — Jack
