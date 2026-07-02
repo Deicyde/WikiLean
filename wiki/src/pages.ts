@@ -886,12 +886,27 @@ function fmtVal(v: unknown): string {
   return String(v);
 }
 
-export function proposalsQueuePage(rows: ProposalQueueRow[]): string {
+export function proposalsQueuePage(
+  rows: ProposalQueueRow[],
+  meta: { total: number; forbidden?: boolean },
+): string {
+  if (meta.forbidden) {
+    return shell(
+      "AI proposals",
+      `<h1>AI proposals</h1><p>Reviewing proposals is a patroller/admin task. ` +
+        `If you'd like to help moderate, <a class="wl-navlink" href="/about">get in touch</a>.</p>`,
+    );
+  }
+  const truncNote =
+    meta.total > rows.length
+      ? `<p class="muted">Showing the newest ${rows.length} of <b>${meta.total}</b> pending proposals — decide some to see the rest.</p>`
+      : "";
   const body =
     `<h1>AI proposals</h1>` +
     `<p class="muted">The AI may propose updates to human-owned annotations but never applies them ` +
     `(<a class="wl-navlink" href="/about">how moderation works</a>). Approving applies the change and keeps the annotation yours; ` +
     `rejecting remembers the delta so it is not re-proposed.</p>` +
+    truncNote +
     (rows.length === 0
       ? `<p><b>No pending proposals.</b> New ones appear here after AI review passes.</p>`
       : `<div style="overflow-x:auto"><table>` +

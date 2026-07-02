@@ -789,7 +789,15 @@ app.delete("/api/watch/:slug", async (c) => {
 app.get("/proposals", async (c) => {
   const user = await getUser(c);
   if (!user) return c.redirect("/login?returnTo=%2Fproposals");
+  // Same gate as the decide actions: deciding is patroller/admin moderation.
+  if (user.role !== "patroller" && user.role !== "admin") {
+    return c.html(proposalsQueuePage([], { total: 0, forbidden: true }), 403);
+  }
   const db = drizzle(c.env.DB);
+  const [{ total }] = await db
+    .select({ total: sql<number>`COUNT(*)` })
+    .from(proposals)
+    .where(eq(proposals.status, "pending"));
   const pending = await db
     .select({
       proposalId: proposals.id,
@@ -799,22 +807,27 @@ app.get("/proposals", async (c) => {
       reason: proposals.reason,
       model: proposals.model,
       createdAt: proposals.createdAt,
-      displayTitle: articles.displayTitle,
-      version: articles.version,
-      annotations: articles.annotations,
     })
     .from(proposals)
-    .innerJoin(articles, eq(articles.slug, proposals.slug))
     .where(eq(proposals.status, "pending"))
     .orderBy(desc(proposals.createdAt))
     .limit(200);
-  // Pull each target annotation's current approvable fields (same slug may
-  // repeat; the row already carries the blob — parse per row, cheap at ≤200).
+  // One article fetch per DISTINCT slug (not per proposal row — the join was
+  // duplicating each article's full annotations blob per row).
+  const slugs = [...new Set(pending.map((p) => p.slug))];
+  const arts = slugs.length
+    ? await db
+        .select({ slug: articles.slug, displayTitle: articles.displayTitle, version: articles.version, annotations: articles.annotations })
+        .from(articles)
+        .where(inArray(articles.slug, slugs))
+    : [];
+  const bySlug = new Map(arts.map((a) => [a.slug, a]));
   const rows: ProposalQueueRow[] = pending.map((p) => {
+    const art = bySlug.get(p.slug);
     let label = "";
     let current: Record<string, unknown> | null = null;
     try {
-      const anns = JSON.parse(p.annotations) as AnnRecord[];
+      const anns = JSON.parse(art?.annotations ?? "[]") as AnnRecord[];
       const target = anns.find((a) => a.id === p.annotationId);
       if (target) {
         label = typeof target.label === "string" ? target.label : "";
@@ -838,8 +851,8 @@ app.get("/proposals", async (c) => {
     return {
       proposalId: p.proposalId,
       slug: p.slug,
-      displayTitle: p.displayTitle ?? p.slug,
-      version: p.version,
+      displayTitle: art?.displayTitle ?? p.slug,
+      version: art?.version ?? 0,
       annotationId: p.annotationId,
       label,
       current,
@@ -849,7 +862,7 @@ app.get("/proposals", async (c) => {
       createdAt: p.createdAt,
     };
   });
-  return c.html(proposalsQueuePage(rows));
+  return c.html(proposalsQueuePage(rows, { total }));
 });
 
 app.get("/flags", async (c) => {
@@ -1178,8 +1191,18 @@ app.post("/api/article/:slug", async (c) => {
     // owns it now — findLostHuman keeps protecting it). Rejecting remembers the
     // delta so the agent won't re-propose it. The agent never mutates here.
     if (posted.action === "approve_proposal" || posted.action === "reject_proposal") {
+      // Deciding a proposal is a MODERATION act (reject permanently suppresses
+      // re-proposals) — patroller/admin only, like flag-resolve and revert.
+      // Ordinary users still see nothing: the banner/queue are role-gated too.
+      if (user.role !== "patroller" && user.role !== "admin") {
+        return c.json({ ok: false, error: "forbidden" }, 403);
+      }
       if (!isProposalId(posted.proposal_id)) return c.json({ ok: false, error: "bad proposal_id" }, 400);
       const proposalId = posted.proposal_id;
+      // NB: this read → the batch below is a small TOCTOU window against a
+      // concurrent bot-save merge on the same slug (D1 has no read-in-batch).
+      // The window is kept minimal here, and the bot-save sweep self-heals
+      // both divergence directions (zombie table rows ↔ decided blob entries).
       const ms = (await db.select().from(moderationState).where(eq(moderationState.slug, slug)).limit(1))[0];
       const pending = parsePending(ms?.proposal);
       const prop = pending.find((p) => p.proposalId === proposalId);
@@ -1213,7 +1236,11 @@ app.post("/api/article/:slug", async (c) => {
         return c.json({ error: "stale", version: row.version, annotations: JSON.parse(row.annotations) }, 409);
       }
       const stored = JSON.parse(row.annotations) as AnnRecord[];
-      const idx = stored.findIndex((a) => a.id === prop.annotationId);
+      // A tombstoned target is as dead as a missing one: a `rejected`
+      // annotation is a human veto, and approving a pre-tombstone proposal
+      // would resurrect it (flip rejected → formalized). Same rule as
+      // mergeProposals' validIds and the bot-save sweep.
+      const idx = stored.findIndex((a) => a.id === prop.annotationId && a.status !== "rejected");
       if (idx === -1) {
         // Target annotation gone — drop the stale proposal, no content write.
         await db.batch([
@@ -1463,11 +1490,23 @@ app.post("/api/article/:slug", async (c) => {
         .map((a) => a.id)
         .filter((x): x is string => typeof x === "string"),
     );
+    // Blob↔table reconciliation (the dual-write self-heal): a decision racing
+    // a bot save on the same slug can diverge the two stores in either
+    // direction (a blind blob overwrite erases a just-merged entry → zombie
+    // pending table row; a bot merge re-writes an entry a human just decided →
+    // ghost blob entry). Every bot save heals both.
+    const tableRows = await db
+      .select({ id: proposals.id, status: proposals.status })
+      .from(proposals)
+      .where(eq(proposals.slug, slug));
+    const tableStatus = new Map(tableRows.map((r) => [r.id, r.status]));
+    // Ghost heal: blob entries whose lifecycle row is already decided.
+    const undecided = existingPending.filter((p) => (tableStatus.get(p.proposalId) ?? "pending") === "pending");
     // Staleness sweep: pending proposals whose target no longer exists (or was
     // tombstoned since) can never be approved — drop them from the hot blob and
     // record the silent expiry in the lifecycle log instead of losing it.
-    const staleNow = existingPending.filter((p) => !liveIds.has(p.annotationId));
-    const stillPending = staleNow.length ? existingPending.filter((p) => liveIds.has(p.annotationId)) : existingPending;
+    const staleNow = undecided.filter((p) => !liveIds.has(p.annotationId));
+    const stillPending = undecided.filter((p) => liveIds.has(p.annotationId));
     // posted.meta may be absent entirely (the sweep runs on every bot save).
     const postedMeta = (posted.meta && typeof posted.meta === "object" ? posted.meta : {}) as {
       run_id?: unknown;
@@ -1479,7 +1518,15 @@ app.post("/api/article/:slug", async (c) => {
       model: typeof postedMeta.model === "string" ? postedMeta.model : undefined,
       validIds: liveIds,
     });
-    if (merged.length > stillPending.length || staleNow.length > 0) {
+    // Zombie heal: table rows still 'pending' that are in neither the incoming
+    // blob nor the pre-existing one (their blob entry was lost to a race) —
+    // sweep to stale so /proposals and /stats can't show undecidable rows.
+    const mergedIds = new Set(merged.map((p) => p.proposalId));
+    const blobIds = new Set(existingPending.map((p) => p.proposalId));
+    const zombies = tableRows.filter((r) => r.status === "pending" && !mergedIds.has(r.id) && !blobIds.has(r.id));
+    const blobChanged = merged.length !== existingPending.length ||
+      merged.some((p, i) => p.proposalId !== existingPending[i]?.proposalId);
+    if (blobChanged || staleNow.length > 0 || zombies.length > 0) {
       const proposalJson = merged.length ? JSON.stringify(merged) : null;
       const newOnes = merged.slice(stillPending.length);
       await db.batch([
@@ -1502,12 +1549,12 @@ app.post("/api/article/:slug", async (c) => {
             createdAt: p.createdAt,
           }),
         ),
-        // …and the silent expiries.
-        ...staleNow.map((p) =>
+        // …the silent expiries, and the zombie rows healed to stale.
+        ...[...staleNow.map((p) => p.proposalId), ...zombies.map((z) => z.id)].map((pid) =>
           db
             .update(proposals)
             .set({ status: "stale", decidedAt: pnow })
-            .where(and(eq(proposals.id, p.proposalId), eq(proposals.status, "pending"))),
+            .where(and(eq(proposals.id, pid), eq(proposals.status, "pending"))),
         ),
       ]);
     }
@@ -2487,13 +2534,15 @@ async function serveArticle(c: Context<{ Bindings: Env }>, slug: string) {
       .where(and(eq(watchlist.userId, user.id), eq(watchlist.slug, slug)))
       .limit(1);
     isWatching = w.length > 0;
-    // Propose-then-approve: pending AI proposals to update this article's human
-    // annotations, surfaced to logged-in users as an inline banner (per-request,
-    // never in the cached base page). Empty for anonymous readers.
-    const ms = (
-      await db.select({ proposal: moderationState.proposal }).from(moderationState).where(eq(moderationState.slug, slug)).limit(1)
-    )[0];
-    proposals = parsePending(ms?.proposal);
+    // Propose-then-approve: pending AI proposals, surfaced as an inline banner
+    // (per-request, never in the cached base page). Patroller/admin only —
+    // deciding is a moderation act, so ordinary users see no banner at all.
+    if (user.role === "patroller" || user.role === "admin") {
+      const ms = (
+        await db.select({ proposal: moderationState.proposal }).from(moderationState).where(eq(moderationState.slug, slug)).limit(1)
+      )[0];
+      proposals = parsePending(ms?.proposal);
+    }
   }
   // latestRevid/revid feed the per-request staleness banner (rendered by
   // injectAuthAndEditor — never baked into the cached base page).
