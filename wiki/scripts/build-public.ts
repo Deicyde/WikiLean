@@ -33,6 +33,7 @@ const shellFiles = [
   "concepts.html", "about.html", "404.html", "robots.txt", "wikilean.ttl",
   // Visualization pages served from ASSETS (reserved routes /graph, /article-graph).
   "graph.html", "graph_data.json",
+  "atlas.html", "atlas_data.json",
   "article-graph.html", "article-graph-data.json",
 ];
 for (const f of shellFiles) {
