@@ -24,11 +24,22 @@ export WIKILEAN_API_TOKEN="$(sed -n 's/^PIPELINE_TOKEN=//p' "$REPO/wiki/.dev.var
 # Scrub it so both launch paths use the Max login.
 unset ANTHROPIC_API_KEY ANTHROPIC_AUTH_TOKEN
 
-# Tunables (production defaults; overridden in the smoke test).
+# Editable tunables live in site/ops/nightly.env (the one place to change the
+# nightly rate/budgets). Sourced with ":=" so an env override still wins and the
+# run-now.sh smoke-test env survives. Missing file → the inline defaults below.
+[ -f "$REPO/site/ops/nightly.env" ] && . "$REPO/site/ops/nightly.env"
+
+# Tunables (fallback defaults if nightly.env is absent; overridden in the smoke test).
 WPUPDATE_LIMIT="${WIKILEAN_WPUPDATE_LIMIT:-300}"
 REVIEW_LIMIT="${WIKILEAN_REVIEW_LIMIT:-15}"
 CONCURRENCY="${WIKILEAN_CONCURRENCY:-2}"
 BUDGET_TOKENS="${WIKILEAN_BUDGET_TOKENS:-700000}"
+# Formalize backlog: Agent-2 the extracted (Agent-1-only) articles the manage/
+# control plane surfaces, which the /api/work ladder can't see. Runs before the
+# general review so the backlog gets first claim. Adjust the rate in nightly.env
+# (WIKILEAN_FORMALIZE_LIMIT; 0 disables). NB: nightly spend ≈ FORMALIZE_BUDGET + BUDGET_TOKENS.
+FORMALIZE_LIMIT="${WIKILEAN_FORMALIZE_LIMIT:-6}"
+FORMALIZE_BUDGET="${WIKILEAN_FORMALIZE_BUDGET:-300000}"
 
 LOGDIR="$REPO/site/cache/cron"
 mkdir -p "$LOGDIR"
@@ -55,16 +66,94 @@ cd "$REPO/site" || exit 1
   echo "=== WikiLean nightly moderation $TS ==="
   echo "PY=$PY  wp=$WPUPDATE_LIMIT review=$REVIEW_LIMIT conc=$CONCURRENCY budget=$BUDGET_TOKENS"
   echo
+  echo "--- refresh control plane: centrality + coverage + worklists (zero agent tokens) ---"
+  # Offline by default (computes from disk). Set WIKILEAN_MANAGE_PULL=1 to pull
+  # the live D1 annotation layer first (needs wrangler auth in this env — verify
+  # before enabling, or it fails soft and refresh falls back to disk).
+  MANAGE_PULL=""; [ "${WIKILEAN_MANAGE_PULL:-0}" = "1" ] && MANAGE_PULL="--pull"
+  python3 "$REPO/manage/refresh.py" $MANAGE_PULL || echo "(manage refresh returned $?)"
+  echo
   echo "--- flush prior checkpoints (zero agent tokens) ---"
   "$PY" moderate.py flush || echo "(flush returned $?)"
   echo
   echo "--- drift sweep: wp-update (zero agent tokens) ---"
   "$PY" moderate.py wp-update --limit "$WPUPDATE_LIMIT" || echo "(wp-update returned $?)"
   echo
+  if [ "$FORMALIZE_LIMIT" -gt 0 ]; then
+    echo "--- formalize backlog: verify vs live D1, then Agent-2 the extracted articles ---"
+    # Run the reviewer ONLY if the verifier succeeded AND wrote a non-empty list
+    # this run — never trust a possibly-stale file from a prior run (it would
+    # burn tokens re-reviewing already-formalized articles).
+    if python3 "$REPO/manage/formalize_backlog.py" --limit "$FORMALIZE_LIMIT" \
+         && [ -s "$REPO/manage/data/formalize_slugs.txt" ]; then
+      "$PY" moderate.py review --slugs "$REPO/manage/data/formalize_slugs.txt" \
+            --limit "$FORMALIZE_LIMIT" --concurrency "$CONCURRENCY" \
+            --budget-tokens "$FORMALIZE_BUDGET" || echo "(formalize review returned $?)"
+    else
+      echo "(no fresh verified backlog — skipping formalize review)"
+    fi
+    echo
+  fi
   echo "--- review batch (search-verified) ---"
   "$PY" moderate.py review --limit "$REVIEW_LIMIT" --concurrency "$CONCURRENCY" \
         --budget-tokens "$BUDGET_TOKENS" || echo "(review returned $?)"
   echo
+  if [ "${WIKILEAN_GRAPH_REFRESH:-1}" = "1" ]; then
+    echo "--- refresh concept-graph data -> KV (verified @[wikidata] tags + live coverage; no deploy) ---"
+    # Coverage now reflects tonight's formalization (moderate.py rewrites the disk
+    # artifacts it posts). Rebuild the data, then push ONLY the JSON to KV — the
+    # Worker serves /graph_data.json from KV (run_worker_first in wrangler.jsonc),
+    # so NO Worker deploy happens here and nothing can ship uncommitted wiki/src.
+    # && so a failed build keeps the last good KV copy (production is unaffected).
+    # Crossref backfill first (fail-soft: atomic write keeps the last good file,
+    # and the graph builds fine without it) — then coverage + the page build.
+    python3 "$REPO/catalog/mathlib_deps/fetch_crossrefs.py" || echo "(crossrefs fetch returned $? — using last good file)"
+    # FormalConjectures frontier ingest — same fail-soft contract; the DRIFT
+    # lines in its output are the frontier moving (open→solved flips).
+    python3 "$REPO/catalog/ingest_formal_conjectures.py" || echo "(fc ingest returned $? — using last good file)"
+    if python3 "$REPO/manage/coverage.py" && python3 "$REPO/site/build_graph_page.py"; then
+      if [ "${WIKILEAN_GRAPH_DEPLOY:-1}" = "1" ]; then
+        ( cd "$REPO/wiki" && npx wrangler kv key put --binding=RENDER_CACHE --remote \
+            graph:data:v1 --path="$REPO/site/out/graph_data.json" ) \
+          || echo "(graph kv put returned $?)"
+      fi
+    else
+      echo "(graph build failed — keeping the last KV copy)"
+    fi
+    echo
+  fi
+  # /decl/:name reverse citations — same success-gated KV pattern, but under
+  # its OWN gate: pausing the graph refresh must not silently stop the /decl
+  # cited_by refresh (they share nothing but the pattern).
+  if [ "${WIKILEAN_DECLCITES_REFRESH:-1}" = "1" ]; then
+    echo "--- refresh /decl reverse citations (KV declcites:v1) ---"
+    if python3 "$REPO/site/build_decl_citations.py"; then
+      if [ "${WIKILEAN_GRAPH_DEPLOY:-1}" = "1" ]; then
+        ( cd "$REPO/wiki" && npx wrangler kv key put --binding=RENDER_CACHE --remote \
+            declcites:v1 --path="$REPO/site/out/decl_citations.json" ) \
+          || echo "(declcites kv put returned $?)"
+      fi
+    else
+      echo "(decl-citations build failed — keeping the last KV copy)"
+    fi
+    echo
+  fi
+  # Multi-library decl fabric (CSLib / Physlib / Formal Conjectures own-decl
+  # indexes → KV libdecls:v1). Same success-gated pattern; per-library
+  # fail-soft lives inside the builder (a dead docs site keeps its last blob).
+  if [ "${WIKILEAN_LIBDECLS_REFRESH:-1}" = "1" ]; then
+    echo "--- refresh multi-library decl fabric (KV libdecls:v1) ---"
+    if python3 "$REPO/site/build_library_decls.py"; then
+      if [ "${WIKILEAN_GRAPH_DEPLOY:-1}" = "1" ]; then
+        ( cd "$REPO/wiki" && npx wrangler kv key put --binding=RENDER_CACHE --remote \
+            libdecls:v1 --path="$REPO/site/out/library_decls.json" ) \
+          || echo "(libdecls kv put returned $?)"
+      fi
+    else
+      echo "(library-decls build failed — keeping the last KV copy)"
+    fi
+    echo
+  fi
   echo "=== done $(date +%Y%m%dT%H%M%S) ==="
 } >>"$LOG" 2>&1
 

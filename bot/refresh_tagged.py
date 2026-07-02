@@ -25,7 +25,11 @@ def main():
     f = subprocess.run(g + ["fetch", "--depth=1", UPSTREAM, "master"], text=True, capture_output=True)
     if f.returncode != 0:
         sys.exit(f"git fetch failed: {f.stderr[:300]}")
-    grep = subprocess.run(g + ["grep", "-hoIE", r"wikidata[[:space:]]+Q[0-9]+", "FETCH_HEAD", "--", "Mathlib/"],
+    # Exclude the attribute's own file: its docstring example (`@[wikidata Q12345
+    # "Optional comment"]`) is not a tag, and counting it silently blocks that
+    # QID from ever being proposed.
+    grep = subprocess.run(g + ["grep", "-hoIE", r"wikidata[[:space:]]+Q[0-9]+", "FETCH_HEAD", "--",
+                               "Mathlib/", ":(exclude)Mathlib/Tactic/CrossRefAttribute.lean"],
                           text=True, capture_output=True)
     qids = sorted(set(re.findall(r"Q\d+", grep.stdout)), key=lambda q: int(q[1:]))
     print(f"found {len(qids)} tagged QIDs on master (was {len(OUT.read_text().split()) if OUT.exists() else 0})")

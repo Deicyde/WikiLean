@@ -9,12 +9,30 @@ Run alongside build_index.py / export_wikidata_rdf.py / build_static_pages.py.
 """
 from __future__ import annotations
 
-import shutil
+import json
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 OUT_DIR = HERE / "out"
 DATA_SRC = HERE.parent / "catalog" / "data" / "concept_graph.json"
+# QIDs whose Wikidata↔Mathlib mapping is a merged @[wikidata] tag in Mathlib
+# master — the deterministic, human-reviewed ground truth. The bot keeps this
+# list current as batches land.
+BOT_TAGGED = HERE.parent / "bot" / "data" / "tagged_in_master.txt"
+# Live per-article formalization coverage (the manage/ control plane computes it
+# from the annotation layer; grows nightly as moderation formalizes). Optional —
+# the graph still builds without it.
+COVERAGE = HERE.parent / "manage" / "data" / "coverage.json"
+# External-database crossrefs per QID (MathWorld, nLab, ProofWiki, Metamath,
+# LMFDB knowl, OEIS, …) — the one-SPARQL backfill from the Wikidata hub
+# (catalog/mathlib_deps/fetch_crossrefs.py, refreshed nightly). Optional.
+CROSSREFS = HERE.parent / "catalog" / "data" / "wikidata_crossrefs.json"
+# FormalConjectures frontier: conjecture statements mapped to QIDs via the
+# Wikipedia articles their own module docs cite (catalog/
+# ingest_formal_conjectures.py, nightly). Statements attach to existing nodes;
+# QIDs the graph lacks become NEW frontier nodes — stated-but-unproved is the
+# shoreline of the map. Optional.
+FC_TAGGED = HERE.parent / "catalog" / "data" / "fc_tagged.jsonl"
 
 
 HTML = """<!doctype html>
@@ -70,6 +88,9 @@ input[type="text"]:focus { outline:none; border-color:#0969da; box-shadow:0 0 0 
 #info a:hover { text-decoration:underline; }
 #info .field { margin:4px 0; font-size:.9rem; }
 #info .field b { color:#57606a; font-weight:600; }
+#info .xref-chip { display:inline-block; padding:1px 8px; margin:1px 2px; border:1px solid #d0d7de;
+  border-radius:10px; font-size:.75rem; text-decoration:none; color:#0969da; background:#f6f8fa; }
+#info .xref-chip:hover { border-color:#0969da; }
 #info .links { display:flex; flex-direction:column; gap:4px; margin-top:14px; padding-top:14px; border-top:1px solid #d0d7de; }
 .empty { color:#8c959f; font-style:italic; }
 
@@ -117,6 +138,17 @@ input[type="text"]:focus { outline:none; border-color:#0969da; box-shadow:0 0 0 
     <label class="row"><input type="checkbox" id="show-wikidata" checked><span class="swatch" style="background:#c78420"></span> Wikidata only</label>
     <label class="row"><input type="checkbox" id="show-both" checked><span class="swatch" style="background:#2da44e"></span> Both (overlap)</label>
 
+    <h2>Human-reviewed</h2>
+    <label class="row"><input type="checkbox" id="verified-only"><span class="swatch" style="width:11px;height:11px;border-radius:50%;background:transparent;border:2px solid #8250df"></span> Only merged <code>@[wikidata]</code> tags <span class="hint" id="verified-count" style="margin-left:auto"></span></label>
+    <p class="hint">The deterministic subset — Wikidata↔Mathlib links a maintainer merged into Mathlib (ringed ○). Everything else is an AI-proposed mapping.</p>
+
+    <h2>Conjecture frontier</h2>
+    <p class="hint">Nodes with a <span style="color:#c78420">dashed amber ring</span> carry statements from DeepMind's <a href="https://google-deepmind.github.io/formal-conjectures/" target="_blank" rel="noopener" style="color:#0969da">Formal Conjectures</a> — formally <i>stated</i> but unproved (or only informally solved). The shoreline of the formalized world.</p>
+
+    <h2>Node colour</h2>
+    <label class="row"><input type="checkbox" id="color-coverage"> Colour by Mathlib coverage</label>
+    <p class="hint">Nodes shade <span style="color:#d1242f">red</span>→<span style="color:#d4a72c">amber</span>→<span style="color:#2da44e">green</span> by the share of the concept's Wikipedia statements formalized in Mathlib. Refreshed nightly.</p>
+
     <h2>Search</h2>
     <input type="text" id="search" placeholder="Concept label…" autocomplete="off">
 
@@ -141,6 +173,7 @@ const COLORS = {
   wikidata: '#c78420',
   both: '#2da44e',
   highlight: '#cf222e',
+  verified: '#8250df',
   nodeFormalized: '#2da44e',
   nodeUnformalized: '#d0d7de',
   nodeDefault: '#57606a',
@@ -168,14 +201,20 @@ function labelColor() { return isDark() ? '#ebe5d8' : '#1f2328'; }
     validEdges.push(e);
   }
 
-  const nodeById = new Map();
-  for (const n of data.nodes) nodeById.set(n.qid, { ...n, id: n.qid });
-  const nodes = [...nodeById.values()];
-  const edges = validEdges.filter(e => nodeById.has(e.source) && nodeById.has(e.target));
+  const allNodesById = new Map();
+  for (const n of data.nodes) allNodesById.set(n.qid, { ...n, id: n.qid });
+  const allNodes = [...allNodesById.values()];
+  const allEdges = validEdges.filter(e => allNodesById.has(e.source) && allNodesById.has(e.target));
+  const nVerified = allNodes.reduce((a, n) => a + (n.verified ? 1 : 0), 0);
 
-  // Pre-bucket edges by category so each draw pass iterates only its own slice.
-  const edgesByCat = { mathlib: [], wikidata: [], both: [] };
-  for (const e of edges) edgesByCat[e.cat].push(e);
+  // Active set — swapped by the human-reviewed filter, so these are reassignable.
+  let nodes = allNodes, edges = allEdges, nodeById = allNodesById;
+  let edgesByCat = { mathlib: [], wikidata: [], both: [] };
+  function bucketEdges() {
+    edgesByCat = { mathlib: [], wikidata: [], both: [] };
+    for (const e of edges) edgesByCat[e.cat].push(e);
+  }
+  bucketEdges();
 
   const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
@@ -203,9 +242,58 @@ function labelColor() { return isDark() ? '#ebe5d8' : '#1f2328'; }
   const show = { mathlib: false, wikidata: true, both: true };
   let highlighted = null;
   let searchTerm = '';
+  let verifiedOnly = false;
+  let colorByCoverage = false;
 
+  const endpointId = x => (x && typeof x === 'object') ? x.id : x;
+  // Swap the active node/edge set to the human-reviewed subgraph (or back) and
+  // re-run the layout so the ~97 verified nodes cluster instead of scattering.
+  function applyFilter() {
+    if (verifiedOnly) {
+      nodeById = new Map([...allNodesById].filter(([, n]) => n.verified));
+      nodes = [...nodeById.values()];
+      edges = allEdges.filter(e => nodeById.has(endpointId(e.source)) && nodeById.has(endpointId(e.target)));
+      // The verified subgraph is mostly Mathlib edges (few, and meaningful here),
+      // so surface them even though they're hidden on the full graph by default.
+      if (!show.mathlib) { show.mathlib = true; document.getElementById('show-mathlib').checked = true; }
+    } else {
+      nodeById = allNodesById; nodes = allNodes; edges = allEdges;
+    }
+    bucketEdges();
+    if (highlighted && !nodeById.has(highlighted.id)) { highlighted = null; renderInfo(); }
+    sim.nodes(nodes);
+    sim.force('link').links(edges);
+    sim.alpha(0.9).restart();
+    renderStats();
+    scheduleDraw();
+  }
+
+  // External-database mirrors (from the Wikidata crossref backfill). Formatter
+  // URLs match the Wikidata property formatters; 'mathlib' (P14534) routes
+  // through our own resolver so reverse citations ride along.
+  const XREF_DBS = {
+    mathlib:     { label: 'Mathlib',    url: 'https://wikilean.jackmccarthy.org/decl/$1' },
+    mathworld:   { label: 'MathWorld',  url: 'https://mathworld.wolfram.com/$1.html' },
+    nlab:        { label: 'nLab',       url: 'https://ncatlab.org/nlab/show/$1' },
+    proofwiki:   { label: 'ProofWiki',  url: 'https://proofwiki.org/wiki/$1' },
+    metamath:    { label: 'Metamath',   url: 'https://us.metamath.org/mpeuni/$1.html' },
+    lmfdb_knowl: { label: 'LMFDB',      url: 'https://www.lmfdb.org/knowledge/show/$1' },
+    oeis:        { label: 'OEIS',       url: 'https://oeis.org/$1' },
+    eom:         { label: 'EoM',        url: 'https://encyclopediaofmath.org/wiki/$1' },
+    planetmath:  { label: 'PlanetMath', url: 'https://planetmath.org/$1' },
+    dlmf:        { label: 'DLMF',       url: 'https://dlmf.nist.gov/$1' },
+    msc:         { label: 'MSC',        url: 'https://zbmath.org/classification/?q=cc%3A$1' },
+    kgmid:       { label: 'Google',     url: 'https://www.google.com/search?kgmid=$1' },
+  };
+  const covStops = [[209, 36, 47], [212, 167, 44], [45, 164, 78]]; // red → amber → green
+  function coverageColor(c) {
+    const x = Math.max(0, Math.min(1, c)) * 2, i = Math.min(1, Math.floor(x)), t = x - i;
+    const A = covStops[i], B = covStops[i + 1], l = k => Math.round(A[k] + (B[k] - A[k]) * t);
+    return `rgb(${l(0)},${l(1)},${l(2)})`;
+  }
   function nodeColor(n, matched) {
     if (matched) return COLORS.highlight;
+    if (colorByCoverage && n.coverage != null) return coverageColor(n.coverage);
     if (n.status === 'formalized') return COLORS.nodeFormalized;
     if (!n.primary_decl) return nodeUnformalizedColor();
     return nodeDefaultColor();
@@ -277,6 +365,25 @@ function labelColor() { return isDark() ? '#ebe5d8' : '#1f2328'; }
       ctx.beginPath();
       ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
       ctx.fill();
+      // Ring the human-reviewed nodes so they're identifiable even unfiltered.
+      if (n.verified && !isHl && !matched) {
+        ctx.strokeStyle = COLORS.verified;
+        ctx.lineWidth = 1.2 * inv;
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, r + 1.7 * inv, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      // The conjecture frontier: dashed amber ring — stated (in Formal
+      // Conjectures) but not proved. The shoreline of the map.
+      if (n.conjectures && !isHl && !matched) {
+        ctx.strokeStyle = '#c78420';
+        ctx.lineWidth = 1.1 * inv;
+        ctx.setLineDash([2.5 * inv, 2 * inv]);
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, r + (n.verified ? 3.4 : 1.7) * inv, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
     }
 
     if (highlighted) {
@@ -347,8 +454,27 @@ function labelColor() { return isDark() ? '#ebe5d8' : '#1f2328'; }
     const parts = [];
     parts.push(`<h3>${esc(n.label || n.qid)}</h3>`);
     parts.push(`<div class="qid">${n.qid}${n.importance ? ' · ' + esc(n.importance) : ''}${n.status ? ' · ' + esc(n.status) : ''}</div>`);
+    if (n.verified) parts.push(`<div class="field" style="color:${COLORS.verified}"><b style="color:${COLORS.verified}">✓ Human-reviewed</b> · merged <code>@[wikidata ${esc(n.qid)}]</code> in Mathlib</div>`);
     if (n.primary_decl) parts.push(`<div class="field"><b>Decl</b> · <code>${esc(n.primary_decl)}</code></div>`);
     if (n.module) parts.push(`<div class="field"><b>Module</b> · <code>${esc(n.module)}</code></div>`);
+    if (n.coverage != null) parts.push(`<div class="field"><b>Coverage</b> · ${Math.round(n.coverage * 100)}% formalized <span style="color:#57606a">(${n.n_formalized}/${n.n_status} statements)</span></div>`);
+    if (n.xrefs) {
+      const chips = Object.entries(XREF_DBS).flatMap(([key, db]) =>
+        (n.xrefs[key] || []).slice(0, 3).map(id =>
+          `<a class="xref-chip" href="${db.url.replace('$1', encodeURIComponent(id))}" target="_blank" rel="noopener" title="${db.label}: ${esc(id)}">${db.label}</a>`));
+      if (chips.length) parts.push(`<div class="field"><b>Also in</b> · ${chips.join(' ')}</div>`);
+    }
+    if (n.conjectures && n.conjectures.length) {
+      // 'research solved' = informally accepted by experts, NOT formally
+      // proved — never render it as proved (anti-slop doctrine rule 5).
+      const items = n.conjectures.slice(0, 6).map(cj =>
+        `<div style="margin:2px 0"><a href="https://wikilean.jackmccarthy.org/decl/${encodeURIComponent(cj.decl)}" target="_blank" rel="noopener"><code>${esc(cj.decl)}</code></a> ` +
+        (cj.category === 'research solved'
+          ? '<span style="color:#2da44e;font-size:.78rem">solved (informally)</span>'
+          : '<span style="color:#c78420;font-size:.78rem">open</span>') + `</div>`);
+      const more = n.conjectures.length > 6 ? `<div class="hint">+${n.conjectures.length - 6} more</div>` : '';
+      parts.push(`<div class="field" style="margin-top:10px"><b>Conjecture frontier</b> · ${n.conjectures.length} statement${n.conjectures.length === 1 ? '' : 's'} in <a href="https://google-deepmind.github.io/formal-conjectures/" target="_blank" rel="noopener">Formal Conjectures</a>${items.join('')}${more}</div>`);
+    }
     parts.push(`<div class="field" style="margin-top:10px"><b>Edges</b> · <span style="color:${COLORS.mathlib}">${counts.mathlib} mathlib</span> · <span style="color:${COLORS.wikidata}">${counts.wikidata} wikidata</span> · <span style="color:${COLORS.both}">${counts.both} both</span></div>`);
     parts.push('<div class="links">');
     if (wlUrl) parts.push(`<a href="${wlUrl}">WikiLean article →</a>`);
@@ -365,19 +491,26 @@ function labelColor() { return isDark() ? '#ebe5d8' : '#1f2328'; }
   document.getElementById('show-mathlib').addEventListener('change', e => { show.mathlib = e.target.checked; scheduleDraw(); });
   document.getElementById('show-wikidata').addEventListener('change', e => { show.wikidata = e.target.checked; scheduleDraw(); });
   document.getElementById('show-both').addEventListener('change', e => { show.both = e.target.checked; scheduleDraw(); });
+  document.getElementById('verified-only').addEventListener('change', e => { verifiedOnly = e.target.checked; applyFilter(); });
+  document.getElementById('color-coverage').addEventListener('change', e => { colorByCoverage = e.target.checked; scheduleDraw(); });
   document.getElementById('search').addEventListener('input', e => {
     searchTerm = e.target.value.toLowerCase().trim();
     scheduleDraw();
   });
 
   const statsEl = document.getElementById('stats');
-  const counts = { mathlib: 0, wikidata: 0, both: 0 };
-  for (const e of edges) counts[e.cat]++;
-  statsEl.innerHTML = `
-    <div class="stat"><span>Nodes</span><span class="v">${nodes.length.toLocaleString()}</span></div>
-    <div class="stat"><span>Mathlib only</span><span class="v">${counts.mathlib.toLocaleString()}</span></div>
-    <div class="stat"><span>Wikidata only</span><span class="v">${counts.wikidata.toLocaleString()}</span></div>
-    <div class="stat"><span>Both</span><span class="v">${counts.both.toLocaleString()}</span></div>`;
+  function renderStats() {
+    const counts = { mathlib: 0, wikidata: 0, both: 0 };
+    for (const e of edges) counts[e.cat]++;
+    statsEl.innerHTML = `
+      <div class="stat"><span>Nodes</span><span class="v">${nodes.length.toLocaleString()}</span></div>
+      <div class="stat"><span>Mathlib only</span><span class="v">${counts.mathlib.toLocaleString()}</span></div>
+      <div class="stat"><span>Wikidata only</span><span class="v">${counts.wikidata.toLocaleString()}</span></div>
+      <div class="stat"><span>Both</span><span class="v">${counts.both.toLocaleString()}</span></div>`;
+  }
+  renderStats();
+  const vcEl = document.getElementById('verified-count');
+  if (vcEl) vcEl.textContent = nVerified.toLocaleString();
 
   resize();
   window.addEventListener('resize', resize);
@@ -399,12 +532,105 @@ function labelColor() { return isDark() ? '#ebe5d8' : '#1f2328'; }
 """
 
 
+def load_verified_qids() -> set[str]:
+    if not BOT_TAGGED.exists():
+        return set()
+    return {l.strip() for l in BOT_TAGGED.read_text().splitlines() if l.strip().startswith("Q")}
+
+
+def load_coverage() -> dict:
+    # Coverage is optional enrichment — a missing/empty/corrupt file must degrade
+    # to "no coverage", never crash the graph build (the verified subgraph and the
+    # rest of the graph don't depend on it).
+    if not COVERAGE.exists():
+        return {}
+    try:
+        return json.loads(COVERAGE.read_text()).get("by_slug", {})
+    except (ValueError, OSError):
+        return {}
+
+
+def load_crossrefs() -> dict:
+    # Same optional-enrichment contract as coverage: absent/corrupt → no chips.
+    if not CROSSREFS.exists():
+        return {}
+    try:
+        return json.loads(CROSSREFS.read_text()).get("xrefs", {})
+    except (ValueError, OSError):
+        return {}
+
+
+def load_fc() -> dict[str, dict]:
+    """qid → {wp_title, statements: [{decl, category}]} from fc_tagged.jsonl."""
+    if not FC_TAGGED.exists():
+        return {}
+    out: dict[str, dict] = {}
+    try:
+        for line in FC_TAGGED.read_text().splitlines():
+            if not line.strip():
+                continue
+            r = json.loads(line)
+            e = out.setdefault(r["qid"], {"wp_title": r.get("wp_title") or "", "statements": []})
+            e["statements"].append({"decl": r["fc_decl"], "category": r["category"]})
+    except (ValueError, OSError, KeyError):
+        return {}
+    return out
+
+
 def main() -> None:
     OUT_DIR.mkdir(exist_ok=True)
     (OUT_DIR / "graph.html").write_text(HTML)
-    shutil.copyfile(DATA_SRC, OUT_DIR / "graph_data.json")
-    n = (OUT_DIR / "graph_data.json").stat().st_size
-    print(f"Wrote out/graph.html and out/graph_data.json ({n / 1024 / 1024:.1f} MB)")
+    # Stamp `verified` on nodes backed by a merged @[wikidata] tag, `coverage`
+    # (live formalized share of the concept's article), and `xrefs` (external-
+    # database ids from the Wikidata hub) — so the viewer can filter to the
+    # human-reviewed subgraph, colour by coverage, and deep-link each concept's
+    # mirrors across the math-database ecosystem.
+    verified = load_verified_qids()
+    coverage = load_coverage()
+    crossrefs = load_crossrefs()
+    data = json.loads(DATA_SRC.read_text())
+    nv = ncov = nx = 0
+    for node in data.get("nodes", []):
+        if node.get("qid") in verified:
+            node["verified"] = True
+            nv += 1
+        c = coverage.get(node.get("slug"))
+        if c and c.get("n_status", 0) > 0:
+            node["coverage"] = c["coverage"]
+            node["n_status"] = c["n_status"]
+            node["n_formalized"] = c["n_formalized"]
+            ncov += 1
+        x = crossrefs.get(node.get("qid"))
+        if x:
+            node["xrefs"] = x
+            nx += 1
+    # FormalConjectures frontier: attach statements to existing nodes; QIDs the
+    # graph lacks become new frontier nodes (edge-less until the next full
+    # merge_graph rebuild picks them up — the layout still places them).
+    fc = load_fc()
+    have = {n.get("qid") for n in data.get("nodes", [])}
+    n_fc_nodes = n_frontier = 0
+    for node in data.get("nodes", []):
+        e = fc.get(node.get("qid"))
+        if e:
+            node["conjectures"] = e["statements"]
+            n_fc_nodes += 1
+    for qid, e in sorted(fc.items()):
+        if qid in have:
+            continue
+        data["nodes"].append({
+            "qid": qid, "label": e["wp_title"],
+            "slug": e["wp_title"].replace(" ", "_"),
+            "primary_decl": None, "module": None,
+            "status": "not_formalized", "importance": "",
+            "frontier": True, "conjectures": e["statements"],
+        })
+        n_frontier += 1
+    (OUT_DIR / "graph_data.json").write_text(json.dumps(data, ensure_ascii=False))
+    size = (OUT_DIR / "graph_data.json").stat().st_size
+    print(f"Wrote out/graph.html and out/graph_data.json ({size / 1024 / 1024:.1f} MB); "
+          f"{nv} human-reviewed nodes, {ncov} with live coverage, {nx} with crossrefs, "
+          f"{n_fc_nodes}+{n_frontier} conjecture-bearing (existing+new frontier)")
 
 
 if __name__ == "__main__":
