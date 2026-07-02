@@ -42,14 +42,27 @@ def curl(args, timeout=90, stdin=None):
                           input=stdin, capture_output=True, text=True, check=True).stdout
 
 
-def live_p14534() -> dict[str, set[str]]:
-    """qid → set of decls currently carrying P14534 on Wikidata."""
-    out = curl(["-H", "Accept: application/sparql-results+json", "-H", f"User-Agent: {UA}",
-                "--data-urlencode", f"query=SELECT ?i ?v WHERE {{ ?i wdt:{PROP} ?v }}", WDQS])
+def sparql(query: str) -> list[dict]:
+    # --fail so a WDQS 4xx/5xx exits non-zero (raises) instead of returning an
+    # error-page body that json.loads might mis-handle.
+    out = curl(["--fail", "-H", "Accept: application/sparql-results+json",
+                "-H", f"User-Agent: {UA}", "--data-urlencode", f"query={query}", WDQS])
+    return json.loads(out)["results"]["bindings"]
+
+
+def live_p14534() -> tuple[dict[str, set[str]], int, int]:
+    """(qid → set of live decls, rows_returned, count). The row listing is
+    cross-checked against a SEPARATE COUNT aggregate: a truncated/partial WDQS
+    200 (the silent under-report failure mode) makes them disagree, so the
+    caller aborts rather than treating already-live rows as net-new — which
+    would append duplicate reference blocks to public statements."""
+    rows = sparql(f"SELECT ?i ?v WHERE {{ ?i wdt:{PROP} ?v }}")
     live: dict[str, set[str]] = {}
-    for r in json.loads(out)["results"]["bindings"]:
+    for r in rows:
         live.setdefault(r["i"]["value"].rsplit("/", 1)[1], set()).add(str(r["v"]["value"]))
-    return live
+    cnt = sparql(f"SELECT (COUNT(*) AS ?c) WHERE {{ ?i wdt:{PROP} ?v }}")
+    expected = int(cnt[0]["c"]["value"]) if cnt else -1
+    return live, len(rows), expected
 
 
 def parse_autopush() -> list[tuple[str, str, str]]:
@@ -74,10 +87,14 @@ def main() -> int:
         return 0
     rows = parse_autopush()
     try:
-        live = live_p14534()
+        live, got, expected = live_p14534()
     except Exception as e:  # noqa: BLE001 — never crash the poller
         print(f"push_property: SPARQL failed ({type(e).__name__}) — skipping this tick")
         return 0
+    if expected < 0 or got != expected:
+        print(f"  ABORT: WDQS row listing has {got} P14534 statements but COUNT says "
+              f"{expected} — truncated/partial result; not submitting this tick.")
+        return 2
 
     net_new, conflicts, done = [], [], 0
     for qid, decl, line in rows:
