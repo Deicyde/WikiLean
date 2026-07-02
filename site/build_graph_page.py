@@ -27,6 +27,12 @@ COVERAGE = HERE.parent / "manage" / "data" / "coverage.json"
 # LMFDB knowl, OEIS, …) — the one-SPARQL backfill from the Wikidata hub
 # (catalog/mathlib_deps/fetch_crossrefs.py, refreshed nightly). Optional.
 CROSSREFS = HERE.parent / "catalog" / "data" / "wikidata_crossrefs.json"
+# FormalConjectures frontier: conjecture statements mapped to QIDs via the
+# Wikipedia articles their own module docs cite (catalog/
+# ingest_formal_conjectures.py, nightly). Statements attach to existing nodes;
+# QIDs the graph lacks become NEW frontier nodes — stated-but-unproved is the
+# shoreline of the map. Optional.
+FC_TAGGED = HERE.parent / "catalog" / "data" / "fc_tagged.jsonl"
 
 
 HTML = """<!doctype html>
@@ -135,6 +141,9 @@ input[type="text"]:focus { outline:none; border-color:#0969da; box-shadow:0 0 0 
     <h2>Human-reviewed</h2>
     <label class="row"><input type="checkbox" id="verified-only"><span class="swatch" style="width:11px;height:11px;border-radius:50%;background:transparent;border:2px solid #8250df"></span> Only merged <code>@[wikidata]</code> tags <span class="hint" id="verified-count" style="margin-left:auto"></span></label>
     <p class="hint">The deterministic subset — Wikidata↔Mathlib links a maintainer merged into Mathlib (ringed ○). Everything else is an AI-proposed mapping.</p>
+
+    <h2>Conjecture frontier</h2>
+    <p class="hint">Nodes with a <span style="color:#c78420">dashed amber ring</span> carry statements from DeepMind's <a href="https://google-deepmind.github.io/formal-conjectures/" target="_blank" rel="noopener" style="color:#0969da">Formal Conjectures</a> — formally <i>stated</i> but unproved (or only informally solved). The shoreline of the formalized world.</p>
 
     <h2>Node colour</h2>
     <label class="row"><input type="checkbox" id="color-coverage"> Colour by Mathlib coverage</label>
@@ -364,6 +373,17 @@ function labelColor() { return isDark() ? '#ebe5d8' : '#1f2328'; }
         ctx.arc(n.x, n.y, r + 1.7 * inv, 0, Math.PI * 2);
         ctx.stroke();
       }
+      // The conjecture frontier: dashed amber ring — stated (in Formal
+      // Conjectures) but not proved. The shoreline of the map.
+      if (n.conjectures && !isHl && !matched) {
+        ctx.strokeStyle = '#c78420';
+        ctx.lineWidth = 1.1 * inv;
+        ctx.setLineDash([2.5 * inv, 2 * inv]);
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, r + (n.verified ? 3.4 : 1.7) * inv, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
     }
 
     if (highlighted) {
@@ -443,6 +463,17 @@ function labelColor() { return isDark() ? '#ebe5d8' : '#1f2328'; }
         (n.xrefs[key] || []).slice(0, 3).map(id =>
           `<a class="xref-chip" href="${db.url.replace('$1', encodeURIComponent(id))}" target="_blank" rel="noopener" title="${db.label}: ${esc(id)}">${db.label}</a>`));
       if (chips.length) parts.push(`<div class="field"><b>Also in</b> · ${chips.join(' ')}</div>`);
+    }
+    if (n.conjectures && n.conjectures.length) {
+      // 'research solved' = informally accepted by experts, NOT formally
+      // proved — never render it as proved (anti-slop doctrine rule 5).
+      const items = n.conjectures.slice(0, 6).map(cj =>
+        `<div style="margin:2px 0"><a href="https://wikilean.jackmccarthy.org/decl/${encodeURIComponent(cj.decl)}" target="_blank" rel="noopener"><code>${esc(cj.decl)}</code></a> ` +
+        (cj.category === 'research solved'
+          ? '<span style="color:#2da44e;font-size:.78rem">solved (informally)</span>'
+          : '<span style="color:#c78420;font-size:.78rem">open</span>') + `</div>`);
+      const more = n.conjectures.length > 6 ? `<div class="hint">+${n.conjectures.length - 6} more</div>` : '';
+      parts.push(`<div class="field" style="margin-top:10px"><b>Conjecture frontier</b> · ${n.conjectures.length} statement${n.conjectures.length === 1 ? '' : 's'} in <a href="https://google-deepmind.github.io/formal-conjectures/" target="_blank" rel="noopener">Formal Conjectures</a>${items.join('')}${more}</div>`);
     }
     parts.push(`<div class="field" style="margin-top:10px"><b>Edges</b> · <span style="color:${COLORS.mathlib}">${counts.mathlib} mathlib</span> · <span style="color:${COLORS.wikidata}">${counts.wikidata} wikidata</span> · <span style="color:${COLORS.both}">${counts.both} both</span></div>`);
     parts.push('<div class="links">');
@@ -529,6 +560,23 @@ def load_crossrefs() -> dict:
         return {}
 
 
+def load_fc() -> dict[str, dict]:
+    """qid → {wp_title, statements: [{decl, category}]} from fc_tagged.jsonl."""
+    if not FC_TAGGED.exists():
+        return {}
+    out: dict[str, dict] = {}
+    try:
+        for line in FC_TAGGED.read_text().splitlines():
+            if not line.strip():
+                continue
+            r = json.loads(line)
+            e = out.setdefault(r["qid"], {"wp_title": r.get("wp_title") or "", "statements": []})
+            e["statements"].append({"decl": r["fc_decl"], "category": r["category"]})
+    except (ValueError, OSError, KeyError):
+        return {}
+    return out
+
+
 def main() -> None:
     OUT_DIR.mkdir(exist_ok=True)
     (OUT_DIR / "graph.html").write_text(HTML)
@@ -556,10 +604,33 @@ def main() -> None:
         if x:
             node["xrefs"] = x
             nx += 1
+    # FormalConjectures frontier: attach statements to existing nodes; QIDs the
+    # graph lacks become new frontier nodes (edge-less until the next full
+    # merge_graph rebuild picks them up — the layout still places them).
+    fc = load_fc()
+    have = {n.get("qid") for n in data.get("nodes", [])}
+    n_fc_nodes = n_frontier = 0
+    for node in data.get("nodes", []):
+        e = fc.get(node.get("qid"))
+        if e:
+            node["conjectures"] = e["statements"]
+            n_fc_nodes += 1
+    for qid, e in sorted(fc.items()):
+        if qid in have:
+            continue
+        data["nodes"].append({
+            "qid": qid, "label": e["wp_title"],
+            "slug": e["wp_title"].replace(" ", "_"),
+            "primary_decl": None, "module": None,
+            "status": "not_formalized", "importance": "",
+            "frontier": True, "conjectures": e["statements"],
+        })
+        n_frontier += 1
     (OUT_DIR / "graph_data.json").write_text(json.dumps(data, ensure_ascii=False))
     size = (OUT_DIR / "graph_data.json").stat().st_size
     print(f"Wrote out/graph.html and out/graph_data.json ({size / 1024 / 1024:.1f} MB); "
-          f"{nv} human-reviewed nodes, {ncov} with live coverage, {nx} with crossrefs")
+          f"{nv} human-reviewed nodes, {ncov} with live coverage, {nx} with crossrefs, "
+          f"{n_fc_nodes}+{n_frontier} conjecture-bearing (existing+new frontier)")
 
 
 if __name__ == "__main__":
