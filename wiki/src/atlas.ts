@@ -93,7 +93,11 @@ export function registerAtlasRoutes(app: Hono<{ Bindings: Env }>): void {
         200, JSON_HEADERS,
       );
     }
-    const sf = atlas.subfields[key];
+    // own-property gate: `atlas.subfields` is a JSON.parse'd plain object, so a
+    // bare `[key]` for an inherited name (__proto__, constructor, toString, …)
+    // returns a truthy Object.prototype member and crashes on `.qids` → a 500
+    // instead of the intended 404. Any anonymous request can trigger it.
+    const sf = Object.prototype.hasOwnProperty.call(atlas.subfields, key) ? atlas.subfields[key] : undefined;
     if (sf) {
       const concepts = sf.qids.slice(0, MAX_CONCEPTS).map((q) => ({ qid: q, ...atlas.nodes[q] }));
       return c.json(

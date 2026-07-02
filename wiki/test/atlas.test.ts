@@ -69,6 +69,13 @@ describe("GET /api/atlas/:key (expand one bubble)", () => {
     const h = setupAtlas();
     expect((await get(h.env, "/api/atlas/nope")).status).toBe(404);
   });
+  it("404s (never 500s) inherited Object.prototype keys", async () => {
+    const h = setupAtlas();
+    for (const key of ["__proto__", "constructor", "toString", "valueOf", "hasOwnProperty"]) {
+      const res = await get(h.env, `/api/atlas/${key}`);
+      expect(res.status, key).toBe(404);
+    }
+  });
 });
 
 describe("GET /atlas_data.json", () => {
