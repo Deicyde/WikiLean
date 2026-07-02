@@ -123,7 +123,7 @@ describe("POST /api/article/:slug (proposals)", () => {
     expect(p[0]).toMatchObject({ annotationId: HUMAN_ID, fields: PROP_FIELDS, runId: "run-abc", model: "test-model" });
 
     // Approve.
-    const res = await save(env, { action: "approve_proposal", proposal_id: p[0].proposalId, base_version: 2 }, { user: "u-human" });
+    const res = await save(env, { action: "approve_proposal", proposal_id: p[0].proposalId, base_version: 2 }, { user: "u-patroller" });
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual({ ok: true, version: 3 });
 
@@ -159,10 +159,10 @@ describe("POST /api/article/:slug (proposals)", () => {
     const rej = await save(
       env,
       { action: "reject_proposal", proposal_id: p.proposalId, reject_reason: "incorrect" },
-      { user: "u-human" },
+      { user: "u-patroller" },
     );
     expect(rej.status).toBe(200);
-    expect(prow()).toMatchObject({ status: "rejected", reject_reason: "incorrect", decided_by: "u-human" });
+    expect(prow()).toMatchObject({ status: "rejected", reject_reason: "incorrect", decided_by: "u-patroller" });
 
     // A different delta → new pending row; approve it → approved, no reason.
     const current = storedAnnotations(db).map(echo);
@@ -173,10 +173,10 @@ describe("POST /api/article/:slug (proposals)", () => {
     });
     expect(res.status).toBe(200);
     const p2 = pending(db)[0];
-    const app = await save(env, { action: "approve_proposal", proposal_id: p2.proposalId, base_version: 2 }, { user: "u-human" });
+    const app = await save(env, { action: "approve_proposal", proposal_id: p2.proposalId, base_version: 2 }, { user: "u-patroller" });
     expect(app.status).toBe(200);
     const row2 = db.prepare("SELECT * FROM proposals WHERE id = ?").get(p2.proposalId) as Record<string, unknown>;
-    expect(row2).toMatchObject({ status: "approved", reject_reason: null, decided_by: "u-human" });
+    expect(row2).toMatchObject({ status: "approved", reject_reason: null, decided_by: "u-patroller" });
     // An invalid reject_reason would have been nulled: enum-only (validRejectReason).
   });
 
@@ -206,6 +206,40 @@ describe("POST /api/article/:slug (proposals)", () => {
     expect(row.decided_at).not.toBeNull();
   });
 
+  it("approving a proposal whose target was tombstoned AFTER storage cannot resurrect the veto", async () => {
+    const { db, env } = setup();
+    await seedProposal(env);
+    await storeProposal(env, db, 2); // pending proposal on HUMAN_ID (v2)
+    const pid = pending(db)[0].proposalId;
+    // Human tombstones the target via a session save (no bot sweep runs).
+    const anns = storedAnnotations(db).map(echo);
+    const i = anns.findIndex((a) => a.id === HUMAN_ID);
+    anns[i] = { ...anns[i], status: "rejected" };
+    expect((await save(env, { annotations: anns, base_version: 2 }, { user: "u-human" })).status).toBe(200);
+    // Approve with the CURRENT version (what /proposals would hand out) — must
+    // NOT flip the veto back; proposal is dropped as stale instead.
+    const res = await save(env, { action: "approve_proposal", proposal_id: pid, base_version: 3 }, { user: "u-patroller" });
+    expect(res.status).toBe(409);
+    expect(storedAnnotations(db).find((a) => a.id === HUMAN_ID)!.status).toBe("rejected"); // veto intact
+    const row = db.prepare("SELECT status FROM proposals WHERE id = ?").get(pid) as { status: string };
+    expect(row.status).toBe("stale");
+    expect(pending(db)).toHaveLength(0);
+  });
+
+  it("role 'user' cannot decide (403) and gets the forbidden queue page", async () => {
+    const { db, env } = setup();
+    await seedProposal(env);
+    await storeProposal(env, db, 2);
+    const pid = pending(db)[0].proposalId;
+    expect((await save(env, { action: "approve_proposal", proposal_id: pid, base_version: 2 }, { user: "u-human" })).status).toBe(403);
+    expect((await save(env, { action: "reject_proposal", proposal_id: pid }, { user: "u-human" })).status).toBe(403);
+    const page = await get(env, "/proposals", { user: "u-human" });
+    expect(page.status).toBe(403);
+    expect(await page.text()).toContain("patroller/admin");
+    // still pending — nothing recorded
+    expect(pending(db)).toHaveLength(1);
+  });
+
   it("GET /proposals: anon redirects to login; logged-in sees the pending queue", async () => {
     const { db, env } = setup();
     await seedProposal(env);
@@ -213,7 +247,7 @@ describe("POST /api/article/:slug (proposals)", () => {
     const anon = await get(env, "/proposals");
     expect(anon.status).toBe(302);
     expect(anon.headers.get("Location")).toContain("/login");
-    const page = await get(env, "/proposals", { user: "u-human" });
+    const page = await get(env, "/proposals", { user: "u-patroller" });
     expect(page.status).toBe(200);
     const html = await page.text();
     expect(html).toContain("AI proposals");
@@ -244,7 +278,7 @@ describe("POST /api/article/:slug (proposals)", () => {
     await storeProposal(env, db, 2);
     const pid = pending(db)[0].proposalId;
 
-    const rej = await save(env, { action: "reject_proposal", proposal_id: pid }, { user: "u-human" });
+    const rej = await save(env, { action: "reject_proposal", proposal_id: pid }, { user: "u-patroller" });
     expect(rej.status).toBe(200);
     expect(await rej.json()).toEqual({ ok: true, rejected: true });
     expect(pending(db)).toHaveLength(0);
@@ -264,9 +298,9 @@ describe("POST /api/article/:slug (proposals)", () => {
     expect((await botSave(env, { action: "approve_proposal", proposal_id: pid, base_version: 2 })).status).toBe(403);
     expect((await save(env, { action: "approve_proposal", proposal_id: pid, base_version: 2 })).status).toBe(401);
     // unknown proposal id → 404
-    expect((await save(env, { action: "approve_proposal", proposal_id: "ffffffffffff", base_version: 2 }, { user: "u-human" })).status).toBe(404);
+    expect((await save(env, { action: "approve_proposal", proposal_id: "ffffffffffff", base_version: 2 }, { user: "u-patroller" })).status).toBe(404);
     // stale base_version → 409, no write
-    const stale = await save(env, { action: "approve_proposal", proposal_id: pid, base_version: 99 }, { user: "u-human" });
+    const stale = await save(env, { action: "approve_proposal", proposal_id: pid, base_version: 99 }, { user: "u-patroller" });
     expect(stale.status).toBe(409);
     expect(articleRow(db)!.version).toBe(2);
     expect(pending(db)).toHaveLength(1); // untouched
