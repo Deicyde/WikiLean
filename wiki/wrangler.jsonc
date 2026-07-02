@@ -7,7 +7,11 @@
   "compatibility_flags": ["nodejs_compat"],
   "assets": {
     "directory": "./public",
-    "binding": "ASSETS"
+    "binding": "ASSETS",
+    // Let the Worker handle /graph_data.json so it can serve the KV copy the
+    // nightly refreshes (no Worker deploy needed to update the graph). The
+    // static file in ./public stays as the fallback on a KV miss.
+    "run_worker_first": ["/graph_data.json"]
   },
   "observability": {
     "enabled": true

@@ -43,6 +43,9 @@ export function injectAuthAndEditor(
     // P3: is the logged-in viewer watching this article? Drives the
     // ★ Watch / ★ Watching toggle state in the editor bar.
     isWatching?: boolean;
+    // Propose-then-approve: pending AI proposals to update this article's human
+    // annotations (PendingProposal[]). Rendered as an inline banner by editor.js.
+    proposals?: unknown[];
   },
 ): string {
   const ret = encodeURIComponent("/" + opts.slug);
@@ -56,6 +59,7 @@ export function injectAuthAndEditor(
       // the server can 409 if the article was edited since this page loaded.
       `window.__WL_VERSION__=${safeJson(opts.version ?? 0)};` +
       `window.__WL_WATCHING__=${safeJson(Boolean(opts.isWatching))};` +
+      `window.__WL_PROPOSALS__=${safeJson(opts.proposals ?? [])};` +
       `window.__WL_FULL_ANNOS__=${safeJson({ annotations: opts.annotations })};</script>\n` +
       // v=4: warm-palette editor chrome + sticky bar offsets (W3 fixes #5/#6d).
       // v=5: anchor-editing fieldset styles (highlight-range box + Use-selection btn).
@@ -64,7 +68,8 @@ export function injectAuthAndEditor(
       // cache key; without this, returning users see the stale editor / CSS).
       // v=14: highlight-range editing — Section + Snippet are now exposed in
       // the panel with a "Use selection" button (typed anchors stay locked).
-      `<script src="/assets/editor.js?v=14"></script>\n`;
+      // v=15: propose-then-approve inline banner (window.__WL_PROPOSALS__).
+      `<script src="/assets/editor.js?v=15"></script>\n`;
   } else {
     inject =
       `<a id="wl-signin" href="/login?returnTo=${ret}" ` +
@@ -230,7 +235,7 @@ function shell(title: string, bodyInner: string, extraScript = ""): string {
 <style>${SHELL_CSS}</style>
 </head>
 <body>
-<header class="wl-header"><a class="wl-brand" href="/">WikiLean</a><span><a class="wl-navlink" href="/recent-changes">Recent changes</a> · <a class="wl-navlink" href="/flags">Flags</a> · <a class="wl-navlink" href="/stats">Stats</a> · <a class="wl-navlink" href="/about">About</a><button id="wl-theme-toggle" class="wl-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">🌓</button></span></header>
+<header class="wl-header"><a class="wl-brand" href="/">WikiLean</a><span><a class="wl-navlink" href="/recent-changes">Recent changes</a> · <a class="wl-navlink" href="/proposals">Proposals</a> · <a class="wl-navlink" href="/flags">Flags</a> · <a class="wl-navlink" href="/stats">Stats</a> · <a class="wl-navlink" href="/about">About</a><button id="wl-theme-toggle" class="wl-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">🌓</button></span></header>
 <div class="wrap">
 ${bodyInner}
 </div>
@@ -609,6 +614,16 @@ export interface StatsData {
     tokens: number;
     cost: number | null;
   }>;
+  // Propose-then-approve lifecycle (the AI-precision measure): acceptance
+  // rate = approved / (approved + rejected); stale = target vanished before a
+  // decision. meanDecisionMs is null until the first decision.
+  proposals: {
+    pending: number;
+    approved: number;
+    rejected: number;
+    stale: number;
+    meanDecisionMs: number | null;
+  };
 }
 
 function statNum(n: number): string {
@@ -730,6 +745,24 @@ export function statsPage(d: StatsData): string {
     statTable(metricHead, revisionRows) +
     `<h2 class="wl-stats-h">Pipeline runs</h2>` +
     statTable(`<th>Kind</th><th>Runs</th><th>Articles</th><th>Errors</th><th>Tokens</th><th>Cost</th><th>Feeds</th>`, runsRows) +
+    `<h2 class="wl-stats-h">AI proposals (propose-then-approve)</h2>` +
+    statTable(
+      metricHead,
+      statRow("Pending (awaiting a human)", d.proposals.pending, "RQ2") +
+        statRow("Approved", d.proposals.approved, "RQ1 RQ2") +
+        statRow("Rejected", d.proposals.rejected, "RQ1 RQ2") +
+        statRow("Stale (target vanished undecided)", d.proposals.stale, "RQ5") +
+        `<tr><td>Acceptance rate (approved ÷ decided)</td><td class="wl-stat-num">${
+          d.proposals.approved + d.proposals.rejected > 0
+            ? Math.round((100 * d.proposals.approved) / (d.proposals.approved + d.proposals.rejected)) + "%"
+            : "—"
+        }</td>${rqCell("RQ2")}</tr>` +
+        `<tr><td>Mean time to decision</td><td class="wl-stat-num">${
+          d.proposals.meanDecisionMs !== null && d.proposals.meanDecisionMs >= 0
+            ? (d.proposals.meanDecisionMs / 3600000).toFixed(1) + "h"
+            : "—"
+        }</td>${rqCell("RQ4")}</tr>`,
+    ) +
     `<p class="wl-stats-foot"><b>Reading a zero:</b> every instrument on this page has shipped, so a 0 in any row ` +
     `means that instrumentation is broken, not that nothing happened — investigate before celebrating. ` +
     `Median time-to-first-human-touch is omitted: it needs a per-annotation pipeline-event × human-event self-join ` +
@@ -822,4 +855,131 @@ export function userProfilePage(
     `<tbody>${recentRows}</tbody></table></div>`;
 
   return shell(name, body);
+}
+
+// ---- /proposals — the cross-article propose-then-approve review queue -------
+// One row per pending AI proposal (from the proposals lifecycle table), with
+// the target annotation's CURRENT values beside the proposed delta so the
+// reviewer can judge without opening the article. Approve/Reject post the
+// existing /api/article/:slug contract (approve carries that slug's current
+// version as base_version; a 409 mid-queue just reloads).
+export interface ProposalQueueRow {
+  proposalId: string;
+  slug: string;
+  displayTitle: string;
+  version: number;
+  annotationId: string;
+  label: string; // target annotation's label ('' if the target is gone)
+  current: Record<string, unknown> | null; // target's current approvable fields
+  fields: Record<string, unknown>; // the proposed delta
+  reason: string;
+  model: string | null;
+  createdAt: number;
+}
+
+function fmtVal(v: unknown): string {
+  if (v === null || v === undefined) return "∅";
+  if (typeof v === "object") {
+    const o = v as Record<string, unknown>;
+    return typeof o.decl === "string" ? String(o.decl) : JSON.stringify(v);
+  }
+  return String(v);
+}
+
+export function proposalsQueuePage(
+  rows: ProposalQueueRow[],
+  meta: { total: number; forbidden?: boolean },
+): string {
+  if (meta.forbidden) {
+    return shell(
+      "AI proposals",
+      `<h1>AI proposals</h1><p>Reviewing proposals is a patroller/admin task. ` +
+        `If you'd like to help moderate, <a class="wl-navlink" href="/about">get in touch</a>.</p>`,
+    );
+  }
+  const truncNote =
+    meta.total > rows.length
+      ? `<p class="muted">Showing the newest ${rows.length} of <b>${meta.total}</b> pending proposals — decide some to see the rest.</p>`
+      : "";
+  const body =
+    `<h1>AI proposals</h1>` +
+    `<p class="muted">The AI may propose updates to human-owned annotations but never applies them ` +
+    `(<a class="wl-navlink" href="/about">how moderation works</a>). Approving applies the change and keeps the annotation yours; ` +
+    `rejecting remembers the delta so it is not re-proposed.</p>` +
+    truncNote +
+    (rows.length === 0
+      ? `<p><b>No pending proposals.</b> New ones appear here after AI review passes.</p>`
+      : `<div style="overflow-x:auto"><table>` +
+        `<thead><tr><th>Article</th><th>Annotation</th><th>Proposed change</th><th>Why</th><th>Age</th><th></th></tr></thead>` +
+        `<tbody>` +
+        rows
+          .map((r) => {
+            const delta = Object.entries(r.fields)
+              .map(([k, v]) => {
+                const from = r.current ? fmtVal(r.current[k]) : "?";
+                return `<code>${htmlEscape(k, false)}</code> ${htmlEscape(from, false)} → <b>${htmlEscape(fmtVal(v), false)}</b>`;
+              })
+              .join("<br>");
+            const age = Math.max(0, Math.round((Date.now() - r.createdAt) / 86400000));
+            return (
+              `<tr data-pid="${htmlEscape(r.proposalId, false)}" data-slug="${htmlEscape(r.slug)}" data-ver="${r.version}">` +
+              `<td><a class="wl-navlink" href="/${htmlEscape(r.slug)}">${htmlEscape(r.displayTitle)}</a></td>` +
+              `<td>${htmlEscape(r.label || r.annotationId)}</td>` +
+              `<td>${delta}</td>` +
+              `<td class="muted">${htmlEscape(r.reason)}${r.model ? `<br><span class="muted">${htmlEscape(r.model, false)}</span>` : ""}</td>` +
+              `<td class="muted">${age}d</td>` +
+              `<td style="white-space:nowrap">` +
+              `<button class="revert wl-prop-approve" data-pid="${htmlEscape(r.proposalId, false)}">✓ approve</button> ` +
+              `<select class="wl-prop-why" aria-label="Reject reason">` +
+              `<option value="">reject: why?</option>` +
+              `<option value="incorrect">incorrect</option>` +
+              `<option value="not_better">not better</option>` +
+              `<option value="out_of_scope">out of scope</option>` +
+              `<option value="other">other</option>` +
+              `</select> ` +
+              `<button class="revert wl-prop-reject" data-pid="${htmlEscape(r.proposalId, false)}">✗ reject</button>` +
+              `</td></tr>`
+            );
+          })
+          .join("") +
+        `</tbody></table></div>`);
+
+  const script = `<script>
+document.addEventListener("click", async function (e) {
+  var btn = e.target.closest ? e.target.closest(".wl-prop-approve, .wl-prop-reject") : null;
+  if (!btn) return;
+  var tr = btn.closest("tr");
+  var body = { proposal_id: btn.dataset.pid };
+  if (btn.classList.contains("wl-prop-approve")) {
+    body.action = "approve_proposal";
+    body.base_version = Number(tr.dataset.ver);
+  } else {
+    body.action = "reject_proposal";
+    var why = tr.querySelector(".wl-prop-why");
+    if (why && why.value) body.reject_reason = why.value;
+  }
+  tr.querySelectorAll("button").forEach(function (b) { b.disabled = true; });
+  try {
+    var res = await fetch("/api/article/" + encodeURIComponent(tr.dataset.slug), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    if (res.status === 200) {
+      tr.remove();
+    } else if (res.status === 409) {
+      alert("Article changed since this page loaded — reloading.");
+      location.reload();
+    } else {
+      var j = await res.json().catch(function () { return {}; });
+      alert("Failed: " + (j.error || res.status));
+      tr.querySelectorAll("button").forEach(function (b) { b.disabled = false; });
+    }
+  } catch (err) {
+    alert("Network error — try again.");
+    tr.querySelectorAll("button").forEach(function (b) { b.disabled = false; });
+  }
+});
+</${"script"}>`;
+  return shell("AI proposals", body, script);
 }

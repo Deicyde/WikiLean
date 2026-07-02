@@ -315,7 +315,7 @@ def build_meta(ctx, rec: dict, wire_stats: dict) -> dict:
     duration_ms = ((a1.get("duration_ms") or 0) + (a2.get("duration_ms") or 0)
                    or int((rec.get("elapsed_s") or 0) * 1000))
     ladder = {"restored": 0, "reinserted": 0, "downgrades_blocked": 0,
-              "moderation_flags": []}  # F14: harvested agent dissent rides meta
+              "moderation_flags": []}  # F14 dissent (+ step-2 proposals when present) ride meta
     ladder.update(rec.get("ladder") or {})
     return {
         "run_id": ctx.run_id,
@@ -639,8 +639,12 @@ def get_prompt_sha(ba_mod, mode: str) -> str:
     if ba_mod is None:
         return "unavailable"
     a1 = ba_mod.MODERATE_AGENT1_SYSTEM if mode == "review" else ba_mod.AGENT1_SYSTEM
-    return hashlib.sha256((a1 + "\n" + ba_mod.AGENT2_SYSTEM)
-                          .encode("utf-8")).hexdigest()[:12]
+    parts = a1 + "\n" + ba_mod.AGENT2_SYSTEM
+    # Step 2: the proposal guidance changes Agent 2's review-mode prompt, so it must
+    # move prompt_sha when enabled (else the two cohorts look identical in research).
+    if mode == "review" and getattr(ba_mod, "_PROPOSALS", False):
+        parts += "\n" + getattr(ba_mod, "AGENT2_PROPOSAL_GUIDANCE", "")
+    return hashlib.sha256(parts.encode("utf-8")).hexdigest()[:12]
 
 
 # ---------------------------------------------------------------------------
@@ -664,6 +668,17 @@ def fetch_work(api_base: str, token: str, mode: str, limit: int) -> list[dict]:
     if r.status_code != 200:
         sys.exit(f"GET /api/work?mode={mode} failed: {r.status_code} {r.text[:200]}")
     return r.json().get("jobs", [])
+
+
+def load_slug_jobs(path: Path, limit: int, reason: str = "targeted") -> list[dict]:
+    """Explicit review targets: one slug per line (blank / '#' lines ignored),
+    capped at `limit`. Lets review run against a specific worklist — e.g. the
+    manage/ formalize backlog (manage/data/formalize_slugs.txt) — instead of the
+    /api/work ladder, which has no notion of 'extracted but unformalized'.
+    process_review GETs each article's live state, so only the slug is needed."""
+    slugs = [ln.strip() for ln in path.read_text().splitlines()
+             if ln.strip() and not ln.startswith("#")]
+    return [{"slug": s, "reason": reason} for s in slugs[:limit]]
 
 
 async def get_article(api_base: str, slug: str,
@@ -1212,11 +1227,17 @@ def run_mode(mode: str, args, token: str | None) -> tuple[int, dict]:
 
     if mode == "review":
         ba_mod = _try_import_ba(args.auth) if args.dry_run else _import_ba(args.auth)
-        # The job list is fetched HERE — i.e. in 'all' mode AFTER wp-update
-        # has run, when stage-0 re-pins have already cleared wp_drifted for
-        # zero tokens (F3: review spend goes to articles needing judgment).
-        jobs = fetch_work(args.api_base, token, "review", args.limit)
-        print(f"review: {len(jobs)} jobs from /api/work")
+        if getattr(args, "slugs", None):
+            # Targeted review from an explicit slug list (e.g. the formalize
+            # backlog) instead of the /api/work ladder.
+            jobs = load_slug_jobs(Path(args.slugs), args.limit, reason="formalize-backlog")
+            print(f"review: {len(jobs)} jobs from {args.slugs} (explicit slug list)")
+        else:
+            # The job list is fetched HERE — i.e. in 'all' mode AFTER wp-update
+            # has run, when stage-0 re-pins have already cleared wp_drifted for
+            # zero tokens (F3: review spend goes to articles needing judgment).
+            jobs = fetch_work(args.api_base, token, "review", args.limit)
+            print(f"review: {len(jobs)} jobs from /api/work")
         if not jobs:
             return 0, zero_stats()
         ctx = make_ctx(args, "review", token, ba_mod)
@@ -1262,6 +1283,10 @@ def main() -> int:
                     help="new mode: candidate JSONL from discover_articles.py "
                          "({'title','slug','source'} per line; default is the "
                          "catalog 404-probe fallback)")
+    ap.add_argument("--slugs", default=None, metavar="FILE",
+                    help="review mode: explicit slug list (one per line) to "
+                         "review instead of /api/work — e.g. the formalize "
+                         "backlog at manage/data/formalize_slugs.txt")
     ap.add_argument("--api-base", default=DEFAULT_API_BASE)
     args = ap.parse_args()
     args.run_id = secrets.token_hex(4)
