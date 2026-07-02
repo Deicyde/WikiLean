@@ -108,6 +108,9 @@ cd "$REPO/site" || exit 1
     # Crossref backfill first (fail-soft: atomic write keeps the last good file,
     # and the graph builds fine without it) — then coverage + the page build.
     python3 "$REPO/catalog/mathlib_deps/fetch_crossrefs.py" || echo "(crossrefs fetch returned $? — using last good file)"
+    # FormalConjectures frontier ingest — same fail-soft contract; the DRIFT
+    # lines in its output are the frontier moving (open→solved flips).
+    python3 "$REPO/catalog/ingest_formal_conjectures.py" || echo "(fc ingest returned $? — using last good file)"
     if python3 "$REPO/manage/coverage.py" && python3 "$REPO/site/build_graph_page.py"; then
       if [ "${WIKILEAN_GRAPH_DEPLOY:-1}" = "1" ]; then
         ( cd "$REPO/wiki" && npx wrangler kv key put --binding=RENDER_CACHE --remote \
