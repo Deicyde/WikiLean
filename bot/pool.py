@@ -115,12 +115,14 @@ def load_catalog():
     return cat
 
 
-def candidates(n=25, exclude=(), require_high=True, p31_filter=True, offlist=False):
-    """offlist=True: after the most_used ranked walk, also walk catalog QIDs that
-    are NOT in the ranking (e.g. mathlib 1000.yaml theorem QIDs — maintainer-
-    reviewed but theorem-level, so absent from the concept-wikilink ranking), in
-    catalog order. Off by default: including them changes batch composition,
-    which is a reviewer-facing policy choice."""
+def candidates(n=25, exclude=(), require_high=True, p31_filter=True, offlist=True):
+    """offlist (ON by default — Jack's call, 2026-07-02): after the most_used
+    ranked walk, also walk catalog QIDs that are NOT in the ranking (e.g.
+    mathlib 1000.yaml theorem QIDs — maintainer-reviewed but theorem-level, so
+    absent from the concept-wikilink ranking), in catalog order. The ranked walk
+    still comes FIRST, so batch composition only shifts as the ranked pool
+    thins; off-list QIDs multiply the runway. `--no-offlist` restores the
+    ranked-only behavior."""
     cat = load_catalog()
     excl = set(exclude) | seen_qids()           # never re-surface already-reviewed concepts
     if TAGGED.exists():
@@ -159,11 +161,12 @@ if __name__ == "__main__":
     ap.add_argument("--exclude", default="", help="comma-separated qids to skip (in-flight)")
     ap.add_argument("--json", action="store_true")
     ap.add_argument("--no-p31", action="store_true", help="skip the Wikidata field-of-math filter (offline)")
-    ap.add_argument("--offlist", action="store_true",
-                    help="also draw catalog QIDs outside the most_used ranking (e.g. 1000.yaml theorems)")
+    ap.add_argument("--no-offlist", action="store_true",
+                    help="ranked-only: exclude catalog QIDs outside the most_used ranking "
+                         "(off-list — e.g. 1000.yaml theorems — is the default)")
     args = ap.parse_args()
     cands = candidates(args.n, [q.strip() for q in args.exclude.split(",") if q.strip()],
-                       p31_filter=not args.no_p31, offlist=args.offlist)
+                       p31_filter=not args.no_p31, offlist=not args.no_offlist)
     if args.json:
         print(json.dumps(cands, indent=1))
     else:
