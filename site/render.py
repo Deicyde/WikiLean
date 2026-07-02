@@ -828,8 +828,11 @@ def wrap_annotations(body_html: str, annotations: list[dict]) -> tuple[str, list
     for (start, end), members in groups.items():
         indices = [i for i, _ in members]
         wrapper = "div" if any(w == "div" for _, w in members) else "span"
-        statuses = [annotations[i]["status"] for i in indices]
-        rep = sorted(statuses, key=lambda s: _STATUS_PRIORITY.get(s, 99))[0]
+        # Extracted (Agent-1-only) annotations carry no "status" key yet; treat a
+        # missing/None status as lowest-priority and fall back to the conservative
+        # "not_formalized" so wp-update's anchor check can't KeyError on them.
+        statuses = [annotations[i].get("status") for i in indices]
+        rep = sorted(statuses, key=lambda s: _STATUS_PRIORITY.get(s, 99))[0] or "not_formalized"
         decl = None
         for i in indices:
             a = annotations[i]
@@ -960,8 +963,9 @@ def main() -> int:
     # reach the header badges or the meta description (mirrors page.ts).
     counts = {"formalized": 0, "partial": 0, "not_formalized": 0}
     for a in annot["annotations"]:
-        if a["status"] in counts:
-            counts[a["status"]] += 1
+        st = a.get("status")
+        if st in counts:
+            counts[st] += 1
 
     if n_unmatched:
         print(f"warning: {n_unmatched} annotation(s) had no matching anchor in HTML:")
@@ -990,7 +994,7 @@ def main() -> int:
         m = a.get("mathlib") or {}
         decl = m.get("decl") or a.get("decl")
         module = m.get("module") or a.get("module")
-        item = {"status": a["status"]}
+        item = {"status": a.get("status") or "not_formalized"}
         # Stable annotation id for the anonymous flag form (mirrors page.ts
         # ClientAnno.id). Inert in rendering.
         if isinstance(a.get("id"), str):

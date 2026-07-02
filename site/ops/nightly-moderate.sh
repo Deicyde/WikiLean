@@ -46,6 +46,34 @@ mkdir -p "$LOGDIR"
 TS="$(date +%Y%m%dT%H%M%S)"
 LOG="$LOGDIR/moderate-$TS.log"
 
+# Retry an agent step across a Max-window reset. moderate.py's run loop exits 3
+# on a consecutive-window-exhaustion abort AND prints "hit your limit"; that same
+# exit 3 is ALSO used for an intentional token-budget stop, so we retry ONLY when
+# the fresh log tail carries the Max rate-limit signature — never on a budget
+# stop. Bounded (default 3 tries × 15 min) so a stuck night can't run into the
+# morning. Rationale: launchd fires at a fixed clock time but the Max 5-hour
+# window resets on a rolling schedule, so any fixed start can still straddle a
+# reset (the 2026-07-02 run lost all 29 jobs to a 03:10 reset). See nightly.env.
+RETRY_SLEEP="${WIKILEAN_RETRY_SLEEP:-900}"   # seconds to wait for the window reset
+RETRY_MAX="${WIKILEAN_RETRY_MAX:-3}"
+retry_on_ratelimit() {
+  local n=0 rc
+  while : ; do
+    "$@"; rc=$?
+    [ "$rc" -ne 3 ] && return "$rc"
+    if ! tail -n 80 "$LOG" 2>/dev/null | grep -qiE "hit your limit|usage limit|resets [0-9]"; then
+      return "$rc"   # exit 3 without the Max signature = intended budget stop
+    fi
+    n=$((n + 1))
+    if [ "$n" -ge "$RETRY_MAX" ]; then
+      echo "  (rate-limited: exhausted $n retries across the Max reset — leaving the rest for tomorrow)"
+      return "$rc"
+    fi
+    echo "  (Max window exhausted; sleeping ${RETRY_SLEEP}s for the reset, then retry $n/$((RETRY_MAX - 1)))"
+    sleep "$RETRY_SLEEP"
+  done
+}
+
 # Single-instance lock (macOS has no flock): atomic mkdir, with stale recovery
 # after 4h in case a prior run was killed without cleaning up. A review batch
 # should never exceed ~2-3h.
@@ -86,7 +114,7 @@ cd "$REPO/site" || exit 1
     # burn tokens re-reviewing already-formalized articles).
     if python3 "$REPO/manage/formalize_backlog.py" --limit "$FORMALIZE_LIMIT" \
          && [ -s "$REPO/manage/data/formalize_slugs.txt" ]; then
-      "$PY" moderate.py review --slugs "$REPO/manage/data/formalize_slugs.txt" \
+      retry_on_ratelimit "$PY" moderate.py review --slugs "$REPO/manage/data/formalize_slugs.txt" \
             --limit "$FORMALIZE_LIMIT" --concurrency "$CONCURRENCY" \
             --budget-tokens "$FORMALIZE_BUDGET" || echo "(formalize review returned $?)"
     else
@@ -95,7 +123,7 @@ cd "$REPO/site" || exit 1
     echo
   fi
   echo "--- review batch (search-verified) ---"
-  "$PY" moderate.py review --limit "$REVIEW_LIMIT" --concurrency "$CONCURRENCY" \
+  retry_on_ratelimit "$PY" moderate.py review --limit "$REVIEW_LIMIT" --concurrency "$CONCURRENCY" \
         --budget-tokens "$BUDGET_TOKENS" || echo "(review returned $?)"
   echo
   if [ "${WIKILEAN_GRAPH_REFRESH:-1}" = "1" ]; then
