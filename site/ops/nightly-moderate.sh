@@ -112,6 +112,17 @@ cd "$REPO/site" || exit 1
     # lines in its output are the frontier moving (open→solved flips).
     python3 "$REPO/catalog/ingest_formal_conjectures.py" || echo "(fc ingest returned $? — using last good file)"
     if python3 "$REPO/manage/coverage.py" && python3 "$REPO/site/build_graph_page.py"; then
+      # Bubble-atlas hierarchy rides the graph build (consumes graph_data.json);
+      # same success-gate + KV pattern (atlas:data:v1).
+      if python3 "$REPO/site/build_atlas.py"; then
+        if [ "${WIKILEAN_GRAPH_DEPLOY:-1}" = "1" ]; then
+          ( cd "$REPO/wiki" && npx wrangler kv key put --binding=RENDER_CACHE --remote \
+              atlas:data:v1 --path="$REPO/site/out/atlas_data.json" ) \
+            || echo "(atlas kv put returned $?)"
+        fi
+      else
+        echo "(atlas build failed — keeping the last KV copy)"
+      fi
       if [ "${WIKILEAN_GRAPH_DEPLOY:-1}" = "1" ]; then
         ( cd "$REPO/wiki" && npx wrangler kv key put --binding=RENDER_CACHE --remote \
             graph:data:v1 --path="$REPO/site/out/graph_data.json" ) \
