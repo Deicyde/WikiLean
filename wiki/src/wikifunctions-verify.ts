@@ -4,8 +4,8 @@
 // wikifunctions.ts: same inline <style> palette/fonts, same wl-header/wl-nav/
 // footer, same local `esc` twin, no D1. Self-contained — the only "data" is the
 // verbatim Python/Lean snippets and case counts, which are accurate to the code
-// in wikifunctions/ (Z13701.lean, Z13667.lean, native/leanpy/Main.lean,
-// native/difftest.py).
+// in the standalone Deicyde/wikifunctions repo (Z13701.lean, Z13667.lean,
+// native/leanpy/Main.lean, native/difftest.py).
 
 // Local twin of engine/html.ts htmlEscape — keeps this module import-free
 // (matches wikifunctions.ts / home.ts).
@@ -18,7 +18,7 @@ function esc(s: string): string {
     .replace(/'/g, "&#x27;");
 }
 
-const GH_BLOB = "https://github.com/Deicyde/WikiLean/blob/main/";
+const GH_BLOB = "https://github.com/Deicyde/wikifunctions/blob/main/";
 
 // A GitHub source-file link rendered as a monospace path.
 function srcLink(path: string, label?: string): string {
@@ -287,7 +287,7 @@ footer a:hover { text-decoration:underline; }
     <div class="step">
       <p class="lbl">The Lean embedding</p>
       <p>The program is encoded as data over a tiny imperative-Python AST
-        (${srcLink("wikifunctions/lean/Wikifunctions/Python/Imp.lean", "Imp.lean")}) with an operational
+        (${srcLink("Wikifunctions/Python/Imp.lean", "Imp.lean")}) with an operational
         semantics; then we prove it equal to Mathlib&#x27;s <code>Nat.Coprime</code>:</p>
       <p style="margin-top:10px;"><span class="lean-line">theorem runProgram_eq_coprime (a b : Nat) : runProgram a b = some (decide (Nat.Coprime a b))</span></p>
     </div>
@@ -328,19 +328,19 @@ footer a:hover { text-decoration:underline; }
   <p class="sect-intro">Every claim above is in the repository &mdash; the embedding, the two proofs, and both
     CPython cross-checks.</p>
   <div class="src-grid">
-    <div class="li">${srcLink("wikifunctions/lean/Wikifunctions/Python/Imp.lean")}
+    <div class="li">${srcLink("Wikifunctions/Python/Imp.lean")}
       <span class="desc"> &mdash; the imperative-Python embedding (AST + operational semantics).</span></div>
-    <div class="li">${srcLink("wikifunctions/lean/Wikifunctions/Python/Z13701.lean")}
+    <div class="li">${srcLink("Wikifunctions/Python/Z13701.lean")}
       <span class="desc"> &mdash; the coprime proof (<code>runProgram_eq_coprime</code>).</span></div>
-    <div class="li">${srcLink("wikifunctions/lean/Wikifunctions/Python/Z13667.lean")}
+    <div class="li">${srcLink("Wikifunctions/Python/Z13667.lean")}
       <span class="desc"> &mdash; the factorial proof (<code>runFac_eq_factorial</code>).</span></div>
-    <div class="li">${srcLink("wikifunctions/native/leanpy/Main.lean")}
+    <div class="li">${srcLink("native/leanpy/Main.lean")}
       <span class="desc"> &mdash; lean.py: real CPython loaded in-process, checked against the spec.</span></div>
-    <div class="li">${srcLink("wikifunctions/native/difftest.py")}
+    <div class="li">${srcLink("native/difftest.py")}
       <span class="desc"> &mdash; the cross-process differential test vs real CPython.</span></div>
   </div>
   <p class="prose muted" style="margin-top:16px;">Reproduce the proofs:</p>
-  <pre class="code">cd wikifunctions/lean
+  <pre class="code">git clone https://github.com/Deicyde/wikifunctions &amp;&amp; cd wikifunctions
 lake exe cache get
 lake build Wikifunctions.Python.Z13701 Wikifunctions.Python.Z13667</pre>
 
