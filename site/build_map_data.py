@@ -130,12 +130,22 @@ def main() -> int:
     # "Related concepts" — each node's strongest formal neighbours (by edge
     # weight), so a node is shown IN CONTEXT (grouped with what it depends on /
     # supports) rather than as an isolated QID. Top 6 per node.
+    # Dedupe by unordered QID-pair first: the SAME pair can appear as both a
+    # mathlib edge and a wikidata edge (two separate entries in `edges`), and
+    # without this collapse a node's neighbour list — and later `deg`/`score`
+    # inputs — double-count that one neighbour, which both skews the ranking
+    # and can seat the same "related" chip twice (e.g. Determinant ended up
+    # with "Singular matrix" occupying two of its six slots).
     label_by_qid = {n["qid"]: n["label"] for n in nodes}
-    deg: dict[str, int] = {}
-    nbr: dict[str, list[tuple[str, int]]] = {}
+    pair_w: dict[tuple[str, str], int] = {}
     for e in edges:
         w = e.get("weight", 1)
-        a0, b0 = e["from"], e["to"]
+        key = (e["from"], e["to"]) if e["from"] <= e["to"] else (e["to"], e["from"])
+        if w > pair_w.get(key, 0):
+            pair_w[key] = w
+    deg: dict[str, int] = {}
+    nbr: dict[str, list[tuple[str, int]]] = {}
+    for (a0, b0), w in pair_w.items():
         deg[a0] = deg.get(a0, 0) + 1
         deg[b0] = deg.get(b0, 0) + 1
         for a, b in ((a0, b0), (b0, a0)):
@@ -161,7 +171,13 @@ def main() -> int:
     for q, lst in nbr.items():
         cand = [(b, w) for b, w in lst if b not in hubs and b in grounded]
         if len(cand) < 3:
-            cand = [(b, w) for b, w in lst if b not in hubs] or lst
+            cand = [(b, w) for b, w in lst if b not in hubs]
+        # Do NOT fall back to `lst` (which can still contain hubs) when a
+        # node's every neighbour is itself a mega-hub — that reintroduces
+        # exactly the hub the exclusion above was meant to drop (e.g. Forcing
+        # (mathematics) -> Set theory). Better to show no related-concepts
+        # panel than a misleading one; `related` is only set below when
+        # `top` is non-empty, so an empty `cand` here is already handled.
         top = sorted(cand, key=lambda bw: -score(*bw))[:6]
         n = node_by_qid.get(q)
         if n is not None and top:

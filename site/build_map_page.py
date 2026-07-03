@@ -241,7 +241,9 @@ a.rel:hover { border-color:#0969da; color:#0969da; }
     info.innerHTML = rows.join('');
     const cv = document.getElementById('crossview');
     if (cv) cv.onclick = (e) => { e.preventDefault(); setView(view === 'web' ? 'bubbles' : 'web'); focusConcept(qid); };
-    info.querySelectorAll('a.rel').forEach(a => a.onclick = (e) => { e.preventDefault(); focusConcept(a.dataset.qid); });
+    info.querySelectorAll('a.rel').forEach(a => a.onclick = (e) => { e.preventDefault();
+      if (view === 'sources') setView('bubbles');
+      focusConcept(a.dataset.qid); });
   }
   function selectConcept(qid) { selectedQid = qid; conceptPanel(qid); }
 
@@ -347,7 +349,11 @@ a.rel:hover { border-color:#0969da; color:#0969da; }
       `Switch to <b>Web</b> for the dependency graph, or <b>Sources</b> for where every link comes from.</p>`;
   }
   function bubblesInit() {
-    zoomTo([root.x, root.y, root.r * 2.05]);
+    // Re-entering the view (e.g. after switching to Web/Sources and back) must not reset
+    // `focus` to root — `focus` drives both label visibility (relabel) and the background-click
+    // zoom-out target, and is otherwise only ever changed by zoom(d). Re-derive the view vector
+    // from the current `focus`, mirroring the window-resize handler below.
+    zoomTo([focus.x, focus.y, focus.r * 2.05]);
     if (selectedQid) conceptPanel(selectedQid); else bubblesIntro();
   }
   const bubbleLeaves = root.leaves();
@@ -379,7 +385,6 @@ a.rel:hover { border-color:#0969da; color:#0969da; }
   }
   let edgesByCat = { mathlib: [], wikidata: [], both: [] };
   function bucketEdges() { edgesByCat = { mathlib: [], wikidata: [], both: [] }; for (const e of webEdges) edgesByCat[e.cat].push(e); }
-  const endpointId = x => (x && typeof x === 'object') ? x.id : x;
   function nodeColor(n, matched) {
     if (matched) return COLORS.highlight;
     // colour by continent (the bubble structure, carried into the web)
@@ -446,7 +451,7 @@ a.rel:hover { border-color:#0969da; color:#0969da; }
     wresize();
     canvas.addEventListener('mousedown', (ev) => {
       const [wx, wy] = [(ev.offsetX - tx) / scale, (ev.offsetY - ty) / scale];
-      let best = null, bd = 64;
+      let best = null, bd = (8 / scale) ** 2;  // constant ~8px SCREEN hit radius at every zoom (world*scale=screen)
       for (const n of webNodes) { const dx = n.x - wx, dy = n.y - wy, d2 = dx * dx + dy * dy; if (d2 < bd) { bd = d2; best = n; } }
       if (best) { highlighted = best; selectConcept(best.id); scheduleDraw(); }
     });
@@ -509,7 +514,7 @@ a.rel:hover { border-color:#0969da; color:#0969da; }
     document.getElementById('search').style.display = (v === 'sources') ? 'none' : '';
     try { history.replaceState(null, '', '?view=' + v); } catch (e) {}
     if (v === 'bubbles') bubblesInit();
-    else if (v === 'web') webInit();
+    else if (v === 'web') { wsearch = document.getElementById('search').value.trim().toLowerCase(); webInit(); }
     else renderSources();
   }
   document.querySelectorAll('#viewswitch button').forEach(b => b.onclick = () => setView(b.dataset.view));
