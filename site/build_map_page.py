@@ -82,6 +82,14 @@ text.blabel { pointer-events:none; text-anchor:middle;
   border-radius:999px; font-size:.78rem; text-decoration:none; color:#0969da; }
 .chip:hover { border-color:#0969da; }
 .chip .ly { font-size:.62rem; color:#8c959f; text-transform:uppercase; letter-spacing:.04em; margin-left:4px; }
+.litrow { margin:6px 0; font-size:.86rem; }
+.lithint { color:#57606a; font-size:.78rem; line-height:1.4; margin-top:1px; }
+.lit-b { font-size:.62rem; text-transform:uppercase; letter-spacing:.04em; padding:1px 6px; border-radius:999px; margin-left:5px; }
+.lit-exact { background:#2da44e22; color:#1a7f37; }
+.lit-inexact { background:#9a670022; color:#9a6700; }
+[data-theme="dark"] .lithint { color:#b8b0a2; }
+[data-theme="dark"] .lit-exact { color:#4ac26b; }
+[data-theme="dark"] .lit-inexact { color:#d4a72c; }
 /* sources view */
 .src-intro { max-width:760px; margin:0 0 20px; line-height:1.6; }
 .src-intro h2 { margin:0 0 8px; font-size:1.3rem; }
@@ -183,6 +191,22 @@ text.blabel { pointer-events:none; text-anchor:middle;
         chips.push(`<a class="chip" href="${esc(href)}" target="_blank" rel="noopener">${esc(s.name)}<span class="ly">${esc(s.layer)}</span></a>`);
       }
     }
+    // arXiv literature layer (TheoremGraph). Hidden under the 'formal' filter
+    // (these are informal/literature links). Primary-decl match first.
+    const arx = (layer !== 'formal' && n.arxiv) ? n.arxiv : [];
+    const arxHtml = arx.length ? (
+      `<div class="field" style="margin-top:12px"><b>Stated in the literature</b> ` +
+      `<span class="hint">via TheoremGraph</span>` +
+      arx.slice(0, 8).map(a => {
+        const badge = a.gpt54 === 'exact'
+          ? `<span class="lit-b lit-exact">exact</span>`
+          : `<span class="lit-b lit-inexact">inexact</span>`;
+        return `<div class="litrow"><a href="https://arxiv.org/abs/${esc(a.arxiv_id)}" target="_blank" rel="noopener">arXiv:${esc(a.arxiv_id)}</a>` +
+          `${a.ref ? ` · Thm ${esc(a.ref)}` : ''} ${badge}` +
+          `<div class="lithint">${esc(a.title)}${a.primary ? '' : ` · <code>${esc(a.decl)}</code>`}</div></div>`;
+      }).join('') +
+      (arx.length > 8 ? `<div class="hint">+${arx.length - 8} more</div>` : '') +
+      `</div>`) : '';
     const rows = [
       `<h3>${esc(n.label)}</h3>`,
       `<div class="crumb">${esc(contLabel[n.continent] || n.continent)} › ${esc((data.subfields[n.subfield]||{}).label || n.subfield)}</div>`,
@@ -192,6 +216,7 @@ text.blabel { pointer-events:none; text-anchor:middle;
       n.verified ? `<div class="field" style="color:#8250df"><b>✓ Human-reviewed</b> mapping</div>` : '',
       `<div class="field"><b>Placed by</b> · <code>${esc(n.assign_rule)}</code></div>`,
       chips.length ? `<div class="field" style="margin-top:10px"><b>Also in</b><br>${chips.join('')}</div>` : '',
+      arxHtml,
       `<div class="field" style="margin-top:12px">` +
         `<a href="/${encodeURIComponent(n.slug)}">WikiLean article →</a><br>` +
         `<a href="https://www.wikidata.org/wiki/${esc(qid)}" target="_blank" rel="noopener">Wikidata ${esc(qid)} →</a><br>` +
