@@ -78,6 +78,11 @@ def main() -> int:
     # Wikidata one-line descriptions (summaries), keyed by QID (fail-soft).
     desc_path = HERE.parent / "catalog" / "data" / "wikidata_descriptions.json"
     descriptions = json.loads(desc_path.read_text()) if desc_path.exists() else {}
+    # Which slugs are ACTUAL WikiLean articles (have an annotation file). Nodes
+    # whose slug isn't one must NOT show a "WikiLean article →" link (it 404s) —
+    # the page links them to Wikipedia instead. Fixes ~1,820 dead links on v2.
+    ANNOT = HERE / "annotations"
+    wl_slugs = {p.name[:-5] for p in ANNOT.glob("*.json") if not p.name.endswith(".agent1.json")}
 
     sub_continent = {k: sf["continent"] for k, sf in atlas["subfields"].items()}
     atlas_nodes = atlas["nodes"]
@@ -105,6 +110,7 @@ def main() -> int:
             **({"n_conjectures": len(n["conjectures"])} if n.get("conjectures") else {}),
             **({"arxiv": tg[q]} if tg.get(q) else {}),
             **({"description": descriptions[q]} if descriptions.get(q) else {}),
+            **({"wl_article": True} if n.get("slug") in wl_slugs else {}),
             "continent": cont, "subfield": sub, "assign_rule": rule,
         })
         if tg.get(q):

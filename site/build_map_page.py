@@ -232,7 +232,9 @@ a.rel:hover { border-color:#0969da; color:#0969da; }
       arxHtml,
       rel,
       `<div class="field" style="margin-top:12px">` +
-        `<a href="/${encodeURIComponent(n.slug)}">WikiLean article →</a><br>` +
+        (n.wl_article
+          ? `<a href="/${encodeURIComponent(n.slug)}">WikiLean article →</a><br>`
+          : (n.slug ? `<a href="https://en.wikipedia.org/wiki/${encodeURIComponent(n.slug)}" target="_blank" rel="noopener">Wikipedia →</a><br>` : '')) +
         `<a href="https://www.wikidata.org/wiki/${esc(qid)}" target="_blank" rel="noopener">Wikidata ${esc(qid)} →</a><br>` +
         `<a href="#" id="crossview">${view === 'web' ? 'Show in bubbles →' : 'Show in web →'}</a></div>`,
     ];
