@@ -1,0 +1,92 @@
+{
+  "_comment": "Canonical provenance registry for WikiLean's formal<->informal graph. The SINGLE source of truth for every database WikiLean links to: where OUR data comes from, under what license, and which layer of the formal<->informal stack it sits in. fetch_crossrefs.py derives its property map from `crossref_sources` here; the graph/atlas UIs and the /api surfaces render `layers` + these entries as a transparent 'sources' legend. HAND-CURATED. `our_provenance` (how WikiLean obtained the link) is authoritative and verified; `target_license` (the linked project's own content license) is best-effort — VERIFY each before any public 'sources' page claims it.",
+  "our_data_license": {
+    "annotations": "CC0-1.0",
+    "concept_graph": "CC0-1.0",
+    "note": "WikiLean's own annotation + graph data is CC0. Linked-target CONTENT stays under each project's own license (below); we store only identifiers/edges, which are facts."
+  },
+  "layers": {
+    "informal": "Natural-language mathematics — encyclopedias & reference works keyed by concept.",
+    "formal": "Machine-checked / formal-library statements keyed by declaration or theorem id.",
+    "literature": "Primary literature & sequence/object databases (arXiv, OEIS, LMFDB objects).",
+    "classification": "Topic/taxonomy overlays (MSC) — never an identity join, a subject tag.",
+    "bridge": "Cross-database identity hubs (Wikidata QID, Google KG mid) — the join spine itself."
+  },
+  "spine": {
+    "key": "wikidata",
+    "name": "Wikidata",
+    "homepage": "https://www.wikidata.org",
+    "layer": "bridge",
+    "our_provenance": "The QID is the only cross-database join key in mathematics (no federated math SPARQL exists). Every WikiLean concept node IS a Wikidata QID; every crossref below is a property on that QID.",
+    "id_license": "CC0-1.0",
+    "note": "All crossref identifiers below are read from Wikidata (CC0), never scraped from the target site."
+  },
+  "node_sources": {
+    "wikipedia": {
+      "name": "Wikipedia (English)",
+      "homepage": "https://en.wikipedia.org",
+      "layer": "informal",
+      "kind": "The informal source article each concept annotates.",
+      "our_provenance": "Article text + section anchors pinned per-revision; concept node = the article's Wikidata sitelink.",
+      "target_license": "CC BY-SA 4.0",
+      "attribution_required": true
+    },
+    "mathlib": {
+      "name": "Mathlib 4",
+      "homepage": "https://github.com/leanprover-community/mathlib4",
+      "layer": "formal",
+      "kind": "The primary formal declaration for a concept (node.primary_decl / module).",
+      "our_provenance": "Read from the local mathlib4 checkout + doc-gen4 declaration data; the @[wikidata] tag program contributes the human-reviewed decl<->QID pairs upstream (also Wikidata property P14534).",
+      "target_license": "Apache-2.0",
+      "wikidata_property": "P14534"
+    }
+  },
+  "edge_sources": {
+    "mathlib_deps": {
+      "name": "Mathlib declaration dependencies",
+      "layer": "formal",
+      "kind": "A formal dependency between two concepts, lifted from decl->decl uses in Mathlib to QID->QID.",
+      "our_provenance": "catalog/mathlib_deps/mathlib_edges.tsv (decl dep graph) x decl_to_qid.json; edge carries the witnessing [decl_a, decl_b] pairs. source='mathlib'.",
+      "target_license": "Apache-2.0 (derived facts, CC0)"
+    },
+    "wikidata_props": {
+      "name": "Wikidata concept relations",
+      "layer": "bridge",
+      "kind": "An informal/ontological relation between two concepts (subclass-of, part-of, ...).",
+      "our_provenance": "catalog/mathlib_deps/wikidata_edges.jsonl; edge carries the witnessing property [P#, label]. source='wikidata'.",
+      "target_license": "CC0-1.0"
+    }
+  },
+  "crossref_sources": {
+    "mathworld": {"name": "MathWorld", "homepage": "https://mathworld.wolfram.com", "wikidata_property": "P2812", "layer": "informal", "url_template": "https://mathworld.wolfram.com/{id}.html", "our_provenance": "Wikidata P2812 (CC0)", "target_license": "© Wolfram (proprietary; link only)"},
+    "nlab": {"name": "nLab", "homepage": "https://ncatlab.org", "wikidata_property": "P4215", "layer": "informal", "url_template": "https://ncatlab.org/nlab/show/{id}", "our_provenance": "Wikidata P4215 (CC0)", "target_license": "CC BY-SA (nLab) — verify"},
+    "proofwiki": {"name": "ProofWiki", "homepage": "https://proofwiki.org", "wikidata_property": "P6781", "layer": "formal", "url_template": "https://proofwiki.org/wiki/{id}", "our_provenance": "Wikidata P6781 (CC0)", "target_license": "CC BY-SA 4.0"},
+    "metamath": {"name": "Metamath", "homepage": "https://us.metamath.org", "wikidata_property": "P12888", "layer": "formal", "url_template": "https://us.metamath.org/mpeuni/{id}.html", "our_provenance": "Wikidata P12888 (CC0)", "target_license": "CC0 / public domain (set.mm)"},
+    "lmfdb_knowl": {"name": "LMFDB (knowl)", "homepage": "https://www.lmfdb.org", "wikidata_property": "P12987", "layer": "formal", "url_template": "https://www.lmfdb.org/knowledge/show/{id}", "our_provenance": "Wikidata P12987 (CC0)", "target_license": "CC BY-SA 4.0 — verify", "note": "LMFDB has no object-label Wikidata property yet (the gap in the LeanBridge cross-check)."},
+    "oeis": {"name": "OEIS", "homepage": "https://oeis.org", "wikidata_property": "P829", "layer": "literature", "url_template": "https://oeis.org/{id}", "our_provenance": "Wikidata P829 (CC0)", "target_license": "OEIS end-user license (attribution, non-commercial reuse) — verify"},
+    "eom": {"name": "Encyclopedia of Mathematics", "homepage": "https://encyclopediaofmath.org", "wikidata_property": "P7554", "layer": "informal", "url_template": "https://encyclopediaofmath.org/wiki/{id}", "our_provenance": "Wikidata P7554 (CC0)", "target_license": "CC BY-SA 3.0 (EMS/Springer) — verify"},
+    "planetmath": {"name": "PlanetMath", "homepage": "https://planetmath.org", "wikidata_property": "P7726", "layer": "informal", "url_template": "https://planetmath.org/{id}", "our_provenance": "Wikidata P7726 (CC0)", "target_license": "CC BY-SA — verify"},
+    "dlmf": {"name": "DLMF", "homepage": "https://dlmf.nist.gov", "wikidata_property": "P11497", "layer": "informal", "url_template": "https://dlmf.nist.gov/{id}", "our_provenance": "Wikidata P11497 (CC0)", "target_license": "NIST DLMF (US Gov, free use w/ attribution) — verify"},
+    "msc": {"name": "MSC 2020", "homepage": "https://msc2020.org", "wikidata_property": "P3285", "layer": "classification", "url_template": "https://msc2020.org/#{id}", "our_provenance": "Wikidata P3285 (CC0)", "target_license": "MSC2020 © AMS/zbMATH (freely usable scheme)", "note": "A subject overlay, NOT an identity join — used only for atlas continent/subfield assignment."},
+    "mathlib": {"name": "Mathlib Declaration ID", "homepage": "https://leanprover-community.github.io/mathlib4_docs", "wikidata_property": "P14534", "layer": "formal", "url_template": "https://wikilean.jackmccarthy.org/decl/{id}", "our_provenance": "Wikidata P14534 (CC0) — WikiLean's own property (created by Jack; seeded from the 126 human-reviewed merged @[wikidata] tags). The node xref key is `mathlib` (matches fetch_crossrefs.py); resolved through our own /decl so reverse citations ride along.", "target_license": "Apache-2.0"},
+    "kgmid": {"name": "Google Knowledge Graph", "homepage": "https://www.google.com/search", "wikidata_property": "P2671/P646", "layer": "bridge", "url_template": "https://www.google.com/search?kgmid={id}", "our_provenance": "Wikidata P2671 (/g/ form) + P646 (Freebase form), both CC0.", "target_license": "© Google (proprietary)", "note": "CRITICAL: the kgmid is sourced from WIKIDATA (CC0), NEVER from Google's Knowledge Graph API — Google ToS §5.e forbids building a database from that API. Link/bridge only."}
+  },
+  "frontier_sources": {
+    "formal_conjectures": {
+      "name": "FormalConjectures",
+      "homepage": "https://github.com/google-deepmind/formal-conjectures",
+      "layer": "formal",
+      "kind": "Open-problem frontier: formalized conjecture STATEMENTS (proof_wanted) mapped to QIDs; dashed 'shoreline' nodes on the map.",
+      "our_provenance": "catalog/ingest_formal_conjectures.py over the FC repo; 342 statements -> 114 QIDs (101 new frontier nodes). 'research solved' != proved.",
+      "target_license": "Apache-2.0"
+    },
+    "wikilean_tags": {
+      "name": "WikiLean @[wikidata] tags",
+      "homepage": "https://github.com/leanprover-community/mathlib4",
+      "layer": "formal",
+      "kind": "The human-reviewed decl<->QID pairs WikiLean's bot upstreams into Mathlib (the ground-truth seed for P14534).",
+      "our_provenance": "bot/ pipeline; 126 merged as of 2026-07; each is a gated, human-reviewed PR.",
+      "target_license": "Apache-2.0 (in Mathlib) / CC0 (the mapping)"
+    }
+  }
+}

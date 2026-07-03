@@ -210,7 +210,7 @@ footer a:hover { text-decoration:underline; }
     <a href="/wikifunctions">Wikifunctions</a>
     <a href="/wikifunctions/verify">How we verify</a>
     <a href="/article-graph">Article graph</a>
-    <a href="/graph">Concept graph</a>
+    <a href="/map">Map</a>
     <a href="/about">About &amp; method</a>
     <button id="wl-theme-toggle" class="wl-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">🌓</button>
   </nav>

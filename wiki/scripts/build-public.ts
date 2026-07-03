@@ -1,7 +1,7 @@
 // Populates wiki/public/ (the Worker's static-asset dir) from the existing
 // static-site build: shared CSS/JS and the shell pages (index/concepts/about/
 // 404/sitemap/robots). Article pages are served dynamically by the Worker.
-import { mkdirSync, copyFileSync, existsSync } from "node:fs";
+import { mkdirSync, copyFileSync, existsSync, rmSync } from "node:fs";
 import { resolve } from "node:path";
 import { buildMathlibIndex } from "./build-mathlib-index.ts";
 
@@ -31,14 +31,24 @@ for (const f of fromWiki) {
 // copies already in wiki/public/.
 const shellFiles = [
   "concepts.html", "about.html", "404.html", "robots.txt", "wikilean.ttl",
-  // Visualization pages served from ASSETS (reserved routes /graph, /article-graph).
-  "graph.html", "graph_data.json",
-  "atlas.html", "atlas_data.json",
+  // The unified map page (reserved route /map) + its KV-first data artifact.
+  "map.html", "map_data.json",
+  // Data blobs kept for the fallback path + the /api/atlas agent surface (the
+  // old /graph and /atlas *pages* now 301 → /map; see src/index.ts).
+  "graph_data.json", "atlas_data.json",
   "article-graph.html", "article-graph-data.json",
 ];
 for (const f of shellFiles) {
   const src = resolve(site, "out", f);
   if (existsSync(src)) copyFileSync(src, resolve(pub, f));
+}
+
+// Retired page assets: /graph + /atlas are now redirect routes in the Worker.
+// public/ is generated-but-not-wiped, so a stale graph.html/atlas.html would
+// still be bundled by `npm run deploy` and SHADOW the redirect. Remove them.
+for (const f of ["graph.html", "atlas.html"]) {
+  const p = resolve(pub, f);
+  if (existsSync(p)) rmSync(p);
 }
 
 const n = buildMathlibIndex(site, resolve(pubAssets, "mathlib-index.json"));
