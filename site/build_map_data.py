@@ -30,6 +30,7 @@ OUT = HERE / "out"
 GRAPH = OUT / "graph_data.json"
 ATLAS = OUT / "atlas_data.json"
 REGISTRY = HERE.parent / "catalog" / "data" / "source_registry.json"
+THEOREMGRAPH = HERE.parent / "catalog" / "data" / "theoremgraph_links.json"
 MAP_OUT = OUT / "map_data.json"
 
 # Which layer each EDGE source belongs to (nodes/crossrefs carry their own).
@@ -55,7 +56,8 @@ def compact_sources(reg: dict) -> dict:
             "note": e.get("note", ""),
         })
     add(reg["spine"]["key"], reg["spine"], "spine")
-    for grp in ("node_sources", "edge_sources", "crossref_sources", "frontier_sources"):
+    for grp in ("node_sources", "edge_sources", "crossref_sources",
+                "literature_sources", "frontier_sources"):
         for k, e in reg.get(grp, {}).items():
             add(k, e, grp)
     return {
@@ -70,12 +72,15 @@ def main() -> int:
     graph = json.loads(GRAPH.read_text())
     atlas = json.loads(ATLAS.read_text())
     reg = json.loads(REGISTRY.read_text())
+    # TheoremGraph arXiv literature links (fail-soft: absent => no lit layer).
+    tg = json.loads(THEOREMGRAPH.read_text())["links"] if THEOREMGRAPH.exists() else {}
 
     sub_continent = {k: sf["continent"] for k, sf in atlas["subfields"].items()}
     atlas_nodes = atlas["nodes"]
 
     nodes = []
     n_taxonomy = 0
+    n_arxiv = 0
     for n in graph["nodes"]:
         q = n.get("qid")
         a = atlas_nodes.get(q) or {}
@@ -94,8 +99,11 @@ def main() -> int:
             **({"verified": True} if n.get("verified") else {}),
             **({"frontier": True} if n.get("frontier") else {}),
             **({"n_conjectures": len(n["conjectures"])} if n.get("conjectures") else {}),
+            **({"arxiv": tg[q]} if tg.get(q) else {}),
             "continent": cont, "subfield": sub, "assign_rule": rule,
         })
+        if tg.get(q):
+            n_arxiv += 1
 
     edges = []
     for e in graph.get("edges", []):
@@ -110,7 +118,7 @@ def main() -> int:
         "meta": {
             "generated_from": ["graph_data.json", "atlas_data.json", "source_registry.json"],
             "n_nodes": len(nodes), "n_edges": len(edges),
-            "n_with_taxonomy": n_taxonomy,
+            "n_with_taxonomy": n_taxonomy, "n_with_arxiv": n_arxiv,
             "note": "Unified map artifact: nodes carry graph enrichment + taxonomy "
                     "layer; one identity across the bubble and web views.",
         },
@@ -125,9 +133,9 @@ def main() -> int:
     tmp = MAP_OUT.with_suffix(".json.tmp")
     tmp.write_text(json.dumps(out, ensure_ascii=False))
     tmp.replace(MAP_OUT)
-    print(f"map_data: {len(nodes)} nodes ({n_taxonomy} taxonomy-placed) / {len(edges)} edges / "
-          f"{len(atlas['supernodes'])} super-nodes / {len(out['sources']['sources'])} sources "
-          f"({MAP_OUT.stat().st_size / 1024:.0f} KB)")
+    print(f"map_data: {len(nodes)} nodes ({n_taxonomy} taxonomy-placed, {n_arxiv} with arXiv "
+          f"lit) / {len(edges)} edges / {len(atlas['supernodes'])} super-nodes / "
+          f"{len(out['sources']['sources'])} sources ({MAP_OUT.stat().st_size / 1024:.0f} KB)")
     return 0
 
 

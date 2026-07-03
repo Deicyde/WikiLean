@@ -71,6 +71,17 @@
     "mathlib": {"name": "Mathlib Declaration ID", "homepage": "https://leanprover-community.github.io/mathlib4_docs", "wikidata_property": "P14534", "layer": "formal", "url_template": "https://wikilean.jackmccarthy.org/decl/{id}", "our_provenance": "Wikidata P14534 (CC0) — WikiLean's own property (created by Jack; seeded from the 126 human-reviewed merged @[wikidata] tags). The node xref key is `mathlib` (matches fetch_crossrefs.py); resolved through our own /decl so reverse citations ride along.", "target_license": "Apache-2.0"},
     "kgmid": {"name": "Google Knowledge Graph", "homepage": "https://www.google.com/search", "wikidata_property": "P2671/P646", "layer": "bridge", "url_template": "https://www.google.com/search?kgmid={id}", "our_provenance": "Wikidata P2671 (/g/ form) + P646 (Freebase form), both CC0.", "target_license": "© Google (proprietary)", "note": "CRITICAL: the kgmid is sourced from WIKIDATA (CC0), NEVER from Google's Knowledge Graph API — Google ToS §5.e forbids building a database from that API. Link/bridge only."}
   },
+  "literature_sources": {
+    "theoremgraph": {
+      "name": "TheoremGraph (arXiv links)",
+      "homepage": "https://theoremsearch.com",
+      "layer": "literature",
+      "kind": "'This result is STATED in the literature as Thm X.Y in arXiv:…' — judge-affirmed (formal Mathlib decl ↔ informal arXiv statement) matches, joined to our concepts on the shared Mathlib decl name.",
+      "url_template": "https://arxiv.org/abs/{id}",
+      "our_provenance": "uw-math-ai/theorem-matching (arXiv:2606.25363), paper-affirmed slice only (GPT-5.4 judge ∈ {exact,inexact}; both judges' labels kept per link). catalog/ingest_theorem_graph.py. NOT the concept's canonical/origin source; AI-proposed, not human-verified.",
+      "target_license": "CC-BY-SA-4.0 — we store only the link facts (decl ↔ arxiv_id/ref/title + judge verdicts); each arXiv paper retains its own license."
+    }
+  },
   "frontier_sources": {
     "formal_conjectures": {
       "name": "FormalConjectures",
