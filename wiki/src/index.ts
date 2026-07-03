@@ -97,6 +97,8 @@ const RESERVED = new Set([
   "atlas",
   "map",
   "map_data.json",
+  "map-v2",
+  "map_data_v2.json",
 ]);
 
 const app = new Hono<{ Bindings: Env }>();
@@ -413,7 +415,7 @@ app.get("/", async (c) => {
 });
 
 app.get("/sitemap.xml", async (c) => {
-  const cacheKey = "page:sitemap:v1";
+  const cacheKey = "page:sitemap:v2";  // v2: + flagship static pages (/map, /concepts, /about)
   const headers = { "Content-Type": "application/xml; charset=utf-8" };
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.body(cached, 200, headers);
@@ -464,6 +466,20 @@ app.get("/map_data.json", async (c) => {
 // Worker; the *_data.json endpoints + /api/atlas stay live for deep links/agents.
 app.get("/graph", (c) => c.redirect("/map", 301));
 app.get("/atlas", (c) => c.redirect("/map", 301));
+
+// ---- /favicon.ico — was 404 on every page. A tiny inline SVG (a turnstile ⊢,
+// "proves" — the essence of a formal-math site) in the WikiLean blue. Font-
+// independent (drawn as paths); long-cached + immutable.
+app.get("/favicon.ico", (c) =>
+  c.body(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">` +
+      `<rect width="32" height="32" rx="7" fill="#0969da"/>` +
+      `<path d="M11 8v16M11 16h11" stroke="#fff" stroke-width="2.6" ` +
+      `stroke-linecap="round" fill="none"/></svg>`,
+    200,
+    { "Content-Type": "image/svg+xml", "Cache-Control": "public, max-age=604800, immutable" },
+  ),
+);
 
 // ---- /wikifunctions — Wikifunctions-formalization tracker (static; public) --
 // A self-contained status page rendered from the embedded verified corpus
