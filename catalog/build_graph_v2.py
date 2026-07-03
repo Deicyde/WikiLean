@@ -16,6 +16,7 @@ from __future__ import annotations
 import argparse
 import collections
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -51,8 +52,10 @@ def checkout_has(decls: list[str]) -> set[str]:
     kw = r"(theorem|lemma|def|abbrev|structure|class|instance|inductive)"
     for d in decls:
         seg = d.split(".")[-1]
+        # NB: a trailing \b never matches a decl ending in a prime (smulAux',
+        # Stream') — ' is a non-word char, so require end-or-non-identifier instead.
         try:
-            r = subprocess.run(["grep", "-rIlE", f"{kw} +{seg}\\b", str(CHECKOUT)],
+            r = subprocess.run(["grep", "-rIlE", f"{kw} +{re.escape(seg)}($|[^A-Za-z0-9_'])", str(CHECKOUT)],
                                capture_output=True, text=True, timeout=30)
             if r.stdout.strip():
                 found.add(d)
