@@ -103,11 +103,36 @@ def build_search_server():
     @tool(
         "wikidata_search",
         "Find the Wikidata QID(s) for a concept name. Returns candidates with "
-        "descriptions so you can disambiguate (do not trust the top hit blindly).",
+        "descriptions so you can disambiguate (do not trust the top hit blindly). "
+        "Label/alias PREFIX match only — for phrasing that may not match the "
+        "Wikidata label, prefer wikidata_semantic.",
         {"label": str},
     )
     async def wikidata_search(args):
         return _text(await asyncio.to_thread(_run_cli, WIKIDATA_CLI, "search", args["label"]))
+
+    @tool(
+        "wikidata_by_slug",
+        "Resolve an English-Wikipedia article title/slug to its Wikidata QID by "
+        "EXACT sitelink lookup (not a search). Use this for the article you are "
+        "annotating — its own QID is an exact anchor, no guessing. Input: the "
+        "enwiki title or slug, e.g. 'Determinant' or 'Pythagorean_theorem'.",
+        {"title": str},
+    )
+    async def wikidata_by_slug(args):
+        return _text(await asyncio.to_thread(_run_cli, WIKIDATA_CLI, "by_slug", args["title"]))
+
+    @tool(
+        "wikidata_semantic",
+        "Find the best-matching Wikidata QID(s) for a concept by MEANING, not "
+        "just label spelling. Describe the concept in prose; returns candidates "
+        "ranked by semantic similarity with descriptions to disambiguate. Prefer "
+        "this over wikidata_search when the concept's phrasing may not match its "
+        "Wikidata label, then confirm the chosen QID with wikidata_xrefs.",
+        {"description": str},
+    )
+    async def wikidata_semantic(args):
+        return _text(await asyncio.to_thread(_run_cli, WIKIDATA_CLI, "semantic", args["description"]))
 
     @tool(
         "wikidata_xrefs",
@@ -120,7 +145,8 @@ def build_search_server():
     async def wikidata_xrefs(args):
         return _text(await asyncio.to_thread(_run_cli, WIKIDATA_CLI, "xrefs", args["qid"]))
 
-    tools = [decl_exists, loogle, mathlib_semantic, wikidata_search, wikidata_xrefs]
+    tools = [decl_exists, loogle, mathlib_semantic,
+             wikidata_search, wikidata_by_slug, wikidata_semantic, wikidata_xrefs]
     server = create_sdk_mcp_server(SERVER_NAME, "1.0.0", tools)
     names = [f"mcp__{SERVER_NAME}__{t.name}" for t in tools]
     return server, names
@@ -136,8 +162,15 @@ VERIFICATION TOOLS — use them, do not rely on grep alone:
 - loogle(query): find a lemma by pattern when grep is unfruitful (dotted
   constant, "name substring", ?a/?b type pattern, or `|-` conclusion).
 - mathlib_semantic(query): natural-language fallback for uncertain matches.
-- wikidata_search(label) / wikidata_xrefs(qid): optional — check what formal
-  references a concept already carries.
+- wikidata_by_slug(title): the article you are annotating maps to its QID by
+  EXACT enwiki sitelink — use this for the top-level concept, never guess it.
+- wikidata_semantic(description): meaning-based Wikidata search over the curated
+  math-QID universe. PREFER it over wikidata_search(label) when the concept may
+  be phrased differently from its Wikidata label (label search is prefix-only
+  and grabs plausible-but-too-broad QIDs). Then confirm the chosen QID with
+  wikidata_xrefs(qid).
+- wikidata_search(label) / wikidata_xrefs(qid): optional — label-prefix search
+  and a check of what formal references a concept already carries.
 These are cheap and prevent wrong citations; prefer them to settle any match
 you are not certain of.
 """

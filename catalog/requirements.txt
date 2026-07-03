@@ -1,2 +1,7 @@
 requests>=2.31
 claude-agent-sdk>=0.2.82
+# Local embedding index for wikidata_semantic (Agent 2 meaning-based retrieval).
+# Pulls torch + numpy; CPU-only, ~80MB model cached on first use. Build with
+# catalog/build_wikidata_embeddings.py; queried by the wikidata-search skill.
+sentence-transformers>=2.2
+numpy>=1.24
