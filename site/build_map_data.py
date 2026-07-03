@@ -74,6 +74,9 @@ def main() -> int:
     reg = json.loads(REGISTRY.read_text())
     # TheoremGraph arXiv literature links (fail-soft: absent => no lit layer).
     tg = json.loads(THEOREMGRAPH.read_text())["links"] if THEOREMGRAPH.exists() else {}
+    # Wikidata one-line descriptions (summaries), keyed by QID (fail-soft).
+    desc_path = HERE.parent / "catalog" / "data" / "wikidata_descriptions.json"
+    descriptions = json.loads(desc_path.read_text()) if desc_path.exists() else {}
 
     sub_continent = {k: sf["continent"] for k, sf in atlas["subfields"].items()}
     atlas_nodes = atlas["nodes"]
@@ -100,6 +103,7 @@ def main() -> int:
             **({"frontier": True} if n.get("frontier") else {}),
             **({"n_conjectures": len(n["conjectures"])} if n.get("conjectures") else {}),
             **({"arxiv": tg[q]} if tg.get(q) else {}),
+            **({"description": descriptions[q]} if descriptions.get(q) else {}),
             "continent": cont, "subfield": sub, "assign_rule": rule,
         })
         if tg.get(q):
@@ -108,11 +112,39 @@ def main() -> int:
     edges = []
     for e in graph.get("edges", []):
         ed = {"from": e["from"], "to": e["to"], "source": e.get("source")}
+        if e.get("weight"):
+            ed["weight"] = e["weight"]
         if e.get("decls"):
             ed["decls"] = e["decls"][:MAX_EDGE_DECLS]
         if e.get("props"):
             ed["props"] = e["props"][:MAX_EDGE_DECLS]
         edges.append(ed)
+
+    # "Related concepts" — each node's strongest formal neighbours (by edge
+    # weight), so a node is shown IN CONTEXT (grouped with what it depends on /
+    # supports) rather than as an isolated QID. Top 6 per node.
+    label_by_qid = {n["qid"]: n["label"] for n in nodes}
+    deg: dict[str, int] = {}
+    nbr: dict[str, list[tuple[str, int]]] = {}
+    for e in edges:
+        w = e.get("weight", 1)
+        a0, b0 = e["from"], e["to"]
+        deg[a0] = deg.get(a0, 0) + 1
+        deg[b0] = deg.get(b0, 0) + 1
+        for a, b in ((a0, b0), (b0, a0)):
+            if b in label_by_qid:
+                nbr.setdefault(a, []).append((b, w))
+    # Foundational hubs (Equality, Function, Natural number…) are trivially
+    # "related" to everything — exclude the top-degree nodes so the chips surface
+    # SPECIFIC neighbours (fall back to all if a node has too few otherwise).
+    hubs = {q for q, _ in sorted(deg.items(), key=lambda x: -x[1])[:20]}
+    node_by_qid = {n["qid"]: n for n in nodes}
+    for q, lst in nbr.items():
+        specific = [(b, w) for b, w in lst if b not in hubs]
+        top = sorted(specific if len(specific) >= 3 else lst, key=lambda x: -x[1])[:6]
+        n = node_by_qid.get(q)
+        if n is not None and top:
+            n["related"] = [{"qid": b, "label": label_by_qid[b], "weight": w} for b, w in top]
 
     out = {
         "meta": {
