@@ -49,3 +49,11 @@ site/out/
 
 # TheoremGraph match CSV cache (108MB; re-download via ingest_theorem_graph.py --download)
 catalog/.cache/
+
+# v2 graph rebuild — large derived artifacts (regenerate via build_graph_v2.py
+# from rebuild_grounding.json + the math-graph dep cache). The grounding itself
+# (the expensive agent output) IS committed.
+catalog/data/concept_graph_v2.json
+catalog/data/concept_graph_v2_viz.json
+catalog/data/decl_to_qid_v2.json
+catalog/data/formal_edges_lifted.json
