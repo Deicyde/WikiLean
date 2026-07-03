@@ -23,6 +23,7 @@ Deterministic; atomic write. Run after build_graph_page.py + build_atlas.py.
 from __future__ import annotations
 
 import json
+import math
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -134,14 +135,28 @@ def main() -> int:
         for a, b in ((a0, b0), (b0, a0)):
             if b in label_by_qid:
                 nbr.setdefault(a, []).append((b, w))
-    # Foundational hubs (Equality, Function, Natural number…) are trivially
-    # "related" to everything — exclude the top-degree nodes so the chips surface
-    # SPECIFIC neighbours (fall back to all if a node has too few otherwise).
-    hubs = {q for q, _ in sorted(deg.items(), key=lambda x: -x[1])[:20]}
+    # Rank related by a TF-IDF-like score: weight / log2(neighbour degree). This
+    # rewards STRONG + SPECIFIC edges (Matrix→Determinant, weight 197) and
+    # penalises broad-but-weak connectors — e.g. "String theory" (not formalized,
+    # but its article cites Group/IsSimpleGroup/… so it links to every group-
+    # theory concept). A hard degree cap would wrongly drop legit hubs like
+    # Matrix; normalisation keeps them. Still exclude the ~15 mega-hubs outright.
+    hubs = {q for q, _ in sorted(deg.items(), key=lambda x: -x[1])[:15]}
     node_by_qid = {n["qid"]: n for n in nodes}
+    # Related concepts should be formally GROUNDED (have a decl). A not-formalized
+    # field-of-study like "String theory" only has edges because its article
+    # cites Matrix/Group in passing — a poor "related concept". Prefer grounded
+    # targets; fall back to any non-hub only if a node has too few grounded ones.
+    grounded = {n["qid"] for n in nodes if n.get("primary_decl")}
+
+    def score(b: str, w: int) -> float:
+        return w / math.log2(deg.get(b, 1) + 2)
+
     for q, lst in nbr.items():
-        specific = [(b, w) for b, w in lst if b not in hubs]
-        top = sorted(specific if len(specific) >= 3 else lst, key=lambda x: -x[1])[:6]
+        cand = [(b, w) for b, w in lst if b not in hubs and b in grounded]
+        if len(cand) < 3:
+            cand = [(b, w) for b, w in lst if b not in hubs] or lst
+        top = sorted(cand, key=lambda bw: -score(*bw))[:6]
         n = node_by_qid.get(q)
         if n is not None and top:
             n["related"] = [{"qid": b, "label": label_by_qid[b], "weight": w} for b, w in top]
