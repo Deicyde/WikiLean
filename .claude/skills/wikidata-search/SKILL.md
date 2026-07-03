@@ -22,6 +22,8 @@ No API keys required for any path — **all subcommands are keyless** (see Auth 
 | You want to…                                                              | Use            |
 |---------------------------------------------------------------------------|----------------|
 | Turn a concept title / Wikipedia title into candidate QIDs                | `search`       |
+| Turn an exact enwiki article title/slug into ITS QID (no search)          | `by_slug`      |
+| Find a QID by MEANING when phrasing may not match the label               | `semantic`     |
 | Disambiguate candidates by description + P31/P279                         | `entity`       |
 | **Check what formal cross-refs a concept already has** (the core job)     | `xrefs`        |
 | Verify a QID points back to the expected Wikipedia article / list mirrors | `sitelinks`    |
@@ -50,6 +52,39 @@ $ wikidata.py search "prime ideal" --limit 3
   Q139919115   prime ideal
                a concept of non-commutative ring theory  [matched: label]
 ```
+
+### `by_slug "<enwiki title>"` — exact article title/slug → QID (NOT a search)
+The article being annotated maps to its QID by an **exact enwiki sitelink lookup**
+(`wbgetentities sites=enwiki`), so the top-level concept needs no guessing.
+Underscores are normalized to spaces (`Pythagorean_theorem` and `Pythagorean theorem`
+both resolve). A clean miss (no such article) is reported, not an error.
+
+```
+$ wikidata.py by_slug "Determinant"
+Q178546  determinant  (enwiki: Determinant)
+  sum of signed terms of n factors from n×n matrix with no two factors sharing row or column
+```
+
+### `semantic "<description>"` — meaning-based search over the math-QID universe
+**Local** embedding search (sentence-transformers `all-MiniLM-L6-v2`, 384-d) over the
+curated ~11.7k-row `catalog/data/wikidata_universe.jsonl`. No network at query time.
+Fixes the **broad-QID failure mode** of `search` (label-prefix only): describe the
+concept in prose and get candidates ranked by cosine similarity. `--k` sets the count
+(default 8). Requires the index built once by `catalog/build_wikidata_embeddings.py`
+(rebuilt in the nightly when the universe changes). Confirm the pick with `xrefs`.
+
+```
+$ wikidata.py semantic "the squeeze theorem" --k 3
+3 semantic match(es) for 'the squeeze theorem' (cosine; DISAMBIGUATE by description, confirm with xrefs):
+  Q1065257     0.9572  squeeze theorem
+                       theorem
+  Q3527214     0.6911  Non-squeezing theorem
+                       theorem
+  Q7582217     0.6463  Squeeze operator
+                       formula
+```
+NB: the index covers only the curated math universe, so a concept absent from
+`wikidata_universe.jsonl` (some base concepts are) won't appear — fall back to `search`.
 
 ### `entity <QID>` — labels/description + P31/P279, via the clean REST API
 Use to disambiguate `search` candidates. Surfaces instance-of/subclass-of QIDs, alias list, enwiki sitelink, statement count.

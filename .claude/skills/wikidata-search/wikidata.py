@@ -14,6 +14,10 @@ Subcommands:
                                  MathWorld, ProofWiki, defining formula) + sitelinks
   sitelinks <QID>               Wikipedia sitelinks for a QID (verify the concept
                                  maps back to the expected article)
+  by_slug   "<enwiki title>"    exact enwiki article title/slug -> QID (sitelink
+                                 lookup, NOT a search; the article's own QID)
+  semantic  "<description>"     LOCAL embedding search over the math-QID universe
+                                 (meaning-based; fixes the broad-QID failure mode)
   sparql    "<query>"           WDQS main-graph SPARQL -> JSON bindings
   reconcile "<label>"           reconciliation API (optional, 3rd-party WMCloud)
 
@@ -435,6 +439,143 @@ def cmd_sitelinks(args) -> None:
 
 
 # ---------------------------------------------------------------------------
+# by_slug: enwiki article title/slug -> QID (exact sitelink lookup, NOT a search)
+# ---------------------------------------------------------------------------
+
+def cmd_by_slug(args) -> None:
+    """Resolve an English-Wikipedia article title/slug to its QID.
+
+    This is an EXACT sitelink -> QID lookup (Action API wbgetentities with
+    sites=enwiki), not a label search. The article's own QID is the exact
+    anchor for the top-level concept, so Agent 2 does not have to guess it.
+    Underscores in a slug are normalized to spaces (both forms resolve).
+    """
+    title = args.title.replace("_", " ").strip()
+    url = _action_url({
+        "action": "wbgetentities",
+        "sites": "enwiki",
+        "titles": title,
+        "props": "labels|descriptions|sitelinks",
+        "languages": "en",
+        "sitefilter": "enwiki",
+    })
+    data = _get_json(url, what="wbgetentities by slug")
+    if "error" in data:
+        _die(f"wbgetentities API error: {data['error'].get('info', data['error'])}")
+    entities = data.get("entities", {})
+    # A miss yields a synthetic "-1" key (or missing/"" flags).
+    out = None
+    for qid, ent in entities.items():
+        if not qid.startswith("Q") or ent.get("missing") is not None:
+            continue
+        out = {
+            "qid": qid,
+            "label": ent.get("labels", {}).get("en", {}).get("value", ""),
+            "description": ent.get("descriptions", {}).get("en", {}).get("value", ""),
+            "enwiki": ent.get("sitelinks", {}).get("enwiki", {}).get("title", ""),
+        }
+        break
+    if args.json:
+        print(json.dumps(out or {}, indent=2, ensure_ascii=False))
+        return
+    if not out:
+        print(f"(no Wikidata item with an enwiki article titled {title!r})")
+        return
+    print(f"{out['qid']}  {out['label']}"
+          + (f"  (enwiki: {out['enwiki']})" if out["enwiki"] else ""))
+    if out["description"]:
+        print(f"  {out['description']}")
+
+
+# ---------------------------------------------------------------------------
+# semantic: local embedding search over the math-QID universe (no network)
+# ---------------------------------------------------------------------------
+
+# Resolved lazily relative to this file: catalog/data/wikidata_embeddings.*
+_EMB_NPZ = None
+_EMB_META = None
+
+
+def _embed_paths():
+    global _EMB_NPZ, _EMB_META
+    if _EMB_NPZ is None:
+        # .claude/skills/wikidata-search/wikidata.py -> repo root is parents[3].
+        root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(
+            os.path.abspath(__file__)))))
+        data = os.path.join(root, "catalog", "data")
+        _EMB_NPZ = os.path.join(data, "wikidata_embeddings.npz")
+        _EMB_META = os.path.join(data, "wikidata_embeddings.meta.jsonl")
+    return _EMB_NPZ, _EMB_META
+
+
+def cmd_semantic(args) -> None:
+    """Embedding (meaning-based) search over the local math-QID universe.
+
+    Loads catalog/data/wikidata_embeddings.npz (built offline by
+    catalog/build_wikidata_embeddings.py), embeds the query with the SAME local
+    model, cosine top-k. Fully local: no network, no injection surface. Fixes
+    the broad-QID failure mode of the label-prefix `search`.
+    """
+    npz_path, meta_path = _embed_paths()
+    if not os.path.isfile(npz_path):
+        _die(f"embedding index not built: {npz_path} missing. Build it with:\n"
+             f"  catalog/.venv/bin/python3 catalog/build_wikidata_embeddings.py")
+
+    try:
+        import numpy as np
+    except Exception as e:
+        _die(f"numpy not available for semantic search: {e}")
+    try:
+        from sentence_transformers import SentenceTransformer
+    except Exception as e:
+        _die(f"sentence-transformers not available for semantic search: {e}\n"
+             f"install: <venv>/bin/pip install sentence-transformers")
+
+    data = np.load(npz_path, allow_pickle=True)
+    mat = data["embeddings"]                    # (N, d) float32, L2-normalized
+    qids = [str(q) for q in data["qids"]]
+    model_name = str(data["model"]) if "model" in data else "all-MiniLM-L6-v2"
+
+    # Parallel meta for labels/descriptions (order matches the matrix rows).
+    meta = []
+    if os.path.isfile(meta_path):
+        with open(meta_path, encoding="utf-8") as fh:
+            for line in fh:
+                line = line.strip()
+                if line:
+                    meta.append(json.loads(line))
+    by_qid = {m["qid"]: m for m in meta}
+
+    model = SentenceTransformer(model_name)
+    qv = model.encode([args.query], normalize_embeddings=True,
+                      convert_to_numpy=True).astype(np.float32)[0]
+    scores = mat @ qv                            # cosine (both normalized)
+    k = max(1, min(args.k, len(qids)))
+    top = np.argpartition(-scores, k - 1)[:k]
+    top = top[np.argsort(-scores[top])]
+
+    results = []
+    for i in top:
+        q = qids[i]
+        m = by_qid.get(q, {})
+        results.append({
+            "qid": q,
+            "label": m.get("label", ""),
+            "description": m.get("description", ""),
+            "score": round(float(scores[i]), 4),
+        })
+    if args.json:
+        print(json.dumps(results, indent=2, ensure_ascii=False))
+        return
+    print(f"{len(results)} semantic match(es) for {args.query!r} "
+          f"(cosine; DISAMBIGUATE by description, confirm with xrefs):")
+    for r in results:
+        desc = r["description"] or "(no description)"
+        print(f"  {r['qid']:<12} {r['score']:<7} {r['label']}")
+        print(f"  {'':<12} {'':<7} {desc}")
+
+
+# ---------------------------------------------------------------------------
 # sparql: WDQS main graph
 # ---------------------------------------------------------------------------
 
@@ -552,6 +693,17 @@ def build_parser() -> argparse.ArgumentParser:
     pl.add_argument("--all", action="store_true", help="include non-Wikipedia sites")
     pl.add_argument("--json", action="store_true", help="machine output")
     pl.set_defaults(func=cmd_sitelinks)
+
+    pb = sub.add_parser("by_slug", help="enwiki article title/slug -> QID (exact sitelink lookup)")
+    pb.add_argument("title", help="enwiki article title or slug, e.g. 'Determinant'")
+    pb.add_argument("--json", action="store_true", help="machine output")
+    pb.set_defaults(func=cmd_by_slug)
+
+    pm = sub.add_parser("semantic", help="local embedding search over the math-QID universe")
+    pm.add_argument("query", help="prose description of the concept")
+    pm.add_argument("--k", type=int, default=8, help="number of candidates (default 8)")
+    pm.add_argument("--json", action="store_true", help="machine output")
+    pm.set_defaults(func=cmd_semantic)
 
     pq = sub.add_parser("sparql", help="WDQS main-graph SPARQL (UA required)")
     pq.add_argument("query", help="SPARQL query string, or '-' to read from stdin")
