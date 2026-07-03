@@ -30,7 +30,7 @@ Mission = three routine AI operations: (1) generate annotations for new articles
 | Tagging bot | `bot/` + `.github/workflows/wikidata-poll.yml`; state in `bot/state/` |
 | Tag catalog | `catalog/data/*.jsonl` |
 | Management control plane | `manage/` — centrality × coverage → worklists (see `manage/README.md`) |
-| Concept graph | `catalog/data/concept_graph.json` → `site/build_graph_page.py` → `/graph` |
+| Map of mathematics | `concept_graph.json` → `build_graph_page.py` + `build_atlas.py` → `build_map_data.py` (joins + `catalog/data/source_registry.json`) → `map_data.json` (KV `map:data:v1`) → **`/map`** (3 views: bubbles/web/sources). `/graph` + `/atlas` 301→`/map`; `source_registry.json` = provenance single-source-of-truth. |
 | Nightly ops | `site/ops/` (launchd, 03:00 local); tunables in `site/ops/nightly.env` |
 | Plans/docs | `docs/` — `ROADMAP.md` canonical |
 | Mathlib checkout | `/Users/jack/Desktop/LEAN/mathlib4` — **read-only; the bot's; don't edit** |
