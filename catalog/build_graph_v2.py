@@ -72,6 +72,17 @@ def main() -> int:
     live = json.loads(LIVE.read_text())
     live_by_qid = {n["qid"]: n for n in live["nodes"]}
     live_edge_n = len(live["edges"])
+    # Authoritative labels — the agents left `label` null for expansion nodes, so
+    # resolve from the target list / universe, never fall back to a bare QID.
+    tgt_label: dict[str, str] = {}
+    tf = HERE.parent / "manage" / "data" / "rebuild_targets.json"
+    if tf.exists():
+        for r in json.loads(tf.read_text()):
+            if r.get("label"):
+                tgt_label[r["qid"]] = r["label"]
+
+    def humanize(slug: str | None) -> str:
+        return (slug or "").replace("_", " ") if slug else ""
 
     # ---- deterministic decl-existence filter --------------------------------
     proposed = {f["decl"] for c in concepts for f in (c.get("formalizations") or [])}
@@ -101,7 +112,9 @@ def main() -> int:
         if c.get("status") in ("formalized", "partial", "not_formalized") and forms:
             status = c["status"] if not (status == "formalized" and c["status"] == "partial") else status
         node = {
-            "qid": qid, "label": c.get("label") or (prev or {}).get("label") or qid,
+            "qid": qid,
+            "label": c.get("label") or tgt_label.get(qid) or (prev or {}).get("label")
+                     or humanize(c.get("slug")) or qid,
             "slug": c.get("slug") or (prev or {}).get("slug"),
             "primary_decl": primary,
             "module": module,

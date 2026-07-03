@@ -82,6 +82,13 @@ text.blabel { pointer-events:none; text-anchor:middle;
   border-radius:999px; font-size:.78rem; text-decoration:none; color:#0969da; }
 .chip:hover { border-color:#0969da; }
 .chip .ly { font-size:.62rem; color:#8c959f; text-transform:uppercase; letter-spacing:.04em; margin-left:4px; }
+.wl-desc { font-size:.9rem; color:#3d4450; line-height:1.5; margin:2px 0 10px; }
+.rels { margin-top:5px; display:flex; flex-wrap:wrap; gap:5px; }
+a.rel { display:inline-block; padding:2px 9px; border:1px solid #d0d7de; border-radius:999px;
+  font-size:.8rem; text-decoration:none; color:#1f2328; background:#f6f8fa; cursor:pointer; }
+a.rel:hover { border-color:#0969da; color:#0969da; }
+[data-theme="dark"] .wl-desc { color:#c9c2b4; }
+[data-theme="dark"] a.rel { background:#2c2926; border-color:#4d4742; color:#ebe5d8; }
 .litrow { margin:6px 0; font-size:.86rem; }
 .lithint { color:#57606a; font-size:.78rem; line-height:1.4; margin-top:1px; }
 .lit-b { font-size:.62rem; text-transform:uppercase; letter-spacing:.04em; padding:1px 6px; border-radius:999px; margin-left:5px; }
@@ -207,9 +214,15 @@ text.blabel { pointer-events:none; text-anchor:middle;
       }).join('') +
       (arx.length > 8 ? `<div class="hint">+${arx.length - 8} more</div>` : '') +
       `</div>`) : '';
+    const rel = (n.related || []).length
+      ? `<div class="field" style="margin-top:12px"><b>Related concepts</b><div class="rels">` +
+        n.related.map(r => `<a href="#" class="rel" data-qid="${esc(r.qid)}">${esc(r.label)}</a>`).join('') +
+        `</div></div>`
+      : '';
     const rows = [
       `<h3>${esc(n.label)}</h3>`,
       `<div class="crumb">${esc(contLabel[n.continent] || n.continent)} › ${esc((data.subfields[n.subfield]||{}).label || n.subfield)}</div>`,
+      n.description ? `<div class="wl-desc">${esc(n.description)}</div>` : '',
       `<div class="field"><b>Status</b> · ${esc(n.status)}${n.coverage != null ? ` · ${Math.round(n.coverage * 100)}% coverage` : ''}</div>`,
       n.primary_decl ? `<div class="field"><b>Mathlib</b> · <code>${esc(n.primary_decl)}</code></div>` : '',
       n.n_conjectures ? `<div class="field" style="color:#c78420"><b>Conjecture frontier</b> · ${n.n_conjectures} statement${n.n_conjectures === 1 ? '' : 's'}</div>` : '',
@@ -217,6 +230,7 @@ text.blabel { pointer-events:none; text-anchor:middle;
       `<div class="field"><b>Placed by</b> · <code>${esc(n.assign_rule)}</code></div>`,
       chips.length ? `<div class="field" style="margin-top:10px"><b>Also in</b><br>${chips.join('')}</div>` : '',
       arxHtml,
+      rel,
       `<div class="field" style="margin-top:12px">` +
         `<a href="/${encodeURIComponent(n.slug)}">WikiLean article →</a><br>` +
         `<a href="https://www.wikidata.org/wiki/${esc(qid)}" target="_blank" rel="noopener">Wikidata ${esc(qid)} →</a><br>` +
@@ -225,6 +239,7 @@ text.blabel { pointer-events:none; text-anchor:middle;
     info.innerHTML = rows.join('');
     const cv = document.getElementById('crossview');
     if (cv) cv.onclick = (e) => { e.preventDefault(); setView(view === 'web' ? 'bubbles' : 'web'); focusConcept(qid); };
+    info.querySelectorAll('a.rel').forEach(a => a.onclick = (e) => { e.preventDefault(); focusConcept(a.dataset.qid); });
   }
   function selectConcept(qid) { selectedQid = qid; conceptPanel(qid); }
 
