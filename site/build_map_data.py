@@ -1,0 +1,135 @@
+#!/usr/bin/env python3
+"""Unified map data builder — one artifact for the combined /map (bubbles + web).
+
+Joins the three existing, separately-tested outputs into ONE canonical
+`site/out/map_data.json` so a single page can render both the containment view
+(circle-pack bubbles, formerly /atlas) and the dependency view (force-directed
+web, formerly /graph) from identical node identities:
+
+  site/out/graph_data.json        — enriched concept graph (coverage, xrefs,
+                                     verified, FC frontier, conjectures) + edges
+  site/out/atlas_data.json        — taxonomy assignment (continent / subfield /
+                                     assign_rule), super-nodes, bubble rollups
+  catalog/data/source_registry.json — provenance registry (the transparent
+                                     'where every link comes from' legend)
+
+Every node in map_data.json carries BOTH its graph enrichment AND its taxonomy
+layer, so the map is layered end-to-end. Edges keep their `source`
+(mathlib=formal dependency, wikidata=informal/bridge relation); the source→layer
+map lives in `sources` so the web view can filter formal↔informal.
+
+Deterministic; atomic write. Run after build_graph_page.py + build_atlas.py.
+"""
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+OUT = HERE / "out"
+GRAPH = OUT / "graph_data.json"
+ATLAS = OUT / "atlas_data.json"
+REGISTRY = HERE.parent / "catalog" / "data" / "source_registry.json"
+MAP_OUT = OUT / "map_data.json"
+
+# Which layer each EDGE source belongs to (nodes/crossrefs carry their own).
+EDGE_LAYER = {"mathlib": "formal", "wikidata": "bridge"}
+
+# Cap decl witnesses per edge so the web view keeps tooltips without bloating
+# the artifact (the full witness list stays in graph_data.json).
+MAX_EDGE_DECLS = 2
+
+
+def compact_sources(reg: dict) -> dict:
+    """Flatten the registry into a render-ready legend: one list of sources,
+    each tagged with its layer, plus the layer glossary and the edge map."""
+    out = []
+    def add(key: str, e: dict, group: str):
+        out.append({
+            "key": key, "name": e.get("name", key), "group": group,
+            "layer": e.get("layer", ""), "homepage": e.get("homepage", ""),
+            "wikidata_property": e.get("wikidata_property", ""),
+            "url_template": e.get("url_template", ""),
+            "our_provenance": e.get("our_provenance", ""),
+            "target_license": e.get("target_license", ""),
+            "note": e.get("note", ""),
+        })
+    add(reg["spine"]["key"], reg["spine"], "spine")
+    for grp in ("node_sources", "edge_sources", "crossref_sources", "frontier_sources"):
+        for k, e in reg.get(grp, {}).items():
+            add(k, e, grp)
+    return {
+        "layers": reg["layers"],
+        "our_data_license": reg["our_data_license"],
+        "edge_layer": EDGE_LAYER,
+        "sources": out,
+    }
+
+
+def main() -> int:
+    graph = json.loads(GRAPH.read_text())
+    atlas = json.loads(ATLAS.read_text())
+    reg = json.loads(REGISTRY.read_text())
+
+    sub_continent = {k: sf["continent"] for k, sf in atlas["subfields"].items()}
+    atlas_nodes = atlas["nodes"]
+
+    nodes = []
+    n_taxonomy = 0
+    for n in graph["nodes"]:
+        q = n.get("qid")
+        a = atlas_nodes.get(q) or {}
+        sub = a.get("subfield", "unsorted")
+        cont = sub_continent.get(sub, "unsorted")
+        rule = a.get("assign_rule", "unsorted")
+        if rule != "unsorted":
+            n_taxonomy += 1
+        nodes.append({
+            **{k: n[k] for k in ("qid", "label", "slug", "primary_decl", "module",
+                                 "status", "importance") if k in n},
+            **({"coverage": n["coverage"]} if n.get("coverage") is not None else {}),
+            **({"n_status": n["n_status"]} if n.get("n_status") is not None else {}),
+            **({"n_formalized": n["n_formalized"]} if n.get("n_formalized") is not None else {}),
+            **({"xrefs": n["xrefs"]} if n.get("xrefs") else {}),
+            **({"verified": True} if n.get("verified") else {}),
+            **({"frontier": True} if n.get("frontier") else {}),
+            **({"n_conjectures": len(n["conjectures"])} if n.get("conjectures") else {}),
+            "continent": cont, "subfield": sub, "assign_rule": rule,
+        })
+
+    edges = []
+    for e in graph.get("edges", []):
+        ed = {"from": e["from"], "to": e["to"], "source": e.get("source")}
+        if e.get("decls"):
+            ed["decls"] = e["decls"][:MAX_EDGE_DECLS]
+        if e.get("props"):
+            ed["props"] = e["props"][:MAX_EDGE_DECLS]
+        edges.append(ed)
+
+    out = {
+        "meta": {
+            "generated_from": ["graph_data.json", "atlas_data.json", "source_registry.json"],
+            "n_nodes": len(nodes), "n_edges": len(edges),
+            "n_with_taxonomy": n_taxonomy,
+            "note": "Unified map artifact: nodes carry graph enrichment + taxonomy "
+                    "layer; one identity across the bubble and web views.",
+        },
+        "sources": compact_sources(reg),
+        "continents": atlas["continents"],
+        "subfields": atlas["subfields"],
+        "nodes": nodes,
+        "supernodes": atlas["supernodes"],
+        "bubble_edges": atlas["edges"],
+        "edges": edges,
+    }
+    tmp = MAP_OUT.with_suffix(".json.tmp")
+    tmp.write_text(json.dumps(out, ensure_ascii=False))
+    tmp.replace(MAP_OUT)
+    print(f"map_data: {len(nodes)} nodes ({n_taxonomy} taxonomy-placed) / {len(edges)} edges / "
+          f"{len(atlas['supernodes'])} super-nodes / {len(out['sources']['sources'])} sources "
+          f"({MAP_OUT.stat().st_size / 1024:.0f} KB)")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -336,7 +336,7 @@ footer a:hover { text-decoration:underline; }
     <a href="/concepts">Concepts</a>
     <a href="/wikifunctions">Wikifunctions</a>
     <a href="/article-graph">Article graph</a>
-    <a href="/graph">Concept graph</a>
+    <a href="/map">Map</a>
     <a href="/about">About &amp; method</a>
     <button id="wl-theme-toggle" class="wl-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">🌓</button>
   </nav>
@@ -375,7 +375,7 @@ footer a:hover { text-decoration:underline; }
         <em>&ldquo;formalized as (Lean/Mathlib)&rdquo;</em> Wikidata property).</li>
       <li><a href="/article-graph">Article graph</a> &mdash; articles clustered by shared Mathlib
         formalizations, colored by their dominant Mathlib area.</li>
-      <li><a href="/graph">Concept graph</a> &mdash; Mathlib&#x27;s declaration-level dependency
+      <li><a href="/map">Map</a> &mdash; Mathlib&#x27;s declaration-level dependency
         edges overlaid on Wikidata&#x27;s typed statements, on a shared node set.</li>
     </ul>
   </section>

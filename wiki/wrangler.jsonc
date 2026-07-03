@@ -8,10 +8,10 @@
   "assets": {
     "directory": "./public",
     "binding": "ASSETS",
-    // Let the Worker handle /graph_data.json so it can serve the KV copy the
-    // nightly refreshes (no Worker deploy needed to update the graph). The
-    // static file in ./public stays as the fallback on a KV miss.
-    "run_worker_first": ["/graph_data.json"]
+    // Let the Worker handle the *_data.json graph blobs so it can serve the KV
+    // copies the nightly refreshes (no Worker deploy needed to update the map).
+    // The static files in ./public stay as the fallback on a KV miss.
+    "run_worker_first": ["/graph_data.json", "/map_data.json"]
   },
   "observability": {
     "enabled": true

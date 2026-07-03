@@ -104,6 +104,21 @@ cd "$REPO/site" || exit 1
   echo "--- flush prior checkpoints (zero agent tokens) ---"
   "$PY" moderate.py flush || echo "(flush returned $?)"
   echo
+  if [ "${WIKILEAN_WD_EMBED_REFRESH:-1}" = "1" ]; then
+    echo "--- refresh Wikidata semantic index (rebuild only if universe is newer) ---"
+    # Powers the wikidata_semantic tool (Agent 2 meaning-based retrieval). Rebuild
+    # only when the curated universe changed, so the nightly cost is normally zero.
+    # Fail-soft: a build failure keeps the last good .npz (query still works).
+    WD_UNIVERSE="$REPO/catalog/data/wikidata_universe.jsonl"
+    WD_NPZ="$REPO/catalog/data/wikidata_embeddings.npz"
+    if [ ! -f "$WD_NPZ" ] || [ "$WD_UNIVERSE" -nt "$WD_NPZ" ]; then
+      "$PY" "$REPO/catalog/build_wikidata_embeddings.py" \
+        || echo "(wikidata embeddings rebuild returned $? — keeping last good .npz)"
+    else
+      echo "(wikidata embeddings up to date — skipping)"
+    fi
+    echo
+  fi
   echo "--- drift sweep: wp-update (zero agent tokens) ---"
   "$PY" moderate.py wp-update --limit "$WPUPDATE_LIMIT" || echo "(wp-update returned $?)"
   echo
@@ -147,6 +162,18 @@ cd "$REPO/site" || exit 1
           ( cd "$REPO/wiki" && npx wrangler kv key put --binding=RENDER_CACHE --remote \
               atlas:data:v1 --path="$REPO/site/out/atlas_data.json" ) \
             || echo "(atlas kv put returned $?)"
+        fi
+        # Unified /map artifact rides on top of both (consumes graph_data.json +
+        # atlas_data.json + source_registry.json); same success-gate + KV pattern
+        # (map:data:v1). The /map PAGE (map.html) ships on deploy, not here.
+        if python3 "$REPO/site/build_map_data.py"; then
+          if [ "${WIKILEAN_GRAPH_DEPLOY:-1}" = "1" ]; then
+            ( cd "$REPO/wiki" && npx wrangler kv key put --binding=RENDER_CACHE --remote \
+                map:data:v1 --path="$REPO/site/out/map_data.json" ) \
+              || echo "(map kv put returned $?)"
+          fi
+        else
+          echo "(map build failed — keeping the last KV copy)"
         fi
       else
         echo "(atlas build failed — keeping the last KV copy)"

@@ -212,7 +212,7 @@ ABOUT_TEMPLATE = (
   <nav class="wl-nav">
     <a class="wl-navlink" href="/concepts">Concepts</a>
     <a class="wl-navlink" href="/article-graph">Article graph</a>
-    <a class="wl-navlink" href="/graph">Concept graph</a>
+    <a class="wl-navlink" href="/map">Map</a>
     <a class="wl-navlink active" href="/about">About &amp; method</a>
     %TOGGLE_BTN%
   </nav>
@@ -278,14 +278,17 @@ ABOUT_TEMPLATE = (
   Mathlib namespace; only the shared-decl edges drive the force layout, so the
   Wikipedia-link layer is a true overlay.</p>
 
-  <h2>Concept graph</h2>
-  <p>The <a href="/graph">concept graph</a> overlays two independent reference graphs on
-  the same Wikidata node set: Mathlib's declaration-level dependency edges (extracted via
-  <code>Expr.getUsedConstants</code> over the built Mathlib environment — the same data
-  that produces hyperlinks in the Mathlib docs) and Wikidata's typed item-to-item
-  statements (P279 subclass-of, P361 part-of, etc., pulled from the Wikidata Query
-  Service). Edges are colored by source so the consensus subgraph (where both systems
-  independently assert a relation) is visible at a glance.</p>
+  <h2>Map of mathematics</h2>
+  <p>The <a href="/map">map</a> unifies two views over one Wikidata node set: a
+  containment <em>bubble</em> view (domains → subfields → concepts) and a dependency
+  <em>web</em> view overlaying two independent reference graphs — Mathlib's
+  declaration-level dependency edges (extracted via <code>Expr.getUsedConstants</code>
+  over the built Mathlib environment — the same data that produces hyperlinks in the
+  Mathlib docs) and Wikidata's typed item-to-item statements (P279 subclass-of, P361
+  part-of, etc., pulled from the Wikidata Query Service). Edges are colored by source so
+  the consensus subgraph (where both systems independently assert a relation) is visible
+  at a glance. A third <em>sources</em> view documents where every external link comes
+  from, with its Wikidata property, provenance, and license.</p>
 
   <h2>Limitations</h2>
   <p>Annotations are best-effort and cover a growing sample of WikiProject Mathematics,
@@ -332,7 +335,7 @@ NOT_FOUND_TEMPLATE = (
   <nav class="wl-nav">
     <a class="wl-navlink" href="/concepts">Concepts</a>
     <a class="wl-navlink" href="/article-graph">Article graph</a>
-    <a class="wl-navlink" href="/graph">Concept graph</a>
+    <a class="wl-navlink" href="/map">Map</a>
     <a class="wl-navlink" href="/about">About &amp; method</a>
     %TOGGLE_BTN%
   </nav>
@@ -341,7 +344,7 @@ NOT_FOUND_TEMPLATE = (
   <div class="nf">
     <p class="code">404</p>
     <p>That page isn't here. It may not be one of the annotated articles yet.</p>
-    <p><a href="/">Browse all articles</a> &middot; <a href="/concepts">Concepts</a> &middot; <a href="/article-graph">Article graph</a> &middot; <a href="/graph">Concept graph</a></p>
+    <p><a href="/">Browse all articles</a> &middot; <a href="/concepts">Concepts</a> &middot; <a href="/article-graph">Article graph</a> &middot; <a href="/map">Map</a></p>
   </div>
 </div>
 %TOGGLE_SCRIPT%

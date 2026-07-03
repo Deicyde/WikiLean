@@ -95,6 +95,8 @@ const RESERVED = new Set([
   "decl",
   "proposals",
   "atlas",
+  "map",
+  "map_data.json",
 ]);
 
 const app = new Hono<{ Bindings: Env }>();
@@ -441,6 +443,27 @@ app.get("/graph_data.json", async (c) => {
   // (no recursion) — the last-deployed graph_data.json as a safety net.
   return c.env.ASSETS.fetch(new Request(new URL("/graph_data.json", c.req.url)));
 });
+
+// ---- /map_data.json — the UNIFIED map artifact (nodes with taxonomy + graph
+// enrichment, edges, super-nodes, bubble rollups, provenance registry). Same
+// KV-first contract as /graph_data.json (key map:data:v1, run_worker_first in
+// wrangler.jsonc, static fallback on a KV miss). Drives /map's three views. ----
+app.get("/map_data.json", async (c) => {
+  const headers = {
+    "Content-Type": "application/json; charset=utf-8",
+    "Cache-Control": "public, max-age=600",
+  };
+  const kv = await c.env.RENDER_CACHE.get("map:data:v1");
+  if (kv) return c.body(kv, 200, headers);
+  return c.env.ASSETS.fetch(new Request(new URL("/map_data.json", c.req.url)));
+});
+
+// ---- /graph + /atlas → /map (301). The concept graph and the bubble atlas are
+// now one unified map (three views: Bubbles / Web / Sources). The old page
+// assets are no longer shipped (build-public.ts), so these fall through to the
+// Worker; the *_data.json endpoints + /api/atlas stay live for deep links/agents.
+app.get("/graph", (c) => c.redirect("/map", 301));
+app.get("/atlas", (c) => c.redirect("/map", 301));
 
 // ---- /wikifunctions — Wikifunctions-formalization tracker (static; public) --
 // A self-contained status page rendered from the embedded verified corpus
