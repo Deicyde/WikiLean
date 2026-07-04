@@ -414,7 +414,7 @@ async function homeRows(c: Context<{ Bindings: Env }>) {
 
 // the landing page IS the Brain (embedded); the article directory moved to /articles
 app.get("/", async (c) => {
-  const cacheKey = "page:home:v5";  // v5: Brain embedded as the landing page
+  const cacheKey = "page:home:v6";  // v6: Map tab dropped (superseded by the Brain)
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const html = brainLanding(await homeRows(c));
