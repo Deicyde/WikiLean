@@ -106,10 +106,11 @@ section.kind h3 .cnt { color:#8c959f; font-weight:400; }
   font-size:.85rem; flex-wrap:wrap; }
 .edge .row:hover { background:#f6f8fa; }
 .edge .mk { color:#8250df; font-size:.74rem; }
-.edge .conf { font-size:.7rem; border-radius:8px; padding:0 6px; border:1px solid #d0d7de;
-  color:#57606a; margin-left:auto; }
-.edge .conf.high { border-color:#1a7f37; color:#1a7f37; }
-.edge .conf.low { border-color:#cf222e; color:#cf222e; }
+.edge .prov { font-size:.7rem; border-radius:8px; padding:0 6px; border:1px solid #d0d7de;
+  color:#57606a; margin-left:auto; white-space:nowrap; }
+.edge .prov.human { border-color:#1a7f37; color:#1a7f37; }
+.edge .prov.machine { border-color:#8250df; color:#8250df; }
+.edge .prov.ai { border-color:#bc4c00; color:#bc4c00; }
 .edge .drawer { display:none; border-top:1px solid #eaeef2; padding:8px 10px; font-size:.76rem;
   background:#f6f8fa; border-radius:0 0 6px 6px; }
 .edge .drawer pre { margin:4px 0 0; white-space:pre-wrap; word-break:break-word;
@@ -181,6 +182,11 @@ html[data-theme="dark"] text.bcount { fill:#8b949e; }
     <label title="weight edges by observed/expected flow (null model) instead of raw volume — corrects the hub bias found by arXiv 2604.24797"><input type="checkbox" id="dehub" checked> de-hub (lift)</label>
     <label title="color bubble outlines by dependency-flow communities — where logical structure diverges from the folder tree (arXiv 2604.24797: NMI 0.34)"><input type="checkbox" id="commColor" checked> logical communities</label>
   </span>
+  <span class="grp"><b>Provenance</b>
+    <label title="community/human-curated: Wikidata properties &amp; claims, @[wikidata]/@[stacks]/@[kerodon] attributes written in Mathlib source"><input type="checkbox" data-p="human" checked> human</label>
+    <label title="machine-verified: kernel-extracted dependencies and the file tree — checked by the Lean compiler, no judgment involved"><input type="checkbox" data-p="machine" checked> machine</label>
+    <label title="AI-generated: agent-proposed concept matches (skeptic-reviewed), LLM-judged paper matches (TheoremGraph), pipeline annotations"><input type="checkbox" data-p="ai" checked> AI</label>
+  </span>
   <span class="note" id="status">loading manifest…</span>
 </div>
 <div id="crumbbar"></div>
@@ -191,7 +197,8 @@ html[data-theme="dark"] text.bcount { fill:#8b949e; }
       <span style="color:#0969da">formalizes</span> ·
       <span style="color:#d4a72c">wikidata relations</span> ·
       <span style="color:#bf5af2">same external page</span> ·
-      dots = concepts (blue) / decls (green) · bubble outlines = logical communities</div>
+      dots = concepts (blue) / decls (green) · bubble outlines = logical communities ·
+      selecting a node orbits its off-canvas neighbors (click to travel)</div>
   </div>
   <div id="panel"><p class="note">The Brain as bubbles: areas nest by containment
     (Mathlib → Algebra → Group → …), concepts float beside the code that formalizes
@@ -279,6 +286,30 @@ function activeLibKinds() {
   });
   return ks;
 }
+function activeProv() {
+  const ks = new Set();
+  document.querySelectorAll(".toolbar input[data-p]").forEach(cb => {
+    if (cb.checked) ks.add(cb.dataset.p);
+  });
+  return ks;
+}
+
+// Provenance CLASS is what matters, not a vacuous high/medium/low: did a human
+// write this link (Wikidata properties/claims, @[wikidata]/@[stacks] source
+// attributes), did the Lean kernel certify it (dependencies, the file tree),
+// or did an AI propose it (agent grounding, LLM-judged paper matches)?
+function provClass(kind, prov, ev) {
+  if (kind === "depends" || kind === "contains") return "machine";
+  if (((prov && prov.method) || "").includes("@[")) return "human";
+  if (ev && ev.source_tagged) return "human";   // gold pair reached via another path
+  if (kind === "xref" || kind === "xref-shared" || kind === "relates") return "human";
+  return "ai";
+}
+const PROV_TITLE = {
+  human: "human-curated (Wikidata property/claim or a source attribute in Mathlib)",
+  machine: "machine-verified (Lean kernel / file tree)",
+  ai: "AI-generated (agent-proposed or LLM-judged), verified by oracle + skeptic",
+};
 
 // ============================ canvas state ==================================
 let focusId = null;        // container id (or LIBS_ID) whose children fill the stage
@@ -533,9 +564,13 @@ function renderEdges() {
   gEdges.selectAll("*").remove();
   if (!layout) return;
   const kinds = activeKinds();
+  const provs = activeProv();
   const dehub = $("#dehub").checked;
   const show = edgeStore.filter(e =>
-    e.kind === "xref-shared" ? kinds.has("xref") : kinds.has(e.kind));
+    (e.kind === "xref-shared" ? kinds.has("xref") : kinds.has(e.kind))
+    && provs.has(provClass(e.kind,
+        e.payload && e.payload.prov !== undefined ? manifest.prov[e.payload.prov] : null,
+        e.payload && e.payload.evidence)));
   // depends dominates by count — cap it, keep every join/informal edge.
   // De-hub mode ranks by lift×√sig (affinity × volume) instead of raw volume,
   // per arXiv 2604.24797: raw weights measure infrastructure, not relevance.
@@ -645,10 +680,12 @@ function showEdgePanel(e) {
     const L = layout.items.get(id);
     return (L && L.data.label) || id;
   };
+  const eprov = e.payload && e.payload.prov !== undefined ? manifest.prov[e.payload.prov] : null;
+  const epc = provClass(e.kind, eprov, e.payload && e.payload.evidence);
   panelEl.innerHTML = `
     <h2 style="font-size:1.05rem">${esc(st.label)}</h2>
-    <div class="sub"><span style="color:${st.color}">●</span> ${esc(e.kind)}${
-      e.payload && e.payload.confidence ? ` · confidence ${esc(e.payload.confidence)}` : ""}${
+    <div class="sub"><span style="color:${st.color}">●</span> ${esc(e.kind)}
+      · <span class="prov ${epc}" style="margin-left:0" title="${esc(PROV_TITLE[epc])}">${epc}</span>${
       e.kind === "depends" ? ` · sig weight ${e.w}` : ""}${
       liftOf(e) !== null ? ` · lift ${liftOf(e)}× vs null model` : ""}</div>
     <div class="chips">
@@ -697,6 +734,66 @@ function drawSelRing() {
   if (S) gOverlay.append("circle").attr("class", "selring")
     .attr("cx", S.x).attr("cy", S.y).attr("r", Math.max(S.r, 3) + 3);
   drawOverlay();
+  drawSatellites();
+}
+
+// Satellites: the selected node's OFF-CANVAS neighborhood — Wikidata relations,
+// formal dependencies, formalizations and paper matches whose other endpoint
+// lives elsewhere in the containment tree — orbiting the selection so the
+// Wikidata graph, the Mathlib graph and the literature overlay in one view.
+// Click a satellite to travel there. Filtered by the Layers + Provenance toggles.
+const SAT_RANK = {relates: 0, formalizes: 1, matches: 2, depends: 3, cites: 4, mentions: 5};
+async function drawSatellites() {
+  gOverlay.selectAll("g.sat").remove();
+  if (!selectedId || !layout) return;
+  const S = layout.items.get(selectedId);
+  const e = await getEntry(selectedId);
+  if (!S || !e) return;
+  const kinds = activeKinds(), provs = activeProv();
+  const seen = new Set();
+  const cand = [];
+  for (const dir of ["out", "in"]) {
+    for (const x of (e.edges && e.edges[dir]) || []) {
+      if (x.kind === "xref" || !kinds.has(x.kind)) continue;
+      if (!provs.has(provClass(x.kind, manifest.prov[x.prov], x.evidence))) continue;
+      if (layout.items.has(x.id) || seen.has(x.id)) continue;
+      seen.add(x.id);
+      cand.push({x, rank: SAT_RANK[x.kind] ?? 9});
+    }
+  }
+  cand.sort((a, b) => a.rank - b.rank);
+  const sats = cand.slice(0, 18);
+  if (!sats.length) return;
+  const W = stageEl.clientWidth || 800, H = stageEl.clientHeight || 600;
+  const R = Math.max(S.r, 8) + 54;
+  sats.forEach((s, i) => {
+    const a = -Math.PI / 2 + i * 2 * Math.PI / sats.length;
+    const sx = Math.max(16, Math.min(W - 16, S.x + R * Math.cos(a)));
+    const sy = Math.max(16, Math.min(H - 22, S.y + R * Math.sin(a)));
+    const st = EDGE_STYLE[s.x.kind] || {};
+    const g = gOverlay.append("g").attr("class", "sat").style("cursor", "pointer")
+      .on("click", ev => { ev.stopPropagation(); navigate(s.x.id); });
+    const p = g.append("path").attr("fill", "none")
+      .attr("d", `M${S.x},${S.y} L${sx},${sy}`)
+      .attr("stroke", st.color || "#57606a")
+      .attr("stroke-width", 1.4).attr("stroke-opacity", 0.75);
+    if (st.dash) p.attr("stroke-dasharray", st.dash);
+    const t = /^Q\d+$/.test(s.x.id) ? "concept"
+      : s.x.id.startsWith("decl:") ? "decl"
+      : s.x.id.startsWith("lit:") ? "literature" : "container";
+    g.append("circle").attr("cx", sx).attr("cy", sy).attr("r", 7)
+      .attr("fill", t === "concept" ? "#0969da" : t === "decl" ? "#1a7f37"
+            : t === "literature" ? "#bf5af2" : "#8250df")
+      .attr("fill-opacity", 0.92).attr("stroke", "#fff").attr("stroke-width", 1.2);
+    const label = g.append("text").attr("class", "blabel")
+      .attr("x", sx).attr("y", sy + 17).attr("font-size", 9)
+      .text(s.x.id.length > 22 ? s.x.id.slice(0, 20) + "…" : s.x.id);
+    getEntry(s.x.id).then(se => {
+      if (se && se.node.label && se.node.label !== s.x.id)
+        label.text(se.node.label.length > 26 ? se.node.label.slice(0, 24) + "…" : se.node.label);
+    });
+    g.append("title").text(`${s.x.kind} · ${s.x.id} — click to open`);
+  });
 }
 
 // ============================ zoom navigation ================================
@@ -808,7 +905,8 @@ const KIND_LABEL = {
 };
 const XREF_NAME = {mathworld: "MathWorld", nlab: "nLab", proofwiki: "ProofWiki",
   eom: "Encyclopedia of Math", planetmath: "PlanetMath", metamath: "Metamath",
-  lmfdb_knowl: "LMFDB", oeis: "OEIS", dlmf: "DLMF", msc: "MSC"};
+  lmfdb_knowl: "LMFDB", oeis: "OEIS", dlmf: "DLMF", msc: "MSC",
+  stacks: "Stacks Project", kerodon: "Kerodon"};
 const XREF_URL = {
   mathworld: v => `https://mathworld.wolfram.com/${v}.html`,
   nlab: v => `https://ncatlab.org/nlab/show/${encodeURIComponent(v)}`,
@@ -819,10 +917,13 @@ const XREF_URL = {
   lmfdb_knowl: v => `https://www.lmfdb.org/knowledge/show/${encodeURIComponent(v)}`,
   oeis: v => `https://oeis.org/${encodeURIComponent(v)}`,
   dlmf: v => `https://dlmf.nist.gov/${encodeURIComponent(v)}`,
+  stacks: v => `https://stacks.math.columbia.edu/tag/${encodeURIComponent(v)}`,
+  kerodon: v => `https://kerodon.net/tag/${encodeURIComponent(v)}`,
   msc: () => null,
 };
 function nodeUrl(id) {
   if (id.startsWith("decl:")) return "/decl/" + encodeURIComponent(id.slice(id.indexOf(":", 5) + 1));
+  if (/^Q\d+$/.test(id)) return `https://www.wikidata.org/wiki/${id}`;
   if (id.startsWith("lit:")) {
     const ax = id.slice(4).split("#")[0];
     if (/^[A-Za-z.-]+\/\d{7}(v\d+)?$/.test(ax) || !ax.includes("/"))
@@ -831,15 +932,19 @@ function nodeUrl(id) {
   }
   return null;
 }
+// "field" as a match_kind chip beside an algebra QID reads like the Field
+// concept — spell it out
+const MK_LABEL = {field: "field-of-study link"};
 function edgeHtml(x, provTable, dir) {
   const ev = x.evidence || {};
-  const mk = ev.match_kind ? `<span class="mk">${esc(ev.match_kind)}</span>` : "";
+  const mkv = ev.match_kind && (MK_LABEL[ev.match_kind] || ev.match_kind);
+  const mk = mkv ? `<span class="mk">${esc(mkv)}</span>` : "";
   const arrow = dir === "in" ? "←" : "→";
   let target = esc(x.id);
   if (x.kind === "xref" && ev.value !== undefined) {
     const mkUrl = XREF_URL[x.id.split(":")[1]];
     const url = mkUrl && mkUrl(ev.value);
-    const lbl = `${esc(x.id.split(":")[1])}: ${esc(ev.value)}`;
+    const lbl = `${esc(XREF_NAME[x.id.split(":")[1]] || x.id.split(":")[1])}: ${esc(ev.value)}`;
     target = url ? `<a href="${esc(url)}" rel="noopener" target="_blank">${lbl}</a>` : lbl;
   } else {
     const u = nodeUrl(x.id);
@@ -847,10 +952,11 @@ function edgeHtml(x, provTable, dir) {
            + (u ? ` <a class="extlink" href="${esc(u)}" rel="noopener" target="_blank">↗</a>` : "");
   }
   const prov = provTable[x.prov] || {};
+  const pc = provClass(x.kind, prov, ev);
   const drawer = `provenance: <b>${esc(prov.source)}</b> · ${esc(prov.method)} · pin ${esc(prov.pin)}
 <pre>${esc(JSON.stringify(ev, null, 1))}</pre>`;
   return `<div class="edge"><div class="row">${arrow} ${target} ${mk}
-    <span class="conf ${esc(x.confidence)}">${esc(x.confidence)}${ev.skeptic === "pending" ? " · unreviewed" : ""}</span></div>
+    <span class="prov ${pc}" title="${esc(PROV_TITLE[pc])}">${pc}${ev.skeptic === "pending" ? " · unreviewed" : ""}${ev.source_tagged ? " · @[wikidata]" : ""}</span></div>
     <div class="drawer">${drawer}</div></div>`;
 }
 async function renderPanel(id) {
@@ -878,6 +984,7 @@ async function renderPanel(id) {
   if (n.type === "concept") {
     const chips = [];
     if (n.slug) chips.push(`<a href="/${esc(n.slug)}">WikiLean article</a>`);
+    if (n.slug) chips.push(`<a href="https://en.wikipedia.org/wiki/${esc(n.slug)}" rel="noopener" target="_blank">Wikipedia</a>`);
     chips.push(`<a href="https://www.wikidata.org/wiki/${esc(n.id)}" rel="noopener" target="_blank">Wikidata</a>`);
     if (n.kgmid) chips.push(`<a href="https://www.google.com/search?kgmid=${encodeURIComponent(n.kgmid)}" rel="noopener" target="_blank">Google Knowledge Graph</a>`);
     for (const x of (e.edges && e.edges.out) || []) {
@@ -924,10 +1031,12 @@ async function renderPanel(id) {
   }
 
   const kinds = activeKinds();
+  const provs = activeProv();
   const groups = new Map();
   for (const dir of ["out", "in"]) {
     for (const x of (e.edges && e.edges[dir]) || []) {
       if (!kinds.has(x.kind)) continue;
+      if (!provs.has(provClass(x.kind, prov[x.prov], x.evidence))) continue;
       const key = x.kind + ":" + dir;
       if (!groups.has(key)) groups.set(key, []);
       groups.get(key).push([x, dir]);
@@ -978,6 +1087,14 @@ async function renderPanel(id) {
     el.innerHTML = `${esc(t)} <span class="lit-ref">${esc(le.node.ref || "")} · ${
       esc(le.node.arxiv_id || "")}</span>`;
   });
+  // concept rows likewise boot as bare QIDs — show the human label
+  // (a "← Q3968 field-of-study link" row must read "Algebra", not "field")
+  [...panelEl.querySelectorAll('[data-nav]')].filter(el => /^Q\d+$/.test(el.dataset.nav))
+    .slice(0, 40).forEach(async el => {
+      const qe = await getEntry(el.dataset.nav);
+      if (!qe || !qe.node.label) return;
+      el.innerHTML = `${esc(qe.node.label)} <span class="lit-ref">${esc(el.dataset.nav)}</span>`;
+    });
 }
 
 // ghost decls have no brain node — the panel explains and links out instead
