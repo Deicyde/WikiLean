@@ -224,17 +224,37 @@ function shardFor(id) {
   }
   return null;
 }
-async function getEntry(id) {
+// Every data fetch is pinned to the manifest's data version: shard KEY NAMES
+// change across rebuilds, so a cached manifest + fresh shards (or vice versa)
+// silently 404s — the "Unknown node" ghost bug. The manifest revalidates
+// (no-cache) and a missing shard triggers one manifest re-sync + retry.
+let dataV = "";
+const vq = () => (dataV ? "?v=" + dataV : "");
+async function fetchManifest() {
+  const r = await fetch(BASE + "manifest.json", {cache: "no-cache"});
+  if (!r.ok) throw new Error("HTTP " + r.status);
+  manifest = await r.json();
+  dataV = encodeURIComponent(manifest._meta.generated_at || "");
+}
+async function getEntry(id, canRetry = true) {
   if (entryCache.has(id)) return entryCache.get(id);
   const key = shardFor(id);
   if (key === null) return null;
   if (!shardCache.has(key)) {
-    shardCache.set(key, fetch(BASE + key + ".json")
-      .then(r => r.ok ? r.json() : {})
-      .catch(() => { shardCache.delete(key); return {}; }));
+    shardCache.set(key, fetch(BASE + key + ".json" + vq())
+      .then(r => r.ok ? r.json().then(j => ({ok: true, j})) : {ok: false, j: {}})
+      .catch(() => { shardCache.delete(key); return {ok: false, j: {}}; }));
   }
-  const shard = await shardCache.get(key);
-  const e = shard[id] || null;
+  const res = await shardCache.get(key);
+  const e = res.j[id] || null;
+  if (e === null && !res.ok && canRetry) {
+    // the shard key vanished under us — the data version moved (nightly
+    // rebuild / redeploy while this tab was open). Re-sync once and retry.
+    try { await fetchManifest(); } catch { return null; }
+    shardCache.clear();
+    entryCache.clear();
+    return getEntry(id, false);
+  }
   entryCache.set(id, e);
   return e;
 }
@@ -318,6 +338,13 @@ async function focusItems(id) {
       }
     }));
   }
+  // leaf level: ghost decls — in the formal snapshot but not yet linked by any
+  // brain edge. Rendered dimmer so a file's real contents are never invisible.
+  if (!conts.length && e.ghosts && e.ghosts.first) {
+    const lib = e.node.library || "Mathlib";
+    for (const name of e.ghosts.first)
+      decls.push({id: `decl:${lib}:${name}`, label: name, type: "decl", ghost: true});
+  }
   return conts.concat(decls, anchored);
 }
 
@@ -355,10 +382,11 @@ async function renderFocus(anim) {
     .attr("cx", l => l.x).attr("cy", l => l.y)
     .attr("r", l => Math.max(l.r, 2.5))
     .attr("fill", l => fillFor(l.data, shade))
-    .attr("fill-opacity", l => l.data.type === "container" ? 0.55 : 0.9)
+    .attr("fill-opacity", l => l.data.type === "container" ? 0.55 : l.data.ghost ? 0.35 : 0.9)
     .on("click", (ev, l) => { ev.stopPropagation(); nodeClick(l.data); });
   all.select("title").text(l => l.data.label + (l.data.n_decls
-    ? ` — ${l.data.n_decls.toLocaleString()} decls` : ""));
+    ? ` — ${l.data.n_decls.toLocaleString()} decls` : "")
+    + (l.data.ghost ? " — in Mathlib, not yet linked in the brain" : ""));
 
   gLabels.selectAll("*").remove();
   for (const l of leaves) {
@@ -713,6 +741,10 @@ async function nodeClick(item) {
     renderPanel(focusId);
     return;
   }
+  if (item.ghost) {               // snapshot decl with no brain edges yet
+    ghostPanel(item);
+    return;
+  }
   if (item.type === "container") {
     selectedId = null;
     renderPanel(item.id);
@@ -948,11 +980,29 @@ async function renderPanel(id) {
   });
 }
 
+// ghost decls have no brain node — the panel explains and links out instead
+// of erroring with "Unknown node"
+function ghostPanel(item) {
+  const name = item.label;
+  const mod = focusId.startsWith("path:")
+    ? focusId.slice(5).replaceAll("/", ".") : "";
+  panelEl.innerHTML = `
+    <h2 style="font-size:1.1rem">${esc(name)}</h2>
+    <div class="sub">decl${mod ? " · " + esc(mod) : ""} ·
+      <a href="/decl/${encodeURIComponent(name)}" rel="noopener" target="_blank">Mathlib docs ↗</a></div>
+    <span class="badge">not yet linked</span>
+    <p class="note" style="margin-top:10px">This declaration exists in the formal
+    snapshot, but no brain edge reaches it yet — no concept formalizes it, no
+    article cites it, no judged paper match. It renders dimmed so the file's
+    real contents stay visible. Links grow through the discovery pipeline
+    (<code>brain/proposals/</code>) or a WikiLean annotation citing it.</p>`;
+}
+
 // ---- the transparency legend: /map's Sources view, rendered in the panel ----
 let sourcesData = null;
 async function showSourcesPanel() {
   if (!sourcesData) {
-    const r = await fetch(BASE + "sources.json");
+    const r = await fetch(BASE + "sources.json" + vq());
     if (!r.ok) { panelEl.innerHTML = `<p class="note">sources.json unavailable</p>`; return; }
     sourcesData = await r.json();
   }
@@ -998,7 +1048,7 @@ $("#srcbtn").addEventListener("click", showSourcesPanel);
 // ============================ search =========================================
 async function ensureLabels() {
   if (!labels) {
-    const r = await fetch(BASE + "labels.json");
+    const r = await fetch(BASE + "labels.json" + vq());
     labels = r.ok ? await r.json() : [];
   }
   return labels;
@@ -1051,9 +1101,7 @@ window.addEventListener("resize", () => { renderFocus(false); });
 
 (async function boot() {
   try {
-    const r = await fetch(BASE + "manifest.json");
-    if (!r.ok) throw new Error("HTTP " + r.status);
-    manifest = await r.json();
+    await fetchManifest();
   } catch (e) {
     statusEl.textContent = "brain data unavailable (" + e.message +
       ") — run brain/build_shards.py + build-public";

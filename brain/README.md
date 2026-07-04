@@ -150,10 +150,16 @@ biases the BRAIN must correct for, and three of its findings are wired in:
   outlines by community, so the divergence between the containment tree and the
   logical structure is visible at every zoom level.
 
-Their dataset (MathNetwork/MathlibGraph on HuggingFace, fresher than the
-TheoremGraph snapshot and carrying the explicit/synthesized flag) is a candidate
-future substrate — adopting it would let the BRAIN filter synthesized edges
-directly instead of approximating via sig.
+Their released dataset (MathNetwork/MathlibGraph, Apache-2.0) is now ingested:
+`catalog/fetch_mathlib_graph.py` → `catalog/.cache/mathnetwork/edges.csv`
+(10.9M edges, 29.8% explicit — confirming the paper's 74.2%-synthesized figure),
+joined by decl name onto the pinned TheoremGraph substrate in
+`build_rollups.py`. Tree-grain rows carry **`w_types.exp`** — the count of
+distinct EXPLICIT (source-visible) decl pairs, the paper's closest proxy for
+"a human deliberately cited this" (125,359 tree edges carry it). Unmatched
+names (~9% of explicit rows, the fresher snapshot's drift) are counted and
+skipped, never guessed. Full snapshot adoption (replacing TheoremGraph as the
+substrate) remains open — it would need the informal-matching layer re-keyed.
 
 ## Provenance & licensing
 

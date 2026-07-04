@@ -34,6 +34,7 @@ Run: python3 brain/build_shards.py
 """
 from __future__ import annotations
 
+import csv
 import json
 import shutil
 import sys
@@ -42,6 +43,8 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 from build_common import BRAIN_DATA, KIND_ORDER, ROOT
+
+csv.field_size_limit(10 ** 9)
 
 OUT_DIR = ROOT / "site" / "assets" / "brain"
 
@@ -200,6 +203,38 @@ def main() -> int:
                  for n in ordered[:CHILD_CAP]]
         return {"count": len(ordered), "first": first}
 
+    # ghost decls: every snapshot decl that is NOT a brain node, listed on its
+    # deepest existing container — leaf bubbles must never be silently empty
+    # (a container's n_decls counts the whole snapshot; the brain only mints
+    # decl NODES for declarations referenced by an ontology edge)
+    ghost_names: dict[str, list[str]] = defaultdict(list)
+    ghost_count: dict[str, int] = defaultdict(int)
+    sf = ROOT / "catalog" / ".cache" / "statement_formal.csv"
+    if sf.exists():
+        seen_ghosts: set[str] = set()
+        with sf.open(newline="") as fh:
+            for row in csv.DictReader(fh):
+                d, mod = row["decl_name"], row["module"]
+                if not mod:
+                    continue
+                parts = mod.split(".")
+                if f"decl:{parts[0]}:{d}" in nodes or d in seen_ghosts:
+                    continue
+                seen_ghosts.add(d)
+                cur = "path:" + parts[0]
+                if cur not in nodes:
+                    continue
+                for comp in parts[1:]:
+                    if f"{cur}/{comp}" not in nodes:
+                        break
+                    cur = f"{cur}/{comp}"
+                ghost_count[cur] += 1
+                if len(ghost_names[cur]) < CHILD_CAP:
+                    ghost_names[cur].append(d)
+    else:
+        print(f"WARNING: {sf} missing — ghost decl lists skipped "
+              f"(leaf bubbles show only brain-linked decls)", file=sys.stderr)
+
     serialized: dict[str, str] = {}
     n_edges_attached = 0
     for nid, node in nodes.items():
@@ -208,6 +243,9 @@ def main() -> int:
             entry["breadcrumb"] = breadcrumb(nid)
         if node["type"] == "container":
             entry["children"] = child_summary(nid)
+            if ghost_count.get(nid):
+                entry["ghosts"] = {"count": ghost_count[nid],
+                                   "first": sorted(ghost_names[nid])}
         block = {}
         for direction, per in (("out", edges_out), ("in", edges_in)):
             rows = sorted(per.get(nid, []), key=lambda t: (t[0], t[1]))

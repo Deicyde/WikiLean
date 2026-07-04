@@ -37,6 +37,10 @@ REPO = HERE.parent
 DEP = REPO / "catalog" / ".cache" / "formal_dependency.csv"
 STMT = REPO / "catalog" / ".cache" / "statement_formal.csv"
 HIER = REPO / "catalog" / "data" / "hierarchy.json"
+# MathNetwork/MathlibGraph (arXiv 2604.24797, Apache-2.0): per-edge is_explicit
+# flags — the explicit subgraph is the paper's proxy for human-intended
+# (non-elaborator-synthesized) dependencies. Optional; fetch_mathlib_graph.py.
+MNET = REPO / "catalog" / ".cache" / "mathnetwork" / "edges.csv"
 OUTDIR = HERE / "data"
 
 GRAINS = ("file", "dir", "module", "tree")
@@ -209,6 +213,52 @@ def main() -> int:
     edges = aggregate(pairs, grain_nodes)
     t_agg = time.monotonic()
 
+    # ---- MathlibGraph explicit-subgraph overlay (tree grain only) -----------
+    # Counts DISTINCT source-visible (is_explicit) decl pairs per tree edge —
+    # w_types.exp. Joined by decl NAME onto the pinned TheoremGraph substrate;
+    # MathlibGraph is a fresher snapshot, so unmatched names are expected and
+    # counted, never guessed.
+    exp_tree: dict[tuple[str, str], int] = {}
+    mnet_stats = {"rows": 0, "explicit": 0, "unmatched": 0, "pairs": 0}
+    if MNET.exists():
+        name2i: dict[str, int] = {}
+        for i, nm in enumerate(names):
+            if nm not in name2i:
+                name2i[nm] = i
+        anc = grain_nodes[3]
+        seen_exp: set[int] = set()
+        with MNET.open(newline="") as fh:
+            reader = csv.reader(fh)
+            header = next(reader)
+            if header[:3] != ["source", "target", "is_explicit"]:
+                raise SystemExit(f"unexpected MathlibGraph edges.csv header: {header[:3]}")
+            for row in reader:
+                mnet_stats["rows"] += 1
+                if row[2] != "True":
+                    continue
+                mnet_stats["explicit"] += 1
+                si = name2i.get(row[0])
+                di = name2i.get(row[1])
+                if si is None or di is None:
+                    mnet_stats["unmatched"] += 1
+                    continue
+                key = si << SHIFT | di
+                if key in seen_exp:
+                    continue
+                seen_exp.add(key)
+                mnet_stats["pairs"] += 1
+                A, B = anc[si], anc[di]
+                for k in range(min(len(A), len(B))):
+                    if A[k] != B[k]:
+                        for j in range(k, min(len(A), len(B))):
+                            p = (A[j], B[j])
+                            exp_tree[p] = exp_tree.get(p, 0) + 1
+                        break
+    else:
+        print(f"NOTE: {MNET} missing — explicit-subgraph overlay skipped "
+              f"(catalog/fetch_mathlib_graph.py)", file=sys.stderr)
+    t_mnet = time.monotonic()
+
     hier_meta = json.loads(HIER.read_text())["meta"]
     dep_st = DEP.stat()
     base_meta = {
@@ -232,7 +282,11 @@ def main() -> int:
                 "docref rows excluded entirely; self-loops at this grain excluded; "
                 "top_witnesses = up to 3 [src_decl, dep_decl] FQ decl-name pairs by "
                 "raw row frequency over the included buckets. Default render layer "
-                "= sig.",
+                "= sig. Tree-grain rows may carry w_types.exp — distinct EXPLICIT "
+                "(source-visible, non-elaborator-synthesized) pairs per "
+                "MathNetwork/MathlibGraph (arXiv 2604.24797, Apache-2.0), joined by "
+                "decl name onto this pinned snapshot — and `lift` (observed sig / "
+                "configuration-model expectation at that depth).",
     }
 
     # Null-model lift for the tree grain: observed sig weight vs the weight
@@ -281,6 +335,9 @@ def main() -> int:
                     "top_witnesses": [[names[si], names[di]] for _, si, di in rec[3]],
                 }
                 if grain == "tree":
+                    ex = exp_tree.get((s, d))
+                    if ex:
+                        row["w_types"]["exp"] = ex
                     lf = lift(s, d, rec[0])
                     if lf is not None:
                         row["lift"] = lf
@@ -314,9 +371,14 @@ def main() -> int:
         print(f"  {grain:6} {len(edges[g]):>7} edges "
               f"({(OUTDIR / f'rollup_edges.{grain}.jsonl').stat().st_size / 2**20:.1f} MB)")
     print(f"  file-grain edges with sig>0: {sig_file_edges}")
+    if mnet_stats["rows"]:
+        print(f"  MathlibGraph explicit overlay: {mnet_stats['explicit']} explicit "
+              f"of {mnet_stats['rows']} rows -> {mnet_stats['pairs']} matched pairs "
+              f"({mnet_stats['unmatched']} unmatched names, fresher snapshot) -> "
+              f"{len(exp_tree)} tree edges with exp")
     print(f"  wall: decls {t_decls - t0:.1f}s + deps {t_pairs - t_decls:.1f}s + "
-          f"aggregate {t_agg - t_pairs:.1f}s + write {time.monotonic() - t_agg:.1f}s "
-          f"= {time.monotonic() - t0:.1f}s")
+          f"aggregate {t_agg - t_pairs:.1f}s + mnet {t_mnet - t_agg:.1f}s + "
+          f"write {time.monotonic() - t_mnet:.1f}s = {time.monotonic() - t0:.1f}s")
     return 0
 
 

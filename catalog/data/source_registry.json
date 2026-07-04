@@ -63,6 +63,14 @@
    "kind": "A `mentions` edge: a moderated WikiLean article about the concept cites the declaration in one of its annotations (citation role, NOT a formalization claim).",
    "our_provenance": "site/annotations/*.json mathlib.decl citations x the article's concept QID (catalog/data/decl_qid_roles_v2.json role=citation); D1 is canonical for the annotations themselves.",
    "target_license": "CC0-1.0 (WikiLean's own annotation data)"
+  },
+  "mathnetwork": {
+   "name": "MathlibGraph (MathNetwork)",
+   "homepage": "https://huggingface.co/datasets/MathNetwork/MathlibGraph",
+   "layer": "formal",
+   "kind": "Per-edge is_explicit flags on the full Mathlib declaration dependency graph — the explicit (source-visible, non-elaborator-synthesized) subgraph, folded into tree-grain rollups as w_types.exp.",
+   "our_provenance": "Released dataset of 'The Network Structure of Mathlib' (arXiv 2604.24797); catalog/fetch_mathlib_graph.py -> catalog/.cache/mathnetwork/; joined by decl name onto the pinned TheoremGraph snapshot in brain/build_rollups.py.",
+   "target_license": "Apache-2.0"
   }
  },
  "crossref_sources": {
