@@ -418,7 +418,7 @@ app.get("/", async (c) => {
 });
 
 app.get("/sitemap.xml", async (c) => {
-  const cacheKey = "page:sitemap:v2";  // v2: + flagship static pages (/map, /concepts, /about)
+  const cacheKey = "page:sitemap:v3";  // v3: + /brain flagship
   const headers = { "Content-Type": "application/xml; charset=utf-8" };
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.body(cached, 200, headers);
