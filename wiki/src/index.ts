@@ -41,6 +41,7 @@ import { wikifunctionsVerifyPage } from "./wikifunctions-verify.js";
 import { registerReviewRoutes } from "./review.js";
 import { registerDeclRoutes } from "./decl.js";
 import { registerAtlasRoutes } from "./atlas.js";
+import { registerBrainRoutes } from "./brain.js";
 import { registerQueueRoutes } from "./queue.js";
 import type { Annotation } from "./engine/types.js";
 import type { Env } from "./env.js";
@@ -99,6 +100,7 @@ const RESERVED = new Set([
   "map_data.json",
   "map-v2",
   "map_data_v2.json",
+  "brain",
 ]);
 
 const app = new Hono<{ Bindings: Env }>();
@@ -106,6 +108,7 @@ registerAuthRoutes(app);
 registerReviewRoutes(app);
 registerDeclRoutes(app);
 registerAtlasRoutes(app);
+registerBrainRoutes(app);
 registerQueueRoutes(app);
 
 // Renders (and KV-caches) the anonymous base page for an article. Takes the

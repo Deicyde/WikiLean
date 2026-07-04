@@ -1,7 +1,7 @@
 // Populates wiki/public/ (the Worker's static-asset dir) from the existing
 // static-site build: shared CSS/JS and the shell pages (index/concepts/about/
 // 404/sitemap/robots). Article pages are served dynamically by the Worker.
-import { mkdirSync, copyFileSync, existsSync, rmSync } from "node:fs";
+import { mkdirSync, copyFileSync, cpSync, existsSync, rmSync } from "node:fs";
 import { resolve } from "node:path";
 import { buildMathlibIndex } from "./build-mathlib-index.ts";
 
@@ -33,6 +33,9 @@ const shellFiles = [
   "concepts.html", "about.html", "404.html", "robots.txt", "wikilean.ttl",
   // The unified map page (reserved route /map) + its KV-first data artifact.
   "map.html", "map_data.json",
+  // The brain explorer (reserved route /brain, site/build_brain_page.py); its
+  // data ships as the prefix shards in assets/brain/ (copied below).
+  "brain.html",
   // Data blobs kept for the fallback path + the /api/atlas agent surface (the
   // old /graph and /atlas *pages* now 301 → /map; see src/index.ts).
   "graph_data.json", "atlas_data.json",
@@ -41,6 +44,16 @@ const shellFiles = [
 for (const f of shellFiles) {
   const src = resolve(site, "out", f);
   if (existsSync(src)) copyFileSync(src, resolve(pub, f));
+}
+
+// BRAIN neighborhood shards (brain/build_shards.py → site/assets/brain/):
+// wipe-then-copy so renamed shard keys never leave stale files behind, the
+// same discipline as build-decl-index.ts. Scoped strictly to assets/brain/.
+const brainSrc = resolve(site, "assets", "brain");
+const brainDst = resolve(pubAssets, "brain");
+if (existsSync(brainSrc)) {
+  rmSync(brainDst, { recursive: true, force: true });
+  cpSync(brainSrc, brainDst, { recursive: true });
 }
 
 // Retired page assets: /graph + /atlas are now redirect routes in the Worker.

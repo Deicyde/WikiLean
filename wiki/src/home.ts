@@ -465,7 +465,7 @@ export function sitemapXml(rows: SitemapRow[]): string {
   const rootMod = newest ? `<lastmod>${new Date(newest).toISOString().slice(0, 10)}</lastmod>` : "";
   const rootUrl = `  <url><loc>${SITE_ORIGIN}/</loc>${rootMod}<priority>1.0</priority></url>`;
   // Flagship static pages — were missing, so crawlers never discovered the map.
-  const staticUrls = ["map", "concepts", "about"].map(
+  const staticUrls = ["map", "brain", "concepts", "about"].map(
     (p) => `  <url><loc>${SITE_ORIGIN}/${p}</loc><priority>0.8</priority></url>`,
   );
   const urls = [
