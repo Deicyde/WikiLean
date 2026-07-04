@@ -1240,7 +1240,7 @@ async function renderPanel(id) {
   }
   if (n.n_decls) html += `<span class="badge">${n.n_decls.toLocaleString()} decls</span>`;
   if (n.superseded) html += `<span class="badge n">superseded snapshot module</span>`;
-  if (n.slogan) html += `<div class="slogan">${esc(n.slogan)}<span class="src">slogan — TheoremGraph (CC-BY-SA-4.0)</span></div>`;
+  if (n.slogan) html += `<div class="slogan">${esc(n.slogan)}<span class="src">slogan — math-graph (CC-BY-4.0)</span></div>`;
   if (n.code) {
     html += `<div class="codeblock"><pre>${esc(n.code)}</pre><span class="src">${
       esc(n.decl_kind || "decl")} — mathlib4 source (Apache-2.0) · ` +
