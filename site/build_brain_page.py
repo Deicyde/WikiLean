@@ -1218,6 +1218,7 @@ async function renderPanel(id) {
   if (n.module) sub.push(esc(n.module));
   if (n.slug) sub.push(`<a href="/${esc(n.slug)}">WikiLean article</a>`);
   if (n.type === "concept") sub.push(`<a href="https://www.wikidata.org/wiki/${esc(n.id)}" rel="noopener" target="_blank">${esc(n.id)}</a>`);
+  if (n.type === "container" && n.qid) sub.push(`<a href="https://www.wikidata.org/wiki/${esc(n.qid)}" rel="noopener" target="_blank">Wikidata ${esc(n.qid)}</a>`);
   if (n.type === "decl") sub.push(`<a href="${esc(nodeUrl(n.id))}" rel="noopener" target="_blank">${esc(n.library || "Mathlib")} docs ↗</a>`);
   html += `<div class="sub">${sub.join(" · ")}</div>`;
   // "Also in" — every external identity of this concept as one chip strip
