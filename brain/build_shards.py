@@ -172,6 +172,83 @@ def main() -> int:
             n_rollup_attached += len(block["out"]) + len(block["in"])
             rollups[nid][grain] = block
 
+    # ---- INFORMAL rollups: relates/mentions aggregated to container pairs ----
+    # The formal tree grain alone made container levels read as "raw Mathlib
+    # deps only". Here every concept gets a HOME (the container of its first
+    # formalizing decl, or the folder it formalizes directly) and its relates
+    # (Wikidata claims, human) + mentions (article citations, AI-moderated)
+    # edges aggregate to every equal-depth ancestor pair — the human/AI synapse
+    # layers drawn between bubbles at every zoom level.
+    concept_home: dict[str, str] = {}
+    for nid, rows in edges_out.items():
+        if not nid.startswith("Q"):
+            continue
+        for _, dst, item in sorted(rows):
+            if item["kind"] != "formalizes":
+                continue
+            home = dst if dst.startswith("path:") else parent.get(dst)
+            if home:
+                concept_home[nid] = home
+                break
+
+    def anc_chain(cid: str) -> list[str]:
+        chain = [cid]
+        while chain[0] in parent:
+            chain.insert(0, parent[chain[0]])
+        return chain
+
+    anc_memo: dict[str, list[str]] = {}
+    informal: dict[tuple[str, str], dict[str, list]] = defaultdict(dict)
+    for src, rows in edges_out.items():
+        if not src.startswith("Q"):
+            continue
+        hA = concept_home.get(src)
+        if not hA:
+            continue
+        for _, dst, item in rows:
+            if item["kind"] == "relates":
+                hB = concept_home.get(dst)
+            elif item["kind"] == "mentions":
+                hB = parent.get(dst)
+            else:
+                continue
+            if not hB:
+                continue
+            A = anc_memo.setdefault(hA, anc_chain(hA))
+            B = anc_memo.setdefault(hB, anc_chain(hB))
+            for k in range(min(len(A), len(B))):
+                if A[k] != B[k]:
+                    for j in range(k, min(len(A), len(B))):
+                        pair = (A[j], B[j]) if A[j] < B[j] else (B[j], A[j])
+                        rec = informal[pair].setdefault(item["kind"], [0, []])
+                        rec[0] += 1
+                        if len(rec[1]) < 2:
+                            dlab = (nodes[dst].get("label") if dst in nodes else None) \
+                                   or dst.split(":")[-1]
+                            rec[1].append([nodes[src].get("label") or src, dlab])
+                    break
+
+    inf_prov = {"relates": prov_index({"source": "wikidata_props",
+                                       "method": "informal rollup (concept homes)",
+                                       "pin": metas["edges.jsonl"]["generated_at"][:10]}),
+                "mentions": prov_index({"source": "annotations",
+                                        "method": "informal rollup (concept homes)",
+                                        "pin": metas["edges.jsonl"]["generated_at"][:10]})}
+    n_informal_attached = 0
+    inf_rows_by_node: dict[str, list[dict]] = defaultdict(list)
+    for (a, b), kinds_ in informal.items():
+        for kind, (count, samples) in kinds_.items():
+            row = {"kind": kind, "count": count, "samples": samples,
+                   "prov": inf_prov[kind]}
+            inf_rows_by_node[a].append({**row, "id": b})
+            inf_rows_by_node[b].append({**row, "id": a})
+    for nid, rows in inf_rows_by_node.items():
+        if nid not in nodes:
+            continue
+        rows.sort(key=lambda r: (-r["count"], r["id"]))
+        rollups[nid]["informal"] = rows[:24]
+        n_informal_attached += min(len(rows), 24)
+
     # ---- assemble one entry per node ----------------------------------------
     def breadcrumb(nid: str) -> list[dict]:
         chain, seen = [nid], {nid}
@@ -372,7 +449,8 @@ def main() -> int:
     hist = Counter(min(sizes[k] // 25_000, 6) for k in sizes)
     print(f"shards: {len(nodes)} entries -> {len(sizes)} shards + manifest.json "
           f"({total / 1e6:.1f} MB) in {OUT_DIR}")
-    print(f"  attachments: {n_edges_attached} ontology + {n_rollup_attached} rollup")
+    print(f"  attachments: {n_edges_attached} ontology + {n_rollup_attached} rollup "
+          f"+ {n_informal_attached} informal-rollup")
     print("  size histogram: " + ", ".join(
         f"{'>=150K' if b == 6 else f'{b * 25}-{b * 25 + 25}K'}: {hist[b]}"
         for b in sorted(hist)))
