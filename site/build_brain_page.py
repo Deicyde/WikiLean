@@ -206,7 +206,10 @@ async function getEntry(id) {
   const key = shardFor(id);
   if (key === null) return null;
   if (!shardCache.has(key)) {
-    shardCache.set(key, fetch(BASE + key + ".json").then(r => r.ok ? r.json() : {}));
+    // a rejected fetch must not poison the cache for the whole session
+    shardCache.set(key, fetch(BASE + key + ".json")
+      .then(r => r.ok ? r.json() : {})
+      .catch(() => { shardCache.delete(key); return {}; }));
   }
   const shard = await shardCache.get(key);
   const e = shard[id] || null;
@@ -339,7 +342,8 @@ const XREF_URL = {
   mathworld: v => `https://mathworld.wolfram.com/${v}.html`,
   nlab: v => `https://ncatlab.org/nlab/show/${encodeURIComponent(v)}`,
   proofwiki: v => `https://proofwiki.org/wiki/${encodeURIComponent(v)}`,
-  eom: v => `https://encyclopediaofmath.org/wiki/${encodeURIComponent(v)}`,
+  // some P7554 values arrive pre-percent-encoded (Hotelling-T%5E2-…) — don't double-encode
+  eom: v => `https://encyclopediaofmath.org/wiki/${/%[0-9A-Fa-f]{2}/.test(v) ? v : encodeURIComponent(v)}`,
   planetmath: v => `https://planetmath.org/${encodeURIComponent(v)}`,
   metamath: v => `https://us.metamath.org/mpeuni/${encodeURIComponent(v)}.html`,
   lmfdb_knowl: v => `https://www.lmfdb.org/knowledge/show/${encodeURIComponent(v)}`,
@@ -348,11 +352,15 @@ const XREF_URL = {
   msc: () => null,
 };
 function nodeUrl(id) {
-  if (id.startsWith("decl:")) return "/decl/" + encodeURIComponent(id.split(":", 3)[2]);
+  if (id.startsWith("decl:")) return "/decl/" + encodeURIComponent(id.slice(id.indexOf(":", 5) + 1));
   if (id.startsWith("lit:")) {
     const ax = id.slice(4).split("#")[0];
-    return /^[A-Za-z-]+\//.test(ax) ? `https://github.com/${ax.split("#")[0]}`
-                                    : `https://arxiv.org/abs/${ax}`;
+    // old-style arXiv ids (math/0605527, cond-mat.GT/0309136) have an
+    // all-digit tail; only non-arXiv repo slugs (ImperialCollegeLondon/FLT)
+    // route to GitHub
+    if (/^[A-Za-z.-]+\/\d{7}(v\d+)?$/.test(ax) || !ax.includes("/"))
+      return `https://arxiv.org/abs/${ax}`;
+    return `https://github.com/${ax}`;
   }
   return null;
 }
@@ -492,7 +500,10 @@ async function navigate(id, depth) {
 
 // ---- search -------------------------------------------------------------------
 async function ensureLabels() {
-  if (!labels) labels = await fetch(BASE + "labels.json").then(r => r.json());
+  if (!labels) {
+    const r = await fetch(BASE + "labels.json");
+    labels = r.ok ? await r.json() : [];
+  }
   return labels;
 }
 let searchT = null;
@@ -542,7 +553,15 @@ window.addEventListener("hashchange", () => {
 
 // ---- boot -----------------------------------------------------------------------
 (async function boot() {
-  manifest = await fetch(BASE + "manifest.json").then(r => r.json());
+  try {
+    const r = await fetch(BASE + "manifest.json");
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    manifest = await r.json();
+  } catch (e) {
+    statusEl.textContent = "brain data unavailable (" + e.message +
+      ") — run brain/build_shards.py + build-public";
+    return;
+  }
   statusEl.textContent = `${manifest._meta.counts.entries.toLocaleString()} nodes · ` +
     `${manifest._meta.counts.ontology_edges.toLocaleString()} edges · ` +
     `data ${manifest._meta.generated_at.slice(0, 10)}`;

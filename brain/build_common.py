@@ -117,6 +117,17 @@ def build() -> tuple[list[dict], list[dict], dict]:
                            for q, r in m.items() if r == "citation")
     ldecls = {l["decl"] for ls in links.values() for l in ls}
     decl_set = set(roles) | fdecls | ldecls
+    # Annotation citations occasionally carry junk like
+    # "MonoidAlgebra.instIsSemisimpleModule (Maschke)" — whitespace is never
+    # legal in a Lean identifier, so such names can't resolve anywhere. Drop
+    # them (and their mention pairs) rather than mint unreachable decl nodes.
+    bad_names = {d for d in decl_set if any(c.isspace() for c in d)}
+    if bad_names:
+        print(f"WARNING: dropping {len(bad_names)} whitespace-bearing decl "
+              f"name(s) from annotation citations: {sorted(bad_names)[:3]}",
+              file=sys.stderr)
+        decl_set -= bad_names
+        mention_pairs = [(q, d) for q, d in mention_pairs if d not in bad_names]
 
     # grounding evidence text, joined by (qid, decl) — the immutable audit trail
     # (match_kind/status overrides are already applied inside concept_graph_v2).
@@ -428,6 +439,13 @@ def build() -> tuple[list[dict], list[dict], dict]:
                 print(f"WARNING: discovery src QID {src} has no universe "
                       f"record — row skipped", file=sys.stderr)
                 continue
+            if dst.startswith("decl:"):
+                # The fold hardcodes lib=Mathlib; if resolve() already placed
+                # this decl under another library (TheoremGraph module vote),
+                # remap onto the existing node instead of forking a duplicate.
+                bare = dst.split(":", 2)[2]
+                if dst not in known and bare in decl_id:
+                    dst = decl_id[bare]
             if dst not in known and dst not in new_decls and dst.startswith("decl:"):
                 lib, d = dst.split(":", 2)[1:]
                 module = rec.get("module")

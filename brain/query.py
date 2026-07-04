@@ -89,9 +89,17 @@ def cmd_neighborhood(args) -> int:
         if e is not None:
             block = e.get("edges", {})
             if kinds:
-                block = {**block,
-                         "out": [x for x in block.get("out", []) if x["kind"] in kinds],
-                         "in": [x for x in block.get("in", []) if x["kind"] in kinds]}
+                out = [x for x in block.get("out", []) if x["kind"] in kinds]
+                inn = [x for x in block.get("in", []) if x["kind"] in kinds]
+                # counts/truncated must describe the FILTERED lists — the
+                # shard's totals span all kinds and would contradict them.
+                # After a kind filter the true per-kind total is unknowable
+                # from a truncated shard, so flag truncation only when the
+                # shard itself was truncated in that direction.
+                block = {"out": out, "in": inn,
+                         "counts": {"out": len(out), "in": len(inn)},
+                         "counts_all_kinds": block.get("counts"),
+                         "truncated": block.get("truncated")}
             print(json.dumps({"ok": True, "id": args.id, "edges": block,
                               "rollup": e.get("rollup"),
                               "_prov_table": e.get("_prov_table")}, ensure_ascii=False))

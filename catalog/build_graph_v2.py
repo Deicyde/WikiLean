@@ -21,6 +21,7 @@ from __future__ import annotations
 import argparse
 import collections
 import json
+import os
 import re
 import subprocess
 import sys
@@ -30,7 +31,8 @@ HERE = Path(__file__).resolve().parent
 DATA = HERE / "data"
 LIVE = DATA / "concept_graph.json"
 ORACLE = HERE.parent / ".claude" / "skills" / "mathlib-search" / ".cache" / "declaration-data.json"
-CHECKOUT = Path("/Users/jack/Desktop/LEAN/mathlib4/Mathlib")
+CHECKOUT = Path(os.environ.get("BRAIN_MATHLIB_CHECKOUT",
+                               "/Users/jack/Desktop/LEAN/mathlib4/Mathlib"))
 WD_EDGES = HERE / "mathlib_deps" / "wikidata_edges.jsonl"
 ANNOT = HERE.parent / "site" / "annotations"
 OUT = DATA / "concept_graph_v2.json"
@@ -157,6 +159,18 @@ def main() -> int:
     # ---- deterministic decl-existence filter --------------------------------
     proposed = {f["decl"] for c in concepts for f in (c.get("formalizations") or [])}
     okset = oracle_names()
+    # An empty oracle must FAIL, not degrade: on a machine without the
+    # gitignored cache (and/or the checkout) every formalization would be
+    # silently "DROPPED (nonexistent)" and the build would exit 0 with a
+    # formalization-free graph (2026-07-03 self-review, reproduced on a fresh
+    # clone). Fetch the cache via the mathlib-search skill.
+    if not okset:
+        sys.exit(f"FATAL: decl oracle empty/missing at {ORACLE} — fetch it "
+                 "(mathlib-search skill) before building")
+    if not CHECKOUT.exists():
+        print(f"WARNING: mathlib checkout missing at {CHECKOUT} "
+              f"(override with BRAIN_MATHLIB_CHECKOUT) — oracle misses cannot "
+              f"be rescued and will be dropped", file=sys.stderr)
     misses = sorted(proposed - okset)
     print(f"proposed decls: {len(proposed)} | in oracle: {len(proposed) - len(misses)} | "
           f"oracle-misses to checkout-verify: {len(misses)}", file=sys.stderr)

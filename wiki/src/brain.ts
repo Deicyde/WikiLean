@@ -17,7 +17,9 @@ import type { Context, Hono } from "hono";
 import type { Env } from "./env.js";
 import { declShardFor } from "./decl.js";
 
-const ID_RE = /^[^\s\p{C}]{1,400}$/u;
+// Interior spaces are legal (lit anchors like "lit:2110.15741#Theorem 2");
+// only control chars and blank/overlong ids are rejected.
+const ID_RE = /^(?!\s*$)[^\p{C}]{1,400}$/u;
 
 interface BrainManifest {
   scheme: { min_len: number; max_len: number; pad: string };
