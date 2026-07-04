@@ -164,7 +164,6 @@ iframe { flex:1; border:0; width:100%; min-height:420px; }
     <a href="/articles"><b>Browse ${fmtInt(rows.length)} articles</b></a>
     <a href="/recent-changes">Recent changes</a>
     <a href="/concepts">Concepts</a>
-    <a href="/map">Map</a>
     <a href="/about">About</a>
   </nav>
 </header>
