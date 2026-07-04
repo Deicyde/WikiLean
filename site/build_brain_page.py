@@ -164,6 +164,10 @@ html[data-theme="dark"] text.bcount { fill:#8b949e; }
   </nav>
 </header>
 <div class="toolbar">
+  <span class="grp"><b>View</b>
+    <label><input type="radio" name="vm" value="bubbles" checked> bubbles</label>
+    <label title="same level, force-directed — nodes spread apart so the connections dominate and every edge is easy to hit"><input type="radio" name="vm" value="web"> web</label>
+  </span>
   <span class="grp"><b>Layers</b>
     <label><input type="checkbox" data-k="depends" checked> formal deps</label>
     <label><input type="checkbox" data-k="formalizes" checked> formalizations</label>
@@ -387,6 +391,92 @@ function packValue(item) {
   return item.type === "concept" ? 6 : 2.5;
 }
 
+// bubbles = containment-first (circle pack); web = edge-first (force layout of
+// the SAME level, nodes shrunk and spread so the connections dominate and are
+// easy to hit)
+let viewMode = "bubbles";
+try { viewMode = localStorage.getItem("wl-brain-view") || "bubbles"; } catch (e) {}
+
+function drawNodes() {
+  const leaves = layout.leaves;
+  const shade = document.documentElement.dataset.theme === "dark" ? "#20304a" : "#dbeafe";
+  const bubbles = gBubbles.selectAll("circle.node").data(leaves, l => l.data.id);
+  bubbles.exit().remove();
+  const entered = bubbles.enter().append("circle")
+    .attr("class", l => l.data.type === "container" ? "bubble node" : "dot node");
+  entered.append("title");
+  entered.merge(bubbles)
+    .attr("cx", l => l.x).attr("cy", l => l.y)
+    .attr("r", l => Math.max(l.r, 2.5))
+    .attr("fill", l => fillFor(l.data, shade))
+    .attr("fill-opacity", l => l.data.type === "container" ? 0.55 : l.data.ghost ? 0.35 : 0.9)
+    .on("click", (ev, l) => { ev.stopPropagation(); nodeClick(l.data); })
+    .select("title").text(l => l.data.label + (l.data.n_decls
+      ? ` — ${l.data.n_decls.toLocaleString()} decls` : "")
+      + (l.data.ghost ? " — in Mathlib, not yet linked in the brain" : ""));
+}
+
+function drawLabels() {
+  gLabels.selectAll("*").remove();
+  const web = viewMode === "web";
+  for (const l of layout.leaves) {
+    if (l.data.type === "container") {
+      if (!web && l.r < 24) continue;
+      const fs = web ? 10 : Math.max(10, Math.min(16, l.r / 4.5));
+      gLabels.append("text").attr("class", "blabel")
+        .attr("x", l.x).attr("y", web ? l.y + l.r + 11 : l.y - (l.r > 40 ? 4 : -4))
+        .attr("font-size", fs).text(l.data.label);
+      if (!web && l.r > 40) {
+        gLabels.append("text").attr("class", "bcount")
+          .attr("x", l.x).attr("y", l.y + fs - 2).attr("font-size", fs * 0.72)
+          .text(`${(l.data.n_decls || 0).toLocaleString()}${
+            l.data.n_concepts ? " · " + l.data.n_concepts + "★" : ""}`);
+      }
+    } else if (l.data.type === "concept" && l.data.label && !/^Q\d+$/.test(l.data.label)) {
+      if (!web && l.r < 11) continue;
+      gLabels.append("text").attr("class", "blabel")
+        .attr("x", l.x).attr("y", l.y + Math.max(l.r, 3) + 10).attr("font-size", 9)
+        .text(l.data.label.length > 26 ? l.data.label.slice(0, 24) + "…" : l.data.label);
+    }
+  }
+}
+
+// force layout over the CURRENT level using the just-built edge web; runs
+// synchronously (200 ticks) once enrich() has the edges
+function applyWebLayout() {
+  if (viewMode !== "web" || !layout || !layout.leaves) return;
+  const W = stageEl.clientWidth || 800, H = stageEl.clientHeight || 600;
+  const leaves = layout.leaves;
+  const sims = leaves.map(l => ({
+    id: l.data.id, l,
+    x: l.x, y: l.y,
+    r: l.data.type === "container"
+      ? 9 + 3.2 * Math.log2(1 + (l.data.n_decls || 1))
+      : Math.min(Math.max(l.r, 3.5), 7),
+  }));
+  const byId = new Map(sims.map(s => [s.id, s]));
+  const links = edgeStore
+    .filter(e => byId.has(e.a) && byId.has(e.b))
+    .map(e => ({source: e.a, target: e.b, w: e.w}));
+  const sim = d3.forceSimulation(sims)
+    .force("link", d3.forceLink(links).id(d => d.id)
+      .distance(l => 70 + 50 / Math.sqrt(1 + l.w)).strength(0.4))
+    .force("charge", d3.forceManyBody().strength(-140).distanceMax(420))
+    .force("center", d3.forceCenter(W / 2, H / 2))
+    .force("collide", d3.forceCollide(d => d.r + 8))
+    .stop();
+  for (let i = 0; i < 200; i++) sim.tick();
+  for (const s of sims) {
+    s.l.x = Math.max(s.r + 6, Math.min(W - s.r - 6, s.x));
+    s.l.y = Math.max(s.r + 6, Math.min(H - s.r - 18, s.y));
+    s.l.r = s.r;
+  }
+  drawNodes();
+  drawLabels();
+  renderEdges();
+  drawSelRing();
+}
+
 let renderSeq = 0;   // guards against out-of-order async renders
 async function renderFocus(anim) {
   const seq = ++renderSeq;
@@ -397,56 +487,24 @@ async function renderFocus(anim) {
   d3.pack().size([W, H]).padding(items.length > 150 ? 1.5 : 4)(root);
   const leaves = root.leaves().filter(l => l.data.id);
 
-  layout = {items: new Map(leaves.map(l => [l.data.id, l]))};
+  layout = {items: new Map(leaves.map(l => [l.data.id, l])), leaves: leaves};
   gEdges.selectAll("*").remove();
   gOverlay.selectAll("*").remove();
   gBubbles.selectAll("circle.preview").remove();
-
-  const shade = document.documentElement.dataset.theme === "dark" ? "#20304a" : "#dbeafe";
-  const bubbles = gBubbles.selectAll("circle.node")
-    .data(leaves, l => l.data.id);
-  bubbles.exit().remove();
-  const entered = bubbles.enter().append("circle")
-    .attr("class", l => l.data.type === "container" ? "bubble node" : "dot node");
-  entered.append("title");
-  const all = entered.merge(bubbles)
-    .attr("cx", l => l.x).attr("cy", l => l.y)
-    .attr("r", l => Math.max(l.r, 2.5))
-    .attr("fill", l => fillFor(l.data, shade))
-    .attr("fill-opacity", l => l.data.type === "container" ? 0.55 : l.data.ghost ? 0.35 : 0.9)
-    .on("click", (ev, l) => { ev.stopPropagation(); nodeClick(l.data); });
-  all.select("title").text(l => l.data.label + (l.data.n_decls
-    ? ` — ${l.data.n_decls.toLocaleString()} decls` : "")
-    + (l.data.ghost ? " — in Mathlib, not yet linked in the brain" : ""));
-
-  gLabels.selectAll("*").remove();
-  for (const l of leaves) {
-    if (l.data.type !== "container" || l.r < 24) continue;
-    const fs = Math.max(10, Math.min(16, l.r / 4.5));
-    gLabels.append("text").attr("class", "blabel")
-      .attr("x", l.x).attr("y", l.y - (l.r > 40 ? 4 : -4)).attr("font-size", fs)
-      .text(l.data.label);
-    if (l.r > 40) {
-      gLabels.append("text").attr("class", "bcount")
-        .attr("x", l.x).attr("y", l.y + fs - 2).attr("font-size", fs * 0.72)
-        .text(`${(l.data.n_decls || 0).toLocaleString()}${
-          l.data.n_concepts ? " · " + l.data.n_concepts + "★" : ""}`);
-    }
-  }
+  drawNodes();
+  drawLabels();
 
   // concept dots boot with their QID as label; resolve real labels lazily
+  let pendingLabels = 0;
   for (const l of leaves) {
     if (l.data.type !== "concept") continue;
+    pendingLabels++;
     getEntry(l.data.id).then(ce => {
       if (seq !== renderSeq || !ce || !ce.node.label) return;
       l.data.label = ce.node.label;
-      all.filter(d => d.data.id === l.data.id).select("title").text(ce.node.label);
-      if (l.r >= 11) {
-        gLabels.append("text").attr("class", "blabel")
-          .attr("x", l.x).attr("y", l.y + l.r + 10).attr("font-size", 10)
-          .text(ce.node.label.length > 26
-            ? ce.node.label.slice(0, 24) + "…" : ce.node.label);
-      }
+      gBubbles.selectAll("circle.node").filter(d => d.data.id === l.data.id)
+        .select("title").text(ce.node.label);
+      if (--pendingLabels <= 0) drawLabels();
     });
   }
 
@@ -493,7 +551,7 @@ async function enrich(seq, leaves) {
     // grandchild preview: faint inner circles (top 24 by size)
     const kids = (e.children && e.children.first || [])
       .filter(c => c.type === "container").slice(0, 24);
-    if (kids.length > 1 && l.r > 26) {
+    if (kids.length > 1 && l.r > 26 && viewMode !== "web") {
       const inner = d3.hierarchy({children: kids})
         .sum(d => d.children ? 0 : Math.pow(Math.max(d.n_decls || 1, 1), 0.6));
       d3.pack().size([l.r * 1.7, l.r * 1.7]).padding(2)(inner);
@@ -555,6 +613,8 @@ async function enrich(seq, leaves) {
   if (seq !== renderSeq) return;
   edgeStore = [...store.values()];
   renderEdges();
+  applyWebLayout();
+  if (lastPanelId === focusId && !selectedId) renderPanel(focusId);
 }
 
 function liftOf(e) {
@@ -590,10 +650,16 @@ function renderEdges() {
     if (!A || !B) continue;
     const mx = (A.x + B.x) / 2, my = (A.y + B.y) / 2;
     const dx = B.x - A.x, dy = B.y - A.y;
-    const d = `M${A.x},${A.y} Q${mx - dy * 0.18},${my + dx * 0.18} ${B.x},${B.y}`;
+    // deterministic per-pair bend so parallel routes fan out instead of piling
+    let h = 0;
+    const hk = e.a + "|" + e.b + e.kind;
+    for (let i = 0; i < hk.length; i++) h = (h * 31 + hk.charCodeAt(i)) >>> 0;
+    const bend = (0.08 + (h % 1000) / 1000 * 0.22) * ((h & 1) ? 1 : -1);
+    const d = `M${A.x},${A.y} Q${mx - dy * bend},${my + dx * bend} ${B.x},${B.y}`;
     const st = EDGE_STYLE[e.kind];
     const isDep = e.kind === "depends";
-    const baseOp = isDep ? depOpacity(e) : 0.5;
+    const web = viewMode === "web";
+    const baseOp = isDep ? Math.max(depOpacity(e), web ? 0.3 : 0) : web ? 0.65 : 0.5;
     const p = gEdges.append("path").attr("class", "link")
       .attr("d", d).attr("fill", "none")
       .attr("stroke", st.color)
@@ -603,10 +669,12 @@ function renderEdges() {
     // invisible fat twin = the click/hover target
     gEdges.append("path").attr("class", "hit")
       .attr("d", d).attr("fill", "none")
-      .attr("stroke", "transparent").attr("stroke-width", 9)
+      .attr("stroke", "transparent").attr("stroke-width", 14)
       .style("cursor", "pointer")
-      .on("mouseenter", () => p.attr("stroke-opacity", 0.95))
-      .on("mouseleave", () => p.attr("stroke-opacity", baseOp))
+      .on("mouseenter", () => p.attr("stroke-opacity", 0.95)
+        .attr("stroke-width", (isDep ? 0.6 + 2.6 * Math.sqrt(e.w / maxSig) : 1.3) + 1.4))
+      .on("mouseleave", () => p.attr("stroke-opacity", baseOp)
+        .attr("stroke-width", isDep ? 0.6 + 2.6 * Math.sqrt(e.w / maxSig) : 1.3))
       .on("click", ev => { ev.stopPropagation(); showEdgePanel(e); });
   }
   paintCommunities();
@@ -673,6 +741,7 @@ function paintCommunities() {
 
 // click-to-inspect: the edge's provenance card in the panel
 function showEdgePanel(e) {
+  lastPanelId = "__edge__";
   const st = EDGE_STYLE[e.kind];
   const prov = (e.payload && e.payload.prov !== undefined && manifest.prov[e.payload.prov]) || null;
   const ev = (e.payload && e.payload.evidence) || {};
@@ -959,7 +1028,10 @@ function edgeHtml(x, provTable, dir) {
     <span class="prov ${pc}" title="${esc(PROV_TITLE[pc])}">${pc}${ev.skeptic === "pending" ? " · unreviewed" : ""}${ev.source_tagged ? " · @[wikidata]" : ""}</span></div>
     <div class="drawer">${drawer}</div></div>`;
 }
+let lastPanelId = null;
+let lastLevelEdges = [];
 async function renderPanel(id) {
+  lastPanelId = id;
   const e = await getEntry(id);
   if (!e) { panelEl.innerHTML = `<p class="note">Unknown node: ${esc(id)}</p>`; return; }
   const n = e.node, prov = manifest.prov;
@@ -976,7 +1048,7 @@ async function renderPanel(id) {
   if (n.module) sub.push(esc(n.module));
   if (n.slug) sub.push(`<a href="/${esc(n.slug)}">WikiLean article</a>`);
   if (n.type === "concept") sub.push(`<a href="https://www.wikidata.org/wiki/${esc(n.id)}" rel="noopener" target="_blank">${esc(n.id)}</a>`);
-  if (n.type === "decl") sub.push(`<a href="${esc(nodeUrl(n.id))}" rel="noopener" target="_blank">docs ↗</a>`);
+  if (n.type === "decl") sub.push(`<a href="${esc(nodeUrl(n.id))}" rel="noopener" target="_blank">${esc(n.library || "Mathlib")} docs ↗</a>`);
   html += `<div class="sub">${sub.join(" · ")}</div>`;
   // "Also in" — every external identity of this concept as one chip strip
   // (the /map concept-panel affordance): article, Wikidata, Google KG, and
@@ -1014,7 +1086,7 @@ async function renderPanel(id) {
   if (n.code) {
     html += `<div class="codeblock"><pre>${esc(n.code)}</pre><span class="src">${
       esc(n.decl_kind || "decl")} — mathlib4 source (Apache-2.0) · ` +
-      `<a href="${esc(nodeUrl(n.id))}" rel="noopener" target="_blank">Mathlib docs ↗</a></span></div>`;
+      `<a href="${esc(nodeUrl(n.id))}" rel="noopener" target="_blank">${esc(n.library || "Mathlib")} docs ↗</a></span></div>`;
   }
   if (n.docstring) html += `<p class="note">${esc(n.docstring)}</p>`;
   if (n.arxiv_id) html += `<p class="note">appears as <b>${esc(n.ref || "?")}</b> of
@@ -1069,12 +1141,46 @@ async function renderPanel(id) {
       break;
     }
   }
+
+  // the focused container also lists the strongest connections AMONG its
+  // children — the easy way to pick an edge that is hard to hit on canvas
+  if (n.type === "container" && id === focusId && layout) {
+    const short = nid => {
+      const L = layout.items.get(nid);
+      if (L && L.data.label && !/^Q\d+$/.test(L.data.label)) return L.data.label;
+      return nid.startsWith("path:") ? nid.split("/").slice(-1)[0] : nid;
+    };
+    lastLevelEdges = edgeStore
+      .filter(e2 => layout.items.has(e2.a) && layout.items.has(e2.b)
+        && (e2.kind === "xref-shared" ? kinds.has("xref") : kinds.has(e2.kind))
+        && provs.has(provClass(e2.kind,
+            e2.payload && e2.payload.prov !== undefined ? manifest.prov[e2.payload.prov] : null,
+            e2.payload && e2.payload.evidence)))
+      .sort((x, y) => y.w - x.w).slice(0, 15);
+    if (lastLevelEdges.length) {
+      html += `<section class="kind"><h3>Connections at this level
+        <span class="cnt">(strongest ${lastLevelEdges.length})</span></h3>`;
+      lastLevelEdges.forEach((e2, i) => {
+        const st2 = EDGE_STYLE[e2.kind] || {};
+        html += `<div class="edge"><div class="row" data-lvledge="${i}">
+          <span style="color:${st2.color}">●</span>
+          <span>${esc(short(e2.a))} ↔ ${esc(short(e2.b))}</span>
+          <span class="mk">${esc(st2.label || e2.kind)}</span>${
+          e2.kind === "depends" ? ` <span class="lit-ref">sig ${e2.w}</span>` : ""}</div></div>`;
+      });
+      html += `</section>`;
+    }
+  }
   panelEl.innerHTML = html;
   panelEl.querySelectorAll("[data-nav]").forEach(a =>
     a.addEventListener("click", () => navigate(a.dataset.nav)));
   panelEl.querySelectorAll(".edge .row").forEach(r =>
     r.addEventListener("click", ev => {
       if (ev.target.closest("a") || ev.target.closest("[data-nav]")) return;
+      if (r.dataset.lvledge !== undefined) {
+        showEdgePanel(lastLevelEdges[Number(r.dataset.lvledge)]);
+        return;
+      }
       r.parentElement.classList.toggle("open");
     }));
   // literature rows boot as raw lit: ids — resolve paper titles lazily (their
@@ -1100,13 +1206,14 @@ async function renderPanel(id) {
 // ghost decls have no brain node — the panel explains and links out instead
 // of erroring with "Unknown node"
 function ghostPanel(item) {
+  lastPanelId = "__ghost__";
   const name = item.label;
   const mod = focusId.startsWith("path:")
     ? focusId.slice(5).replaceAll("/", ".") : "";
   panelEl.innerHTML = `
     <h2 style="font-size:1.1rem">${esc(name)}</h2>
     <div class="sub">decl${mod ? " · " + esc(mod) : ""} ·
-      <a href="/decl/${encodeURIComponent(name)}" rel="noopener" target="_blank">Mathlib docs ↗</a></div>
+      <a href="/decl/${encodeURIComponent(name)}" rel="noopener" target="_blank">docs ↗</a></div>
     <span class="badge">not yet linked</span>
     <p class="note" style="margin-top:10px">This declaration exists in the formal
     snapshot, but no brain edge reaches it yet — no concept formalizes it, no
@@ -1118,6 +1225,7 @@ function ghostPanel(item) {
 // ---- the transparency legend: /map's Sources view, rendered in the panel ----
 let sourcesData = null;
 async function showSourcesPanel() {
+  lastPanelId = "__sources__";
   if (!sourcesData) {
     const r = await fetch(BASE + "sources.json" + vq());
     if (!r.ok) { panelEl.innerHTML = `<p class="note">sources.json unavailable</p>`; return; }
@@ -1209,6 +1317,15 @@ document.querySelectorAll(".toolbar input").forEach(el =>
     if (selectedId) renderPanel(selectedId);
     else if (focusId !== LIBS_ID) renderPanel(focusId);
   }));
+
+document.querySelectorAll('input[name="vm"]').forEach(r => {
+  r.checked = r.value === viewMode;
+  r.addEventListener("change", () => {
+    viewMode = r.value;
+    try { localStorage.setItem("wl-brain-view", viewMode); } catch (e) {}
+    renderFocus(false);
+  });
+});
 
 window.addEventListener("hashchange", () => {
   const id = decodeURIComponent(location.hash.slice(1));
