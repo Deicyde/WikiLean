@@ -173,8 +173,8 @@ html[data-theme="dark"] text.bcount { fill:#8b949e; }
     <label><input type="checkbox" data-k="formalizes" checked> formalizations</label>
     <label><input type="checkbox" data-k="xref" checked> cross-refs</label>
     <label><input type="checkbox" data-k="cites,matches" checked> literature</label>
-    <label><input type="checkbox" data-k="relates"> wikidata relations</label>
-    <label><input type="checkbox" data-k="mentions"> article mentions</label>
+    <label><input type="checkbox" data-k="relates" checked> wikidata relations</label>
+    <label><input type="checkbox" data-k="mentions" checked> article mentions</label>
   </span>
   <span class="grp"><b>Libraries</b>
     <label><input type="checkbox" data-lk="math" checked> math</label>
@@ -677,6 +677,18 @@ async function enrich(seq, leaves) {
           .attr("stroke", "currentColor").attr("stroke-opacity", 0.14);
       }
     }
+    // informal rollups: relates (Wikidata, human) + mentions (articles, AI)
+    // aggregated between concept homes — the human/AI synapses between bubbles
+    const inf = e.rollup && e.rollup.informal;
+    if (inf) {
+      for (const row of inf) {
+        if (!visible.has(row.id)) continue;
+        put(row.kind, l.data.id, row.id, row.count,
+            {prov: row.prov, confidence: "high",
+             evidence: {aggregated: true, count: row.count, sample_pairs: row.samples,
+                        note: "concept-level " + row.kind + " flows between these areas"}});
+      }
+    }
     // container↔container depends from the typed rollups (sig weights) —
     // both directions: a sibling link crowded out of A's top-N by global
     // hubs often survives in B's
@@ -778,7 +790,8 @@ function renderEdges() {
     const p = gEdges.append("path").attr("class", "link")
       .attr("d", d).attr("fill", "none")
       .attr("stroke", st.color)
-      .attr("stroke-width", isDep ? 0.6 + 2.6 * Math.sqrt(e.w / maxSig) : 1.3)
+      .attr("stroke-width", isDep ? 0.6 + 2.6 * Math.sqrt(e.w / maxSig)
+            : 1 + Math.min(2.2, Math.log2(1 + e.w) * 0.5))
       .attr("stroke-opacity", baseOp);
     if (st.dash) p.attr("stroke-dasharray", st.dash);
     // invisible fat twin = the click/hover target
@@ -787,9 +800,11 @@ function renderEdges() {
       .attr("stroke", "transparent").attr("stroke-width", 14)
       .style("cursor", "pointer")
       .on("mouseenter", () => p.attr("stroke-opacity", 0.95)
-        .attr("stroke-width", (isDep ? 0.6 + 2.6 * Math.sqrt(e.w / maxSig) : 1.3) + 1.4))
+        .attr("stroke-width", (isDep ? 0.6 + 2.6 * Math.sqrt(e.w / maxSig)
+          : 1 + Math.min(2.2, Math.log2(1 + e.w) * 0.5)) + 1.4))
       .on("mouseleave", () => p.attr("stroke-opacity", baseOp)
-        .attr("stroke-width", isDep ? 0.6 + 2.6 * Math.sqrt(e.w / maxSig) : 1.3))
+        .attr("stroke-width", isDep ? 0.6 + 2.6 * Math.sqrt(e.w / maxSig)
+          : 1 + Math.min(2.2, Math.log2(1 + e.w) * 0.5)))
       .on("click", ev => { ev.stopPropagation(); showEdgePanel(e); });
   }
   paintCommunities();
