@@ -198,6 +198,7 @@ def main() -> int:
         return chain
 
     anc_memo: dict[str, list[str]] = {}
+    seen_cpairs: dict[str, set] = {}
     informal: dict[tuple[str, str], dict[str, list]] = defaultdict(dict)
     for src, rows in edges_out.items():
         if not src.startswith("Q"):
@@ -214,6 +215,12 @@ def main() -> int:
                 continue
             if not hB:
                 continue
+            # reciprocal Wikidata claims (A→B and B→A) are ONE relationship:
+            # count distinct unordered concept pairs, not directed claims
+            cpair = (src, dst) if src < dst else (dst, src)
+            if cpair in seen_cpairs.setdefault(item["kind"], set()):
+                continue
+            seen_cpairs[item["kind"]].add(cpair)
             A = anc_memo.setdefault(hA, anc_chain(hA))
             B = anc_memo.setdefault(hB, anc_chain(hB))
             for k in range(min(len(A), len(B))):
