@@ -119,6 +119,80 @@ def build() -> tuple[list[dict], list[dict], dict]:
     mention_pairs = sorted((q, d) for d, m in roles.items()
                            for q, r in m.items() if r == "citation")
     ldecls = {l["decl"] for ls in links.values() for l in ls}
+
+    # per-annotation evidence from the article corpus (site/annotations/*.json —
+    # the D1 cache): each mentions edge carries how many annotations cite the
+    # decl (statuses, labels, deep-linkable ids); each annotated concept gets an
+    # article_annotations summary. Articles whose concept is NOT in the graph
+    # fall back to the universe slug→QID map and are MINTED as concepts — every
+    # annotated article must reach the brain. Fail-soft: no corpus, bare edges.
+    ann_dir = ROOT / "site" / "annotations"
+    ann_ev: dict[tuple[str, str], dict] = {}
+    ann_summary: dict[str, dict] = {}
+    ann_new_concepts: set[str] = set()
+    ann_extra_pairs: list[tuple[str, str]] = []
+    slug2qid_local = {n.get("slug"): n["qid"] for n in graph["nodes"] if n.get("slug")}
+    uni_slug2qid: dict[str, str] = {}
+    for name in ("wikidata_universe.jsonl", "universe_extension.jsonl"):
+        if INPUTS[name].exists():
+            with INPUTS[name].open() as fh:
+                for line in fh:
+                    r = json.loads(line)
+                    sl = r.get("enwiki_slug")
+                    if sl and r.get("qid"):
+                        uni_slug2qid.setdefault(sl, r["qid"])
+                        # WikiLean slugs hyphenate en-dashes (Curry–Howard)
+                        uni_slug2qid.setdefault(sl.replace("\u2013", "-")
+                                                .replace("–", "-"), r["qid"])
+    if ann_dir.exists():
+        for f in sorted(ann_dir.glob("*.json")):
+            if f.name.endswith(".agent1.json"):
+                continue
+            try:
+                doc = json.loads(f.read_text())
+            except (OSError, json.JSONDecodeError):
+                continue
+            slug = doc.get("slug")
+            anns = doc.get("annotations") or []
+            if not slug or not anns:
+                continue
+            qid = slug2qid_local.get(slug)
+            if not qid:
+                qid = uni_slug2qid.get(slug)
+                if not qid:
+                    print(f"WARNING: annotated article {slug} has no QID in the "
+                          f"universe — invisible to the brain", file=sys.stderr)
+                    continue
+                ann_new_concepts.add(qid)
+            summ = {"total": len(anns), "formalized": 0, "partial": 0,
+                    "not_formalized": 0}
+            for a in anns:
+                st = a.get("status")
+                if st in summ:
+                    summ[st] += 1
+                dec = (a.get("mathlib") or {}).get("decl")
+                if not dec:
+                    continue
+                if qid in ann_new_concepts:
+                    ann_extra_pairs.append((qid, dec))
+                ev = ann_ev.setdefault((qid, dec), {
+                    "role": "citation", "n_annotations": 0, "statuses": {},
+                    "sample": []})
+                ev["n_annotations"] += 1
+                ev["statuses"][st] = ev["statuses"].get(st, 0) + 1
+                if len(ev["sample"]) < 3:
+                    ev["sample"].append({"id": a.get("id"),
+                                         "label": (a.get("label") or "")[:80],
+                                         "status": st})
+            ann_summary[qid] = summ
+        if ann_new_concepts:
+            print(f"  annotated articles outside the graph, minted as concepts: "
+                  f"{len(ann_new_concepts)} (+{len(ann_extra_pairs)} mention pairs)",
+                  file=sys.stderr)
+        mention_pairs = sorted(set(mention_pairs) | set(ann_extra_pairs))
+    else:
+        print("NOTE: site/annotations missing — mentions edges stay bare",
+              file=sys.stderr)
     # @[stacks]/@[kerodon]/@[wikidata] attributes harvested from the mathlib4
     # checkout — loaded before the decl universe is fixed so every gold
     # @[wikidata]-tagged decl becomes a brain node even when no agent pipeline
@@ -136,7 +210,8 @@ def build() -> tuple[list[dict], list[dict], dict]:
               "provenance skipped", file=sys.stderr)
     source_tagged = {(r["tag"], r["decl"]) for r in tag_rows
                      if r["db"] == "wikidata"}
-    decl_set = set(roles) | fdecls | ldecls | {d for _, d in source_tagged}
+    decl_set = (set(roles) | fdecls | ldecls | {d for _, d in source_tagged}
+                | {d for _, d in mention_pairs})
     # Annotation citations occasionally carry junk like
     # "MonoidAlgebra.instIsSemisimpleModule (Maschke)" — whitespace is never
     # legal in a Lean identifier, so such names can't resolve anywhere. Drop
@@ -362,52 +437,6 @@ def build() -> tuple[list[dict], list[dict], dict]:
                                            (n["qid"], f["decl"])),
                                        "verified_by": "build_graph_v2 oracle+checkout"})))
 
-    # per-annotation evidence from the article corpus (site/annotations/*.json —
-    # the D1 cache): each mentions edge carries how many annotations in the
-    # concept's article cite the decl, their formalization statuses, labels and
-    # ids (deep-linkable); each annotated concept gets an article_annotations
-    # summary on its node payload. Fail-soft: no corpus, bare citation edges.
-    ann_dir = ROOT / "site" / "annotations"
-    ann_ev: dict[tuple[str, str], dict] = {}
-    ann_summary: dict[str, dict] = {}
-    slug2qid_local = {n.get("slug"): n["qid"] for n in graph["nodes"] if n.get("slug")}
-    if ann_dir.exists():
-        for f in sorted(ann_dir.glob("*.json")):
-            if f.name.endswith(".agent1.json"):
-                continue
-            try:
-                doc = json.loads(f.read_text())
-            except (OSError, json.JSONDecodeError):
-                continue
-            qid = slug2qid_local.get(doc.get("slug"))
-            if not qid:
-                continue
-            anns = doc.get("annotations") or []
-            if not anns:
-                continue
-            summ = {"total": len(anns), "formalized": 0, "partial": 0,
-                    "not_formalized": 0}
-            for a in anns:
-                st = a.get("status")
-                if st in summ:
-                    summ[st] += 1
-                dec = (a.get("mathlib") or {}).get("decl")
-                if not dec:
-                    continue
-                ev = ann_ev.setdefault((qid, dec), {
-                    "role": "citation", "n_annotations": 0, "statuses": {},
-                    "sample": []})
-                ev["n_annotations"] += 1
-                ev["statuses"][st] = ev["statuses"].get(st, 0) + 1
-                if len(ev["sample"]) < 3:
-                    ev["sample"].append({"id": a.get("id"),
-                                         "label": (a.get("label") or "")[:80],
-                                         "status": st})
-            ann_summary[qid] = summ
-    else:
-        print("NOTE: site/annotations missing — mentions edges stay bare",
-              file=sys.stderr)
-
     pin_r = _pin("decl_qid_roles_v2.json")
     for q, d in mention_pairs:
         edges.append(_edge(q, decl_id[d], "mentions", "annotations",
@@ -568,11 +597,15 @@ def build() -> tuple[list[dict], list[dict], dict]:
             "id": qid, "type": "concept", "label": u.get("label"),
             "slug": u.get("enwiki_slug"),
             "description": u.get("description"),
+            "article_annotations": ann_summary.get(qid),
             "altitude_evidence": {"p31": u.get("classes") or [],
                                   "module_span": [], "match_kinds": []},
             "display": {"status": "partial"},
         })
         return True
+
+    for _q in sorted(ann_new_concepts):   # every annotated article reaches the brain
+        ensure_concept(_q)
 
     p = OPTIONAL_INPUTS["container_links.jsonl"]
     if p.exists():

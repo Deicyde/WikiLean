@@ -35,7 +35,7 @@ import {
   type StatsEventCell,
   type UserProfileRow,
 } from "./pages.js";
-import { homePage, sitemapXml } from "./home.js";
+import { brainLanding, homePage, sitemapXml } from "./home.js";
 import { wikifunctionsPage } from "./wikifunctions.js";
 import { wikifunctionsVerifyPage } from "./wikifunctions-verify.js";
 import { registerReviewRoutes } from "./review.js";
@@ -101,6 +101,7 @@ const RESERVED = new Set([
   "map-v2",
   "map_data_v2.json",
   "brain",
+  "articles",
 ]);
 
 const app = new Hono<{ Bindings: Env }>();
@@ -396,12 +397,9 @@ type WriteBatch = [BatchItem<"sqlite">, ...BatchItem<"sqlite">[]];
 // with TTL-only invalidation. They route here only because build-public.ts no
 // longer copies index.html/sitemap.xml into wiki/public/ — the asset layer
 // runs BEFORE the Worker and would otherwise shadow these paths.
-app.get("/", async (c) => {
-  const cacheKey = "page:home:v4";  // v4: Brain nav/CTA/dataset links
-  const cached = await c.env.RENDER_CACHE.get(cacheKey);
-  if (cached) return c.html(cached);
+async function homeRows(c: Context<{ Bindings: Env }>) {
   const db = drizzle(c.env.DB);
-  const rows = await db
+  return db
     .select({
       slug: articles.slug,
       displayTitle: articles.displayTitle,
@@ -412,7 +410,23 @@ app.get("/", async (c) => {
     })
     .from(articles)
     .orderBy(articles.displayTitle);
-  const html = homePage(rows);
+}
+
+// the landing page IS the Brain (embedded); the article directory moved to /articles
+app.get("/", async (c) => {
+  const cacheKey = "page:home:v5";  // v5: Brain embedded as the landing page
+  const cached = await c.env.RENDER_CACHE.get(cacheKey);
+  if (cached) return c.html(cached);
+  const html = brainLanding(await homeRows(c));
+  await c.env.RENDER_CACHE.put(cacheKey, html, { expirationTtl: 300 });
+  return c.html(html);
+});
+
+app.get("/articles", async (c) => {
+  const cacheKey = "page:articles:v1";  // the former homepage: directory + search
+  const cached = await c.env.RENDER_CACHE.get(cacheKey);
+  if (cached) return c.html(cached);
+  const html = homePage(await homeRows(c));
   await c.env.RENDER_CACHE.put(cacheKey, html, { expirationTtl: 300 });
   return c.html(html);
 });
