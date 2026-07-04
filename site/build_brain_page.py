@@ -187,6 +187,8 @@ body.embed .main { height:calc(100vh - 44px); }
     <label title="machine-verified: kernel-extracted dependencies and the file tree — checked by the Lean compiler, no judgment involved"><input type="checkbox" data-p="machine" checked> machine</label>
     <label title="AI-generated: agent-proposed concept matches (skeptic-reviewed), LLM-judged paper matches (TheoremGraph), pipeline annotations"><input type="checkbox" data-p="ai" checked> AI</label>
   </span>
+  <span class="grp"><a id="srcbtn2" style="cursor:pointer"
+    title="every external database the brain links to — layer, provenance, license">Sources</a></span>
   <span class="note" id="status">loading manifest…</span>
 </div>
 <div id="crumbbar"></div>
@@ -1445,6 +1447,7 @@ async function showSourcesPanel() {
     r.addEventListener("click", () => r.parentElement.classList.toggle("open")));
 }
 $("#srcbtn").addEventListener("click", showSourcesPanel);
+$("#srcbtn2").addEventListener("click", showSourcesPanel);
 
 // ============================ search =========================================
 async function ensureLabels() {
