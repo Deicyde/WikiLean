@@ -1,20 +1,23 @@
 #!/usr/bin/env python3
-"""Generate /brain — the locality-scoped explorer over the BRAIN dataset.
+"""Generate /brain — the bubble+graph explorer over the BRAIN dataset.
 
-One page, zero baked-in data: everything is fetched on demand from the prefix
-shards in /assets/brain/ (manifest.json → one shard fetch per node), so the
-client never loads the whole graph — brain/SCHEMA.md's locality law as UX.
+One zoomable canvas, zero baked-in data: everything is fetched on demand from
+the prefix shards in /assets/brain/ (manifest.json → one shard fetch per node),
+so the client never loads the whole graph — brain/SCHEMA.md's locality law as UX.
 
-  · Explore  — Miller-column drill-down through the containment tree
-               (library → module → … → file → decl), concepts floating beside
-               the container they anchor to.
-  · Panel    — the selected node: breadcrumb, altitude evidence, slogan, and
-               every ontology edge grouped by kind, each with its provenance
-               and evidence one tap away (the anti-slop drawer).
-  · Layers   — per-source-kind toggles (formal deps / cross-refs / literature /
-               wikidata relations / mentions) overlay or hide edge families.
-  · Search   — label search over concepts + containers (labels.json, lazy);
-               decls resolve through the existing /decl route.
+  · Bubbles — one circle-pack level per focus container (library → module → …
+              → file → decl), children sized by decl count, concepts packed
+              beside the containers that anchor them. Click a bubble to zoom
+              in (d3.interpolateZoom, the /map bubbles feel); click the
+              background or breadcrumb to zoom out.
+  · Graph   — real database connections drawn in space: sibling `depends`
+              edges from the typed rollups (sig-weighted), and the selected
+              node's ontology edges (formalizes / xref / cites / relates)
+              overlaid by kind.
+  · Panel   — the selected node: breadcrumb, altitude evidence, slogan, and
+              every edge with its provenance one tap away (anti-slop drawer).
+  · Layers  — per-source-kind toggles overlay or hide edge families.
+  · Search  — label search over concepts + areas (labels.json, lazy).
 
 Run: python3 site/build_brain_page.py   (writes site/out/brain.html; build-public
 copies it + site/assets/brain/ into the Worker's static assets)
@@ -30,7 +33,7 @@ HTML = r"""<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>WikiLean — The Brain</title>
-<meta name="description" content="Explore the BRAIN: a locality-scoped concept and dependency graph of mathematics joining Wikipedia/Wikidata concepts, Lean formalizations across 39 libraries, cross-database identities (LMFDB, nLab, MathWorld, …) and arXiv literature — with machine-checkable provenance on every edge.">
+<meta name="description" content="Explore the BRAIN: a zoomable bubble map of mathematics joining Wikipedia/Wikidata concepts, Lean formalizations across 39 libraries, cross-database identities (LMFDB, nLab, MathWorld, …) and arXiv literature — real dependency edges between bubbles, machine-checkable provenance on every link.">
 <script>(function(){try{var s=localStorage.getItem("wl-theme");var t=s==="dark"||s==="light"?s:(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.dataset.theme=t;}catch(e){}})();</script>
 <style>
 * { box-sizing:border-box; }
@@ -61,27 +64,28 @@ a:hover { text-decoration:underline; }
 #hits .hit { padding:6px 10px; cursor:pointer; display:flex; gap:8px; align-items:baseline; }
 #hits .hit:hover { background:#f6f8fa; }
 #hits .hit .t { font-size:.72rem; color:#57606a; min-width:64px; }
-.main { display:flex; height:calc(100vh - 96px); }
-#columns { flex:1 1 58%; display:flex; overflow-x:auto; border-right:1px solid #d0d7de;
-  background:#fff; }
-.col { min-width:230px; max-width:290px; border-right:1px solid #eaeef2; overflow-y:auto;
-  padding:4px 0; flex:0 0 auto; }
-.col h4 { margin:6px 10px 4px; font-size:.72rem; color:#57606a; text-transform:uppercase;
-  letter-spacing:.03em; font-weight:600; }
-.item { padding:5px 10px; cursor:pointer; display:flex; align-items:center; gap:7px;
-  font-size:.86rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.item:hover { background:#f6f8fa; }
-.item.sel { background:#ddf4ff; }
-.item .n { color:#8c959f; font-size:.72rem; margin-left:auto; flex:0 0 auto; }
-.item .chev { color:#8c959f; flex:0 0 auto; font-size:.7rem; }
-.dot { width:8px; height:8px; border-radius:50%; flex:0 0 auto; }
-.dot.container { background:#8250df; border-radius:2px; }
-.dot.decl { background:#1a7f37; }
-.dot.concept { background:#0969da; }
-.dot.concept.partial { background:#d4a72c; }
-.dot.concept.not_formalized { background:#cf222e; }
-.dot.literature { background:#bf5af2; }
-#panel { flex:1 1 42%; overflow-y:auto; padding:18px 22px; background:#fafbfc; }
+#crumbbar { background:#fff; border-bottom:1px solid #eaeef2; padding:6px 20px;
+  font-size:.82rem; color:#57606a; display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
+#crumbbar a { cursor:pointer; }
+#crumbbar .sep { color:#8c959f; }
+.main { display:flex; height:calc(100vh - 132px); }
+#stage { flex:1 1 62%; position:relative; background:#fff; overflow:hidden; }
+#stage svg { display:block; width:100%; height:100%; }
+#stage .hint { position:absolute; left:12px; bottom:10px; font-size:.72rem; color:#8c959f;
+  pointer-events:none; }
+circle.bubble { cursor:pointer; transition: stroke .12s; stroke:#fff0; }
+circle.bubble:hover { stroke:#0969da; stroke-width:2px; }
+circle.preview { pointer-events:none; }
+circle.dot { cursor:pointer; stroke:#fff0; }
+circle.dot:hover { stroke:#0969da; stroke-width:2px; }
+circle.selring { fill:none; stroke:#0969da; stroke-width:2.5px; pointer-events:none; }
+text.blabel { pointer-events:none; text-anchor:middle;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; fill:#1f2328; }
+text.bcount { pointer-events:none; text-anchor:middle; fill:#57606a; }
+path.dep { fill:none; stroke:#8250df; pointer-events:none; }
+path.ov { fill:none; pointer-events:none; stroke-dasharray:4 3; }
+#panel { flex:1 1 38%; overflow-y:auto; padding:18px 22px; background:#fafbfc;
+  border-left:1px solid #d0d7de; }
 #panel h2 { margin:0 0 2px; font-size:1.25rem; }
 #panel .sub { color:#57606a; font-size:.85rem; margin-bottom:10px; }
 .crumb { font-size:.8rem; color:#57606a; margin-bottom:8px; }
@@ -118,15 +122,13 @@ section.kind h3 .cnt { color:#8c959f; font-weight:400; }
 .more { font-size:.78rem; color:#57606a; padding:4px 10px; }
 .extlink { font-size:.8rem; }
 @media (max-width: 900px) { .main { flex-direction:column; height:auto; }
-  #columns { max-height:45vh; border-right:none; border-bottom:1px solid #d0d7de; }
-  #panel { max-height:none; } }
+  #stage { min-height:52vh; border-left:none; }
+  #panel { border-left:none; border-top:1px solid #d0d7de; max-height:none; } }
 html[data-theme="dark"] body { background:#0d1117; color:#e6edf3; }
 html[data-theme="dark"] .wl-header, html[data-theme="dark"] .toolbar,
-html[data-theme="dark"] #columns { background:#161b22; border-color:#30363d; }
-html[data-theme="dark"] .col { border-color:#21262d; }
-html[data-theme="dark"] .item:hover { background:#21262d; }
-html[data-theme="dark"] .item.sel { background:#0c2d6b; }
-html[data-theme="dark"] #panel { background:#0d1117; }
+html[data-theme="dark"] #crumbbar, html[data-theme="dark"] #stage { background:#161b22;
+  border-color:#30363d; }
+html[data-theme="dark"] #panel { background:#0d1117; border-color:#30363d; }
 html[data-theme="dark"] .edge, html[data-theme="dark"] .badge, html[data-theme="dark"] .chip,
 html[data-theme="dark"] .slogan { background:#161b22; border-color:#30363d; }
 html[data-theme="dark"] .edge .row:hover { background:#21262d; }
@@ -134,6 +136,8 @@ html[data-theme="dark"] .edge .drawer { background:#0d1117; border-color:#30363d
 html[data-theme="dark"] #search input { background:#0d1117; border-color:#30363d; color:#e6edf3; }
 html[data-theme="dark"] #hits { background:#161b22; border-color:#30363d; }
 html[data-theme="dark"] #hits .hit:hover { background:#21262d; }
+html[data-theme="dark"] text.blabel { fill:#e6edf3; }
+html[data-theme="dark"] text.bcount { fill:#8b949e; }
 </style>
 </head>
 <body>
@@ -151,8 +155,8 @@ html[data-theme="dark"] #hits .hit:hover { background:#21262d; }
 </header>
 <div class="toolbar">
   <span class="grp"><b>Layers</b>
-    <label><input type="checkbox" data-k="formalizes" checked> formalizations</label>
     <label><input type="checkbox" data-k="depends" checked> formal deps</label>
+    <label><input type="checkbox" data-k="formalizes" checked> formalizations</label>
     <label><input type="checkbox" data-k="xref" checked> cross-refs</label>
     <label><input type="checkbox" data-k="cites,matches" checked> literature</label>
     <label><input type="checkbox" data-k="relates"> wikidata relations</label>
@@ -164,22 +168,24 @@ html[data-theme="dark"] #hits .hit:hover { background:#21262d; }
     <label><input type="checkbox" data-lk="physics" checked> physics</label>
     <label><input type="checkbox" data-lk="tooling"> tooling</label>
   </span>
-  <span class="grp"><b>Sort</b>
-    <label><select id="sort">
-      <option value="size">by size</option>
-      <option value="name">by name</option>
-    </select></label>
-  </span>
   <span class="note" id="status">loading manifest…</span>
 </div>
+<div id="crumbbar"></div>
 <div class="main">
-  <div id="columns"></div>
-  <div id="panel"><p class="note">Pick a library on the left, drill into its modules, or search.
-    Every edge you see carries its provenance — click any row to open the evidence drawer.</p></div>
+  <div id="stage"><svg id="svg"></svg>
+    <div class="hint">click a bubble to zoom in · click the background to zoom out ·
+      purple links = formal dependencies (sig-weighted) · dots = concepts (blue) / decls (green)</div>
+  </div>
+  <div id="panel"><p class="note">The Brain as bubbles: areas nest by containment
+    (Mathlib → Algebra → Group → …), concepts float beside the code that formalizes
+    them, and the links between bubbles are real, provenance-carrying dependency
+    edges. Click anything — every edge opens its evidence drawer here.</p></div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 <script>
 "use strict";
 const BASE = "/assets/brain/";
+const LIBS_ID = "__libs__";           // pseudo-focus: the 39 library roots
 let manifest = null, labels = null;
 const shardCache = new Map(), entryCache = new Map();
 
@@ -206,7 +212,6 @@ async function getEntry(id) {
   const key = shardFor(id);
   if (key === null) return null;
   if (!shardCache.has(key)) {
-    // a rejected fetch must not poison the cache for the whole session
     shardCache.set(key, fetch(BASE + key + ".json")
       .then(r => r.ok ? r.json() : {})
       .catch(() => { shardCache.delete(key); return {}; }));
@@ -218,7 +223,8 @@ async function getEntry(id) {
 }
 
 const $ = s => document.querySelector(s);
-const columnsEl = $("#columns"), panelEl = $("#panel"), statusEl = $("#status");
+const stageEl = $("#stage"), panelEl = $("#panel"), statusEl = $("#status");
+const crumbEl = $("#crumbbar");
 const esc = s => String(s ?? "").replace(/[&<>"']/g,
   c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
@@ -237,102 +243,331 @@ function activeLibKinds() {
   return ks;
 }
 
-// ---- columns (Miller drill-down) -------------------------------------------
-let colPath = [];   // selected ids, one per column depth
+// ============================ canvas state ==================================
+let focusId = null;        // container id (or LIBS_ID) whose children fill the stage
+let selectedId = null;     // node the panel shows / ring highlights
+let layout = null;         // {items: Map(id -> {x,y,r,item}), root}
+const svg = d3.select("#svg");
+const gEdges = svg.append("g");
+const gBubbles = svg.append("g");
+const gOverlay = svg.append("g");
+const gLabels = svg.append("g");
 
-function statusClass(n) {
-  const st = n.status || (n.display && n.display.status) || "";
-  return st === "formalized" ? "" : st ? " " + st : "";
+const CONCEPT_COLOR = {formalized: "#0969da", partial: "#d4a72c", not_formalized: "#cf222e"};
+function fillFor(item, depthShade) {
+  if (item.type === "concept") return CONCEPT_COLOR[item.status] || "#0969da";
+  if (item.type === "decl") return "#1a7f37";
+  if (item.type === "strays") return "#8c959f";
+  return depthShade;   // container
 }
-function itemHtml(n, hasKids) {
-  const dot = `<span class="dot ${n.type}${n.type === "concept" ? statusClass(n) : ""}"></span>`;
-  const count = n.n_decls ? `<span class="n">${n.n_decls.toLocaleString()}</span>` : "";
-  const chev = hasKids ? `<span class="chev">›</span>` : "";
-  return `${dot}<span style="overflow:hidden;text-overflow:ellipsis">${esc(n.label || n.id)}</span>${count}${chev}`;
-}
-function sortRows(rows) {
-  const mode = $("#sort").value;
-  const arr = rows.slice();
-  if (mode === "name") arr.sort((a, b) => (a.label || a.id).localeCompare(b.label || b.id));
-  else arr.sort((a, b) => (b.n_decls || 0) - (a.n_decls || 0) ||
-                          (a.label || a.id).localeCompare(b.label || b.id));
-  return arr;
-}
-function rootRows() {
-  const kinds = activeLibKinds();
-  return manifest.roots.filter(r => kinds.has(r.library_kind || "math"))
-    .map(r => ({...r, type: "container"}));
-}
-async function childRows(id) {
+
+// children of the current focus, as pack-able items
+async function focusItems(id) {
+  if (id === LIBS_ID) {
+    const kinds = activeLibKinds();
+    return manifest.roots
+      .filter(r => kinds.has(r.library_kind || "math"))
+      .map(r => ({id: r.id, label: r.label, type: "container",
+                  n_decls: r.n_decls || 1, n_concepts: 0}));
+  }
   const e = await getEntry(id);
-  if (!e) return {rows: [], total: 0};
+  if (!e) return [];
   const kids = (e.children && e.children.first || []).map(c => ({...c}));
-  // concepts anchored to this container (inbound formalizes), shown beside kids
+  const conts = kids.filter(c => c.type === "container");
+  let decls = kids.filter(c => c.type !== "container");
+  // At levels that have sub-containers, loose decls (placed here because the
+  // depth-capped tree has no deeper node) would flood the pack — collapse
+  // them into one small bubble; the panel's children list still has them all.
+  if (conts.length && decls.length > 12) {
+    decls = [{id: "__strays__", type: "strays",
+              label: decls.length + " loose decls", n: decls.length}];
+  }
+  // concepts anchored to THIS container (field-of-study altitude links)
   const anchored = (e.edges && e.edges.in || [])
     .filter(x => x.kind === "formalizes")
     .map(x => ({id: x.id, label: x.id, type: "concept",
                 mk: x.evidence && x.evidence.match_kind}));
-  return {rows: kids, anchored, total: e.children ? e.children.count : 0};
-}
-function renderColumn(title, rows, anchored, total, depth) {
-  const col = document.createElement("div");
-  col.className = "col";
-  col.dataset.depth = depth;
-  let html = `<h4>${esc(title)}</h4>`;
-  for (const n of sortRows(rows)) {
-    const sel = colPath[depth] === n.id ? " sel" : "";
-    const hasKids = n.type === "container";
-    html += `<div class="item${sel}" data-id="${esc(n.id)}" data-kids="${hasKids ? 1 : 0}">
-      ${itemHtml(n, hasKids)}</div>`;
+  // file level: concepts formalized by the decls here float beside them
+  // (decls of one file share shard prefixes, so this is a handful of fetches)
+  if (!conts.length && decls.length) {
+    const seen = new Set(anchored.map(a => a.id));
+    await Promise.all(decls.map(async d => {
+      const de = await getEntry(d.id);
+      for (const x of (de && de.edges && de.edges.in) || []) {
+        if (x.kind !== "formalizes" || seen.has(x.id)) continue;
+        seen.add(x.id);
+        anchored.push({id: x.id, label: x.id, type: "concept",
+                       mk: x.evidence && x.evidence.match_kind});
+      }
+    }));
   }
-  if (total > rows.length)
-    html += `<div class="more">+ ${total - rows.length} more — open the panel list</div>`;
-  if (anchored && anchored.length) {
-    html += `<h4>concepts here</h4>`;
-    for (const c of anchored.slice(0, 30)) {
-      const sel = colPath[depth] === c.id ? " sel" : "";
-      html += `<div class="item${sel}" data-id="${esc(c.id)}" data-kids="0" data-concept="1">
-        <span class="dot concept"></span><span class="cl" data-cl="${esc(c.id)}">${esc(c.label)}</span>
-        ${c.mk ? `<span class="n">${esc(c.mk)}</span>` : ""}</div>`;
-    }
-  }
-  col.innerHTML = html;
-  col.addEventListener("click", ev => {
-    const it = ev.target.closest(".item");
-    if (it) navigate(it.dataset.id, depth);
-  });
-  return col;
-}
-// Concept labels aren't in children summaries; resolve them lazily.
-async function fillConceptLabels(col) {
-  for (const el of col.querySelectorAll("[data-cl]")) {
-    const e = await getEntry(el.dataset.cl);
-    if (e && e.node.label) el.textContent = e.node.label;
-  }
-}
-async function renderColumns() {
-  columnsEl.innerHTML = "";
-  columnsEl.appendChild(renderColumn("libraries", rootRows(), null, 0, 0));
-  for (let d = 0; d < colPath.length; d++) {
-    const id = colPath[d];
-    const e = await getEntry(id);
-    if (!e || e.node.type !== "container") break;
-    const {rows, anchored, total} = await childRows(id);
-    if (!rows.length && !(anchored || []).length) break;
-    const col = renderColumn(e.node.label || id, rows, anchored, total, d + 1);
-    columnsEl.appendChild(col);
-    fillConceptLabels(col);
-  }
-  // reflect selection in the root column too
-  columnsEl.querySelectorAll(".col").forEach((col, d) => {
-    col.querySelectorAll(".item").forEach(it => {
-      it.classList.toggle("sel", colPath[d] === it.dataset.id);
-    });
-  });
-  columnsEl.scrollLeft = columnsEl.scrollWidth;
+  return conts.concat(decls, anchored);
 }
 
-// ---- panel ------------------------------------------------------------------
+// pack values: container area ~ decl-count^0.6 (compresses Algebra=52k vs a
+// 100-decl module into a ~6:1 radius ratio); concepts/decls small fixed dots
+function packValue(item) {
+  if (item.type === "container") return Math.pow(Math.max(item.n_decls || 1, 1), 0.6);
+  if (item.type === "strays") return 30;
+  return item.type === "concept" ? 6 : 2.5;
+}
+
+let renderSeq = 0;   // guards against out-of-order async renders
+async function renderFocus(anim) {
+  const seq = ++renderSeq;
+  const items = await focusItems(focusId);
+  if (seq !== renderSeq) return;
+  const W = stageEl.clientWidth || 800, H = stageEl.clientHeight || 600;
+  const root = d3.hierarchy({children: items}).sum(d => d.children ? 0 : packValue(d));
+  d3.pack().size([W, H]).padding(items.length > 150 ? 1.5 : 4)(root);
+  const leaves = root.leaves().filter(l => l.data.id);
+
+  layout = {items: new Map(leaves.map(l => [l.data.id, l]))};
+  gEdges.selectAll("*").remove();
+  gOverlay.selectAll("*").remove();
+  gBubbles.selectAll("circle.preview").remove();
+
+  const shade = document.documentElement.dataset.theme === "dark" ? "#20304a" : "#dbeafe";
+  const bubbles = gBubbles.selectAll("circle.node")
+    .data(leaves, l => l.data.id);
+  bubbles.exit().remove();
+  const entered = bubbles.enter().append("circle")
+    .attr("class", l => l.data.type === "container" ? "bubble node" : "dot node");
+  entered.append("title");
+  const all = entered.merge(bubbles)
+    .attr("cx", l => l.x).attr("cy", l => l.y)
+    .attr("r", l => Math.max(l.r, 2.5))
+    .attr("fill", l => fillFor(l.data, shade))
+    .attr("fill-opacity", l => l.data.type === "container" ? 0.55 : 0.9)
+    .on("click", (ev, l) => { ev.stopPropagation(); nodeClick(l.data); });
+  all.select("title").text(l => l.data.label + (l.data.n_decls
+    ? ` — ${l.data.n_decls.toLocaleString()} decls` : ""));
+
+  gLabels.selectAll("*").remove();
+  for (const l of leaves) {
+    if (l.data.type !== "container" || l.r < 24) continue;
+    const fs = Math.max(10, Math.min(16, l.r / 4.5));
+    gLabels.append("text").attr("class", "blabel")
+      .attr("x", l.x).attr("y", l.y - (l.r > 40 ? 4 : -4)).attr("font-size", fs)
+      .text(l.data.label);
+    if (l.r > 40) {
+      gLabels.append("text").attr("class", "bcount")
+        .attr("x", l.x).attr("y", l.y + fs - 2).attr("font-size", fs * 0.72)
+        .text(`${(l.data.n_decls || 0).toLocaleString()}${
+          l.data.n_concepts ? " · " + l.data.n_concepts + "★" : ""}`);
+    }
+  }
+
+  // concept dots boot with their QID as label; resolve real labels lazily
+  for (const l of leaves) {
+    if (l.data.type !== "concept") continue;
+    getEntry(l.data.id).then(ce => {
+      if (seq !== renderSeq || !ce || !ce.node.label) return;
+      l.data.label = ce.node.label;
+      all.filter(d => d.data.id === l.data.id).select("title").text(ce.node.label);
+      if (l.r >= 11) {
+        gLabels.append("text").attr("class", "blabel")
+          .attr("x", l.x).attr("y", l.y + l.r + 10).attr("font-size", 10)
+          .text(ce.node.label.length > 26
+            ? ce.node.label.slice(0, 24) + "…" : ce.node.label);
+      }
+    });
+  }
+
+  drawSelRing();
+  renderCrumb();
+  if (anim) {
+    const g = [gEdges, gBubbles, gOverlay, gLabels];
+    for (const gr of g) gr.attr("opacity", 0).transition().duration(260).attr("opacity", 1);
+  }
+
+  // background enrichment: children shards → inner previews + sibling edges
+  enrich(seq, leaves.filter(l => l.data.type === "container"));
+}
+
+// prefetch visible containers' shards; draw grandchild previews + depends edges
+async function enrich(seq, containers) {
+  const visible = new Set(containers.map(l => l.data.id));
+  const pairs = new Map();   // "a|b" -> {a,b,sig}
+  let done = 0;
+  await Promise.all(containers.map(async l => {
+    const e = await getEntry(l.data.id);
+    if (seq !== renderSeq || !e) return;
+    // grandchild preview: faint inner circles (top 24 by size)
+    const kids = (e.children && e.children.first || [])
+      .filter(c => c.type === "container").slice(0, 24);
+    if (kids.length > 1 && l.r > 26) {
+      const inner = d3.hierarchy({children: kids})
+        .sum(d => d.children ? 0 : Math.pow(Math.max(d.n_decls || 1, 1), 0.6));
+      d3.pack().size([l.r * 1.7, l.r * 1.7]).padding(2)(inner);
+      for (const k of inner.leaves()) {
+        gBubbles.append("circle").attr("class", "preview")
+          .attr("cx", l.x - l.r * 0.85 + k.x).attr("cy", l.y - l.r * 0.85 + k.y)
+          .attr("r", k.r).attr("fill", "none")
+          .attr("stroke", "currentColor").attr("stroke-opacity", 0.14);
+      }
+    }
+    // sibling depends edges from the typed rollups (both grains; sig weights)
+    for (const grain of ["module", "dir"]) {
+      const b = e.rollup && e.rollup[grain];
+      if (!b) continue;
+      for (const row of b.out || []) {
+        if (!visible.has(row.id)) continue;
+        const sig = row.evidence && row.evidence.w_types ? row.evidence.w_types.sig : 0;
+        if (!sig) continue;
+        const key = l.data.id < row.id ? l.data.id + "|" + row.id : row.id + "|" + l.data.id;
+        const prev = pairs.get(key);
+        if (!prev || sig > prev.sig) pairs.set(key, {a: l.data.id, b: row.id, sig});
+      }
+    }
+    if (++done === containers.length) drawDeps(pairs);
+  }));
+  if (seq === renderSeq && done < containers.length) drawDeps(pairs);
+}
+
+let lastPairs = new Map();
+function drawDeps(pairs) {
+  lastPairs = pairs;
+  gEdges.selectAll("*").remove();
+  if (!activeKinds().has("depends")) return;
+  const rows = [...pairs.values()].sort((x, y) => y.sig - x.sig).slice(0, 120);
+  const maxSig = rows.length ? rows[0].sig : 1;
+  for (const {a, b, sig} of rows) {
+    const A = layout.items.get(a), B = layout.items.get(b);
+    if (!A || !B) continue;
+    const mx = (A.x + B.x) / 2, my = (A.y + B.y) / 2;
+    const dx = B.x - A.x, dy = B.y - A.y;
+    const bend = 0.18;
+    gEdges.append("path").attr("class", "dep")
+      .attr("d", `M${A.x},${A.y} Q${mx - dy * bend},${my + dx * bend} ${B.x},${B.y}`)
+      .attr("stroke-width", 0.6 + 2.6 * Math.sqrt(sig / maxSig))
+      .attr("stroke-opacity", 0.16 + 0.3 * (sig / maxSig));
+  }
+}
+
+// overlay: the selected node's ontology edges to visible endpoints
+const OV_COLOR = {formalizes: "#0969da", xref: "#bf5af2", cites: "#d4a72c",
+                  matches: "#d4a72c", relates: "#57606a", mentions: "#8c959f",
+                  depends: "#8250df"};
+async function drawOverlay() {
+  gOverlay.selectAll("path.ov").remove();
+  if (!selectedId || !layout) return;
+  const S = layout.items.get(selectedId);
+  const e = await getEntry(selectedId);
+  if (!e || !S) return;
+  const kinds = activeKinds();
+  for (const dir of ["out", "in"]) {
+    for (const x of (e.edges && e.edges[dir]) || []) {
+      if (!kinds.has(x.kind)) continue;
+      const T = layout.items.get(x.id);
+      if (!T) continue;
+      gOverlay.append("path").attr("class", "ov")
+        .attr("d", `M${S.x},${S.y} L${T.x},${T.y}`)
+        .attr("stroke", OV_COLOR[x.kind] || "#57606a")
+        .attr("stroke-width", 1.6).attr("stroke-opacity", 0.8);
+    }
+  }
+}
+function drawSelRing() {
+  gOverlay.selectAll("circle.selring").remove();
+  const S = selectedId && layout && layout.items.get(selectedId);
+  if (S) gOverlay.append("circle").attr("class", "selring")
+    .attr("cx", S.x).attr("cy", S.y).attr("r", Math.max(S.r, 3) + 3);
+  drawOverlay();
+}
+
+// ============================ zoom navigation ================================
+async function zoomInto(id) {
+  // slick part: scale the clicked bubble up to fill the stage, then swap levels
+  const L = layout && layout.items.get(id);
+  if (L) {
+    const W = stageEl.clientWidth, H = stageEl.clientHeight;
+    const k = Math.min(W, H) / (L.r * 2.2);
+    const t = d3.zoomIdentity.translate(W / 2 - L.x * k, H / 2 - L.y * k).scale(k);
+    const groups = [gEdges, gBubbles, gOverlay, gLabels];
+    await Promise.all(groups.map(g =>
+      g.transition().duration(420).ease(d3.easeCubicInOut)
+        .attr("transform", t.toString()).attr("opacity", g === gBubbles ? 0.35 : 0)
+        .end().catch(() => {})));
+    groups.forEach(g => g.attr("transform", null).attr("opacity", 1));
+  }
+  focusId = id;
+  history.replaceState(null, "", "#" + encodeURIComponent(id));
+  await renderFocus(true);
+}
+async function zoomOut() {
+  if (focusId === LIBS_ID) return;
+  const e = await getEntry(focusId);
+  const bc = (e && e.breadcrumb) || [];
+  const parent = bc.length > 1 ? bc[bc.length - 2].id : LIBS_ID;
+  focusId = parent;
+  selectedId = null;
+  history.replaceState(null, "", "#" + encodeURIComponent(
+    parent === LIBS_ID ? "" : parent));
+  await renderFocus(true);
+}
+svg.on("click", () => { zoomOut(); });
+
+async function nodeClick(item) {
+  if (item.type === "strays") {   // the collapsed loose-decl bubble: list them
+    renderPanel(focusId);
+    return;
+  }
+  if (item.type === "container") {
+    selectedId = null;
+    renderPanel(item.id);
+    await zoomInto(item.id);
+  } else {
+    selectedId = item.id;
+    history.replaceState(null, "", "#" + encodeURIComponent(item.id));
+    renderPanel(item.id);
+    drawSelRing();
+  }
+}
+
+// land the canvas on any node id: containers focus themselves; leaves focus
+// their parent container and select themselves
+async function navigate(id) {
+  const e = await getEntry(id);
+  if (!e) { renderPanel(id); return; }
+  if (e.node.type === "container") {
+    focusId = id; selectedId = null;
+  } else if (e.breadcrumb && e.breadcrumb.length > 1) {
+    focusId = e.breadcrumb[e.breadcrumb.length - 2].id;
+    selectedId = id;
+  } else if (e.node.type === "concept") {
+    const f = ((e.edges || {}).out || []).find(x => x.kind === "formalizes");
+    const fe = f && await getEntry(f.id);
+    if (fe && fe.node.type === "container") focusId = f.id;
+    else if (fe && fe.breadcrumb && fe.breadcrumb.length > 1)
+      focusId = fe.breadcrumb[fe.breadcrumb.length - 2].id;
+    else focusId = "path:Mathlib";
+    selectedId = id;
+  } else { focusId = "path:Mathlib"; selectedId = id; }
+  history.replaceState(null, "", "#" + encodeURIComponent(id));
+  renderPanel(id);
+  await renderFocus(true);
+}
+
+async function renderCrumb() {
+  let html = `<a data-nav="${LIBS_ID}">all libraries</a>`;
+  if (focusId !== LIBS_ID) {
+    const e = await getEntry(focusId);
+    for (const b of (e && e.breadcrumb) || []) {
+      html += ` <span class="sep">/</span> ` + (b.id === focusId
+        ? `<b>${esc(b.label)}</b>` : `<a data-nav="${esc(b.id)}">${esc(b.label)}</a>`);
+    }
+  }
+  crumbEl.innerHTML = html;
+  crumbEl.querySelectorAll("[data-nav]").forEach(a =>
+    a.addEventListener("click", () => {
+      if (a.dataset.nav === LIBS_ID) { focusId = LIBS_ID; selectedId = null;
+        history.replaceState(null, "", "#"); renderFocus(true); }
+      else navigate(a.dataset.nav);
+    }));
+}
+
+// ============================ panel ==========================================
 const KIND_LABEL = {
   formalizes: "Formalizations", mentions: "Article mentions", depends: "Formal dependencies",
   matches: "Formal ↔ literature matches", xref: "Cross-database identity",
@@ -342,7 +577,6 @@ const XREF_URL = {
   mathworld: v => `https://mathworld.wolfram.com/${v}.html`,
   nlab: v => `https://ncatlab.org/nlab/show/${encodeURIComponent(v)}`,
   proofwiki: v => `https://proofwiki.org/wiki/${encodeURIComponent(v)}`,
-  // some P7554 values arrive pre-percent-encoded (Hotelling-T%5E2-…) — don't double-encode
   eom: v => `https://encyclopediaofmath.org/wiki/${/%[0-9A-Fa-f]{2}/.test(v) ? v : encodeURIComponent(v)}`,
   planetmath: v => `https://planetmath.org/${encodeURIComponent(v)}`,
   metamath: v => `https://us.metamath.org/mpeuni/${encodeURIComponent(v)}.html`,
@@ -355,9 +589,6 @@ function nodeUrl(id) {
   if (id.startsWith("decl:")) return "/decl/" + encodeURIComponent(id.slice(id.indexOf(":", 5) + 1));
   if (id.startsWith("lit:")) {
     const ax = id.slice(4).split("#")[0];
-    // old-style arXiv ids (math/0605527, cond-mat.GT/0309136) have an
-    // all-digit tail; only non-arXiv repo slugs (ImperialCollegeLondon/FLT)
-    // route to GitHub
     if (/^[A-Za-z.-]+\/\d{7}(v\d+)?$/.test(ax) || !ax.includes("/"))
       return `https://arxiv.org/abs/${ax}`;
     return `https://github.com/${ax}`;
@@ -389,7 +620,7 @@ function edgeHtml(x, provTable, dir) {
 async function renderPanel(id) {
   const e = await getEntry(id);
   if (!e) { panelEl.innerHTML = `<p class="note">Unknown node: ${esc(id)}</p>`; return; }
-  const n = e.node, prov = e._provTable || manifest.prov;
+  const n = e.node, prov = manifest.prov;
   let html = "";
   if (e.breadcrumb) {
     html += `<div class="crumb">` + e.breadcrumb.map((b, i) =>
@@ -423,10 +654,10 @@ async function renderPanel(id) {
 
   if (e.children && e.children.count) {
     html += `<section class="kind"><h3>Children <span class="cnt">(${e.children.count})</span></h3><div class="chips">`;
-    for (const c of e.children.first)
+    for (const c of e.children.first.slice(0, 60))
       html += `<span class="chip"><a data-nav="${esc(c.id)}">${esc(c.label || c.id)}</a>${c.n_decls ? ` <small>${c.n_decls.toLocaleString()}</small>` : ""}</span>`;
-    if (e.children.count > e.children.first.length)
-      html += `<span class="chip">… +${e.children.count - e.children.first.length} more</span>`;
+    if (e.children.count > 60)
+      html += `<span class="chip">… +${e.children.count - 60} more</span>`;
     html += `</div></section>`;
   }
 
@@ -477,28 +708,7 @@ async function renderPanel(id) {
     }));
 }
 
-// ---- navigation --------------------------------------------------------------
-async function navigate(id, depth) {
-  if (depth !== undefined) {
-    colPath = colPath.slice(0, depth); colPath[depth] = id;
-  } else {
-    const e = await getEntry(id);
-    if (e && e.breadcrumb) colPath = e.breadcrumb.map(b => b.id);
-    else if (e && e.node.type === "concept") {
-      // land the columns on the concept's first formalization container
-      const f = ((e.edges || {}).out || []).find(x => x.kind === "formalizes");
-      if (f) {
-        const fe = await getEntry(f.id);
-        if (fe && fe.breadcrumb) colPath = fe.breadcrumb.map(b => b.id);
-      }
-    }
-  }
-  history.replaceState(null, "", "#" + encodeURIComponent(id));
-  statusEl.textContent = id;
-  await Promise.all([renderColumns(), renderPanel(id)]);
-}
-
-// ---- search -------------------------------------------------------------------
+// ============================ search =========================================
 async function ensureLabels() {
   if (!labels) {
     const r = await fetch(BASE + "labels.json");
@@ -536,22 +746,22 @@ document.addEventListener("click", ev => {
   if (!ev.target.closest("#search")) $("#hits").style.display = "none";
 });
 
-// ---- toolbar re-renders --------------------------------------------------------
-document.querySelectorAll(".toolbar input, #sort").forEach(el =>
+// ============================ toolbar + boot =================================
+document.querySelectorAll(".toolbar input").forEach(el =>
   el.addEventListener("change", () => {
-    const cur = decodeURIComponent(location.hash.slice(1));
-    renderColumns();
-    if (cur) renderPanel(cur);
+    if (el.dataset.lk && focusId === LIBS_ID) { renderFocus(false); return; }
+    drawDeps(lastPairs);
+    drawSelRing();
+    if (selectedId) renderPanel(selectedId);
+    else if (focusId !== LIBS_ID) renderPanel(focusId);
   }));
 
-// back/forward + externally-set hashes navigate too (navigate() uses
-// replaceState, so its own updates never re-trigger this)
 window.addEventListener("hashchange", () => {
   const id = decodeURIComponent(location.hash.slice(1));
   if (id) navigate(id);
 });
+window.addEventListener("resize", () => { renderFocus(false); });
 
-// ---- boot -----------------------------------------------------------------------
 (async function boot() {
   try {
     const r = await fetch(BASE + "manifest.json");
@@ -565,9 +775,9 @@ window.addEventListener("hashchange", () => {
   statusEl.textContent = `${manifest._meta.counts.entries.toLocaleString()} nodes · ` +
     `${manifest._meta.counts.ontology_edges.toLocaleString()} edges · ` +
     `data ${manifest._meta.generated_at.slice(0, 10)}`;
-  await renderColumns();
   const target = decodeURIComponent(location.hash.slice(1));
-  if (target) navigate(target);
+  if (target) { await navigate(target); }
+  else { focusId = "path:Mathlib"; await renderFocus(false); renderPanel(focusId); }
 })();
 </script>
 </body>
