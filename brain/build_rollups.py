@@ -8,6 +8,9 @@ grains that line up with the containment tree (brain/SCHEMA.md):
   file    path:<file_path>                      (file_path is already library-rooted)
   dir     path:<deepest hierarchy.json prefix>  (catalog/data/hierarchy.json node paths)
   module  path:<Library>/<top module>
+  tree    every EQUAL-DEPTH hierarchy ancestor pair from the divergence point
+          down — each hierarchy node's FULL aggregate flow at its own depth
+          (what /brain draws between sibling bubbles at every zoom level)
 
 Per aggregated edge: w_types = {sig, def, proof} counting DISTINCT (src_decl, dep_decl)
 pairs per bucket (sig bucket = sig+field+extends; docref excluded entirely), plus up to
@@ -36,7 +39,7 @@ STMT = REPO / "catalog" / ".cache" / "statement_formal.csv"
 HIER = REPO / "catalog" / "data" / "hierarchy.json"
 OUTDIR = HERE / "data"
 
-GRAINS = ("file", "dir", "module")
+GRAINS = ("file", "dir", "module", "tree")
 BUCKETS = ("sig", "def", "proof")
 # kernel edge_type → w_types bucket bit; docref is absent on purpose (excluded entirely)
 BUCKET_BIT = {"sig": 1, "field": 1, "extends": 1, "def": 2, "proof": 4}
@@ -59,7 +62,7 @@ def load_decls() -> tuple[dict[str, int], list[str], tuple[list[str], list[str],
     hier = json.loads(HIER.read_text())
     libraries = hier["libraries"]
 
-    def grain_nodes_for(module: str) -> tuple[str, str]:
+    def grain_nodes_for(module: str) -> tuple[str, str, tuple[str, ...]]:
         parts = module.split(".")
         lib = parts[0]
         L = libraries.get(lib)
@@ -67,24 +70,27 @@ def load_decls() -> tuple[dict[str, int], list[str], tuple[list[str], list[str],
             print(f"WARNING: library {lib!r} missing from hierarchy.json — "
                   f"dir grain falls back to the library root", file=sys.stderr)
         comps = [lib]
+        anc = ["path:" + lib]           # every hierarchy-node ancestor, root→deepest
         node = L["modules"] if L else {}
         for c in parts[1:]:
             child = node.get(c)
             if child is None:
                 break
             comps.append(c)
+            anc.append("path:" + "/".join(comps))
             node = child.get("sub") or {}
-        dir_node = "path:" + "/".join(comps)
+        dir_node = anc[-1]
         mod_node = "path:" + (f"{lib}/{parts[1]}" if len(parts) > 1 else lib)
-        return dir_node, mod_node
+        return dir_node, mod_node, tuple(anc)
 
     id2idx: dict[str, int] = {}
     names: list[str] = []
     file_nodes: list[str] = []
     dir_nodes: list[str] = []
     mod_nodes: list[str] = []
+    anc_nodes: list[tuple[str, ...]] = []
     file_memo: dict[str, str] = {}
-    mod_memo: dict[str, tuple[str, str]] = {}
+    mod_memo: dict[str, tuple[str, str, tuple[str, ...]]] = {}
     with STMT.open(newline="") as fh:
         for r in csv.DictReader(fh):
             sid = r["statement_id"]
@@ -103,7 +109,8 @@ def load_decls() -> tuple[dict[str, int], list[str], tuple[list[str], list[str],
                 dm = mod_memo[mod] = grain_nodes_for(mod)
             dir_nodes.append(dm[0])
             mod_nodes.append(dm[1])
-    return id2idx, names, (file_nodes, dir_nodes, mod_nodes)
+            anc_nodes.append(dm[2])
+    return id2idx, names, (file_nodes, dir_nodes, mod_nodes, anc_nodes)
 
 
 def stream_pairs(id2idx: dict[str, int]) -> tuple[dict[int, int], dict[str, int]]:
@@ -142,7 +149,28 @@ def aggregate(pairs: dict[int, int],
     Witness entries are (-rowcount, src_idx, dep_idx), kept sorted ascending so
     [-1] is the weakest; ties break on CSV order for determinism."""
     mask_lo = (1 << SHIFT) - 1
-    edges: list[dict[tuple[str, str], list]] = [{}, {}, {}]
+    edges: list[dict[tuple[str, str], list]] = [{}, {}, {}, {}]
+    anc = grain_nodes[3]
+
+    def bump(store: dict, s: str, d: str, mask: int, wit: tuple) -> None:
+        rec = store.get((s, d))
+        if rec is None:
+            rec = store[(s, d)] = [0, 0, 0, []]
+        if mask & 1:
+            rec[0] += 1
+        if mask & 2:
+            rec[1] += 1
+        if mask & 4:
+            rec[2] += 1
+        top = rec[3]
+        if len(top) < TOP_WITNESSES:
+            top.append(wit)
+            if len(top) == TOP_WITNESSES:
+                top.sort()
+        elif wit < top[-1]:
+            top[-1] = wit
+            top.sort()
+
     for key, packed in pairs.items():
         si = key >> SHIFT
         di = key & mask_lo
@@ -152,25 +180,19 @@ def aggregate(pairs: dict[int, int],
             nodes = grain_nodes[g]
             s = nodes[si]
             d = nodes[di]
-            if s == d:
-                continue
-            rec = edges[g].get((s, d))
-            if rec is None:
-                rec = edges[g][(s, d)] = [0, 0, 0, []]
-            if mask & 1:
-                rec[0] += 1
-            if mask & 2:
-                rec[1] += 1
-            if mask & 4:
-                rec[2] += 1
-            top = rec[3]
-            if len(top) < TOP_WITNESSES:
-                top.append(wit)
-                if len(top) == TOP_WITNESSES:
-                    top.sort()
-            elif wit < top[-1]:
-                top[-1] = wit
-                top.sort()
+            if s != d:
+                bump(edges[g], s, d, mask, wit)
+        # tree grain: every EQUAL-DEPTH ancestor pair from the divergence point
+        # down, so each hierarchy node carries its FULL aggregate flow at its
+        # own depth (dir grain buckets only at the deepest prefix, which hides
+        # sibling flows from every intermediate level — e.g. Algebra/Ring ↔
+        # Algebra/Group lives in Ring/Defs↔Group/Defs buckets)
+        A, B = anc[si], anc[di]
+        for k in range(min(len(A), len(B))):
+            if A[k] != B[k]:
+                for j in range(k, min(len(A), len(B))):
+                    bump(edges[3], A[j], B[j], mask, wit)
+                break
     return edges
 
 

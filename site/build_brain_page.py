@@ -82,7 +82,7 @@ circle.selring { fill:none; stroke:#0969da; stroke-width:2.5px; pointer-events:n
 text.blabel { pointer-events:none; text-anchor:middle;
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; fill:#1f2328; }
 text.bcount { pointer-events:none; text-anchor:middle; fill:#57606a; }
-path.dep { fill:none; stroke:#8250df; pointer-events:none; }
+path.link { pointer-events:none; }
 path.ov { fill:none; pointer-events:none; stroke-dasharray:4 3; }
 #panel { flex:1 1 38%; overflow-y:auto; padding:18px 22px; background:#fafbfc;
   border-left:1px solid #d0d7de; }
@@ -173,8 +173,12 @@ html[data-theme="dark"] text.bcount { fill:#8b949e; }
 <div id="crumbbar"></div>
 <div class="main">
   <div id="stage"><svg id="svg"></svg>
-    <div class="hint">click a bubble to zoom in · click the background to zoom out ·
-      purple links = formal dependencies (sig-weighted) · dots = concepts (blue) / decls (green)</div>
+    <div class="hint">click a bubble to zoom in · background to zoom out · click any edge
+      for its evidence · <span style="color:#8250df">formal deps</span> ·
+      <span style="color:#0969da">formalizes</span> ·
+      <span style="color:#d4a72c">wikidata relations</span> ·
+      <span style="color:#bf5af2">same external page</span> ·
+      dots = concepts (blue) / decls (green)</div>
   </div>
   <div id="panel"><p class="note">The Brain as bubbles: areas nest by containment
     (Mathlib → Algebra → Group → …), concepts float beside the code that formalizes
@@ -379,17 +383,38 @@ async function renderFocus(anim) {
   if (anim) {
     const g = [gEdges, gBubbles, gOverlay, gLabels];
     for (const gr of g) gr.attr("opacity", 0).transition().duration(260).attr("opacity", 1);
+    // rAF-driven transitions pause in background tabs — never leave the
+    // canvas stuck invisible
+    setTimeout(() => g.forEach(gr => { gr.interrupt(); gr.attr("opacity", 1); }), 600);
   }
 
-  // background enrichment: children shards → inner previews + sibling edges
-  enrich(seq, leaves.filter(l => l.data.type === "container"));
+  // background enrichment: children shards → inner previews + the edge web
+  enrich(seq, leaves);
 }
 
-// prefetch visible containers' shards; draw grandchild previews + depends edges
-async function enrich(seq, containers) {
-  const visible = new Set(containers.map(l => l.data.id));
-  const pairs = new Map();   // "a|b" -> {a,b,sig}
-  let done = 0;
+// EVERY drawn edge is a real brain edge (or a pair of xref edges to the same
+// external page) and carries its payload for the click-to-inspect panel card.
+const EDGE_STYLE = {
+  depends:      {color: "#8250df", dash: null,   label: "formal dependency"},
+  formalizes:   {color: "#0969da", dash: null,   label: "formalizes (formal↔informal join)"},
+  relates:      {color: "#d4a72c", dash: "5 3",  label: "Wikidata relation (informal)"},
+  mentions:     {color: "#8c959f", dash: "2 3",  label: "article mention (informal)"},
+  "xref-shared":{color: "#bf5af2", dash: "5 3",  label: "same external-database page"},
+};
+let edgeStore = [];
+
+// prefetch visible shards: grandchild previews, container rollup edges, and
+// the ontology web among visible concepts/decls (formal + informal)
+async function enrich(seq, leaves) {
+  const visible = new Set(leaves.map(l => l.data.id));
+  const containers = leaves.filter(l => l.data.type === "container");
+  const store = new Map();   // kind|a|b -> edge
+  const put = (kind, a, b, w, payload) => {
+    const key = kind + "|" + (a < b ? a + "|" + b : b + "|" + a);
+    const prev = store.get(key);
+    if (!prev || w > prev.w) store.set(key, {kind, a, b, w, payload});
+  };
+
   await Promise.all(containers.map(async l => {
     const e = await getEntry(l.data.id);
     if (seq !== renderSeq || !e) return;
@@ -407,42 +432,124 @@ async function enrich(seq, containers) {
           .attr("stroke", "currentColor").attr("stroke-opacity", 0.14);
       }
     }
-    // sibling depends edges from the typed rollups (both grains; sig weights)
-    for (const grain of ["module", "dir"]) {
+    // container↔container depends from the typed rollups (sig weights) —
+    // both directions: a sibling link crowded out of A's top-N by global
+    // hubs often survives in B's
+    for (const grain of ["tree", "module", "dir"]) {
       const b = e.rollup && e.rollup[grain];
       if (!b) continue;
-      for (const row of b.out || []) {
-        if (!visible.has(row.id)) continue;
-        const sig = row.evidence && row.evidence.w_types ? row.evidence.w_types.sig : 0;
-        if (!sig) continue;
-        const key = l.data.id < row.id ? l.data.id + "|" + row.id : row.id + "|" + l.data.id;
-        const prev = pairs.get(key);
-        if (!prev || sig > prev.sig) pairs.set(key, {a: l.data.id, b: row.id, sig});
+      for (const dir of ["out", "in"]) {
+        for (const row of b[dir] || []) {
+          if (!visible.has(row.id)) continue;
+          const sig = row.evidence && row.evidence.w_types ? row.evidence.w_types.sig : 0;
+          if (sig) put("depends", l.data.id, row.id, sig, row);
+        }
       }
     }
-    if (++done === containers.length) drawDeps(pairs);
   }));
-  if (seq === renderSeq && done < containers.length) drawDeps(pairs);
+
+  // the ontology web: every visible concept's edges to other visible nodes,
+  // plus same-external-page pairs (two concepts both xref-ing one nLab/
+  // MathWorld/LMFDB/… page — the cross-database fabric made visible)
+  const concepts = leaves.filter(l => l.data.type === "concept");
+  const xrefPages = new Map();   // external page id -> [concept ids]
+  await Promise.all(concepts.map(async l => {
+    const e = await getEntry(l.data.id);
+    if (seq !== renderSeq || !e) return;
+    for (const dir of ["out", "in"]) {
+      for (const x of (e.edges && e.edges[dir]) || []) {
+        if (x.kind === "xref") {
+          const arr = xrefPages.get(x.id) || [];
+          arr.push([l.data.id, x]);
+          xrefPages.set(x.id, arr);
+          continue;
+        }
+        if (!visible.has(x.id) || !EDGE_STYLE[x.kind]) continue;
+        const w = x.kind === "depends" && x.evidence && x.evidence.w_types
+          ? x.evidence.w_types.sig || 1 : 1;
+        put(x.kind, l.data.id, x.id, w, x);
+      }
+    }
+  }));
+  for (const [page, arr] of xrefPages) {
+    if (arr.length < 2) continue;
+    for (let i = 0; i < arr.length; i++)
+      for (let j = i + 1; j < arr.length; j++)
+        put("xref-shared", arr[i][0], arr[j][0], 1,
+            {evidence: {shared_page: page, via: [arr[i][1], arr[j][1]]},
+             confidence: "high"});
+  }
+
+  if (seq !== renderSeq) return;
+  edgeStore = [...store.values()];
+  renderEdges();
 }
 
-let lastPairs = new Map();
-function drawDeps(pairs) {
-  lastPairs = pairs;
+function renderEdges() {
   gEdges.selectAll("*").remove();
-  if (!activeKinds().has("depends")) return;
-  const rows = [...pairs.values()].sort((x, y) => y.sig - x.sig).slice(0, 120);
-  const maxSig = rows.length ? rows[0].sig : 1;
-  for (const {a, b, sig} of rows) {
-    const A = layout.items.get(a), B = layout.items.get(b);
+  if (!layout) return;
+  const kinds = activeKinds();
+  const show = edgeStore.filter(e =>
+    e.kind === "xref-shared" ? kinds.has("xref") : kinds.has(e.kind));
+  // depends dominates by count — cap it by weight, keep every join/informal edge
+  const dep = show.filter(e => e.kind === "depends").sort((x, y) => y.w - x.w).slice(0, 250);
+  const rest = show.filter(e => e.kind !== "depends");
+  const maxSig = dep.length ? dep[0].w : 1;
+  for (const e of [...dep, ...rest]) {
+    const A = layout.items.get(e.a), B = layout.items.get(e.b);
     if (!A || !B) continue;
     const mx = (A.x + B.x) / 2, my = (A.y + B.y) / 2;
     const dx = B.x - A.x, dy = B.y - A.y;
-    const bend = 0.18;
-    gEdges.append("path").attr("class", "dep")
-      .attr("d", `M${A.x},${A.y} Q${mx - dy * bend},${my + dx * bend} ${B.x},${B.y}`)
-      .attr("stroke-width", 0.6 + 2.6 * Math.sqrt(sig / maxSig))
-      .attr("stroke-opacity", 0.16 + 0.3 * (sig / maxSig));
+    const d = `M${A.x},${A.y} Q${mx - dy * 0.18},${my + dx * 0.18} ${B.x},${B.y}`;
+    const st = EDGE_STYLE[e.kind];
+    const isDep = e.kind === "depends";
+    const p = gEdges.append("path").attr("class", "link")
+      .attr("d", d).attr("fill", "none")
+      .attr("stroke", st.color)
+      .attr("stroke-width", isDep ? 0.6 + 2.6 * Math.sqrt(e.w / maxSig) : 1.3)
+      .attr("stroke-opacity", isDep ? 0.16 + 0.3 * (e.w / maxSig) : 0.5);
+    if (st.dash) p.attr("stroke-dasharray", st.dash);
+    // invisible fat twin = the click/hover target
+    gEdges.append("path").attr("class", "hit")
+      .attr("d", d).attr("fill", "none")
+      .attr("stroke", "transparent").attr("stroke-width", 9)
+      .style("cursor", "pointer")
+      .on("mouseenter", () => p.attr("stroke-opacity", 0.95))
+      .on("mouseleave", () => p.attr("stroke-opacity",
+        isDep ? 0.16 + 0.3 * (e.w / maxSig) : 0.5))
+      .on("click", ev => { ev.stopPropagation(); showEdgePanel(e); });
   }
+}
+
+// click-to-inspect: the edge's provenance card in the panel
+function showEdgePanel(e) {
+  const st = EDGE_STYLE[e.kind];
+  const prov = (e.payload && e.payload.prov !== undefined && manifest.prov[e.payload.prov]) || null;
+  const ev = (e.payload && e.payload.evidence) || {};
+  const name = id => {
+    const L = layout.items.get(id);
+    return (L && L.data.label) || id;
+  };
+  panelEl.innerHTML = `
+    <h2 style="font-size:1.05rem">${esc(st.label)}</h2>
+    <div class="sub"><span style="color:${st.color}">●</span> ${esc(e.kind)}${
+      e.payload && e.payload.confidence ? ` · confidence ${esc(e.payload.confidence)}` : ""}${
+      e.kind === "depends" ? ` · sig weight ${e.w}` : ""}</div>
+    <div class="chips">
+      <span class="chip"><a data-nav="${esc(e.a)}">${esc(name(e.a))}</a></span>
+      <span class="chip">↔</span>
+      <span class="chip"><a data-nav="${esc(e.b)}">${esc(name(e.b))}</a></span>
+    </div>
+    <section class="kind"><h3>Evidence</h3>
+      <div class="edge open"><div class="drawer" style="display:block">${
+        prov ? `provenance: <b>${esc(prov.source)}</b> · ${esc(prov.method)} · pin ${esc(prov.pin)}` : ""}
+        <pre>${esc(JSON.stringify(ev, null, 1))}</pre></div></div>
+    </section>
+    <p class="note">Every line on the canvas is a stored brain edge (or, for
+    "same external-database page", the pair of xref edges shown above). Click
+    the endpoints to inspect the nodes.</p>`;
+  panelEl.querySelectorAll("[data-nav]").forEach(a =>
+    a.addEventListener("click", () => navigate(a.dataset.nav)));
 }
 
 // overlay: the selected node's ontology edges to visible endpoints
@@ -485,11 +592,16 @@ async function zoomInto(id) {
     const k = Math.min(W, H) / (L.r * 2.2);
     const t = d3.zoomIdentity.translate(W / 2 - L.x * k, H / 2 - L.y * k).scale(k);
     const groups = [gEdges, gBubbles, gOverlay, gLabels];
-    await Promise.all(groups.map(g =>
-      g.transition().duration(420).ease(d3.easeCubicInOut)
-        .attr("transform", t.toString()).attr("opacity", g === gBubbles ? 0.35 : 0)
-        .end().catch(() => {})));
-    groups.forEach(g => g.attr("transform", null).attr("opacity", 1));
+    // race the transition against a timer: rAF pauses in background tabs and
+    // the reset below must ALWAYS run
+    await Promise.race([
+      Promise.all(groups.map(g =>
+        g.transition().duration(420).ease(d3.easeCubicInOut)
+          .attr("transform", t.toString()).attr("opacity", g === gBubbles ? 0.35 : 0)
+          .end().catch(() => {}))),
+      new Promise(r => setTimeout(r, 700)),
+    ]);
+    groups.forEach(g => { g.interrupt(); g.attr("transform", null).attr("opacity", 1); });
   }
   focusId = id;
   history.replaceState(null, "", "#" + encodeURIComponent(id));
@@ -688,10 +800,10 @@ async function renderPanel(id) {
   }
 
   if (e.rollup) {
-    for (const grain of ["module", "dir"]) {
+    for (const grain of ["tree", "module", "dir"]) {
       const b = e.rollup[grain];
       if (!b || !kinds.has("depends")) continue;
-      html += `<section class="kind"><h3>Strongest ${esc(grain)}-level dependencies
+      html += `<section class="kind"><h3>Strongest ${esc(grain === 'tree' ? 'sibling' : grain)}-level dependencies
         <span class="cnt">(${b.counts.out} out / ${b.counts.in} in)</span></h3>`;
       for (const x of b.out.slice(0, 12)) html += edgeHtml(x, prov, "out");
       html += `</section>`;
@@ -750,7 +862,7 @@ document.addEventListener("click", ev => {
 document.querySelectorAll(".toolbar input").forEach(el =>
   el.addEventListener("change", () => {
     if (el.dataset.lk && focusId === LIBS_ID) { renderFocus(false); return; }
-    drawDeps(lastPairs);
+    renderEdges();
     drawSelRing();
     if (selectedId) renderPanel(selectedId);
     else if (focusId !== LIBS_ID) renderPanel(focusId);
