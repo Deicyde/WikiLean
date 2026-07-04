@@ -38,115 +38,109 @@ HTML = r"""<!doctype html>
 <style>
 * { box-sizing:border-box; }
 html, body { height:100%; }
-body { margin:0; background:#fafbfc; color:#1f2328;
+body { margin:0; background:#0b0e14; color:#e6e4de;
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
-a { color:#0969da; text-decoration:none; }
+a { color:#7cb3ff; text-decoration:none; }
 a:hover { text-decoration:underline; }
-.wl-header { background:#fff; border-bottom:1px solid #d0d7de; padding:10px 20px;
+.wl-header { background:#10141d; border-bottom:1px solid #262c3a; padding:10px 20px;
   display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
-.wl-brand { font-weight:700; color:#0969da; font-size:18px; }
+.wl-brand { font-weight:700; color:#7cb3ff; font-size:18px; }
 .wl-nav { display:flex; gap:14px; align-items:center; flex-wrap:wrap; }
 .wl-navlink { font-size:.9rem; }
-.toolbar { background:#fff; border-bottom:1px solid #d0d7de; padding:8px 20px;
+.toolbar { background:#10141d; border-bottom:1px solid #262c3a; padding:8px 20px;
   display:flex; gap:14px; align-items:center; flex-wrap:wrap; font-size:.85rem; }
 .toolbar label { display:inline-flex; align-items:center; gap:4px; cursor:pointer;
-  color:#57606a; user-select:none; }
+  color:#9aa3b2; user-select:none; }
 .toolbar .grp { display:inline-flex; gap:10px; align-items:center; padding-right:14px;
-  border-right:1px solid #d8dee4; }
+  border-right:1px solid #262c3a; }
 .toolbar .grp:last-child { border-right:none; }
+.toolbar b { color:#e6e4de; }
 #search { position:relative; }
-#search input { width:290px; padding:5px 9px; border:1px solid #d0d7de; border-radius:6px;
-  font-size:.88rem; background:#f6f8fa; }
-#search input:focus { outline:2px solid #0969da33; background:#fff; }
+#search input { width:290px; padding:5px 9px; border:1px solid #33405c; border-radius:6px;
+  font-size:.88rem; background:#0b0e14; color:#e6e4de; }
+#search input:focus { outline:2px solid #38bdf855; }
 #hits { position:absolute; top:32px; left:0; z-index:30; width:420px; max-height:380px;
-  overflow:auto; background:#fff; border:1px solid #d0d7de; border-radius:8px;
-  box-shadow:0 8px 24px rgba(31,35,40,.15); display:none; }
+  overflow:auto; background:#151b28; border:1px solid #33405c; border-radius:8px;
+  box-shadow:0 8px 24px rgba(0,0,0,.5); display:none; }
 #hits .hit { padding:6px 10px; cursor:pointer; display:flex; gap:8px; align-items:baseline; }
-#hits .hit:hover { background:#f6f8fa; }
-#hits .hit .t { font-size:.72rem; color:#57606a; min-width:64px; }
-#crumbbar { background:#fff; border-bottom:1px solid #eaeef2; padding:6px 20px;
-  font-size:.82rem; color:#57606a; display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
+#hits .hit:hover { background:#1e2635; }
+#hits .hit .t { font-size:.72rem; color:#9aa3b2; min-width:64px; }
+#crumbbar { background:#10141d; border-bottom:1px solid #1c2230; padding:6px 20px;
+  font-size:.82rem; color:#9aa3b2; display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
 #crumbbar a { cursor:pointer; }
-#crumbbar .sep { color:#8c959f; }
+#crumbbar .sep { color:#556074; }
+#crumbbar b { color:#e6e4de; }
 .main { display:flex; height:calc(100vh - 132px); }
-#stage { flex:1 1 62%; position:relative; background:#fff; overflow:hidden; }
+#stage { flex:1 1 62%; position:relative; background:#0b0e14; overflow:hidden; }
 #stage svg { display:block; width:100%; height:100%; }
-#stage .hint { position:absolute; left:12px; bottom:10px; font-size:.72rem; color:#8c959f;
-  pointer-events:none; }
+#stage .hint { position:absolute; left:12px; bottom:10px; font-size:.72rem;
+  pointer-events:none; color:#77808f; }
 circle.bubble { cursor:pointer; transition: stroke .12s; stroke:#fff0; }
-circle.bubble:hover { stroke:#0969da; stroke-width:2px; }
+circle.bubble:hover { stroke:#38bdf8; stroke-width:2px; }
 circle.preview { pointer-events:none; }
 circle.dot { cursor:pointer; stroke:#fff0; }
-circle.dot:hover { stroke:#0969da; stroke-width:2px; }
-circle.selring { fill:none; stroke:#0969da; stroke-width:2.5px; pointer-events:none; }
+circle.dot:hover { stroke:#38bdf8; stroke-width:2px; }
+circle.selring { fill:none; stroke:#38bdf8; stroke-width:2.5px; pointer-events:none; }
 text.blabel { pointer-events:none; text-anchor:middle;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; fill:#1f2328; }
-text.bcount { pointer-events:none; text-anchor:middle; fill:#57606a; }
+  font-family:Georgia,"Iowan Old Style","Times New Roman",serif; fill:#e8e6e1; }
+text.bcount { pointer-events:none; text-anchor:middle; fill:#9aa3b2;
+  font-family:Georgia,serif; }
 path.link { pointer-events:none; }
 path.ov { fill:none; pointer-events:none; stroke-dasharray:4 3; }
-#panel { flex:1 1 38%; overflow-y:auto; padding:18px 22px; background:#fafbfc;
-  border-left:1px solid #d0d7de; }
-#panel h2 { margin:0 0 2px; font-size:1.25rem; }
-#panel .sub { color:#57606a; font-size:.85rem; margin-bottom:10px; }
-.crumb { font-size:.8rem; color:#57606a; margin-bottom:8px; }
+
+/* the reading surface: an encyclopedia page beside a star map */
+#panel { flex:1 1 38%; overflow-y:auto; padding:20px 26px; background:#f6f1e5;
+  border-left:1px solid #262c3a; color:#151310;
+  font-family:Georgia,"Iowan Old Style","Times New Roman",serif; }
+#panel a { color:#1a4b8f; }
+#panel h2 { margin:0 0 2px; font-size:1.35rem; font-weight:700; color:#0d0c0a;
+  letter-spacing:.01em; }
+#panel .sub { margin-bottom:10px; color:#5a544a; font-size:.88rem; }
+.crumb { font-size:.8rem; color:#5a544a; margin-bottom:8px; }
 .crumb a { cursor:pointer; }
 .badge { display:inline-block; padding:1px 8px; border-radius:10px; font-size:.72rem;
-  border:1px solid #d0d7de; color:#57606a; margin:0 4px 4px 0; background:#fff; }
-.badge.f { border-color:#1a7f37; color:#1a7f37; }
-.badge.p { border-color:#d4a72c; color:#9a6700; }
-.badge.n { border-color:#cf222e; color:#cf222e; }
+  border:1px solid #c8bfa8; color:#5a544a; margin:0 4px 4px 0; background:#fdfbf4; }
+.badge.f { border-color:#1a7f37; color:#116329; }
+.badge.p { border-color:#b58800; color:#7d5e00; }
+.badge.n { border-color:#c93c37; color:#a12621; }
 .chips { margin:8px 0; }
-.chip { display:inline-block; margin:0 6px 6px 0; padding:2px 9px; border:1px solid #d0d7de;
-  border-radius:12px; font-size:.76rem; background:#fff; }
-section.kind { margin-top:14px; }
-section.kind h3 { font-size:.85rem; margin:0 0 6px; color:#1f2328; }
-section.kind h3 .cnt { color:#8c959f; font-weight:400; }
-.edge { border:1px solid #eaeef2; border-radius:6px; margin-bottom:6px; background:#fff; }
+.chip { display:inline-block; margin:0 6px 6px 0; padding:2px 9px; border:1px solid #c8bfa8;
+  border-radius:12px; font-size:.78rem; background:#fdfbf4; }
+section.kind { margin-top:16px; }
+section.kind h3 { font-size:.95rem; margin:0 0 6px; color:#0d0c0a; font-weight:700;
+  border-bottom:1px solid #d8cfb8; padding-bottom:2px; }
+section.kind h3 .cnt { color:#8a8272; font-weight:400; font-size:.8rem; }
+.edge { border:1px solid #ddd4bd; border-radius:6px; margin-bottom:6px; background:#fdfbf4; }
 .edge .row { padding:6px 10px; display:flex; gap:8px; align-items:baseline; cursor:pointer;
-  font-size:.85rem; flex-wrap:wrap; }
-.edge .row:hover { background:#f6f8fa; }
-.edge .mk { color:#8250df; font-size:.74rem; }
-.edge .prov { font-size:.7rem; border-radius:8px; padding:0 6px; border:1px solid #d0d7de;
-  color:#57606a; margin-left:auto; white-space:nowrap; }
-.edge .prov.human { border-color:#1a7f37; color:#1a7f37; }
-.edge .prov.machine { border-color:#8250df; color:#8250df; }
-.edge .prov.ai { border-color:#bc4c00; color:#bc4c00; }
-.edge .drawer { display:none; border-top:1px solid #eaeef2; padding:8px 10px; font-size:.76rem;
-  background:#f6f8fa; border-radius:0 0 6px 6px; }
+  font-size:.86rem; flex-wrap:wrap; }
+.edge .row:hover { background:#f3ecda; }
+.edge .mk { color:#6d28d9; font-size:.74rem; font-style:italic; }
+.edge .prov { font-size:.7rem; border-radius:8px; padding:0 6px; border:1px solid #c8bfa8;
+  color:#5a544a; margin-left:auto; white-space:nowrap; font-family:-apple-system,sans-serif; }
+.edge .prov.human { border-color:#1a7f37; color:#116329; }
+.edge .prov.machine { border-color:#6d28d9; color:#5b21b6; }
+.edge .prov.ai { border-color:#c2540a; color:#9a3f00; }
+.edge .drawer { display:none; border-top:1px solid #ddd4bd; padding:8px 10px; font-size:.78rem;
+  background:#f3ecda; border-radius:0 0 6px 6px; }
 .edge .drawer pre { margin:4px 0 0; white-space:pre-wrap; word-break:break-word;
-  font-size:.72rem; color:#1f2328; }
+  font-size:.72rem; color:#2b2822;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
 .edge.open .drawer { display:block; }
-.slogan { border-left:3px solid #8250df; padding:6px 10px; background:#fff; margin:8px 0;
-  font-size:.86rem; border-radius:0 6px 6px 0; }
-.slogan .src { display:block; color:#8c959f; font-size:.7rem; margin-top:3px; }
-.codeblock { margin:8px 0; border:1px solid #d0d7de; border-radius:6px; background:#f6f8fa; }
+.slogan { border-left:3px solid #6d28d9; padding:6px 10px; background:#fdfbf4; margin:8px 0;
+  font-size:.88rem; border-radius:0 6px 6px 0; font-style:italic; }
+.slogan .src { display:block; color:#8a8272; font-size:.7rem; margin-top:3px; font-style:normal; }
+.codeblock { margin:8px 0; border:1px solid #ddd4bd; border-radius:6px; background:#fbf8ef; }
 .codeblock pre { margin:0; padding:8px 10px; overflow-x:auto; font-size:.76rem;
-  font-family:ui-monospace,SFMono-Regular,Menlo,monospace; line-height:1.45; }
-.codeblock .src { display:block; color:#8c959f; font-size:.7rem; padding:4px 10px 6px;
-  border-top:1px solid #d8dee4; }
-html[data-theme="dark"] .codeblock { background:#0d1117; border-color:#30363d; }
-html[data-theme="dark"] .codeblock .src { border-color:#30363d; }
-.lit-ref { color:#8c959f; font-size:.74rem; }
-.note { color:#57606a; font-size:.8rem; }
-.more { font-size:.78rem; color:#57606a; padding:4px 10px; }
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace; line-height:1.45; color:#1f1d18; }
+.codeblock .src { display:block; color:#8a8272; font-size:.7rem; padding:4px 10px 6px;
+  border-top:1px solid #ddd4bd; }
+.lit-ref { color:#8a8272; font-size:.74rem; }
+.note { color:#5a544a; font-size:.82rem; }
+.more { font-size:.78rem; color:#5a544a; padding:4px 10px; }
 .extlink { font-size:.8rem; }
 @media (max-width: 900px) { .main { flex-direction:column; height:auto; }
   #stage { min-height:52vh; border-left:none; }
-  #panel { border-left:none; border-top:1px solid #d0d7de; max-height:none; } }
-html[data-theme="dark"] body { background:#0d1117; color:#e6edf3; }
-html[data-theme="dark"] .wl-header, html[data-theme="dark"] .toolbar,
-html[data-theme="dark"] #crumbbar, html[data-theme="dark"] #stage { background:#161b22;
-  border-color:#30363d; }
-html[data-theme="dark"] #panel { background:#0d1117; border-color:#30363d; }
-html[data-theme="dark"] .edge, html[data-theme="dark"] .badge, html[data-theme="dark"] .chip,
-html[data-theme="dark"] .slogan { background:#161b22; border-color:#30363d; }
-html[data-theme="dark"] .edge .row:hover { background:#21262d; }
-html[data-theme="dark"] .edge .drawer { background:#0d1117; border-color:#30363d; }
-html[data-theme="dark"] #search input { background:#0d1117; border-color:#30363d; color:#e6edf3; }
-html[data-theme="dark"] #hits { background:#161b22; border-color:#30363d; }
-html[data-theme="dark"] #hits .hit:hover { background:#21262d; }
-html[data-theme="dark"] text.blabel { fill:#e6edf3; }
-html[data-theme="dark"] text.bcount { fill:#8b949e; }
+  #panel { border-left:none; border-top:1px solid #262c3a; max-height:none; } }
 </style>
 </head>
 <body>
@@ -197,12 +191,14 @@ html[data-theme="dark"] text.bcount { fill:#8b949e; }
 <div class="main">
   <div id="stage"><svg id="svg"></svg>
     <div class="hint">click a bubble to zoom in · background to zoom out · click any edge
-      for its evidence · <span style="color:#8250df">formal deps</span> ·
-      <span style="color:#0969da">formalizes</span> ·
-      <span style="color:#d4a72c">wikidata relations</span> ·
-      <span style="color:#bf5af2">same external page</span> ·
-      dots = concepts (blue) / decls (green) · bubble outlines = logical communities ·
-      selecting a node orbits its off-canvas neighbors (click to travel)</div>
+      for its evidence · <span style="color:#a78bfa">formal deps</span> ·
+      <span style="color:#38bdf8">formalizes</span> ·
+      <span style="color:#fbbf24">wikidata relations</span> ·
+      <span style="color:#f472b6">cross-database</span> ·
+      <span style="color:#fb923c">literature</span> ·
+      <span style="color:#2dd4bf">matches</span> ·
+      dots = concepts (blue) / decls (green) · outlines = logical communities ·
+      selecting a node orbits its neighbors (click to travel)</div>
   </div>
   <div id="panel"><p class="note">The Brain as bubbles: areas nest by containment
     (Mathlib → Algebra → Group → …), concepts float beside the code that formalizes
@@ -325,12 +321,12 @@ const gBubbles = svg.append("g");
 const gOverlay = svg.append("g");
 const gLabels = svg.append("g");
 
-const CONCEPT_COLOR = {formalized: "#0969da", partial: "#d4a72c", not_formalized: "#cf222e"};
+const CONCEPT_COLOR = {formalized: "#3b82f6", partial: "#eab308", not_formalized: "#ef4444"};
 function fillFor(item, depthShade) {
   if (item.type === "concept") return CONCEPT_COLOR[item.status] || "#0969da";
-  if (item.type === "decl") return "#1a7f37";
+  if (item.type === "decl") return "#22c55e";
   if (item.type === "strays") return "#8c959f";
-  if (item.type === "external") return "#bf5af2";
+  if (item.type === "external") return "#f472b6";
   if (item.type === "literature") return "#d4a72c";
   return depthShade;   // container
 }
@@ -401,7 +397,7 @@ try { viewMode = localStorage.getItem("wl-brain-view") || "bubbles"; } catch (e)
 
 function drawNodes() {
   const leaves = layout.leaves;
-  const shade = document.documentElement.dataset.theme === "dark" ? "#20304a" : "#dbeafe";
+  const shade = "#22304d";   // container fill — the canvas is always dark
   const bubbles = gBubbles.selectAll("circle.node").data(leaves, l => l.data.id);
   bubbles.exit().remove();
   const entered = bubbles.enter().append("circle")
@@ -648,14 +644,14 @@ async function renderFocus(anim) {
 // EVERY drawn edge is a real brain edge (or a pair of xref edges to the same
 // external page) and carries its payload for the click-to-inspect panel card.
 const EDGE_STYLE = {
-  depends:      {color: "#8250df", dash: null,   label: "formal dependency"},
-  formalizes:   {color: "#0969da", dash: null,   label: "formalizes (formal↔informal join)"},
-  relates:      {color: "#d4a72c", dash: "5 3",  label: "Wikidata relation (informal)"},
-  mentions:     {color: "#8c959f", dash: "2 3",  label: "article mention (informal)"},
-  "xref-shared":{color: "#bf5af2", dash: "5 3",  label: "same external-database page"},
-  xref:         {color: "#bf5af2", dash: "3 3",  label: "cross-database identity"},
-  cites:        {color: "#d4a72c", dash: "2 4",  label: "stated in the literature (TheoremGraph)"},
-  matches:      {color: "#d4a72c", dash: null,   label: "formal ↔ literature match"},
+  depends:      {color: "#a78bfa", dash: null,   label: "formal dependency"},
+  formalizes:   {color: "#38bdf8", dash: null,   label: "formalizes (formal↔informal join)"},
+  relates:      {color: "#fbbf24", dash: "5 3",  label: "Wikidata relation (informal)"},
+  mentions:     {color: "#94a3b8", dash: "2 3",  label: "article mention (informal)"},
+  "xref-shared":{color: "#f472b6", dash: "5 3",  label: "same external-database page"},
+  xref:         {color: "#f472b6", dash: "3 3",  label: "cross-database identity"},
+  cites:        {color: "#fb923c", dash: "2 4",  label: "stated in the literature (TheoremGraph)"},
+  matches:      {color: "#2dd4bf", dash: null,   label: "formal ↔ literature match"},
 };
 let edgeStore = [];
 
@@ -916,9 +912,9 @@ function showEdgePanel(e) {
 }
 
 // overlay: the selected node's ontology edges to visible endpoints
-const OV_COLOR = {formalizes: "#0969da", xref: "#bf5af2", cites: "#d4a72c",
-                  matches: "#d4a72c", relates: "#57606a", mentions: "#8c959f",
-                  depends: "#8250df"};
+const OV_COLOR = {formalizes: "#38bdf8", xref: "#f472b6", cites: "#fb923c",
+                  matches: "#2dd4bf", relates: "#fbbf24", mentions: "#94a3b8",
+                  depends: "#a78bfa"};
 async function drawOverlay() {
   gOverlay.selectAll("path.ov").remove();
   if (!selectedId || !layout) return;
@@ -1187,7 +1183,7 @@ function edgeHtml(x, provTable, dir) {
     target = url ? `<a href="${esc(url)}" rel="noopener" target="_blank">${lbl}</a>` : lbl;
   } else {
     const u = nodeUrl(x.id);
-    target = `<span class="nav" data-nav="${esc(x.id)}" style="color:#0969da;cursor:pointer">${target}</span>`
+    target = `<span class="nav" data-nav="${esc(x.id)}" style="color:#1a4b8f;cursor:pointer">${target}</span>`
            + (u ? ` <a class="extlink" href="${esc(u)}" rel="noopener" target="_blank">↗</a>` : "");
   }
   const prov = provTable[x.prov] || {};
