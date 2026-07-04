@@ -9,6 +9,12 @@ edge, keeping only edges between concepts we actually map — so a richer,
 formally-grounded edge set than the extract, with the witnessing decl-pairs +
 edge_type kept as the evidence payload.
 
+Weight semantics (brain/SCHEMA.md contract): `weight` counts DISTINCT
+(src_decl, dep_decl) pairs witnessing the edge — never raw CSV rows (18.3% dup
+inflation) and never once per (qa,qb) product. `w_types` splits that count into
+{sig: sig+field+extends, def, proof} buckets (a pair can land in several).
+`docref` rows are doc references, not dependencies — excluded entirely.
+
 Inputs (cached, gitignored — from uw-math-ai/math-graph, CC-BY-4.0):
   catalog/.cache/statement_formal.csv    statement_id → decl_name (388k)
   catalog/.cache/formal_dependency.csv   src_id → dep_id (+ edge_type) (11.3M)
@@ -34,6 +40,7 @@ DEP = CACHE / "formal_dependency.csv"
 DEFAULT_D2Q = HERE / "mathlib_deps" / "decl_to_qid.json"
 DEFAULT_OUT = HERE / "data" / "formal_edges_lifted.json"
 MAX_WITNESS = 4
+BUCKET = {"sig": "sig", "field": "sig", "extends": "sig", "def": "def", "proof": "proof"}
 csv.field_size_limit(10 ** 9)
 
 
@@ -53,7 +60,7 @@ def lift(decl_to_qid: dict[str, list[str]]) -> list[dict]:
 
     # scan the 11.3M dep edges; keep only interest→interest.
     edges: dict[tuple[str, str], dict] = {}
-    n = kept = 0
+    n = kept = docref = unbucketed = 0
     with DEP.open(newline="") as fh:
         for r in csv.DictReader(fh):
             n += 1
@@ -63,20 +70,36 @@ def lift(decl_to_qid: dict[str, list[str]]) -> list[dict]:
             b_decl = id2decl.get(r["dep_id"])
             if b_decl is None or b_decl == a_decl:
                 continue
+            t = r.get("edge_type") or "dep"
+            if t == "docref":
+                docref += 1
+                continue
+            bucket = BUCKET.get(t)
+            if bucket is None:
+                unbucketed += 1  # counts toward weight but no w_types bucket
+            pair = (a_decl, b_decl)
             for qa in decl_to_qid[a_decl]:
                 for qb in decl_to_qid[b_decl]:
                     if qa == qb:
                         continue
                     kept += 1
-                    e = edges.setdefault((qa, qb), {"decls": [], "n": 0, "types": set()})
-                    e["n"] += 1
-                    e["types"].add(r.get("edge_type") or "dep")
-                    if len(e["decls"]) < MAX_WITNESS:
-                        e["decls"].append([a_decl, b_decl])
-    print(f"  scanned {n} dep rows, {kept} interest-pairs → {len(edges)} QID→QID edges", file=sys.stderr)
+                    e = edges.setdefault((qa, qb), {"decls": [], "pairs": set(),
+                                                    "w": {"sig": set(), "def": set(), "proof": set()},
+                                                    "types": set()})
+                    e["types"].add(t)
+                    if bucket is not None:
+                        e["w"][bucket].add(pair)
+                    if pair not in e["pairs"]:
+                        e["pairs"].add(pair)
+                        if len(e["decls"]) < MAX_WITNESS:
+                            e["decls"].append([a_decl, b_decl])
+    print(f"  scanned {n} dep rows, {kept} interest-pairs → {len(edges)} QID→QID edges "
+          f"({docref} docref rows excluded, {unbucketed} unbucketed)", file=sys.stderr)
 
     return [{"from": a, "to": b, "source": "mathlib",
-             "decls": v["decls"], "weight": v["n"], "edge_types": sorted(v["types"])}
+             "decls": v["decls"], "weight": len(v["pairs"]),
+             "w_types": {k: len(s) for k, s in v["w"].items()},
+             "edge_types": sorted(v["types"])}
             for (a, b), v in edges.items()]
 
 
@@ -89,7 +112,9 @@ def main() -> int:
     # accept {decl: qid} or {decl: [qids]}
     d2q = {k: (v if isinstance(v, list) else [v]) for k, v in d2q.items()}
     edges = lift(d2q)
-    args.out.write_text(json.dumps({"n_edges": len(edges), "edges": edges}, ensure_ascii=False))
+    tmp = args.out.with_suffix(".json.tmp")
+    tmp.write_text(json.dumps({"n_edges": len(edges), "edges": edges}, ensure_ascii=False))
+    tmp.replace(args.out)
     print(f"wrote {args.out.name}: {len(edges)} formal QID→QID edges "
           f"({args.out.stat().st_size / 1024:.0f} KB)")
     return 0

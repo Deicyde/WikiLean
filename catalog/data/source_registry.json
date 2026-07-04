@@ -55,6 +55,14 @@
    "kind": "An informal/ontological relation between two concepts (subclass-of, part-of, ...).",
    "our_provenance": "catalog/mathlib_deps/wikidata_edges.jsonl; edge carries the witnessing property [P#, label]. source='wikidata'.",
    "target_license": "CC0-1.0"
+  },
+  "annotations": {
+   "name": "WikiLean annotations",
+   "homepage": "https://wikilean.jackmccarthy.org",
+   "layer": "informal",
+   "kind": "A `mentions` edge: a moderated WikiLean article about the concept cites the declaration in one of its annotations (citation role, NOT a formalization claim).",
+   "our_provenance": "site/annotations/*.json mathlib.decl citations x the article's concept QID (catalog/data/decl_qid_roles_v2.json role=citation); D1 is canonical for the annotations themselves.",
+   "target_license": "CC0-1.0 (WikiLean's own annotation data)"
   }
  },
  "crossref_sources": {
@@ -180,6 +188,38 @@
    "our_provenance": "uw-math-ai/theorem-matching (arXiv:2606.25363), paper-affirmed slice only (GPT-5.4 judge ∈ {exact,inexact}; both judges' labels kept per link). catalog/ingest_theorem_graph.py. NOT the concept's canonical/origin source; AI-proposed, not human-verified.",
    "target_license": "CC-BY-SA-4.0 — we store only the link facts (decl ↔ arxiv_id/ref/title + judge verdicts); each arXiv paper retains its own license.",
    "note": "~80% of the underlying arXiv papers are NOT open-licensed (non-exclusive-distrib) — we store only the link facts (decl↔arxiv_id/ref/title), never the paper text."
+  }
+ },
+ "brain_sources": {
+  "rebuild_grounding": {
+   "name": "BRAIN agent grounding (oracle-verified)",
+   "layer": "formal",
+   "kind": "concept -> decl `formalizes` edges: the 2026-07 parallel-agent regrounding of every concept QID to its Mathlib declaration(s), decl-existence-verified at build time.",
+   "our_provenance": "catalog/data/rebuild_grounding.json (immutable agent audit trail) + catalog/data/grounding_overrides.jsonl (curated point-fixes) -> brain/build_edges.py; every dst decl passed the existence oracle before emission.",
+   "target_license": "CC0-1.0 (WikiLean's own edge data; the decls themselves are Mathlib, Apache-2.0)"
+  },
+  "theoremgraph_matching": {
+   "name": "TheoremGraph theorem matching (decl <-> arXiv statement)",
+   "homepage": "https://theoremsearch.com",
+   "layer": "literature",
+   "kind": "decl <-> literature `matches` edges (dual-judge affirmed) + the decl slogans rendered on decl pages.",
+   "our_provenance": "uw-math-ai/theorem-matching theorem_matching.csv @ pin (arXiv:2606.25363); judge verdicts + similarity kept per edge; slogans from its formal_slogan column. Distinct from `theoremgraph` (the concept->arXiv citation lift).",
+   "target_license": "CC-BY-SA-4.0 — attribution carried in artifact _meta and rendered with a source credit; arXiv statement TEXT is never redistributed, only ids/labels/links.",
+   "attribution_required": true
+  },
+  "brain_container_links": {
+   "name": "BRAIN container links (field-of-study altitude)",
+   "layer": "formal",
+   "kind": "concept -> container `formalizes` edges (match_kind: field) placing field-of-study QIDs at module/dir altitude, e.g. Q217413 -> path:Mathlib/CategoryTheory.",
+   "our_provenance": "brain/data/container_links.jsonl — agent-proposed (brain/proposals/container_batch_*.jsonl), paths validated against catalog/data/hierarchy.json before fold-in.",
+   "target_license": "CC0-1.0 (WikiLean's own edge data)"
+  },
+  "brain_discovery": {
+   "name": "BRAIN discovery fold-ins (verified proposals)",
+   "layer": "formal",
+   "kind": "New `formalizes` links/nodes proposed by agent discovery passes and folded in only after the deterministic verifier passes (QID exists upstream, decl passes the oracle).",
+   "our_provenance": "brain/proposals/discover_*.jsonl -> deterministic verifier -> build inputs; rejected rows retained with rejected_reason (propose-then-approve, no LLM on the build path).",
+   "target_license": "CC0-1.0 (WikiLean's own edge data)"
   }
  },
  "frontier_sources": {
