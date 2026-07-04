@@ -47,6 +47,7 @@ INPUTS = {
 OPTIONAL_INPUTS = {
     "container_links.jsonl": BRAIN_DATA / "container_links.jsonl",
     "discovery_proposals.jsonl": BRAIN_DATA / "discovery_proposals.jsonl",
+    "mathlib_tag_xrefs.jsonl": DATA / "mathlib_tag_xrefs.jsonl",
 }
 
 KIND_ORDER = ["contains", "formalizes", "mentions", "depends", "relates",
@@ -118,7 +119,24 @@ def build() -> tuple[list[dict], list[dict], dict]:
     mention_pairs = sorted((q, d) for d, m in roles.items()
                            for q, r in m.items() if r == "citation")
     ldecls = {l["decl"] for ls in links.values() for l in ls}
-    decl_set = set(roles) | fdecls | ldecls
+    # @[stacks]/@[kerodon]/@[wikidata] attributes harvested from the mathlib4
+    # checkout — loaded before the decl universe is fixed so every gold
+    # @[wikidata]-tagged decl becomes a brain node even when no agent pipeline
+    # found it independently (27/121 were otherwise absent, per the harvest
+    # verifier). Fail-soft: without the harvest the build just loses this layer.
+    tag_rows: list[dict] = []
+    p = OPTIONAL_INPUTS["mathlib_tag_xrefs.jsonl"]
+    if p.exists():
+        with p.open() as fh:
+            tag_rows = [r for line in fh if line.strip()
+                        for r in [json.loads(line)] if "decl" in r]
+    else:
+        print("NOTE: catalog/data/mathlib_tag_xrefs.jsonl missing — "
+              "@[stacks]/@[kerodon] xref edges + @[wikidata] source-tag "
+              "provenance skipped", file=sys.stderr)
+    source_tagged = {(r["tag"], r["decl"]) for r in tag_rows
+                     if r["db"] == "wikidata"}
+    decl_set = set(roles) | fdecls | ldecls | {d for _, d in source_tagged}
     # Annotation citations occasionally carry junk like
     # "MonoidAlgebra.instIsSemisimpleModule (Maschke)" — whitespace is never
     # legal in a Lean identifier, so such names can't resolve anywhere. Drop
@@ -300,17 +318,27 @@ def build() -> tuple[list[dict], list[dict], dict]:
                                     "module-prefix placement", pin_h, "high",
                                     _prune({"module": module})))
 
+    # ---- mathlib source cross-reference tags --------------------------------
+    n_source_tagged = 0
+    emitted_formalizes: set[tuple[str, str]] = set()   # (qid, bare decl name)
+
     # ---- ontology edges -----------------------------------------------------
     edges: list[dict] = list(contains_edges)
     pin_g = _pin("concept_graph_v2.json")
 
     for n in graph["nodes"]:
         for f in n.get("formalizations") or []:
+            gold = (n["qid"], f["decl"]) in source_tagged
+            n_source_tagged += gold
+            emitted_formalizes.add((n["qid"], f["decl"]))
             edges.append(_edge(n["qid"], decl_id[f["decl"]], "formalizes",
-                               "mathlib", "agent+oracle", pin_g,
+                               "mathlib",
+                               "@[wikidata] attribute (mathlib4 source)" if gold
+                               else "agent+oracle", pin_g,
                                f.get("confidence") or "medium",
                                _prune({"match_kind": f.get("match_kind"),
                                        "module": f.get("module"),
+                                       "source_tagged": True if gold else None,
                                        "grounding_note": grounding_note.get(
                                            (n["qid"], f["decl"])),
                                        "verified_by": "build_graph_v2 oracle+checkout"})))
@@ -357,6 +385,31 @@ def build() -> tuple[list[dict], list[dict], dict]:
                 edges.append(_edge(n["qid"], f"xref:{key}:{v}", "xref", key,
                                    "wikidata-property", pin_x, "high",
                                    {"property": XREF_KEYS[key], "value": v}))
+
+    # decl → Stacks/Kerodon tag xrefs, only for decls that are already brain
+    # nodes (rows for untracked decls are counted, never minted into nodes)
+    n_tag_xref = n_tag_skipped = 0
+    seen_tag: set[tuple[str, str]] = set()
+    for r in tag_rows:
+        if r["db"] not in ("stacks", "kerodon"):
+            continue
+        if r["decl"] not in decl_id:
+            n_tag_skipped += 1
+            continue
+        key = (decl_id[r["decl"]], f"xref:{r['db']}:{r['tag']}")
+        if key in seen_tag:
+            continue
+        seen_tag.add(key)
+        n_tag_xref += 1
+        edges.append(_edge(key[0], key[1], "xref", r["db"],
+                           f"@[{r['db']}] attribute (mathlib4 source)",
+                           snapshot_pin, "high",
+                           {"tag": r["tag"], "value": r["tag"], "file": r["file"]}))
+    if tag_rows:
+        print(f"  mathlib tag xrefs: {n_tag_xref} stacks/kerodon edges "
+              f"({n_tag_skipped} rows skipped — decl has no brain node); "
+              f"{n_source_tagged} formalizes edges source-tagged @[wikidata]",
+              file=sys.stderr)
 
     # ---- cites + matches (TheoremGraph links + transitive join) ------------
     pin_l = _pin("theoremgraph_links.json")
@@ -533,12 +586,39 @@ def build() -> tuple[list[dict], list[dict], dict]:
                 span = "/".join((rec.get("module") or "").split(".")[:2])
                 if span and span not in ae["module_span"]:
                     ae["module_span"].append(span)
+            if rec["kind"] == "formalizes" and dst.startswith("decl:"):
+                bare = dst.split(":", 2)[2]
+                emitted_formalizes.add((src, bare))
+                if (src, bare) in source_tagged:   # gold pair found by another path
+                    ev = {**ev, "source_tagged": True}
             edges.append(_edge(src, dst, rec["kind"], "mathlib",
                                "discovery_proposals (verified)", pin_d,
                                rec.get("confidence") or "medium", ev))
     else:
         print("NOTE: brain/data/discovery_proposals.jsonl missing — "
               "discovery layer skipped", file=sys.stderr)
+
+    # Gold @[wikidata] pairs no pipeline found independently get minted here —
+    # a maintainer-reviewed source tag IS a formalizes edge, the strongest kind
+    # we have. Their decls joined decl_set above, so the decl node exists; the
+    # QID must at least be known to the universe (else counted, never guessed).
+    n_gold_minted = n_gold_unknown_qid = 0
+    for qid, d in sorted(source_tagged - emitted_formalizes):
+        if d not in decl_id:
+            continue   # whitespace-filtered or unresolvable name
+        if not ensure_concept(qid):
+            n_gold_unknown_qid += 1
+            continue
+        n_gold_minted += 1
+        n_source_tagged += 1
+        edges.append(_edge(qid, decl_id[d], "formalizes", "mathlib",
+                           "@[wikidata] attribute (mathlib4 source)",
+                           snapshot_pin, "high",
+                           {"match_kind": "exact", "source_tagged": True}))
+    if source_tagged:
+        print(f"  gold @[wikidata] pairs minted as new formalizes edges: "
+              f"{n_gold_minted} ({n_gold_unknown_qid} skipped — QID not in the "
+              f"universe)", file=sys.stderr)
 
     # ---- concept nodes -------------------------------------------------------
     p31: dict[str, list[str]] = {}
@@ -618,6 +698,9 @@ def build() -> tuple[list[dict], list[dict], dict]:
                     "statement_formal.csv (CC-BY-4.0)",
             "arxiv": "arXiv statement text is never redistributed — ids/titles/labels only",
             "wikidata": "CC0-1.0",
+            "mathlib_tags": "@[stacks]/@[kerodon]/@[wikidata] cross-reference tags "
+                            "harvested from the mathlib4 source (Apache-2.0, mathlib4 "
+                            "contributors) — human-reviewed gold links",
         },
         "counts": {
             "nodes": dict(sorted(Counter(n["type"] for n in nodes).items())),
@@ -632,6 +715,9 @@ def build() -> tuple[list[dict], list[dict], dict]:
             "cites_from_links": n_cites_links,
             "cites_from_transitive_join": len(cites) - n_cites_links,
             "xref_values_skipped_nonschema_keys": n_xref_skipped_keys,
+            "mathlib_tag_xref_edges": n_tag_xref,
+            "mathlib_tag_rows_skipped_no_decl_node": n_tag_skipped,
+            "formalizes_source_tagged": n_source_tagged,
         },
     }
     return nodes, edges, meta

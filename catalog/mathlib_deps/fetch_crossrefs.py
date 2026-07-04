@@ -36,10 +36,12 @@ def load_props() -> dict[str, str]:
     crossref_sources (the provenance single-source-of-truth). kgmid carries two
     PIDs slash-joined ("P2671/P646") — kgmids come from Wikidata (CC0), never
     Google's API (ToS §5.e). NB literature props (P818 arXiv) deliberately
-    absent from the registry: they live on the scholarly WDQS split."""
+    absent from the registry: they live on the scholarly WDQS split. Entries
+    without a wikidata_property (stacks/kerodon — harvested from mathlib4
+    @[stacks]/@[kerodon] attributes, no Wikidata property exists) are skipped."""
     sources = json.loads(SOURCE_REGISTRY.read_text())["crossref_sources"]
     return {pid: key for key, entry in sources.items()
-            for pid in entry["wikidata_property"].split("/")}
+            for pid in entry.get("wikidata_property", "").split("/") if pid}
 
 
 def load_qids() -> list[str]:
