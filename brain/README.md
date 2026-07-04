@@ -128,6 +128,33 @@ sweep: edge shape, provenance.source ∈ `catalog/data/source_registry.json`,
 | `brain/proposals/*.jsonl` | raw agent proposals + skeptic verdicts | ~700 KB | yes |
 | `site/assets/brain/` | 2,165 neighborhood shards + manifest + labels.json | 65 MB | **gitignored** (rebuild ~6 s) |
 
+## Network-structure calibration (arXiv 2604.24797)
+
+"The Network Structure of Mathlib" (Li, Peng, Severini, Shafto 2026) measured the
+biases the BRAIN must correct for, and three of its findings are wired in:
+
+- **74.2% of dependency edges are compiler-synthesized; 43.9% are proof-only** —
+  the graph records the process of proving, not mathematical content. The BRAIN's
+  default render layer is therefore `w_types.sig` (statement-level dependencies,
+  the closest analogue of the paper's "explicit subgraph ≈ human-intended").
+- **Centrality captures infrastructure, not relevance** (Eq.refl ranks #2 by
+  in-degree; the CRT isn't in the top 100). Tree-grain rollup rows carry a
+  **`lift`** field: observed sig weight ÷ configuration-model expectation at that
+  depth. Hub↔hub volume gets lift ≈ 1; genuine entanglement gets lift ≫ 1
+  (measured on our data: FieldTheory↔ModelTheory 28.7×, MeasureTheory↔Probability
+  22.9×, Probability↔InformationTheory 20.5×). /brain's "de-hub" toggle ranks and
+  fades edges by lift; the edge card shows it.
+- **Folders diverge from logical communities** (NMI 0.34, 50.9% cross-namespace
+  edges). /brain computes greedy-modularity communities over each visible level's
+  sibling graph (lift-weighted, client-side — locality-true) and colors bubble
+  outlines by community, so the divergence between the containment tree and the
+  logical structure is visible at every zoom level.
+
+Their dataset (MathNetwork/MathlibGraph on HuggingFace, fresher than the
+TheoremGraph snapshot and carrying the explicit/synthesized flag) is a candidate
+future substrate — adopting it would let the BRAIN filter synthesized edges
+directly instead of approximating via sig.
+
 ## Provenance & licensing
 
 `catalog/data/source_registry.json` is the single source of truth: every edge's

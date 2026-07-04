@@ -168,6 +168,10 @@ html[data-theme="dark"] text.bcount { fill:#8b949e; }
     <label><input type="checkbox" data-lk="physics" checked> physics</label>
     <label><input type="checkbox" data-lk="tooling"> tooling</label>
   </span>
+  <span class="grp"><b>Structure</b>
+    <label title="weight edges by observed/expected flow (null model) instead of raw volume — corrects the hub bias found by arXiv 2604.24797"><input type="checkbox" id="dehub" checked> de-hub (lift)</label>
+    <label title="color bubble outlines by dependency-flow communities — where logical structure diverges from the folder tree (arXiv 2604.24797: NMI 0.34)"><input type="checkbox" id="commColor" checked> logical communities</label>
+  </span>
   <span class="note" id="status">loading manifest…</span>
 </div>
 <div id="crumbbar"></div>
@@ -178,7 +182,7 @@ html[data-theme="dark"] text.bcount { fill:#8b949e; }
       <span style="color:#0969da">formalizes</span> ·
       <span style="color:#d4a72c">wikidata relations</span> ·
       <span style="color:#bf5af2">same external page</span> ·
-      dots = concepts (blue) / decls (green)</div>
+      dots = concepts (blue) / decls (green) · bubble outlines = logical communities</div>
   </div>
   <div id="panel"><p class="note">The Brain as bubbles: areas nest by containment
     (Mathlib → Algebra → Group → …), concepts float beside the code that formalizes
@@ -485,16 +489,30 @@ async function enrich(seq, leaves) {
   renderEdges();
 }
 
+function liftOf(e) {
+  return (e.payload && e.payload.evidence && e.payload.evidence.lift) || null;
+}
 function renderEdges() {
   gEdges.selectAll("*").remove();
   if (!layout) return;
   const kinds = activeKinds();
+  const dehub = $("#dehub").checked;
   const show = edgeStore.filter(e =>
     e.kind === "xref-shared" ? kinds.has("xref") : kinds.has(e.kind));
-  // depends dominates by count — cap it by weight, keep every join/informal edge
-  const dep = show.filter(e => e.kind === "depends").sort((x, y) => y.w - x.w).slice(0, 250);
+  // depends dominates by count — cap it, keep every join/informal edge.
+  // De-hub mode ranks by lift×√sig (affinity × volume) instead of raw volume,
+  // per arXiv 2604.24797: raw weights measure infrastructure, not relevance.
+  const rank = e => dehub ? (liftOf(e) || 0.05) * Math.sqrt(e.w) : e.w;
+  const dep = show.filter(e => e.kind === "depends")
+    .sort((x, y) => rank(y) - rank(x)).slice(0, 250);
   const rest = show.filter(e => e.kind !== "depends");
-  const maxSig = dep.length ? dep[0].w : 1;
+  const maxSig = dep.reduce((m, e) => Math.max(m, e.w), 1);
+  const depOpacity = e => {
+    const lf = liftOf(e);
+    return dehub && lf !== null
+      ? Math.min(0.9, Math.max(0.06, 0.06 + 0.17 * Math.log2(1 + lf)))
+      : 0.16 + 0.3 * (e.w / maxSig);
+  };
   for (const e of [...dep, ...rest]) {
     const A = layout.items.get(e.a), B = layout.items.get(e.b);
     if (!A || !B) continue;
@@ -503,11 +521,12 @@ function renderEdges() {
     const d = `M${A.x},${A.y} Q${mx - dy * 0.18},${my + dx * 0.18} ${B.x},${B.y}`;
     const st = EDGE_STYLE[e.kind];
     const isDep = e.kind === "depends";
+    const baseOp = isDep ? depOpacity(e) : 0.5;
     const p = gEdges.append("path").attr("class", "link")
       .attr("d", d).attr("fill", "none")
       .attr("stroke", st.color)
       .attr("stroke-width", isDep ? 0.6 + 2.6 * Math.sqrt(e.w / maxSig) : 1.3)
-      .attr("stroke-opacity", isDep ? 0.16 + 0.3 * (e.w / maxSig) : 0.5);
+      .attr("stroke-opacity", baseOp);
     if (st.dash) p.attr("stroke-dasharray", st.dash);
     // invisible fat twin = the click/hover target
     gEdges.append("path").attr("class", "hit")
@@ -515,10 +534,69 @@ function renderEdges() {
       .attr("stroke", "transparent").attr("stroke-width", 9)
       .style("cursor", "pointer")
       .on("mouseenter", () => p.attr("stroke-opacity", 0.95))
-      .on("mouseleave", () => p.attr("stroke-opacity",
-        isDep ? 0.16 + 0.3 * (e.w / maxSig) : 0.5))
+      .on("mouseleave", () => p.attr("stroke-opacity", baseOp))
       .on("click", ev => { ev.stopPropagation(); showEdgePanel(e); });
   }
+  paintCommunities();
+}
+
+// Logical-community coloring of the visible level: greedy modularity merging
+// over the sibling depends graph (lift-corrected weights). Makes the paper's
+// Finding 1 visible — where dependency communities cut across the folder tree.
+const COMM_PALETTE = ["#e6550d", "#1a7f37", "#0969da", "#bf5af2", "#d4a72c",
+                      "#cf222e", "#0e7490", "#6e7781", "#9a6700", "#8250df"];
+function communitiesOf(ids, links) {
+  const m = links.reduce((s, l) => s + l.w, 0);
+  if (!m || ids.length < 3) return null;
+  const deg = new Map(ids.map(i => [i, 0]));
+  for (const l of links) { deg.set(l.a, deg.get(l.a) + l.w); deg.set(l.b, deg.get(l.b) + l.w); }
+  const comm = new Map(ids.map((i, k) => [i, k]));
+  const tot = new Map(ids.map((i, k) => [k, deg.get(i)]));
+  for (let round = 0; round < 40; round++) {
+    const cw = new Map();
+    for (const l of links) {
+      const ca = comm.get(l.a), cb = comm.get(l.b);
+      if (ca === cb) continue;
+      const key = ca < cb ? ca + ":" + cb : cb + ":" + ca;
+      cw.set(key, (cw.get(key) || 0) + l.w);
+    }
+    let best = null, bestDq = 1e-9;
+    for (const [key, w] of cw) {
+      const [ca, cb] = key.split(":").map(Number);
+      const dq = w / m - (tot.get(ca) * tot.get(cb)) / (2 * m * m);
+      if (dq > bestDq) { bestDq = dq; best = [ca, cb]; }
+    }
+    if (!best) break;
+    const [ca, cb] = best;
+    for (const [i, c] of comm) if (c === cb) comm.set(i, ca);
+    tot.set(ca, tot.get(ca) + tot.get(cb));
+    tot.delete(cb);
+  }
+  return comm;
+}
+function paintCommunities() {
+  const conts = [...layout.items.values()].filter(l => l.data.type === "container");
+  gBubbles.selectAll("circle.bubble").attr("stroke", null).attr("stroke-width", null)
+    .attr("stroke-opacity", null);
+  if (!$("#commColor").checked || !activeKinds().has("depends")) return;
+  const ids = conts.map(l => l.data.id);
+  const idset = new Set(ids);
+  const links = edgeStore.filter(e => e.kind === "depends"
+      && idset.has(e.a) && idset.has(e.b))
+    .map(e => ({a: e.a, b: e.b, w: e.w * (liftOf(e) || 1)}));
+  const comm = communitiesOf(ids, links);
+  if (!comm) return;
+  const sizes = new Map();
+  for (const c of comm.values()) sizes.set(c, (sizes.get(c) || 0) + 1);
+  const colorOf = new Map();
+  let ci = 0;
+  gBubbles.selectAll("circle.bubble").each(function(l) {
+    const c = comm.get(l.data.id);
+    if (c === undefined || sizes.get(c) < 2) return;
+    if (!colorOf.has(c)) colorOf.set(c, COMM_PALETTE[ci++ % COMM_PALETTE.length]);
+    d3.select(this).attr("stroke", colorOf.get(c))
+      .attr("stroke-width", 2.4).attr("stroke-opacity", 0.9);
+  });
 }
 
 // click-to-inspect: the edge's provenance card in the panel
@@ -534,7 +612,8 @@ function showEdgePanel(e) {
     <h2 style="font-size:1.05rem">${esc(st.label)}</h2>
     <div class="sub"><span style="color:${st.color}">●</span> ${esc(e.kind)}${
       e.payload && e.payload.confidence ? ` · confidence ${esc(e.payload.confidence)}` : ""}${
-      e.kind === "depends" ? ` · sig weight ${e.w}` : ""}</div>
+      e.kind === "depends" ? ` · sig weight ${e.w}` : ""}${
+      liftOf(e) !== null ? ` · lift ${liftOf(e)}× vs null model` : ""}</div>
     <div class="chips">
       <span class="chip"><a data-nav="${esc(e.a)}">${esc(name(e.a))}</a></span>
       <span class="chip">↔</span>
