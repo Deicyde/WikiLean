@@ -523,6 +523,17 @@ async function renderEgo(seq, entry, anim) {
       }
     }
   }
+  if (entry.node.article_annotations && entry.node.slug) {
+    const aa = entry.node.article_annotations;
+    neigh.set("article:" + entry.node.slug, {
+      id: "article:" + entry.node.slug, type: "external",
+      label: `WikiLean article — ${aa.total} annotations`,
+      url: "/" + entry.node.slug,
+      edge: {kind: "mentions", prov: 0,
+             evidence: {role: "article", ...aa,
+                        note: "the concept's annotated Wikipedia mirror"}},
+      rank: -1});
+  }
   let nodesArr = [...neigh.values()].sort((a, b) => a.rank - b.rank);
   if (nodesArr.length > 72) { skipped = nodesArr.length - 72; nodesArr = nodesArr.slice(0, 72); }
 
@@ -1165,7 +1176,8 @@ const MK_LABEL = {field: "field-of-study link"};
 function edgeHtml(x, provTable, dir) {
   const ev = x.evidence || {};
   const mkv = ev.match_kind && (MK_LABEL[ev.match_kind] || ev.match_kind);
-  const mk = mkv ? `<span class="mk">${esc(mkv)}</span>` : "";
+  let mk = mkv ? `<span class="mk">${esc(mkv)}</span>` : "";
+  if (ev.n_annotations > 1) mk += ` <span class="lit-ref">×${ev.n_annotations} annotations</span>`;
   const arrow = dir === "in" ? "←" : "→";
   let target = esc(x.id);
   if (x.kind === "xref" && ev.value !== undefined) {
@@ -1228,6 +1240,14 @@ async function renderPanel(id) {
     if (chips.length)
       html += `<div class="chips"><span class="note">Also in:</span> ` +
               chips.map(c => `<span class="chip">${c}</span>`).join("") + `</div>`;
+  }
+  if (n.article_annotations) {
+    const aa = n.article_annotations;
+    html += `<div class="chips"><span class="chip"><a href="/${esc(n.slug)}">WikiLean article</a>:
+      <b>${aa.total}</b> Lean annotations</span>
+      <span class="badge f">${aa.formalized} formalized</span>
+      <span class="badge p">${aa.partial} partial</span>
+      <span class="badge n">${aa.not_formalized} not</span></div>`;
   }
   if (n.description) html += `<p style="font-size:.9rem">${esc(n.description)}</p>`;
   const st = n.display && n.display.status;

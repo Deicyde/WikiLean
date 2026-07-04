@@ -362,11 +362,57 @@ def build() -> tuple[list[dict], list[dict], dict]:
                                            (n["qid"], f["decl"])),
                                        "verified_by": "build_graph_v2 oracle+checkout"})))
 
+    # per-annotation evidence from the article corpus (site/annotations/*.json —
+    # the D1 cache): each mentions edge carries how many annotations in the
+    # concept's article cite the decl, their formalization statuses, labels and
+    # ids (deep-linkable); each annotated concept gets an article_annotations
+    # summary on its node payload. Fail-soft: no corpus, bare citation edges.
+    ann_dir = ROOT / "site" / "annotations"
+    ann_ev: dict[tuple[str, str], dict] = {}
+    ann_summary: dict[str, dict] = {}
+    slug2qid_local = {n.get("slug"): n["qid"] for n in graph["nodes"] if n.get("slug")}
+    if ann_dir.exists():
+        for f in sorted(ann_dir.glob("*.json")):
+            if f.name.endswith(".agent1.json"):
+                continue
+            try:
+                doc = json.loads(f.read_text())
+            except (OSError, json.JSONDecodeError):
+                continue
+            qid = slug2qid_local.get(doc.get("slug"))
+            if not qid:
+                continue
+            anns = doc.get("annotations") or []
+            if not anns:
+                continue
+            summ = {"total": len(anns), "formalized": 0, "partial": 0,
+                    "not_formalized": 0}
+            for a in anns:
+                st = a.get("status")
+                if st in summ:
+                    summ[st] += 1
+                dec = (a.get("mathlib") or {}).get("decl")
+                if not dec:
+                    continue
+                ev = ann_ev.setdefault((qid, dec), {
+                    "role": "citation", "n_annotations": 0, "statuses": {},
+                    "sample": []})
+                ev["n_annotations"] += 1
+                ev["statuses"][st] = ev["statuses"].get(st, 0) + 1
+                if len(ev["sample"]) < 3:
+                    ev["sample"].append({"id": a.get("id"),
+                                         "label": (a.get("label") or "")[:80],
+                                         "status": st})
+            ann_summary[qid] = summ
+    else:
+        print("NOTE: site/annotations missing — mentions edges stay bare",
+              file=sys.stderr)
+
     pin_r = _pin("decl_qid_roles_v2.json")
     for q, d in mention_pairs:
         edges.append(_edge(q, decl_id[d], "mentions", "annotations",
                            "annotation-citation (decl_qid_roles_v2)", pin_r,
-                           "high", {"role": "citation"}))
+                           "high", ann_ev.get((q, d)) or {"role": "citation"}))
 
     for e in graph["edges"]:
         if e.get("source") != "mathlib":
@@ -655,6 +701,7 @@ def build() -> tuple[list[dict], list[dict], dict]:
         concept_nodes.append(_prune({
             "id": n["qid"], "type": "concept", "label": n.get("label"),
             "slug": n.get("slug"),
+            "article_annotations": ann_summary.get(n["qid"]),
             # Google KG is a hub id (never an xref edge — SCHEMA) but a useful
             # "Also in" chip; carried on the node payload instead
             "kgmid": ((n.get("xrefs") or {}).get("kgmid") or [None])[0],
