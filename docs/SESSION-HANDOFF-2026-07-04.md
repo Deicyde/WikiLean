@@ -76,6 +76,30 @@ fixed a real cache-skew bug). Preview quirk: viewport often boots ~580px wide �
 `preview_resize` to 1360x850 and RELOAD before judging layout; screenshots
 render small but DOM checks are reliable.
 
+## PROJECT 2 (Jack, 2026-07-04): community edge-posting on the brain
+
+Jack wants users to POST NEW CONNECTIONS onto the brain, "very similar to how
+people post annotations on Articles". Agreed architecture (extend the
+annotation stack, two-layer read model — full reasoning in the session log):
+1. D1 table brain_edges (id, src, dst, kind, evidence JSON, author,
+   actor_type, created_at, patrolled_by, version). Humans post-moderate
+   (live + patrol queue); AI goes through the existing proposals table.
+2. POST /api/brain/edge: better-auth session via getUser(c), EDIT_LIMITER
+   rate limit, ids validated against the static shards via ASSETS.fetch
+   (the shard set IS the existence oracle), kind ∈ schema enum, note required.
+3. Read: static shards = nightly base layer; GET /api/brain/edges?id=<node>
+   = live D1 overlay merged client-side into panel/ego/canvas with a distinct
+   "community" provenance chip, "unpatrolled" until patrolled. Locality kept.
+4. Nightly harvest: patrolled D1 edges → brain/data/community_edges.jsonl →
+   folded by build_edges.py into the static base (versioned in git; D1 stays
+   canonical for the live tail; rebuilds can never drop a human edge).
+5. Panel "propose a connection" button: target via labels search, kind
+   dropdown, evidence note.
+Preconditions: the diffFields array-order fix (task chip spawned; Jack
+started it in another session — check its state); brain page currently
+fetches shards directly, so the overlay fetch is a new small hook in
+getEntry/renderPanel.
+
 ## Verified backlog (docs/BRAIN-STATUS.md, twice-verified)
 
 1. Multi-library grounding: FLT/Physlib/Cslib/Carleson/SpherePacking = ZERO
