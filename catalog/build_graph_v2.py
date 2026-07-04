@@ -2,12 +2,17 @@
 """Assemble the rebuilt concept graph (v2) from the agent grounding.
 
 Reads the parallel-agent grounding (verified Mathlib formalizations per concept),
-applies a DETERMINISTIC decl-existence backstop (the agents proposed + a skeptic
-verified; here the oracle/checkout has the final say — anti-slop), builds the
-upgraded node set (multi-library formalizations; primary_decl = best), lifts the
-FULL formal dependency graph to QID→QID edges via lift_formal_edges, folds in the
-Wikidata relation edges, and writes concept_graph_v2.json + a diff vs the live
-graph. Does NOT touch the canonical graph — this is a reviewable artifact.
+applies curated point-fixes from grounding_overrides.jsonl (the grounding file is
+the immutable audit trail — never edited), applies a DETERMINISTIC decl-existence
+backstop (the agents proposed + a skeptic verified; here the oracle/checkout has
+the final say — anti-slop), builds the upgraded node set (multi-library
+formalizations; primary_decl = best; xrefs joined by QID from
+wikidata_crossrefs.json — the agent-echoed xrefs are dead, per brain/SCHEMA.md),
+lifts the FULL formal dependency graph to QID→QID edges via lift_formal_edges,
+folds in the Wikidata relation edges, and writes concept_graph_v2.json +
+decl_to_qid_v2.json + decl_qid_roles_v2.json (formalization vs citation — the two
+roles must never be conflated) + a diff vs the live graph. Does NOT touch the
+canonical graph — this is a reviewable artifact.
 
 Usage: python3 catalog/build_graph_v2.py --grounding catalog/data/rebuild_grounding.json
 """
@@ -30,6 +35,9 @@ WD_EDGES = HERE / "mathlib_deps" / "wikidata_edges.jsonl"
 ANNOT = HERE.parent / "site" / "annotations"
 OUT = DATA / "concept_graph_v2.json"
 D2Q_OUT = DATA / "decl_to_qid_v2.json"
+ROLES_OUT = DATA / "decl_qid_roles_v2.json"
+XREFS = DATA / "wikidata_crossrefs.json"
+OVERRIDES = DATA / "grounding_overrides.jsonl"
 
 sys.path.insert(0, str(HERE))
 import lift_formal_edges  # noqa: E402
@@ -54,14 +62,67 @@ def checkout_has(decls: list[str]) -> set[str]:
         seg = d.split(".")[-1]
         # NB: a trailing \b never matches a decl ending in a prime (smulAux',
         # Stream') — ' is a non-word char, so require end-or-non-identifier instead.
+        # Decls are often DECLARED under a dotted name (`theorem
+        # TendstoInDistribution.prodMk_of_tendstoInMeasure_const`), so allow an
+        # optional dotted namespace prefix between the keyword and the segment —
+        # requiring the keyword immediately before the segment cost Q643826.
+        pat = f"{kw} +([A-Za-z0-9_'.«»]+\\.)?{re.escape(seg)}($|[^A-Za-z0-9_'])"
         try:
-            r = subprocess.run(["grep", "-rIlE", f"{kw} +{re.escape(seg)}($|[^A-Za-z0-9_'])", str(CHECKOUT)],
+            r = subprocess.run(["grep", "-rIlE", pat, str(CHECKOUT)],
                                capture_output=True, text=True, timeout=30)
             if r.stdout.strip():
                 found.add(d)
         except (subprocess.SubprocessError, OSError):
             pass
     return found
+
+
+def load_overrides() -> dict[str, dict]:
+    """Curated point-fixes applied AFTER loading the grounding (which stays an
+    immutable audit trail — never edit it). One JSONL row per fix:
+    {"qid": ..., "set": {"status": <s> | "match_kind:<decl>": <k>}, "reason": ...};
+    rows for the same QID merge, later rows win. Returns {qid: merged set-map}."""
+    out: dict[str, dict] = {}
+    if not OVERRIDES.exists():
+        return out
+    for line in OVERRIDES.read_text().splitlines():
+        if line.strip():
+            r = json.loads(line)
+            out.setdefault(r["qid"], {}).update(r.get("set") or {})
+    return out
+
+
+def apply_match_kind_overrides(forms: list[dict], ov: dict) -> bool:
+    """Apply "match_kind:<decl>" set-keys to the matching formalization entries
+    (in place). Returns True if any entry was touched."""
+    hit = False
+    for key, val in ov.items():
+        if key.startswith("match_kind:"):
+            decl = key.split(":", 1)[1]
+            for f in forms:
+                if f.get("decl") == decl:
+                    f["match_kind"] = val
+                    hit = True
+    return hit
+
+
+def derive_status(forms: list[dict], agent_status: str | None) -> str:
+    """Node status from the (possibly override-corrected) formalization evidence,
+    preserving the original deference to the agent's own status claim."""
+    if not forms:
+        return "not_formalized"
+    status = "formalized" if any(f["match_kind"] == "exact" and f.get("confidence") == "high" for f in forms) \
+        else "partial"
+    # keep the agent's status if it's more conservative and forms exist
+    if agent_status in ("formalized", "partial", "not_formalized"):
+        status = agent_status if not (status == "formalized" and agent_status == "partial") else status
+    return status
+
+
+def write_atomic(path: Path, text: str) -> None:
+    tmp = path.with_suffix(".json.tmp")
+    tmp.write_text(text)
+    tmp.replace(path)
 
 
 def main() -> int:
@@ -72,6 +133,12 @@ def main() -> int:
     concepts = json.loads(args.grounding.read_text())
     if isinstance(concepts, dict):
         concepts = concepts.get("concepts", [])
+    overrides = load_overrides()
+    xrefs_by_qid: dict[str, dict] = {}
+    if XREFS.exists():
+        xrefs_by_qid = json.loads(XREFS.read_text()).get("xrefs", {})
+    else:
+        print(f"WARNING: {XREFS.name} missing — every node gets empty xrefs", file=sys.stderr)
     live = json.loads(LIVE.read_text())
     live_by_qid = {n["qid"]: n for n in live["nodes"]}
     live_edge_n = len(live["edges"])
@@ -102,18 +169,33 @@ def main() -> int:
     # ---- build v2 nodes ------------------------------------------------------
     nodes = []
     decl_to_qid: dict[str, list[str]] = collections.defaultdict(list)
+    decl_qid_roles: dict[str, dict[str, str]] = {}
+    ov_applied: set[str] = set()
     n_new = n_gained_decl = n_changed_decl = 0
     for c in concepts:
         qid = c["qid"]
         forms = [f for f in (c.get("formalizations") or []) if f["decl"] in valid]
+        # regression-guard baseline (the Slutsky Q643826 class): status as it
+        # would be with neither checkout rescues nor overrides.
+        base_status = derive_status([f for f in forms if f["decl"] not in rescued], c.get("status"))
+        ov = overrides.get(qid) or {}
+        if apply_match_kind_overrides(forms, ov):
+            ov_applied.add(qid)
         prev = live_by_qid.get(qid)
         primary = forms[0]["decl"] if forms else None
         module = forms[0].get("module") if forms else (prev or {}).get("module")
-        status = "formalized" if any(f["match_kind"] == "exact" and f.get("confidence") == "high" for f in forms) \
-            else ("partial" if forms else "not_formalized")
-        # keep the agent's status if it's more conservative and forms exist
-        if c.get("status") in ("formalized", "partial", "not_formalized") and forms:
-            status = c["status"] if not (status == "formalized" and c["status"] == "partial") else status
+        status = derive_status(forms, c.get("status"))
+        if "status" in ov:
+            ov_applied.add(qid)
+            status = ov["status"]
+        if not forms:
+            status = "not_formalized"  # zero oracle-valid decls never claim one
+        if status != base_status:
+            cause = "+".join(s for s, hit in (("override", bool(ov)),
+                             ("checkout-rescue", any(f["decl"] in rescued for f in forms))) if hit) or "?"
+            print(f"  STATUS GUARD: {qid} ({c.get('slug') or ''}) "
+                  f"{base_status} -> {status} via {cause}", file=sys.stderr)
+        xr = xrefs_by_qid.get(qid) or {}
         node = {
             "qid": qid,
             "label": c.get("label") or tgt_label.get(qid) or (prev or {}).get("label")
@@ -121,17 +203,19 @@ def main() -> int:
             "slug": c.get("slug") or (prev or {}).get("slug"),
             "primary_decl": primary,
             "module": module,
-            "status": status if forms else "not_formalized",
+            "status": status,
             "importance": (prev or {}).get("importance") or "Mid",
             "formalizations": [{k: f.get(k) for k in ("decl", "module", "library", "match_kind", "confidence")}
                                for f in forms],
-            "xrefs_keys": c.get("xrefs") or [],
+            "xrefs": xr,
+            "xrefs_keys": sorted(xr),
             "arxiv": c.get("arxiv") or [],
             "is_new": qid not in live_by_qid,
         }
         nodes.append(node)
         for f in forms:
             decl_to_qid[f["decl"]].append(qid)
+            decl_qid_roles.setdefault(f["decl"], {})[qid] = "formalization"
         if node["is_new"]:
             n_new += 1
         elif not prev.get("primary_decl") and primary:
@@ -163,11 +247,14 @@ def main() -> int:
             dec = (a.get("mathlib") or {}).get("decl")
             if dec:
                 decl_to_qid[dec].append(qid)
+                # formalization wins when a decl carries both roles for a QID
+                decl_qid_roles.setdefault(dec, {}).setdefault(qid, "citation")
                 n_ann_decls += 1
     decl_to_qid = {k: sorted(set(v)) for k, v in decl_to_qid.items()}
     print(f"  decl→QID map for edges: {len(decl_to_qid)} decls "
           f"(grounding + {n_ann_decls} annotation citations)", file=sys.stderr)
-    D2Q_OUT.write_text(json.dumps(decl_to_qid, ensure_ascii=False))
+    write_atomic(D2Q_OUT, json.dumps(decl_to_qid, ensure_ascii=False))
+    write_atomic(ROLES_OUT, json.dumps(decl_qid_roles, ensure_ascii=False, sort_keys=True))
 
     # ---- edges: full formal dep-graph lift + wikidata relations -------------
     formal_edges = lift_formal_edges.lift(decl_to_qid)
@@ -186,7 +273,7 @@ def main() -> int:
                                  "props": [{"p": r.get("p"), "label": r.get("p_label", "")}]})
     edges = formal_edges + wd_edges
 
-    OUT.write_text(json.dumps({"nodes": nodes, "edges": edges}, ensure_ascii=False))
+    write_atomic(OUT, json.dumps({"nodes": nodes, "edges": edges}, ensure_ascii=False))
 
     # ---- diff / stats --------------------------------------------------------
     n_formalized = sum(1 for n in nodes if n["status"] == "formalized")
@@ -202,7 +289,14 @@ def main() -> int:
     print(f"decls newly grounded on existing nodes: +{n_gained_decl} | primary_decl changed: {n_changed_decl}")
     print(f"nodes with arXiv literature: {n_with_arxiv}")
     print(f"decl-existence: dropped {len(dropped)} nonexistent decl(s) as a backstop")
-    print(f"\nwrote {OUT.name} ({OUT.stat().st_size/1024:.0f} KB) + {D2Q_OUT.name}")
+    print(f"grounding overrides: applied on {len(ov_applied)}/{len(overrides)} QIDs")
+    unapplied = sorted(set(overrides) - ov_applied)
+    if unapplied:
+        print(f"  WARNING: override QIDs with nothing applied (absent from grounding, "
+              f"or decl dropped?): {unapplied}", file=sys.stderr)
+    n_role_f = sum(1 for m in decl_qid_roles.values() if "formalization" in m.values())
+    print(f"decl roles: {len(decl_qid_roles)} decls ({n_role_f} with a formalization role)")
+    print(f"\nwrote {OUT.name} ({OUT.stat().st_size/1024:.0f} KB) + {D2Q_OUT.name} + {ROLES_OUT.name}")
     return 0
 
 
