@@ -50,7 +50,9 @@ MIN_KEY_LEN = 2
 MAX_KEY_LEN = 64            # termination guard for pathological collisions
 PAD = "_"
 EDGE_CAP = 200              # ontology edges kept per direction (SCHEMA shard cap)
-ROLLUP_CAP = {"module": 50, "dir": 16}  # depends rollups kept per direction
+# tree grain = each node's full aggregate depends-flow at its own depth (the
+# canvas draws these between sibling bubbles at every zoom level)
+ROLLUP_CAP = {"tree": 48}               # depends rollups kept per direction
 # Complete child lists (largest file = 501 decls, largest dir ~200 files): the
 # /brain bubble canvas packs every child, so truncation = invisible bubbles.
 CHILD_CAP = 600
@@ -135,7 +137,7 @@ def main() -> int:
     # ---- depends rollups at the shipped grains ------------------------------
     rollups: dict[str, dict[str, dict]] = defaultdict(dict)   # id → grain → block
     n_rollup_attached = 0
-    for grain in ("module", "dir"):
+    for grain in ("tree",):
         name = f"rollup_edges.{grain}.jsonl"
         outs: dict[str, list] = defaultdict(list)
         ins: dict[str, list] = defaultdict(list)
