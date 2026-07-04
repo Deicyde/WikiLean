@@ -148,7 +148,7 @@ def main() -> int:
             for line in fh:
                 r = json.loads(line)
                 sig = r["w_types"]["sig"]
-                rec = (-sig, r["w_types"], r["top_witnesses"][:1])
+                rec = (-sig, r["w_types"], r["top_witnesses"][:1], r.get("lift"))
                 if r["src"] in nodes:
                     outs[r["src"]].append((*rec, r["dst"]))
                 if r["dst"] in nodes:
@@ -157,11 +157,13 @@ def main() -> int:
         for nid in sorted(set(outs) | set(ins)):
             block = {}
             for direction, per in (("out", outs), ("in", ins)):
-                rows = sorted(per.get(nid, []), key=lambda t: (t[0], t[3]))
+                rows = sorted(per.get(nid, []), key=lambda t: (t[0], t[4]))
                 block[direction] = [
                     {"id": other, "kind": "depends", "confidence": rollup_confidence(-neg),
-                     "evidence": {"w_types": wt, "top_witnesses": tw}, "prov": pi}
-                    for neg, wt, tw, other in rows[:cap]]
+                     "evidence": {"w_types": wt, "top_witnesses": tw,
+                                  **({"lift": lf} if lf is not None else {})},
+                     "prov": pi}
+                    for neg, wt, tw, lf, other in rows[:cap]]
             block["counts"] = {"out": len(outs.get(nid, [])), "in": len(ins.get(nid, []))}
             block["truncated"] = {d: block["counts"][d] > len(block[d]) for d in ("out", "in")}
             n_rollup_attached += len(block["out"]) + len(block["in"])

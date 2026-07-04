@@ -235,6 +235,33 @@ def main() -> int:
                 "= sig.",
     }
 
+    # Null-model lift for the tree grain: observed sig weight vs the weight
+    # expected if flows were proportional to endpoint totals at that depth
+    # (the configuration-model expectation, as in modularity). Corrects the
+    # "centrality captures infrastructure, not mathematical relevance" bias of
+    # arXiv 2604.24797 at the EDGE level: hub↔hub traffic gets lift ≈ 1,
+    # genuinely entangled areas get lift ≫ 1.
+    depth_of = lambda node: node.count("/") + 1   # path:A/B/C → depth 3
+    out_sig: dict[str, int] = {}
+    in_sig: dict[str, int] = {}
+    depth_total: dict[int, int] = {}
+    for (s, d), rec in edges[3].items():
+        if rec[0] == 0:
+            continue
+        out_sig[s] = out_sig.get(s, 0) + rec[0]
+        in_sig[d] = in_sig.get(d, 0) + rec[0]
+        k = depth_of(s)
+        depth_total[k] = depth_total.get(k, 0) + rec[0]
+
+    def lift(s: str, d: str, sig: int) -> float | None:
+        if sig == 0:
+            return None
+        total = depth_total.get(depth_of(s))
+        if not total:
+            return None
+        expected = out_sig.get(s, 0) * in_sig.get(d, 0) / total
+        return round(sig / expected, 2) if expected > 0 else None
+
     OUTDIR.mkdir(parents=True, exist_ok=True)
     hubs: dict[str, list[dict]] = {}
     for g, grain in enumerate(GRAINS):
@@ -248,11 +275,16 @@ def main() -> int:
                                            "n_edges": len(rows)}},
                                 ensure_ascii=False) + "\n")
             for (s, d), rec in rows:
-                fh.write(json.dumps({
+                row = {
                     "src": s, "dst": d,
                     "w_types": {"sig": rec[0], "def": rec[1], "proof": rec[2]},
                     "top_witnesses": [[names[si], names[di]] for _, si, di in rec[3]],
-                }, ensure_ascii=False) + "\n")
+                }
+                if grain == "tree":
+                    lf = lift(s, d, rec[0])
+                    if lf is not None:
+                        row["lift"] = lf
+                fh.write(json.dumps(row, ensure_ascii=False) + "\n")
                 acc = inbound.setdefault(d, [0, 0])
                 acc[0] += rec[0]
                 acc[1] += 1
