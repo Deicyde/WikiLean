@@ -330,6 +330,8 @@ function fillFor(item, depthShade) {
   if (item.type === "concept") return CONCEPT_COLOR[item.status] || "#0969da";
   if (item.type === "decl") return "#1a7f37";
   if (item.type === "strays") return "#8c959f";
+  if (item.type === "external") return "#bf5af2";
+  if (item.type === "literature") return "#d4a72c";
   return depthShade;   // container
 }
 
@@ -418,8 +420,18 @@ function drawNodes() {
 
 function drawLabels() {
   gLabels.selectAll("*").remove();
-  const web = viewMode === "web";
+  const web = viewMode === "web" || (layout && layout.ego);
+  const ego = layout && layout.ego;
   for (const l of layout.leaves) {
+    if (ego && l.data.type !== "container" && l.data.type !== "concept") {
+      const raw = l.data.label || l.data.id;
+      const short = l.data.type === "decl" && raw.includes(":")
+        ? raw.split(":").pop().split(".").slice(-2).join(".") : raw;
+      gLabels.append("text").attr("class", "blabel")
+        .attr("x", l.x).attr("y", l.y + l.r + 10).attr("font-size", 9)
+        .text(short.length > 28 ? short.slice(0, 26) + "…" : short);
+      continue;
+    }
     if (l.data.type === "container") {
       if (!web && l.r < 24) continue;
       const fs = web ? 10 : Math.max(10, Math.min(16, l.r / 4.5));
@@ -477,9 +489,109 @@ function applyWebLayout() {
   drawSelRing();
 }
 
+// Ego view: a concept/decl/paper becomes the focus — it sits centered and
+// EVERYTHING it links to expands around it (formalizing decls, related
+// concepts, external database pages, papers, its home folders), laid out by a
+// static force pass. Clicking a neighbor re-centers on it, so you can walk
+// the Wikidata relation graph and the formal graph in one continuous motion.
+// Same edgeStore pipeline as the level views: the Layers + Provenance toggles
+// and edge evidence cards all apply.
+const EGO_DIST = {formalizes: 95, relates: 135, xref: 160, depends: 175,
+                  matches: 195, cites: 205, mentions: 215};
+async function renderEgo(seq, entry, anim) {
+  const id = entry.node.id;
+  selectedId = id;
+  const kinds = activeKinds(), provs = activeProv();
+  const neigh = new Map();
+  let skipped = 0;
+  for (const dir of ["out", "in"]) {
+    for (const x of (entry.edges && entry.edges[dir]) || []) {
+      const pc = provClass(x.kind, manifest.prov[x.prov], x.evidence);
+      const kindOk = x.kind === "xref" ? kinds.has("xref") : kinds.has(x.kind);
+      if (!kindOk || !provs.has(pc)) continue;
+      if (neigh.has(x.id)) continue;
+      if (x.kind === "xref") {
+        const key = x.id.split(":")[1];
+        const mkUrl = XREF_URL[key];
+        neigh.set(x.id, {id: x.id, type: "external",
+          label: `${XREF_NAME[key] || key}: ${x.evidence ? x.evidence.value : ""}`,
+          url: (mkUrl && x.evidence && mkUrl(x.evidence.value)) || null,
+          edge: x, rank: SAT_RANK.relates + 0.5});
+      } else {
+        neigh.set(x.id, {id: x.id, type: idType(x.id), label: x.id,
+          edge: x, rank: SAT_RANK[x.kind] ?? 9});
+      }
+    }
+  }
+  let nodesArr = [...neigh.values()].sort((a, b) => a.rank - b.rank);
+  if (nodesArr.length > 72) { skipped = nodesArr.length - 72; nodesArr = nodesArr.slice(0, 72); }
+
+  const W = stageEl.clientWidth || 800, H = stageEl.clientHeight || 600;
+  const R_BY_TYPE = {concept: 11, decl: 8, container: 13, literature: 7, external: 7};
+  const center = {data: {id, label: entry.node.label || id, type: entry.node.type},
+                  x: W / 2, y: H / 2, r: 24};
+  const leaves = [center].concat(nodesArr.map(nd => ({
+    data: nd, x: W / 2 + (Math.random() - 0.5), y: H / 2 + (Math.random() - 0.5),
+    r: R_BY_TYPE[nd.type] || 8,
+  })));
+  const sims = leaves.map(l => ({id: l.data.id, l, x: l.x, y: l.y, r: l.r}));
+  sims[0].fx = W / 2; sims[0].fy = H / 2;
+  const links = nodesArr.map(nd => ({source: id, target: nd.id,
+    dist: EGO_DIST[nd.edge.kind] || 180}));
+  const sim = d3.forceSimulation(sims)
+    .force("link", d3.forceLink(links).id(d => d.id).distance(l => l.dist).strength(0.6))
+    .force("charge", d3.forceManyBody().strength(-170).distanceMax(420))
+    .force("collide", d3.forceCollide(d => d.r + 11))
+    .stop();
+  for (let i = 0; i < 220; i++) sim.tick();
+  for (const sm of sims) {
+    sm.l.x = Math.max(sm.r + 6, Math.min(W - sm.r - 6, sm.x));
+    sm.l.y = Math.max(sm.r + 6, Math.min(H - sm.r - 18, sm.y));
+  }
+
+  layout = {items: new Map(leaves.map(l => [l.data.id, l])), leaves, ego: true};
+  edgeStore = nodesArr.map(nd => ({kind: nd.edge.kind, a: id, b: nd.id,
+    w: (nd.edge.evidence && nd.edge.evidence.w_types && nd.edge.evidence.w_types.sig) || 1,
+    payload: nd.edge}));
+  gEdges.selectAll("*").remove();
+  gOverlay.selectAll("*").remove();
+  gBubbles.selectAll("circle.preview").remove();
+  drawNodes();
+  drawLabels();
+  renderEdges();
+  drawSelRing();
+  renderCrumb();
+  statusEl.textContent = `${nodesArr.length} linked nodes${
+    skipped ? ` (+${skipped} more in the panel)` : ""} · ` +
+    `${entry.node.type === "concept" ? id : entry.node.type} ego view`;
+  if (anim) {
+    const g = [gEdges, gBubbles, gOverlay, gLabels];
+    for (const gr of g) gr.attr("opacity", 0).transition().duration(260).attr("opacity", 1);
+    setTimeout(() => g.forEach(gr => { gr.interrupt(); gr.attr("opacity", 1); }), 600);
+  }
+  // resolve neighbor labels lazily (shared prefix shards — few fetches)
+  let pending = 0;
+  for (const nd of nodesArr) {
+    if (nd.type === "external" || (nd.label && nd.label !== nd.id)) continue;
+    pending++;
+    getEntry(nd.id).then(ne => {
+      if (seq !== renderSeq) return;
+      if (ne && ne.node.label) nd.label = ne.node.label;
+      else if (nd.type === "decl") nd.label = nd.id.split(":").pop().split(".").slice(-2).join(".");
+      if (--pending <= 0) drawLabels();
+    });
+  }
+  renderPanel(id);
+}
+
 let renderSeq = 0;   // guards against out-of-order async renders
 async function renderFocus(anim) {
   const seq = ++renderSeq;
+  if (focusId !== LIBS_ID) {
+    const fe = await getEntry(focusId);
+    if (seq !== renderSeq) return;
+    if (fe && fe.node.type !== "container") return renderEgo(seq, fe, anim);
+  }
   const items = await focusItems(focusId);
   if (seq !== renderSeq) return;
   const W = stageEl.clientWidth || 800, H = stageEl.clientHeight || 600;
@@ -530,6 +642,9 @@ const EDGE_STYLE = {
   relates:      {color: "#d4a72c", dash: "5 3",  label: "Wikidata relation (informal)"},
   mentions:     {color: "#8c959f", dash: "2 3",  label: "article mention (informal)"},
   "xref-shared":{color: "#bf5af2", dash: "5 3",  label: "same external-database page"},
+  xref:         {color: "#bf5af2", dash: "3 3",  label: "cross-database identity"},
+  cites:        {color: "#d4a72c", dash: "2 4",  label: "stated in the literature (TheoremGraph)"},
+  matches:      {color: "#d4a72c", dash: null,   label: "formal ↔ literature match"},
 };
 let edgeStore = [];
 
@@ -812,9 +927,16 @@ function drawSelRing() {
 // Wikidata graph, the Mathlib graph and the literature overlay in one view.
 // Click a satellite to travel there. Filtered by the Layers + Provenance toggles.
 const SAT_RANK = {relates: 0, formalizes: 1, matches: 2, depends: 3, cites: 4, mentions: 5};
+function idType(id) {
+  if (/^Q\d+$/.test(id)) return "concept";
+  if (id.startsWith("decl:")) return "decl";
+  if (id.startsWith("lit:")) return "literature";
+  if (id.startsWith("path:")) return "container";
+  return "external";
+}
 async function drawSatellites() {
   gOverlay.selectAll("g.sat").remove();
-  if (!selectedId || !layout) return;
+  if (!selectedId || !layout || layout.ego) return;
   const S = layout.items.get(selectedId);
   const e = await getEntry(selectedId);
   if (!S || !e) return;
@@ -892,6 +1014,15 @@ async function zoomInto(id) {
 async function zoomOut() {
   if (focusId === LIBS_ID) return;
   const e = await getEntry(focusId);
+  if (e && e.node.type !== "container") {     // leaving an ego view
+    const home = await homeContainerOf(e);
+    const ego = focusId;
+    focusId = home;
+    selectedId = ego;                         // keep it ringed at its home level
+    history.replaceState(null, "", "#" + encodeURIComponent(home));
+    await renderFocus(true);
+    return;
+  }
   const bc = (e && e.breadcrumb) || [];
   const parent = bc.length > 1 ? bc[bc.length - 2].id : LIBS_ID;
   focusId = parent;
@@ -915,12 +1046,14 @@ async function nodeClick(item) {
     selectedId = null;
     renderPanel(item.id);
     await zoomInto(item.id);
-  } else {
-    selectedId = item.id;
-    history.replaceState(null, "", "#" + encodeURIComponent(item.id));
-    renderPanel(item.id);
-    drawSelRing();
+    return;
   }
+  if (item.type === "external") {          // ego xref pseudo-node → the DB page
+    if (item.url) window.open(item.url, "_blank", "noopener");
+    return;
+  }
+  // concept/decl/paper: zoom in and expand its whole neighborhood (ego view)
+  await zoomInto(item.id);
 }
 
 // land the canvas on any node id: containers focus themselves; leaves focus
@@ -928,32 +1061,42 @@ async function nodeClick(item) {
 async function navigate(id) {
   const e = await getEntry(id);
   if (!e) { renderPanel(id); return; }
-  if (e.node.type === "container") {
-    focusId = id; selectedId = null;
-  } else if (e.breadcrumb && e.breadcrumb.length > 1) {
-    focusId = e.breadcrumb[e.breadcrumb.length - 2].id;
-    selectedId = id;
-  } else if (e.node.type === "concept") {
-    const f = ((e.edges || {}).out || []).find(x => x.kind === "formalizes");
-    const fe = f && await getEntry(f.id);
-    if (fe && fe.node.type === "container") focusId = f.id;
-    else if (fe && fe.breadcrumb && fe.breadcrumb.length > 1)
-      focusId = fe.breadcrumb[fe.breadcrumb.length - 2].id;
-    else focusId = "path:Mathlib";
-    selectedId = id;
-  } else { focusId = "path:Mathlib"; selectedId = id; }
+  focusId = id;                    // containers → level view; others → ego view
+  selectedId = e.node.type === "container" ? null : id;
   history.replaceState(null, "", "#" + encodeURIComponent(id));
   renderPanel(id);
   await renderFocus(true);
+}
+
+// the container an ego node calls home (for zoom-out + the breadcrumb)
+async function homeContainerOf(entry) {
+  if (entry.breadcrumb && entry.breadcrumb.length > 1)
+    return entry.breadcrumb[entry.breadcrumb.length - 2].id;
+  if (entry.node.type === "concept") {
+    const f = ((entry.edges || {}).out || []).find(x => x.kind === "formalizes");
+    const fe = f && await getEntry(f.id);
+    if (fe && fe.node.type === "container") return f.id;
+    if (fe && fe.breadcrumb && fe.breadcrumb.length > 1)
+      return fe.breadcrumb[fe.breadcrumb.length - 2].id;
+  }
+  return "path:Mathlib";
 }
 
 async function renderCrumb() {
   let html = `<a data-nav="${LIBS_ID}">all libraries</a>`;
   if (focusId !== LIBS_ID) {
     const e = await getEntry(focusId);
-    for (const b of (e && e.breadcrumb) || []) {
-      html += ` <span class="sep">/</span> ` + (b.id === focusId
-        ? `<b>${esc(b.label)}</b>` : `<a data-nav="${esc(b.id)}">${esc(b.label)}</a>`);
+    if (e && e.node.type !== "container") {   // ego view: home chain + ● node
+      const home = await homeContainerOf(e);
+      const he = await getEntry(home);
+      for (const b of (he && he.breadcrumb) || [])
+        html += ` <span class="sep">/</span> <a data-nav="${esc(b.id)}">${esc(b.label)}</a>`;
+      html += ` <span class="sep">/</span> <b>● ${esc(e.node.label || focusId)}</b>`;
+    } else {
+      for (const b of (e && e.breadcrumb) || []) {
+        html += ` <span class="sep">/</span> ` + (b.id === focusId
+          ? `<b>${esc(b.label)}</b>` : `<a data-nav="${esc(b.id)}">${esc(b.label)}</a>`);
+      }
     }
   }
   crumbEl.innerHTML = html;
@@ -1312,6 +1455,7 @@ document.addEventListener("click", ev => {
 document.querySelectorAll(".toolbar input").forEach(el =>
   el.addEventListener("change", () => {
     if (el.dataset.lk && focusId === LIBS_ID) { renderFocus(false); return; }
+    if (layout && layout.ego) { renderFocus(false); return; }
     renderEdges();
     drawSelRing();
     if (selectedId) renderPanel(selectedId);
