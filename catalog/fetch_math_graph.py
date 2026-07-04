@@ -7,6 +7,9 @@ self-review: a fresh clone had no way to obtain them):
 
   statement_formal.csv    (~85 MB)  388k decls across 39 Lean libraries
   formal_dependency.csv   (~1 GB)   11.3M typed decl→decl dependency edges
+  slogan.csv              (~1 GB)   NL one-liners per statement (the CC-BY-4.0
+                                    slogan source — the theorem-matching set's
+                                    license is contested, BRAIN.md:452)
 
 Mirrors catalog/ingest_theorem_graph.py's curl-based download (the system
 python's SSL trust store is broken on this machine). CC-BY-4.0 upstream.
@@ -23,7 +26,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 CACHE = HERE / ".cache"
 DATASET = "uw-math-ai/math-graph"
-FILES = ["statement_formal.csv", "formal_dependency.csv"]
+FILES = ["statement_formal.csv", "formal_dependency.csv", "slogan.csv"]
 UA = "WikiLean-math-graph-fetch/1.0 (https://wikilean.jackmccarthy.org; jack.mccarthy.1@stonybrook.edu)"
 
 

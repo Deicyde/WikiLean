@@ -167,8 +167,6 @@ def build() -> tuple[list[dict], list[dict], dict]:
             if d in decl_set:
                 if row["formal_module"] and d not in csv_mod:
                     csv_mod[d] = row["formal_module"]
-                if row["formal_slogan"] and d not in slogans:
-                    slogans[d] = row["formal_slogan"]
             if row["arxiv_id"] and row["arxiv_id"] not in lic_open:
                 lic_open[row["arxiv_id"]] = row["license_open"] == "True"
             if (row["gpt54_label"] in AFFIRM and row["deepseek_label"] in AFFIRM
@@ -190,9 +188,12 @@ def build() -> tuple[list[dict], list[dict], dict]:
     unresolved = {d for d in decl_set if d not in mod_votes and d not in csv_mod}
     sf_mod: dict[str, str] = {}
     decl_code: dict[str, dict] = {}
+    sid2decl: dict[str, str] = {}
     with INPUTS["statement_formal.csv"].open(newline="") as fh:
         for row in csv.DictReader(fh):
             d = row["decl_name"]
+            if d in decl_set and row.get("statement_id"):
+                sid2decl.setdefault(row["statement_id"], d)
             if d in unresolved and row["module"] and d not in sf_mod:
                 sf_mod[d] = row["module"]
             if d in decl_set and d not in decl_code:
@@ -202,6 +203,24 @@ def build() -> tuple[list[dict], list[dict], dict]:
                 })
                 if rec:
                     decl_code[d] = rec
+
+    # decl slogans from math-graph slogan.csv (CC-BY-4.0) — NOT from
+    # theorem_matching.csv's formal_slogan: that dataset's license is
+    # contested upstream (CC-BY-SA card vs CC-BY-NC-SA paper, BRAIN.md:452),
+    # so it stays link-facts-only. Fail-soft: no file, no slogans.
+    slogan_csv = CACHE / "slogan.csv"
+    if slogan_csv.exists():
+        with slogan_csv.open(newline="") as fh:
+            for row in csv.DictReader(fh):
+                d = sid2decl.get(row["statement_id"])
+                if (d and d not in slogans and row.get("slogan")
+                        and row.get("insufficient_context") != "True"):
+                    slogans[d] = row["slogan"][:500]
+        print(f"  slogans from slogan.csv (CC-BY-4.0): {len(slogans)}/{len(decl_set)} decls",
+              file=sys.stderr)
+    else:
+        print(f"NOTE: {slogan_csv} missing — decl slogans skipped "
+              f"(catalog/fetch_math_graph.py)", file=sys.stderr)
 
     # ---- containers from hierarchy.json ------------------------------------
     lib_meta = hierarchy["libraries"]
@@ -690,8 +709,13 @@ def build() -> tuple[list[dict], list[dict], dict]:
         "licenses": {
             "brain": "CC0-1.0 (WikiLean's own node/edge data)",
             "theoremgraph": links_meta["attribution"],
-            "slogans": "decl `slogan` fields are formal_slogan from TheoremGraph "
-                       "theorem_matching.csv — CC-BY-SA-4.0, render with source credit",
+            "slogans": "decl slogans are currently ABSENT by policy: "
+                       "theorem_matching.csv's formal_slogan is license-contested "
+                       "upstream (CC-BY-SA card vs CC-BY-NC-SA paper, BRAIN.md:452) "
+                       "so it stays link-facts-only, and slogan.csv (CC-BY-4.0) "
+                       "turned out to cover informal statements exclusively "
+                       "(0/2.57M rows reference a formal id). Decl gloss = "
+                       "docstring + code, both cleanly licensed.",
             "code": "decl `code` snippets are statement headers read from the live "
                     "mathlib4 checkout — Apache-2.0 (mathlib4 contributors), render "
                     "with source credit; `docstring`/`decl_kind` from TheoremGraph "
