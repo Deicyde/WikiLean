@@ -397,7 +397,7 @@ type WriteBatch = [BatchItem<"sqlite">, ...BatchItem<"sqlite">[]];
 // longer copies index.html/sitemap.xml into wiki/public/ — the asset layer
 // runs BEFORE the Worker and would otherwise shadow these paths.
 app.get("/", async (c) => {
-  const cacheKey = "page:home:v3";  // v3: dark-mode theme script + toggle
+  const cacheKey = "page:home:v4";  // v4: Brain nav/CTA/dataset links
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const db = drizzle(c.env.DB);

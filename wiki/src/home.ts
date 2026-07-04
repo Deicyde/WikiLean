@@ -337,6 +337,7 @@ footer a:hover { text-decoration:underline; }
     <a href="/wikifunctions">Wikifunctions</a>
     <a href="/article-graph">Article graph</a>
     <a href="/map">Map</a>
+    <a href="/brain">Brain</a>
     <a href="/about">About &amp; method</a>
     <button id="wl-theme-toggle" class="wl-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">🌓</button>
   </nav>
@@ -359,6 +360,7 @@ footer a:hover { text-decoration:underline; }
     </div>${statsNote}
     <div class="ctas">
       <a class="btn btn-primary" href="#directory">Browse articles</a>
+      <a class="btn" href="/brain">Explore the Brain</a>
       <a class="btn" href="/about">How to contribute</a>
       <a class="btn" href="/recent-changes">Recent changes</a>
     </div>
@@ -370,6 +372,10 @@ footer a:hover { text-decoration:underline; }
   <section class="explore" aria-labelledby="explore-h">
     <div class="sect-head"><h2 id="explore-h">Datasets &amp; graphs</h2></div>
     <ul>
+      <li><a href="/brain">The Brain</a> &mdash; a zoomable map of all of mathematics:
+        every concept joined to its Lean formalization, Wikidata identity,
+        cross-database pages, and literature &mdash; with machine-checkable
+        provenance on every edge.</li>
       <li><a href="/concepts">Wikidata concept links</a> &mdash; every formalized concept keyed
         to its Wikidata item, as an open RDF dataset (the basis for a proposed
         <em>&ldquo;formalized as (Lean/Mathlib)&rdquo;</em> Wikidata property).</li>
