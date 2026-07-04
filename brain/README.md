@@ -1,0 +1,131 @@
+# BRAIN — the WikiLean math knowledge graph
+
+The BRAIN is WikiLean's informal brain behind a formal Mathlib: one hierarchical,
+locality-scoped graph whose concept nodes (Wikidata QIDs) join to the formal skeleton
+(Mathlib declarations, files, and modules) only through verified edges — an existence
+oracle or a judged match, never name similarity. It carries five node types (concept,
+container, decl, literature, object) and two edge families (a strict `contains` tree
+plus typed, weighted ontology edges: `formalizes`, `mentions`, `depends`, `matches`,
+`xref`, `relates`, `cites`), every edge with `{kind, provenance, confidence, evidence}`
+and a version pin. `brain/SCHEMA.md` is the binding contract; agents extend the graph
+only through `brain/proposals/` and a deterministic verifier, mirroring the site's
+propose-then-approve moderation stack.
+
+## Pipeline
+
+```
+catalog/data/{rebuild_grounding,wikidata_universe(+extension),wikidata_crossrefs,hierarchy,...}
+catalog/.cache/{statement_formal,formal_dependency,theorem_matching}.csv
+brain/proposals/*.jsonl (agent fleets)  ─┐
+        │                                ▼
+        │                brain/fold_proposals.py   → data/container_links.jsonl
+        │                (deterministic verifier)    data/discovery_proposals.jsonl
+        ▼                                            data/discovery_rejected.jsonl
+brain/build_nodes.py      → brain/data/nodes.jsonl
+brain/build_edges.py      → brain/data/edges.jsonl        (all ontology kinds)
+brain/build_rollups.py    → brain/data/rollup_edges.*.jsonl
+brain/build_shards.py     → site/assets/brain/*.json      (per-node shards + manifest
+        │                                                  + labels.json search index)
+        ▼
+wiki build-public         → wiki/public/assets/brain/     (wipe-then-copy; deployed)
+brain/test_acceptance.py  → CI gate; the 5 datapoints + schema invariants
+```
+
+Everything on the build path is deterministic — no LLM calls. Agent discovery passes
+write `brain/proposals/*.jsonl` only; each shard gets an adversarial skeptic pass
+(`*.verified.jsonl`), then `fold_proposals.py` re-applies hard machine checks
+(hierarchy-path existence, decl oracle + checkout grep, live Wikidata entity + label
+agreement) to every row regardless of verdict. Rejected rows land in
+`discovery_rejected.jsonl` with reasons — the audit trail. Rows folded before their
+skeptic ran carry `evidence.skeptic: "pending"` with confidence capped at medium; the
+2026-07-03 build has zero pending rows.
+
+## Rebuild (ordered)
+
+```bash
+cd /Users/jack/Desktop/LEAN/WikiLean
+python3 brain/fold_proposals.py    # only when proposals/ changed (network: Wikidata)
+python3 catalog/build_graph_v2.py --grounding catalog/data/rebuild_grounding.json
+python3 brain/build_nodes.py       # nodes.jsonl (concepts + containers + decls + literature)
+python3 brain/build_edges.py       # edges.jsonl (all edge kinds)
+python3 brain/build_rollups.py     # rollup_edges.<grain>.jsonl (needs catalog/.cache CSVs, ~1 GB)
+python3 brain/test_acceptance.py   # exit 0 = green
+cd brain && python3 build_shards.py && cd ..          # site/assets/brain/ (gitignored)
+cd wiki && node --experimental-strip-types scripts/build-public.ts   # ship shards to wiki/public
+```
+
+All writers are atomic (tmp file + rename), so a crashed build never leaves a torn
+artifact. The file/dir rollups and the shards are gitignored derived data (rebuild in
+seconds); `nodes.jsonl`/`edges.jsonl`/the module rollup are committed — they ARE the
+dataset.
+
+## Query surfaces
+
+- **Local CLI (agents):** `python3 brain/query.py node|neighborhood|path|search …` —
+  JSON to stdout; see `.claude/skills/brain-query/SKILL.md`.
+- **Live API:** `GET /api/brain/node?id=<id>` and `GET /api/brain/search?q=…`
+  (wiki/src/brain.ts, served from the deployed shards).
+- **UI:** `/brain` (site/build_brain_page.py → brain.html) — Miller-column drill-down
+  through the containment tree, per-node panel with every edge's provenance one click
+  away, layer toggles per edge family, label search. One shard fetch per interaction;
+  the whole graph never ships.
+
+## Shards
+
+`build_shards.py` mirrors `wiki/scripts/build-decl-index.ts`'s longest-prefix scheme
+(normalize to `[a-z0-9_]`, start at 2-char keys, split shards over 150 KB): a client
+loads `manifest.json` once, then any node is one fetch away. Each entry carries the
+node payload, up to 200 ontology edges per direction (ranked, `truncated` flagged),
+the containment breadcrumb, a children summary (first 50 + count), and for containers
+the strongest `depends` rollups at module/dir grain. Provenance dicts are factored
+into a manifest-level `prov` table. `manifest.roots` is the /brain boot payload;
+`labels.json` is the concept+container search index.
+
+## Acceptance
+
+```bash
+python3 brain/test_acceptance.py   # exit 0 = green (10/10 as of 2026-07-03)
+```
+
+Checks the 5 regression datapoints of `SCHEMA.md` §Acceptance (P1–P4 name specific
+nodes/edges — abelian group's LMFDB+CommGroup joins, Module's multi-QID, insphere's
+two inscribed QIDs, Category theory's container-level home; P5 is the invariant
+sweep: edge shape, provenance.source ∈ `catalog/data/source_registry.json`,
+`formalizes` dst existence, `contains` referential integrity, node-id uniqueness).
+
+## Artifact inventory (2026-07-03 build)
+
+| artifact | what | size | committed |
+|---|---|---|---|
+| `brain/SCHEMA.md` | the binding data contract | 11 KB | yes |
+| `brain/data/nodes.jsonl` | 21,240 nodes (2,651 concepts / 9,052 containers / 7,042 decls / 2,495 literature) | 5.2 MB | yes |
+| `brain/data/edges.jsonl` | 126,334 edges, all kinds | 40 MB | yes |
+| `brain/data/rollup_edges.module.jsonl` | `depends` @ library/top-module grain | 2.1 MB | yes |
+| `brain/data/rollup_edges.{file,dir}.jsonl` | `depends` @ file/dir grain | 173/114 MB | **gitignored** (rebuild ~15 s) |
+| `brain/data/hub_stats.json` | per grain, top-50 inbound-weight hubs (render pruning) | 16 KB | yes |
+| `brain/data/container_links.jsonl` | 81 concept→container `formalizes` (field altitude) | 25 KB | yes |
+| `brain/data/discovery_proposals.jsonl` | 153 verified discovery links | 90 KB | yes |
+| `brain/data/discovery_rejected.jsonl` | 110 rejected rows + reasons (audit trail) | 60 KB | yes |
+| `brain/proposals/*.jsonl` | raw agent proposals + skeptic verdicts | ~700 KB | yes |
+| `site/assets/brain/` | 2,165 neighborhood shards + manifest + labels.json | 65 MB | **gitignored** (rebuild ~6 s) |
+
+## Provenance & licensing
+
+`catalog/data/source_registry.json` is the single source of truth: every edge's
+`provenance.source` must be a key there (enforced by the acceptance gate). Summary:
+
+- **BRAIN's own node/edge data is CC0-1.0** — we store identifiers and link facts,
+  which are facts. Sources `rebuild_grounding`, `brain_container_links`,
+  `brain_discovery` (registry section `brain_sources`).
+- **Mathlib-derived structure** (decl names, file tree, dependencies) — Apache-2.0;
+  derived link facts CC0.
+- **Wikidata** (QIDs, `relates` properties, all `xref` identifiers) — CC0-1.0. Each
+  xref target's own content keeps its own license (see `crossref_sources`; MathWorld
+  and DLMF are link-only).
+- **TheoremGraph** (`matches` edges, decl slogans, `depends` CSV @ pin) —
+  CC-BY-SA-4.0: attribution rides in artifact `_meta` and is rendered with a source
+  credit. arXiv statement TEXT is never redistributed — only ids/labels/links
+  (license-open rows may render text, per the existing ingest gate).
+- **No TheoremGraph UUIDs / LeanExplore int ids as identity** — session keys live
+  inside evidence payloads only; durable keys are QID, (library, FQ decl name),
+  arXiv id + ref label, LMFDB/OEIS labels, and file paths @ pin.
