@@ -306,6 +306,23 @@ def main() -> int:
         json.dumps(manifest, ensure_ascii=False, separators=(",", ":")))
     (tmp / "labels.json").write_text(
         json.dumps(labels, ensure_ascii=False, separators=(",", ":")))
+    # the transparency legend (/map's Sources view): the flattened provenance
+    # registry, one entry per external database with layer + license
+    reg = json.loads((ROOT / "catalog" / "data" / "source_registry.json").read_text())
+    src_out = []
+    def _add(key, e, group):
+        src_out.append({k: e.get(k, "") for k in
+                        ("name", "homepage", "layer", "kind", "our_provenance",
+                         "target_license", "wikidata_property", "note")}
+                       | {"key": key, "group": group})
+    _add(reg["spine"]["key"], reg["spine"], "spine")
+    for grp in ("node_sources", "edge_sources", "crossref_sources",
+                "literature_sources", "frontier_sources", "brain_sources"):
+        for k, e in reg.get(grp, {}).items():
+            _add(k, e, grp)
+    (tmp / "sources.json").write_text(json.dumps(
+        {"layers": reg["layers"], "our_data_license": reg["our_data_license"],
+         "sources": src_out}, ensure_ascii=False, separators=(",", ":")))
     if OUT_DIR.exists():
         OUT_DIR.rename(old)
     tmp.rename(OUT_DIR)

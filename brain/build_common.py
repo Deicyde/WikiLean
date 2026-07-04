@@ -15,6 +15,8 @@ from __future__ import annotations
 
 import csv
 import json
+import os
+import re
 import sys
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
@@ -164,15 +166,24 @@ def build() -> tuple[list[dict], list[dict], dict]:
                     "deepseek": row["deepseek_label"],
                 })
 
-    # statement_formal.csv backstop for decls the matching sample never saw
+    # statement_formal.csv: module backstop for decls the matching sample never
+    # saw, plus kind + docstring (the snapshot's `body` column is empty, so the
+    # code itself comes from the live checkout below)
     unresolved = {d for d in decl_set if d not in mod_votes and d not in csv_mod}
     sf_mod: dict[str, str] = {}
-    if unresolved:
-        with INPUTS["statement_formal.csv"].open(newline="") as fh:
-            for row in csv.DictReader(fh):
-                d = row["decl_name"]
-                if d in unresolved and row["module"] and d not in sf_mod:
-                    sf_mod[d] = row["module"]
+    decl_code: dict[str, dict] = {}
+    with INPUTS["statement_formal.csv"].open(newline="") as fh:
+        for row in csv.DictReader(fh):
+            d = row["decl_name"]
+            if d in unresolved and row["module"] and d not in sf_mod:
+                sf_mod[d] = row["module"]
+            if d in decl_set and d not in decl_code:
+                rec = _prune({
+                    "decl_kind": row.get("kind") or None,
+                    "docstring": (row.get("docstring") or "")[:280] or None,
+                })
+                if rec:
+                    decl_code[d] = rec
 
     # ---- containers from hierarchy.json ------------------------------------
     lib_meta = hierarchy["libraries"]
@@ -214,6 +225,53 @@ def build() -> tuple[list[dict], list[dict], dict]:
             lib = root if root in lib_meta else "Mathlib"
         return lib, module
 
+    # ---- Lean source snippets from the live checkout ------------------------
+    # The snapshot CSV ships no statement bodies, so the decl panel's code
+    # comes from the live mathlib4 checkout (Apache-2.0, attribution in _meta;
+    # read-only; fail-soft on drift — a renamed file just means no snippet).
+    mathlib_src = Path(os.environ.get(
+        "BRAIN_MATHLIB_CHECKOUT", "/Users/jack/Desktop/LEAN/mathlib4/Mathlib")).parent
+    kw = r"(?:theorem|lemma|def|abbrev|structure|class|instance|inductive|opaque|axiom)"
+    by_file: dict[str, list[str]] = defaultdict(list)
+    for d in decl_set:
+        lib, module = resolve(d)
+        if lib == "Mathlib" and module:
+            by_file[module].append(d)
+    n_snippets = 0
+    if mathlib_src.exists():
+        for module, decls in by_file.items():
+            fp = mathlib_src / (module.replace(".", "/") + ".lean")
+            try:
+                lines = fp.read_text().splitlines()
+            except OSError:
+                continue
+            for d in decls:
+                seg = re.escape(d.split(".")[-1])
+                pat = re.compile(rf"^\s*(?:@\[[^\]]*\]\s*)?(?:private\s+|protected\s+"
+                                 rf"|noncomputable\s+|nonrec\s+|scoped\s+)*{kw}\s+"
+                                 rf"(?:[A-Za-z0-9_'.«»]+\.)?{seg}($|[^A-Za-z0-9_'])")
+                for i, line in enumerate(lines):
+                    if not pat.match(line):
+                        continue
+                    snip: list[str] = []
+                    for l in lines[i:i + 12]:
+                        s = l.rstrip()
+                        if snip and not s:
+                            break            # blank line = statement header over
+                        snip.append(l)
+                        if (s.endswith(":=") or s.endswith(":= by") or s.endswith(" by")
+                                or s.endswith("where") or s.endswith(":= fun")):
+                            break
+                    code = "\n".join(snip)[:700]
+                    decl_code.setdefault(d, {})["code"] = code
+                    n_snippets += 1
+                    break
+    else:
+        print(f"WARNING: mathlib checkout missing at {mathlib_src} — decl code "
+              f"snippets skipped (BRAIN_MATHLIB_CHECKOUT to override)", file=sys.stderr)
+    print(f"  decl code snippets from the checkout: {n_snippets}/{len(decl_set)}",
+          file=sys.stderr)
+
     decl_id: dict[str, str] = {}
     decl_nodes: list[dict] = []
     n_unplaced = 0
@@ -224,6 +282,7 @@ def build() -> tuple[list[dict], list[dict], dict]:
         decl_nodes.append(_prune({
             "id": did, "type": "decl", "label": d, "library": lib,
             "module": module, "slogan": slogans.get(d), "pin": snapshot_pin,
+            **decl_code.get(d, {}),
         }))
         # placement: deepest hierarchy container prefixing the decl's module
         # (the tree is depth-capped, so this is the file container when the
@@ -453,6 +512,7 @@ def build() -> tuple[list[dict], list[dict], dict]:
                     "id": dst, "type": "decl", "label": d, "library": lib,
                     "module": module, "slogan": slogans.get(d),
                     "pin": snapshot_pin,
+                    **decl_code.get(d, {}),
                 })
                 parts = module.split(".") if module else [lib]
                 cur = f"path:{parts[0]}"
@@ -496,6 +556,9 @@ def build() -> tuple[list[dict], list[dict], dict]:
         concept_nodes.append(_prune({
             "id": n["qid"], "type": "concept", "label": n.get("label"),
             "slug": n.get("slug"),
+            # Google KG is a hub id (never an xref edge — SCHEMA) but a useful
+            # "Also in" chip; carried on the node payload instead
+            "kgmid": ((n.get("xrefs") or {}).get("kgmid") or [None])[0],
             "altitude_evidence": {
                 "p31": p31.get(n["qid"], []),
                 "module_span": span,
@@ -549,6 +612,10 @@ def build() -> tuple[list[dict], list[dict], dict]:
             "theoremgraph": links_meta["attribution"],
             "slogans": "decl `slogan` fields are formal_slogan from TheoremGraph "
                        "theorem_matching.csv — CC-BY-SA-4.0, render with source credit",
+            "code": "decl `code` snippets are statement headers read from the live "
+                    "mathlib4 checkout — Apache-2.0 (mathlib4 contributors), render "
+                    "with source credit; `docstring`/`decl_kind` from TheoremGraph "
+                    "statement_formal.csv (CC-BY-4.0)",
             "arxiv": "arXiv statement text is never redistributed — ids/titles/labels only",
             "wikidata": "CC0-1.0",
         },

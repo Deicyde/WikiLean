@@ -118,6 +118,14 @@ section.kind h3 .cnt { color:#8c959f; font-weight:400; }
 .slogan { border-left:3px solid #8250df; padding:6px 10px; background:#fff; margin:8px 0;
   font-size:.86rem; border-radius:0 6px 6px 0; }
 .slogan .src { display:block; color:#8c959f; font-size:.7rem; margin-top:3px; }
+.codeblock { margin:8px 0; border:1px solid #d0d7de; border-radius:6px; background:#f6f8fa; }
+.codeblock pre { margin:0; padding:8px 10px; overflow-x:auto; font-size:.76rem;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace; line-height:1.45; }
+.codeblock .src { display:block; color:#8c959f; font-size:.7rem; padding:4px 10px 6px;
+  border-top:1px solid #d8dee4; }
+html[data-theme="dark"] .codeblock { background:#0d1117; border-color:#30363d; }
+html[data-theme="dark"] .codeblock .src { border-color:#30363d; }
+.lit-ref { color:#8c959f; font-size:.74rem; }
 .note { color:#57606a; font-size:.8rem; }
 .more { font-size:.78rem; color:#57606a; padding:4px 10px; }
 .extlink { font-size:.8rem; }
@@ -148,6 +156,7 @@ html[data-theme="dark"] text.bcount { fill:#8b949e; }
       <input id="q" type="search" placeholder="Search concepts &amp; areas… (e.g. abelian group)" autocomplete="off">
       <div id="hits"></div>
     </div>
+    <a class="wl-navlink" id="srcbtn" style="cursor:pointer" title="every external database the brain links to — layer, provenance, license">Sources</a>
     <a class="wl-navlink" href="/map">Map</a>
     <a class="wl-navlink" href="/stats">Stats</a>
     <a class="wl-navlink" href="https://github.com/Deicyde/WikiLean" rel="noopener">GitHub</a>
@@ -762,8 +771,12 @@ async function renderCrumb() {
 const KIND_LABEL = {
   formalizes: "Formalizations", mentions: "Article mentions", depends: "Formal dependencies",
   matches: "Formal ↔ literature matches", xref: "Cross-database identity",
-  relates: "Wikidata relations", cites: "Literature", contains: "Contains",
+  relates: "Wikidata relations", cites: "Stated in the literature (TheoremGraph)",
+  contains: "Contains",
 };
+const XREF_NAME = {mathworld: "MathWorld", nlab: "nLab", proofwiki: "ProofWiki",
+  eom: "Encyclopedia of Math", planetmath: "PlanetMath", metamath: "Metamath",
+  lmfdb_knowl: "LMFDB", oeis: "OEIS", dlmf: "DLMF", msc: "MSC"};
 const XREF_URL = {
   mathworld: v => `https://mathworld.wolfram.com/${v}.html`,
   nlab: v => `https://ncatlab.org/nlab/show/${encodeURIComponent(v)}`,
@@ -827,6 +840,26 @@ async function renderPanel(id) {
   if (n.type === "concept") sub.push(`<a href="https://www.wikidata.org/wiki/${esc(n.id)}" rel="noopener" target="_blank">${esc(n.id)}</a>`);
   if (n.type === "decl") sub.push(`<a href="${esc(nodeUrl(n.id))}" rel="noopener" target="_blank">docs ↗</a>`);
   html += `<div class="sub">${sub.join(" · ")}</div>`;
+  // "Also in" — every external identity of this concept as one chip strip
+  // (the /map concept-panel affordance): article, Wikidata, Google KG, and
+  // each cross-referenced database, deep-linked
+  if (n.type === "concept") {
+    const chips = [];
+    if (n.slug) chips.push(`<a href="/${esc(n.slug)}">WikiLean article</a>`);
+    chips.push(`<a href="https://www.wikidata.org/wiki/${esc(n.id)}" rel="noopener" target="_blank">Wikidata</a>`);
+    if (n.kgmid) chips.push(`<a href="https://www.google.com/search?kgmid=${encodeURIComponent(n.kgmid)}" rel="noopener" target="_blank">Google Knowledge Graph</a>`);
+    for (const x of (e.edges && e.edges.out) || []) {
+      if (x.kind !== "xref") continue;
+      const key = x.id.split(":")[1];
+      const mkUrl = XREF_URL[key];
+      const url = mkUrl && x.evidence && mkUrl(x.evidence.value);
+      const nm = XREF_NAME[key] || key;
+      chips.push(url ? `<a href="${esc(url)}" rel="noopener" target="_blank">${esc(nm)}</a>` : esc(nm));
+    }
+    if (chips.length)
+      html += `<div class="chips"><span class="note">Also in:</span> ` +
+              chips.map(c => `<span class="chip">${c}</span>`).join("") + `</div>`;
+  }
   if (n.description) html += `<p style="font-size:.9rem">${esc(n.description)}</p>`;
   const st = n.display && n.display.status;
   if (st) html += `<span class="badge ${st === "formalized" ? "f" : st === "partial" ? "p" : "n"}">${esc(st.replace("_", " "))}</span>`;
@@ -839,6 +872,12 @@ async function renderPanel(id) {
   if (n.n_decls) html += `<span class="badge">${n.n_decls.toLocaleString()} decls</span>`;
   if (n.superseded) html += `<span class="badge n">superseded snapshot module</span>`;
   if (n.slogan) html += `<div class="slogan">${esc(n.slogan)}<span class="src">slogan — TheoremGraph (CC-BY-SA-4.0)</span></div>`;
+  if (n.code) {
+    html += `<div class="codeblock"><pre>${esc(n.code)}</pre><span class="src">${
+      esc(n.decl_kind || "decl")} — mathlib4 source (Apache-2.0) · ` +
+      `<a href="${esc(nodeUrl(n.id))}" rel="noopener" target="_blank">Mathlib docs ↗</a></span></div>`;
+  }
+  if (n.docstring) html += `<p class="note">${esc(n.docstring)}</p>`;
   if (n.arxiv_id) html += `<p class="note">appears as <b>${esc(n.ref || "?")}</b> of
     <a href="${esc(nodeUrl(n.id))}" rel="noopener" target="_blank">${esc(n.arxiv_id)}</a>
     ${n.license_open ? "" : " (text not redistributable — link only)"}</p>`;
@@ -897,7 +936,64 @@ async function renderPanel(id) {
       if (ev.target.closest("a") || ev.target.closest("[data-nav]")) return;
       r.parentElement.classList.toggle("open");
     }));
+  // literature rows boot as raw lit: ids — resolve paper titles lazily (their
+  // entries share arXiv-prefix shards, so this is a handful of fetches)
+  [...panelEl.querySelectorAll('[data-nav^="lit:"]')].slice(0, 20).forEach(async el => {
+    const lid = el.dataset.nav;
+    const le = await getEntry(lid);
+    if (!le || !le.node.label || le.node.label === lid) return;
+    const t = le.node.label.length > 90 ? le.node.label.slice(0, 88) + "…" : le.node.label;
+    el.innerHTML = `${esc(t)} <span class="lit-ref">${esc(le.node.ref || "")} · ${
+      esc(le.node.arxiv_id || "")}</span>`;
+  });
 }
+
+// ---- the transparency legend: /map's Sources view, rendered in the panel ----
+let sourcesData = null;
+async function showSourcesPanel() {
+  if (!sourcesData) {
+    const r = await fetch(BASE + "sources.json");
+    if (!r.ok) { panelEl.innerHTML = `<p class="note">sources.json unavailable</p>`; return; }
+    sourcesData = await r.json();
+  }
+  const GROUP_LABEL = {spine: "The join spine", node_sources: "Node sources",
+    edge_sources: "Edge sources", crossref_sources: "Cross-reference databases",
+    literature_sources: "Literature", frontier_sources: "Research frontier",
+    brain_sources: "Brain pipeline"};
+  let html = `<h2>Sources</h2>
+    <div class="sub">every external database the brain links to — its layer in the
+    formal↔informal stack, how WE obtained each link, and the target's own license</div>`;
+  html += `<div class="chips">` + Object.entries(sourcesData.layers).map(([k, v]) =>
+    `<span class="chip" title="${esc(v)}">${esc(k)}</span>`).join("") + `</div>`;
+  html += `<p class="note">WikiLean's own annotation + graph data: ${
+    esc(sourcesData.our_data_license.annotations)} / ${
+    esc(sourcesData.our_data_license.concept_graph)}. ${
+    esc(sourcesData.our_data_license.note || "")}</p>`;
+  const byGroup = new Map();
+  for (const s of sourcesData.sources) {
+    if (!byGroup.has(s.group)) byGroup.set(s.group, []);
+    byGroup.get(s.group).push(s);
+  }
+  for (const [grp, rows] of byGroup) {
+    html += `<section class="kind"><h3>${esc(GROUP_LABEL[grp] || grp)} <span class="cnt">(${rows.length})</span></h3>`;
+    for (const s of rows) {
+      html += `<div class="edge"><div class="row">${
+        s.homepage ? `<a href="${esc(s.homepage)}" rel="noopener" target="_blank"><b>${esc(s.name || s.key)}</b></a>` : `<b>${esc(s.name || s.key)}</b>`}
+        <span class="mk">${esc(s.layer)}</span>${
+        s.wikidata_property ? ` <span class="lit-ref">${esc(s.wikidata_property)}</span>` : ""}
+        <span class="conf">${esc(s.target_license || "—")}</span></div>
+        <div class="drawer">${esc(s.kind || "")}${s.kind ? "<br>" : ""}<i>${esc(s.our_provenance || "")}</i>${
+        s.note ? `<br>${esc(s.note)}` : ""}</div></div>`;
+    }
+    html += `</section>`;
+  }
+  html += `<p class="note">Identifiers are read from Wikidata (CC0) or derived locally —
+    linked-target content keeps each project's own license.</p>`;
+  panelEl.innerHTML = html;
+  panelEl.querySelectorAll(".edge .row").forEach(r =>
+    r.addEventListener("click", () => r.parentElement.classList.toggle("open")));
+}
+$("#srcbtn").addEventListener("click", showSourcesPanel);
 
 // ============================ search =========================================
 async function ensureLabels() {
