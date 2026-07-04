@@ -50,8 +50,10 @@ MIN_KEY_LEN = 2
 MAX_KEY_LEN = 64            # termination guard for pathological collisions
 PAD = "_"
 EDGE_CAP = 200              # ontology edges kept per direction (SCHEMA shard cap)
-ROLLUP_CAP = {"module": 50, "dir": 5}   # depends rollups kept per direction
-CHILD_CAP = 50
+ROLLUP_CAP = {"module": 50, "dir": 16}  # depends rollups kept per direction
+# Complete child lists (largest file = 501 decls, largest dir ~200 files): the
+# /brain bubble canvas packs every child, so truncation = invisible bubbles.
+CHILD_CAP = 600
 CONF_RANK = {"high": 0, "medium": 1, "low": 2}
 
 
@@ -172,6 +174,14 @@ def main() -> int:
         return [{"id": i, "label": nodes[i].get("label"), "type": nodes[i]["type"]}
                 for i in chain if i in nodes]
 
+    # concepts anchored per container (inbound formalizes) — baked into child
+    # summaries so the bubble canvas can badge children without prefetching
+    # every child shard
+    n_concepts: dict[str, int] = defaultdict(int)
+    for nid, rows in edges_in.items():
+        if nid in nodes and nodes[nid]["type"] == "container":
+            n_concepts[nid] = sum(1 for _, _, item in rows if item["kind"] == "formalizes")
+
     def child_summary(nid: str) -> dict:
         conts, decls = [], []
         for cid in children.get(nid, []):
@@ -180,7 +190,9 @@ def main() -> int:
         decls.sort(key=lambda n: n["id"])
         ordered = conts + decls
         first = [{"id": n["id"], "label": n.get("label"), "type": n["type"],
-                  **({"n_decls": n["n_decls"]} if n["type"] == "container" else {})}
+                  **({"n_decls": n["n_decls"]} if n["type"] == "container" else {}),
+                  **({"n_concepts": n_concepts[n["id"]]}
+                     if n["type"] == "container" and n_concepts.get(n["id"]) else {})}
                  for n in ordered[:CHILD_CAP]]
         return {"count": len(ordered), "first": first}
 
