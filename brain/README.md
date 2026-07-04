@@ -42,13 +42,23 @@ skeptic ran carry `evidence.skeptic: "pending"` with confidence capped at medium
 
 ## Rebuild (ordered)
 
+Prerequisites on a fresh clone (all gitignored, all fetchable):
+
+```bash
+python3 catalog/fetch_math_graph.py          # statement_formal + formal_dependency CSVs (~1.1 GB)
+python3 .claude/skills/mathlib-search/mathlib_search.py --live decl Nat.add_comm  # warms the decl oracle cache
+# plus a mathlib4 checkout (default /Users/jack/Desktop/LEAN/mathlib4; override
+# with BRAIN_MATHLIB_CHECKOUT) — build_graph_v2 and fold_proposals FAIL HARD
+# when the oracle/checkout are missing rather than silently dropping data.
+```
+
 ```bash
 cd /Users/jack/Desktop/LEAN/WikiLean
 python3 brain/fold_proposals.py    # only when proposals/ changed (network: Wikidata)
 python3 catalog/build_graph_v2.py --grounding catalog/data/rebuild_grounding.json
 python3 brain/build_nodes.py       # nodes.jsonl (concepts + containers + decls + literature)
 python3 brain/build_edges.py       # edges.jsonl (all edge kinds)
-python3 brain/build_rollups.py     # rollup_edges.<grain>.jsonl (needs catalog/.cache CSVs, ~1 GB)
+python3 brain/build_rollups.py     # rollup_edges.<grain>.jsonl (streams the 1 GB CSV)
 python3 brain/test_acceptance.py   # exit 0 = green
 cd brain && python3 build_shards.py && cd ..          # site/assets/brain/ (gitignored)
 cd wiki && node --experimental-strip-types scripts/build-public.ts   # ship shards to wiki/public
@@ -58,6 +68,14 @@ All writers are atomic (tmp file + rename), so a crashed build never leaves a to
 artifact. The file/dir rollups and the shards are gitignored derived data (rebuild in
 seconds); `nodes.jsonl`/`edges.jsonl`/the module rollup are committed — they ARE the
 dataset.
+
+**Reproducibility caveat:** `build_graph_v2.py` densifies the decl→QID map from the
+LIVE `site/annotations/*.json` working tree — which is a cache of D1, the canonical
+store. A rebuild therefore reflects the current annotation state, not the one the
+committed dataset was built from; bit-exact reproduction of a committed
+`edges.jsonl` requires the same annotation snapshot (~10% of `depends` edges shift
+otherwise). This is by design (D1 is canonical); treat committed brain/data as the
+pinned dataset and rebuilds as newer snapshots.
 
 ## Query surfaces
 
@@ -105,7 +123,8 @@ sweep: edge shape, provenance.source ∈ `catalog/data/source_registry.json`,
 | `brain/data/hub_stats.json` | per grain, top-50 inbound-weight hubs (render pruning) | 16 KB | yes |
 | `brain/data/container_links.jsonl` | 81 concept→container `formalizes` (field altitude) | 25 KB | yes |
 | `brain/data/discovery_proposals.jsonl` | 153 verified discovery links | 90 KB | yes |
-| `brain/data/discovery_rejected.jsonl` | 110 rejected rows + reasons (audit trail) | 60 KB | yes |
+| `brain/data/discovery_rejected.jsonl` | rejected rows + reasons (audit trail) | 60 KB | yes |
+| `brain/data/grading_disputes.jsonl` | skeptic-rejected audits of SHIPPED grounding grades — the human-review queue feeding grounding_overrides.jsonl | small | yes |
 | `brain/proposals/*.jsonl` | raw agent proposals + skeptic verdicts | ~700 KB | yes |
 | `site/assets/brain/` | 2,165 neighborhood shards + manifest + labels.json | 65 MB | **gitignored** (rebuild ~6 s) |
 

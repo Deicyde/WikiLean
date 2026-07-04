@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import glob
 import json
+import os
 import re
 import subprocess
 import sys
@@ -35,7 +36,8 @@ DATA = HERE / "data"
 PROPOSALS = HERE / "proposals"
 CATALOG = REPO / "catalog" / "data"
 ORACLE = REPO / ".claude" / "skills" / "mathlib-search" / ".cache" / "declaration-data.json"
-CHECKOUT = Path("/Users/jack/Desktop/LEAN/mathlib4/Mathlib")
+CHECKOUT = Path(os.environ.get("BRAIN_MATHLIB_CHECKOUT",
+                               "/Users/jack/Desktop/LEAN/mathlib4/Mathlib"))
 UA = "WikiLean/1.0 (https://wikilean.jackmccarthy.org)"
 QID_RE = re.compile(r"^Q\d+$")
 CONF_ORDER = {"low": 0, "medium": 1, "high": 2}
@@ -139,24 +141,61 @@ def fetch_entities(qids: list[str]) -> dict[str, dict]:
 def main() -> int:
     paths = hierarchy_paths()
     oracle = oracle_names()
+    # A missing oracle must FAIL, not degrade: an empty set would silently
+    # reject every decl-bearing proposal (and in build_graph_v2's twin, drop
+    # every formalization) on a machine without the gitignored cache.
+    if not oracle:
+        sys.exit(f"FATAL: decl oracle empty/missing at {ORACLE} — fetch it "
+                 "(mathlib-search skill) before folding")
+    if not CHECKOUT.exists():
+        sys.exit(f"FATAL: mathlib checkout missing at {CHECKOUT} "
+                 "(override with BRAIN_MATHLIB_CHECKOUT)")
     known = known_qids()
     grounding = {r["qid"]: r for r in json.loads((CATALOG / "rebuild_grounding.json").read_text())}
 
-    # ---- collect rows, preferring the skeptic-verified copy ------------------
+    # ---- collect rows: the BASE file is the row universe; the skeptic's
+    # .verified.jsonl overlays verdicts onto it. Reading only the verified copy
+    # would silently drop base rows a partial skeptic never echoed (found in
+    # the 2026-07-03 self-review: a skeptic died mid-shard leaving 2/29 rows).
+    def row_key(r: dict) -> tuple:
+        return (r.get("qid"), r.get("decl") or r.get("new_decl"),
+                r.get("path"), r.get("action"))
+
     rows: list[dict] = []
+    n_unechoed = 0
     for f in sorted(glob.glob(str(PROPOSALS / "*.jsonl"))):
         if f.endswith(".verified.jsonl"):
             continue
-        vf = f + ".verified.jsonl"
-        src = vf if Path(vf).exists() else f
-        skepticked = Path(vf).exists()
-        for line in Path(src).read_text().splitlines():
+        vf = Path(f + ".verified.jsonl")
+        verdicts: dict[tuple, dict] = {}
+        if vf.exists():
+            for line in vf.read_text().splitlines():
+                if line.strip():
+                    v = json.loads(line)
+                    verdicts[row_key(v)] = v
+        seen = set()
+        for line in Path(f).read_text().splitlines():
             if not line.strip():
                 continue
             r = json.loads(line)
+            k = row_key(r)
+            seen.add(k)
+            v = verdicts.get(k)
+            if v is not None:
+                r = {**r, **{kk: v[kk] for kk in ("verdict", "verify_note") if kk in v}}
+            elif vf.exists():
+                n_unechoed += 1  # skeptic ran but never echoed this row → pending
             r["_shard"] = Path(f).name
-            r["_skepticked"] = skepticked
             rows.append(r)
+        # skeptic-added rows absent from the base (corrected copies) count too
+        for k, v in verdicts.items():
+            if k not in seen:
+                v = dict(v)
+                v["_shard"] = Path(f).name
+                rows.append(v)
+    if n_unechoed:
+        print(f"NOTE: {n_unechoed} base rows had no skeptic echo — folded as "
+              f"pending (capped confidence)", file=sys.stderr)
 
     # kind inference: container batches have path+no decl; collision rows have
     # action; discover rows have decl+qid
@@ -198,16 +237,49 @@ def main() -> int:
     discovery_out: dict[tuple[str, str], dict] = {}
     overrides_out: list[dict] = []
     rejected: list[dict] = []
+    disputes: list[dict] = []
     n_ok = 0
 
     def reject(r: dict, why: str) -> None:
         rejected.append({**r, "rejected_reason": why})
 
+    # Cross-batch reconciliation: proposers overlapped, so the same
+    # (qid, target) pair can carry contradictory skeptic verdicts from
+    # different shards. Any-reject wins — a link one skeptic refuted must not
+    # ship because another batch's copy was accepted.
+    vetoed: set[tuple] = set()
+    for r in rows:
+        if r.get("verdict") == "reject":
+            t = rtype(r)
+            if t == "container":
+                vetoed.add(("container", r.get("qid"),
+                            (r.get("path") or "").removeprefix("path:")))
+            elif t in ("discover", "replace_decl"):
+                vetoed.add(("discover", r.get("qid"),
+                            r.get("decl") or r.get("new_decl")))
+
     for r in rows:
         t = rtype(r)
         verdict = r.get("verdict")
         if verdict == "reject":
+            # A rejected 'ok' audit means the skeptic disputes an ALREADY-
+            # SHIPPED grounding grade — that needs a correction surface, not a
+            # silent drop. grading_disputes.jsonl feeds human review /
+            # grounding_overrides.jsonl.
+            if t == "ok":
+                disputes.append({k: r.get(k) for k in
+                                 ("qid", "decl", "note", "verify_note", "_shard")})
             reject(r, f"skeptic: {r.get('verify_note') or 'rejected'}")
+            continue
+        if t == "container" and ("container", r.get("qid"),
+                                 (r.get("path") or "").removeprefix("path:")) in vetoed:
+            reject(r, "fold-check: conflicting skeptic verdicts across batches "
+                      "(any-reject wins)")
+            continue
+        if t in ("discover", "replace_decl") and \
+                ("discover", r.get("qid"), r.get("decl") or r.get("new_decl")) in vetoed:
+            reject(r, "fold-check: conflicting skeptic verdicts across batches "
+                      "(any-reject wins)")
             continue
         skeptic = "accept" if verdict == "accept" else "pending"
         conf = r.get("confidence") or "medium"
@@ -238,6 +310,14 @@ def main() -> int:
             continue
 
         if t == "override":
+            # Overrides mutate already-shipped grades with no confidence
+            # field to cap — unlike links, they apply only with an explicit
+            # skeptic accept (the collision skeptics rejected ~half of
+            # proposed overrides as no-ops or convention-inverted).
+            if skeptic == "pending":
+                reject(r, "fold-check: override requires a skeptic verdict — "
+                          "left in proposals for the next skeptic pass")
+                continue
             qid = r.get("qid")
             g = grounding.get(qid)
             if not g:
@@ -292,6 +372,7 @@ def main() -> int:
     dump(DATA / "container_links.jsonl", [containers_out[k] for k in sorted(containers_out)])
     dump(DATA / "discovery_proposals.jsonl", [discovery_out[k] for k in sorted(discovery_out)])
     dump(DATA / "discovery_rejected.jsonl", rejected)
+    dump(DATA / "grading_disputes.jsonl", disputes)
 
     ov_path = CATALOG / "grounding_overrides.jsonl"
     existing = set()
@@ -337,6 +418,7 @@ def main() -> int:
     print(f"folded: {len(containers_out)} container links, {len(discovery_out)} discovery "
           f"links, {added_ov} new overrides, {added_ext} universe-extension rows; "
           f"{n_ok} ok-confirmations; {len(rejected)} rejected; "
+          f"{len(disputes)} grading disputes (review → grounding_overrides.jsonl); "
           f"{n_pending} rows carry skeptic:pending (capped at medium confidence)")
     return 0
 
