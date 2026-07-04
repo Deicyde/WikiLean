@@ -196,6 +196,7 @@ describe("sitemapXml", () => {
         "  <url><loc>https://wikilean.jackmccarthy.org/</loc><priority>1.0</priority></url>\n" +
         "  <url><loc>https://wikilean.jackmccarthy.org/map</loc><priority>0.8</priority></url>\n" +
         "  <url><loc>https://wikilean.jackmccarthy.org/brain</loc><priority>0.8</priority></url>\n" +
+        "  <url><loc>https://wikilean.jackmccarthy.org/articles</loc><priority>0.8</priority></url>\n" +
         "  <url><loc>https://wikilean.jackmccarthy.org/concepts</loc><priority>0.8</priority></url>\n" +
         "  <url><loc>https://wikilean.jackmccarthy.org/about</loc><priority>0.8</priority></url>\n" +
         "</urlset>",

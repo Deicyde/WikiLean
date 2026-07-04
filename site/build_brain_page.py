@@ -138,6 +138,8 @@ section.kind h3 .cnt { color:#8a8272; font-weight:400; font-size:.8rem; }
 .note { color:#5a544a; font-size:.82rem; }
 .more { font-size:.78rem; color:#5a544a; padding:4px 10px; }
 .extlink { font-size:.8rem; }
+body.embed .wl-header, body.embed #crumbbar { display:none; }
+body.embed .main { height:calc(100vh - 44px); }
 @media (max-width: 900px) { .main { flex-direction:column; height:auto; }
   #stage { min-height:52vh; border-left:none; }
   #panel { border-left:none; border-top:1px solid #262c3a; max-height:none; } }
@@ -1509,6 +1511,14 @@ window.addEventListener("hashchange", () => {
 window.addEventListener("resize", () => { renderFocus(false); });
 
 (async function boot() {
+  // ?embed=1 → chrome-less mode for the landing-page iframe: hide the header +
+  // crumb bar, article/external links escape the frame
+  if (new URLSearchParams(location.search).has("embed")) {
+    document.body.classList.add("embed");
+    const base = document.createElement("base");
+    base.target = "_parent";
+    document.head.appendChild(base);
+  }
   try {
     await fetchManifest();
   } catch (e) {

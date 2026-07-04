@@ -122,6 +122,64 @@ function recentItem(r: HomeRow): string {
   );
 }
 
+// The landing page IS the Brain: dark shell, headline stats from D1, and the
+// explorer embedded full-bleed (/brain?embed=1 hides its own chrome). The
+// article directory that used to live here moved to /articles.
+export function brainLanding(rows: HomeRow[]): string {
+  const nF = rows.reduce((s, r) => s + (r.nFormalized ?? 0), 0);
+  const nP = rows.reduce((s, r) => s + (r.nPartial ?? 0), 0);
+  const nN = rows.reduce((s, r) => s + (r.nNotFormalized ?? 0), 0);
+  const grand = nF + nP + nN;
+  const pct = (n: number) => (grand ? ((100 * n) / grand).toFixed(1) : "0.0");
+  return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WikiLean — the Brain</title>
+<meta name="description" content="WikiLean: Wikipedia's mathematics annotated with its Mathlib formalization status — explored through the Brain, a zoomable provenance-carrying map joining concepts, Lean code, cross-database identities, and the literature.">
+<style>
+* { box-sizing:border-box; } html, body { height:100%; }
+body { margin:0; display:flex; flex-direction:column; background:#0b0e14; color:#e6e4de;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+a { color:#7cb3ff; text-decoration:none; } a:hover { text-decoration:underline; }
+.wl-header { background:#10141d; border-bottom:1px solid #262c3a; padding:10px 20px;
+  display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+.wl-brand { font-weight:700; color:#7cb3ff; font-size:18px; }
+.tag { color:#9aa3b2; font-size:.85rem; }
+.wl-nav { display:flex; gap:14px; align-items:center; flex-wrap:wrap; font-size:.9rem; }
+.strip { background:#10141d; border-bottom:1px solid #262c3a; padding:6px 20px;
+  display:flex; gap:18px; align-items:center; flex-wrap:wrap; font-size:.85rem; color:#9aa3b2; }
+.strip b { color:#e6e4de; font-size:1rem; }
+.strip .f { color:#22c55e; } .strip .p { color:#eab308; } .strip .n { color:#ef4444; }
+iframe { flex:1; border:0; width:100%; min-height:420px; }
+</style>
+</head>
+<body>
+<header class="wl-header">
+  <span><span class="wl-brand">WikiLean</span>
+    <span class="tag">— Wikipedia&#x27;s mathematics, annotated with its Mathlib formalization status.
+    This is the <b>Brain</b>: every concept joined to its Lean code, databases, and literature.</span></span>
+  <nav class="wl-nav" aria-label="Site">
+    <a href="/articles"><b>Browse ${fmtInt(rows.length)} articles</b></a>
+    <a href="/recent-changes">Recent changes</a>
+    <a href="/concepts">Concepts</a>
+    <a href="/map">Map</a>
+    <a href="/about">About</a>
+  </nav>
+</header>
+<div class="strip">
+  <span><b>${fmtInt(grand)}</b> annotated results</span>
+  <span class="f"><b>${pct(nF)}%</b> formalized</span>
+  <span class="p"><b>${pct(nP)}%</b> partial</span>
+  <span class="n"><b>${pct(nN)}%</b> not yet</span>
+  <span><a href="/brain">open the Brain full-page ↗</a></span>
+</div>
+<iframe src="/brain?embed=1" title="The Brain — a zoomable map of mathematics"></iframe>
+</body>
+</html>`;
+}
+
 export function homePage(rows: HomeRow[]): string {
   const sorted = [...rows].sort((a, b) =>
     a.displayTitle.toLowerCase().localeCompare(b.displayTitle.toLowerCase()),
@@ -471,7 +529,7 @@ export function sitemapXml(rows: SitemapRow[]): string {
   const rootMod = newest ? `<lastmod>${new Date(newest).toISOString().slice(0, 10)}</lastmod>` : "";
   const rootUrl = `  <url><loc>${SITE_ORIGIN}/</loc>${rootMod}<priority>1.0</priority></url>`;
   // Flagship static pages — were missing, so crawlers never discovered the map.
-  const staticUrls = ["map", "brain", "concepts", "about"].map(
+  const staticUrls = ["map", "brain", "articles", "concepts", "about"].map(
     (p) => `  <url><loc>${SITE_ORIGIN}/${p}</loc><priority>0.8</priority></url>`,
   );
   const urls = [
