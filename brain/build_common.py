@@ -320,11 +320,16 @@ def build() -> tuple[list[dict], list[dict], dict]:
         for child, sub in node.get("sub", {}).items():
             walk(lib, kind, child, sub, cid, superseded)
 
+    # library roots that ARE Wikidata items get their identity on the node
+    # (rendered as a Wikidata chip on the container panel) — extend as more
+    # libraries gain items
+    LIBRARY_QIDS = {"Mathlib": "Q140128421"}
     for lib, L in lib_meta.items():
         root = f"path:{lib}"
-        containers[root] = {"id": root, "type": "container", "label": lib,
-                            "library": lib, "library_kind": L["kind"],
-                            "n_decls": L["n_decls"], "n_files": L["n_files"]}
+        containers[root] = _prune({"id": root, "type": "container", "label": lib,
+                                   "library": lib, "library_kind": L["kind"],
+                                   "qid": LIBRARY_QIDS.get(lib),
+                                   "n_decls": L["n_decls"], "n_files": L["n_files"]})
         for name, node in L["modules"].items():
             walk(lib, L["kind"], name, node, root, False)
 
