@@ -222,6 +222,7 @@ body.embed .wl-header, body.embed #crumbbar { display:none; }   /* flex column f
     <a class="wl-navlink" id="srcbtn" style="cursor:pointer" title="every external database the brain links to — layer, provenance, license">Sources</a>
     <a class="wl-navlink" href="/stats">Stats</a>
     <a class="wl-navlink" href="https://github.com/Deicyde/WikiLean" rel="noopener">GitHub</a>
+    <span class="wl-navlink" id="wl-auth"><a href="/login?returnTo=/brain">Log in</a></span>
   </nav>
 </header>
 <div class="toolbar">
@@ -1877,9 +1878,18 @@ const XREF_DB_OPTIONS = [
 async function fetchMe() {
   try {
     const r = await fetch("/api/auth/me", {headers: {Accept: "application/json"}});
-    if (!r.ok) return;
-    currentUser = (await r.json()).user || null;
+    if (r.ok) currentUser = (await r.json()).user || null;
   } catch (e) { currentUser = null; }
+  updateAuthNav();
+}
+// reflect login state in the header: "Log in" ↔ "<name> · Log out"
+function updateAuthNav() {
+  const el = $("#wl-auth");
+  if (!el) return;
+  el.innerHTML = currentUser
+    ? `<span style="color:#9aa3b2">${esc(currentUser.name || "you")}</span> · ` +
+      `<a href="/logout?returnTo=/brain">Log out</a>`
+    : `<a href="/login?returnTo=/brain">Log in</a>`;
 }
 async function fetchCommunityEdges(id) {
   try {
