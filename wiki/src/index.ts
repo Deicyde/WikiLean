@@ -42,6 +42,7 @@ import { registerReviewRoutes } from "./review.js";
 import { registerDeclRoutes } from "./decl.js";
 import { registerAtlasRoutes } from "./atlas.js";
 import { registerBrainRoutes } from "./brain.js";
+import { registerBrainEditRoutes } from "./brain-edits.js";
 import { registerQueueRoutes } from "./queue.js";
 import type { Annotation } from "./engine/types.js";
 import type { Env } from "./env.js";
@@ -106,6 +107,7 @@ registerReviewRoutes(app);
 registerDeclRoutes(app);
 registerAtlasRoutes(app);
 registerBrainRoutes(app);
+registerBrainEditRoutes(app);
 registerQueueRoutes(app);
 
 // Renders (and KV-caches) the anonymous base page for an article. Takes the

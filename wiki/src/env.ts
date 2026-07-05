@@ -11,6 +11,11 @@ export interface Env {
   FLAG_LIMITER: {
     limit: (opts: { key: string }) => Promise<{ success: boolean }>;
   };
+  // Looser limiter for API/bearer brain-edge writes (scripts + agents post in
+  // bursts). Keyed brainapi:<user.id>. Browser brain-edge writes use EDIT_LIMITER.
+  BRAIN_API_LIMITER: {
+    limit: (opts: { key: string }) => Promise<{ success: boolean }>;
+  };
 
   AUTH_MODE: string; // "dev" (cookie stub) | "oauth" (better-auth)
 

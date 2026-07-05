@@ -89,7 +89,7 @@ export interface Harness {
 }
 
 export function setup(
-  opts: { limiterAllows?: boolean; flagLimiterAllows?: boolean } = {},
+  opts: { limiterAllows?: boolean; flagLimiterAllows?: boolean; brainApiLimiterAllows?: boolean } = {},
 ): Harness {
   const db = new DatabaseSync(":memory:");
   for (const f of MIGRATIONS) db.exec(readFileSync(resolve(MIGRATIONS_DIR, f), "utf8"));
@@ -123,6 +123,7 @@ export function setup(
     ASSETS: { fetch: async () => new Response("not found", { status: 404 }) },
     EDIT_LIMITER: { limit: async () => ({ success: opts.limiterAllows ?? true }) },
     FLAG_LIMITER: { limit: async () => ({ success: opts.flagLimiterAllows ?? true }) },
+    BRAIN_API_LIMITER: { limit: async () => ({ success: opts.brainApiLimiterAllows ?? true }) },
     AUTH_MODE: "dev",
     PIPELINE_TOKEN,
   } as unknown as Env;

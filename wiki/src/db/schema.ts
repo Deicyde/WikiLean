@@ -220,6 +220,35 @@ export const verifications = sqliteTable("verifications", {
   updatedAt: integer("updated_at", { mode: "timestamp" }),
 });
 
+// Community brain edges (migration 0010; docs/BRAIN-EDITS-ROADMAP.md). Users +
+// API callers add connections to the Brain (links between existing nodes, or an
+// xref to an external database). Live-on-create with an "added by" attribution
+// and a human/AI label; soft-delete leaves a gravestone (deleted_by/at). The
+// nightly build folds live (non-deleted) edges into the static base.
+export const brainEdges = sqliteTable(
+  "brain_edges",
+  {
+    id: text("id").primaryKey(), // 12-hex, server-minted
+    src: text("src").notNull(), // brain node id (shard-validated)
+    dst: text("dst").notNull(), // brain node id, or xref:<db>:<value>
+    kind: text("kind").notNull(), // relates | xref | formalizes | mentions | matches | cites
+    evidence: text("evidence").notNull(), // JSON {note, ...}
+    addedBy: text("added_by").notNull(), // users.id (or 'pipeline' bearer) — server-derived, never claimed
+    actorType: text("actor_type").notNull(), // 'human' | 'ai' — OAuth forces human; API declares
+    status: text("status").notNull().default("live"), // 'live' | 'deleted'
+    createdAt: integer("created_at").notNull(), // ms
+    deletedBy: text("deleted_by"), // users.id who deleted it (gravestone)
+    deletedAt: integer("deleted_at"), // ms
+    version: integer("version").notNull().default(1),
+  },
+  (t) => [
+    index("idx_brain_edges_src").on(t.src, t.status),
+    index("idx_brain_edges_dst").on(t.dst, t.status),
+    index("idx_brain_edges_created").on(t.status, t.createdAt),
+  ],
+);
+export type BrainEdgeRow = typeof brainEdges.$inferSelect;
+
 // Per-user article watchlist (P3 contribution-loop: "watch" a slug to filter
 // /recent-changes to articles you care about). One row per (user, slug).
 export const watchlist = sqliteTable(
