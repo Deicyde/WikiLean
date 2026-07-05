@@ -1,10 +1,11 @@
 # Roadmap — user-submitted brain edits (Project 2)
 
-> Status: **Phases 0–4 SHIPPED** on branch `feat/brain-community-edges` (not
-> deployed). Full auto-nightly graduation waits on the brain-rebuild-in-ops
-> backlog item; the harvest + fold are done. This is the plan for letting people
-> (and scripts/agents) add connections to the Brain through the same GitHub-login
-> auth used for article annotations.
+> Status: **Phases 0–4 SHIPPED + DEPLOYED 2026-07-05** (wrangler version
+> b1683966; remote migration 0010 applied). Branch `feat/brain-community-edges`
+> — local, awaiting merge to `main`. Full auto-nightly graduation waits on the
+> brain-rebuild-in-ops backlog item; the harvest + fold are done. This is the
+> plan for letting people (and scripts/agents) add connections to the Brain
+> through the same GitHub-login auth used for article annotations.
 
 ## Goal
 
