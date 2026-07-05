@@ -153,6 +153,36 @@ section.kind h3 .cnt { color:#8a8272; font-weight:400; font-size:.8rem; }
 .rawtoggle:hover { color:#5a544a; }
 .rawjson { margin:4px 0 0 !important; }
 .dirarrow { color:#8a8272; font-weight:600; }
+/* community connections — user/API-submitted edges (Project 2) */
+section.kind.community h3 { border-bottom-color:#c9b98a; }
+.cedge { border:1px solid #ddd4bd; border-radius:6px; margin-bottom:6px; padding:6px 10px;
+  background:#fdfbf4; font-size:.84rem; display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
+.cedge .ctarget { font-weight:600; color:#0d0c0a; }
+.cedge .mk { color:#6d28d9; font-size:.72rem; font-style:italic; }
+.cprov { font-size:.66rem; border-radius:8px; padding:0 6px; border:1px solid #c8bfa8;
+  color:#5a544a; margin-left:auto; white-space:nowrap; font-family:-apple-system,sans-serif; }
+.cprov.human { border-color:#1a7f37; color:#116329; }
+.cprov.ai { border-color:#c2540a; color:#9a3f00; }
+.cdel { border:none; background:none; color:#a12621; cursor:pointer; font-size:1.05rem;
+  line-height:1; padding:0 2px; font-family:-apple-system,sans-serif; }
+.cdel:hover { color:#7d1a16; }
+.cnote { flex-basis:100%; color:#4a463d; font-size:.78rem; font-style:italic; }
+.caddform { margin-top:8px; }
+.caddform summary { cursor:pointer; color:#1a4b8f; font-size:.85rem; user-select:none; }
+.cform { display:flex; flex-direction:column; gap:7px; margin-top:8px; padding:9px;
+  border:1px solid #ddd4bd; border-radius:6px; background:#fbf8ef; }
+.cform label { font-size:.76rem; color:#4a463d; display:flex; flex-direction:column; gap:2px;
+  font-family:-apple-system,sans-serif; }
+.cform input, .cform select { padding:4px 6px; border:1px solid #c8bfa8; border-radius:4px;
+  font-size:.82rem; background:#fff; color:#151310; font-family:inherit; }
+.cf-hits { max-height:150px; overflow:auto; }
+.cf-hit { padding:3px 6px; cursor:pointer; font-size:.8rem; border-radius:4px; }
+.cf-hit:hover { background:#efe8d6; }
+.cf-hit .t { color:#8a8272; font-size:.7rem; margin-left:4px; }
+#cf-submit { align-self:flex-start; padding:4px 13px; background:#1a4b8f; color:#fff; border:none;
+  border-radius:5px; cursor:pointer; font-size:.82rem; font-family:-apple-system,sans-serif; }
+#cf-submit:disabled { opacity:.5; cursor:default; }
+#cf-msg { font-size:.76rem; }
 .slogan { border-left:3px solid #6d28d9; padding:6px 10px; background:#fdfbf4; margin:8px 0;
   font-size:.88rem; border-radius:0 6px 6px 0; font-style:italic; }
 .slogan .src { display:block; color:#8a8272; font-size:.7rem; margin-top:3px; font-style:normal; }
@@ -350,6 +380,7 @@ const PROV_TITLE = {
 let focusId = null;        // container id (or LIBS_ID) whose children fill the stage
 let selectedId = null;     // node the panel shows / ring highlights
 let layout = null;         // {items: Map(id -> {x,y,r,item}), root}
+let currentUser = null;    // {id, name, role} once /api/auth/me resolves (community edits)
 const svg = d3.select("#svg");
 // One <g> holds the whole scene so free pan/zoom is a single transform on it,
 // layered UNDER the semantic click-to-descend. Everything drawn (edges,
@@ -1637,10 +1668,12 @@ async function renderPanel(id) {
       html += `</section>`;
     }
   }
+  html += `<div id="community-slot"></div>`;
   panelEl.innerHTML = html;
   panelEl.querySelectorAll("[data-nav]").forEach(a =>
     a.addEventListener("click", () => navigate(a.dataset.nav)));
   bindRawToggles();
+  renderCommunity(id);   // async: overlay the live community edges + add-a-connection form
   panelEl.querySelectorAll(".edge .row").forEach(r =>
     r.addEventListener("click", ev => {
       if (ev.target.closest("a") || ev.target.closest("[data-nav]")) return;
@@ -1814,6 +1847,162 @@ window.addEventListener("resize", () => {
   }, 160);
 });
 
+// ======================= community connections (Project 2) ==================
+// Live, user/API-submitted edges (docs/BRAIN-EDITS-ROADMAP.md). Fetched per-node
+// from the D1 overlay and merged into the panel with an attribution + human/AI
+// chip; logged-in users get an "add a connection" form and can delete any edge
+// (soft-delete gravestone). All fetches degrade silently when the API is absent
+// (e.g. the static preview), so the page still works read-only.
+const COMMUNITY_KINDS_UI = [
+  ["formalizes", "formalizes (concept ↔ Lean decl)"],
+  ["relates", "relates (concept ↔ concept)"],
+  ["xref", "cross-database link (LMFDB, nLab, …)"],
+  ["mentions", "article mention"],
+  ["matches", "formal ↔ literature match"],
+  ["cites", "stated in the literature"],
+];
+const XREF_DB_OPTIONS = [
+  ["lmfdb_knowl", "LMFDB"], ["nlab", "nLab"], ["mathworld", "MathWorld"],
+  ["stacks", "Stacks Project"], ["kerodon", "Kerodon"], ["oeis", "OEIS"],
+  ["dlmf", "DLMF"], ["proofwiki", "ProofWiki"], ["eom", "Encyclopedia of Math"],
+  ["planetmath", "PlanetMath"], ["metamath", "Metamath"], ["msc", "MSC"],
+  ["kgmid", "Google Knowledge Graph"],
+];
+
+async function fetchMe() {
+  try {
+    const r = await fetch("/api/auth/me", {headers: {Accept: "application/json"}});
+    if (!r.ok) return;
+    currentUser = (await r.json()).user || null;
+  } catch (e) { currentUser = null; }
+}
+async function fetchCommunityEdges(id) {
+  try {
+    const r = await fetch("/api/brain/edges?id=" + encodeURIComponent(id));
+    if (!r.ok) return [];
+    return (await r.json()).edges || [];
+  } catch (e) { return []; }
+}
+async function submitCommunityEdge(payload) {
+  try {
+    const r = await fetch("/api/brain/edge", {
+      method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(payload)});
+    if (r.ok) return {ok: true};
+    return {ok: false, error: ((await r.json().catch(() => ({}))).error) || ("HTTP " + r.status)};
+  } catch (e) { return {ok: false, error: String(e)}; }
+}
+async function deleteCommunityEdge(edgeId) {
+  try { await fetch("/api/brain/edge/" + encodeURIComponent(edgeId) + "/delete", {method: "POST"}); }
+  catch (e) { /* ignore; the refresh will show the true state */ }
+}
+// the "other" endpoint of a community edge, relative to the focused node
+function communityTargetLabel(e, selfId) {
+  const other = e.src === selfId ? e.dst : e.src;
+  if (other.startsWith("xref:")) {
+    const p = other.split(":");
+    return (XREF_NAME[p[1]] || p[1]) + ": " + p.slice(2).join(":");
+  }
+  const L = layout && layout.items.get(other);
+  return (L && L.data.label) || other;
+}
+async function renderCommunity(id) {
+  const slot = $("#community-slot");
+  if (!slot) return;
+  const edges = await fetchCommunityEdges(id);
+  if (lastPanelId !== id || !$("#community-slot")) return;   // panel moved on
+  let html = `<section class="kind community"><h3>Community connections
+    <span class="cnt">(${edges.length})</span></h3>`;
+  for (const e of edges) {
+    const out = e.src === id;
+    const note = (e.evidence && e.evidence.note) || "";
+    html += `<div class="cedge">
+      <span class="dirarrow">${out ? "→" : "←"}</span>
+      <span class="ctarget">${esc(communityTargetLabel(e, id))}</span>
+      <span class="mk">${esc(e.kind)}</span>
+      <span class="cprov ${e.actor_type === "ai" ? "ai" : "human"}">${
+        e.actor_type === "ai" ? "AI" : "human"} · ${esc(e.added_by)}</span>${
+      currentUser ? `<button class="cdel" data-del="${esc(e.id)}"
+        title="delete this connection (kept as a gravestone recording who removed it)">×</button>` : ""}${
+      note ? `<div class="cnote">${esc(note)}</div>` : ""}</div>`;
+  }
+  if (!edges.length) html += `<p class="note">No community connections yet.</p>`;
+  if (currentUser) {
+    html += `<details class="caddform"><summary>＋ Add a connection</summary><div class="cform">
+      <label>Type<select id="cf-kind">${
+        COMMUNITY_KINDS_UI.map(([k, l]) => `<option value="${k}">${esc(l)}</option>`).join("")}</select></label>
+      <div id="cf-target-node"><label>Connect to
+        <input id="cf-target" type="text" autocomplete="off" placeholder="search a concept / decl / area…"></label>
+        <div id="cf-hits" class="cf-hits"></div><input type="hidden" id="cf-target-id"></div>
+      <div id="cf-target-xref" style="display:none">
+        <label>Database<select id="cf-db">${
+          XREF_DB_OPTIONS.map(([k, l]) => `<option value="${k}">${esc(l)}</option>`).join("")}</select></label>
+        <label>Identifier<input id="cf-value" type="text" placeholder="e.g. group.abelian"></label></div>
+      <label>Evidence note<input id="cf-note" type="text" placeholder="why is this connection valid?"></label>
+      <button id="cf-submit">Add connection</button><span id="cf-msg" class="note"></span></div></details>`;
+  } else {
+    html += `<p class="note"><a href="/login">Log in with GitHub</a> to add or remove connections.</p>`;
+  }
+  html += `</section>`;
+  slot.innerHTML = html;
+  wireCommunity(id);
+}
+function wireCommunity(id) {
+  const slot = $("#community-slot");
+  if (!slot) return;
+  slot.querySelectorAll("[data-del]").forEach(b => b.addEventListener("click", async () => {
+    if (!confirm("Delete this connection? It stays as a gravestone that records who removed it.")) return;
+    await deleteCommunityEdge(b.dataset.del);
+    if (lastPanelId === id) renderCommunity(id);
+  }));
+  const kindSel = $("#cf-kind");
+  if (!kindSel) return;
+  const sync = () => {
+    const isX = kindSel.value === "xref";
+    $("#cf-target-node").style.display = isX ? "none" : "";
+    $("#cf-target-xref").style.display = isX ? "" : "none";
+  };
+  kindSel.addEventListener("change", sync); sync();
+  const tin = $("#cf-target"), hits = $("#cf-hits"), tid = $("#cf-target-id");
+  let searchT;
+  if (tin) tin.addEventListener("input", () => {
+    clearTimeout(searchT);
+    tid.value = "";
+    const q = tin.value.trim();
+    if (q.length < 2) { hits.innerHTML = ""; return; }
+    searchT = setTimeout(async () => {
+      try {
+        const r = await fetch("/api/brain/search?limit=8&q=" + encodeURIComponent(q));
+        const j = await r.json();
+        hits.innerHTML = (j.hits || []).map(h =>
+          `<div class="cf-hit" data-id="${esc(h.id)}" data-label="${esc(h.label)}">${
+            esc(h.label)}<span class="t">${esc(h.type)}</span></div>`).join("");
+        hits.querySelectorAll(".cf-hit").forEach(el => el.addEventListener("click", () => {
+          tid.value = el.dataset.id; tin.value = el.dataset.label; hits.innerHTML = "";
+        }));
+      } catch (e) { /* offline / no API */ }
+    }, 200);
+  });
+  const submit = $("#cf-submit");
+  if (submit) submit.addEventListener("click", async () => {
+    const msg = $("#cf-msg"), kind = kindSel.value, note = $("#cf-note").value.trim();
+    if (!note) { msg.textContent = "an evidence note is required"; return; }
+    let dst;
+    if (kind === "xref") {
+      const value = $("#cf-value").value.trim();
+      if (!value) { msg.textContent = "enter an identifier"; return; }
+      dst = "xref:" + $("#cf-db").value + ":" + value;
+    } else {
+      dst = tid.value;
+      if (!dst) { msg.textContent = "pick a target from the search results"; return; }
+    }
+    submit.disabled = true; msg.textContent = "saving…";
+    const res = await submitCommunityEdge({src: id, dst, kind, evidence: {note}});
+    submit.disabled = false;
+    if (res.ok) { if (lastPanelId === id) renderCommunity(id); }
+    else msg.textContent = res.error || "could not add";
+  });
+}
+
 (async function boot() {
   // ?embed=1 → chrome-less mode for the landing-page iframe: hide the header +
   // crumb bar, article/external links escape the frame
@@ -1823,6 +2012,7 @@ window.addEventListener("resize", () => {
     base.target = "_parent";
     document.head.appendChild(base);
   }
+  fetchMe();   // login state for the community-edit affordances (non-blocking)
   try {
     await fetchManifest();
   } catch (e) {
