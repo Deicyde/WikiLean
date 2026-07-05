@@ -1,9 +1,9 @@
 # Roadmap — user-submitted brain edits (Project 2)
 
-> Status: **Phase 0+1 (backend) + Phase 2 (UI) SHIPPED** on branch
-> `feat/brain-community-edges` (not deployed). Phases 3–4 remain. This is the
-> plan for letting people (and scripts/agents) add connections to the Brain
-> through the same GitHub-login auth used for article annotations.
+> Status: **Phases 0–3 SHIPPED** on branch `feat/brain-community-edges` (not
+> deployed). Only Phase 4 (nightly graduation) remains. This is the plan for
+> letting people (and scripts/agents) add connections to the Brain through the
+> same GitHub-login auth used for article annotations.
 
 ## Goal
 
@@ -152,7 +152,7 @@ connections with no new nodes.**
 | **0. Schema ✅** | `0010_brain_edges.sql`; Drizzle types; apply local + remote (per gotcha) | migration applies; table queryable |
 | **1. Write/read/delete API ✅** | `POST /api/brain/edge`, `GET /api/brain/edges`, `DELETE /api/brain/edge/:id`; auth + origin + rate-limit + shard/kind/registry validation + provenance + dedupe + soft-delete gravestone; unit tests | ✅ 18 tests + adversarial security review (1 finding fixed) |
 | **2. Overlay UI ✅** | overlay fetch in `renderPanel` (`renderCommunity`); community chip (added-by + human/AI); "add a connection" panel (labels search for target, kind dropdown, xref DB picker + value, evidence note) + a delete affordance on community edges | ✅ verified in preview: list renders with chips, add-form + xref toggle work, graceful-degrades when the API is absent |
-| **3. Cross-pollination** | `xref-shared` inference over community xref edges (overlay + build) | two community xrefs to one LMFDB page surface a new A↔B link |
+| **3. Cross-pollination ✅** | `xref-shared` inference over community + static xref edges (build emits `xref_index.json`; overlay endpoint infers partners; UI "Same object elsewhere" block) | ✅ 3 tests (community↔community, community→static both ways, no false partners) + verified in preview |
 | **4. Graduation** | nightly: live (non-deleted) edges → `brain/data/community_edges.jsonl` → `build_edges.py` fold; AI edges through the `fold_proposals` verifier before they become permanent | after a nightly, a live edge is in the static base; deleted gravestones are excluded; a rebuild never drops a live edge |
 
 **Suggested build order for the first PR:** Phases 0 + 1 (backend, curl-verified),

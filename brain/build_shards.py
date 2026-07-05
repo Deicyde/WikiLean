@@ -115,6 +115,10 @@ def main() -> int:
     children: dict[str, list[str]] = defaultdict(list)
     edges_out: dict[str, list] = defaultdict(list)
     edges_in: dict[str, list] = defaultdict(list)
+    # external-page reverse index: xref:<db>:<value> → [node ids that xref it].
+    # Powers cross-pollination — GET /api/brain/edges infers xref-shared A↔B when
+    # a community xref lands on a page some other node already points at.
+    xref_index: dict[str, list[str]] = defaultdict(list)
     n_ontology = 0
     with open_meta("edges.jsonl") as fh:
         for line in fh:
@@ -125,6 +129,8 @@ def main() -> int:
                 continue
             n_ontology += 1
             kind = e["kind"]
+            if kind == "xref":
+                xref_index[e["dst"]].append(e["src"])
             ev = e["evidence"]
             if kind == "depends" and len(ev.get("witnesses") or []) > 1:
                 ev = {**ev, "witnesses": ev["witnesses"][:1]}
@@ -428,6 +434,11 @@ def main() -> int:
         json.dumps(manifest, ensure_ascii=False, separators=(",", ":")))
     (tmp / "labels.json").write_text(
         json.dumps(labels, ensure_ascii=False, separators=(",", ":")))
+    # external-page → nodes reverse index (cross-pollination oracle for the
+    # community-edge overlay; ~150 KB, changes only on nightly rebuilds)
+    (tmp / "xref_index.json").write_text(
+        json.dumps({p: ns for p, ns in xref_index.items()},
+                   ensure_ascii=False, separators=(",", ":")))
     # the transparency legend (/map's Sources view): the flattened provenance
     # registry, one entry per external database with layer + license
     reg = json.loads((ROOT / "catalog" / "data" / "source_registry.json").read_text())

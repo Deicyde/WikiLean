@@ -9,11 +9,11 @@
 // and the brain shard set as the node-existence oracle.
 import type { Context, Hono } from "hono";
 import { drizzle } from "drizzle-orm/d1";
-import { and, eq, or } from "drizzle-orm";
+import { and, eq, or, inArray } from "drizzle-orm";
 import type { Env } from "./env.js";
 import { getUser } from "./auth.js";
 import { brainEdges } from "./db/schema.js";
-import { brainNodeExists, BRAIN_ID_RE } from "./brain.js";
+import { brainNodeExists, resolveBrainEntry, BRAIN_ID_RE } from "./brain.js";
 
 // Semantic edge kinds a person/agent may contribute. Structural (`contains`) and
 // kernel-derived (`depends`) kinds are machine-only and NOT user-addable.
@@ -60,6 +60,26 @@ function safeParse(s: string): unknown {
   } catch {
     return { note: s };
   }
+}
+
+// Static external-page → nodes reverse index (built by build_shards.py →
+// /assets/brain/xref_index.json). Cached for the isolate lifetime: it changes
+// only on nightly rebuilds, and community (D1) partners are queried live, so a
+// few minutes of staleness on the STATIC side is harmless.
+let _xrefIndex: Record<string, string[]> | null = null;
+/** test-only: clear the isolate-lifetime static-index cache between cases */
+export function _resetBrainEditCaches(): void {
+  _xrefIndex = null;
+}
+async function getXrefIndex(c: Context<{ Bindings: Env }>): Promise<Record<string, string[]>> {
+  if (_xrefIndex) return _xrefIndex;
+  try {
+    const res = await c.env.ASSETS.fetch(new Request(new URL("/assets/brain/xref_index.json", c.req.url)));
+    _xrefIndex = res.ok ? ((await res.json()) as Record<string, string[]>) : {};
+  } catch {
+    _xrefIndex = {};
+  }
+  return _xrefIndex;
 }
 
 // user.role 'bot' is the shared PIPELINE_TOKEN bearer (site/moderate.py + scripts).
@@ -214,8 +234,48 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
       actor_type: r.actorType,
       created_at: r.createdAt,
     }));
+
+    // ---- cross-pollination: inferred xref-shared partners --------------------
+    // A's external pages = its community xrefs (src=id) ∪ its STATIC xrefs (from
+    // the shard). For each page, every OTHER node pointing at it — from the
+    // static reverse index and from live community xrefs — is the same object
+    // as A across databases (an xref-shared link nobody drew explicitly).
+    const pages = new Set<string>();
+    for (const r of rows) if (r.kind === "xref" && r.src === id) pages.add(r.dst);
+    const resolved = await resolveBrainEntry(c, id);
+    if (resolved) {
+      const entry = resolved.entry as {
+        edges?: { out?: Array<{ id: string; kind: string }>; in?: Array<{ id: string; kind: string }> };
+      };
+      for (const dir of ["out", "in"] as const)
+        for (const x of entry.edges?.[dir] || []) if (x.kind === "xref") pages.add(x.id);
+    }
+    const shared: Array<{ node: string; via: string; db: string; value: string; source: string }> = [];
+    if (pages.size) {
+      const pageArr = [...pages].slice(0, 40);
+      const seen = new Set<string>();
+      const addPartner = (node: string, page: string, source: string) => {
+        if (node === id || shared.length >= 100) return;
+        const k = node + " " + page;
+        if (seen.has(k)) return;
+        seen.add(k);
+        const parts = page.split(":");
+        shared.push({ node, via: page, db: parts[1] || "", value: parts.slice(2).join(":"), source });
+      };
+      const idx = await getXrefIndex(c);
+      for (const p of pageArr) for (const n of idx[p] || []) addPartner(n, p, "static");
+      const comm = await db
+        .select({ src: brainEdges.src, dst: brainEdges.dst })
+        .from(brainEdges)
+        .where(
+          and(inArray(brainEdges.dst, pageArr), eq(brainEdges.kind, "xref"), eq(brainEdges.status, "live")),
+        )
+        .limit(500);
+      for (const r of comm) addPartner(r.src, r.dst, "community");
+    }
+
     // live tail — never cache
-    return c.json({ ok: true, id, edges }, 200, { "Cache-Control": "no-store" });
+    return c.json({ ok: true, id, edges, shared }, 200, { "Cache-Control": "no-store" });
   });
 
   // DELETE /api/brain/edge/:id — soft-delete (gravestone). Any logged-in user
