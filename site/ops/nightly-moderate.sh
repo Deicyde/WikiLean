@@ -46,6 +46,34 @@ mkdir -p "$LOGDIR"
 TS="$(date +%Y%m%dT%H%M%S)"
 LOG="$LOGDIR/moderate-$TS.log"
 
+# Retry an agent step across a Max-window reset. moderate.py's run loop exits 3
+# on a consecutive-window-exhaustion abort AND prints "hit your limit"; that same
+# exit 3 is ALSO used for an intentional token-budget stop, so we retry ONLY when
+# the fresh log tail carries the Max rate-limit signature — never on a budget
+# stop. Bounded (default 3 tries × 15 min) so a stuck night can't run into the
+# morning. Rationale: launchd fires at a fixed clock time but the Max 5-hour
+# window resets on a rolling schedule, so any fixed start can still straddle a
+# reset (the 2026-07-02 run lost all 29 jobs to a 03:10 reset). See nightly.env.
+RETRY_SLEEP="${WIKILEAN_RETRY_SLEEP:-900}"   # seconds to wait for the window reset
+RETRY_MAX="${WIKILEAN_RETRY_MAX:-3}"
+retry_on_ratelimit() {
+  local n=0 rc
+  while : ; do
+    "$@"; rc=$?
+    [ "$rc" -ne 3 ] && return "$rc"
+    if ! tail -n 80 "$LOG" 2>/dev/null | grep -qiE "hit your limit|usage limit|resets [0-9]"; then
+      return "$rc"   # exit 3 without the Max signature = intended budget stop
+    fi
+    n=$((n + 1))
+    if [ "$n" -ge "$RETRY_MAX" ]; then
+      echo "  (rate-limited: exhausted $n retries across the Max reset — leaving the rest for tomorrow)"
+      return "$rc"
+    fi
+    echo "  (Max window exhausted; sleeping ${RETRY_SLEEP}s for the reset, then retry $n/$((RETRY_MAX - 1)))"
+    sleep "$RETRY_SLEEP"
+  done
+}
+
 # Single-instance lock (macOS has no flock): atomic mkdir, with stale recovery
 # after 4h in case a prior run was killed without cleaning up. A review batch
 # should never exceed ~2-3h.
@@ -76,6 +104,21 @@ cd "$REPO/site" || exit 1
   echo "--- flush prior checkpoints (zero agent tokens) ---"
   "$PY" moderate.py flush || echo "(flush returned $?)"
   echo
+  if [ "${WIKILEAN_WD_EMBED_REFRESH:-1}" = "1" ]; then
+    echo "--- refresh Wikidata semantic index (rebuild only if universe is newer) ---"
+    # Powers the wikidata_semantic tool (Agent 2 meaning-based retrieval). Rebuild
+    # only when the curated universe changed, so the nightly cost is normally zero.
+    # Fail-soft: a build failure keeps the last good .npz (query still works).
+    WD_UNIVERSE="$REPO/catalog/data/wikidata_universe.jsonl"
+    WD_NPZ="$REPO/catalog/data/wikidata_embeddings.npz"
+    if [ ! -f "$WD_NPZ" ] || [ "$WD_UNIVERSE" -nt "$WD_NPZ" ]; then
+      "$PY" "$REPO/catalog/build_wikidata_embeddings.py" \
+        || echo "(wikidata embeddings rebuild returned $? — keeping last good .npz)"
+    else
+      echo "(wikidata embeddings up to date — skipping)"
+    fi
+    echo
+  fi
   echo "--- drift sweep: wp-update (zero agent tokens) ---"
   "$PY" moderate.py wp-update --limit "$WPUPDATE_LIMIT" || echo "(wp-update returned $?)"
   echo
@@ -86,7 +129,7 @@ cd "$REPO/site" || exit 1
     # burn tokens re-reviewing already-formalized articles).
     if python3 "$REPO/manage/formalize_backlog.py" --limit "$FORMALIZE_LIMIT" \
          && [ -s "$REPO/manage/data/formalize_slugs.txt" ]; then
-      "$PY" moderate.py review --slugs "$REPO/manage/data/formalize_slugs.txt" \
+      retry_on_ratelimit "$PY" moderate.py review --slugs "$REPO/manage/data/formalize_slugs.txt" \
             --limit "$FORMALIZE_LIMIT" --concurrency "$CONCURRENCY" \
             --budget-tokens "$FORMALIZE_BUDGET" || echo "(formalize review returned $?)"
     else
@@ -95,7 +138,7 @@ cd "$REPO/site" || exit 1
     echo
   fi
   echo "--- review batch (search-verified) ---"
-  "$PY" moderate.py review --limit "$REVIEW_LIMIT" --concurrency "$CONCURRENCY" \
+  retry_on_ratelimit "$PY" moderate.py review --limit "$REVIEW_LIMIT" --concurrency "$CONCURRENCY" \
         --budget-tokens "$BUDGET_TOKENS" || echo "(review returned $?)"
   echo
   if [ "${WIKILEAN_GRAPH_REFRESH:-1}" = "1" ]; then
@@ -112,6 +155,19 @@ cd "$REPO/site" || exit 1
     # lines in its output are the frontier moving (open→solved flips).
     python3 "$REPO/catalog/ingest_formal_conjectures.py" || echo "(fc ingest returned $? — using last good file)"
     if python3 "$REPO/manage/coverage.py" && python3 "$REPO/site/build_graph_page.py"; then
+      # Bubble-atlas hierarchy rides the graph build (consumes graph_data.json);
+      # same success-gate + KV pattern (atlas:data:v1).
+      if python3 "$REPO/site/build_atlas.py"; then
+        if [ "${WIKILEAN_GRAPH_DEPLOY:-1}" = "1" ]; then
+          ( cd "$REPO/wiki" && npx wrangler kv key put --binding=RENDER_CACHE --remote \
+              atlas:data:v1 --path="$REPO/site/out/atlas_data.json" ) \
+            || echo "(atlas kv put returned $?)"
+        fi
+        # /map is retired (→ /brain); only the graph_data.json + atlas_data.json
+        # agent endpoints are refreshed here now.
+      else
+        echo "(atlas build failed — keeping the last KV copy)"
+      fi
       if [ "${WIKILEAN_GRAPH_DEPLOY:-1}" = "1" ]; then
         ( cd "$REPO/wiki" && npx wrangler kv key put --binding=RENDER_CACHE --remote \
             graph:data:v1 --path="$REPO/site/out/graph_data.json" ) \

@@ -186,7 +186,7 @@ footer a {{ color:#0969da; text-decoration:none; }}
   <nav class="wl-nav">
     <a class="wl-navlink active" href="/concepts">Concepts</a>
     <a class="wl-navlink" href="/article-graph">Article graph</a>
-    <a class="wl-navlink" href="/graph">Concept graph</a>
+    <a class="wl-navlink" href="/brain">Brain</a>
     <a class="wl-navlink" href="/about">About &amp; method</a>
   </nav>
 </header>

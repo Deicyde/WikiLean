@@ -47,7 +47,6 @@ The repo is three loosely-coupled pieces. Pick the one matching your interest.
 ### `site/` — the annotation pipeline (Python)
 - `render.py` — fetches Wikipedia HTML and renders the annotated page.
 - `batch_annotate.py` — orchestrates the 2-agent pipeline (enumeration + Mathlib matching), with a `--moderate` mode that preserves human edits.
-- `update_old_annotations.py` — re-runs articles whose annotations are below current schema/quality.
 - `export_w3c.py`, `export_wikidata_rdf.py` — exports to standards-aligned formats.
 - `serve_review.py` — the local review server (predecessor of the live wiki editor).
 

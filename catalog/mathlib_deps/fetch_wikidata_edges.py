@@ -26,6 +26,9 @@ except ImportError:
 
 HERE = Path(__file__).resolve().parent
 CONCEPT = HERE.parent / "data" / "concept_layer.jsonl"
+# the brain's full concept pool (2.6k+ QIDs) — the v1 concept layer alone left
+# the relates layer at ~1k edges over a 1,376-QID subset
+BRAIN_NODES = HERE.parent.parent / "brain" / "data" / "nodes.jsonl"
 OUT = HERE / "wikidata_edges.jsonl"
 
 ENDPOINT = "https://query.wikidata.org/sparql"
@@ -59,6 +62,14 @@ def main() -> None:
             if q and q not in seen:
                 seen.add(q)
                 qids.append(q)
+    if BRAIN_NODES.exists():
+        with BRAIN_NODES.open() as fh:
+            for line in fh:
+                r = json.loads(line)
+                q = r.get("id")
+                if r.get("type") == "concept" and q and q not in seen:
+                    seen.add(q)
+                    qids.append(q)
     qid_set = set(qids)
     print(f"{len(qids)} unique QIDs")
 
