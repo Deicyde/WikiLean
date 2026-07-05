@@ -393,7 +393,6 @@ footer a:hover { text-decoration:underline; }
     <a href="/concepts">Concepts</a>
     <a href="/wikifunctions">Wikifunctions</a>
     <a href="/article-graph">Article graph</a>
-    <a href="/map">Map</a>
     <a href="/brain">Brain</a>
     <a href="/about">About &amp; method</a>
     <button id="wl-theme-toggle" class="wl-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">🌓</button>
@@ -438,8 +437,6 @@ footer a:hover { text-decoration:underline; }
         <em>&ldquo;formalized as (Lean/Mathlib)&rdquo;</em> Wikidata property).</li>
       <li><a href="/article-graph">Article graph</a> &mdash; articles clustered by shared Mathlib
         formalizations, colored by their dominant Mathlib area.</li>
-      <li><a href="/map">Map</a> &mdash; Mathlib&#x27;s declaration-level dependency
-        edges overlaid on Wikidata&#x27;s typed statements, on a shared node set.</li>
     </ul>
   </section>
   <section class="directory" id="directory" aria-labelledby="directory-h">
@@ -527,8 +524,8 @@ export function sitemapXml(rows: SitemapRow[]): string {
   const newest = rows.reduce((m, r) => (r.updatedAt > m ? r.updatedAt : m), 0);
   const rootMod = newest ? `<lastmod>${new Date(newest).toISOString().slice(0, 10)}</lastmod>` : "";
   const rootUrl = `  <url><loc>${SITE_ORIGIN}/</loc>${rootMod}<priority>1.0</priority></url>`;
-  // Flagship static pages — were missing, so crawlers never discovered the map.
-  const staticUrls = ["map", "brain", "articles", "concepts", "about"].map(
+  // Flagship static pages (the retired /map 301s to /brain, so it is not listed).
+  const staticUrls = ["brain", "article-graph", "articles", "concepts", "about"].map(
     (p) => `  <url><loc>${SITE_ORIGIN}/${p}</loc><priority>0.8</priority></url>`,
   );
   const urls = [

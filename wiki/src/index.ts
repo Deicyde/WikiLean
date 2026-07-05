@@ -96,10 +96,6 @@ const RESERVED = new Set([
   "decl",
   "proposals",
   "atlas",
-  "map",
-  "map_data.json",
-  "map-v2",
-  "map_data_v2.json",
   "brain",
   "articles",
 ]);
@@ -463,26 +459,14 @@ app.get("/graph_data.json", async (c) => {
   return c.env.ASSETS.fetch(new Request(new URL("/graph_data.json", c.req.url)));
 });
 
-// ---- /map_data.json — the UNIFIED map artifact (nodes with taxonomy + graph
-// enrichment, edges, super-nodes, bubble rollups, provenance registry). Same
-// KV-first contract as /graph_data.json (key map:data:v1, run_worker_first in
-// wrangler.jsonc, static fallback on a KV miss). Drives /map's three views. ----
-app.get("/map_data.json", async (c) => {
-  const headers = {
-    "Content-Type": "application/json; charset=utf-8",
-    "Cache-Control": "public, max-age=600",
-  };
-  const kv = await c.env.RENDER_CACHE.get("map:data:v1");
-  if (kv) return c.body(kv, 200, headers);
-  return c.env.ASSETS.fetch(new Request(new URL("/map_data.json", c.req.url)));
-});
-
-// ---- /graph + /atlas → /map (301). The concept graph and the bubble atlas are
-// now one unified map (three views: Bubbles / Web / Sources). The old page
-// assets are no longer shipped (build-public.ts), so these fall through to the
-// Worker; the *_data.json endpoints + /api/atlas stay live for deep links/agents.
-app.get("/graph", (c) => c.redirect("/map", 301));
-app.get("/atlas", (c) => c.redirect("/map", 301));
+// ---- /map, /graph, /atlas → /brain (301). The /map page (bubbles/web/sources)
+// is retired — /brain supersedes it as the primary explorer. The DATA endpoints
+// /graph_data.json + /atlas_data.json (+ /api/atlas) stay live for agents and
+// deep links; only the map/graph/atlas *pages* are gone. -----------------------
+app.get("/map", (c) => c.redirect("/brain", 301));
+app.get("/map-v2", (c) => c.redirect("/brain", 301));
+app.get("/graph", (c) => c.redirect("/brain", 301));
+app.get("/atlas", (c) => c.redirect("/brain", 301));
 
 // ---- /favicon.ico — WikiLean's mark: the "W" drawn as a graph of connected
 // nodes (a constellation), which is what the site now IS — the Brain, a network
