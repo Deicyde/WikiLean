@@ -143,6 +143,22 @@ def main() -> int:
             if e["dst"] in nodes:
                 edges_in[e["dst"]].append((rank, e["src"], {"id": e["src"], **base}))
 
+    # ---- graduated community edges (docs/BRAIN-EDITS-ROADMAP.md phase 4) ------
+    # harvest_community_edges.py snapshots the live D1 tail here. Fold their xref
+    # targets into the reverse index so cross-pollination sees graduated links
+    # from the static base too (the live overlay still queries D1 for the tail).
+    comm = ROOT / "brain" / "data" / "community_edges.jsonl"
+    n_community = 0
+    if comm.exists():
+        for line in comm.read_text().splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            e = json.loads(line)
+            n_community += 1
+            if e.get("kind") == "xref":
+                xref_index[e["dst"]].append(e["src"])
+
     # ---- depends rollups at the shipped grains ------------------------------
     rollups: dict[str, dict[str, dict]] = defaultdict(dict)   # id → grain → block
     n_rollup_attached = 0

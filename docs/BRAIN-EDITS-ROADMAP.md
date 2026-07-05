@@ -1,9 +1,10 @@
 # Roadmap — user-submitted brain edits (Project 2)
 
-> Status: **Phases 0–3 SHIPPED** on branch `feat/brain-community-edges` (not
-> deployed). Only Phase 4 (nightly graduation) remains. This is the plan for
-> letting people (and scripts/agents) add connections to the Brain through the
-> same GitHub-login auth used for article annotations.
+> Status: **Phases 0–4 SHIPPED** on branch `feat/brain-community-edges` (not
+> deployed). Full auto-nightly graduation waits on the brain-rebuild-in-ops
+> backlog item; the harvest + fold are done. This is the plan for letting people
+> (and scripts/agents) add connections to the Brain through the same GitHub-login
+> auth used for article annotations.
 
 ## Goal
 
@@ -153,7 +154,7 @@ connections with no new nodes.**
 | **1. Write/read/delete API ✅** | `POST /api/brain/edge`, `GET /api/brain/edges`, `DELETE /api/brain/edge/:id`; auth + origin + rate-limit + shard/kind/registry validation + provenance + dedupe + soft-delete gravestone; unit tests | ✅ 18 tests + adversarial security review (1 finding fixed) |
 | **2. Overlay UI ✅** | overlay fetch in `renderPanel` (`renderCommunity`); community chip (added-by + human/AI); "add a connection" panel (labels search for target, kind dropdown, xref DB picker + value, evidence note) + a delete affordance on community edges | ✅ verified in preview: list renders with chips, add-form + xref toggle work, graceful-degrades when the API is absent |
 | **3. Cross-pollination ✅** | `xref-shared` inference over community + static xref edges (build emits `xref_index.json`; overlay endpoint infers partners; UI "Same object elsewhere" block) | ✅ 3 tests (community↔community, community→static both ways, no false partners) + verified in preview |
-| **4. Graduation** | nightly: live (non-deleted) edges → `brain/data/community_edges.jsonl` → `build_edges.py` fold; AI edges through the `fold_proposals` verifier before they become permanent | after a nightly, a live edge is in the static base; deleted gravestones are excluded; a rebuild never drops a live edge |
+| **4. Graduation ✅** | `harvest_community_edges.py`: live (non-deleted) D1 edges → `brain/data/community_edges.jsonl` (human trusted; AI through the oracle); `build_shards.py` folds graduated xrefs into `xref_index.json`; wired into the nightly (`WIKILEAN_COMMUNITY_HARVEST`) | ✅ 6 tests + offline end-to-end run (AI-to-bogus-node dropped; graduated xref appears in the static index). *Note:* the brain SHARD rebuild+deploy is not yet nightly (separate ops backlog), so full auto-graduation runs when that lands; the harvest + fold are done and on-demand-runnable |
 
 **Suggested build order for the first PR:** Phases 0 + 1 (backend, curl-verified),
 then 2 (make it real on `/brain`), then 3–4 as follow-ups.

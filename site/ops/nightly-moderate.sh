@@ -178,6 +178,17 @@ cd "$REPO/site" || exit 1
     fi
     echo
   fi
+  # Community brain edges (docs/BRAIN-EDITS-ROADMAP.md phase 4): snapshot the live
+  # D1 tail into brain/data/community_edges.jsonl (human edges trusted; AI edges
+  # verified against the oracle). This is the graduation record the brain rebuild
+  # folds into the static base. Fail-soft — the graph refresh already ran. The
+  # brain SHARD rebuild + deploy is a separate step (not yet in this nightly).
+  if [ "${WIKILEAN_COMMUNITY_HARVEST:-1}" = "1" ]; then
+    echo "--- graduate community brain edges (D1 → community_edges.jsonl) ---"
+    python3 "$REPO/brain/harvest_community_edges.py" \
+      || echo "(community harvest returned $? — keeping the last snapshot)"
+    echo
+  fi
   # /decl/:name reverse citations — same success-gated KV pattern, but under
   # its OWN gate: pausing the graph refresh must not silently stop the /decl
   # cited_by refresh (they share nothing but the pattern).
