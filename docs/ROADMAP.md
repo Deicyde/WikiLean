@@ -182,8 +182,8 @@ into `wiki/public/assets/`. Edit sources, then run build-public, never edit
 - [x] **Unified runner `site/moderate.py`** — DONE (new|review|wp-update|all;
   --auth subscription|api-key via guarded key-pop; WIKILEAN_MATHLIB env; ID3 meta
   with ladder + id-discipline stats; 409/422/429 handling; D1-backed selection via
-  /api/work). update_old_annotations.py deprecated; seed-delta/refresh retired to
-  legacy. KNOWN GAP: `new` mode has no D1 create path — POST 404s on unknown slugs
+  /api/work). update_old_annotations.py removed (v1/v2→v3 migration complete);
+  seed-delta/refresh retired to legacy. KNOWN GAP: `new` mode has no D1 create path — POST 404s on unknown slugs
   (Wave D: bot-only article-create endpoint or seed-delta handoff).
 - [x] **Wikipedia drift detection** — DONE (cron 17 6 * * * deployed; first tick
   pending). wiki/src/drift.ts: prop=info batches of 50, ≤8 batches/run with KV

@@ -44,7 +44,7 @@ The Worker reads each article's current annotations from D1, injects the in-page
 | Path | What's there |
 |---|---|
 | [`catalog/`](catalog/) — see [catalog/README.md](catalog/README.md) | Catalog of WikiProject Math articles, AI Mathlib-tagging, concept layer, RDF export, Wikidata enrichment. |
-| [`site/`](site/) | Annotation pipeline (`render.py`, `batch_annotate.py`, `update_old_annotations.py`), local review editor (`serve_review.py`), W3C export, sources for the static fallback. |
+| [`site/`](site/) | Annotation pipeline (`render.py`, `batch_annotate.py`), local review editor (`serve_review.py`), W3C export, sources for the static fallback. |
 | [`wiki/`](wiki/) — see [wiki/README.md](wiki/README.md) | Cloudflare Worker + D1 backend that serves the live editable site. |
 | [`docs/`](docs/) | Long-form docs (Wikidata property proposal, …). |
 
