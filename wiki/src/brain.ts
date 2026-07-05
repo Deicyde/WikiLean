@@ -19,7 +19,8 @@ import { declShardFor } from "./decl.js";
 
 // Interior spaces are legal (lit anchors like "lit:2110.15741#Theorem 2");
 // only control chars and blank/overlong ids are rejected.
-const ID_RE = /^(?!\s*$)[^\p{C}]{1,400}$/u;
+export const BRAIN_ID_RE = /^(?!\s*$)[^\p{C}]{1,400}$/u;
+const ID_RE = BRAIN_ID_RE;
 
 interface BrainManifest {
   scheme: { min_len: number; max_len: number; pad: string };
@@ -35,25 +36,42 @@ async function assetJson<T>(c: Context<{ Bindings: Env }>, path: string): Promis
   return (await res.json()) as T;
 }
 
+// Resolve a node id to its shard entry (+ the manifest prov table), or null.
+// Shared by GET /api/brain/node and the brain-edit write path (the shard set is
+// the node-existence oracle — an edge endpoint must resolve to a real node).
+export async function resolveBrainEntry(
+  c: Context<{ Bindings: Env }>,
+  id: string,
+): Promise<{ entry: object; prov: Array<Record<string, string>> } | null> {
+  const manifest = await assetJson<BrainManifest>(c, "/assets/brain/manifest.json");
+  if (!manifest?.shards) return null;
+  const key = declShardFor(
+    { scheme: { min_len: manifest.scheme.min_len, max_len: manifest.scheme.max_len, pad: manifest.scheme.pad },
+      shards: manifest.shards },
+    id,
+  );
+  const shard = key
+    ? await assetJson<Record<string, unknown>>(c, `/assets/brain/${key}.json`)
+    : null;
+  const entry = shard?.[id];
+  if (!entry) return null;
+  return { entry: entry as object, prov: manifest.prov };
+}
+
+// True iff `id` is a real brain node (used to validate edge endpoints).
+export async function brainNodeExists(c: Context<{ Bindings: Env }>, id: string): Promise<boolean> {
+  if (!BRAIN_ID_RE.test(id)) return false;
+  return (await resolveBrainEntry(c, id)) !== null;
+}
+
 export function registerBrainRoutes(app: Hono<{ Bindings: Env }>): void {
   app.get("/api/brain/node", async (c) => {
     const id = c.req.query("id") || "";
     if (!ID_RE.test(id)) return c.json({ ok: false, error: "bad node id" }, 400);
-    const manifest = await assetJson<BrainManifest>(c, "/assets/brain/manifest.json");
-    if (!manifest?.shards) return c.json({ ok: false, error: "brain data unavailable" }, 503);
-    // decl-index and brain shards share one normalization + longest-prefix scheme
-    const key = declShardFor(
-      { scheme: { min_len: manifest.scheme.min_len, max_len: manifest.scheme.max_len, pad: manifest.scheme.pad },
-        shards: manifest.shards },
-      id,
-    );
-    const shard = key
-      ? await assetJson<Record<string, unknown>>(c, `/assets/brain/${key}.json`)
-      : null;
-    const entry = shard?.[id];
-    if (!entry) return c.json({ ok: false, error: "unknown node id", id }, 404);
+    const resolved = await resolveBrainEntry(c, id);
+    if (!resolved) return c.json({ ok: false, error: "unknown node id", id }, 404);
     return c.json(
-      { ok: true, id, ...(entry as object), prov_table: manifest.prov },
+      { ok: true, id, ...resolved.entry, prov_table: resolved.prov },
       200,
       // shards change only on nightly data rebuilds
       { "Cache-Control": "public, max-age=3600" },
