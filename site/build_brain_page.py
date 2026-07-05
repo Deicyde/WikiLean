@@ -163,6 +163,11 @@ section.kind.community h3 { border-bottom-color:#c9b98a; }
   color:#5a544a; margin-left:auto; white-space:nowrap; font-family:-apple-system,sans-serif; }
 .cprov.human { border-color:#1a7f37; color:#116329; }
 .cprov.ai { border-color:#c2540a; color:#9a3f00; }
+.cprov.machine { border-color:#6d28d9; color:#5b21b6; }
+.cshared { margin-top:8px; border-top:1px dashed #d8cfb8; padding-top:8px; }
+.cshared h4 { margin:0 0 6px; font-size:.86rem; color:#0d0c0a; font-weight:700; }
+.cshared h4 .cnt { color:#8a8272; font-weight:400; font-size:.78rem; }
+.cedge.cinferred { background:#f6f1e5; border-style:dashed; }
 .cdel { border:none; background:none; color:#a12621; cursor:pointer; font-size:1.05rem;
   line-height:1; padding:0 2px; font-family:-apple-system,sans-serif; }
 .cdel:hover { color:#7d1a16; }
@@ -1879,9 +1884,10 @@ async function fetchMe() {
 async function fetchCommunityEdges(id) {
   try {
     const r = await fetch("/api/brain/edges?id=" + encodeURIComponent(id));
-    if (!r.ok) return [];
-    return (await r.json()).edges || [];
-  } catch (e) { return []; }
+    if (!r.ok) return {edges: [], shared: []};
+    const j = await r.json();
+    return {edges: j.edges || [], shared: j.shared || []};
+  } catch (e) { return {edges: [], shared: []}; }
 }
 async function submitCommunityEdge(payload) {
   try {
@@ -1905,10 +1911,18 @@ function communityTargetLabel(e, selfId) {
   const L = layout && layout.items.get(other);
   return (L && L.data.label) || other;
 }
+function communityNodeLabel(nid) {
+  if (nid.startsWith("xref:")) {
+    const p = nid.split(":");
+    return (XREF_NAME[p[1]] || p[1]) + ": " + p.slice(2).join(":");
+  }
+  const L = layout && layout.items.get(nid);
+  return (L && L.data.label) || nid;
+}
 async function renderCommunity(id) {
   const slot = $("#community-slot");
   if (!slot) return;
-  const edges = await fetchCommunityEdges(id);
+  const {edges, shared} = await fetchCommunityEdges(id);
   if (lastPanelId !== id || !$("#community-slot")) return;   // panel moved on
   let html = `<section class="kind community"><h3>Community connections
     <span class="cnt">(${edges.length})</span></h3>`;
@@ -1926,6 +1940,22 @@ async function renderCommunity(id) {
       note ? `<div class="cnote">${esc(note)}</div>` : ""}</div>`;
   }
   if (!edges.length) html += `<p class="note">No community connections yet.</p>`;
+  // cross-pollination: nodes that share an external-database page with this one
+  // (discovered, not drawn) — the same object catalogued in two places.
+  if (shared && shared.length) {
+    html += `<div class="cshared"><h4>Same object elsewhere
+      <span class="cnt">(${shared.length} discovered)</span></h4>`;
+    for (const s of shared.slice(0, 30)) {
+      html += `<div class="cedge cinferred">
+        <span class="dirarrow">↔</span>
+        <span class="ctarget"><a data-nav="${esc(s.node)}">${esc(communityNodeLabel(s.node))}</a></span>
+        <span class="mk">same page in ${esc(XREF_NAME[s.db] || s.db)}</span>
+        <span class="cprov ${s.source === "community" ? "human" : "machine"}">${
+          s.source === "community" ? "community" : "database"}</span></div>`;
+    }
+    html += `<p class="note">Shared external-database pages ⇒ these are the same
+      object. Add a cross-database link above to discover more.</p></div>`;
+  }
   if (currentUser) {
     html += `<details class="caddform"><summary>＋ Add a connection</summary><div class="cform">
       <label>Type<select id="cf-kind">${
@@ -1949,6 +1979,8 @@ async function renderCommunity(id) {
 function wireCommunity(id) {
   const slot = $("#community-slot");
   if (!slot) return;
+  slot.querySelectorAll("[data-nav]").forEach(a =>
+    a.addEventListener("click", () => navigate(a.dataset.nav)));
   slot.querySelectorAll("[data-del]").forEach(b => b.addEventListener("click", async () => {
     if (!confirm("Delete this connection? It stays as a gravestone that records who removed it.")) return;
     await deleteCommunityEdge(b.dataset.del);

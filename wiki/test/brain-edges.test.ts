@@ -5,13 +5,15 @@
 // gravestone. Node existence is oracle'd against a shim brain manifest built
 // with the real declShardKey so the shard resolution matches production.
 
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import { setup, post, get, blockNetwork, PIPELINE_TOKEN, type Harness } from "./helpers/harness.js";
 import { app } from "../src/index.js";
 import { declShardKey } from "../src/decl.js";
+import { _resetBrainEditCaches } from "../src/brain-edits.js";
 import type { Env } from "../src/env.js";
 
 blockNetwork();
+beforeEach(() => _resetBrainEditCaches());   // clear the isolate-lifetime xref index
 
 const CONCEPT = "Q181296"; // abelian group
 const DECL = "decl:Mathlib:CommGroup";
@@ -19,14 +21,22 @@ const XREF_DST = "xref:lmfdb_knowl:group.abelian";
 const UNKNOWN = "Q999999999";
 
 // Serve a brain manifest + shards for `nodeIds` so brainNodeExists resolves them.
-function installBrainAssets(env: Env, nodeIds: string[]): void {
+// `nodeXrefs` seeds each node's STATIC xref edges (node id → external pages) so
+// the shard entry has them; `xrefIndex` is the reverse page → nodes index.
+function installBrainAssets(
+  env: Env,
+  nodeIds: string[],
+  nodeXrefs: Record<string, string[]> = {},
+  xrefIndex: Record<string, string[]> = {},
+): void {
   const scheme = { min_len: 2, max_len: 2, pad: "_" };
   const shards: Record<string, number> = {};
   const data: Record<string, Record<string, unknown>> = {};
   for (const id of nodeIds) {
     const key = declShardKey(id, 2);
     shards[key] = (shards[key] ?? 0) + 1;
-    (data[key] ??= {})[id] = { node: { id, label: id } };
+    const out = (nodeXrefs[id] || []).map((pg) => ({ id: pg, kind: "xref" }));
+    (data[key] ??= {})[id] = { node: { id, label: id }, edges: { out, in: [] } };
   }
   const manifest = { scheme, shards, prov: [], roots: [], _meta: { generated_at: "2026-07-05" } };
   (env as unknown as { ASSETS: { fetch: (r: Request) => Promise<Response> } }).ASSETS = {
@@ -34,6 +44,8 @@ function installBrainAssets(env: Env, nodeIds: string[]): void {
       const path = new URL(req.url).pathname;
       if (path === "/assets/brain/manifest.json")
         return new Response(JSON.stringify(manifest), { status: 200 });
+      if (path === "/assets/brain/xref_index.json")
+        return new Response(JSON.stringify(xrefIndex), { status: 200 });
       const m = /^\/assets\/brain\/([a-z0-9_]+)\.json$/.exec(path);
       if (m && data[m[1]]) return new Response(JSON.stringify(data[m[1]]), { status: 200 });
       return new Response("not found", { status: 404 });
@@ -170,6 +182,44 @@ describe("GET /api/brain/edges", () => {
     expect(((await byConcept.json()) as { edges: unknown[] }).edges).toHaveLength(1);
     expect(((await byDecl.json()) as { edges: unknown[] }).edges).toHaveLength(1);
     expect(byConcept.headers.get("Cache-Control")).toBe("no-store");
+  });
+});
+
+describe("GET /api/brain/edges — xref-shared cross-pollination", () => {
+  const PAGE = "xref:lmfdb_knowl:group.abelian";
+  const NODE_B = "Q11650"; // a second node
+
+  function sharedOf(j: unknown): Array<{ node: string; via: string; source: string }> {
+    return ((j as { shared?: Array<{ node: string; via: string; source: string }> }).shared) || [];
+  }
+
+  it("community↔community: two nodes both community-xref'd to one page infer each other", async () => {
+    const h = setup();
+    installBrainAssets(h.env, [CONCEPT, DECL]);
+    await postEdge(h, { src: CONCEPT, dst: PAGE, kind: "xref", evidence: { note: "a" } }, { user: "u-human" });
+    await postEdge(h, { src: DECL, dst: PAGE, kind: "xref", evidence: { note: "b" } }, { user: "u-human" });
+    const shared = sharedOf(await (await get(h.env, `/api/brain/edges?id=${encodeURIComponent(CONCEPT)}`)).json());
+    expect(shared.some((s) => s.node === DECL && s.source === "community" && s.via === PAGE)).toBe(true);
+  });
+
+  it("community→static: a community xref onto a page a STATIC node already holds, bridges both ways", async () => {
+    const h = setup();
+    // NODE_B carries a STATIC xref to PAGE (seeded in its shard + the reverse index)
+    installBrainAssets(h.env, [CONCEPT, DECL, NODE_B], { [NODE_B]: [PAGE] }, { [PAGE]: [NODE_B] });
+    await postEdge(h, { src: CONCEPT, dst: PAGE, kind: "xref", evidence: { note: "same object" } }, { user: "u-human" });
+    // viewing CONCEPT surfaces the static NODE_B
+    const sA = sharedOf(await (await get(h.env, `/api/brain/edges?id=${encodeURIComponent(CONCEPT)}`)).json());
+    expect(sA.some((s) => s.node === NODE_B && s.source === "static" && s.via === PAGE)).toBe(true);
+    // viewing NODE_B surfaces the community CONCEPT
+    const sB = sharedOf(await (await get(h.env, `/api/brain/edges?id=${encodeURIComponent(NODE_B)}`)).json());
+    expect(sB.some((s) => s.node === CONCEPT && s.source === "community")).toBe(true);
+  });
+
+  it("no false partners: a node whose page is unique has no shared", async () => {
+    const h = setup();
+    installBrainAssets(h.env, [CONCEPT]);
+    await postEdge(h, { src: CONCEPT, dst: "xref:nlab:unique_thing", kind: "xref", evidence: { note: "x" } }, { user: "u-human" });
+    expect(sharedOf(await (await get(h.env, `/api/brain/edges?id=${encodeURIComponent(CONCEPT)}`)).json())).toHaveLength(0);
   });
 });
 
