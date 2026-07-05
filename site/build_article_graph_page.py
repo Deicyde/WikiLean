@@ -287,7 +287,7 @@ label.row .swatch { display:inline-block; width:14px; height:4px; border-radius:
   <nav class="wl-nav">
     <a class="wl-navlink" href="/concepts">Concepts</a>
     <a class="wl-navlink active" href="/article-graph">Article graph</a>
-    <a class="wl-navlink" href="/graph">Concept graph</a>
+    <a class="wl-navlink" href="/brain">Brain</a>
     <a class="wl-navlink" href="/about">About &amp; method</a>
     <button id="wl-theme-toggle" class="wl-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">\U0001f313</button>
   </nav>

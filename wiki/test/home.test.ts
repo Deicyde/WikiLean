@@ -189,9 +189,17 @@ describe("sitemapXml", () => {
 
   it("still lists the homepage root when there are zero article rows", () => {
     const xml = sitemapXml([]);
-    // No articles, but the homepage itself always exists — root with no lastmod.
+    // No articles, but the homepage + flagship static pages always exist —
+    // root first with no lastmod, then the flagships at 0.8.
     expect(xml).toContain(
-      '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url><loc>https://wikilean.jackmccarthy.org/</loc><priority>1.0</priority></url>\n</urlset>',
+      '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+        "  <url><loc>https://wikilean.jackmccarthy.org/</loc><priority>1.0</priority></url>\n" +
+        "  <url><loc>https://wikilean.jackmccarthy.org/brain</loc><priority>0.8</priority></url>\n" +
+        "  <url><loc>https://wikilean.jackmccarthy.org/article-graph</loc><priority>0.8</priority></url>\n" +
+        "  <url><loc>https://wikilean.jackmccarthy.org/articles</loc><priority>0.8</priority></url>\n" +
+        "  <url><loc>https://wikilean.jackmccarthy.org/concepts</loc><priority>0.8</priority></url>\n" +
+        "  <url><loc>https://wikilean.jackmccarthy.org/about</loc><priority>0.8</priority></url>\n" +
+        "</urlset>",
     );
   });
 });

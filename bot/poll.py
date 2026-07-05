@@ -14,7 +14,7 @@ re-open). Dry-run by default — prints the decision; --apply acts.
   poll.py --mathlib ~/mathlib4 --apply             # one tick, act
   poll.py --mathlib ~/mathlib4 --apply --watch 600 # poll every 600s (launchd/cron)
 """
-import argparse, json, subprocess, sys, time
+import argparse, json, os, subprocess, sys, time
 from pathlib import Path
 import settle, pool, split
 
@@ -195,6 +195,10 @@ def tick(mathlib, dry, no_open=False):
     merged = settle.is_merged(pr, REPO)  # bors closes the PR, so check title/merged too
     print(f"poll #{pr}: state={state} merged={merged}  settled={st.get('settled_pr') == pr}")
     if merged:
+        # Auto-populate Wikidata P14534 from the freshly-merged @[wikidata] tags
+        # (the merge IS the review gate). Gated + best-effort — never blocks the
+        # batch-open. Runs at most ONCE per merged PR (pushed_pr guard).
+        push_property_on_merge(mathlib, dry, pr, st)
         if no_open:
             print("  MERGED ✓ — open the next batch (supervised): "
                   "`poll.py --apply` without --no-open, or open_batch.py --apply"); return
@@ -255,6 +259,33 @@ def tick(mathlib, dry, no_open=False):
     do_settle(pr, branch, mathlib, cls, dry)
     if not dry:
         st["settled_pr"] = pr; STATE.write_text(json.dumps(st, indent=1))
+
+
+def push_property_on_merge(mathlib, dry, pr, st):
+    """Auto-populate Wikidata P14534 from the just-merged @[wikidata] tags.
+    Gated by WIKILEAN_PUSH_PROPERTY=1 (QUICKSTATEMENTS_TOKEN is checked inside
+    push_property.py, which stays dry-run without it). Regenerates the seed from
+    fresh master, then submits ONLY net-new statements (diffed live vs Wikidata;
+    conflicts and catalog-settled tiebreaks are excluded).
+
+    ONCE per merged PR (pushed_pr guard): the merged block re-enters on later
+    ticks — the --no-open supervised window, or a do_open failure that sys.exits
+    AFTER this ran — and under WDQS replication lag the value-only diff would
+    re-submit the just-merged batch, appending duplicate reference blocks. So we
+    push at most once per merged PR, marking pushed_pr only on a clean (exit-0)
+    run; a QS error / WDQS-partial abort (non-zero) leaves it unset to retry.
+    Best-effort: sh is unchecked, so a stumble never fails the tick."""
+    if os.environ.get("WIKILEAN_PUSH_PROPERTY") != "1":
+        return
+    if st.get("pushed_pr") == pr:
+        print(f"  push_property: already pushed for merged #{pr} — skip")
+        return
+    print("  push_property: refresh P14534 seed from merged master + submit net-new")
+    sh([sys.executable, str(HERE / "export_property_seed.py"), "--mathlib", str(mathlib)])
+    r = sh([sys.executable, str(HERE / "push_property.py")] + ([] if dry else ["--submit"]))
+    if not dry and getattr(r, "returncode", 1) == 0:
+        st["pushed_pr"] = pr
+        STATE.write_text(json.dumps(st, indent=1))
 
 
 def decide():

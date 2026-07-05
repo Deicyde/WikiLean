@@ -54,7 +54,7 @@ CATALOG_DATA = HERE.parent / "catalog" / "data"
 RUN_LOG = CACHE / ".batch_run.log"
 
 MATHLIB = Path(os.environ.get("WIKILEAN_MATHLIB", "/Users/jack/Desktop/LEAN/mathlib4"))
-MODEL = "claude-opus-4-7"  # pinned agent model; recorded in run meta by moderate.py
+MODEL = os.environ.get("WIKILEAN_AGENT_MODEL", "claude-opus-4-7")  # agent model (env-overridable); recorded in run meta by moderate.py
 WIKI_API = "https://en.wikipedia.org/w/api.php"
 WIKI_UA = "WikiLean/0.1 (https://github.com/Deicyde/WikiLean; jack.mccarthy.1@stonybrook.edu)"
 PY = sys.executable if "venv" not in sys.executable else "python3"

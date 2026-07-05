@@ -21,6 +21,10 @@ CATALOG = [ROOT / "catalog/data/pilot_tagged.jsonl", ROOT / "catalog/data/tier2_
 MOST_USED = ROOT / "bot/data/most_used_qids.json"
 TAGGED = ROOT / "bot/data/tagged_in_master.txt"
 WD_API = "https://www.wikidata.org/w/api.php"
+# Tags per batch PR — the single knob for batch size. Mathlib maintainers asked
+# for smaller batches (~10) over the original 25 (easier to review in one pass).
+# open_batch.py / daily_bot.py both import this so there's one place to change it.
+BATCH_SIZE = 10
 # P31 ("instance of") values that mark a *field/discipline*, not a math OBJECT —
 # we don't tag these (e.g. "linear algebra" Q82571, not the object "vector space").
 FIELD_TYPES = {"Q1936384", "Q11862829", "Q2267705", "Q4671286", "Q1047113"}
@@ -115,7 +119,7 @@ def load_catalog():
     return cat
 
 
-def candidates(n=25, exclude=(), require_high=True, p31_filter=True, offlist=True):
+def candidates(n=BATCH_SIZE, exclude=(), require_high=True, p31_filter=True, offlist=True):
     """offlist (ON by default — Jack's call, 2026-07-02): after the most_used
     ranked walk, also walk catalog QIDs that are NOT in the ranking (e.g.
     mathlib 1000.yaml theorem QIDs — maintainer-reviewed but theorem-level, so
@@ -157,7 +161,7 @@ def candidates(n=25, exclude=(), require_high=True, p31_filter=True, offlist=Tru
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("-n", type=int, default=25)
+    ap.add_argument("-n", type=int, default=BATCH_SIZE)
     ap.add_argument("--exclude", default="", help="comma-separated qids to skip (in-flight)")
     ap.add_argument("--json", action="store_true")
     ap.add_argument("--no-p31", action="store_true", help="skip the Wikidata field-of-math filter (offline)")

@@ -35,11 +35,13 @@ import {
   type StatsEventCell,
   type UserProfileRow,
 } from "./pages.js";
-import { homePage, sitemapXml } from "./home.js";
+import { brainLanding, homePage, sitemapXml } from "./home.js";
 import { wikifunctionsPage } from "./wikifunctions.js";
 import { wikifunctionsVerifyPage } from "./wikifunctions-verify.js";
 import { registerReviewRoutes } from "./review.js";
 import { registerDeclRoutes } from "./decl.js";
+import { registerAtlasRoutes } from "./atlas.js";
+import { registerBrainRoutes } from "./brain.js";
 import { registerQueueRoutes } from "./queue.js";
 import type { Annotation } from "./engine/types.js";
 import type { Env } from "./env.js";
@@ -93,12 +95,17 @@ const RESERVED = new Set([
   "u",
   "decl",
   "proposals",
+  "atlas",
+  "brain",
+  "articles",
 ]);
 
 const app = new Hono<{ Bindings: Env }>();
 registerAuthRoutes(app);
 registerReviewRoutes(app);
 registerDeclRoutes(app);
+registerAtlasRoutes(app);
+registerBrainRoutes(app);
 registerQueueRoutes(app);
 
 // Renders (and KV-caches) the anonymous base page for an article. Takes the
@@ -386,12 +393,9 @@ type WriteBatch = [BatchItem<"sqlite">, ...BatchItem<"sqlite">[]];
 // with TTL-only invalidation. They route here only because build-public.ts no
 // longer copies index.html/sitemap.xml into wiki/public/ — the asset layer
 // runs BEFORE the Worker and would otherwise shadow these paths.
-app.get("/", async (c) => {
-  const cacheKey = "page:home:v3";  // v3: dark-mode theme script + toggle
-  const cached = await c.env.RENDER_CACHE.get(cacheKey);
-  if (cached) return c.html(cached);
+async function homeRows(c: Context<{ Bindings: Env }>) {
   const db = drizzle(c.env.DB);
-  const rows = await db
+  return db
     .select({
       slug: articles.slug,
       displayTitle: articles.displayTitle,
@@ -402,13 +406,29 @@ app.get("/", async (c) => {
     })
     .from(articles)
     .orderBy(articles.displayTitle);
-  const html = homePage(rows);
+}
+
+// the landing page IS the Brain (embedded); the article directory moved to /articles
+app.get("/", async (c) => {
+  const cacheKey = "page:home:v6";  // v6: Map tab dropped (superseded by the Brain)
+  const cached = await c.env.RENDER_CACHE.get(cacheKey);
+  if (cached) return c.html(cached);
+  const html = brainLanding(await homeRows(c));
+  await c.env.RENDER_CACHE.put(cacheKey, html, { expirationTtl: 300 });
+  return c.html(html);
+});
+
+app.get("/articles", async (c) => {
+  const cacheKey = "page:articles:v1";  // the former homepage: directory + search
+  const cached = await c.env.RENDER_CACHE.get(cacheKey);
+  if (cached) return c.html(cached);
+  const html = homePage(await homeRows(c));
   await c.env.RENDER_CACHE.put(cacheKey, html, { expirationTtl: 300 });
   return c.html(html);
 });
 
 app.get("/sitemap.xml", async (c) => {
-  const cacheKey = "page:sitemap:v1";
+  const cacheKey = "page:sitemap:v3";  // v3: + /brain flagship
   const headers = { "Content-Type": "application/xml; charset=utf-8" };
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.body(cached, 200, headers);
@@ -438,6 +458,35 @@ app.get("/graph_data.json", async (c) => {
   // (no recursion) — the last-deployed graph_data.json as a safety net.
   return c.env.ASSETS.fetch(new Request(new URL("/graph_data.json", c.req.url)));
 });
+
+// ---- /map, /graph, /atlas → /brain (301). The /map page (bubbles/web/sources)
+// is retired — /brain supersedes it as the primary explorer. The DATA endpoints
+// /graph_data.json + /atlas_data.json (+ /api/atlas) stay live for agents and
+// deep links; only the map/graph/atlas *pages* are gone. -----------------------
+app.get("/map", (c) => c.redirect("/brain", 301));
+app.get("/map-v2", (c) => c.redirect("/brain", 301));
+app.get("/graph", (c) => c.redirect("/brain", 301));
+app.get("/atlas", (c) => c.redirect("/brain", 301));
+
+// ---- /favicon.ico — WikiLean's mark: the "W" drawn as a graph of connected
+// nodes (a constellation), which is what the site now IS — the Brain, a network
+// joining concepts, code, and databases. The lit central node nods to the
+// formal-join layer. Font-independent (paths); long-cached + immutable.
+app.get("/favicon.ico", (c) =>
+  c.body(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">` +
+      `<rect width="32" height="32" rx="7" fill="#0969da"/>` +
+      `<polyline points="6.5,9 11.5,22 16,12.5 20.5,22 25.5,9" fill="none" ` +
+      `stroke="#fff" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"/>` +
+      `<circle cx="6.5" cy="9" r="2.3" fill="#fff"/>` +
+      `<circle cx="11.5" cy="22" r="2.3" fill="#fff"/>` +
+      `<circle cx="16" cy="12.5" r="2.8" fill="#8fd0ff"/>` +
+      `<circle cx="20.5" cy="22" r="2.3" fill="#fff"/>` +
+      `<circle cx="25.5" cy="9" r="2.3" fill="#fff"/></svg>`,
+    200,
+    { "Content-Type": "image/svg+xml", "Cache-Control": "public, max-age=86400" },
+  ),
+);
 
 // ---- /wikifunctions — Wikifunctions-formalization tracker (static; public) --
 // A self-contained status page rendered from the embedded verified corpus

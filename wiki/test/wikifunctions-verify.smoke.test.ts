@@ -27,10 +27,10 @@ describe("wikifunctions verify explainer page", () => {
   });
   it("links the source files on GitHub", () => {
     expect(html).toContain(
-      "github.com/Deicyde/WikiLean/blob/main/wikifunctions/lean/Wikifunctions/Python/Z13701.lean",
+      "github.com/Deicyde/wikifunctions/blob/main/Wikifunctions/Python/Z13701.lean",
     );
     expect(html).toContain(
-      "github.com/Deicyde/WikiLean/blob/main/wikifunctions/native/leanpy/Main.lean",
+      "github.com/Deicyde/wikifunctions/blob/main/native/leanpy/Main.lean",
     );
     expect(html).toContain("lake build Wikifunctions.Python.Z13701 Wikifunctions.Python.Z13667");
   });

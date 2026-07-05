@@ -111,6 +111,12 @@ jobs:
         if: steps.decide.outputs.act == 'true'
         env:
           CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          # On a merge, auto-populate Wikidata P14534 from the just-merged tags.
+          # WIKILEAN_PUSH_PROPERTY gates the whole step; without the token the
+          # pusher stays dry-run. Flip the flag to "1" to enable once ready.
+          WIKILEAN_PUSH_PROPERTY: "0"
+          QUICKSTATEMENTS_TOKEN: ${{ secrets.QUICKSTATEMENTS_TOKEN }}
+          QUICKSTATEMENTS_USER: "Mynus grey"
         run: |
           git config --global user.name  "wikilean-bot"
           git config --global user.email "bot@wikilean.jackmccarthy.org"
