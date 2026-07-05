@@ -37,8 +37,9 @@ HTML = r"""<!doctype html>
 <script>(function(){try{var s=localStorage.getItem("wl-theme");var t=s==="dark"||s==="light"?s:(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.dataset.theme=t;}catch(e){}})();</script>
 <style>
 * { box-sizing:border-box; }
-html, body { height:100%; }
-body { margin:0; background:#0b0e14; color:#e6e4de;
+html, body { height:100%; overflow:hidden; }   /* app canvas — no page scrollbar; the wheel zooms */
+body { margin:0; height:100vh; display:flex; flex-direction:column;
+  background:#0b0e14; color:#e6e4de;
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
 a { color:#7cb3ff; text-decoration:none; }
 a:hover { text-decoration:underline; }
@@ -70,8 +71,10 @@ a:hover { text-decoration:underline; }
 #crumbbar a { cursor:pointer; }
 #crumbbar .sep { color:#556074; }
 #crumbbar b { color:#e6e4de; }
-.main { display:flex; height:calc(100vh - 132px); }
-#stage { flex:1 1 62%; position:relative; background:#0b0e14; overflow:hidden; }
+.main { display:flex; flex:1 1 auto; min-height:0; }   /* fills the space the chrome leaves — no magic numbers */
+#stage { flex:1 1 62%; position:relative; background:#0b0e14; overflow:hidden;
+  cursor:grab; touch-action:none; }
+#stage.grabbing { cursor:grabbing; }
 #stage svg { display:block; width:100%; height:100%; }
 #stage .hint { position:absolute; left:12px; bottom:10px; font-size:.72rem;
   pointer-events:none; color:#77808f; }
@@ -126,6 +129,30 @@ section.kind h3 .cnt { color:#8a8272; font-weight:400; font-size:.8rem; }
   font-size:.72rem; color:#2b2822;
   font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
 .edge.open .drawer { display:block; }
+/* evidence, rendered as prose instead of a JSON dump */
+.ev { font-size:.82rem; line-height:1.5; color:#2b2822; }
+.ev .lead { margin:0 0 4px; }
+.ev .lead b { color:#0d0c0a; }
+.ev code { background:#efe8d6; padding:0 3px; border-radius:3px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.85em; }
+.ev-list { list-style:none; margin:5px 0; padding:0; }
+.ev-list li { padding:2px 0 2px 14px; position:relative; }
+.ev-list li::before { content:"–"; position:absolute; left:1px; color:#a99f86; }
+.ev-sub { margin:5px 0; color:#4a463d; font-size:.8rem; }
+.ev .stat { font-weight:600; }
+.ev .stat.formalized { color:#116329; }
+.ev .stat.partial { color:#7d5e00; }
+.ev .stat.not_formalized { color:#a12621; }
+.ev .attrib { margin-top:8px; border-top:1px solid #e3dac4; padding-top:6px;
+  color:#4a463d; font-size:.76rem; }
+.ev .attrib .prov { border:none; padding:0; margin:0 4px 0 0; font-weight:700;
+  font-family:-apple-system,sans-serif; }
+.ev .pin { color:#8a8272; }
+.rawtoggle { font-size:.7rem; color:#8a8272; cursor:pointer; margin-top:6px;
+  font-family:-apple-system,sans-serif; user-select:none; }
+.rawtoggle:hover { color:#5a544a; }
+.rawjson { margin:4px 0 0 !important; }
+.dirarrow { color:#8a8272; font-weight:600; }
 .slogan { border-left:3px solid #6d28d9; padding:6px 10px; background:#fdfbf4; margin:8px 0;
   font-size:.88rem; border-radius:0 6px 6px 0; font-style:italic; }
 .slogan .src { display:block; color:#8a8272; font-size:.7rem; margin-top:3px; font-style:normal; }
@@ -138,10 +165,14 @@ section.kind h3 .cnt { color:#8a8272; font-weight:400; font-size:.8rem; }
 .note { color:#5a544a; font-size:.82rem; }
 .more { font-size:.78rem; color:#5a544a; padding:4px 10px; }
 .extlink { font-size:.8rem; }
-body.embed .wl-header, body.embed #crumbbar { display:none; }
-body.embed .main { height:calc(100vh - 44px); }
-@media (max-width: 900px) { .main { flex-direction:column; height:auto; }
-  #stage { min-height:52vh; border-left:none; }
+body.embed .wl-header, body.embed #crumbbar { display:none; }   /* flex column fills the rest */
+/* On a phone the stage + panel stack and the PAGE scrolls again (no fixed
+   viewport to pan within), so restore normal document overflow there. */
+@media (max-width: 900px) {
+  html, body { overflow:auto; height:auto; }
+  body { height:auto; }
+  .main { flex-direction:column; }
+  #stage { min-height:52vh; border-left:none; touch-action:auto; }
   #panel { border-left:none; border-top:1px solid #262c3a; max-height:none; } }
 </style>
 </head>
@@ -194,7 +225,8 @@ body.embed .main { height:calc(100vh - 44px); }
 <div id="crumbbar"></div>
 <div class="main">
   <div id="stage"><svg id="svg"></svg>
-    <div class="hint">click a bubble to zoom in · background to zoom out · click any edge
+    <div class="hint">scroll to zoom · drag to pan · click a bubble to dive in ·
+      background to go up · arrows point along dependencies · click any edge
       for its evidence · <span style="color:#a78bfa">formal deps</span> ·
       <span style="color:#38bdf8">formalizes</span> ·
       <span style="color:#fbbf24">wikidata relations</span> ·
@@ -320,10 +352,48 @@ let focusId = null;        // container id (or LIBS_ID) whose children fill the 
 let selectedId = null;     // node the panel shows / ring highlights
 let layout = null;         // {items: Map(id -> {x,y,r,item}), root}
 const svg = d3.select("#svg");
-const gEdges = svg.append("g");
-const gBubbles = svg.append("g");
-const gOverlay = svg.append("g");
-const gLabels = svg.append("g");
+// One <g> holds the whole scene so free pan/zoom is a single transform on it,
+// layered UNDER the semantic click-to-descend. Everything drawn (edges,
+// bubbles, overlays, labels) lives inside it and therefore pans/zooms together.
+const gViewport = svg.append("g").attr("class", "viewport");
+const gEdges = gViewport.append("g");
+const gBubbles = gViewport.append("g");
+const gOverlay = gViewport.append("g");
+const gLabels = gViewport.append("g");
+const defs = svg.append("defs");
+
+// directed edge kinds get an arrowhead pointing at the dependency/target end
+const DIRECTED = new Set(["depends", "contains", "cites", "mentions", "formalizes"]);
+function ensureMarker(color) {
+  const id = "arw_" + color.replace(/[^a-z0-9]/gi, "");
+  if (defs.select("#" + id).empty()) {
+    defs.append("marker").attr("id", id).attr("viewBox", "0 0 10 10")
+      .attr("refX", 8.5).attr("refY", 5).attr("markerWidth", 5.5).attr("markerHeight", 5.5)
+      .attr("orient", "auto-start-reverse")
+      .append("path").attr("d", "M0.6,1 L9,5 L0.6,9 Z").attr("fill", color);
+  }
+  return "url(#" + id + ")";
+}
+
+// Free pan/zoom over the canvas: scroll wheel zooms, drag pans (the /map feel).
+// A pan must not read as a background click (which zooms out to the parent), so
+// we swallow the click that follows a real drag.
+let panMoved = false;
+const isPhone = () => window.matchMedia && window.matchMedia("(max-width: 900px)").matches;
+const zoomBehav = d3.zoom().scaleExtent([0.35, 16])
+  // On a phone the page scrolls (the stack layout); d3-zoom's touch handlers
+  // call preventDefault, which would trap a vertical swipe started over the
+  // >50vh stage. Reject every gesture below 900px so native scroll wins there.
+  // Desktop keeps the default gating (allow wheel, ignore ctrl/secondary-button).
+  .filter(ev => !isPhone() && (!ev.ctrlKey || ev.type === "wheel") && !ev.button)
+  .on("start", ev => { panMoved = false;
+    if (ev.sourceEvent && ev.sourceEvent.type === "mousedown") stageEl.classList.add("grabbing"); })
+  .on("zoom", ev => { if (ev.sourceEvent && ev.sourceEvent.type === "mousemove") panMoved = true;
+    gViewport.attr("transform", ev.transform); })
+  .on("end", () => stageEl.classList.remove("grabbing"));
+svg.call(zoomBehav).on("dblclick.zoom", null);
+// every fresh level fits the viewport — discard any lingering pan/zoom
+function resetZoom() { svg.call(zoomBehav.transform, d3.zoomIdentity); }
 
 const CONCEPT_COLOR = {formalized: "#3b82f6", partial: "#eab308", not_formalized: "#ef4444"};
 function fillFor(item, depthShade) {
@@ -513,12 +583,12 @@ async function renderEgo(seq, entry, anim) {
       if (x.kind === "xref") {
         const key = x.id.split(":")[1];
         const mkUrl = XREF_URL[key];
-        neigh.set(x.id, {id: x.id, type: "external",
+        neigh.set(x.id, {id: x.id, type: "external", dir,
           label: `${XREF_NAME[key] || key}: ${x.evidence ? x.evidence.value : ""}`,
           url: (mkUrl && x.evidence && mkUrl(x.evidence.value)) || null,
           edge: x, rank: SAT_RANK.relates + 0.5});
       } else {
-        neigh.set(x.id, {id: x.id, type: idType(x.id), label: x.id,
+        neigh.set(x.id, {id: x.id, type: idType(x.id), label: x.id, dir,
           edge: x, rank: SAT_RANK[x.kind] ?? 9});
       }
     }
@@ -526,7 +596,7 @@ async function renderEgo(seq, entry, anim) {
   if (entry.node.article_annotations && entry.node.slug) {
     const aa = entry.node.article_annotations;
     neigh.set("article:" + entry.node.slug, {
-      id: "article:" + entry.node.slug, type: "external",
+      id: "article:" + entry.node.slug, type: "external", dir: "out",
       label: `WikiLean article — ${aa.total} annotations`,
       url: "/" + entry.node.slug,
       edge: {kind: "mentions", prov: 0,
@@ -563,7 +633,9 @@ async function renderEgo(seq, entry, anim) {
   layout = {items: new Map(leaves.map(l => [l.data.id, l])), leaves, ego: true};
   edgeStore = nodesArr.map(nd => ({kind: nd.edge.kind, a: id, b: nd.id,
     w: (nd.edge.evidence && nd.edge.evidence.w_types && nd.edge.evidence.w_types.sig) || 1,
-    payload: nd.edge}));
+    payload: nd.edge,
+    from: nd.dir === "in" ? nd.id : id,   // arrow points the true way (in = neighbor → focus)
+    to: nd.dir === "in" ? id : nd.id}));
   gEdges.selectAll("*").remove();
   gOverlay.selectAll("*").remove();
   gBubbles.selectAll("circle.preview").remove();
@@ -598,6 +670,7 @@ async function renderEgo(seq, entry, anim) {
 let renderSeq = 0;   // guards against out-of-order async renders
 async function renderFocus(anim) {
   const seq = ++renderSeq;
+  resetZoom();   // a fresh level is laid out to fit the stage — drop any pan/zoom
   if (focusId !== LIBS_ID) {
     const fe = await getEntry(focusId);
     if (seq !== renderSeq) return;
@@ -665,10 +738,12 @@ async function enrich(seq, leaves) {
   const visible = new Set(leaves.map(l => l.data.id));
   const containers = leaves.filter(l => l.data.type === "container");
   const store = new Map();   // kind|a|b -> edge
-  const put = (kind, a, b, w, payload) => {
+  // from/to carry the true dependency direction (a/b are only the dedup key
+  // order); the heavier of the two directions wins and its arrow is drawn.
+  const put = (kind, a, b, w, payload, from, to) => {
     const key = kind + "|" + (a < b ? a + "|" + b : b + "|" + a);
     const prev = store.get(key);
-    if (!prev || w > prev.w) store.set(key, {kind, a, b, w, payload});
+    if (!prev || w > prev.w) store.set(key, {kind, a, b, w, payload, from: from ?? a, to: to ?? b});
   };
 
   await Promise.all(containers.map(async l => {
@@ -697,7 +772,8 @@ async function enrich(seq, leaves) {
         put(row.kind, l.data.id, row.id, row.count,
             {prov: row.prov, confidence: "high",
              evidence: {aggregated: true, count: row.count, sample_pairs: row.samples,
-                        note: "concept-level " + row.kind + " flows between these areas"}});
+                        note: "concept-level " + row.kind + " flows between these areas"}},
+            l.data.id, row.id);
       }
     }
     // container↔container depends from the typed rollups (sig weights) —
@@ -710,7 +786,9 @@ async function enrich(seq, leaves) {
         for (const row of b[dir] || []) {
           if (!visible.has(row.id)) continue;
           const sig = row.evidence && row.evidence.w_types ? row.evidence.w_types.sig : 0;
-          if (sig) put("depends", l.data.id, row.id, sig, row);
+          if (sig) put("depends", l.data.id, row.id, sig, row,
+                        dir === "out" ? l.data.id : row.id,
+                        dir === "out" ? row.id : l.data.id);
         }
       }
     }
@@ -735,7 +813,9 @@ async function enrich(seq, leaves) {
         if (!visible.has(x.id) || !EDGE_STYLE[x.kind]) continue;
         const w = x.kind === "depends" && x.evidence && x.evidence.w_types
           ? x.evidence.w_types.sig || 1 : 1;
-        put(x.kind, l.data.id, x.id, w, x);
+        put(x.kind, l.data.id, x.id, w, x,
+            dir === "out" ? l.data.id : x.id,
+            dir === "out" ? x.id : l.data.id);
       }
     }
   }));
@@ -784,7 +864,11 @@ function renderEdges() {
       : 0.16 + 0.3 * (e.w / maxSig);
   };
   for (const e of [...dep, ...rest]) {
-    const A = layout.items.get(e.a), B = layout.items.get(e.b);
+    const directed = DIRECTED.has(e.kind);
+    // undirected kinds use a/b; directed kinds draw from source → target so the
+    // arrowhead lands on the dependency/target end
+    const A = layout.items.get(directed ? (e.from || e.a) : e.a);
+    const B = layout.items.get(directed ? (e.to || e.b) : e.b);
     if (!A || !B) continue;
     const mx = (A.x + B.x) / 2, my = (A.y + B.y) / 2;
     const dx = B.x - A.x, dy = B.y - A.y;
@@ -793,7 +877,17 @@ function renderEdges() {
     const hk = e.a + "|" + e.b + e.kind;
     for (let i = 0; i < hk.length; i++) h = (h * 31 + hk.charCodeAt(i)) >>> 0;
     const bend = (0.08 + (h % 1000) / 1000 * 0.22) * ((h & 1) ? 1 : -1);
-    const d = `M${A.x},${A.y} Q${mx - dy * bend},${my + dx * bend} ${B.x},${B.y}`;
+    const cpx = mx - dy * bend, cpy = my + dx * bend;   // quadratic control point
+    // trim the arrow end back to the node's rim so the head isn't buried
+    let ex = B.x, ey = B.y;
+    if (directed) {
+      let tx = B.x - cpx, ty = B.y - cpy;               // tangent at the end ≈ B - control
+      const tl = Math.hypot(tx, ty) || 1;
+      const back = Math.max(B.r || 3, 3) + 3.5;
+      ex = B.x - (tx / tl) * back; ey = B.y - (ty / tl) * back;
+    }
+    const d = `M${A.x},${A.y} Q${cpx},${cpy} ${ex},${ey}`;
+    const hitD = `M${A.x},${A.y} Q${cpx},${cpy} ${B.x},${B.y}`;
     const st = EDGE_STYLE[e.kind];
     const isDep = e.kind === "depends";
     const web = viewMode === "web";
@@ -805,9 +899,10 @@ function renderEdges() {
             : 1 + Math.min(2.2, Math.log2(1 + e.w) * 0.5))
       .attr("stroke-opacity", baseOp);
     if (st.dash) p.attr("stroke-dasharray", st.dash);
+    if (directed) p.attr("marker-end", ensureMarker(st.color));
     // invisible fat twin = the click/hover target
     gEdges.append("path").attr("class", "hit")
-      .attr("d", d).attr("fill", "none")
+      .attr("d", hitD).attr("fill", "none")
       .attr("stroke", "transparent").attr("stroke-width", 14)
       .style("cursor", "pointer")
       .on("mouseenter", () => p.attr("stroke-opacity", 0.95)
@@ -892,27 +987,30 @@ function showEdgePanel(e) {
   };
   const eprov = e.payload && e.payload.prov !== undefined ? manifest.prov[e.payload.prov] : null;
   const epc = provClass(e.kind, eprov, e.payload && e.payload.evidence);
+  // directed kinds read source → target; undirected read A ↔ B
+  const directed = DIRECTED.has(e.kind);
+  const fromId = directed ? (e.from || e.a) : e.a;
+  const toId = directed ? (e.to || e.b) : e.b;
   panelEl.innerHTML = `
     <h2 style="font-size:1.05rem">${esc(st.label)}</h2>
     <div class="sub"><span style="color:${st.color}">●</span> ${esc(e.kind)}
       · <span class="prov ${epc}" style="margin-left:0" title="${esc(PROV_TITLE[epc])}">${epc}</span>${
-      e.kind === "depends" ? ` · sig weight ${e.w}` : ""}${
       liftOf(e) !== null ? ` · lift ${liftOf(e)}× vs null model` : ""}</div>
     <div class="chips">
-      <span class="chip"><a data-nav="${esc(e.a)}">${esc(name(e.a))}</a></span>
-      <span class="chip">↔</span>
-      <span class="chip"><a data-nav="${esc(e.b)}">${esc(name(e.b))}</a></span>
+      <span class="chip"><a data-nav="${esc(fromId)}">${esc(name(fromId))}</a></span>
+      <span class="chip dirarrow">${directed ? "→" : "↔"}</span>
+      <span class="chip"><a data-nav="${esc(toId)}">${esc(name(toId))}</a></span>
     </div>
     <section class="kind"><h3>Evidence</h3>
       <div class="edge open"><div class="drawer" style="display:block">${
-        prov ? `provenance: <b>${esc(prov.source)}</b> · ${esc(prov.method)} · pin ${esc(prov.pin)}` : ""}
-        <pre>${esc(JSON.stringify(ev, null, 1))}</pre></div></div>
+        evidenceProse(e.kind, ev, eprov, null)}</div></div>
     </section>
-    <p class="note">Every line on the canvas is a stored brain edge (or, for
-    "same external-database page", the pair of xref edges shown above). Click
-    the endpoints to inspect the nodes.</p>`;
+    <p class="note">Every line on the canvas is a stored brain edge${
+      directed ? " — the arrowhead points from the source to what it depends on / joins to" : ""}.
+    Click either endpoint to inspect that node.</p>`;
   panelEl.querySelectorAll("[data-nav]").forEach(a =>
     a.addEventListener("click", () => navigate(a.dataset.nav)));
+  bindRawToggles();
 }
 
 // overlay: the selected node's ontology edges to visible endpoints
@@ -931,10 +1029,22 @@ async function drawOverlay() {
       if (!kinds.has(x.kind)) continue;
       const T = layout.items.get(x.id);
       if (!T) continue;
-      gOverlay.append("path").attr("class", "ov")
-        .attr("d", `M${S.x},${S.y} L${T.x},${T.y}`)
-        .attr("stroke", OV_COLOR[x.kind] || "#57606a")
+      // point the arrow the true way: an incoming edge is neighbour → selection
+      const directed = DIRECTED.has(x.kind);
+      const F = dir === "in" && directed ? T : S;
+      const G = dir === "in" && directed ? S : T;
+      let gx = G.x, gy = G.y;
+      if (directed) {
+        let tx = G.x - F.x, ty = G.y - F.y; const tl = Math.hypot(tx, ty) || 1;
+        const back = Math.max(G.r || 3, 3) + 3;
+        gx = G.x - (tx / tl) * back; gy = G.y - (ty / tl) * back;
+      }
+      const color = OV_COLOR[x.kind] || "#57606a";
+      const ov = gOverlay.append("path").attr("class", "ov")
+        .attr("d", `M${F.x},${F.y} L${gx},${gy}`)
+        .attr("stroke", color)
         .attr("stroke-width", 1.6).attr("stroke-opacity", 0.8);
+      if (directed) ov.attr("marker-end", ensureMarker(color));
     }
   }
 }
@@ -1015,7 +1125,9 @@ async function drawSatellites() {
 
 // ============================ zoom navigation ================================
 async function zoomInto(id) {
-  // slick part: scale the clicked bubble up to fill the stage, then swap levels
+  // slick part: scale the clicked bubble up to fill the stage, then swap levels.
+  // Drive it through the pan/zoom transform so it composes with (and replaces)
+  // any manual pan the user has applied — L.x/L.y are always identity-space.
   const L = layout && layout.items.get(id);
   if (L) {
     const W = stageEl.clientWidth, H = stageEl.clientHeight;
@@ -1023,15 +1135,20 @@ async function zoomInto(id) {
     const t = d3.zoomIdentity.translate(W / 2 - L.x * k, H / 2 - L.y * k).scale(k);
     const groups = [gEdges, gBubbles, gOverlay, gLabels];
     // race the transition against a timer: rAF pauses in background tabs and
-    // the reset below must ALWAYS run
+    // the cleanup below must ALWAYS run
     await Promise.race([
-      Promise.all(groups.map(g =>
-        g.transition().duration(420).ease(d3.easeCubicInOut)
-          .attr("transform", t.toString()).attr("opacity", g === gBubbles ? 0.35 : 0)
-          .end().catch(() => {}))),
+      Promise.all([
+        svg.transition().duration(420).ease(d3.easeCubicInOut)
+          .call(zoomBehav.transform, t).end().catch(() => {}),
+        ...groups.map(g =>
+          g.transition().duration(g === gBubbles ? 420 : 300)
+            .attr("opacity", g === gBubbles ? 0.35 : 0).end().catch(() => {})),
+      ]),
       new Promise(r => setTimeout(r, 700)),
     ]);
-    groups.forEach(g => { g.interrupt(); g.attr("transform", null).attr("opacity", 1); });
+    // hold the fading scene invisible across the async re-layout so no stale
+    // frame flashes when renderFocus snaps the viewport back to identity
+    groups.forEach(g => { g.interrupt(); g.attr("opacity", g === gBubbles ? 0.35 : 0); });
   }
   focusId = id;
   history.replaceState(null, "", "#" + encodeURIComponent(id));
@@ -1057,7 +1174,7 @@ async function zoomOut() {
     parent === LIBS_ID ? "" : parent));
   await renderFocus(true);
 }
-svg.on("click", () => { zoomOut(); });
+svg.on("click", () => { if (panMoved) { panMoved = false; return; } zoomOut(); });
 
 async function nodeClick(item) {
   if (item.type === "strays") {   // the collapsed loose-decl bubble: list them
@@ -1173,12 +1290,183 @@ function nodeUrl(id) {
 // "field" as a match_kind chip beside an algebra QID reads like the Field
 // concept — spell it out
 const MK_LABEL = {field: "field-of-study link"};
+
+// ---- evidence, in plain English --------------------------------------------
+// The drawer used to dump raw JSON. Instead we say what the edge ASSERTS and
+// where it came from — one sentence, plus the structured bits (annotation
+// samples, dependency witnesses, judge verdicts) rendered legibly. The raw
+// object stays one click away for anyone who wants it.
+const STATUS_WORD = {formalized: "formalized", partial: "partially formalized",
+  not_formalized: "not yet formalized"};
+function statusChip(s) {
+  return `<span class="stat ${esc(s || "")}">${esc(STATUS_WORD[s] || s || "unknown")}</span>`;
+}
+const evList = items => items.length
+  ? `<ul class="ev-list"><li>${items.join("</li><li>")}</li></ul>` : "";
+const shortDecl = s => String(s).split(".").slice(-2).join(".");
+function pairText(p) {
+  const a = Array.isArray(p) ? p[0] : (p && (p.a ?? p[0]));
+  const b = Array.isArray(p) ? p[1] : (p && (p.b ?? p[1]));
+  return b !== undefined ? `${esc(a)} <span class="dirarrow">↔</span> ${esc(b)}` : esc(p);
+}
+function judgeVerdict(ev) {
+  const verd = [ev.gpt54, ev.deepseek].filter(Boolean);
+  const agree = verd.length === 2 && verd[0] === verd[1];
+  const label = agree ? verd[0] : (verd.includes("exact") ? "a partial" : (verd[0] || "a"));
+  const sim = typeof ev.sim === "number" ? ` (cosine similarity ${ev.sim.toFixed(2)})` : "";
+  return `two independent LLM judges rated it <b>${esc(label)}</b> match${sim}`;
+}
+// friendly names for the manifest provenance vocabulary (source/method)
+const SRC_NICE = {
+  annotations: "WikiLean article annotations",
+  mathlib_deps: "the Lean kernel dependency graph",
+  wikidata_props: "Wikidata properties &amp; claims",
+  theoremgraph: "the TheoremGraph corpus (arXiv 2606.25363)",
+  mathlib: "Mathlib source",
+};
+function provAttribHtml(kind, ev, prov) {
+  // deterministic field-of-study altitude links aren't an AI proposal — label
+  // them honestly even though the coarse provenance filter groups them as "ai"
+  if (prov && prov.method === "container_links") {
+    const pin = prov.pin ? `<span class="pin"> · snapshot ${esc(String(prov.pin).slice(0, 10))}</span>` : "";
+    return `<div class="attrib"><span class="prov machine">Deterministic</span> (a field-of-study concept mapped to the Mathlib area that formalizes it) · from Wikidata field-of-study + the library tree${pin}</div>`;
+  }
+  const pc = provClass(kind, prov, ev);
+  const who = {human: "Human-curated", machine: "Machine-verified", ai: "AI-generated"}[pc];
+  const gloss = {
+    human: "written by a person",
+    machine: "certified by the Lean compiler, no human or AI judgment",
+    ai: "proposed by an AI agent, checked against the Mathlib oracle + a skeptic",
+  }[pc];
+  let src = "";
+  if (pc === "machine") {
+    // machine edges come from the kernel / file tree regardless of which rollup
+    // file happened to carry them — never mislabel a formal dep as "TheoremGraph"
+    src = kind === "contains" ? "the library file tree" : "Mathlib's kernel dependency graph";
+  } else if (prov) {
+    src = SRC_NICE[prov.source] || String(prov.source || "").replace(/_/g, " ");
+    if (prov.method === "wikidata-property" && XREF_NAME[prov.source])
+      src = XREF_NAME[prov.source] + " (via a Wikidata external-ID property)";
+    else if (prov.method === "wikidata-claims") src = "Wikidata claims";
+    else if (String(prov.method || "").includes("@["))
+      src = String(prov.method).replace(/\s*\(mathlib4 source\)/, "").trim() + " in Mathlib source";
+  }
+  const pin = prov && prov.pin ? `<span class="pin"> · snapshot ${esc(String(prov.pin).slice(0, 10))}</span>` : "";
+  return `<div class="attrib"><span class="prov ${pc}">${who}</span> (${esc(gloss)})${
+    src ? ` · from ${src}` : ""}${pin}</div>`;
+}
+// the sentence + structured detail for one edge
+function evidenceProse(kind, ev, prov, dir) {
+  ev = ev || {};
+  const inbound = dir === "in";
+  let lead = "", detail = "";
+
+  if (kind === "depends") {
+    lead = (ev.aggregated || ev.top_witnesses)
+      ? `<b>Formal dependency.</b> The Lean proofs in one area reference declarations in the other — read straight off Mathlib's compiled kernel graph.`
+      : (inbound
+          ? `<b>Formal dependency.</b> Declarations elsewhere use the declaration here in their proofs.`
+          : `<b>Formal dependency.</b> The proof here uses the declaration on the other side.`);
+    const wt = ev.w_types || {}, bits = [];
+    if (wt.sig) bits.push(`${wt.sig.toLocaleString()} statement-level references`);
+    if (wt.proof) bits.push(`${wt.proof.toLocaleString()} uses inside proofs`);
+    if (wt.def) bits.push(`${wt.def.toLocaleString()} uses in definitions`);
+    if (typeof ev.lift === "number")
+      bits.push(`${ev.lift}× the volume a random graph of the same shape predicts — ${ev.lift >= 1.5 ? "a genuine affinity" : ev.lift >= 0.8 ? "about as expected" : "mostly shared infrastructure"}`);
+    detail += evList(bits);
+    const wit = ev.top_witnesses || ev.witnesses;
+    if (wit && wit.length)
+      detail += `<div class="ev-sub">for example, <code>${esc(shortDecl(wit[0][0]))}</code> uses <code>${esc(shortDecl(wit[0][1]))}</code></div>`;
+  } else if (kind === "formalizes") {
+    if (ev.role) {                                   // annotation-sourced
+      const n = ev.n_annotations || (ev.sample ? ev.sample.length : 1);
+      lead = `<b>Formal ↔ informal join.</b> ${n} WikiLean article annotation${n > 1 ? "s" : ""} name this Lean declaration as the formalization of the concept.`;
+      if (ev.sample && ev.sample.length)
+        detail = evList(ev.sample.filter(s => s.label).map(s => `“${esc(s.label)}” — ${statusChip(s.status)}`));
+    } else if ((prov && String(prov.method || "").includes("@[")) || ev.source_tagged) {
+      lead = `<b>Formal ↔ informal join.</b> A person wrote this match into the Mathlib source as an <code>@[wikidata]</code> attribute — the declaration is asserted to formalize the concept.`;
+      if (ev.match_kind) detail = `<div class="ev-sub">match type: <b>${esc(MK_LABEL[ev.match_kind] || ev.match_kind)}</b></div>`;
+    } else if ((prov && prov.method === "container_links") || ev.match_kind === "field") {
+      lead = `<b>Formal ↔ informal join.</b> This concept is a field of study, linked to the Mathlib area that formalizes it — a deterministic altitude link from Wikidata, not an AI guess.`;
+    } else {
+      // agent-grounded match: verified against the oracle; only claim skeptic
+      // review when the provenance/evidence actually records it (never fabricate)
+      const reviewed = (prov && String(prov.method || "").includes("verified")) ||
+        (ev.skeptic && ev.skeptic !== "pending");
+      lead = `<b>Formal ↔ informal join.</b> An AI agent proposed that this Lean declaration formalizes the concept, and the declaration was verified to exist in Mathlib${
+        reviewed ? "; the match also passed skeptic review" : ""}.`;
+      const d = [];
+      if (ev.match_kind) d.push(`match type: <b>${esc(MK_LABEL[ev.match_kind] || ev.match_kind)}</b>`);
+      if (ev.skeptic === "pending") d.push(`skeptic review: <b>pending</b>`);
+      detail += evList(d);
+      if (ev.grounding_note) detail += `<div class="ev-sub">“${esc(ev.grounding_note)}”</div>`;
+    }
+  } else if (kind === "relates") {
+    if (ev.aggregated) {
+      const c = ev.count || (ev.sample_pairs ? ev.sample_pairs.length : 0);
+      lead = `<b>Wikidata relation.</b> Wikidata connects these two areas through ${c ? "<b>" + c + "</b> " : ""}concept-to-concept relation${c === 1 ? "" : "s"} (subclass-of, part-of, …).`;
+      if (ev.sample_pairs && ev.sample_pairs.length)
+        detail = evList(ev.sample_pairs.slice(0, 4).map(pairText));
+    } else {
+      lead = `<b>Wikidata relation.</b> Wikidata records a direct relationship between these two concepts.`;
+      const props = ev.properties || [];
+      if (props.length) detail = evList(props.map(p => `${esc(p.label || p.p)} <span class="pin">(${esc(p.p)})</span>`));
+    }
+  } else if (kind === "mentions") {
+    if (ev.aggregated) {                              // area↔area rollup (concept homes)
+      const c = ev.count || (ev.sample_pairs ? ev.sample_pairs.length : 0);
+      lead = `<b>Article mentions.</b> WikiLean articles link these two areas through ${c ? "<b>" + c + "</b> " : ""}annotation-level mention${c === 1 ? "" : "s"} of declarations across the boundary.`;
+      if (ev.sample_pairs && ev.sample_pairs.length)
+        detail = evList(ev.sample_pairs.slice(0, 4).map(pairText));
+    } else {
+      const n = ev.n_annotations || ev.total || (ev.sample ? ev.sample.length : 1);
+      lead = `<b>Article mention.</b> ${ev.role === "article"
+        ? "This is the concept's annotated Wikipedia mirror on WikiLean, carrying"
+        : "A WikiLean article cites this in"} <b>${n}</b> Lean annotation${n > 1 ? "s" : ""}.`;
+      if (ev.sample && ev.sample.length)
+        detail = evList(ev.sample.filter(s => s.label).slice(0, 4).map(s => `“${esc(s.label)}” — ${statusChip(s.status)}`));
+      else if (ev.statuses)
+        detail = evList(Object.entries(ev.statuses).map(([k, v]) => `${v} ${STATUS_WORD[k] || k}`));
+    }
+  } else if (kind === "xref-shared") {
+    const key = ev.shared_page ? ev.shared_page.split(":")[1] : null;
+    lead = `<b>Same object, two entries.</b> Both concepts point at the same page${key ? ` in <b>${esc(XREF_NAME[key] || key)}</b>` : ""}, so Wikidata treats them as the same object across databases.`;
+  } else if (kind === "xref") {
+    lead = `<b>Cross-database identity.</b> Wikidata records this concept in an external database${ev.value !== undefined ? ` as <code>${esc(ev.value)}</code>` : ""} — the same object, catalogued elsewhere.`;
+    if (ev.property) detail = `<div class="ev-sub">via Wikidata property <span class="pin">${esc(ev.property)}</span></div>`;
+  } else if (kind === "cites") {
+    lead = `<b>Stated in the literature.</b> This result appears in the mathematical literature; ${judgeVerdict(ev)}.`;
+    if (ev.via_decls && ev.via_decls.length)
+      detail = `<div class="ev-sub">via ${ev.via_decls.slice(0, 3).map(d => `<code>${esc(shortDecl(d))}</code>`).join(", ")}</div>`;
+  } else if (kind === "matches") {
+    lead = `<b>Formal ↔ literature match.</b> A Lean declaration was matched to an informal statement in the literature; ${judgeVerdict(ev)}.`;
+  } else if (kind === "contains") {
+    lead = `<b>Containment.</b> One directly contains the other in the library's folder tree.`;
+  } else {
+    lead = esc((EDGE_STYLE[kind] && EDGE_STYLE[kind].label) || kind);
+  }
+
+  const raw = `<div class="rawtoggle" data-raw>▸ source data</div><pre class="rawjson" style="display:none">${esc(JSON.stringify(ev, null, 1))}</pre>`;
+  return `<div class="ev"><p class="lead">${lead}</p>${detail}${provAttribHtml(kind, ev, prov)}${raw}</div>`;
+}
+// wire the ▸ source-data disclosures inside a freshly-rendered panel
+function bindRawToggles() {
+  panelEl.querySelectorAll(".rawtoggle").forEach(t => t.addEventListener("click", () => {
+    const pre = t.nextElementSibling;
+    if (!pre) return;
+    const open = pre.style.display !== "none";
+    pre.style.display = open ? "none" : "block";
+    t.textContent = (open ? "▸" : "▾") + " source data";
+  }));
+}
+
 function edgeHtml(x, provTable, dir) {
   const ev = x.evidence || {};
   const mkv = ev.match_kind && (MK_LABEL[ev.match_kind] || ev.match_kind);
   let mk = mkv ? `<span class="mk">${esc(mkv)}</span>` : "";
   if (ev.n_annotations > 1) mk += ` <span class="lit-ref">×${ev.n_annotations} annotations</span>`;
-  const arrow = dir === "in" ? "←" : "→";
+  // arrow reflects real direction for directed kinds; undirected kinds get ↔
+  const arrow = DIRECTED.has(x.kind) ? (dir === "in" ? "←" : "→") : "↔";
   let target = esc(x.id);
   if (x.kind === "xref" && ev.value !== undefined) {
     const mkUrl = XREF_URL[x.id.split(":")[1]];
@@ -1192,11 +1480,9 @@ function edgeHtml(x, provTable, dir) {
   }
   const prov = provTable[x.prov] || {};
   const pc = provClass(x.kind, prov, ev);
-  const drawer = `provenance: <b>${esc(prov.source)}</b> · ${esc(prov.method)} · pin ${esc(prov.pin)}
-<pre>${esc(JSON.stringify(ev, null, 1))}</pre>`;
-  return `<div class="edge"><div class="row">${arrow} ${target} ${mk}
+  return `<div class="edge"><div class="row"><span class="dirarrow">${arrow}</span> ${target} ${mk}
     <span class="prov ${pc}" title="${esc(PROV_TITLE[pc])}">${pc}${ev.skeptic === "pending" ? " · unreviewed" : ""}${ev.source_tagged ? " · @[wikidata]" : ""}</span></div>
-    <div class="drawer">${drawer}</div></div>`;
+    <div class="drawer">${evidenceProse(x.kind, ev, prov, dir)}</div></div>`;
 }
 let lastPanelId = null;
 let lastLevelEdges = [];
@@ -1341,9 +1627,11 @@ async function renderPanel(id) {
         <span class="cnt">(strongest ${lastLevelEdges.length})</span></h3>`;
       lastLevelEdges.forEach((e2, i) => {
         const st2 = EDGE_STYLE[e2.kind] || {};
+        const dd = DIRECTED.has(e2.kind);
+        const l = dd ? (e2.from || e2.a) : e2.a, r = dd ? (e2.to || e2.b) : e2.b;
         html += `<div class="edge"><div class="row" data-lvledge="${i}">
           <span style="color:${st2.color}">●</span>
-          <span>${esc(short(e2.a))} ↔ ${esc(short(e2.b))}</span>
+          <span>${esc(short(l))} <span class="dirarrow">${dd ? "→" : "↔"}</span> ${esc(short(r))}</span>
           <span class="mk">${esc(st2.label || e2.kind)}</span>${
           e2.kind === "depends" ? ` <span class="lit-ref">sig ${e2.w}</span>` : ""}</div></div>`;
       });
@@ -1353,6 +1641,7 @@ async function renderPanel(id) {
   panelEl.innerHTML = html;
   panelEl.querySelectorAll("[data-nav]").forEach(a =>
     a.addEventListener("click", () => navigate(a.dataset.nav)));
+  bindRawToggles();
   panelEl.querySelectorAll(".edge .row").forEach(r =>
     r.addEventListener("click", ev => {
       if (ev.target.closest("a") || ev.target.closest("[data-nav]")) return;
@@ -1512,7 +1801,19 @@ window.addEventListener("hashchange", () => {
   const id = decodeURIComponent(location.hash.slice(1));
   if (id) navigate(id);
 });
-window.addEventListener("resize", () => { renderFocus(false); });
+// Re-pack only on a real WIDTH change (the layout is width-driven), debounced.
+// This skips the height-only resize storm a mobile URL bar fires on every
+// scroll, and stops a stray resize from yanking a panned/zoomed desktop view.
+let lastStageW = 0, resizeTimer = 0;
+window.addEventListener("resize", () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    const w = stageEl.clientWidth;
+    if (Math.abs(w - lastStageW) < 2) return;
+    lastStageW = w;
+    renderFocus(false);
+  }, 160);
+});
 
 (async function boot() {
   // ?embed=1 → chrome-less mode for the landing-page iframe: hide the header +
@@ -1536,6 +1837,7 @@ window.addEventListener("resize", () => { renderFocus(false); });
   const target = decodeURIComponent(location.hash.slice(1));
   if (target) { await navigate(target); }
   else { focusId = "path:Mathlib"; await renderFocus(false); renderPanel(focusId); }
+  lastStageW = stageEl.clientWidth;   // baseline for the width-change resize guard
 })();
 </script>
 </body>

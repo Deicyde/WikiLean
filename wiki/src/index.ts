@@ -484,17 +484,23 @@ app.get("/map_data.json", async (c) => {
 app.get("/graph", (c) => c.redirect("/map", 301));
 app.get("/atlas", (c) => c.redirect("/map", 301));
 
-// ---- /favicon.ico — was 404 on every page. A tiny inline SVG (a turnstile ⊢,
-// "proves" — the essence of a formal-math site) in the WikiLean blue. Font-
-// independent (drawn as paths); long-cached + immutable.
+// ---- /favicon.ico — WikiLean's mark: the "W" drawn as a graph of connected
+// nodes (a constellation), which is what the site now IS — the Brain, a network
+// joining concepts, code, and databases. The lit central node nods to the
+// formal-join layer. Font-independent (paths); long-cached + immutable.
 app.get("/favicon.ico", (c) =>
   c.body(
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">` +
       `<rect width="32" height="32" rx="7" fill="#0969da"/>` +
-      `<path d="M11 8v16M11 16h11" stroke="#fff" stroke-width="2.6" ` +
-      `stroke-linecap="round" fill="none"/></svg>`,
+      `<polyline points="6.5,9 11.5,22 16,12.5 20.5,22 25.5,9" fill="none" ` +
+      `stroke="#fff" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"/>` +
+      `<circle cx="6.5" cy="9" r="2.3" fill="#fff"/>` +
+      `<circle cx="11.5" cy="22" r="2.3" fill="#fff"/>` +
+      `<circle cx="16" cy="12.5" r="2.8" fill="#8fd0ff"/>` +
+      `<circle cx="20.5" cy="22" r="2.3" fill="#fff"/>` +
+      `<circle cx="25.5" cy="9" r="2.3" fill="#fff"/></svg>`,
     200,
-    { "Content-Type": "image/svg+xml", "Cache-Control": "public, max-age=604800, immutable" },
+    { "Content-Type": "image/svg+xml", "Cache-Control": "public, max-age=86400" },
   ),
 );
 
