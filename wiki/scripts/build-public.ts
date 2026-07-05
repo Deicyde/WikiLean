@@ -31,13 +31,11 @@ for (const f of fromWiki) {
 // copies already in wiki/public/.
 const shellFiles = [
   "concepts.html", "about.html", "404.html", "robots.txt", "wikilean.ttl",
-  // The unified map page (reserved route /map) + its KV-first data artifact.
-  "map.html", "map_data.json",
   // The brain explorer (reserved route /brain, site/build_brain_page.py); its
   // data ships as the prefix shards in assets/brain/ (copied below).
   "brain.html",
-  // Data blobs kept for the fallback path + the /api/atlas agent surface (the
-  // old /graph and /atlas *pages* now 301 → /map; see src/index.ts).
+  // Data blobs kept for the KV-fallback path + the /api/atlas agent surface (the
+  // /map, /graph and /atlas *pages* now 301 → /brain; see src/index.ts).
   "graph_data.json", "atlas_data.json",
   "article-graph.html", "article-graph-data.json",
 ];
@@ -56,10 +54,11 @@ if (existsSync(brainSrc)) {
   cpSync(brainSrc, brainDst, { recursive: true });
 }
 
-// Retired page assets: /graph + /atlas are now redirect routes in the Worker.
-// public/ is generated-but-not-wiped, so a stale graph.html/atlas.html would
-// still be bundled by `npm run deploy` and SHADOW the redirect. Remove them.
-for (const f of ["graph.html", "atlas.html"]) {
+// Retired page assets: /map, /graph, /atlas are now redirect routes in the
+// Worker. public/ is generated-but-not-wiped, so a stale map.html/graph.html/
+// atlas.html would still be bundled by `npm run deploy` and SHADOW the redirect.
+// map_data.json is likewise no longer served. Remove them.
+for (const f of ["map.html", "map_data.json", "graph.html", "atlas.html"]) {
   const p = resolve(pub, f);
   if (existsSync(p)) rmSync(p);
 }

@@ -163,18 +163,8 @@ cd "$REPO/site" || exit 1
               atlas:data:v1 --path="$REPO/site/out/atlas_data.json" ) \
             || echo "(atlas kv put returned $?)"
         fi
-        # Unified /map artifact rides on top of both (consumes graph_data.json +
-        # atlas_data.json + source_registry.json); same success-gate + KV pattern
-        # (map:data:v1). The /map PAGE (map.html) ships on deploy, not here.
-        if python3 "$REPO/site/build_map_data.py"; then
-          if [ "${WIKILEAN_GRAPH_DEPLOY:-1}" = "1" ]; then
-            ( cd "$REPO/wiki" && npx wrangler kv key put --binding=RENDER_CACHE --remote \
-                map:data:v1 --path="$REPO/site/out/map_data.json" ) \
-              || echo "(map kv put returned $?)"
-          fi
-        else
-          echo "(map build failed — keeping the last KV copy)"
-        fi
+        # /map is retired (→ /brain); only the graph_data.json + atlas_data.json
+        # agent endpoints are refreshed here now.
       else
         echo "(atlas build failed — keeping the last KV copy)"
       fi

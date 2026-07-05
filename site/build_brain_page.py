@@ -185,7 +185,6 @@ body.embed .wl-header, body.embed #crumbbar { display:none; }   /* flex column f
       <div id="hits"></div>
     </div>
     <a class="wl-navlink" id="srcbtn" style="cursor:pointer" title="every external database the brain links to — layer, provenance, license">Sources</a>
-    <a class="wl-navlink" href="/map">Map</a>
     <a class="wl-navlink" href="/stats">Stats</a>
     <a class="wl-navlink" href="https://github.com/Deicyde/WikiLean" rel="noopener">GitHub</a>
   </nav>
