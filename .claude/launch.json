@@ -4,37 +4,91 @@
     {
       "name": "static-out",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8899", "--directory", "site/out"],
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8899",
+        "--directory",
+        "site/out"
+      ],
       "port": 8899
     },
     {
       "name": "pbl-review",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "4173", "--directory", "/Users/jack/Desktop/LEAN/pi-base-lean/site"],
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "4173",
+        "--directory",
+        "/Users/jack/Desktop/LEAN/pi-base-lean/site"
+      ],
       "port": 4173
     },
     {
       "name": "felix-review",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "4174", "--directory", "/private/tmp/claude-501/-Users-jack-Desktop-LEAN-WikiLean/459bd043-8f9f-47b6-a4af-d222842de6b9/scratchpad/felix-review"],
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "4174",
+        "--directory",
+        "/Users/jack/Desktop/LEAN/pibase-lean/site"
+      ],
       "port": 4174
+    },
+    {
+      "name": "jackmccarthy",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "4181",
+        "--directory",
+        "/Users/jack/Desktop/jackmccarthy.com/public"
+      ],
+      "port": 4181
     },
     {
       "name": "wiki-public",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8901", "--directory", "wiki/public"],
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8901",
+        "--directory",
+        "wiki/public"
+      ],
       "port": 8901
     },
     {
       "name": "wiki-dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--prefix", "wiki", "--", "--port", "8787"],
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--prefix",
+        "wiki",
+        "--",
+        "--port",
+        "8787"
+      ],
       "port": 8787
     },
     {
       "name": "wiki-dev-devauth",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--prefix", "wiki", "--", "--port", "8788", "--var", "AUTH_MODE:dev"],
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--prefix",
+        "wiki",
+        "--",
+        "--port",
+        "8788",
+        "--var",
+        "AUTH_MODE:dev"
+      ],
       "port": 8788
     }
   ]
