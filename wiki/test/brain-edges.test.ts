@@ -185,6 +185,67 @@ describe("GET /api/brain/edges", () => {
   });
 });
 
+// Stub the Wikidata wbgetentities call (harness blockNetwork() throws otherwise).
+// `entities` maps QID → entity JSON; an absent QID responds as "missing".
+async function withWikidata(
+  entities: Record<string, unknown>,
+  fn: () => Promise<Response>,
+): Promise<Response> {
+  const prev = globalThis.fetch;
+  globalThis.fetch = (async (url: RequestInfo | URL) => {
+    const m = String(url).match(/ids=(Q\d+)/);
+    const qid = m ? m[1] : "";
+    const ent = qid ? (entities[qid] ?? { missing: "" }) : {};
+    return new Response(JSON.stringify({ entities: qid ? { [qid]: ent } : {} }), { status: 200 });
+  }) as typeof fetch;
+  try {
+    return await fn();
+  } finally {
+    globalThis.fetch = prev;
+  }
+}
+
+describe("POST /api/brain/edge — new Wikidata concept nodes", () => {
+  const QID = "Q5530428";
+  const WD = { [QID]: { labels: { en: { value: "Gelfand–Naimark–Segal construction" } }, descriptions: { en: { value: "a construction" } } } };
+  const nodeRows = (h: Harness) => h.db.prepare("SELECT * FROM brain_nodes").all() as Array<Record<string, unknown>>;
+
+  it("mints a validated Wikidata QID as a community node and links to it", async () => {
+    const h = harness();
+    const res = await withWikidata(WD, () =>
+      postEdge(h, { src: DECL, dst: QID, kind: "formalizes", evidence: { note: "gns" } }, { user: "u-human" }));
+    expect(res.status).toBe(201);
+    expect(edgeRows(h)[0]).toMatchObject({ src: DECL, dst: QID, kind: "formalizes" });
+    const nodes = nodeRows(h);
+    expect(nodes).toHaveLength(1);
+    expect(nodes[0]).toMatchObject({ id: QID, label: "Gelfand–Naimark–Segal construction", added_by: "u-human", status: "live" });
+  });
+
+  it("rejects a QID Wikidata doesn't know (400, no node minted)", async () => {
+    const h = harness();
+    const res = await withWikidata({}, () =>
+      postEdge(h, { src: DECL, dst: "Q999999999", kind: "formalizes", evidence: { note: "x" } }, { user: "u-human" }));
+    expect(res.status).toBe(400);
+    expect(nodeRows(h)).toHaveLength(0);
+  });
+
+  it("the overlay returns node_labels for a minted QID so it renders with its name", async () => {
+    const h = harness();
+    await withWikidata(WD, () =>
+      postEdge(h, { src: DECL, dst: QID, kind: "formalizes", evidence: { note: "gns" } }, { user: "u-human" }));
+    const j = (await (await get(h.env, `/api/brain/edges?id=${encodeURIComponent(DECL)}`)).json()) as { node_labels: Record<string, string> };
+    expect(j.node_labels[QID]).toBe("Gelfand–Naimark–Segal construction");
+  });
+
+  it("a QID that IS already a static node links directly (no mint)", async () => {
+    const h = harness();
+    const res = await withWikidata(WD, () =>
+      postEdge(h, { src: DECL, dst: CONCEPT, kind: "formalizes", evidence: { note: "x" } }, { user: "u-human" }));
+    expect(res.status).toBe(201);
+    expect(nodeRows(h)).toHaveLength(0); // CONCEPT is already a node
+  });
+});
+
 describe("GET /api/brain/edges — xref-shared cross-pollination", () => {
   const PAGE = "xref:lmfdb_knowl:group.abelian";
   const NODE_B = "Q11650"; // a second node

@@ -17,9 +17,18 @@ script or an agent can post them too. Provenance is tracked on every edge:
 
 ### Scope decisions (Jack, 2026-07-05)
 
-- **NO new graph nodes** (too much pollution risk). Edges only, and their
-  endpoints must be existing brain nodes — except `xref` edges, whose `dst` is
-  an external-database identifier (that's the "add a database entry" case).
+- **New nodes: validated Wikidata QIDs only** (Jack reversed the earlier "no new
+  nodes" after hitting the case first-hand — tagging a Mathlib decl with a QID
+  the brain hadn't ingested, e.g. `Q5530428` GNS construction). An edge endpoint
+  may be a QID not yet in the brain; the server validates it live against
+  Wikidata (`wbgetentities`) and mints it into the D1 `brain_nodes` table with
+  its Wikidata label. This is the safe form of new-nodes — a QID either resolves
+  or it doesn't, so no free-form junk. Migration `0011_brain_nodes.sql`;
+  `resolveNodeEndpoint` + `validateWikidataQid` in brain-edits.ts (KV-cached);
+  the overlay returns `node_labels`; the panel renders such nodes with their
+  Wikidata name + an outbound Wikidata link; the search offers a QID you paste.
+- Otherwise edge endpoints must be existing brain nodes — except `xref` edges,
+  whose `dst` is an external-database identifier (the "add a database entry" case).
 - **The high-value case is cross-database links** (`xref`): "this Mathlib decl
   is `group.abelian` in LMFDB." Because the Brain already infers `xref-shared`
   edges when two nodes carry the *same* external page, each user-added `xref`

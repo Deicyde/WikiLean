@@ -12,8 +12,10 @@ import { drizzle } from "drizzle-orm/d1";
 import { and, eq, or, inArray } from "drizzle-orm";
 import type { Env } from "./env.js";
 import { getUser } from "./auth.js";
-import { brainEdges } from "./db/schema.js";
+import { brainEdges, brainNodes } from "./db/schema.js";
 import { brainNodeExists, resolveBrainEntry, BRAIN_ID_RE } from "./brain.js";
+
+const QID_RE = /^Q[1-9][0-9]{0,11}$/;
 
 // Semantic edge kinds a person/agent may contribute. Structural (`contains`) and
 // kernel-derived (`depends`) kinds are machine-only and NOT user-addable.
@@ -87,6 +89,57 @@ function isBearer(role: string): boolean {
   return role === "bot";
 }
 
+// Validate a Wikidata QID exists, returning its label/description, cached in KV.
+// Returns null if the QID is MISSING (negative-cached 1h) or Wikidata is
+// unreachable (NOT cached — retryable). Fail-closed: never mint an unvalidated
+// node. Exported for the search route.
+export async function validateWikidataQid(
+  c: Context<{ Bindings: Env }>,
+  qid: string,
+): Promise<{ label: string; description: string } | null> {
+  const key = "wd:ent:" + qid;
+  const cached = await c.env.RENDER_CACHE.get(key);
+  if (cached !== null) return cached === "0" ? null : (JSON.parse(cached) as { label: string; description: string });
+  try {
+    const url =
+      "https://www.wikidata.org/w/api.php?action=wbgetentities&format=json" +
+      "&props=labels%7Cdescriptions&languages=en&ids=" + encodeURIComponent(qid);
+    const r = await fetch(url, { headers: { "User-Agent": "WikiLean/1.0 (+https://wikilean.jackmccarthy.org)" } });
+    if (!r.ok) return null; // transient — do not cache, allow retry
+    const j = (await r.json()) as {
+      entities?: Record<string, { missing?: string; labels?: Record<string, { value: string }>; descriptions?: Record<string, { value: string }> }>;
+    };
+    const e = j.entities?.[qid];
+    if (!e || e.missing !== undefined) {
+      await c.env.RENDER_CACHE.put(key, "0", { expirationTtl: 3600 });
+      return null;
+    }
+    const val = { label: e.labels?.en?.value || qid, description: e.descriptions?.en?.value || "" };
+    await c.env.RENDER_CACHE.put(key, JSON.stringify(val), { expirationTtl: 2592000 }); // 30d
+    return val;
+  } catch {
+    return null;
+  }
+}
+
+type EndpointResult =
+  | { node: true }
+  | { node: false; mint: { id: string; label: string; description: string } }
+  | { error: string };
+
+// An edge endpoint is valid if it's an EXISTING brain node, OR a validated
+// Wikidata QID (which the caller then mints as a community node). Anything else
+// is rejected — the constrained "new nodes" rule: only real Wikidata items.
+async function resolveNodeEndpoint(c: Context<{ Bindings: Env }>, id: string): Promise<EndpointResult> {
+  if (await brainNodeExists(c, id)) return { node: true };
+  if (QID_RE.test(id)) {
+    const wd = await validateWikidataQid(c, id);
+    if (wd) return { node: false, mint: { id, label: wd.label, description: wd.description } };
+    return { error: `${id} is not a resolvable Wikidata item (retry if Wikidata was unreachable)` };
+  }
+  return { error: "endpoint is not a known brain node" };
+}
+
 export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
   // POST /api/brain/edge — add a connection. Scriptable (bearer) or browser (OAuth).
   app.post("/api/brain/edge", async (c) => {
@@ -137,13 +190,17 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
     if (!note) return c.json({ ok: false, error: "an evidence note is required" }, 400);
     if (note.length > MAX_NOTE) return c.json({ ok: false, error: "evidence note too long" }, 400);
     if (!BRAIN_ID_RE.test(src)) return c.json({ ok: false, error: "bad src id" }, 400);
-    if (!(await brainNodeExists(c, src))) {
-      return c.json({ ok: false, error: "src is not a known brain node", src }, 400);
-    }
+
+    // Endpoints must be an existing brain node OR a validated Wikidata QID (which
+    // we mint as a community node). Collect any mints to persist after the edge.
+    const mints: Array<{ id: string; label: string; description: string }> = [];
+    const srcRes = await resolveNodeEndpoint(c, src);
+    if ("error" in srcRes) return c.json({ ok: false, error: "src: " + srcRes.error, src }, 400);
+    if (!srcRes.node) mints.push(srcRes.mint);
 
     if (dst.length > MAX_DST) return c.json({ ok: false, error: "dst too long" }, 400);
 
-    // dst: for xref it's an external "xref:<db>:<value>"; otherwise a real node.
+    // dst: for xref it's an external "xref:<db>:<value>"; otherwise a node/QID.
     let evidence: Record<string, unknown> = { note };
     if (kind === "xref") {
       const m = /^xref:([a-z0-9_]+):(.+)$/i.exec(dst);
@@ -154,13 +211,31 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
       evidence = { note, db: xdb, value };
     } else {
       if (!BRAIN_ID_RE.test(dst)) return c.json({ ok: false, error: "bad dst id" }, 400);
-      if (!(await brainNodeExists(c, dst))) {
-        return c.json({ ok: false, error: "dst is not a known brain node", dst }, 400);
-      }
+      const dstRes = await resolveNodeEndpoint(c, dst);
+      if ("error" in dstRes) return c.json({ ok: false, error: "dst: " + dstRes.error, dst }, 400);
+      if (!dstRes.node) mints.push(dstRes.mint);
     }
     if (src === dst) return c.json({ ok: false, error: "src and dst are identical" }, 400);
 
     const db = drizzle(c.env.DB);
+    // persist any newly-validated Wikidata concept nodes (idempotent on the QID)
+    const nowMs = Date.now();
+    for (const m of mints) {
+      await db
+        .insert(brainNodes)
+        .values({
+          id: m.id,
+          label: m.label,
+          description: m.description || null,
+          nodeType: "concept",
+          addedBy: user.id,
+          actorType,
+          status: "live",
+          createdAt: nowMs,
+          version: 1,
+        })
+        .onConflictDoNothing();
+    }
     // dedupe: idempotent on an existing live (src,dst,kind).
     const dup = (
       await db
@@ -274,8 +349,25 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
       for (const r of comm) addPartner(r.src, r.dst, "community");
     }
 
+    // labels for community-added (brain_nodes) endpoints, so QID nodes the
+    // static shards don't know about still render with their Wikidata name
+    const refIds = [
+      ...new Set([...rows.flatMap((r) => [r.src, r.dst]), ...shared.map((s) => s.node)].filter((x) =>
+        QID_RE.test(x),
+      )),
+    ];
+    let nodeLabels: Record<string, string> = {};
+    if (refIds.length) {
+      const nrows = await db
+        .select({ id: brainNodes.id, label: brainNodes.label })
+        .from(brainNodes)
+        .where(and(inArray(brainNodes.id, refIds), eq(brainNodes.status, "live")))
+        .limit(500);
+      nodeLabels = Object.fromEntries(nrows.map((n) => [n.id, n.label]));
+    }
+
     // live tail — never cache
-    return c.json({ ok: true, id, edges, shared }, 200, { "Cache-Control": "no-store" });
+    return c.json({ ok: true, id, edges, shared, node_labels: nodeLabels }, 200, { "Cache-Control": "no-store" });
   });
 
   // DELETE /api/brain/edge/:id — soft-delete (gravestone). Any logged-in user

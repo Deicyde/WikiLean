@@ -1894,10 +1894,10 @@ function updateAuthNav() {
 async function fetchCommunityEdges(id) {
   try {
     const r = await fetch("/api/brain/edges?id=" + encodeURIComponent(id));
-    if (!r.ok) return {edges: [], shared: []};
+    if (!r.ok) return {edges: [], shared: [], nodeLabels: {}};
     const j = await r.json();
-    return {edges: j.edges || [], shared: j.shared || []};
-  } catch (e) { return {edges: [], shared: []}; }
+    return {edges: j.edges || [], shared: j.shared || [], nodeLabels: j.node_labels || {}};
+  } catch (e) { return {edges: [], shared: [], nodeLabels: {}}; }
 }
 async function submitCommunityEdge(payload) {
   try {
@@ -1911,28 +1911,27 @@ async function deleteCommunityEdge(edgeId) {
   try { await fetch("/api/brain/edge/" + encodeURIComponent(edgeId) + "/delete", {method: "POST"}); }
   catch (e) { /* ignore; the refresh will show the true state */ }
 }
-// the "other" endpoint of a community edge, relative to the focused node
-function communityTargetLabel(e, selfId) {
-  const other = e.src === selfId ? e.dst : e.src;
+// HTML for a community-edge endpoint: an xref reads "<DB>: value"; a
+// community-added Wikidata node (in nodeLabels) links OUT to Wikidata (it isn't
+// in the static shards, so in-brain nav would 404); a static node navigates
+// in-brain.
+function communityTargetHtml(other, nodeLabels) {
+  nodeLabels = nodeLabels || {};
   if (other.startsWith("xref:")) {
     const p = other.split(":");
-    return (XREF_NAME[p[1]] || p[1]) + ": " + p.slice(2).join(":");
+    return esc((XREF_NAME[p[1]] || p[1]) + ": " + p.slice(2).join(":"));
+  }
+  if (/^Q\d+$/.test(other) && nodeLabels[other]) {
+    return `<a href="https://www.wikidata.org/wiki/${esc(other)}" target="_blank" rel="noopener"
+      title="community-added Wikidata concept">${esc(nodeLabels[other])} <span class="lit-ref">${esc(other)}</span></a>`;
   }
   const L = layout && layout.items.get(other);
-  return (L && L.data.label) || other;
-}
-function communityNodeLabel(nid) {
-  if (nid.startsWith("xref:")) {
-    const p = nid.split(":");
-    return (XREF_NAME[p[1]] || p[1]) + ": " + p.slice(2).join(":");
-  }
-  const L = layout && layout.items.get(nid);
-  return (L && L.data.label) || nid;
+  return `<a data-nav="${esc(other)}">${esc((L && L.data.label) || other)}</a>`;
 }
 async function renderCommunity(id) {
   const slot = $("#community-slot");
   if (!slot) return;
-  const {edges, shared} = await fetchCommunityEdges(id);
+  const {edges, shared, nodeLabels} = await fetchCommunityEdges(id);
   if (lastPanelId !== id || !$("#community-slot")) return;   // panel moved on
   let html = `<section class="kind community"><h3>Community connections
     <span class="cnt">(${edges.length})</span></h3>`;
@@ -1941,7 +1940,7 @@ async function renderCommunity(id) {
     const note = (e.evidence && e.evidence.note) || "";
     html += `<div class="cedge">
       <span class="dirarrow">${out ? "→" : "←"}</span>
-      <span class="ctarget">${esc(communityTargetLabel(e, id))}</span>
+      <span class="ctarget">${communityTargetHtml(out ? e.dst : e.src, nodeLabels)}</span>
       <span class="mk">${esc(e.kind)}</span>
       <span class="cprov ${e.actor_type === "ai" ? "ai" : "human"}">${
         e.actor_type === "ai" ? "AI" : "human"} · ${esc(e.added_by)}</span>${
@@ -1958,7 +1957,7 @@ async function renderCommunity(id) {
     for (const s of shared.slice(0, 30)) {
       html += `<div class="cedge cinferred">
         <span class="dirarrow">↔</span>
-        <span class="ctarget"><a data-nav="${esc(s.node)}">${esc(communityNodeLabel(s.node))}</a></span>
+        <span class="ctarget">${communityTargetHtml(s.node, nodeLabels)}</span>
         <span class="mk">same page in ${esc(XREF_NAME[s.db] || s.db)}</span>
         <span class="cprov ${s.source === "community" ? "human" : "machine"}">${
           s.source === "community" ? "community" : "database"}</span></div>`;
@@ -1971,7 +1970,7 @@ async function renderCommunity(id) {
       <label>Type<select id="cf-kind">${
         COMMUNITY_KINDS_UI.map(([k, l]) => `<option value="${k}">${esc(l)}</option>`).join("")}</select></label>
       <div id="cf-target-node"><label>Connect to
-        <input id="cf-target" type="text" autocomplete="off" placeholder="search a concept / decl / area…"></label>
+        <input id="cf-target" type="text" autocomplete="off" placeholder="search a concept / decl / area — or paste a Wikidata Q-id…"></label>
         <div id="cf-hits" class="cf-hits"></div><input type="hidden" id="cf-target-id"></div>
       <div id="cf-target-xref" style="display:none">
         <label>Database<select id="cf-db">${
@@ -2014,8 +2013,24 @@ function wireCommunity(id) {
     searchT = setTimeout(async () => {
       try {
         const r = await fetch("/api/brain/search?limit=8&q=" + encodeURIComponent(q));
-        const j = await r.json();
-        hits.innerHTML = (j.hits || []).map(h =>
+        let hitsArr = (await r.json()).hits || [];
+        // if the query is a Wikidata QID the brain doesn't already have, offer to
+        // ADD it as a new concept (validated on save). Preview its label from
+        // Wikidata; if it's a missing QID, don't offer it.
+        const m = q.match(/^[Qq]([1-9][0-9]{0,11})$/);
+        const qid = m ? "Q" + m[1] : null;
+        if (qid && !hitsArr.some(h => (h.id || "").toUpperCase() === qid)) {
+          let label = qid, offer = true;
+          try {
+            const wr = await fetch("https://www.wikidata.org/w/api.php?action=wbgetentities" +
+              "&format=json&props=labels&languages=en&origin=*&ids=" + qid);
+            const we = (await wr.json()).entities?.[qid];
+            if (we && we.missing !== undefined) offer = false;
+            else if (we && we.labels && we.labels.en) label = we.labels.en.value;
+          } catch (e) { /* network — still offer; the server validates on save */ }
+          if (offer) hitsArr = [{id: qid, label, type: "Wikidata concept — new"}, ...hitsArr];
+        }
+        hits.innerHTML = hitsArr.map(h =>
           `<div class="cf-hit" data-id="${esc(h.id)}" data-label="${esc(h.label)}">${
             esc(h.label)}<span class="t">${esc(h.type)}</span></div>`).join("");
         hits.querySelectorAll(".cf-hit").forEach(el => el.addEventListener("click", () => {
