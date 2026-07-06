@@ -1526,7 +1526,12 @@ let lastLevelEdges = [];
 async function renderPanel(id) {
   lastPanelId = id;
   const e = await getEntry(id);
-  if (!e) { panelEl.innerHTML = `<p class="note">Unknown node: ${esc(id)}</p>`; return; }
+  if (!e) {
+    // not in the static shards — maybe a community-added Wikidata concept node
+    if (/^Q\d+$/.test(id)) return renderCommunityNodePanel(id);
+    panelEl.innerHTML = `<p class="note">Unknown node: ${esc(id)}</p>`;
+    return;
+  }
   const n = e.node, prov = manifest.prov;
   let html = "";
   if (e.breadcrumb) {
@@ -1895,10 +1900,19 @@ function updateAuthNav() {
 async function fetchCommunityEdges(id) {
   try {
     const r = await fetch("/api/brain/edges?id=" + encodeURIComponent(id));
-    if (!r.ok) return {edges: [], shared: [], nodeLabels: {}};
+    if (!r.ok) return {edges: [], shared: [], nodeLabels: {}, self: null};
     const j = await r.json();
-    return {edges: j.edges || [], shared: j.shared || [], nodeLabels: j.node_labels || {}};
-  } catch (e) { return {edges: [], shared: [], nodeLabels: {}}; }
+    return {edges: j.edges || [], shared: j.shared || [], nodeLabels: j.node_labels || {}, self: j.self || null};
+  } catch (e) { return {edges: [], shared: [], nodeLabels: {}, self: null}; }
+}
+// full-text autocomplete over ALL of Wikidata (not just the ingested nodes)
+async function searchWikidata(q) {
+  try {
+    const r = await fetch("https://www.wikidata.org/w/api.php?action=wbsearchentities" +
+      "&format=json&language=en&uselang=en&type=item&limit=8&origin=*&search=" + encodeURIComponent(q));
+    return ((await r.json()).search || []).map(s =>
+      ({id: s.id, label: s.label || s.id, desc: s.description || ""}));
+  } catch (e) { return []; }
 }
 async function submitCommunityEdge(payload) {
   try {
@@ -1928,6 +1942,26 @@ function communityTargetHtml(other, nodeLabels) {
   }
   const L = layout && layout.items.get(other);
   return `<a data-nav="${esc(other)}">${esc((L && L.data.label) || other)}</a>`;
+}
+// minimal panel for a community-added Wikidata concept (not in the static shards)
+async function renderCommunityNodePanel(id) {
+  const {self} = await fetchCommunityEdges(id);
+  if (lastPanelId !== id) return;
+  if (!self) { panelEl.innerHTML = `<p class="note">Unknown node: ${esc(id)}</p>`; return; }
+  let html = `<h2>${esc(self.label)}</h2>
+    <div class="sub">community concept ·
+      <a href="https://www.wikidata.org/wiki/${esc(id)}" target="_blank" rel="noopener">${esc(id)}</a>
+      · added by ${esc(self.added_by)}${
+      currentUser ? ` · <a data-delnode="1" style="color:#a12621;cursor:pointer">delete</a>` : ""}</div>`;
+  if (self.description) html += `<p style="font-size:.9rem">${esc(self.description)}</p>`;
+  html += `<span class="badge">Wikidata concept</span><div id="community-slot"></div>`;
+  panelEl.innerHTML = html;
+  panelEl.querySelectorAll("[data-delnode]").forEach(a => a.addEventListener("click", async () => {
+    if (!confirm("Delete this community concept? It stays as a gravestone recording who removed it.")) return;
+    try { await fetch("/api/brain/node/" + encodeURIComponent(id) + "/delete", {method: "POST"}); } catch (e) {}
+    navigate("path:Mathlib");
+  }));
+  renderCommunity(id);
 }
 async function renderCommunity(id) {
   const slot = $("#community-slot");
@@ -1967,11 +2001,12 @@ async function renderCommunity(id) {
       object. Add a cross-database link above to discover more.</p></div>`;
   }
   if (currentUser) {
-    html += `<details class="caddform"><summary>＋ Add a connection</summary><div class="cform">
+    // ADD AN EDGE (a connection between this node and another)
+    html += `<details class="caddform"><summary>＋ Add a connection (edge)</summary><div class="cform">
       <label>Type<select id="cf-kind">${
         COMMUNITY_KINDS_UI.map(([k, l]) => `<option value="${k}">${esc(l)}</option>`).join("")}</select></label>
       <div id="cf-target-node"><label>Connect to
-        <input id="cf-target" type="text" autocomplete="off" placeholder="search a concept / decl / area — or paste a Wikidata Q-id…"></label>
+        <input id="cf-target" type="text" autocomplete="off" placeholder="search a concept / decl / area (across all of Wikidata)…"></label>
         <div id="cf-hits" class="cf-hits"></div><input type="hidden" id="cf-target-id"></div>
       <div id="cf-target-xref" style="display:none">
         <label>Database<select id="cf-db">${
@@ -1979,6 +2014,13 @@ async function renderCommunity(id) {
         <label>Identifier<input id="cf-value" type="text" placeholder="e.g. group.abelian"></label></div>
       <label>Evidence note <span class="cf-opt">(optional)</span><input id="cf-note" type="text" placeholder="why is this connection valid?"></label>
       <button id="cf-submit">Add connection</button><span id="cf-msg" class="note"></span></div></details>`;
+    // ADD A NODE (introduce a new Wikidata concept — no edge)
+    html += `<details class="caddform"><summary>＋ Add a Wikidata concept (node)</summary><div class="cform">
+      <p class="note" style="margin:0">Introduce a concept the brain doesn't have yet — search all of Wikidata.</p>
+      <label>Wikidata concept
+        <input id="cn-search" type="text" autocomplete="off" placeholder="search Wikidata by name…"></label>
+      <div id="cn-hits" class="cf-hits"></div><input type="hidden" id="cn-id">
+      <button id="cn-submit">Add concept</button><span id="cn-msg" class="note"></span></div></details>`;
   } else {
     html += `<p class="note"><a href="/login">Log in with GitHub</a> to add or remove connections.</p>`;
   }
@@ -2012,33 +2054,26 @@ function wireCommunity(id) {
     const q = tin.value.trim();
     if (q.length < 2) { hits.innerHTML = ""; return; }
     searchT = setTimeout(async () => {
-      try {
-        const r = await fetch("/api/brain/search?limit=8&q=" + encodeURIComponent(q));
-        let hitsArr = (await r.json()).hits || [];
-        // if the query is a Wikidata QID the brain doesn't already have, offer to
-        // ADD it as a new concept (validated on save). Preview its label from
-        // Wikidata; if it's a missing QID, don't offer it.
-        const m = q.match(/^[Qq]([1-9][0-9]{0,11})$/);
-        const qid = m ? "Q" + m[1] : null;
-        if (qid && !hitsArr.some(h => (h.id || "").toUpperCase() === qid)) {
-          let label = qid, offer = true;
-          try {
-            const wr = await fetch("https://www.wikidata.org/w/api.php?action=wbgetentities" +
-              "&format=json&props=labels&languages=en&origin=*&ids=" + qid);
-            const we = (await wr.json()).entities?.[qid];
-            if (we && we.missing !== undefined) offer = false;
-            else if (we && we.labels && we.labels.en) label = we.labels.en.value;
-          } catch (e) { /* network — still offer; the server validates on save */ }
-          if (offer) hitsArr = [{id: qid, label, type: "Wikidata concept — new"}, ...hitsArr];
-        }
-        hits.innerHTML = hitsArr.map(h =>
-          `<div class="cf-hit" data-id="${esc(h.id)}" data-label="${esc(h.label)}">${
-            esc(h.label)}<span class="t">${esc(h.type)}</span></div>`).join("");
-        hits.querySelectorAll(".cf-hit").forEach(el => el.addEventListener("click", () => {
-          tid.value = el.dataset.id; tin.value = el.dataset.label; hits.innerHTML = "";
-        }));
-      } catch (e) { /* offline / no API */ }
-    }, 200);
+      // brain nodes (decls, containers, ingested concepts) AND all of Wikidata
+      let brainHits = [];
+      try { brainHits = (await (await fetch("/api/brain/search?limit=6&q=" + encodeURIComponent(q))).json()).hits || []; }
+      catch (e) { /* no API */ }
+      const wd = await searchWikidata(q);
+      if (tin.value.trim() !== q) return;   // a newer keystroke won
+      const seen = new Set(brainHits.map(h => (h.id || "").toUpperCase()));
+      const merged = [
+        ...brainHits.map(h => ({id: h.id, label: h.label, type: h.type})),
+        ...wd.filter(w => !seen.has(w.id.toUpperCase())).map(w =>
+          ({id: w.id, label: w.label,
+            type: "Wikidata" + (w.desc ? " · " + (w.desc.length > 42 ? w.desc.slice(0, 40) + "…" : w.desc) : "")})),
+      ];
+      hits.innerHTML = merged.slice(0, 10).map(h =>
+        `<div class="cf-hit" data-id="${esc(h.id)}" data-label="${esc(h.label)}">${
+          esc(h.label)}<span class="t">${esc(h.type)}</span></div>`).join("");
+      hits.querySelectorAll(".cf-hit").forEach(el => el.addEventListener("click", () => {
+        tid.value = el.dataset.id; tin.value = el.dataset.label; hits.innerHTML = "";
+      }));
+    }, 220);
   });
   const submit = $("#cf-submit");
   if (submit) submit.addEventListener("click", async () => {
@@ -2057,6 +2092,41 @@ function wireCommunity(id) {
     submit.disabled = false;
     if (res.ok) { if (lastPanelId === id) renderCommunity(id); }
     else msg.textContent = res.error || "could not add";
+  });
+
+  // ---- "Add a Wikidata concept" (a NEW node, no edge) ----------------------
+  const cnIn = $("#cn-search"), cnHits = $("#cn-hits"), cnId = $("#cn-id"), cnSubmit = $("#cn-submit");
+  let cnT;
+  if (cnIn) cnIn.addEventListener("input", () => {
+    clearTimeout(cnT);
+    cnId.value = "";
+    const q = cnIn.value.trim();
+    if (q.length < 2) { cnHits.innerHTML = ""; return; }
+    cnT = setTimeout(async () => {
+      const wd = await searchWikidata(q);
+      if (cnIn.value.trim() !== q) return;
+      cnHits.innerHTML = wd.map(w =>
+        `<div class="cf-hit" data-id="${esc(w.id)}" data-label="${esc(w.label)}">${esc(w.label)}<span class="t">${
+          esc(w.id + (w.desc ? " · " + (w.desc.length > 42 ? w.desc.slice(0, 40) + "…" : w.desc) : ""))}</span></div>`).join("");
+      cnHits.querySelectorAll(".cf-hit").forEach(el => el.addEventListener("click", () => {
+        cnId.value = el.dataset.id; cnIn.value = el.dataset.label; cnHits.innerHTML = "";
+      }));
+    }, 220);
+  });
+  if (cnSubmit) cnSubmit.addEventListener("click", async () => {
+    const msg = $("#cn-msg"), qid = cnId.value;
+    if (!qid) { msg.textContent = "pick a concept from the search results"; return; }
+    cnSubmit.disabled = true; msg.textContent = "adding…";
+    let ok = false, err = "could not add";
+    try {
+      const r = await fetch("/api/brain/node", {method: "POST",
+        headers: {"Content-Type": "application/json"}, body: JSON.stringify({qid})});
+      ok = r.ok;
+      if (!ok) err = ((await r.json().catch(() => ({}))).error) || ("HTTP " + r.status);
+    } catch (e) { err = String(e); }
+    cnSubmit.disabled = false;
+    if (ok) { msg.innerHTML = `added ✓ — now searchable & linkable`; cnId.value = ""; cnIn.value = ""; }
+    else msg.textContent = err;
   });
 }
 

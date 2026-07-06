@@ -248,6 +248,50 @@ describe("POST /api/brain/edge — new Wikidata concept nodes", () => {
   });
 });
 
+describe("POST /api/brain/node — introduce a concept (no edge)", () => {
+  const QID = "Q5530428";
+  const WD = { [QID]: { labels: { en: { value: "Gelfand–Naimark–Segal construction" } }, descriptions: { en: { value: "a construction" } } } };
+  const nodeRows = (h: Harness) => h.db.prepare("SELECT * FROM brain_nodes").all() as Array<Record<string, unknown>>;
+  const addNode = (h: Harness, body: Record<string, unknown>, opts = {}) => post(h.env, "/api/brain/node", body, opts);
+
+  it("mints a validated Wikidata concept standalone (no edge created)", async () => {
+    const h = harness();
+    const res = await withWikidata(WD, () => addNode(h, { qid: QID }, { user: "u-human" }));
+    expect(res.status).toBe(201);
+    expect((await res.json() as Record<string, unknown>).label).toBe("Gelfand–Naimark–Segal construction");
+    expect(nodeRows(h)).toHaveLength(1);
+    expect(edgeRows(h)).toHaveLength(0); // it's a NODE, not an edge
+  });
+
+  it("rejects a QID Wikidata doesn't know, and a non-QID", async () => {
+    const h = harness();
+    expect((await withWikidata({}, () => addNode(h, { qid: "Q999999999" }, { user: "u-human" }))).status).toBe(400);
+    expect((await addNode(h, { qid: "not-a-qid" }, { user: "u-human" })).status).toBe(400);
+    expect((await addNode(h, { qid: QID }, {})).status).toBe(401); // login required
+  });
+
+  it("is a no-op when the QID is already a static node", async () => {
+    const h = harness();
+    const res = await withWikidata(WD, () => addNode(h, { qid: CONCEPT }, { user: "u-human" }));
+    expect(res.status).toBe(200);
+    expect((await res.json() as Record<string, unknown>).existing).toBe(true);
+    expect(nodeRows(h)).toHaveLength(0);
+  });
+
+  it("the overlay returns `self` for a community node, cleared on delete", async () => {
+    const h = harness();
+    await withWikidata(WD, () => addNode(h, { qid: QID }, { user: "u-human" }));
+    const j1 = (await (await get(h.env, `/api/brain/edges?id=${QID}`)).json()) as { self: Record<string, unknown> | null };
+    expect(j1.self).toMatchObject({ id: QID, label: "Gelfand–Naimark–Segal construction", added_by: "u-human" });
+    // any logged-in user can soft-delete it (gravestone)
+    const del = await post(h.env, `/api/brain/node/${QID}/delete`, {}, { user: "u-admin" });
+    expect(del.status).toBe(200);
+    expect(nodeRows(h)[0]).toMatchObject({ status: "deleted", deleted_by: "u-admin" });
+    const j2 = (await (await get(h.env, `/api/brain/edges?id=${QID}`)).json()) as { self: unknown };
+    expect(j2.self).toBeNull();
+  });
+});
+
 describe("GET /api/brain/edges — xref-shared cross-pollination", () => {
   const PAGE = "xref:lmfdb_knowl:group.abelian";
   const NODE_B = "Q11650"; // a second node

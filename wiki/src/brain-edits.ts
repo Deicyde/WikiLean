@@ -289,6 +289,62 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
     return c.json({ ok: true, id, actor_type: actorType, added_by: user.id }, 201);
   });
 
+  // POST /api/brain/node — introduce a NEW concept node (a validated Wikidata
+  // item), distinct from adding an edge. No connection is created.
+  app.post("/api/brain/node", async (c) => {
+    const bad = checkOrigin(c);
+    if (bad) return bad;
+    const user = await getUser(c);
+    if (!user) return c.json({ ok: false, error: "login required" }, 401);
+    const bearer = isBearer(user.role);
+    const rl = bearer
+      ? await c.env.BRAIN_API_LIMITER.limit({ key: `brainapi:${user.id}` })
+      : await c.env.EDIT_LIMITER.limit({ key: `edit:${user.id}` });
+    if (!rl.success) return c.json({ ok: false, error: "rate limited" }, 429);
+    let body: Record<string, unknown>;
+    try {
+      body = (await c.req.json()) as Record<string, unknown>;
+    } catch {
+      return c.json({ ok: false, error: "bad JSON body" }, 400);
+    }
+    const qid = str(body.qid) || str(body.id);
+    let actorType: "human" | "ai";
+    if (bearer) {
+      const declared = str(body.actor_type);
+      if (declared !== "human" && declared !== "ai")
+        return c.json({ ok: false, error: "API calls must set actor_type to 'human' or 'ai'" }, 400);
+      actorType = declared;
+    } else {
+      actorType = "human";
+    }
+    if (!QID_RE.test(qid)) return c.json({ ok: false, error: "node must be a Wikidata Q-id" }, 400);
+    // already a static node → nothing to add
+    if (await brainNodeExists(c, qid)) return c.json({ ok: true, id: qid, existing: true }, 200);
+    const wd = await validateWikidataQid(c, qid);
+    if (!wd) return c.json({ ok: false, error: `${qid} is not a resolvable Wikidata item` }, 400);
+    const db = drizzle(c.env.DB);
+    await db
+      .insert(brainNodes)
+      .values({
+        id: qid,
+        label: wd.label,
+        description: wd.description || null,
+        nodeType: "concept",
+        addedBy: user.id,
+        actorType,
+        status: "live",
+        createdAt: Date.now(),
+        version: 1,
+      })
+      .onConflictDoNothing();
+    return c.json({ ok: true, id: qid, label: wd.label, actor_type: actorType, added_by: user.id }, 201);
+  });
+
+  // DELETE a community node (soft-delete gravestone). Only community-added nodes
+  // (brain_nodes) can be deleted; static nodes have no D1 row.
+  app.delete("/api/brain/node/:id", (c) => deleteNode(c));
+  app.post("/api/brain/node/:id/delete", (c) => deleteNode(c));
+
   // GET /api/brain/edges?id=<node> — live community overlay touching a node.
   app.get("/api/brain/edges", async (c) => {
     const id = str(c.req.query("id"));
@@ -366,8 +422,19 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
       nodeLabels = Object.fromEntries(nrows.map((n) => [n.id, n.label]));
     }
 
+    // if the focus node ITSELF is a community-added node (not in the static
+    // shards), return its record so the page can render a minimal panel for it
+    let self: { id: string; label: string; description: string | null; added_by: string; actor_type: string } | null = null;
+    if (QID_RE.test(id)) {
+      const selfRow = (
+        await db.select().from(brainNodes).where(and(eq(brainNodes.id, id), eq(brainNodes.status, "live"))).limit(1)
+      )[0];
+      if (selfRow)
+        self = { id: selfRow.id, label: selfRow.label, description: selfRow.description, added_by: selfRow.addedBy, actor_type: selfRow.actorType };
+    }
+
     // live tail — never cache
-    return c.json({ ok: true, id, edges, shared, node_labels: nodeLabels }, 200, { "Cache-Control": "no-store" });
+    return c.json({ ok: true, id, edges, shared, node_labels: nodeLabels, self }, 200, { "Cache-Control": "no-store" });
   });
 
   // DELETE /api/brain/edge/:id — soft-delete (gravestone). Any logged-in user
@@ -397,5 +464,28 @@ async function deleteEdge(c: Context<{ Bindings: Env }>): Promise<Response> {
     .update(brainEdges)
     .set({ status: "deleted", deletedBy: user.id, deletedAt: Date.now(), version: row.version + 1 })
     .where(and(eq(brainEdges.id, id), eq(brainEdges.status, "live")));
+  return c.json({ ok: true, id, deleted_by: user.id }, 200);
+}
+
+async function deleteNode(c: Context<{ Bindings: Env }>): Promise<Response> {
+  const bad = checkOrigin(c);
+  if (bad) return bad;
+  const user = await getUser(c);
+  if (!user) return c.json({ ok: false, error: "login required" }, 401);
+  const rl = isBearer(user.role)
+    ? await c.env.BRAIN_API_LIMITER.limit({ key: `brainapi:${user.id}` })
+    : await c.env.EDIT_LIMITER.limit({ key: `edit:${user.id}` });
+  if (!rl.success) return c.json({ ok: false, error: "rate limited" }, 429);
+
+  const id = c.req.param("id") ?? "";
+  if (!QID_RE.test(id)) return c.json({ ok: false, error: "bad node id" }, 400);
+  const db = drizzle(c.env.DB);
+  const row = (await db.select().from(brainNodes).where(eq(brainNodes.id, id)).limit(1))[0];
+  if (!row) return c.json({ ok: false, error: "unknown community node" }, 404);
+  if (row.status === "deleted") return c.json({ ok: true, id, already_deleted: true }, 200);
+  await db
+    .update(brainNodes)
+    .set({ status: "deleted", deletedBy: user.id, deletedAt: Date.now(), version: row.version + 1 })
+    .where(and(eq(brainNodes.id, id), eq(brainNodes.status, "live")));
   return c.json({ ok: true, id, deleted_by: user.id }, 200);
 }
