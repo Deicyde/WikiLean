@@ -178,6 +178,7 @@ section.kind.community h3 { border-bottom-color:#c9b98a; }
   border:1px solid #ddd4bd; border-radius:6px; background:#fbf8ef; }
 .cform label { font-size:.76rem; color:#4a463d; display:flex; flex-direction:column; gap:2px;
   font-family:-apple-system,sans-serif; }
+.cf-opt { color:#8a8272; font-weight:400; }
 .cform input, .cform select { padding:4px 6px; border:1px solid #c8bfa8; border-radius:4px;
   font-size:.82rem; background:#fff; color:#151310; font-family:inherit; }
 .cf-hits { max-height:150px; overflow:auto; }
@@ -1976,7 +1977,7 @@ async function renderCommunity(id) {
         <label>Database<select id="cf-db">${
           XREF_DB_OPTIONS.map(([k, l]) => `<option value="${k}">${esc(l)}</option>`).join("")}</select></label>
         <label>Identifier<input id="cf-value" type="text" placeholder="e.g. group.abelian"></label></div>
-      <label>Evidence note<input id="cf-note" type="text" placeholder="why is this connection valid?"></label>
+      <label>Evidence note <span class="cf-opt">(optional)</span><input id="cf-note" type="text" placeholder="why is this connection valid?"></label>
       <button id="cf-submit">Add connection</button><span id="cf-msg" class="note"></span></div></details>`;
   } else {
     html += `<p class="note"><a href="/login">Log in with GitHub</a> to add or remove connections.</p>`;
@@ -2042,7 +2043,6 @@ function wireCommunity(id) {
   const submit = $("#cf-submit");
   if (submit) submit.addEventListener("click", async () => {
     const msg = $("#cf-msg"), kind = kindSel.value, note = $("#cf-note").value.trim();
-    if (!note) { msg.textContent = "an evidence note is required"; return; }
     let dst;
     if (kind === "xref") {
       const value = $("#cf-value").value.trim();
