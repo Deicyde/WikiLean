@@ -56,6 +56,7 @@ a:hover { text-decoration:underline; }
   border-right:1px solid #262c3a; }
 .toolbar .grp:last-child { border-right:none; }
 .toolbar b { color:#e6e4de; }
+#structstat { color:#7f8a9c; font-size:.78rem; font-style:italic; white-space:nowrap; }
 #search { position:relative; }
 #search input { width:290px; padding:5px 9px; border:1px solid #33405c; border-radius:6px;
   font-size:.88rem; background:#0b0e14; color:#e6e4de; }
@@ -227,10 +228,6 @@ body.embed .wl-header, body.embed #crumbbar { display:none; }   /* flex column f
   </nav>
 </header>
 <div class="toolbar">
-  <span class="grp"><b>View</b>
-    <label><input type="radio" name="vm" value="bubbles" checked> bubbles</label>
-    <label title="same level, force-directed — nodes spread apart so the connections dominate and every edge is easy to hit"><input type="radio" name="vm" value="web"> web</label>
-  </span>
   <span class="grp"><b>Layers</b>
     <label><input type="checkbox" data-k="depends" checked> formal deps</label>
     <label><input type="checkbox" data-k="formalizes" checked> formalizations</label>
@@ -246,8 +243,9 @@ body.embed .wl-header, body.embed #crumbbar { display:none; }   /* flex column f
     <label><input type="checkbox" data-lk="tooling"> tooling</label>
   </span>
   <span class="grp"><b>Structure</b>
-    <label title="weight edges by observed/expected flow (null model) instead of raw volume — corrects the hub bias found by arXiv 2604.24797"><input type="checkbox" id="dehub" checked> de-hub (lift)</label>
-    <label title="color bubble outlines by dependency-flow communities — where logical structure diverges from the folder tree (arXiv 2604.24797: NMI 0.34)"><input type="checkbox" id="commColor" checked> logical communities</label>
+    <label title="Rank dependency edges by affinity (lift = observed ÷ expected flow) instead of raw volume, so genuine mathematical links survive the cut and shared infrastructure (everything-uses-Mathlib) recedes. Corrects the hub bias of arXiv 2604.24797. Bites hardest inside a dense library, where it changes which edges are shown."><input type="checkbox" id="dehub" checked> de-hub (lift)</label>
+    <label title="Tint each bubble by its dependency-flow community — clusters of areas that lean on each other, regardless of where the folder tree files them (arXiv 2604.24797's Finding 1). Dive into a library to watch its modules regroup."><input type="checkbox" id="commColor" checked> logical communities</label>
+    <span class="note" id="structstat" title="what the Structure toggles are doing at this level"></span>
   </span>
   <span class="grp"><b>Provenance</b>
     <label title="community/human-curated: Wikidata properties &amp; claims, @[wikidata]/@[stacks]/@[kerodon] attributes written in Mathlib source"><input type="checkbox" data-p="human" checked> human</label>
@@ -269,7 +267,7 @@ body.embed .wl-header, body.embed #crumbbar { display:none; }   /* flex column f
       <span style="color:#f472b6">cross-database</span> ·
       <span style="color:#fb923c">literature</span> ·
       <span style="color:#2dd4bf">matches</span> ·
-      dots = concepts (blue) / decls (green) · outlines = logical communities ·
+      dots = concepts (blue) / decls (green) · tinted regions = logical communities ·
       selecting a node orbits its neighbors (click to travel)</div>
   </div>
   <div id="panel"><p class="note">The Brain as bubbles: areas nest by containment
@@ -500,15 +498,9 @@ function packValue(item) {
   return item.type === "concept" ? 6 : 2.5;
 }
 
-// bubbles = containment-first (circle pack); web = edge-first (force layout of
-// the SAME level, nodes shrunk and spread so the connections dominate and are
-// easy to hit)
-let viewMode = "bubbles";
-try { viewMode = localStorage.getItem("wl-brain-view") || "bubbles"; } catch (e) {}
-
+const SHADE = "#22304d";   // container fill — the canvas is always dark
 function drawNodes() {
   const leaves = layout.leaves;
-  const shade = "#22304d";   // container fill — the canvas is always dark
   const bubbles = gBubbles.selectAll("circle.node").data(leaves, l => l.data.id);
   bubbles.exit().remove();
   const entered = bubbles.enter().append("circle")
@@ -517,7 +509,7 @@ function drawNodes() {
   entered.merge(bubbles)
     .attr("cx", l => l.x).attr("cy", l => l.y)
     .attr("r", l => Math.max(l.r, 2.5))
-    .attr("fill", l => fillFor(l.data, shade))
+    .attr("fill", l => fillFor(l.data, SHADE))
     .attr("fill-opacity", l => l.data.type === "container" ? 0.55 : l.data.ghost ? 0.35 : 0.9)
     .on("click", (ev, l) => { ev.stopPropagation(); nodeClick(l.data); })
     .select("title").text(l => l.data.label + (l.data.n_decls
@@ -527,7 +519,9 @@ function drawNodes() {
 
 function drawLabels() {
   gLabels.selectAll("*").remove();
-  const web = viewMode === "web" || (layout && layout.ego);
+  // ego view lays labels flat under the node (edge-first); level views set them
+  // inside/over the bubble (containment-first)
+  const flat = layout && layout.ego;
   const ego = layout && layout.ego;
   for (const l of layout.leaves) {
     if (ego && l.data.type !== "container" && l.data.type !== "concept") {
@@ -540,60 +534,24 @@ function drawLabels() {
       continue;
     }
     if (l.data.type === "container") {
-      if (!web && l.r < 24) continue;
-      const fs = web ? 10 : Math.max(10, Math.min(16, l.r / 4.5));
+      if (!flat && l.r < 24) continue;
+      const fs = flat ? 10 : Math.max(10, Math.min(16, l.r / 4.5));
       gLabels.append("text").attr("class", "blabel")
-        .attr("x", l.x).attr("y", web ? l.y + l.r + 11 : l.y - (l.r > 40 ? 4 : -4))
+        .attr("x", l.x).attr("y", flat ? l.y + l.r + 11 : l.y - (l.r > 40 ? 4 : -4))
         .attr("font-size", fs).text(l.data.label);
-      if (!web && l.r > 40) {
+      if (!flat && l.r > 40) {
         gLabels.append("text").attr("class", "bcount")
           .attr("x", l.x).attr("y", l.y + fs - 2).attr("font-size", fs * 0.72)
           .text(`${(l.data.n_decls || 0).toLocaleString()}${
             l.data.n_concepts ? " · " + l.data.n_concepts + "★" : ""}`);
       }
     } else if (l.data.type === "concept" && l.data.label && !/^Q\d+$/.test(l.data.label)) {
-      if (!web && l.r < 11) continue;
+      if (!flat && l.r < 11) continue;
       gLabels.append("text").attr("class", "blabel")
         .attr("x", l.x).attr("y", l.y + Math.max(l.r, 3) + 10).attr("font-size", 9)
         .text(l.data.label.length > 26 ? l.data.label.slice(0, 24) + "…" : l.data.label);
     }
   }
-}
-
-// force layout over the CURRENT level using the just-built edge web; runs
-// synchronously (200 ticks) once enrich() has the edges
-function applyWebLayout() {
-  if (viewMode !== "web" || !layout || !layout.leaves) return;
-  const W = stageEl.clientWidth || 800, H = stageEl.clientHeight || 600;
-  const leaves = layout.leaves;
-  const sims = leaves.map(l => ({
-    id: l.data.id, l,
-    x: l.x, y: l.y,
-    r: l.data.type === "container"
-      ? 9 + 3.2 * Math.log2(1 + (l.data.n_decls || 1))
-      : Math.min(Math.max(l.r, 3.5), 7),
-  }));
-  const byId = new Map(sims.map(s => [s.id, s]));
-  const links = edgeStore
-    .filter(e => byId.has(e.a) && byId.has(e.b))
-    .map(e => ({source: e.a, target: e.b, w: e.w}));
-  const sim = d3.forceSimulation(sims)
-    .force("link", d3.forceLink(links).id(d => d.id)
-      .distance(l => 70 + 50 / Math.sqrt(1 + l.w)).strength(0.4))
-    .force("charge", d3.forceManyBody().strength(-140).distanceMax(420))
-    .force("center", d3.forceCenter(W / 2, H / 2))
-    .force("collide", d3.forceCollide(d => d.r + 8))
-    .stop();
-  for (let i = 0; i < 200; i++) sim.tick();
-  for (const s of sims) {
-    s.l.x = Math.max(s.r + 6, Math.min(W - s.r - 6, s.x));
-    s.l.y = Math.max(s.r + 6, Math.min(H - s.r - 18, s.y));
-    s.l.r = s.r;
-  }
-  drawNodes();
-  drawLabels();
-  renderEdges();
-  drawSelRing();
 }
 
 // Ego view: a concept/decl/paper becomes the focus — it sits centered and
@@ -789,7 +747,7 @@ async function enrich(seq, leaves) {
     // grandchild preview: faint inner circles (top 24 by size)
     const kids = (e.children && e.children.first || [])
       .filter(c => c.type === "container").slice(0, 24);
-    if (kids.length > 1 && l.r > 26 && viewMode !== "web") {
+    if (kids.length > 1 && l.r > 26) {
       const inner = d3.hierarchy({children: kids})
         .sum(d => d.children ? 0 : Math.pow(Math.max(d.n_decls || 1, 1), 0.6));
       d3.pack().size([l.r * 1.7, l.r * 1.7]).padding(2)(inner);
@@ -868,7 +826,6 @@ async function enrich(seq, leaves) {
   if (seq !== renderSeq) return;
   edgeStore = [...store.values()];
   renderEdges();
-  applyWebLayout();
   if (lastPanelId === focusId && !selectedId) renderPanel(focusId);
 }
 
@@ -890,9 +847,10 @@ function renderEdges() {
   // De-hub mode ranks by lift×√sig (affinity × volume) instead of raw volume,
   // per arXiv 2604.24797: raw weights measure infrastructure, not relevance.
   const rank = e => dehub ? (liftOf(e) || 0.05) * Math.sqrt(e.w) : e.w;
-  const dep = show.filter(e => e.kind === "depends")
-    .sort((x, y) => rank(y) - rank(x)).slice(0, 250);
+  const depAll = show.filter(e => e.kind === "depends");
+  const dep = depAll.slice().sort((x, y) => rank(y) - rank(x)).slice(0, 250);
   const rest = show.filter(e => e.kind !== "depends");
+  depCap = {shown: dep.length, total: depAll.length, dehub};
   const maxSig = dep.reduce((m, e) => Math.max(m, e.w), 1);
   const depOpacity = e => {
     const lf = liftOf(e);
@@ -927,8 +885,7 @@ function renderEdges() {
     const hitD = `M${A.x},${A.y} Q${cpx},${cpy} ${B.x},${B.y}`;
     const st = EDGE_STYLE[e.kind];
     const isDep = e.kind === "depends";
-    const web = viewMode === "web";
-    const baseOp = isDep ? Math.max(depOpacity(e), web ? 0.3 : 0) : web ? 0.65 : 0.5;
+    const baseOp = isDep ? depOpacity(e) : 0.5;
     const p = gEdges.append("path").attr("class", "link")
       .attr("d", d).attr("fill", "none")
       .attr("stroke", st.color)
@@ -951,13 +908,46 @@ function renderEdges() {
       .on("click", ev => { ev.stopPropagation(); showEdgePanel(e); });
   }
   paintCommunities();
+  updateStructStat();
+}
+
+// Live readout of what the two Structure toggles are doing at this level, so the
+// controls visibly earn their place: de-hub reports whether the depends-cap is
+// biting (it only changes which edges show once there are >250 candidates —
+// i.e. inside a dense library), and communities reports the cluster count.
+let depCap = {shown: 0, total: 0, dehub: true};
+let commState = {n: 0, reason: ""};
+function updateStructStat() {
+  const el = $("#structstat");
+  if (!el) return;
+  const parts = [];
+  const capped = depCap.total > depCap.shown;
+  if (depCap.dehub)
+    parts.push(capped ? `de-hub: top ${depCap.shown} of ${depCap.total} deps by affinity`
+                      : "de-hub: weighting deps by affinity");
+  else
+    parts.push(capped ? `raw volume: top ${depCap.shown} of ${depCap.total} deps`
+                      : "raw volume");
+  if (commState.reason === "off") parts.push("communities off");
+  else if (commState.reason === "nodeps") parts.push("communities need formal deps");
+  else if (commState.reason === "sparse") parts.push("one community here");
+  else if (commState.reason === "ok")
+    parts.push(`${commState.n} logical ${commState.n === 1 ? "community" : "communities"}`);
+  el.textContent = parts.join(" · ");
+}
+
+// blend two #rrggbb colors, t=0 → a, t=1 → b
+function mix(a, b, t) {
+  const ch = (h, i) => parseInt(h.slice(1 + 2 * i, 3 + 2 * i), 16);
+  const hx = x => Math.round(x).toString(16).padStart(2, "0");
+  return "#" + [0, 1, 2].map(i => hx(ch(a, i) + (ch(b, i) - ch(a, i)) * t)).join("");
 }
 
 // Logical-community coloring of the visible level: greedy modularity merging
 // over the sibling depends graph (lift-corrected weights). Makes the paper's
 // Finding 1 visible — where dependency communities cut across the folder tree.
-const COMM_PALETTE = ["#e6550d", "#1a7f37", "#0969da", "#bf5af2", "#d4a72c",
-                      "#cf222e", "#0e7490", "#6e7781", "#9a6700", "#8250df"];
+const COMM_PALETTE = ["#f2711c", "#3fb950", "#58a6ff", "#d2a8ff", "#e3b341",
+                      "#ff7b72", "#39c5cf", "#a5d6ff", "#ffa657", "#bc8cff"];
 function communitiesOf(ids, links) {
   const m = links.reduce((s, l) => s + l.w, 0);
   if (!m || ids.length < 3) return null;
@@ -989,16 +979,19 @@ function communitiesOf(ids, links) {
 }
 function paintCommunities() {
   const conts = [...layout.items.values()].filter(l => l.data.type === "container");
-  gBubbles.selectAll("circle.bubble").attr("stroke", null).attr("stroke-width", null)
-    .attr("stroke-opacity", null);
-  if (!$("#commColor").checked || !activeKinds().has("depends")) return;
+  // clear pass: restore the base dark fill + drop any prior community ring
+  gBubbles.selectAll("circle.bubble")
+    .attr("stroke", null).attr("stroke-width", null).attr("stroke-opacity", null)
+    .attr("fill", l => fillFor(l.data, SHADE));
+  if (!$("#commColor").checked) { commState = {n: 0, reason: "off"}; return; }
+  if (!activeKinds().has("depends")) { commState = {n: 0, reason: "nodeps"}; return; }
   const ids = conts.map(l => l.data.id);
   const idset = new Set(ids);
   const links = edgeStore.filter(e => e.kind === "depends"
       && idset.has(e.a) && idset.has(e.b))
     .map(e => ({a: e.a, b: e.b, w: e.w * (liftOf(e) || 1)}));
   const comm = communitiesOf(ids, links);
-  if (!comm) return;
+  if (!comm) { commState = {n: 0, reason: "sparse"}; return; }
   const sizes = new Map();
   for (const c of comm.values()) sizes.set(c, (sizes.get(c) || 0) + 1);
   const colorOf = new Map();
@@ -1007,9 +1000,15 @@ function paintCommunities() {
     const c = comm.get(l.data.id);
     if (c === undefined || sizes.get(c) < 2) return;
     if (!colorOf.has(c)) colorOf.set(c, COMM_PALETTE[ci++ % COMM_PALETTE.length]);
-    d3.select(this).attr("stroke", colorOf.get(c))
-      .attr("stroke-width", 2.4).attr("stroke-opacity", 0.9);
+    const col = colorOf.get(c);
+    // a colored region (fill wash) + a bright ring, both scaled so the grouping
+    // reads against the dark bubbles instead of vanishing into a thin outline
+    d3.select(this).attr("fill", mix(SHADE, col, 0.34))
+      .attr("stroke", col)
+      .attr("stroke-width", Math.max(2, Math.min(4.5, (l.r || 6) * 0.07)))
+      .attr("stroke-opacity", 0.95);
   });
+  commState = {n: colorOf.size, reason: colorOf.size ? "ok" : "sparse"};
 }
 
 // click-to-inspect: the edge's provenance card in the panel
@@ -1831,15 +1830,6 @@ document.querySelectorAll(".toolbar input").forEach(el =>
     if (selectedId) renderPanel(selectedId);
     else if (focusId !== LIBS_ID) renderPanel(focusId);
   }));
-
-document.querySelectorAll('input[name="vm"]').forEach(r => {
-  r.checked = r.value === viewMode;
-  r.addEventListener("change", () => {
-    viewMode = r.value;
-    try { localStorage.setItem("wl-brain-view", viewMode); } catch (e) {}
-    renderFocus(false);
-  });
-});
 
 window.addEventListener("hashchange", () => {
   const id = decodeURIComponent(location.hash.slice(1));
