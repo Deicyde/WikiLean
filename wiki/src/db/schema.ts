@@ -249,6 +249,28 @@ export const brainEdges = sqliteTable(
 );
 export type BrainEdgeRow = typeof brainEdges.$inferSelect;
 
+// Community-added brain nodes (migration 0011): validated Wikidata concepts a
+// user introduced that aren't in the static base yet. Only ever a real QID
+// (validated live against Wikidata on insert). Same live/gravestone model.
+export const brainNodes = sqliteTable(
+  "brain_nodes",
+  {
+    id: text("id").primaryKey(), // the Wikidata QID
+    label: text("label").notNull(), // Wikidata label
+    description: text("description"),
+    nodeType: text("node_type").notNull().default("concept"),
+    addedBy: text("added_by").notNull(),
+    actorType: text("actor_type").notNull(), // 'human' | 'ai'
+    status: text("status").notNull().default("live"), // 'live' | 'deleted'
+    createdAt: integer("created_at").notNull(),
+    deletedBy: text("deleted_by"),
+    deletedAt: integer("deleted_at"),
+    version: integer("version").notNull().default(1),
+  },
+  (t) => [index("idx_brain_nodes_created").on(t.status, t.createdAt)],
+);
+export type BrainNodeRow = typeof brainNodes.$inferSelect;
+
 // Per-user article watchlist (P3 contribution-loop: "watch" a slug to filter
 // /recent-changes to articles you care about). One row per (user, slug).
 export const watchlist = sqliteTable(

@@ -86,11 +86,14 @@ export function registerBrainRoutes(app: Hono<{ Bindings: Env }>): void {
     const labels = await assetJson<Array<{ id: string; type: string; label: string }>>(
       c, "/assets/brain/labels.json");
     if (!labels) return c.json({ ok: false, error: "brain data unavailable" }, 503);
+    // a bare QID query matches an existing node by id (so a concept is findable
+    // by "Q181296", not only its label)
+    const isQid = /^q[1-9][0-9]{0,11}$/.test(q);
     const starts: object[] = [], contains: object[] = [];
     for (const r of labels) {
       if (type && r.type !== type) continue;
       const l = r.label.toLowerCase();
-      if (l.startsWith(q)) starts.push(r);
+      if (l.startsWith(q) || (isQid && r.id.toLowerCase() === q)) starts.push(r);
       else if (l.includes(q)) contains.push(r);
       if (starts.length >= limit) break;
     }
