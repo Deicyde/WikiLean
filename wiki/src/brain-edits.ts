@@ -187,7 +187,7 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
     if (!COMMUNITY_KINDS.has(kind)) {
       return c.json({ ok: false, error: `kind must be one of: ${[...COMMUNITY_KINDS].join(", ")}` }, 400);
     }
-    if (!note) return c.json({ ok: false, error: "an evidence note is required" }, 400);
+    // the evidence note is optional; only cap its length when present
     if (note.length > MAX_NOTE) return c.json({ ok: false, error: "evidence note too long" }, 400);
     if (!BRAIN_ID_RE.test(src)) return c.json({ ok: false, error: "bad src id" }, 400);
 

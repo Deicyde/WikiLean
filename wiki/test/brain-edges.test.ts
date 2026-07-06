@@ -150,9 +150,11 @@ describe("POST /api/brain/edge", () => {
     expect((await postEdge(h, { ...REL, dst: UNKNOWN }, { user: "u-human" })).status).toBe(400);
   });
 
-  it("requires an evidence note and rejects a self-loop", async () => {
+  it("allows a missing evidence note (optional) but rejects a self-loop", async () => {
     const h = harness();
-    expect((await postEdge(h, { src: CONCEPT, dst: DECL, kind: "formalizes", evidence: {} }, { user: "u-human" })).status).toBe(400);
+    // note is optional → a note-less edge succeeds
+    const noNote = await postEdge(h, { src: CONCEPT, dst: DECL, kind: "formalizes", evidence: {} }, { user: "u-human" });
+    expect(noNote.status).toBe(201);
     expect((await postEdge(h, { src: CONCEPT, dst: CONCEPT, kind: "relates", evidence: { note: "x" } }, { user: "u-human" })).status).toBe(400);
   });
 
