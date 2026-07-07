@@ -46,13 +46,13 @@
         "section": "Book I",
         "snippet": "the base angles of an isosceles triangle are equal"
       },
-      "status": "not_formalized",
+      "status": "formalized",
       "mathlib": {
-        "decl": null,
-        "module": null,
-        "match_kind": null
+        "decl": "EuclideanGeometry.angle_eq_angle_of_dist_eq",
+        "module": "Mathlib.Geometry.Euclidean.Triangle",
+        "match_kind": "exact"
       },
-      "note": "No declaration in Mathlib stating that the base angles of an isosceles triangle are equal.",
+      "note": "Mathlib's EuclideanGeometry.angle_eq_angle_of_dist_eq states that if dist p₁ p₂ = dist p₁ p₃ then angle p₁ p₂ p₃ = angle p₁ p₃ p₂, the pons asinorum.",
       "provenance": "ai",
       "id": "76ecea39726d"
     },
@@ -256,8 +256,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The Euclid construction 2^(p−1)(2^p − 1) → perfect when 2^p − 1 is prime is not present in Mathlib.",
-      "provenance": "ai",
+      "note": "The cited Nat.Perfect.two_pow_mul_mersenne_of_prime does not exist; loogle/grep show no Mathlib formalization that 2^(p−1)·(2^p−1) is perfect when 2^p−1 is prime.",
+      "provenance": "ai-moderated",
       "id": "928720baa2b2"
     },
     {
@@ -301,14 +301,14 @@
         "section": "Book IX",
         "snippet": "This result is the Euclid–Euler theorem"
       },
-      "status": "partial",
+      "status": "not_formalized",
       "mathlib": {
-        "decl": "mersenne",
-        "module": "Mathlib.NumberTheory.LucasLehmer",
+        "decl": null,
+        "module": null,
         "match_kind": null
       },
-      "note": "Mathlib has Nat.Perfect and the mersenne function/LucasLehmer test, but no theorem characterizing even perfect numbers as 2^(p−1)·(2^p − 1) with 2^p−1 prime.",
-      "provenance": "ai",
+      "note": "The cited Nat.even_and_perfect_iff does not exist and no Mathlib decl characterizes even perfect numbers in terms of Mersenne primes.",
+      "provenance": "ai-moderated",
       "id": "d34bb58db9d4"
     },
     {
@@ -488,7 +488,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib defines Nat.gcd by the Euclidean recursion gcd a b = gcd (b % a) a and proves the standard correctness lemmas (Nat.gcd_dvd_left, Nat.dvd_gcd, etc.).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "aebc0ce23db9"
     },
     {
       "kind": "theorem",
@@ -504,7 +505,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib formalizes the law of cosines in inner-product space form, generalizing Euclid's geometric precursor in Book II (Propositions 12–13).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "363a54672206"
     },
     {
       "kind": "proposition",
@@ -520,7 +522,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not have a synthetic framework for straightedge-and-compass constructions or for constructibility of regular n-gons.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c45e4420f63c"
     },
     {
       "kind": "theorem",
@@ -536,7 +539,8 @@
         "match_kind": null
       },
       "note": "The impossibility of duplicating the cube by straightedge and compass is not formalized in Mathlib; the underlying constructible-number theory is also absent.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1e61191a8014"
     },
     {
       "kind": "proposition",
@@ -552,7 +556,8 @@
         "match_kind": null
       },
       "note": "Mathlib formalizes Lebesgue/Bochner integration but does not give Euclid's classical method of exhaustion as a stated technique.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a3a51edc8683"
     },
     {
       "kind": "theorem",
@@ -568,7 +573,8 @@
         "match_kind": null
       },
       "note": "Mathlib has supporting machinery (e.g. Logic/Godel/GodelBetaFunction) but no stated form of Gödel's first incompleteness theorem.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dcb955b00098"
     },
     {
       "kind": "definition",
@@ -584,7 +590,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not currently define the projective cross ratio of four collinear points.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e4522e2c697a"
     },
     {
       "kind": "proposition",
@@ -600,6 +607,87 @@
         "match_kind": null
       },
       "note": "Pasch's axiom — that a line entering a triangle through one side must exit through another — is not stated synthetically in Mathlib.",
+      "provenance": "ai",
+      "id": "47e0de4b20ce"
+    },
+    {
+      "kind": "theorem",
+      "label": "Irrationality of √2 (Book X)",
+      "anchor": {
+        "section": "Book X",
+        "snippet": "the square root of 2"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Prime.irrational_sqrt",
+        "module": "Mathlib.NumberTheory.Real.Irrational",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's Nat.Prime.irrational_sqrt yields irrationality of √p for every prime p, in particular √2; an `irrational_sqrt_two` corollary is also available.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Alternation of proportions (Book V, Prop. 16)",
+      "anchor": {
+        "section": "Book V",
+        "snippet": "if a : b :: c : d , then a : c :: b : d"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no synthetic theory of Eudoxian proportions; the alternation rule is subsumed by field arithmetic but not stated in the Euclidean form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Construction of the five Platonic solids inscribed in a sphere (Book XIII)",
+      "anchor": {
+        "section": "Book XIII",
+        "snippet": "constructs the five Platonic solids (regular polyhedra) inscribed in a sphere"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no formalization of the five Platonic solids or their inscription in a sphere.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euler's polyhedron formula V − E + F = 2",
+      "anchor": {
+        "section": "Apocryphal books",
+        "snippet": "without however finding Euler's formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Euler's polyhedron formula relating vertex, edge, and face counts of a convex polyhedron is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Geometric progression as continued proportion (Book VIII)",
+      "anchor": {
+        "section": "Book VIII",
+        "snippet": "defined by the property of being in continued proportion (each two consecutive magnitudes have the same ratio)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib expresses geometric progressions via exponentiation (e.g. geom_series, geom_sum_eq) rather than Euclid's synthetic 'continued proportion' definition.",
       "provenance": "ai"
     }
   ]

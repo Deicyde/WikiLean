@@ -35,9 +35,25 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No `stdDev`/`standardDeviation` declaration exists in Mathlib; only `ProbabilityTheory.variance` is defined (loogle for `\"stdDev\"` returned zero hits).",
+      "note": "No `stdDev`/`standardDeviation` declaration exists in Mathlib; only `ProbabilityTheory.variance` is defined.",
       "provenance": "ai",
       "id": "19781b484b3e"
+    },
+    {
+      "kind": "definition",
+      "label": "Variance as average of squared deviations from the mean",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the variance being the average of the squared deviations from the mean"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.variance",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "exact"
+      },
+      "note": "`ProbabilityTheory.variance` is defined as `𝔼[(X − 𝔼[X])²]`, matching the parenthetical definition.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -72,6 +88,22 @@
       "note": "No definition of standard error of the sample mean was found in Mathlib.",
       "provenance": "ai",
       "id": "159711ed5702"
+    },
+    {
+      "kind": "proposition",
+      "label": "Standard error of the mean equals σ/√N",
+      "anchor": {
+        "section": "Relationship with standard error and statistical significance",
+        "snippet": "The mean's standard error turns out to equal the population standard deviation divided by the square root of the sample size"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `IndepFun.variance_sum` for sums of independent variables but the σ/√N standard-error identity is not stated.",
+      "provenance": "ai"
     },
     {
       "kind": "example",
@@ -177,6 +209,22 @@
     },
     {
       "kind": "example",
+      "label": "Pareto distribution has mean but no SD",
+      "anchor": {
+        "section": "Definition of population values",
+        "snippet": "has a mean, but not a standard deviation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Pareto distribution definition and no statement about which of its moments exist.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
       "label": "Cauchy distribution has no SD",
       "anchor": {
         "section": "Definition of population values",
@@ -188,8 +236,9 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib has no Cauchy distribution definition (loogle for `cauchy`+`Distribution` returned zero hits) and no statement about non-existence of its moments.",
-      "provenance": "ai"
+      "note": "Mathlib has no Cauchy distribution definition and no statement about non-existence of its moments.",
+      "provenance": "ai",
+      "id": "4dd8f30fbad9"
     },
     {
       "kind": "definition",
@@ -255,7 +304,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Log-normal distribution is not defined in Mathlib (loogle for `logNormal` returned zero hits).",
+      "note": "Log-normal distribution is not defined in Mathlib.",
       "provenance": "ai",
       "id": "8961951a176c"
     },
@@ -358,7 +407,8 @@
         "match_kind": "generalization"
       },
       "note": "Jensen's inequality for concave functions is formalized as `ConcaveOn.le_map_integral`; the specific application to sqrt of sample variance is not.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9469b3f8a5fc"
     },
     {
       "kind": "definition",
@@ -390,7 +440,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The chi and chi-square distributions are not defined in Mathlib (loogle for `chiSquared` returned zero hits).",
+      "note": "The chi and chi-square distributions are not defined in Mathlib.",
       "provenance": "ai",
       "id": "7e9a42e89709"
     },
@@ -416,7 +466,7 @@
       "label": "Confidence interval for sampled SD",
       "anchor": {
         "section": "Confidence interval of a sampled standard deviation",
-        "snippet": "where [MATH] is the p -th quantile of the chi-square distribution"
+        "snippet": "is the p -th quantile of the chi-square distribution with k degrees of freedom"
       },
       "status": "not_formalized",
       "mathlib": {
@@ -426,7 +476,6 @@
       },
       "note": "No confidence-interval construction for sample SD is formalized.",
       "provenance": "ai-moderated",
-      "moderation_flag": "Anchor snippet contains '[MATH]' literal; ideally should be replaced with text actually present in extracted prose (kept verbatim to honor the preserve-id rule).",
       "id": "be4046e104d9"
     },
     {
@@ -544,8 +593,9 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No `meanAbsoluteDeviation` declaration is present in Mathlib (loogle returned zero hits).",
-      "provenance": "ai"
+      "note": "No `meanAbsoluteDeviation` declaration is present in Mathlib.",
+      "provenance": "ai",
+      "id": "67d20b55eaf3"
     },
     {
       "kind": "example",
@@ -645,7 +695,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No central limit theorem declaration was found in Mathlib (loogle for `centralLimit` returned zero hits).",
+      "note": "No central limit theorem declaration was found in Mathlib.",
       "provenance": "ai",
       "id": "45e5eaedb4a9"
     },
@@ -665,6 +715,22 @@
       "note": "Normal-CDF based proportion formula is not stated in Mathlib.",
       "provenance": "ai",
       "id": "f17c2036f2b0"
+    },
+    {
+      "kind": "definition",
+      "label": "Normal cumulative distribution function",
+      "anchor": {
+        "section": "Rules for normally distributed data",
+        "snippet": "The proportion that is less than or equal to a number, x , is given by the cumulative distribution function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define the normal distribution or its CDF; `Real.erf`/the error function is also not present.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",
@@ -798,7 +864,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No `coefficientOfVariation` definition exists in Mathlib (loogle returned zero hits).",
+      "note": "No `coefficientOfVariation` definition exists in Mathlib.",
       "provenance": "ai",
       "id": "2248a67f138e"
     },
@@ -841,7 +907,7 @@
       "label": "Weighted running calculation",
       "anchor": {
         "section": "Weighted calculation",
-        "snippet": "When the values [MATH] are weighted with unequal weights"
+        "snippet": "the power sums s 0 , s 1 , s 2 are each computed as"
       },
       "status": "not_formalized",
       "mathlib": {
@@ -851,7 +917,6 @@
       },
       "note": "Weighted online update formula is not in Mathlib.",
       "provenance": "ai-moderated",
-      "moderation_flag": "Anchor snippet contains '[MATH]' literal; preserved verbatim to honor the id but should be re-anchored on a non-[MATH] substring in future.",
       "id": "12c77fe8fd0d"
     },
     {
@@ -884,8 +949,9 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The average/mean absolute deviation is not defined in Mathlib (loogle returned zero hits).",
-      "provenance": "ai"
+      "note": "The average/mean absolute deviation is not defined in Mathlib.",
+      "provenance": "ai",
+      "id": "bc1f170a2795"
     }
   ]
 }

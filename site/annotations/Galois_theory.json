@@ -223,7 +223,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib proves `Equiv.Perm.not_solvable` for cardinality ≥ 5, via simplicity of the alternating group `alternatingGroup.isSimple` for n ≥ 5.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "33a86b5955e8"
     },
     {
       "kind": "example",
@@ -290,7 +291,8 @@
         "match_kind": "generalization"
       },
       "note": "Cayley's theorem is realized via the left-regular action embedding `G ↪ Equiv.Perm G`; see also `Subgroup.equivMapOfInjective` and the standard embedding into `Equiv.Perm`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bfbb3e658957"
     },
     {
       "kind": "theorem",
@@ -340,7 +342,8 @@
         "match_kind": "exact"
       },
       "note": "The Galois correspondence between intermediate fields of `E/F` and subgroups of `Gal(E/F)` is formalized as `IsGalois.intermediateFieldEquivSubgroup` (with companion lemmas about fixed fields and orders).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4180684d1150"
     },
     {
       "kind": "definition",
@@ -356,7 +359,8 @@
         "match_kind": "exact"
       },
       "note": "`IsPurelyInseparable F E` formalizes purely inseparable extensions; the separable/purely-inseparable decomposition is available via the separable closure inside `E`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0afc858692c5"
     },
     {
       "kind": "theorem",
@@ -372,7 +376,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not contain the Gauss–Wantzel characterization of constructible regular n-gons (n a product of a power of 2 and distinct Fermat primes).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "04a5a561a72e"
     },
     {
       "kind": "theorem",
@@ -388,6 +393,103 @@
         "match_kind": null
       },
       "note": "Mathlib lacks formalizations of the classical impossibility results for doubling the cube and trisecting an arbitrary angle by compass and straightedge.",
+      "provenance": "ai",
+      "id": "502312594229"
+    },
+    {
+      "kind": "definition",
+      "label": "Elementary symmetric polynomials",
+      "anchor": {
+        "section": "Pre-history",
+        "snippet": "the coefficients of a monic polynomial are ( up to sign) the elementary symmetric polynomials in the roots"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MvPolynomial.esymm",
+        "module": "Mathlib.RingTheory.MvPolynomial.Symmetric.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`MvPolynomial.esymm σ R n` formalizes the n-th elementary symmetric polynomial; Vieta-type identities relating these to coefficients of `∏ (X - root i)` are available as `Multiset.prod_X_sub_C_coeff` and friends.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Klein four-group",
+      "anchor": {
+        "section": "Quartic equation",
+        "snippet": "They form a group that is isomorphic to the Klein four-group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsKleinFour",
+        "module": "Mathlib.GroupTheory.SpecificGroups.KleinFour",
+        "match_kind": "exact"
+      },
+      "note": "`IsKleinFour G` axiomatizes the Klein four-group; concrete instances `ZMod 2 × ZMod 2` are provided.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Composition series of a group",
+      "anchor": {
+        "section": "Solvable groups and solution by radicals",
+        "snippet": "each field extension L / K corresponds to a factor group in a composition series of the Galois group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompositionSeries",
+        "module": "Mathlib.Order.JordanHolder",
+        "match_kind": "exact"
+      },
+      "note": "`CompositionSeries` formalizes composition series in a general lattice setting; specializing to the subgroup lattice gives composition series of groups, with Jordan–Hölder available.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Intermediate field of L/K",
+      "anchor": {
+        "section": "Modern approach by field theory",
+        "snippet": "In the modern approach, one starts with a field extension L / K (read \" L over K \"), and examines the group of automorphisms of L that fix K"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IntermediateField",
+        "module": "Mathlib.FieldTheory.IntermediateField.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IntermediateField K L` is the lattice of intermediate fields of `L/K`, used as the field-side object in the Galois correspondence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Derivation satisfying the Leibniz rule",
+      "anchor": {
+        "section": "Inseparable extensions",
+        "snippet": "K - linear endomorphisms of F satisfying the Leibniz rule"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Derivation",
+        "module": "Mathlib.RingTheory.Derivation.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Derivation R A M` formalizes `R`-linear maps satisfying the Leibniz rule; specializing to `M := F` with `R := K` gives the space of `K`-linear derivations of `F` used in the Jacobson correspondence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Alternating group A_n is simple for n ≥ 5",
+      "anchor": {
+        "section": "Solvable groups and solution by radicals",
+        "snippet": "the symmetric group S n contains a simple , noncyclic, normal subgroup , namely the alternating group A n"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "alternatingGroup.isSimpleGroup_five",
+        "module": "Mathlib.GroupTheory.SpecificGroups.Alternating.Simple",
+        "match_kind": "exact"
+      },
+      "note": "Simplicity of `alternatingGroup (Fin n)` for `n ≥ 5` is formalized; this is the key group-theoretic input behind `Equiv.Perm.not_solvable` and Abel–Ruffini.",
       "provenance": "ai"
     }
   ]

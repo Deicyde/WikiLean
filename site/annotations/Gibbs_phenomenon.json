@@ -19,7 +19,8 @@
         "match_kind": null
       },
       "note": "Grep for 'Gibbs' in Mathlib returns only Kullback–Leibler/CondVar hits; the Gibbs phenomenon is not defined.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ccea874fdc3e"
     },
     {
       "kind": "proposition",
@@ -35,7 +36,8 @@
         "match_kind": null
       },
       "note": "No quantitative overshoot/Wilbraham–Gibbs constant statement is present in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "aace988375be"
     },
     {
       "kind": "proposition",
@@ -51,7 +53,8 @@
         "match_kind": null
       },
       "note": "Mathlib's Fourier theory in Analysis/Fourier/AddCircle has only L²/summable convergence, no Dirichlet-style pointwise midpoint result at jumps.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a0f00355fe01"
     },
     {
       "kind": "example",
@@ -67,7 +70,8 @@
         "match_kind": null
       },
       "note": "Grep for 'square wave' returns no Mathlib hits and there is no square-wave Fourier series example.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6be3034be52d"
     },
     {
       "kind": "proposition",
@@ -83,7 +87,8 @@
         "match_kind": null
       },
       "note": "No general-jump overshoot bound is formalized; Mathlib lacks the Gibbs phenomenon entirely.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f224fbf15bd6"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": null
       },
       "note": "Grep for 'Wilbraham' in Mathlib returns no hits.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d9fddea7cb53"
     },
     {
       "kind": "proposition",
@@ -115,7 +121,8 @@
         "match_kind": null
       },
       "note": "Generic pointwise/uniform convergence notions exist, but no statement about the Fourier series of a jump function being pointwise-but-not-uniformly convergent is in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "372b47929a44"
     },
     {
       "kind": "proposition",
@@ -131,7 +138,8 @@
         "match_kind": null
       },
       "note": "Dirichlet's pointwise convergence theorem for Fourier series is absent from Mathlib (only L²/summable variants in Analysis/Fourier/AddCircle).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f61d02e80d68"
     },
     {
       "kind": "proposition",
@@ -147,7 +155,8 @@
         "match_kind": null
       },
       "note": "The Riemann–Lebesgue lemma gives qualitative decay-to-zero for L¹ functions, but no quantitative `C^k ⇒ |aₙ| = O(n^{-k})` Fourier-coefficient decay statement is formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b7c948484ed5"
     },
     {
       "kind": "proposition",
@@ -163,7 +172,8 @@
         "match_kind": "invocation"
       },
       "note": "Mathlib shows that summable Fourier coefficients give a uniformly-convergent (hence continuous) sum in the C(AddCircle) topology, from which the contrapositive follows, but the contrapositive itself is not stated as a lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "35a37284a7d8"
     },
     {
       "kind": "proposition",
@@ -179,7 +189,8 @@
         "match_kind": null
       },
       "note": "Case-insensitive grep for 'Fejér'/'fejer' returns no Mathlib hits; the Fejér kernel is not defined.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bfb81cca9389"
     },
     {
       "kind": "theorem",
@@ -195,7 +206,8 @@
         "match_kind": null
       },
       "note": "The precise Gibbs limit theorem (overshoot of the partial-sum sequence at a jump) is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "72757b8bcfbc"
     },
     {
       "kind": "proposition",
@@ -211,7 +223,8 @@
         "match_kind": null
       },
       "note": "No statement about Gibbs overshoot at arbitrary jump discontinuities exists in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d9d99a49c540"
     },
     {
       "kind": "example",
@@ -227,6 +240,55 @@
         "match_kind": null
       },
       "note": "No worked square-wave partial-sum / first-maximum analysis is present in Mathlib.",
+      "provenance": "ai",
+      "id": "8e02a77f0dfd"
+    },
+    {
+      "kind": "proposition",
+      "label": "Gibbs phenomenon as step response of ideal low-pass filter",
+      "anchor": {
+        "section": "Signal processing explanation",
+        "snippet": "the Gibbs phenomenon is the step response of a low-pass filter"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no theory of brick-wall low-pass filters or their step response; sinc/Heaviside convolution interpretation of Gibbs is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Overshoot magnitude as sine integral of sinc tail",
+      "anchor": {
+        "section": "Signal processing explanation",
+        "snippet": "the magnitude of the undershoot is thus exactly the integral of the left tail until the first negative zero"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib lacks the sine integral Si and the identification of the Gibbs overshoot with a sinc tail integral.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Partial sum at first maximum converges to Si(π)/π",
+      "anchor": {
+        "section": "Square wave analysis",
+        "snippet": "the expression in the square brackets is a Riemann sum approximation to the integral"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The midpoint Riemann sum → ∫₀^π sinc identification giving the Wilbraham–Gibbs limit is not formalized; Mathlib has no sinc-integral evaluation of this form.",
       "provenance": "ai"
     }
   ]

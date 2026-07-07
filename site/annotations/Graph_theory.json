@@ -92,6 +92,22 @@
     },
     {
       "kind": "definition",
+      "label": "Loop (graph)",
+      "anchor": {
+        "section": "Definition and etymology",
+        "snippet": "it also allows an edge to connect a vertex to itself, known as a loop"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "SimpleGraph forbids loops by its irreflexivity axiom; loops are accommodated in the general Graph type for multigraphs but no standalone Loop predicate is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Weight graph",
       "anchor": {
         "section": "Definition and etymology",
@@ -121,7 +137,8 @@
         "match_kind": null
       },
       "note": "The Königsberg bridge problem and Eulerian path/circuit theory are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7c85f097c531"
     },
     {
       "kind": "theorem",
@@ -137,7 +154,8 @@
         "match_kind": null
       },
       "note": "Euler's formula V − E + F = 2 for convex polyhedra is not formalized as a graph-theoretic statement in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5812ff771c1d"
     },
     {
       "kind": "definition",
@@ -276,6 +294,22 @@
       "id": "4643bb1fdce2"
     },
     {
+      "kind": "definition",
+      "label": "Chromatic number",
+      "anchor": {
+        "section": "Topological graph theory",
+        "snippet": "It requires the minimum number of colors, which is known as the chromatic number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.chromaticNumber",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Coloring.Vertex",
+        "match_kind": "exact"
+      },
+      "note": "The chromatic number is formalized as SimpleGraph.chromaticNumber, the infimum of n with an n-coloring.",
+      "provenance": "ai"
+    },
+    {
       "kind": "theorem",
       "label": "Four-color theorem",
       "anchor": {
@@ -306,7 +340,8 @@
         "match_kind": null
       },
       "note": "The five-color theorem (every planar graph is 5-colorable) is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9610fb590b56"
     },
     {
       "kind": "definition",
@@ -446,6 +481,22 @@
     },
     {
       "kind": "definition",
+      "label": "Planar graph",
+      "anchor": {
+        "section": "Geometric graph theory",
+        "snippet": "geometric graph theory studies planar graphs"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Planar graphs are not formalized in Mathlib; no embedding-into-the-plane structure exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Planar straight-line graph",
       "anchor": {
         "section": "Geometric graph theory",
@@ -509,7 +560,8 @@
         "match_kind": null
       },
       "note": "The chromatic number of the plane (Hadwiger–Nelson) is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a31d1bf42e3a"
     },
     {
       "kind": "definition",
@@ -683,6 +735,22 @@
     },
     {
       "kind": "definition",
+      "label": "Bipartite graph",
+      "anchor": {
+        "section": "Geometric graph theory",
+        "snippet": "The Levi graph is a bipartite graph that associates to the incidence structure"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.IsBipartite",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Bipartite",
+        "match_kind": "exact"
+      },
+      "note": "Bipartite graphs are formalized via SimpleGraph.IsBipartite (existence of a 2-coloring) in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Graph drawing",
       "anchor": {
         "section": "Geometric graph theory",
@@ -814,7 +882,8 @@
         "match_kind": "exact"
       },
       "note": "Graph homomorphisms are formalized as SimpleGraph.Hom, preserving adjacency.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "18a894b8538a"
     },
     {
       "kind": "theorem",
@@ -866,6 +935,38 @@
       "note": "Trees are formalized as SimpleGraph.IsTree (connected and acyclic).",
       "provenance": "ai",
       "id": "2df5626ed5e2"
+    },
+    {
+      "kind": "definition",
+      "label": "Path (graph theory)",
+      "anchor": {
+        "section": "Theory of random graph",
+        "snippet": "every pair of vertices is connected by exactly one path"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.Walk.IsPath",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Paths",
+        "match_kind": "exact"
+      },
+      "note": "Paths in a graph are formalized as walks with no repeated vertex via SimpleGraph.Walk.IsPath.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Spanning tree",
+      "anchor": {
+        "section": "Theory of random graph",
+        "snippet": "Being a spanning tree means that a subgraph is a tree that includes all of the vertices of a graph"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Spanning trees of a graph are not defined as a standalone notion in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -1425,7 +1526,8 @@
         "match_kind": null
       },
       "note": "The Erdős–Faber–Lovász conjecture is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "abfdeb227da2"
     },
     {
       "kind": "theorem",
@@ -1441,7 +1543,8 @@
         "match_kind": null
       },
       "note": "Total colorings and Behzad's conjecture are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8b59c6408b49"
     },
     {
       "kind": "theorem",
@@ -1457,7 +1560,8 @@
         "match_kind": null
       },
       "note": "List colorings and the list coloring conjecture are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8d2bac80a2b6"
     },
     {
       "kind": "theorem",
@@ -1473,7 +1577,8 @@
         "match_kind": null
       },
       "note": "The Hadwiger conjecture relating chromatic number to clique minors is not in Mathlib (no minors).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d7f15473e2b6"
     },
     {
       "kind": "definition",
@@ -1506,7 +1611,8 @@
         "match_kind": null
       },
       "note": "Hamiltonian paths/cycles and the decision problem are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d2c6cfd91cc2"
     },
     {
       "kind": "definition",
@@ -1522,7 +1628,8 @@
         "match_kind": null
       },
       "note": "Spanning trees and the minimum spanning tree problem are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b3b92a03926d"
     },
     {
       "kind": "definition",
@@ -1538,7 +1645,8 @@
         "match_kind": null
       },
       "note": "Graph distance SimpleGraph.dist exists for unweighted graphs, but no shortest-path algorithm or weighted version is formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "453bff27f150"
     },
     {
       "kind": "definition",
@@ -1554,7 +1662,8 @@
         "match_kind": null
       },
       "note": "The TSP is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "db95911c732c"
     },
     {
       "kind": "theorem",

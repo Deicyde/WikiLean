@@ -3,6 +3,7 @@
   "wikipedia_title": "Basis (linear algebra)",
   "display_title": "Basis (linear algebra)",
   "schema_version": 3,
+  "annotation_style": "theorem_article",
   "annotations": [
     {
       "kind": "definition",
@@ -12,7 +13,14 @@
         "snippet": "a set B of elements of a vector space V is called a basis"
       },
       "provenance": "ai-agent1",
-      "id": "3433a4a87dce"
+      "id": "3433a4a87dce",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Basis",
+        "module": "Mathlib.LinearAlgebra.Basis.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Module.Basis ι R M is Mathlib's ι-indexed basis of a module M, packaged as a linear equivalence M ≃ₗ[R] (ι →₀ R)."
     },
     {
       "kind": "definition",
@@ -22,7 +30,14 @@
         "snippet": "a basis is a linearly independent spanning set"
       },
       "provenance": "ai-agent1",
-      "id": "3e1a98afef89"
+      "id": "3e1a98afef89",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Basis.mk",
+        "module": "Mathlib.LinearAlgebra.Basis.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Basis.mk constructs a Basis from a family v satisfying LinearIndependent v and span R (range v) = ⊤."
     },
     {
       "kind": "proposition",
@@ -32,7 +47,14 @@
         "snippet": "all the bases have the same number of elements, called the dimension"
       },
       "provenance": "ai-agent1",
-      "id": "ec935c147d52"
+      "id": "ec935c147d52",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mk_eq_mk_of_basis",
+        "module": "Mathlib.LinearAlgebra.Dimension.StrongRankCondition",
+        "match_kind": "exact"
+      },
+      "note": "mk_eq_mk_of_basis states that any two bases of the same module over a strong-rank-condition ring have equal cardinality."
     },
     {
       "kind": "definition",
@@ -42,7 +64,14 @@
         "snippet": "A basis B of a vector space V over a field F"
       },
       "provenance": "ai-agent1",
-      "id": "12f81b0b435f"
+      "id": "12f81b0b435f",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Basis",
+        "module": "Mathlib.LinearAlgebra.Basis.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Module.Basis is defined over any semiring, specialising to bases of vector spaces when R is a field."
     },
     {
       "kind": "definition",
@@ -52,7 +81,14 @@
         "snippet": "linear independence : for every finite subset"
       },
       "provenance": "ai-agent1",
-      "id": "312e69f827ee"
+      "id": "312e69f827ee",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearIndependent",
+        "module": "Mathlib.LinearAlgebra.LinearIndependent.Defs",
+        "match_kind": "exact"
+      },
+      "note": "LinearIndependent R v captures the finite-sum condition via injectivity of the linear combination map."
     },
     {
       "kind": "definition",
@@ -62,7 +98,14 @@
         "snippet": "the spanning property: for every vector"
       },
       "provenance": "ai-agent1",
-      "id": "dfda82eda558"
+      "id": "dfda82eda558",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.span",
+        "module": "Mathlib.LinearAlgebra.Span.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The spanning condition is the standard Mathlib statement Submodule.span R S = ⊤ using Submodule.span."
     },
     {
       "kind": "proposition",
@@ -72,7 +115,14 @@
         "snippet": "The first property may be equivalently phrased as follows"
       },
       "provenance": "ai-agent1",
-      "id": "6712e268a4bb"
+      "id": "6712e268a4bb",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "linearIndependent_iff_notMem_span",
+        "module": "Mathlib.LinearAlgebra.LinearIndependent.Defs",
+        "match_kind": "exact"
+      },
+      "note": "linearIndependent_iff_notMem_span is one of several equivalent characterisations of LinearIndependent."
     },
     {
       "kind": "proposition",
@@ -82,7 +132,14 @@
         "snippet": "it follows from linear independence that this can be done in exactly one way"
       },
       "provenance": "ai-agent1",
-      "id": "c85145cd3f82"
+      "id": "c85145cd3f82",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Basis.linearCombination_repr",
+        "module": "Mathlib.LinearAlgebra.Basis.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Basis.repr is itself the linear equivalence M ≃ₗ ι →₀ R, and linearCombination_repr shows the coordinates recompose x uniquely."
     },
     {
       "kind": "definition",
@@ -92,7 +149,14 @@
         "snippet": "A vector space that has a finite basis is called finite-dimensional"
       },
       "provenance": "ai-agent1",
-      "id": "845fdfb2c2c4"
+      "id": "845fdfb2c2c4",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FiniteDimensional",
+        "module": "Mathlib.LinearAlgebra.FiniteDimensional.Defs",
+        "match_kind": "exact"
+      },
+      "note": "FiniteDimensional K V (abbrev for Module.Finite) is Mathlib's finite-dimensionality predicate."
     },
     {
       "kind": "definition",
@@ -102,7 +166,14 @@
         "snippet": "one speaks of an ordered basis"
       },
       "provenance": "ai-agent1",
-      "id": "972c57f4e321"
+      "id": "972c57f4e321",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Basis",
+        "module": "Mathlib.LinearAlgebra.Basis.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's Basis is inherently indexed by a type ι, so it corresponds directly to an ordered basis when ι is Fin n or another ordered index."
     },
     {
       "kind": "example",
@@ -112,7 +183,14 @@
         "snippet": "A simple basis of this vector space consists of the two vectors"
       },
       "provenance": "ai-agent1",
-      "id": "78b4d9df119e"
+      "id": "78b4d9df119e",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Pi.basisFun",
+        "module": "Mathlib.LinearAlgebra.StdBasis",
+        "match_kind": "invocation"
+      },
+      "note": "Pi.basisFun R (Fin 2) is the standard basis of Fin 2 → R, i.e. the (1,0),(0,1) basis of R²."
     },
     {
       "kind": "example",
@@ -122,7 +200,14 @@
         "snippet": "which is called the standard basis of"
       },
       "provenance": "ai-agent1",
-      "id": "9141626a02ef"
+      "id": "9141626a02ef",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Pi.basisFun",
+        "module": "Mathlib.LinearAlgebra.StdBasis",
+        "match_kind": "exact"
+      },
+      "note": "Pi.basisFun R η gives the standard basis on η → R with basis vectors Pi.single i 1."
     },
     {
       "kind": "example",
@@ -132,7 +217,14 @@
         "snippet": "One basis for this space is the monomial basis"
       },
       "provenance": "ai-agent1",
-      "id": "765950849080"
+      "id": "765950849080",
+      "status": "partial",
+      "mathlib": {
+        "decl": "MvPolynomial.basisMonomials",
+        "module": "Mathlib.RingTheory.MvPolynomial.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "MvPolynomial.basisMonomials is the monomial basis for multivariate polynomials; the univariate case (X^i basis of R[X]) is not called out under its own name."
     },
     {
       "kind": "example",
@@ -142,7 +234,14 @@
         "snippet": "Any set of polynomials such that there is exactly one polynomial of each degree"
       },
       "provenance": "ai-agent1",
-      "id": "69e2c633f3c0"
+      "id": "69e2c633f3c0",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.Sequence.basis",
+        "module": "Mathlib.Algebra.Polynomial.Sequence",
+        "match_kind": "exact"
+      },
+      "note": "Polynomial.Sequence.basis turns any polynomial sequence with one polynomial of each degree into a basis of R[X]."
     },
     {
       "kind": "theorem",
@@ -152,7 +251,14 @@
         "snippet": "Many properties of finite bases result from the Steinitz exchange lemma"
       },
       "provenance": "ai-agent1",
-      "id": "55fb74bbd56d"
+      "id": "55fb74bbd56d",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.Basis.extend",
+        "module": "Mathlib.LinearAlgebra.Basis.VectorSpace",
+        "match_kind": "invocation"
+      },
+      "note": "The Steinitz exchange lemma is not stated under that name; its usual consequences (extending an independent set to a basis, invariance of dimension) are present via Basis.extend and mk_eq_mk_of_basis."
     },
     {
       "kind": "proposition",
@@ -162,7 +268,14 @@
         "snippet": "If L is a linearly independent subset of a spanning set"
       },
       "provenance": "ai-agent1",
-      "id": "461fe2e12e0e"
+      "id": "461fe2e12e0e",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Basis.extend",
+        "module": "Mathlib.LinearAlgebra.Basis.VectorSpace",
+        "match_kind": "exact"
+      },
+      "note": "Basis.extend extends any LinearIndepOn set to a basis of V."
     },
     {
       "kind": "theorem",
@@ -172,7 +285,14 @@
         "snippet": "V has a basis (this is the preceding property"
       },
       "provenance": "ai-agent1",
-      "id": "0326797cbe12"
+      "id": "0326797cbe12",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Basis.ofVectorSpace",
+        "module": "Mathlib.LinearAlgebra.Basis.VectorSpace",
+        "match_kind": "exact"
+      },
+      "note": "Basis.ofVectorSpace produces a basis of any vector space V over a division ring K."
     },
     {
       "kind": "theorem",
@@ -182,7 +302,14 @@
         "snippet": "All bases of V have the same cardinality"
       },
       "provenance": "ai-agent1",
-      "id": "38a007473f68"
+      "id": "38a007473f68",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mk_eq_mk_of_basis",
+        "module": "Mathlib.LinearAlgebra.Dimension.StrongRankCondition",
+        "match_kind": "exact"
+      },
+      "note": "mk_eq_mk_of_basis is Mathlib's dimension theorem: any two bases have equal cardinality."
     },
     {
       "kind": "proposition",
@@ -192,7 +319,14 @@
         "snippet": "A generating set S is a basis of V if and only if it is minimal"
       },
       "provenance": "ai-agent1",
-      "id": "7a50fb978059"
+      "id": "7a50fb978059",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No direct 'basis iff minimal spanning set' characterisation found in Mathlib."
     },
     {
       "kind": "proposition",
@@ -202,7 +336,14 @@
         "snippet": "A linearly independent set L is a basis if and only if it is maximal"
       },
       "provenance": "ai-agent1",
-      "id": "01415c44c52d"
+      "id": "01415c44c52d",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Basis.maximal",
+        "module": "Mathlib.LinearAlgebra.Basis.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Basis.maximal shows any basis is a maximal linearly independent family (over a nontrivial semiring)."
     },
     {
       "kind": "proposition",
@@ -212,7 +353,14 @@
         "snippet": "A subset of V with n elements is a basis if and only if it is linearly independent"
       },
       "provenance": "ai-agent1",
-      "id": "fd7494aea9b8"
+      "id": "fd7494aea9b8",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "basisOfLinearIndependentOfCardEqFinrank",
+        "module": "Mathlib.LinearAlgebra.FiniteDimensional.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "basisOfLinearIndependentOfCardEqFinrank turns a linearly independent family of size finrank K V into a basis."
     },
     {
       "kind": "proposition",
@@ -222,7 +370,14 @@
         "snippet": "A subset of V with n elements is a basis if and only if it is a spanning set"
       },
       "provenance": "ai-agent1",
-      "id": "33323e42b679"
+      "id": "33323e42b679",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "basisOfTopLeSpanOfCardEqFinrank",
+        "module": "Mathlib.LinearAlgebra.Dimension.OrzechProperty",
+        "match_kind": "exact"
+      },
+      "note": "basisOfTopLeSpanOfCardEqFinrank turns a spanning family of size finrank K V into a basis."
     },
     {
       "kind": "definition",
@@ -232,7 +387,14 @@
         "snippet": "which are called the coordinates of v over B"
       },
       "provenance": "ai-agent1",
-      "id": "0c87902bb128"
+      "id": "0c87902bb128",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Basis.coord",
+        "module": "Mathlib.LinearAlgebra.Basis.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Basis.coord i v gives the i-th coordinate of v over the basis; the whole coordinate vector is Basis.repr."
     },
     {
       "kind": "proposition",
@@ -242,7 +404,14 @@
         "snippet": "is a linear isomorphism from the vector space"
       },
       "provenance": "ai-agent1",
-      "id": "3504bcf98764"
+      "id": "3504bcf98764",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Basis.equivFun",
+        "module": "Mathlib.LinearAlgebra.Basis.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Basis.equivFun b : M ≃ₗ[R] ι → R is the coordinate isomorphism for finite ι (with Basis.repr for the general Finsupp version)."
     },
     {
       "kind": "definition",
@@ -252,7 +421,14 @@
         "snippet": "which is called its standard basis or canonical basis"
       },
       "provenance": "ai-agent1",
-      "id": "ac28ccea004c"
+      "id": "ac28ccea004c",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Pi.basisFun",
+        "module": "Mathlib.LinearAlgebra.StdBasis",
+        "match_kind": "exact"
+      },
+      "note": "Pi.basisFun R η is Mathlib's standard/canonical basis on η → R."
     },
     {
       "kind": "proposition",
@@ -262,7 +438,14 @@
         "snippet": "it is equivalent to define an ordered basis of V , or a linear isomorphism"
       },
       "provenance": "ai-agent1",
-      "id": "396922662539"
+      "id": "396922662539",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Basis.equivFun",
+        "module": "Mathlib.LinearAlgebra.Basis.Defs",
+        "match_kind": "exact"
+      },
+      "note": "By definition a Basis is a linear equiv M ≃ₗ[R] (ι →₀ R); Basis.equivFun/Basis.ofEquivFun witnesses the correspondence with linear isos to R^n."
     },
     {
       "kind": "theorem",
@@ -272,7 +455,14 @@
         "snippet": "the change-of-basis formula is"
       },
       "provenance": "ai-agent1",
-      "id": "172246dee3fb"
+      "id": "172246dee3fb",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Basis.toMatrix",
+        "module": "Mathlib.LinearAlgebra.Matrix.Basis",
+        "match_kind": "exact"
+      },
+      "note": "Basis.toMatrix records the coordinates of one basis in another and is used to state the change-of-basis formula."
     },
     {
       "kind": "proposition",
@@ -282,7 +472,14 @@
         "snippet": "This formula may be concisely written in matrix notation"
       },
       "provenance": "ai-agent1",
-      "id": "2bb0b6a95ece"
+      "id": "2bb0b6a95ece",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Basis.toMatrix_mul_toMatrix",
+        "module": "Mathlib.LinearAlgebra.Matrix.Basis",
+        "match_kind": "exact"
+      },
+      "note": "Basis.toMatrix_mul_toMatrix expresses the composition law of change-of-basis matrices."
     },
     {
       "kind": "definition",
@@ -292,7 +489,14 @@
         "snippet": "If one replaces the field occurring in the definition of a vector space by a ring"
       },
       "provenance": "ai-agent1",
-      "id": "897843739c9f"
+      "id": "897843739c9f",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module",
+        "module": "Mathlib.Algebra.Module.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Module R M is Mathlib's typeclass for a module over a semiring/ring R."
     },
     {
       "kind": "definition",
@@ -302,17 +506,47 @@
         "snippet": "A module that has a basis is called a free module"
       },
       "provenance": "ai-agent1",
-      "id": "54495097b8d7"
+      "id": "54495097b8d7",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Free",
+        "module": "Mathlib.LinearAlgebra.FreeModule.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Module.Free R M asserts M has a basis; Module.Free.exists_basis produces one."
+    },
+    {
+      "kind": "proposition",
+      "label": "Not every module has a basis",
+      "anchor": {
+        "section": "Free module",
+        "snippet": "not every module has a basis"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No named theorem asserting the negative existence 'not every module is free'; standard counterexamples like ZMod n over ℤ aren't packaged as such."
     },
     {
       "kind": "theorem",
-      "label": "Subgroup of finitely generated free abelian group",
+      "label": "Subgroup of a free abelian group is free",
       "anchor": {
         "section": "Free module",
         "snippet": "every subgroup of a free abelian group is a free abelian group"
       },
-      "provenance": "ai-agent1",
-      "id": "d22a9cd78468"
+      "provenance": "ai-moderated",
+      "id": "d22a9cd78468",
+      "note": "Submodule.basisOfPid gives a basis for a finitely generated submodule of a free module over a PID; specialised to R=ℤ this yields freeness of finitely generated subgroups of free abelian groups, but the fully general (arbitrary rank) statement isn't stated directly under that name.",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Submodule.basisOfPid",
+        "module": "Mathlib.LinearAlgebra.FreeModule.PID",
+        "match_kind": "special_case"
+      }
     },
     {
       "kind": "definition",
@@ -322,7 +556,14 @@
         "snippet": "the term Hamel basis"
       },
       "provenance": "ai-agent1",
-      "id": "7c256dcb11a0"
+      "id": "7c256dcb11a0",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Basis",
+        "module": "Mathlib.LinearAlgebra.Basis.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's Module.Basis is a Hamel (algebraic) basis by default; the term 'Hamel' is not used in the library name but the concept coincides."
     },
     {
       "kind": "proposition",
@@ -332,7 +573,14 @@
         "snippet": "Hamel bases are uncountable, and have specifically the cardinality of the continuum"
       },
       "provenance": "ai-agent1",
-      "id": "e8e255802bb9"
+      "id": "e8e255802bb9",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib statement identifying the cardinality of a ℚ-basis of ℝ with the continuum."
     },
     {
       "kind": "theorem",
@@ -342,7 +590,14 @@
         "snippet": "then any Hamel basis of X is necessarily uncountable"
       },
       "provenance": "ai-agent1",
-      "id": "3974a566f34c"
+      "id": "3974a566f34c",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Baire-category argument giving uncountability of Hamel bases of infinite-dimensional Banach spaces is not present under any name I could find."
     },
     {
       "kind": "example",
@@ -352,7 +607,14 @@
         "snippet": "Its standard basis , consisting of the sequences having only one non-zero element"
       },
       "provenance": "ai-agent1",
-      "id": "45f0fe80b0bb"
+      "id": "45f0fe80b0bb",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finsupp.basisSingleOne",
+        "module": "Mathlib.LinearAlgebra.Finsupp.VectorSpace",
+        "match_kind": "exact"
+      },
+      "note": "The space of finitely supported sequences is (ι →₀ R), and Finsupp.basisSingleOne is its standard basis of single-support vectors."
     },
     {
       "kind": "example",
@@ -362,7 +624,14 @@
         "snippet": "are an \"orthogonal basis\" of the (real or complex) vector space"
       },
       "provenance": "ai-agent1",
-      "id": "b4ed680baf92"
+      "id": "b4ed680baf92",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fourierBasis",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": "exact"
+      },
+      "note": "fourierBasis is Mathlib's HilbertBasis of Lp ℂ 2 haarAddCircle built from the Fourier characters."
     },
     {
       "kind": "proposition",
@@ -372,7 +641,14 @@
         "snippet": "cannot be represented as finite linear combinations of these basis functions"
       },
       "provenance": "ai-agent1",
-      "id": "00dcc7b0f014"
+      "id": "00dcc7b0f014",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The remark that the Fourier basis is not a Hamel basis is an informal aside without a corresponding Mathlib lemma."
     },
     {
       "kind": "definition",
@@ -382,7 +658,14 @@
         "snippet": "An affine basis for an n -dimensional affine space"
       },
       "provenance": "ai-agent1",
-      "id": "b09a02604de7"
+      "id": "b09a02604de7",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AffineBasis",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Basis",
+        "match_kind": "exact"
+      },
+      "note": "AffineBasis ι k P is Mathlib's structure for an affine basis of an affine space."
     },
     {
       "kind": "definition",
@@ -392,7 +675,14 @@
         "snippet": "A projective basis is"
       },
       "provenance": "ai-agent1",
-      "id": "566a83d32b0f"
+      "id": "566a83d32b0f",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No 'projective basis' (frame of n+2 points in general position) definition found in Mathlib's Projectivization files."
     },
     {
       "kind": "definition",
@@ -402,7 +692,14 @@
         "snippet": "A convex basis of a polytope is the set of the vertices"
       },
       "provenance": "ai-agent1",
-      "id": "381791e3896a"
+      "id": "381791e3896a",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has convex hulls and extreme points but does not name a 'convex basis of a polytope' as such."
     },
     {
       "kind": "definition",
@@ -412,7 +709,14 @@
         "snippet": "A cone basis"
       },
       "provenance": "ai-agent1",
-      "id": "dbc3b0736362"
+      "id": "dbc3b0736362",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of a 'cone basis' (minimal set of generators of a polyhedral cone) present in Mathlib."
     },
     {
       "kind": "proposition",
@@ -422,7 +726,14 @@
         "snippet": "n randomly and independently chosen vectors will form a basis with probability one"
       },
       "provenance": "ai-agent1",
-      "id": "6db9a104c63b"
+      "id": "6db9a104c63b",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The probabilistic statement about n random vectors is not formalised in Mathlib."
     },
     {
       "kind": "definition",
@@ -432,7 +743,14 @@
         "snippet": "the notion of ε-orthogonality is used"
       },
       "provenance": "ai-agent1",
-      "id": "d8a1c716662a"
+      "id": "d8a1c716662a",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The quantitative ε-orthogonality condition |⟨x,y⟩| ≤ ε‖x‖‖y‖ is not a named notion in Mathlib."
     },
     {
       "kind": "proposition",
@@ -442,7 +760,14 @@
         "snippet": "the number of independent random vectors, which all are with given high probability pairwise almost orthogonal, grows exponentially with dimension"
       },
       "provenance": "ai-agent1",
-      "id": "7581ce329830"
+      "id": "7581ce329830",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Concentration-of-measure style result about pairwise ε-orthogonal random vectors is not present."
     },
     {
       "kind": "theorem",
@@ -452,7 +777,14 @@
         "snippet": "It is thus a basis of V , and this proves that every vector space has a basis"
       },
       "provenance": "ai-agent1",
-      "id": "a2014fb0315b"
+      "id": "a2014fb0315b",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Basis.ofVectorSpace",
+        "module": "Mathlib.LinearAlgebra.Basis.VectorSpace",
+        "match_kind": "exact"
+      },
+      "note": "Basis.ofVectorSpace is Mathlib's Zorn-based existence-of-basis construction for any vector space over a division ring."
     },
     {
       "kind": "theorem",
@@ -462,7 +794,14 @@
         "snippet": "if every vector space has a basis, then the axiom of choice is true"
       },
       "provenance": "ai-agent1",
-      "id": "10edbefeb7af"
+      "id": "10edbefeb7af",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Blass converse ('every vector space has a basis' ⇒ AC) is not formalised in Mathlib."
     }
   ]
 }

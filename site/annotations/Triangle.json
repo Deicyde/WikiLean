@@ -3,6 +3,7 @@
   "wikipedia_title": "Triangle",
   "display_title": "Triangle",
   "schema_version": 3,
+  "annotation_style": "theorem_article",
   "annotations": [
     {
       "kind": "definition",
@@ -11,6 +12,13 @@
         "section": "(Lead)",
         "snippet": "A triangle is a polygon with three corners and three sides"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Triangle",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Simplex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Affine.Triangle abbreviates `Affine.Simplex k P 2`, a bundled triple of affinely independent points.",
       "provenance": "ai-agent1",
       "id": "236e9af2bcfd"
     },
@@ -21,6 +29,13 @@
         "section": "(Lead)",
         "snippet": "the sum of angles of a triangle always equals a straight angle"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.angle_add_angle_add_angle_eq_pi",
+        "module": "Mathlib.Geometry.Euclidean.Triangle",
+        "match_kind": "exact"
+      },
+      "note": "Proves ∠p₁p₂p₃ + ∠p₂p₃p₁ + ∠p₃p₁p₂ = π for three points in a Euclidean affine space.",
       "provenance": "ai-agent1",
       "id": "10e647e6b05e"
     },
@@ -31,6 +46,13 @@
         "section": "(Lead)",
         "snippet": "The area of a triangle equals one-half the product of height and base length"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Affine.Triangle.area` (or simplex analogue with the ½·base·height formula) appears in Mathlib.",
       "provenance": "ai-agent1",
       "id": "24a1c70f3a59"
     },
@@ -41,8 +63,47 @@
         "section": "(Lead)",
         "snippet": "any three points that do not all lie on the same straight line determine a unique triangle"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Triangle",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Simplex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The structure `Affine.Triangle` bundles exactly three affinely independent (i.e. non-collinear) points.",
       "provenance": "ai-agent1",
       "id": "d4ef29f02a80"
+    },
+    {
+      "kind": "definition",
+      "label": "Tetrahedron",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "four points in three-dimensional Euclidean space determine a solid figure called tetrahedron"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Affine.Simplex",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Simplex.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the general `Affine.Simplex k P n`; the n = 3 case is the tetrahedron but no dedicated `Tetrahedron` abbreviation exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Spherical and hyperbolic triangles (non-Euclidean)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "three \"straight\" segments also determine a \"triangle\", for instance, a spherical triangle or hyperbolic triangle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of spherical or hyperbolic triangle is present in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -51,6 +112,13 @@
         "section": "(Lead)",
         "snippet": "A geodesic triangle is a region of a general two-dimensional surface enclosed by three sides"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of geodesic triangle on a surface or in a metric space.",
       "provenance": "ai-agent1",
       "id": "1a0ddcdebdad"
     },
@@ -61,6 +129,13 @@
         "section": "(Lead)",
         "snippet": "A curvilinear triangle is a shape with three curved sides"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of curvilinear triangle exists in Mathlib.",
       "provenance": "ai-agent1",
       "id": "c35f5118be51"
     },
@@ -71,6 +146,13 @@
         "section": "Definition, terminology, and types",
         "snippet": "A triangle is a figure consisting of three line segments, each of whose endpoints are connected"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Triangle",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Simplex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Triangles in Mathlib are bundled as three affinely independent vertices, with `Polygon.toTriangle` linking to the three-segment view.",
       "provenance": "ai-agent1",
       "id": "fb494d910ada"
     },
@@ -81,6 +163,13 @@
         "section": "Definition, terminology, and types",
         "snippet": "A triangle whose sides are all the same length is an equilateral triangle"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Affine.Simplex.Equilateral",
+        "module": "Mathlib.Analysis.Normed.Affine.Simplex",
+        "match_kind": "generalization"
+      },
+      "note": "`Affine.Simplex.Equilateral` and `Affine.Simplex.Scalene` exist for simplices, but Mathlib has no `Isosceles` predicate.",
       "provenance": "ai-agent1",
       "id": "f5557d89390b"
     },
@@ -91,8 +180,47 @@
         "section": "Definition, terminology, and types",
         "snippet": "A triangle in which one of the angles is a right angle is a right triangle"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Affine.Simplex.AcuteAngled",
+        "module": "Mathlib.Geometry.Euclidean.Simplex",
+        "match_kind": "generalization"
+      },
+      "note": "Only `AcuteAngled` (with `Affine.Triangle.acuteAngled_iff_angle_lt`) is in Mathlib; no `Right` or `Obtuse` triangle predicate.",
       "provenance": "ai-agent1",
       "id": "d26ad9729740"
+    },
+    {
+      "kind": "definition",
+      "label": "Deltahedron",
+      "anchor": {
+        "section": "Appearances",
+        "snippet": "when polyhedra have all equilateral triangles as their faces, they are known as deltahedra"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No deltahedron (or polyhedron-with-equilateral-faces) concept exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Simplex (generalized triangle)",
+      "anchor": {
+        "section": "Appearances",
+        "snippet": "triangles can be found in higher dimensions, as in the generalized notion of triangles known as the simplex"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Simplex",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Simplex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Affine.Simplex k P n` is the n-dimensional affine simplex of (n+1) affinely independent points.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",
@@ -101,6 +229,13 @@
         "section": "Points, lines, and circles associated with a triangle",
         "snippet": "Ceva's theorem , which gives a criterion for determining when three such lines are concurrent"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Triangle.prod_div_one_sub_eq_one_of_mem_line_point_lineMap",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Ceva",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib has Ceva's theorem for triangles in several equivalent forms (weights, divisions, distances).",
       "provenance": "ai-agent1",
       "id": "02eb51094fd4"
     },
@@ -111,6 +246,13 @@
         "section": "Points, lines, and circles associated with a triangle",
         "snippet": "here Menelaus' theorem gives a useful general criterion"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep over Mathlib finds no occurrence of Menelaus.",
       "provenance": "ai-agent1",
       "id": "a4f870cf4f5c"
     },
@@ -121,6 +263,13 @@
         "section": "Points, lines, and circles associated with a triangle",
         "snippet": "A perpendicular bisector of a side of a triangle is a straight line passing through the midpoint of the side"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AffineSubspace.perpBisector",
+        "module": "Mathlib.Geometry.Euclidean.PerpBisector",
+        "match_kind": "exact"
+      },
+      "note": "`perpBisector p₁ p₂` is the perpendicular bisector of the segment [p₁, p₂] as a bundled affine subspace.",
       "provenance": "ai-agent1",
       "id": "2502b3e23891"
     },
@@ -131,8 +280,31 @@
         "section": "Points, lines, and circles associated with a triangle",
         "snippet": "The three perpendicular bisectors meet in a single point, the triangle's circumcenter"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Affine.Simplex.circumcenter",
+        "module": "Mathlib.Geometry.Euclidean.Circumcenter",
+        "match_kind": "generalization"
+      },
+      "note": "Circumcenter is defined via uniqueness of an equidistant point; the explicit concurrence-of-perpBisectors theorem isn't stated as such.",
       "provenance": "ai-agent1",
       "id": "e2a6c6caa38a"
+    },
+    {
+      "kind": "definition",
+      "label": "Circumcircle",
+      "anchor": {
+        "section": "Points, lines, and circles associated with a triangle",
+        "snippet": "this point is the center of the circumcircle , the circle passing through all three vertices"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Simplex.circumsphere",
+        "module": "Mathlib.Geometry.Euclidean.Circumcenter",
+        "match_kind": "generalization"
+      },
+      "note": "`circumsphere` of a simplex specialises to the circumcircle of a triangle.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",
@@ -141,6 +313,13 @@
         "section": "Points, lines, and circles associated with a triangle",
         "snippet": "Thales' theorem implies that if the circumcenter is located on the side of the triangle, then the angle opposite that side is a right angle"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.Sphere.thales_theorem",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Sphere",
+        "match_kind": "exact"
+      },
+      "note": "An inscribed angle subtending a diameter is a right angle; aliased as `thales_theorem`.",
       "provenance": "ai-agent1",
       "id": "7e33379261b4"
     },
@@ -151,6 +330,13 @@
         "section": "Points, lines, and circles associated with a triangle",
         "snippet": "If the circumcenter is located inside the triangle, then the triangle is acute"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma classifying triangle type by interior/exterior position of the circumcenter is in Mathlib.",
       "provenance": "ai-agent1",
       "id": "16f2854c044f"
     },
@@ -161,6 +347,13 @@
         "section": "Points, lines, and circles associated with a triangle",
         "snippet": "An altitude of a triangle is a straight line through a vertex and perpendicular to the opposite side"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Simplex.altitude",
+        "module": "Mathlib.Geometry.Euclidean.Altitude",
+        "match_kind": "generalization"
+      },
+      "note": "Altitude of a simplex is defined as the line through a vertex orthogonal to the opposite face.",
       "provenance": "ai-agent1",
       "id": "fe7a848f807c"
     },
@@ -171,6 +364,13 @@
         "section": "Points, lines, and circles associated with a triangle",
         "snippet": "The three altitudes intersect in a single point, called the orthocenter of the triangle"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Triangle.eq_orthocenter_of_forall_mem_altitude",
+        "module": "Mathlib.Geometry.Euclidean.MongePoint",
+        "match_kind": "exact"
+      },
+      "note": "`orthocenter_mem_altitude` plus `eq_orthocenter_of_forall_mem_altitude` show the three altitudes concur at the orthocenter.",
       "provenance": "ai-agent1",
       "id": "2f55d550049d"
     },
@@ -181,6 +381,13 @@
         "section": "Points, lines, and circles associated with a triangle",
         "snippet": "The orthocenter lies inside the triangle if and only if the triangle is acute"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has the orthocenter and AcuteAngled but no lemma linking the orthocenter's interior position to acuteness.",
       "provenance": "ai-agent1",
       "id": "37a6e3bd928b"
     },
@@ -191,6 +398,13 @@
         "section": "Points, lines, and circles associated with a triangle",
         "snippet": "An angle bisector of a triangle is a straight line through a vertex that cuts the corresponding angle in half"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated `angleBisector` definition appears in Mathlib's geometry library.",
       "provenance": "ai-agent1",
       "id": "fd0546b7265c"
     },
@@ -201,8 +415,31 @@
         "section": "Points, lines, and circles associated with a triangle",
         "snippet": "The three angle bisectors intersect in a single point, the incenter"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Affine.Simplex.incenter",
+        "module": "Mathlib.Geometry.Euclidean.Incenter",
+        "match_kind": "generalization"
+      },
+      "note": "Incenter is defined as the center of the insphere (tangent to the faces), not via concurrence of angle bisectors.",
       "provenance": "ai-agent1",
       "id": "2ee9902a4aca"
+    },
+    {
+      "kind": "definition",
+      "label": "Incircle",
+      "anchor": {
+        "section": "Points, lines, and circles associated with a triangle",
+        "snippet": "The incircle is the largest circle that lies inside the triangle; it touches all three sides"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Simplex.insphere",
+        "module": "Mathlib.Geometry.Euclidean.Incenter",
+        "match_kind": "generalization"
+      },
+      "note": "`Affine.Simplex.insphere` specialises to the incircle for a triangle.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -211,6 +448,13 @@
         "section": "Points, lines, and circles associated with a triangle",
         "snippet": "There are three other important circles, the excircles ; they lie outside the triangle and touch one side"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Simplex.exsphere",
+        "module": "Mathlib.Geometry.Euclidean.Incenter",
+        "match_kind": "generalization"
+      },
+      "note": "`exsphere` covers excircles, and `EuclideanGeometry.OrthocentricSystem` formalises the orthocentric system.",
       "provenance": "ai-agent1",
       "id": "65621c6252a3"
     },
@@ -221,8 +465,47 @@
         "section": "Points, lines, and circles associated with a triangle",
         "snippet": "The midpoints of the three sides and the feet of the three altitudes all lie on a single circle, the triangle's nine-point circle"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Simplex.ninePointCircle",
+        "module": "Mathlib.Geometry.Euclidean.NinePointCircle",
+        "match_kind": "exact"
+      },
+      "note": "Nine-point circle defined; lemmas like `faceOppositeCentroid_mem_ninePointCircle` and `altitudeFoot_mem_ninePointCircle` verify the nine points.",
       "provenance": "ai-agent1",
       "id": "18ff01a2a164"
+    },
+    {
+      "kind": "proposition",
+      "label": "Nine-point circle radius is half circumradius",
+      "anchor": {
+        "section": "Points, lines, and circles associated with a triangle",
+        "snippet": "The radius of the nine-point circle is half that of the circumcircle"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Simplex.ninePointCircle_radius",
+        "module": "Mathlib.Geometry.Euclidean.NinePointCircle",
+        "match_kind": "exact"
+      },
+      "note": "`ninePointCircle_radius` gives `circumradius / n`, which is circumradius/2 for a triangle (n = 2).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Feuerbach's theorem (nine-point circle touches incircle and excircles)",
+      "anchor": {
+        "section": "Points, lines, and circles associated with a triangle",
+        "snippet": "It touches the incircle (at the Feuerbach point ) and the three excircles"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `Feuerbach` returns nothing in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",
@@ -231,8 +514,31 @@
         "section": "Points, lines, and circles associated with a triangle",
         "snippet": "all lie on a single line, known as Euler's line"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Circumcenter, centroid and orthocenter all exist but the collinearity result `EulerLine` is not stated in Mathlib.",
       "provenance": "ai-agent1",
       "id": "482d05f21781"
+    },
+    {
+      "kind": "proposition",
+      "label": "Distances along Euler's line",
+      "anchor": {
+        "section": "Points, lines, and circles associated with a triangle",
+        "snippet": "the distance between the centroid and the circumcenter is half that between the centroid and the orthocenter"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib lemma stating the 1:2 ratio between centroid–circumcenter and centroid–orthocenter distances.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -241,6 +547,13 @@
         "section": "Points, lines, and circles associated with a triangle",
         "snippet": "A median of a triangle is a straight line through a vertex and the midpoint of the opposite side"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Simplex.median",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Simplex.Centroid",
+        "match_kind": "generalization"
+      },
+      "note": "`median` is the line from a vertex of a simplex through the centroid of the opposite face; for a triangle this is the median through the midpoint.",
       "provenance": "ai-agent1",
       "id": "8a6747ab4880"
     },
@@ -251,8 +564,31 @@
         "section": "Points, lines, and circles associated with a triangle",
         "snippet": "The three medians intersect in a single point, the triangle's centroid"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Simplex.eq_centroid_of_forall_mem_median",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Simplex.Centroid",
+        "match_kind": "generalization"
+      },
+      "note": "States that any point lying on all medians of a simplex equals the centroid.",
       "provenance": "ai-agent1",
       "id": "86d874ea8c89"
+    },
+    {
+      "kind": "proposition",
+      "label": "Centroid is center of mass",
+      "anchor": {
+        "section": "Points, lines, and circles associated with a triangle",
+        "snippet": "The centroid of a rigid triangular object (cut out of a thin sheet of uniform density) is also its center of mass"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines the affine centroid but has no link to a physical centre-of-mass integral over the triangle.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -261,6 +597,13 @@
         "section": "Points, lines, and circles associated with a triangle",
         "snippet": "The centroid cuts every median in the ratio 2:1"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Simplex.point_vsub_centroid_eq_smul_vsub",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Simplex.Centroid",
+        "match_kind": "generalization"
+      },
+      "note": "Commandino's theorem: vertex-to-centroid equals `n` times centroid-to-faceOppositeCentroid, giving the 2:1 ratio when n = 2.",
       "provenance": "ai-agent1",
       "id": "837031c29f57"
     },
@@ -271,6 +614,13 @@
         "section": "Points, lines, and circles associated with a triangle",
         "snippet": "If one reflects a median in the angle bisector that passes through the same vertex, one obtains a symmedian"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No symmedian or symmedian point definition exists in Mathlib.",
       "provenance": "ai-agent1",
       "id": "aafac5de5bea"
     },
@@ -281,8 +631,31 @@
         "section": "Angles",
         "snippet": "The sum of the measures of the interior angles of a triangle in Euclidean space is always 180 degrees"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.angle_add_angle_add_angle_eq_pi",
+        "module": "Mathlib.Geometry.Euclidean.Triangle",
+        "match_kind": "exact"
+      },
+      "note": "Sum of the three angle-at-point measures equals π.",
       "provenance": "ai-agent1",
       "id": "b9e51ac5d7cc"
+    },
+    {
+      "kind": "proposition",
+      "label": "Angle-sum equivalent to parallel postulate",
+      "anchor": {
+        "section": "Angles",
+        "snippet": "This fact is equivalent to Euclid's parallel postulate"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib doesn't axiomatise Euclid's parallel postulate or prove its equivalence to the angle-sum.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",
@@ -291,6 +664,13 @@
         "section": "Angles",
         "snippet": "The measure of an exterior angle of a triangle is equal to the sum of the measures of the two interior angles that are not adjacent to it"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.exterior_angle_eq_angle_add_angle",
+        "module": "Mathlib.Geometry.Euclidean.Triangle",
+        "match_kind": "exact"
+      },
+      "note": "Stated directly using `Sbtw` to place a point on the extension of a side.",
       "provenance": "ai-agent1",
       "id": "4527572f8c73"
     },
@@ -301,6 +681,13 @@
         "section": "Angles",
         "snippet": "The sum of the measures of the three exterior angles (one for each vertex) of any triangle is 360 degrees"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement summing the three exterior angles to 2π is present in Mathlib.",
       "provenance": "ai-agent1",
       "id": "58126f9123a9"
     },
@@ -311,6 +698,13 @@
         "section": "Angles",
         "snippet": "They can be defined as the ratio between any two sides of a right triangle"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.sin",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines sin/cos analytically and has `cos_angle` in terms of inner products, but does not give the right-triangle ratio definition.",
       "provenance": "ai-agent1",
       "id": "1c93b21a86ee"
     },
@@ -321,6 +715,13 @@
         "section": "Angles",
         "snippet": "methods for doing so use the law of sines and the law of cosines"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.law_cos",
+        "module": "Mathlib.Geometry.Euclidean.Triangle",
+        "match_kind": "exact"
+      },
+      "note": "Both `law_cos` and `law_sin` are proved (with vector-angle variants in InnerProductGeometry).",
       "provenance": "ai-agent1",
       "id": "062e6192c4e9"
     },
@@ -331,6 +732,13 @@
         "section": "Angles",
         "snippet": "Any three angles that add to 180° can be the internal angles of a triangle"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No converse-existence lemma constructing a triangle from three angles summing to π is in Mathlib.",
       "provenance": "ai-agent1",
       "id": "1839d4db151d"
     },
@@ -341,6 +749,13 @@
         "section": "Angles",
         "snippet": "A degenerate triangle , whose vertices are collinear , has internal angles of 0° and 180°"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`Affine.Triangle` requires affine independence, so a degenerate-triangle predicate is not defined separately.",
       "provenance": "ai-agent1",
       "id": "b0aa8f47ce41"
     },
@@ -351,6 +766,13 @@
         "section": "Similarity and congruence",
         "snippet": "Two triangles are said to be similar , if every angle of one triangle has the same measure as the corresponding angle in the other triangle"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Similar",
+        "module": "Mathlib.Topology.MetricSpace.Similarity",
+        "match_kind": "exact"
+      },
+      "note": "`Similar` is the general indexed-family similarity used by the triangle similarity lemmas in `Mathlib.Geometry.Euclidean.Similarity`.",
       "provenance": "ai-agent1",
       "id": "0b7ecd573adf"
     },
@@ -361,6 +783,13 @@
         "section": "Similarity and congruence",
         "snippet": "If and only if one pair of internal angles of two triangles have the same measure as each other, and another pair also have the same measure as each other, the triangles are similar"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.similar_of_angle_angle",
+        "module": "Mathlib.Geometry.Euclidean.Similarity",
+        "match_kind": "exact"
+      },
+      "note": "Two pairs of equal angles imply similarity of the two triangles.",
       "provenance": "ai-agent1",
       "id": "9e380e19f216"
     },
@@ -371,6 +800,13 @@
         "section": "Similarity and congruence",
         "snippet": "If and only if one pair of corresponding sides of two triangles are in the same proportion as another pair of corresponding sides, and their included angles have the same measure, then the triangles are similar"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.similar_of_side_angle_side",
+        "module": "Mathlib.Geometry.Euclidean.Similarity",
+        "match_kind": "exact"
+      },
+      "note": "Proportional adjacent sides with equal included angle imply similarity.",
       "provenance": "ai-agent1",
       "id": "b1a4632a48d6"
     },
@@ -381,6 +817,13 @@
         "section": "Similarity and congruence",
         "snippet": "If and only if three pairs of corresponding sides of two triangles are all in the same proportion, then the triangles are similar"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "similar_of_side_side",
+        "module": "Mathlib.Topology.MetricSpace.Similarity",
+        "match_kind": "exact"
+      },
+      "note": "Proportional sides imply similarity for the (a,b,c)/(a',b',c') triples.",
       "provenance": "ai-agent1",
       "id": "407034261b14"
     },
@@ -391,6 +834,13 @@
         "section": "Similarity and congruence",
         "snippet": "Two triangles that are congruent have exactly the same size and shape"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.triangle_congruent_iff_dist_eq",
+        "module": "Mathlib.Geometry.Euclidean.Congruence",
+        "match_kind": "exact"
+      },
+      "note": "Triangle congruence is the specialisation of the general `Congruent` predicate, characterised by pairwise equal distances.",
       "provenance": "ai-agent1",
       "id": "fd6b7c4bd7e9"
     },
@@ -401,6 +851,13 @@
         "section": "Similarity and congruence",
         "snippet": "SAS Postulate: Two sides in a triangle have the same length as two sides in the other triangle, and the included angles have the same measure"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.side_angle_side",
+        "module": "Mathlib.Geometry.Euclidean.Congruence",
+        "match_kind": "exact"
+      },
+      "note": "Two sides and the included angle equal ⇒ triangles congruent.",
       "provenance": "ai-agent1",
       "id": "ca715ce0dd1f"
     },
@@ -411,6 +868,13 @@
         "section": "Similarity and congruence",
         "snippet": "ASA: Two interior angles and the side between them in a triangle have the same measure and length"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.angle_side_angle",
+        "module": "Mathlib.Geometry.Euclidean.Congruence",
+        "match_kind": "exact"
+      },
+      "note": "Two angles and the included side equal ⇒ triangles congruent (with a non-collinearity hypothesis).",
       "provenance": "ai-agent1",
       "id": "719e124a4df9"
     },
@@ -421,6 +885,13 @@
         "section": "Similarity and congruence",
         "snippet": "SSS: Each side of a triangle has the same length as the corresponding side of the other triangle"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.side_side_side",
+        "module": "Mathlib.Geometry.Euclidean.Congruence",
+        "match_kind": "exact"
+      },
+      "note": "Three equal pairs of sides ⇒ congruent, even for degenerate triangles.",
       "provenance": "ai-agent1",
       "id": "a9ec7c2c49cd"
     },
@@ -431,6 +902,13 @@
         "section": "Similarity and congruence",
         "snippet": "AAS: Two angles and a corresponding (non-included) side in a triangle have the same measure and length"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.angle_angle_side",
+        "module": "Mathlib.Geometry.Euclidean.Congruence",
+        "match_kind": "exact"
+      },
+      "note": "Two angles and a non-included side equal ⇒ congruent.",
       "provenance": "ai-agent1",
       "id": "48d4f73eceb3"
     },
@@ -441,6 +919,13 @@
         "section": "Area",
         "snippet": "One of the oldest and simplest is to take half the product of the length of one side"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `triangle area = ½·base·height` lemma is present in Mathlib.",
       "provenance": "ai-agent1",
       "id": "8277edfdb10b"
     },
@@ -451,6 +936,13 @@
         "section": "Area",
         "snippet": "If two sides"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `½ a b sin C` triangle-area formula in Mathlib.",
       "provenance": "ai-agent1",
       "id": "d79217ad3f65"
     },
@@ -461,6 +953,13 @@
         "section": "Area",
         "snippet": "Heron's formula , named after Heron of Alexandria , is a formula for finding the area of a triangle from the lengths of its sides"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Heron's-formula declaration appears in Mathlib (the `Heron`-named hits are all unrelated, e.g. `Harmonic`).",
       "provenance": "ai-agent1",
       "id": "eb36da31cea6"
     },
@@ -471,6 +970,13 @@
         "section": "Area",
         "snippet": "the relative areas of triangles in any affine plane can be defined without reference to a notion of distance or squares"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define a notion of relative/affine triangle area.",
       "provenance": "ai-agent1",
       "id": "39eb65af66c2"
     },
@@ -481,6 +987,13 @@
         "section": "Area",
         "snippet": "its relative oriented area can be calculated using the shoelace formula"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `shoelace`/`Shoelace` finds no Mathlib declaration.",
       "provenance": "ai-agent1",
       "id": "c5c78681fdd9"
     },
@@ -491,6 +1004,13 @@
         "section": "Possible side lengths",
         "snippet": "The triangle inequality states that the sum of the lengths of any two sides of a triangle must be greater than or equal to the length of the third side"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dist_triangle",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "The metric-space `dist_triangle` is the general form; `norm_add_le` is the vector version.",
       "provenance": "ai-agent1",
       "id": "fe9566631302"
     },
@@ -501,6 +1021,13 @@
         "section": "Possible side lengths",
         "snippet": "some triangle with three given positive side lengths exists if and only if those side lengths satisfy the triangle inequality"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No constructive lemma producing a triangle from three side lengths satisfying the triangle inequality is in Mathlib.",
       "provenance": "ai-agent1",
       "id": "830921f2ca5e"
     },
@@ -511,6 +1038,13 @@
         "section": "Rigidity",
         "snippet": "triangles are sturdy because specifying the lengths of all three sides determines the angles"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.side_side_side",
+        "module": "Mathlib.Geometry.Euclidean.Congruence",
+        "match_kind": "invocation"
+      },
+      "note": "SSS congruence is the precise statement of triangle rigidity; no separate `rigidity` lemma exists.",
       "provenance": "ai-agent1",
       "id": "13ba6912fd15"
     },
@@ -521,6 +1055,13 @@
         "section": "Triangulation",
         "snippet": "In the case of a simple polygon with"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Polygon triangulation, Catalan-number counts, and simple-polygon decomposition are not formalised in Mathlib.",
       "provenance": "ai-agent1",
       "id": "70b99121289b"
     },
@@ -531,6 +1072,13 @@
         "section": "Triangulation",
         "snippet": "The two ears theorem states that every simple polygon that is not itself a triangle has at least two ears"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep finds no `TwoEar`/`ears`-theorem declaration in Mathlib.",
       "provenance": "ai-agent1",
       "id": "dc26c7f575de"
     },
@@ -541,6 +1089,13 @@
         "section": "Location of a point",
         "snippet": "Trilinear coordinates specify the relative distances of a point from the sides"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib mentions trilinear coordinates only in a docstring of `SignedDist`; no dedicated definition exists.",
       "provenance": "ai-agent1",
       "id": "6e35c8b5ab0a"
     },
@@ -551,6 +1106,13 @@
         "section": "Location of a point",
         "snippet": "Barycentric coordinates of the form"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AffineBasis.coord",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Basis.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`AffineBasis.coord` gives the ith barycentric coordinate map; lemmas like `coord_apply_combination` characterise it.",
       "provenance": "ai-agent1",
       "id": "719774c14add"
     },
@@ -561,6 +1123,13 @@
         "section": "Figures inscribed in a triangle",
         "snippet": "every triangle has a unique inscribed circle (incircle) that is interior to the triangle and tangent to all three sides"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Simplex.insphere",
+        "module": "Mathlib.Geometry.Euclidean.Incenter",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's insphere is uniquely defined for every simplex; specialised to a triangle it gives the unique incircle.",
       "provenance": "ai-agent1",
       "id": "59d26382e9da"
     },
@@ -571,6 +1140,13 @@
         "section": "Figures inscribed in a triangle",
         "snippet": "Every triangle has a unique Steiner inellipse which is interior to the triangle and tangent at the midpoints of the sides"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `Steiner.*inellipse`/`SteinerInellipse` returns no matches.",
       "provenance": "ai-agent1",
       "id": "17cca5701672"
     },
@@ -581,8 +1157,31 @@
         "section": "Figures inscribed in a triangle",
         "snippet": "Marden's theorem shows how to find the foci of this ellipse"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Marden` declaration in Mathlib.",
       "provenance": "ai-agent1",
       "id": "1d45afd76896"
+    },
+    {
+      "kind": "proposition",
+      "label": "Steiner inellipse has maximum area",
+      "anchor": {
+        "section": "Figures inscribed in a triangle",
+        "snippet": "This ellipse has the greatest area of any ellipse tangent to all three sides of the triangle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Steiner inellipse is absent, so its maximum-area property is also absent.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -591,6 +1190,13 @@
         "section": "Figures inscribed in a triangle",
         "snippet": "The Mandart inellipse of a triangle is the ellipse inscribed within the triangle tangent to its sides at the contact points of its excircles"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `Mandart` returns no matches.",
       "provenance": "ai-agent1",
       "id": "32722cd79009"
     },
@@ -601,6 +1207,13 @@
         "section": "Figures inscribed in a triangle",
         "snippet": "From an interior point in a reference triangle, the nearest points on the three sides serve as the vertices of the pedal triangle"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither `pedalTriangle` nor `medialTriangle` is defined in Mathlib.",
       "provenance": "ai-agent1",
       "id": "87735ec9b6fd"
     },
@@ -611,6 +1224,13 @@
         "section": "Figures inscribed in a triangle",
         "snippet": "The midpoint triangle subdivides the reference triangle into four congruent triangles which are similar to the reference triangle"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without a medial-triangle definition, the corresponding subdivision lemma is not in Mathlib.",
       "provenance": "ai-agent1",
       "id": "4d3209c3f568"
     },
@@ -621,6 +1241,13 @@
         "section": "Figures inscribed in a triangle",
         "snippet": "The intouch triangle of a reference triangle has its vertices at the three points of tangency of the reference triangle's sides with its incircle"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `intouchTriangle` declaration; only the underlying `Simplex.touchpoint` exists.",
       "provenance": "ai-agent1",
       "id": "529ddfd67822"
     },
@@ -631,6 +1258,13 @@
         "section": "Figures inscribed in a triangle",
         "snippet": "The extouch triangle of a reference triangle has its vertices at the points of tangency of the reference triangle's excircles with its sides"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `extouchTriangle` declaration in Mathlib.",
       "provenance": "ai-agent1",
       "id": "f6d144e8df53"
     },
@@ -641,6 +1275,13 @@
         "section": "Figures inscribed in a triangle",
         "snippet": "A notable example of this figure relation is the Calabi triangle in which the vertices of every three squares are tangent to all obtuse triangle's sides"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Calabi triangle definition exists in Mathlib.",
       "provenance": "ai-agent1",
       "id": "ce3b4775086f"
     },
@@ -651,6 +1292,13 @@
         "section": "Figures inscribed in a triangle",
         "snippet": "Every acute triangle has three inscribed squares"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib lemma counts inscribed squares of a triangle by type.",
       "provenance": "ai-agent1",
       "id": "2de49ed23ff0"
     },
@@ -661,6 +1309,13 @@
         "section": "Figures inscribed in a triangle",
         "snippet": "The Lemoine hexagon is a cyclic hexagon with vertices given by the six intersections of the sides of a triangle with the three lines that are parallel to the sides"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Lemoine` hexagon definition is present in Mathlib.",
       "provenance": "ai-agent1",
       "id": "98fb603dd729"
     },
@@ -671,8 +1326,31 @@
         "section": "Figures inscribed in a triangle",
         "snippet": "Every convex polygon with area"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No area-bound theorem comparing inscribed convex polygons to the enclosing triangle is in Mathlib.",
       "provenance": "ai-agent1",
       "id": "eef08703c1ed"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equality case: inscribed parallelogram",
+      "anchor": {
+        "section": "Figures inscribed in a triangle",
+        "snippet": "Equality holds only if the polygon is a parallelogram"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Equality case for the previous (unformalised) inscribed-polygon bound is also absent.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -681,6 +1359,13 @@
         "section": "Figures circumscribed about a triangle",
         "snippet": "The tangential triangle of a reference triangle (other than a right triangle) is the triangle whose sides are on the tangent lines to the reference triangle's circumcircle at its vertices"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `tangentialTriangle` definition exists in Mathlib.",
       "provenance": "ai-agent1",
       "id": "ba5b68cfe28c"
     },
@@ -691,8 +1376,31 @@
         "section": "Figures circumscribed about a triangle",
         "snippet": "every triangle has a unique Steiner circumellipse , which passes through the triangle's vertices and has its center at the triangle's centroid"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Steiner circumellipse is not defined or characterised in Mathlib.",
       "provenance": "ai-agent1",
       "id": "df845ac94542"
+    },
+    {
+      "kind": "proposition",
+      "label": "Steiner circumellipse has minimum area",
+      "anchor": {
+        "section": "Figures circumscribed about a triangle",
+        "snippet": "Of all ellipses going through the triangle's vertices, it has the smallest area"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without a Steiner circumellipse definition, the minimum-area property is also absent.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -701,6 +1409,13 @@
         "section": "Figures circumscribed about a triangle",
         "snippet": "The Kiepert hyperbola is unique conic that passes through the triangle's three vertices, its centroid, and its circumcenter"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Kiepert hyperbola is formalised in Mathlib.",
       "provenance": "ai-agent1",
       "id": "b8eabc430a54"
     },
@@ -711,6 +1426,13 @@
         "section": "Figures circumscribed about a triangle",
         "snippet": "Of all triangles contained in a given convex polygon , one with maximal area can be found in linear time"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Algorithmic result on maximum-area inscribed triangles is not part of Mathlib.",
       "provenance": "ai-agent1",
       "id": "2e114d6ecb96"
     },
@@ -721,8 +1443,31 @@
         "section": "Circular triangles",
         "snippet": "A circular triangle is a triangle with circular arc edges"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No circular-triangle definition appears in Mathlib.",
       "provenance": "ai-agent1",
       "id": "c1c6185ce9f7"
+    },
+    {
+      "kind": "proposition",
+      "label": "Intersection of three disks is a convex circular triangle",
+      "anchor": {
+        "section": "Circular triangles",
+        "snippet": "The intersection of three disks forms a circular triangle whose sides are all convex"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma describing the intersection of three disks as a circular triangle is present in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "example",
@@ -731,6 +1476,13 @@
         "section": "Circular triangles",
         "snippet": "An example of a circular triangle with three convex edges is a Reuleaux triangle"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `Reuleaux` returns no matches.",
       "provenance": "ai-agent1",
       "id": "36f37cb2d991"
     },
@@ -741,6 +1493,13 @@
         "section": "Circular triangles",
         "snippet": "The construction may be performed with a compass alone without needing a straightedge, by the Mohr–Mascheroni theorem"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Mohr` declaration in Mathlib (the `Mascheroni` hits are about the Euler–Mascheroni constant).",
       "provenance": "ai-agent1",
       "id": "52dba7200f1a"
     },
@@ -751,17 +1510,31 @@
         "section": "Circular triangles",
         "snippet": "A pseudotriangle is a simply-connected subset of the plane lying between three mutually tangent convex regions"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of pseudotriangle.",
       "provenance": "ai-agent1",
-      "id": "b967537f3bd4"
+      "id": "ca725b91c49b"
     },
     {
       "kind": "proposition",
       "label": "Pseudo-triangulation counts",
       "anchor": {
         "section": "Circular triangles",
-        "snippet": "For"
+        "snippet": "disks in a pseudotriangle, the partition gives"
       },
-      "provenance": "ai-agent1",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Pseudo-triangulation counts are unformalised.",
+      "provenance": "ai-moderated",
       "id": "ca725b91c49b"
     },
     {
@@ -771,6 +1544,13 @@
         "section": "Circular triangles",
         "snippet": "The convex hull of any pseudotriangle is a triangle"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without a pseudotriangle definition, no convex-hull lemma about them is in Mathlib.",
       "provenance": "ai-agent1",
       "id": "c0edc2d91bc2"
     },
@@ -781,6 +1561,13 @@
         "section": "Triangle in non-planar space",
         "snippet": "A triangle in hyperbolic space is called a hyperbolic triangle"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No hyperbolic or spherical triangle definition exists in Mathlib.",
       "provenance": "ai-agent1",
       "id": "6f7e16194078"
     },
@@ -791,6 +1578,13 @@
         "section": "Triangle in non-planar space",
         "snippet": "the sum of the internal angles of a hyperbolic triangle is less than 180°, and for any spherical triangle, the sum is more than 180°"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalise angle sums in hyperbolic or spherical triangles.",
       "provenance": "ai-agent1",
       "id": "264543e78a1d"
     },
@@ -801,8 +1595,31 @@
         "section": "Triangle in non-planar space",
         "snippet": "By Girard's theorem , the sum of the angles of a triangle on a sphere is"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Girard-theorem (spherical excess) declaration is in Mathlib.",
       "provenance": "ai-agent1",
       "id": "2d0ae3059e95"
+    },
+    {
+      "kind": "proposition",
+      "label": "Triangle comparison theorems",
+      "anchor": {
+        "section": "Triangle in non-planar space",
+        "snippet": "there are comparison theorems relating the properties of a triangle in the space to properties of a corresponding triangle in a model space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Toponogov-style triangle comparison theorems.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -811,6 +1628,13 @@
         "section": "Triangle in non-planar space",
         "snippet": "a CAT(k) space is characterized by such comparisons"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No CAT(k) space definition exists in Mathlib.",
       "provenance": "ai-agent1",
       "id": "01a6e4f578b6"
     },
@@ -821,6 +1645,13 @@
         "section": "Fractal geometry",
         "snippet": "Fractal shapes based on triangles include the Sierpiński gasket and the Koch snowflake"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Sierpiński gasket or Koch snowflake construction.",
       "provenance": "ai-agent1",
       "id": "f9984e748a7f"
     }

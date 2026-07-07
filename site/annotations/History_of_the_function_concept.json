@@ -563,7 +563,8 @@
         "match_kind": "exact"
       },
       "note": "Kleene's μ-recursive (partial recursive) functions on the naturals are formalized as `Nat.Partrec`, defined inductively with zero, successor, projections, composition, primitive recursion, and the μ (unbounded search) operator.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "57812a7045ff"
     },
     {
       "kind": "definition",
@@ -579,7 +580,8 @@
         "match_kind": "exact"
       },
       "note": "Turing machines are formalized in `Mathlib.Computability.TuringMachine` (e.g. `Turing.TM0.Machine`), with the equivalence to partial recursive functions proved via `Turing.TM2`/`PartrecToTM2`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f2e9f840caa9"
     },
     {
       "kind": "theorem",
@@ -614,6 +616,38 @@
       "note": "The unsolvability of the Entscheidungsproblem is captured by the formalized non-computability of the halting problem (`ComputablePred.halting_problem`), together with Rice's theorem.",
       "provenance": "ai",
       "id": "d6825e95ff2c"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gödel's incompleteness theorems",
+      "anchor": {
+        "section": "Formalist's function: David Hilbert's axiomatization of mathematics (1904–1927)",
+        "snippet": "see Gödel's incompleteness theorems of 1931"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.ModelTheory.Arithmetic",
+        "match_kind": null
+      },
+      "note": "Gödel's incompleteness theorems are not in Mathlib core, but have been formalized in Lean 4 in dedicated projects (e.g. iehality/lean4-arithmetization, FormalizedFormalLogic).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Church's lambda calculus",
+      "anchor": {
+        "section": "Formalist's function: David Hilbert's axiomatization of mathematics (1904–1927)",
+        "snippet": "Church's lambda calculus (1936)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "While Lean 4 is itself based on a typed lambda calculus, Church's untyped λ-calculus as an object of study is not formalized in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -753,6 +787,22 @@
     },
     {
       "kind": "definition",
+      "label": "Von Neumann–Bernays–Gödel set theory",
+      "anchor": {
+        "section": "Von Neumann's set theory 1925",
+        "snippet": "This axiomatization is now known as von Neumann–Bernays–Gödel set theory"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes ZFC (via `ZFSet`) rather than NBG; there is no dedicated NBG axiomatization in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Cartesian product E × F",
       "anchor": {
         "section": "Bourbaki 1939",
@@ -765,7 +815,8 @@
         "match_kind": "exact"
       },
       "note": "The cartesian product of two sets is the core type `Prod` (notation `α × β`); on `Set`s the corresponding operation is `Set.prod` (notation `s ×ˢ t`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6fbda845a9f2"
     },
     {
       "kind": "definition",

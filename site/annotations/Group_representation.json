@@ -41,6 +41,22 @@
     },
     {
       "kind": "definition",
+      "label": "General linear group GL(V)",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "GL( V ), the general linear group on V"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.GeneralLinearGroup",
+        "module": "Mathlib.LinearAlgebra.GeneralLinearGroup.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.GeneralLinearGroup K V` is the group of invertible linear self-maps of `V`, i.e. GL(V); `Matrix.GeneralLinearGroup` is the matrix version GL(n, K).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Representation space, dimension, degree",
       "anchor": {
         "section": "Definitions",
@@ -344,6 +360,22 @@
       "note": "`MulAction.bijective` proves that for a group acting, each `g • ·` is a bijection on the set.",
       "provenance": "ai",
       "id": "d93d592bb1c9"
+    },
+    {
+      "kind": "proposition",
+      "label": "Permutation rep as homomorphism to symmetric group",
+      "anchor": {
+        "section": "Set-theoretical representations",
+        "snippet": "we may equivalently define a permutation representation to be a group homomorphism from G to the symmetric group S X of X"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulAction.toPermHom",
+        "module": "Mathlib.Algebra.Group.Action.End",
+        "match_kind": "exact"
+      },
+      "note": "`MulAction.toPermHom G X : G →* Equiv.Perm X` is the equivalent reformulation of a `MulAction` as a hom into the symmetric group of X.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",

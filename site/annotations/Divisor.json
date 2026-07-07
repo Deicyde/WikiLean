@@ -82,12 +82,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Odd",
-        "module": "Mathlib.Algebra.Ring.Parity",
+        "decl": "Even",
+        "module": "Mathlib.Algebra.Group.Even",
         "match_kind": "exact"
       },
-      "note": "`Even` is defined in `Mathlib.Algebra.Group.Even` as `∃ r, a = r + r` and `Odd a := ∃ k, a = 2 * k + 1` in `Mathlib.Algebra.Ring.Parity`.",
-      "provenance": "ai",
+      "note": "`Even a := ∃ r, a = r + r` is defined in `Mathlib.Algebra.Group.Even`; `Odd a := ∃ k, a = 2 * k + 1` (in `Mathlib.Algebra.Ring.Parity`) formalizes the not-divisible-by-2 side.",
+      "provenance": "ai-moderated",
       "id": "a5459a41dc82"
     },
     {
@@ -384,7 +384,7 @@
       "label": "Average number of divisors",
       "anchor": {
         "section": "Further notions and facts",
-        "snippet": "where [MATH] is Euler–Mascheroni constant"
+        "snippet": "Euler–Mascheroni constant"
       },
       "status": "not_formalized",
       "mathlib": {
@@ -393,7 +393,7 @@
         "match_kind": null
       },
       "note": "The Dirichlet divisor asymptotic `(1/n)∑ d(k) ∼ ln n + 2γ - 1` is not present in Mathlib (no hits for divisor-average or Dirichlet divisor problem).",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "f3a0c9a906a3"
     },
     {
@@ -452,7 +452,7 @@
       "label": "Divisibility closed under sum",
       "anchor": {
         "section": "Further notions and facts",
-        "snippet": "However, if [MATH] and [MATH] then [MATH] does not always hold"
+        "snippet": "holds, as does"
       },
       "status": "formalized",
       "mathlib": {
@@ -460,8 +460,8 @@
         "module": "Mathlib.Algebra.Ring.Divisibility.Basic",
         "match_kind": "exact"
       },
-      "note": "`dvd_add : a ∣ b → a ∣ c → a ∣ b + c` formalizes that if `a` divides `b` and `c` then `a` divides `b + c`.",
-      "provenance": "ai",
+      "note": "`dvd_add : a ∣ b → a ∣ c → a ∣ b + c` formalizes that if `a` divides `b` and `c` then `a` divides `b + c`; the parallel rule for differences is `dvd_sub`.",
+      "provenance": "ai-moderated",
       "id": "a5d94f2187a3"
     },
     {
@@ -525,7 +525,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Nat.gcd",
-        "module": "Mathlib.Data.Nat.GCD.Basic",
+        "module": "Init.Data.Nat.Gcd",
         "match_kind": "exact"
       },
       "note": "`Nat.gcd` is the meet of the divisibility order on `ℕ`; `Associates.instLattice` realizes gcd as `⊓` for UFDs.",
@@ -542,7 +542,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Nat.lcm",
-        "module": "Mathlib.Data.Nat.GCD.Basic",
+        "module": "Init.Data.Nat.Lcm",
         "match_kind": "exact"
       },
       "note": "`Nat.lcm` is the join of the divisibility order on `ℕ`; `Associates.instLattice` realizes lcm as `⊔` for UFDs.",
@@ -559,12 +559,44 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Nat.Coprime",
-        "module": "Mathlib.Data.Nat.GCD.Basic",
+        "module": "Init.Data.Nat.Coprime",
         "match_kind": "exact"
       },
       "note": "`Nat.Coprime m n := Nat.gcd m n = 1` formalizes the relatively-prime relation for naturals, with `IsCoprime` providing the ring-theoretic analogue.",
       "provenance": "ai",
       "id": "9b087a4c83e6"
+    },
+    {
+      "kind": "definition",
+      "label": "Divisibility in a ring",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "extended, with the same definition, to elements of any ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Dvd",
+        "module": "Init.Prelude",
+        "match_kind": "exact"
+      },
+      "note": "The general `Dvd` class plus the `semigroupDvd`/`Monoid` instance gives `a ∣ b ↔ ∃ c, b = a * c` in any (commutative) ring, matching the ring-theory generalization the lead points to.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Set of positive divisors",
+      "anchor": {
+        "section": "Further notions and facts",
+        "snippet": "and each of the divisors has the form"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.divisors",
+        "module": "Mathlib.NumberTheory.Divisors",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.divisors n : Finset ℕ` is the finset of all positive divisors of `n`, the object whose cardinality is given by `Nat.card_divisors`.",
+      "provenance": "ai"
     }
   ]
 }

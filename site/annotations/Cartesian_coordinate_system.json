@@ -101,10 +101,10 @@
       "mathlib": {
         "decl": "Metric.sphere",
         "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
-        "match_kind": "invocation"
+        "match_kind": "special_case"
       },
       "note": "Metric.sphere 0 2 in EuclideanSpace ℝ (Fin 2) is this set, but the specific example is not stated as a lemma.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "4ab53c152155"
     },
     {
@@ -140,6 +140,22 @@
       "note": "No declaration counts the degrees of freedom in choosing a coordinate system on a line.",
       "provenance": "ai",
       "id": "19f2aafc3dd9"
+    },
+    {
+      "kind": "proposition",
+      "label": "Signed distance from the origin",
+      "anchor": {
+        "section": "One dimension",
+        "snippet": "Each point corresponds to its signed distance from the origin"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib lemma asserts that a real-number coordinate on a 1D affine line equals the signed distance from the origin.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -495,7 +511,8 @@
         "match_kind": "generalization"
       },
       "note": "The Pythagorean theorem in Euclidean geometry is formalized; the Cartesian distance formula is its coordinate expression via EuclideanSpace.dist_eq.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "73e800046545"
     },
     {
       "kind": "definition",
@@ -596,7 +613,8 @@
         "match_kind": "generalization"
       },
       "note": "Submodule.reflection in a 1-dim subspace covers this geometrically; the explicit (cos 2θ, sin 2θ; sin 2θ, -cos 2θ) coordinate formula is not stated as a lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2cad101a5604"
     },
     {
       "kind": "definition",
@@ -630,24 +648,6 @@
       },
       "note": "AffineMap stores a linear part plus translation, but the augmented-matrix representation is not a named declaration.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "General matrix form of the transformations",
-          "snippet": "All affine transformations of the plane can be described in a uniform way by using matrices."
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{pmatrix}x'\\\\y'\\end{pmatrix}}=A{\\begin{pmatrix}x\\\\y\\end{pmatrix}}+b,}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle A={\\begin{pmatrix}A_{1,1}&A_{1,2}\\\\A_{2,1}&A_{2,2}\\end{pmatrix}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}x'&=xA_{1,1}+yA_{1,1}+b_{1}\\\\y'&=xA_{2,1}+yA_{2,2}+b_{2}.\\end{aligned}}}"
-        }
-      ],
       "id": "b6d6fb5f73cd"
     },
     {
@@ -665,20 +665,6 @@
       },
       "note": "Change-of-orthonormal-basis matrices lie in the orthogonal group, but the iff characterization of plane Euclidean transformations is not stated.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "General matrix form of the transformations",
-          "snippet": "the Euclidean transformations are characterized by the fact that the matrix"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle A_{1,1}A_{1,2}+A_{2,1}A_{2,2}=0}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle A_{1,1}^{2}+A_{2,1}^{2}=A_{1,2}^{2}+A_{2,2}^{2}=1.}"
-        }
-      ],
       "id": "2eed0558efe1"
     },
     {
@@ -696,16 +682,6 @@
       },
       "note": "Translations are exactly affine maps with identity linear part, but this iff is not stated as a lemma.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "General matrix form of the transformations",
-          "snippet": "The transformation is a translation if and only if A is the identity matrix ."
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle A_{1,1}A_{2,2}-A_{2,1}A_{1,2}=1.}"
-        }
-      ],
       "id": "aa29d0647bdc"
     },
     {
@@ -723,16 +699,6 @@
       },
       "note": "SO(n) is formalized as specialOrthogonalGroup, but the geometric iff for rotations about a point is not stated.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "General matrix form of the transformations",
-          "snippet": "The transformation is a rotation around some point if and only if A is a rotation matrix"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle A_{1,1}A_{2,2}-A_{2,1}A_{1,2}=1.}"
-        }
-      ],
       "id": "1b995507cb78"
     },
     {
@@ -750,16 +716,6 @@
       },
       "note": "The det A = -1 classification into reflections/glide reflections is not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "General matrix form of the transformations",
-          "snippet": "A reflection or glide reflection is obtained when"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle A_{1,1}A_{2,2}-A_{2,1}A_{1,2}=-1.}"
-        }
-      ],
       "id": "565b391d382d"
     },
     {
@@ -777,20 +733,6 @@
       },
       "note": "LinearMap.toMatrix_comp states that the matrix of a composition equals the product of the matrices.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "General matrix form of the transformations",
-          "snippet": "transformations can be composed by simply multiplying the associated transformation matrices"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{pmatrix}x'\\\\y'\\\\1\\end{pmatrix}}=A'{\\begin{pmatrix}x\\\\y\\\\1\\end{pmatrix}},}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle A'={\\begin{pmatrix}A_{1,1}&A_{1,2}&b_{1}\\\\A_{2,1}&A_{2,2}&b_{2}\\\\0&0&1\\end{pmatrix}}.}"
-        }
-      ],
       "id": "191908516801"
     },
     {
@@ -808,16 +750,6 @@
       },
       "note": "AffineMap formalizes affine maps (defined via affine combinations), an equivalent characterization to the line-preserving one.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Affine transformation",
-          "snippet": "Affine transformations of the Euclidean plane are transformations that map lines to lines"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{pmatrix}A_{1,1}&A_{2,1}&b_{1}\\\\A_{1,2}&A_{2,2}&b_{2}\\\\0&0&1\\end{pmatrix}}{\\begin{pmatrix}x\\\\y\\\\1\\end{pmatrix}}={\\begin{pmatrix}x'\\\\y'\\\\1\\end{pmatrix}}.}"
-        }
-      ],
       "id": "5dba9bcbe4d7"
     },
     {
@@ -940,6 +872,22 @@
       "id": "51fb10f90a6f"
     },
     {
+      "kind": "proposition",
+      "label": "Switching one axis reverses orientation",
+      "anchor": {
+        "section": "In two dimensions",
+        "snippet": "Switching any one axis will reverse the orientation, but switching both will leave the orientation unchanged."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Orientation.map",
+        "module": "Mathlib.LinearAlgebra.Orientation",
+        "match_kind": "generalization"
+      },
+      "note": "Orientation.map tracks how a linear equivalence acts on orientations; reversing a single axis has determinant -1 and so reverses orientation, but this specific corollary is not a standalone lemma.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Right- and left-handed systems (3D)",
       "anchor": {
@@ -988,16 +936,6 @@
       },
       "note": "EuclideanSpace.basisFun is the standard orthonormal basis of unit coordinate vectors (i, j, ...).",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Representing a vector in the standard basis",
-          "snippet": "are unit vectors in the direction of the x -axis and y -axis respectively, generally referred to as the standard basis"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\mathbf {r} =x\\mathbf {i} +y\\mathbf {j} +z\\mathbf {k} ,}"
-        }
-      ],
       "id": "a3e1b6b703ae"
     },
     {
@@ -1031,7 +969,8 @@
         "match_kind": "generalization"
       },
       "note": "The pure-imaginary quaternions (Quaternion.im) form the 3D subspace identified with ℝ³; multiplication restricted there gives the cross-product/scalar-product decomposition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0ae5b95cf780"
     }
   ]
 }

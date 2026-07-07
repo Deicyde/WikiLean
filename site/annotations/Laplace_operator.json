@@ -3,6 +3,7 @@
   "wikipedia_title": "Laplace operator",
   "display_title": "Laplace operator",
   "schema_version": 3,
+  "annotation_style": "theorem_article",
   "annotations": [
     {
       "kind": "definition",
@@ -12,7 +13,14 @@
         "snippet": "the Laplace operator or Laplacian is a differential operator given by the divergence of the gradient of a scalar function on Euclidean space"
       },
       "provenance": "ai-agent1",
-      "id": "3eba00eef616"
+      "id": "3eba00eef616",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Laplacian.laplacian",
+        "module": "Mathlib.Analysis.Distribution.DerivNotation",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines a `Laplacian` typeclass with notation `Δ`, instantiated on `E → F` for real inner product spaces via `InnerProductSpace.instLaplacian`."
     },
     {
       "kind": "definition",
@@ -22,7 +30,14 @@
         "snippet": "Solutions of Laplace's equation Δ f = 0 are called harmonic functions"
       },
       "provenance": "ai-agent1",
-      "id": "3b9be979cfe9"
+      "id": "3b9be979cfe9",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.HarmonicAt",
+        "module": "Mathlib.Analysis.InnerProductSpace.Harmonic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Defined as being C^2 with `Δ f =ᶠ[𝓝 x] 0`; `HarmonicOnNhd` handles the on-a-set version."
     },
     {
       "kind": "definition",
@@ -32,7 +47,14 @@
         "snippet": "defined as the divergence"
       },
       "provenance": "ai-agent1",
-      "id": "84143a3739a7"
+      "id": "84143a3739a7",
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductSpace.laplacianWithin",
+        "module": "Mathlib.Analysis.InnerProductSpace.Laplacian",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's Laplacian is defined via the second iterated derivative applied to the canonical covariant tensor, not literally as `div ∘ grad` — divergence is not defined in Mathlib."
     },
     {
       "kind": "definition",
@@ -42,7 +64,14 @@
         "snippet": "Explicitly, the Laplacian of f is thus the sum of all the unmixed second partial derivatives in the Cartesian coordinates"
       },
       "provenance": "ai-agent1",
-      "id": "e8cc2ed3d38c"
+      "id": "e8cc2ed3d38c",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.laplacian_eq_iteratedFDeriv_orthonormalBasis",
+        "module": "Mathlib.Analysis.InnerProductSpace.Laplacian",
+        "match_kind": "exact"
+      },
+      "note": "States `Δ f = fun x ↦ ∑ i, iteratedFDeriv ℝ 2 f x ![v i, v i]` for any orthonormal basis `v`."
     },
     {
       "kind": "proposition",
@@ -52,7 +81,14 @@
         "snippet": "As a second-order differential operator, the Laplace operator maps C k functions to C k −2 functions for k ≥ 2"
       },
       "provenance": "ai-agent1",
-      "id": "7ca1698464db"
+      "id": "7ca1698464db",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma of the form `ContDiff k → ContDiff (k-2) (Δ f)` on the Laplacian was found."
     },
     {
       "kind": "definition",
@@ -62,7 +98,14 @@
         "snippet": "Alternatively, the Laplace operator can be defined as"
       },
       "provenance": "ai-agent1",
-      "id": "83cfdd00c9fc"
+      "id": "83cfdd00c9fc",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of the Laplacian as a limit of the sphere-average deviation was found."
     },
     {
       "kind": "definition",
@@ -72,7 +115,14 @@
         "snippet": "is negative semidefinite"
       },
       "provenance": "ai-agent1",
-      "id": "b70b0be55152"
+      "id": "b70b0be55152",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Laplacian.laplacian",
+        "module": "Mathlib.Analysis.Distribution.DerivNotation",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `Δ` uses the sum-of-second-partials sign (the negative-semidefinite convention), matching this Wikipedia convention."
     },
     {
       "kind": "definition",
@@ -82,7 +132,14 @@
         "snippet": "Another common convention inserts a minus sign and defines instead"
       },
       "provenance": "ai-agent1",
-      "id": "4929b201aa6a"
+      "id": "4929b201aa6a",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `-Δ` convention operator is defined in Mathlib."
     },
     {
       "kind": "example",
@@ -92,7 +149,14 @@
         "snippet": "the net flux of u through the boundary"
       },
       "provenance": "ai-agent1",
-      "id": "31fc66f52eb8"
+      "id": "31fc66f52eb8",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Physics motivation, not formalized."
     },
     {
       "kind": "proposition",
@@ -102,7 +166,14 @@
         "snippet": "the entire equation Δ u = 0 is known as Laplace's equation"
       },
       "provenance": "ai-agent1",
-      "id": "b4626012f5a0"
+      "id": "b4626012f5a0",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of a diffusion PDE / Fick-law derivation of Laplace's equation."
     },
     {
       "kind": "definition",
@@ -112,7 +183,14 @@
         "snippet": "the average value of"
       },
       "provenance": "ai-agent1",
-      "id": "811379d0b5be"
+      "id": "811379d0b5be",
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.average",
+        "module": "Mathlib.MeasureTheory.Integral.Average",
+        "match_kind": "generalization"
+      },
+      "note": "General measure-theoretic average is present, but a dedicated `ballAverage` for the Laplace/harmonic setting is not."
     },
     {
       "kind": "definition",
@@ -122,7 +200,14 @@
         "snippet": "Similarly, the average value of"
       },
       "provenance": "ai-agent1",
-      "id": "2ec46e8bc097"
+      "id": "2ec46e8bc097",
+      "status": "partial",
+      "mathlib": {
+        "decl": "circleAverage",
+        "module": "Mathlib.MeasureTheory.Integral.CircleAverage",
+        "match_kind": "special_case"
+      },
+      "note": "Circle (2D sphere) average is formalized; the higher-dimensional sphere-average operator specific to harmonic analysis is not."
     },
     {
       "kind": "proposition",
@@ -132,7 +217,14 @@
         "snippet": "the charge distribution itself is given by the negative of the Laplacian"
       },
       "provenance": "ai-agent1",
-      "id": "20527fb4d0ff"
+      "id": "20527fb4d0ff",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Physics application; no electrostatics API in Mathlib."
     },
     {
       "kind": "example",
@@ -142,7 +234,14 @@
         "snippet": "This is a consequence of Gauss's law"
       },
       "provenance": "ai-agent1",
-      "id": "2b75cd3d2ade"
+      "id": "2b75cd3d2ade",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gauss's law is not formalized in Mathlib."
     },
     {
       "kind": "proposition",
@@ -152,7 +251,30 @@
         "snippet": "the negative of the Laplacian of the gravitational potential is the mass distribution"
       },
       "provenance": "ai-agent1",
-      "id": "3c2ec2267625"
+      "id": "3c2ec2267625",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Physics application; not formalized."
+    },
+    {
+      "kind": "definition",
+      "label": "Poisson's equation",
+      "anchor": {
+        "section": "Density associated with a potential",
+        "snippet": "Finding the potential function subject to suitable boundary conditions is equivalent to solving Poisson's equation"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Poisson.equation` or analogous definition was found (the Poisson kernel/formula for harmonic functions exists, but not Poisson's PDE)."
     },
     {
       "kind": "proposition",
@@ -162,7 +284,14 @@
         "snippet": "solutions to Δ f = 0 in a region U are functions that make the Dirichlet energy functional stationary"
       },
       "provenance": "ai-agent1",
-      "id": "583a70c7c634"
+      "id": "583a70c7c634",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Dirichlet energy is not defined in Mathlib."
     },
     {
       "kind": "proposition",
@@ -172,7 +301,14 @@
         "snippet": "Conversely, if E is stationary around f , then Δ f = 0"
       },
       "provenance": "ai-agent1",
-      "id": "733a31f83770"
+      "id": "733a31f83770",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Dirichlet-energy variational characterization of harmonicity is not formalized."
     },
     {
       "kind": "definition",
@@ -182,7 +318,14 @@
         "snippet": "where x and y are the standard Cartesian coordinates of the xy -plane"
       },
       "provenance": "ai-agent1",
-      "id": "56a27caa553b"
+      "id": "56a27caa553b",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.laplacian_eq_iteratedFDeriv_complexPlane",
+        "module": "Mathlib.Analysis.InnerProductSpace.Laplacian",
+        "match_kind": "special_case"
+      },
+      "note": "Gives the 2D formula for `Δ f` on `ℂ` in the `(1, I)` basis, i.e. `∂²/∂x² + ∂²/∂y²`."
     },
     {
       "kind": "definition",
@@ -192,7 +335,14 @@
         "snippet": "where r represents the radial distance and θ the angle"
       },
       "provenance": "ai-agent1",
-      "id": "783f4fe3543b"
+      "id": "783f4fe3543b",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit polar-coordinate expression for the Laplacian was found."
     },
     {
       "kind": "definition",
@@ -202,7 +352,14 @@
         "snippet": "In Cartesian coordinates"
       },
       "provenance": "ai-agent1",
-      "id": "1598dc9a3bb5"
+      "id": "1598dc9a3bb5",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.laplacian_eq_iteratedFDeriv_stdOrthonormalBasis",
+        "module": "Mathlib.Analysis.InnerProductSpace.Laplacian",
+        "match_kind": "generalization"
+      },
+      "note": "General `n`-D Cartesian formula for `Δ f` via the standard orthonormal basis, which specialises to 3D."
     },
     {
       "kind": "definition",
@@ -212,7 +369,14 @@
         "snippet": "represents the radial distance, φ the azimuth angle and z the height"
       },
       "provenance": "ai-agent1",
-      "id": "eea1b0b981cb"
+      "id": "eea1b0b981cb",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No cylindrical-coordinate Laplacian formula was found."
     },
     {
       "kind": "definition",
@@ -222,7 +386,14 @@
         "snippet": "where φ represents the azimuthal angle and θ the zenith angle"
       },
       "provenance": "ai-agent1",
-      "id": "5b26ce8822c6"
+      "id": "5b26ce8822c6",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No spherical-coordinate Laplacian formula was found."
     },
     {
       "kind": "definition",
@@ -232,7 +403,14 @@
         "snippet": "In general curvilinear coordinates"
       },
       "provenance": "ai-agent1",
-      "id": "c51827e78731"
+      "id": "c51827e78731",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No curvilinear-coordinate Laplacian formula was found."
     },
     {
       "kind": "definition",
@@ -242,7 +420,14 @@
         "snippet": "In arbitrary curvilinear coordinates"
       },
       "provenance": "ai-agent1",
-      "id": "c4c623dcb09f"
+      "id": "c4c623dcb09f",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized."
     },
     {
       "kind": "definition",
@@ -252,7 +437,14 @@
         "snippet": "the Laplacian decomposes into radial and angular parts"
       },
       "provenance": "ai-agent1",
-      "id": "5c68f003ded0"
+      "id": "5c68f003ded0",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No radial/angular decomposition of the Laplacian is present."
     },
     {
       "kind": "proposition",
@@ -262,7 +454,14 @@
         "snippet": "the angular factor must satisfy the eigenvalue equation"
       },
       "provenance": "ai-agent1",
-      "id": "c7e9df6c61db"
+      "id": "c7e9df6c61db",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Spherical harmonics are not formalized in Mathlib."
     },
     {
       "kind": "proposition",
@@ -272,7 +471,14 @@
         "snippet": "gives the radial equation"
       },
       "provenance": "ai-agent1",
-      "id": "0352b1eea21d"
+      "id": "0352b1eea21d",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Solid harmonics not formalized."
     },
     {
       "kind": "proposition",
@@ -282,7 +488,14 @@
         "snippet": "Thus every radial harmonic function on an annulus"
       },
       "provenance": "ai-agent1",
-      "id": "a80963ccc12d"
+      "id": "a80963ccc12d",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized."
     },
     {
       "kind": "proposition",
@@ -292,7 +505,14 @@
         "snippet": "the spherical Laplacian of a function on"
       },
       "provenance": "ai-agent1",
-      "id": "d2bd6d4e8586"
+      "id": "d2bd6d4e8586",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Spherical Laplacian and homogeneous-extension characterization not formalized."
     },
     {
       "kind": "proposition",
@@ -302,7 +522,14 @@
         "snippet": "The Laplacian is equivariant under pullback by every Euclidean transformation"
       },
       "provenance": "ai-agent1",
-      "id": "b303304fd03f"
+      "id": "b303304fd03f",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `laplacian_comp_isometry` / pullback-equivariance lemma was found; `laplacian_CLE_comp_left` covers left composition only."
     },
     {
       "kind": "proposition",
@@ -312,7 +539,14 @@
         "snippet": "In two dimensions, this says that"
       },
       "provenance": "ai-agent1",
-      "id": "98a195137c9d"
+      "id": "98a195137c9d",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Rotation/translation invariance of `Δ` is not stated."
     },
     {
       "kind": "proposition",
@@ -322,7 +556,14 @@
         "snippet": "is invariant under the natural action of the Euclidean group"
       },
       "provenance": "ai-agent1",
-      "id": "b34290fb155a"
+      "id": "b34290fb155a",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized."
     },
     {
       "kind": "theorem",
@@ -332,7 +573,14 @@
         "snippet": "those that commute with all Euclidean isometries are exactly the polynomial expressions in the Laplacian"
       },
       "provenance": "ai-agent1",
-      "id": "f94d0d19eeb6"
+      "id": "f94d0d19eeb6",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized."
     },
     {
       "kind": "proposition",
@@ -342,7 +590,14 @@
         "snippet": "the angular part of the Euclidean Laplacian is, up to sign convention, the quadratic Casimir operator of the rotation group"
       },
       "provenance": "ai-agent1",
-      "id": "e1a924730772"
+      "id": "e1a924730772",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No quadratic Casimir operator formalized; angular Laplacian not present."
     },
     {
       "kind": "proposition",
@@ -352,7 +607,14 @@
         "snippet": "the Laplace–Beltrami operator is obtained from the quadratic Casimir of the acting Lie group"
       },
       "provenance": "ai-agent1",
-      "id": "1279e7039d48"
+      "id": "1279e7039d48",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized."
     },
     {
       "kind": "proposition",
@@ -362,7 +624,14 @@
         "snippet": "The Laplace operator is linear"
       },
       "provenance": "ai-agent1",
-      "id": "6f0f9d14d1dc"
+      "id": "6f0f9d14d1dc",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContDiffAt.laplacian_add",
+        "module": "Mathlib.Analysis.InnerProductSpace.Laplacian",
+        "match_kind": "exact"
+      },
+      "note": "Additivity, negation, and scalar multiplication are proven under C^2 hypotheses (`laplacian_add`, `laplacian_neg`, `laplacian_smul`)."
     },
     {
       "kind": "proposition",
@@ -372,7 +641,14 @@
         "snippet": "is an elliptic differential operator"
       },
       "provenance": "ai-agent1",
-      "id": "80ee10b356ed"
+      "id": "80ee10b356ed",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No abstract notion of elliptic differential operator is present in Mathlib."
     },
     {
       "kind": "theorem",
@@ -382,7 +658,14 @@
         "snippet": "Green's identities give"
       },
       "provenance": "ai-agent1",
-      "id": "cb675e5ae9d7"
+      "id": "cb675e5ae9d7",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Green's identities are not formalized in Mathlib."
     },
     {
       "kind": "proposition",
@@ -392,7 +675,14 @@
         "snippet": "the Laplacian is formally self-adjoint"
       },
       "provenance": "ai-agent1",
-      "id": "b911f0ef8c79"
+      "id": "b911f0ef8c79",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized."
     },
     {
       "kind": "proposition",
@@ -402,7 +692,14 @@
         "snippet": "gives the energy identity"
       },
       "provenance": "ai-agent1",
-      "id": "6edc136b2269"
+      "id": "6edc136b2269",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized."
     },
     {
       "kind": "definition",
@@ -412,7 +709,14 @@
         "snippet": "is called harmonic if"
       },
       "provenance": "ai-agent1",
-      "id": "6b5dff3fa0a7"
+      "id": "6b5dff3fa0a7",
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductSpace.HarmonicAt",
+        "module": "Mathlib.Analysis.InnerProductSpace.Harmonic.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Harmonic functions are formalized; subharmonic and superharmonic are not."
     },
     {
       "kind": "theorem",
@@ -422,7 +726,14 @@
         "snippet": "This is the mean value property for harmonic functions"
       },
       "provenance": "ai-agent1",
-      "id": "8dfe8c96a16d"
+      "id": "8dfe8c96a16d",
+      "status": "partial",
+      "mathlib": {
+        "decl": "HarmonicOnNhd.circleAverage_eq",
+        "module": "Mathlib.Analysis.Complex.Harmonic.MeanValue",
+        "match_kind": "special_case"
+      },
+      "note": "The circle-average mean-value property is proven for real-valued harmonic functions on `ℂ`; the higher-dimensional sphere/ball version is not."
     },
     {
       "kind": "theorem",
@@ -432,7 +743,14 @@
         "snippet": "A nonconstant harmonic function cannot attain an interior maximum or minimum"
       },
       "provenance": "ai-agent1",
-      "id": "5f5be9e5fc6c"
+      "id": "5f5be9e5fc6c",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A maximum principle for harmonic (as opposed to holomorphic) functions was not found."
     },
     {
       "kind": "theorem",
@@ -442,7 +760,14 @@
         "snippet": "solutions of equations involving"
       },
       "provenance": "ai-agent1",
-      "id": "063064ec989a"
+      "id": "063064ec989a",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "General elliptic regularity is not formalized."
     },
     {
       "kind": "theorem",
@@ -452,7 +777,14 @@
         "snippet": "harmonic functions are smooth, and in fact real analytic"
       },
       "provenance": "ai-agent1",
-      "id": "2c33cc8cbd84"
+      "id": "2c33cc8cbd84",
+      "status": "partial",
+      "mathlib": {
+        "decl": "HarmonicAt.analyticAt",
+        "module": "Mathlib.Analysis.Complex.Harmonic.Analytic",
+        "match_kind": "special_case"
+      },
+      "note": "Proven for real-valued harmonic functions on `ℂ`; the general n-dimensional result is not formalized."
     },
     {
       "kind": "theorem",
@@ -462,7 +794,14 @@
         "snippet": "Weyl's lemma states that if"
       },
       "provenance": "ai-agent1",
-      "id": "15f834a7a9d1"
+      "id": "15f834a7a9d1",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Weyl's lemma (distributional harmonicity ⇒ smoothness) is not formalized."
     },
     {
       "kind": "proposition",
@@ -472,7 +811,14 @@
         "snippet": "Thus the Laplacian is a Fourier multiplier with symbol"
       },
       "provenance": "ai-agent1",
-      "id": "464f44cd940d"
+      "id": "464f44cd940d",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SchwartzMap.laplacian_eq_fourierMultiplierCLM",
+        "module": "Mathlib.Analysis.Distribution.FourierMultiplier",
+        "match_kind": "exact"
+      },
+      "note": "States `Δ f = -(2π)^2 • fourierMultiplierCLM F (‖·‖^2) f` on Schwartz functions; a distributional version is also proven."
     },
     {
       "kind": "example",
@@ -482,7 +828,14 @@
         "snippet": "the heat semigroup corresponds to multiplication by"
       },
       "provenance": "ai-agent1",
-      "id": "c070bd89a4ec"
+      "id": "c070bd89a4ec",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Heat semigroup and fractional Laplacian are not formalized."
     },
     {
       "kind": "theorem",
@@ -492,7 +845,14 @@
         "snippet": "the spectrum of"
       },
       "provenance": "ai-agent1",
-      "id": "495c16f17a42"
+      "id": "495c16f17a42",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Spectrum of `-Δ` on `L²(ℝⁿ)` is not formalized."
     },
     {
       "kind": "theorem",
@@ -502,7 +862,14 @@
         "snippet": "is a self-adjoint operator with compact resolvent"
       },
       "provenance": "ai-agent1",
-      "id": "bb1898f46d22"
+      "id": "bb1898f46d22",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized."
     },
     {
       "kind": "definition",
@@ -512,7 +879,14 @@
         "snippet": "is the Helmholtz equation"
       },
       "provenance": "ai-agent1",
-      "id": "2990a0bcd98e"
+      "id": "2990a0bcd98e",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Helmholtz equation defined."
     },
     {
       "kind": "theorem",
@@ -522,7 +896,14 @@
         "snippet": "the Laplace–Beltrami operator likewise has discrete nonnegative spectrum"
       },
       "provenance": "ai-agent1",
-      "id": "32b59f5d6b97"
+      "id": "32b59f5d6b97",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Laplace–Beltrami on manifolds is not formalized."
     },
     {
       "kind": "definition",
@@ -532,7 +913,14 @@
         "snippet": "A nonlocal generalization of the Laplace operator is given by the fractional Laplacian"
       },
       "provenance": "ai-agent1",
-      "id": "5a5769f04fbf"
+      "id": "5a5769f04fbf",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No fractional Laplacian is defined."
     },
     {
       "kind": "definition",
@@ -542,7 +930,14 @@
         "snippet": "the fractional Laplacian can be defined by a singular integral"
       },
       "provenance": "ai-agent1",
-      "id": "8d8f241db241"
+      "id": "8d8f241db241",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized."
     },
     {
       "kind": "definition",
@@ -552,7 +947,30 @@
         "snippet": "the Riesz potential of order"
       },
       "provenance": "ai-agent1",
-      "id": "59115628c3ed"
+      "id": "59115628c3ed",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Riesz potential is defined in Mathlib."
+    },
+    {
+      "kind": "proposition",
+      "label": "Riesz potential inverts fractional Laplacian",
+      "anchor": {
+        "section": "Fractional Laplacian",
+        "snippet": "The inverse of the fractional Laplacian is closely related to the Riesz potential"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither operator is formalized."
     },
     {
       "kind": "definition",
@@ -562,7 +980,30 @@
         "snippet": "the Bessel potential operator is defined by"
       },
       "provenance": "ai-agent1",
-      "id": "0e0118fbce3e"
+      "id": "0e0118fbce3e",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TemperedDistribution.besselPotential",
+        "module": "Mathlib.Analysis.Distribution.Sobolev",
+        "match_kind": "exact"
+      },
+      "note": "Defined as the Fourier multiplier with symbol `(1 + ‖x‖²)^(s/2)` on tempered distributions."
+    },
+    {
+      "kind": "definition",
+      "label": "Bessel potential spaces",
+      "anchor": {
+        "section": "Fractional Laplacian",
+        "snippet": "The associated function spaces are the Bessel potential spaces"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TemperedDistribution.MemSobolev",
+        "module": "Mathlib.Analysis.Distribution.Sobolev",
+        "match_kind": "exact"
+      },
+      "note": "`MemSobolev s p f` is defined as `besselPotential s f ∈ Lp`, i.e. membership in a Bessel potential (Sobolev) space."
     },
     {
       "kind": "definition",
@@ -572,7 +1013,14 @@
         "snippet": "The vector Laplace operator"
       },
       "provenance": "ai-agent1",
-      "id": "e47a2cfce7a0"
+      "id": "e47a2cfce7a0",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.laplacianWithin",
+        "module": "Mathlib.Analysis.InnerProductSpace.Laplacian",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `Δ` is defined for `f : E → F` with `F` an arbitrary normed vector space, so the vector-valued case is subsumed."
     },
     {
       "kind": "definition",
@@ -582,7 +1030,14 @@
         "snippet": "The vector Laplacian of a vector field"
       },
       "provenance": "ai-agent1",
-      "id": "f6751cc2cb10"
+      "id": "f6751cc2cb10",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `grad(div F) - curl(curl F)` decomposition or Helmholtz decomposition in Mathlib."
     },
     {
       "kind": "proposition",
@@ -592,7 +1047,14 @@
         "snippet": "In Cartesian coordinates , this reduces to the much simpler expression"
       },
       "provenance": "ai-agent1",
-      "id": "b47ce7de8181"
+      "id": "b47ce7de8181",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.laplacian_eq_iteratedFDeriv_stdOrthonormalBasis",
+        "module": "Mathlib.Analysis.InnerProductSpace.Laplacian",
+        "match_kind": "generalization"
+      },
+      "note": "The general orthonormal-basis formula applied to vector-valued `f` gives the componentwise Cartesian form."
     },
     {
       "kind": "definition",
@@ -602,7 +1064,14 @@
         "snippet": "The Laplacian of any tensor field"
       },
       "provenance": "ai-agent1",
-      "id": "2d7fb6705846"
+      "id": "2d7fb6705846",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized (no tensor-field Laplacian)."
     },
     {
       "kind": "example",
@@ -612,7 +1081,14 @@
         "snippet": "An example of the usage of the vector Laplacian is the Navier-Stokes equations"
       },
       "provenance": "ai-agent1",
-      "id": "3413fc99101c"
+      "id": "3413fc99101c",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Navier–Stokes equations are not formalized in Mathlib."
     },
     {
       "kind": "example",
@@ -622,7 +1098,14 @@
         "snippet": "Another example is the wave equation for the electric field"
       },
       "provenance": "ai-agent1",
-      "id": "824479c1357d"
+      "id": "824479c1357d",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Maxwell/wave equations for E are not formalized."
     },
     {
       "kind": "definition",
@@ -632,7 +1115,14 @@
         "snippet": "The Laplace operator generates the heat semigroup"
       },
       "provenance": "ai-agent1",
-      "id": "df768dde4edb"
+      "id": "df768dde4edb",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Heat semigroup not formalized."
     },
     {
       "kind": "proposition",
@@ -642,7 +1132,14 @@
         "snippet": "A basic feature of the heat semigroup is its smoothing effect"
       },
       "provenance": "ai-agent1",
-      "id": "e1308eec9394"
+      "id": "e1308eec9394",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized."
     },
     {
       "kind": "definition",
@@ -652,7 +1149,14 @@
         "snippet": "the same construction defines a heat semigroup whose integral kernel is again called the heat kernel"
       },
       "provenance": "ai-agent1",
-      "id": "4ad4b3e625d3"
+      "id": "4ad4b3e625d3",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized."
     },
     {
       "kind": "definition",
@@ -662,7 +1166,14 @@
         "snippet": "is the trace"
       },
       "provenance": "ai-agent1",
-      "id": "1f51d2124abb"
+      "id": "1f51d2124abb",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Laplace–Beltrami operator on Riemannian manifolds is defined."
     },
     {
       "kind": "definition",
@@ -672,7 +1183,14 @@
         "snippet": "the \"geometer's Laplacian\" is expressed as"
       },
       "provenance": "ai-agent1",
-      "id": "8d58f9539548"
+      "id": "8d58f9539548",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized."
     },
     {
       "kind": "definition",
@@ -682,7 +1200,30 @@
         "snippet": "the \"Hodge\" Laplacian is defined on differential forms"
       },
       "provenance": "ai-agent1",
-      "id": "f6e091c5f8ec"
+      "id": "f6e091c5f8ec",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Hodge/Laplace–de Rham operator on differential forms is defined."
+    },
+    {
+      "kind": "proposition",
+      "label": "Weitzenböck identity",
+      "anchor": {
+        "section": "Laplace–Beltrami operator",
+        "snippet": "This is known as the Laplace–de Rham operator , which is related to the Laplace–Beltrami operator by the Weitzenböck identity"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Weitzenböck identity is not formalized."
     },
     {
       "kind": "definition",
@@ -692,7 +1233,14 @@
         "snippet": "In Minkowski space the Laplace–Beltrami operator becomes the D'Alembert operator"
       },
       "provenance": "ai-agent1",
-      "id": "5755f26a9ad4"
+      "id": "5755f26a9ad4",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "D'Alembertian on Minkowski space is not defined in Mathlib."
     }
   ]
 }

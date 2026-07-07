@@ -19,7 +19,8 @@
         "match_kind": "invocation"
       },
       "note": "Mathlib has no standalone `kroneckerDelta` constant; the standard `if i = j then 1 else 0` form appears as `Matrix.one_apply`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bbecd7279919"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.one_apply` states `(1 : Matrix n n α) i j = if i = j then 1 else 0`, exactly the Kronecker delta entry formula.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "847619016fc0"
     },
     {
       "kind": "example",
@@ -51,7 +53,8 @@
         "match_kind": "generalization"
       },
       "note": "`orthonormal_iff_ite` characterizes orthonormality by `⟪v i, v j⟫ = if i = j then 1 else 0`, the Kronecker-delta inner-product identity.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b6ebb797e01c"
     },
     {
       "kind": "proposition",
@@ -67,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.one_apply_eq`/`Matrix.one_apply_ne` give the diagonal/off-diagonal entries of the identity matrix, identifying it with the Kronecker delta.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0ee459475ab1"
     },
     {
       "kind": "proposition",
@@ -83,7 +87,8 @@
         "match_kind": null
       },
       "note": "No Mathlib decl expresses the Kronecker delta as a limit/average of a geometric series of roots of unity.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0ad281a258a2"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no `Iverson` bracket notation; only the explicit `if ... then 1 else 0` pattern is used.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0339a8a49028"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": null
       },
       "note": "No Mathlib decl introduces the single-argument δ_{i−j} notation for the Kronecker delta.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3dcb2433745d"
     },
     {
       "kind": "definition",
@@ -131,7 +138,8 @@
         "match_kind": null
       },
       "note": "The terminology 'substitution tensor' is absent from Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5d8390b89167"
     },
     {
       "kind": "definition",
@@ -147,7 +155,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no DSP unit-sample function distinct from the generic indicator/if-then-else.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ac453e71954c"
     },
     {
       "kind": "definition",
@@ -163,7 +172,8 @@
         "match_kind": null
       },
       "note": "No dedicated DSP discrete-unit-sample function exists in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "55a4bd5380a3"
     },
     {
       "kind": "definition",
@@ -179,7 +189,8 @@
         "match_kind": "exact"
       },
       "note": "`MeasureTheory.Measure.dirac` defines the Dirac delta as a measure concentrated at a point, the standard measure-theoretic formalization.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e8518a76c68c"
     },
     {
       "kind": "proposition",
@@ -195,7 +206,8 @@
         "match_kind": "exact"
       },
       "note": "`Finset.sum_ite_eq'` evaluates `∑ i, (if i = j then a j else 0)` to `a j`, exactly the Kronecker delta sifting identity.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "02c671b38ae8"
     },
     {
       "kind": "proposition",
@@ -211,7 +223,8 @@
         "match_kind": "exact"
       },
       "note": "`IncidenceAlgebra.one_apply` shows the multiplicative unit of the incidence algebra is the Kronecker-delta function `if a = b then 1 else 0`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b6cfecaa6ba2"
     },
     {
       "kind": "proposition",
@@ -227,7 +240,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not develop the elementary-recursive-functions hierarchy with the Kronecker delta as an instance.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "14edcb76e907"
     },
     {
       "kind": "definition",
@@ -243,7 +257,8 @@
         "match_kind": "exact"
       },
       "note": "`PMF.pure_apply` gives `pure a a' = if a' = a then 1 else 0`, the Kronecker-delta probability mass function concentrated at a point.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "05d3b56317dd"
     },
     {
       "kind": "definition",
@@ -259,7 +274,8 @@
         "match_kind": "invocation"
       },
       "note": "Mathlib formalizes the Dirac measure (`MeasureTheory.Measure.dirac`) but not specifically as a probability density via the Dirac delta distribution.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bf3d815bedf3"
     },
     {
       "kind": "proposition",
@@ -275,7 +291,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not formalize the discrete sampling identity δ_ij = δ(i−j) connecting Kronecker and Dirac deltas.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8b79ed563b5a"
     },
     {
       "kind": "definition",
@@ -291,7 +308,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no formalization of the mixed (1,1) Kronecker delta tensor δ^i_j as a tensor; `Matrix.kroneckerMap` is the unrelated Kronecker product.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "700d97f2f4b8"
     },
     {
       "kind": "definition",
@@ -307,7 +325,8 @@
         "match_kind": null
       },
       "note": "The multi-index generalized Kronecker delta is not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c4aa329b89a4"
     },
     {
       "kind": "definition",
@@ -323,7 +342,8 @@
         "match_kind": null
       },
       "note": "No index-based definition of the generalized Kronecker delta exists in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "700481f99a5f"
     },
     {
       "kind": "definition",
@@ -339,7 +359,8 @@
         "match_kind": null
       },
       "note": "Mathlib lacks the symmetric-group-based definition of the generalized Kronecker delta.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6285790bc41c"
     },
     {
       "kind": "definition",
@@ -355,7 +376,8 @@
         "match_kind": null
       },
       "note": "No anti-symmetrization-based definition of the generalized Kronecker delta is in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d34f9a76ed6b"
     },
     {
       "kind": "definition",
@@ -371,7 +393,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not define the generalized Kronecker delta as a minor/determinant of identity entries.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bfd1a2dd965b"
     },
     {
       "kind": "definition",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "No recursive Laplace-expansion definition of the generalized Kronecker delta is present in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3327aeac8b1a"
     },
     {
       "kind": "definition",
@@ -403,7 +427,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no Levi-Civita symbol, hence no definition of the generalized Kronecker delta in those terms.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "79537a461e9b"
     },
     {
       "kind": "proposition",
@@ -419,7 +444,8 @@
         "match_kind": null
       },
       "note": "Dimension-dependent contraction identities for the generalized Kronecker delta are not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bf7b8721be98"
     },
     {
       "kind": "proposition",
@@ -435,7 +461,8 @@
         "match_kind": null
       },
       "note": "The full contraction `n!/(n−p)!` identity for the generalized Kronecker delta is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "09039f9604d2"
     },
     {
       "kind": "proposition",
@@ -451,7 +478,8 @@
         "match_kind": "generalization"
       },
       "note": "`MultilinearMap.alternatization` formalizes anti-symmetrization via `∑ σ, sign σ • ...`, the same construction the generalized Kronecker delta encodes.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "74070461c495"
     },
     {
       "kind": "proposition",
@@ -467,6 +495,23 @@
         "match_kind": null
       },
       "note": "Properties of the generalized Kronecker delta are absent from Mathlib since the object itself is not defined.",
+      "provenance": "ai",
+      "id": "62917831206a"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cauchy–Binet formula equivalence",
+      "anchor": {
+        "section": "Properties of the generalized Kronecker delta",
+        "snippet": "equivalent to the Cauchy–Binet formula"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.det_mul",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The square-matrix case of Cauchy–Binet is `Matrix.det_mul`; the rectangular Cauchy–Binet identity itself does not have a dedicated Mathlib decl.",
       "provenance": "ai"
     },
     {
@@ -483,7 +528,8 @@
         "match_kind": null
       },
       "note": "Index-summation order-reduction identities for the generalized Kronecker delta are not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0a0c17b6ffc4"
     },
     {
       "kind": "proposition",
@@ -499,7 +545,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not formalize a Levi-Civita symbol or its summation rule.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8fc76c5fc402"
     },
     {
       "kind": "proposition",
@@ -515,7 +562,8 @@
         "match_kind": null
       },
       "note": "No Mathlib decl writes the Kronecker delta as a complex contour integral of `z^(n−m−1)/2πi`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f7d0099616f6"
     },
     {
       "kind": "definition",
@@ -531,7 +579,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no Kronecker comb (periodic Kronecker delta) function.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ee86063d6974"
     }
   ]
 }

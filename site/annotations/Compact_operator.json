@@ -3,6 +3,7 @@
   "wikipedia_title": "Compact operator",
   "display_title": "Compact operator",
   "schema_version": 3,
+  "annotation_style": "theorem_article",
   "annotations": [
     {
       "kind": "definition",
@@ -12,7 +13,14 @@
         "snippet": "is called compact if it maps bounded subsets of"
       },
       "provenance": "ai-agent1",
-      "id": "3f1a4d04e425"
+      "id": "3f1a4d04e425",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompactOperator",
+        "module": "Mathlib.Analysis.Normed.Operator.Compact.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsCompactOperator f := ∃ K, IsCompact K ∧ f ⁻¹' K ∈ 𝓝 0` is Mathlib's compact operator predicate, equivalent to the Wikipedia definition on normed spaces."
     },
     {
       "kind": "proposition",
@@ -22,7 +30,14 @@
         "snippet": "is compact if the image of the closed unit ball of"
       },
       "provenance": "ai-agent1",
-      "id": "e55acb3aeb1a"
+      "id": "e55acb3aeb1a",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isCompactOperator_iff_isCompact_closure_image_closedBall",
+        "module": "Mathlib.Analysis.Normed.Operator.Compact.Basic",
+        "match_kind": "exact"
+      },
+      "note": "This iff characterization via the closed unit ball (and its `ball` sibling) is exactly the Wikipedia sequential characterization."
     },
     {
       "kind": "proposition",
@@ -32,7 +47,14 @@
         "snippet": "Every compact linear operator between normed spaces is bounded"
       },
       "provenance": "ai-agent1",
-      "id": "fd5db4553b4c"
+      "id": "fd5db4553b4c",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompactOperator.continuous",
+        "module": "Mathlib.Analysis.Normed.Operator.Compact.Basic",
+        "match_kind": "exact"
+      },
+      "note": "For a semilinear map, `IsCompactOperator ⇒ Continuous` (i.e. bounded) is proved directly."
     },
     {
       "kind": "proposition",
@@ -42,7 +64,14 @@
         "snippet": "compactness may also be expressed by saying that the image of every bounded subset"
       },
       "provenance": "ai-agent1",
-      "id": "abbf6846bb9a"
+      "id": "abbf6846bb9a",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompactOperator.isCompact_closure_image_of_bounded",
+        "module": "Mathlib.Analysis.Normed.Operator.Compact.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The image of any bounded set has compact (hence totally bounded) closure; when the codomain is Banach this coincides with the Wikipedia total-boundedness statement."
     },
     {
       "kind": "definition",
@@ -52,7 +81,14 @@
         "snippet": "The following statements are equivalent, and different authors may pick any one of these as the principal definition"
       },
       "provenance": "ai-agent1",
-      "id": "8bb405dd62b1"
+      "id": "8bb405dd62b1",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompactOperator",
+        "module": "Mathlib.Analysis.Normed.Operator.Compact.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsCompactOperator` is defined for arbitrary topological vector spaces via the neighborhood-of-zero characterization, with `isCompactOperator_iff_exists_mem_nhds_image_subset_compact` giving the image-of-neighborhood form."
     },
     {
       "kind": "proposition",
@@ -62,7 +98,14 @@
         "snippet": "Every finite-rank operator is compact."
       },
       "provenance": "ai-agent1",
-      "id": "eda71a275183"
+      "id": "eda71a275183",
+      "status": "partial",
+      "mathlib": {
+        "decl": "isCompactOperator_of_locallyCompactSpace_rng",
+        "module": "Mathlib.Analysis.Normed.Operator.Compact.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has no `FiniteRank` predicate for operators, but any continuous linear map into a locally compact (e.g. finite-dimensional) space is compact, which subsumes the finite-rank case."
     },
     {
       "kind": "proposition",
@@ -72,7 +115,14 @@
         "snippet": "is finite-dimensional if and only if its identity operator"
       },
       "provenance": "ai-agent1",
-      "id": "b3fd3993b321"
+      "id": "b3fd3993b321",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isCompactOperator_id_iff_finiteDimensional",
+        "module": "Mathlib.Analysis.Normed.Operator.Compact.FiniteDimension",
+        "match_kind": "exact"
+      },
+      "note": "Verbatim iff over a nontrivially normed field with `CompleteSpace 𝕜`."
     },
     {
       "kind": "proposition",
@@ -82,7 +132,14 @@
         "snippet": "More generally, if a Banach space"
       },
       "provenance": "ai-agent1",
-      "id": "e2e2696f5e22"
+      "id": "e2e2696f5e22",
+      "status": "partial",
+      "mathlib": {
+        "decl": "FiniteDimensional.of_isCompactOperator_id",
+        "module": "Mathlib.Analysis.Normed.Operator.Compact.FiniteDimension",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves that if the identity is compact then the space is finite-dimensional, from which the invertible-compact-operator corollary is immediate, but the corollary itself is not stated as a lemma."
     },
     {
       "kind": "proposition",
@@ -92,7 +149,14 @@
         "snippet": "Every compact linear operator between normed spaces is bounded, and hence continuous."
       },
       "provenance": "ai-agent1",
-      "id": "8fa923b8a21e"
+      "id": "8fa923b8a21e",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompactOperator.continuous",
+        "module": "Mathlib.Analysis.Normed.Operator.Compact.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Same lemma as (fd5db4553b4c): a compact linear map is automatically continuous."
     },
     {
       "kind": "proposition",
@@ -102,7 +166,14 @@
         "snippet": "is a closed linear subspace of"
       },
       "provenance": "ai-agent1",
-      "id": "e9e88cd67c76"
+      "id": "e9e88cd67c76",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isClosed_setOf_isCompactOperator",
+        "module": "Mathlib.Analysis.Normed.Operator.Compact.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Together with the submodule `compactOperator` (add/smul/zero closure), this gives the closed-subspace structure of K(X,Y) in L(X,Y)."
     },
     {
       "kind": "proposition",
@@ -112,7 +183,14 @@
         "snippet": "Compact operators are stable under composition with bounded operators."
       },
       "provenance": "ai-agent1",
-      "id": "c5aa0ec8d82a"
+      "id": "c5aa0ec8d82a",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompactOperator.clm_comp",
+        "module": "Mathlib.Analysis.Normed.Operator.Compact.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Both `IsCompactOperator.comp_clm` (precompose) and `IsCompactOperator.clm_comp` (postcompose) with a CLM produce a compact operator — the two-sided-ideal property."
     },
     {
       "kind": "definition",
@@ -122,7 +200,14 @@
         "snippet": "the ring"
       },
       "provenance": "ai-agent1",
-      "id": "46a476fd9800"
+      "id": "46a476fd9800",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Calkin algebra or essential-spectrum definition exists in Mathlib."
     },
     {
       "kind": "proposition",
@@ -132,7 +217,14 @@
         "snippet": "every compact operator between Hilbert spaces is the operator-norm limit of finite-rank operators"
       },
       "provenance": "ai-agent1",
-      "id": "fdfc09c32226"
+      "id": "fdfc09c32226",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no finite-rank operator concept and no approximation-by-finite-rank theorem for Hilbert-space compact operators."
     },
     {
       "kind": "example",
@@ -142,7 +234,14 @@
         "snippet": "in 1973 Per Enflo gave a counter-example"
       },
       "provenance": "ai-agent1",
-      "id": "11379f224ca0"
+      "id": "11379f224ca0",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The approximation property and Enflo's counter-example are not present in Mathlib."
     },
     {
       "kind": "theorem",
@@ -152,7 +251,14 @@
         "snippet": "this result is known as Schauder"
       },
       "provenance": "ai-agent1",
-      "id": "83c7c3cffb44"
+      "id": "83c7c3cffb44",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `IsCompactOperator.*adjoint` returns nothing; Schauder's theorem (T compact iff T* compact) is not in Mathlib."
     },
     {
       "kind": "proposition",
@@ -162,7 +268,14 @@
         "snippet": "is compact, then the closure of the range of"
       },
       "provenance": "ai-agent1",
-      "id": "0671710af1cb"
+      "id": "0671710af1cb",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `IsCompactOperator` lemma about separability of the range closure exists in Mathlib."
     },
     {
       "kind": "proposition",
@@ -172,7 +285,14 @@
         "snippet": "Every compact operator between Banach spaces is strictly singular"
       },
       "provenance": "ai-agent1",
-      "id": "fff1e361bf29"
+      "id": "fff1e361bf29",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Strictly singular operators are not defined in Mathlib."
     },
     {
       "kind": "theorem",
@@ -182,7 +302,14 @@
         "snippet": "is a Fredholm operator of index zero"
       },
       "provenance": "ai-agent1",
-      "id": "a19a47d60f63"
+      "id": "a19a47d60f63",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Fredholm-operator definition or index; a TODO in `Banach.lean` explicitly notes this gap."
     },
     {
       "kind": "theorem",
@@ -192,7 +319,14 @@
         "snippet": "has a unique solution"
       },
       "provenance": "ai-agent1",
-      "id": "fd579400b177"
+      "id": "fd579400b177",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompactOperator.hasEigenvalue_or_mem_resolventSet",
+        "module": "Mathlib.Analysis.Normed.Operator.Compact.FredholmAlternative",
+        "match_kind": "exact"
+      },
+      "note": "The Fredholm alternative is stated exactly: for a compact operator T and μ ≠ 0, either μ is an eigenvalue of T or μ lies in the resolvent set."
     },
     {
       "kind": "proposition",
@@ -202,7 +336,30 @@
         "snippet": "Failure of invertibility occurs precisely when"
       },
       "provenance": "ai-agent1",
-      "id": "c04997020a36"
+      "id": "c04997020a36",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompactOperator.hasEigenvalue_iff_mem_spectrum",
+        "module": "Mathlib.Analysis.Normed.Operator.Compact.FredholmAlternative",
+        "match_kind": "exact"
+      },
+      "note": "`hasEigenvalue_iff_mem_spectrum` says that for μ ≠ 0, μ is in the spectrum of a compact operator iff it is an eigenvalue — the parameter-dependent alternative."
+    },
+    {
+      "kind": "proposition",
+      "label": "0 belongs to the spectrum of a compact operator",
+      "anchor": {
+        "section": "Spectral theory",
+        "snippet": "belongs to the spectrum"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The specific fact that 0 is in the spectrum of any compact operator on an infinite-dimensional space is not stated in Mathlib."
     },
     {
       "kind": "theorem",
@@ -212,7 +369,14 @@
         "snippet": "Apart from"
       },
       "provenance": "ai-agent1",
-      "id": "bdc1233608fb"
+      "id": "bdc1233608fb",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompactOperator.hasEigenvalue_iff_mem_spectrum",
+        "module": "Mathlib.Analysis.Normed.Operator.Compact.FredholmAlternative",
+        "match_kind": "exact"
+      },
+      "note": "This lemma states exactly that the nonzero spectrum of a compact operator consists of its (nonzero) eigenvalues."
     },
     {
       "kind": "proposition",
@@ -222,7 +386,14 @@
         "snippet": "The nonzero spectrum is therefore either finite or countably infinite."
       },
       "provenance": "ai-agent1",
-      "id": "b4fcf4c18bc4"
+      "id": "b4fcf4c18bc4",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib lemma states the finite-or-countable spectrum with 0-accumulation property for compact operators."
     },
     {
       "kind": "proposition",
@@ -232,7 +403,14 @@
         "snippet": "has finite-dimensional kernel and cokernel, and these dimensions are equal"
       },
       "provenance": "ai-agent1",
-      "id": "613b444891a1"
+      "id": "613b444891a1",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Depends on Fredholm-index theory, which is not in Mathlib."
     },
     {
       "kind": "proposition",
@@ -242,7 +420,14 @@
         "snippet": "The adjoint has the same nonzero spectral values."
       },
       "provenance": "ai-agent1",
-      "id": "6acd0694f6b3"
+      "id": "6acd0694f6b3",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `IsCompactOperator` lemma relating the spectra of T and its adjoint exists in Mathlib."
     },
     {
       "kind": "definition",
@@ -252,7 +437,14 @@
         "snippet": "is said to have compact resolvent if"
       },
       "provenance": "ai-agent1",
-      "id": "d99549cad0bf"
+      "id": "d99549cad0bf",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The notion of an unbounded operator with compact resolvent is not defined in Mathlib."
     },
     {
       "kind": "theorem",
@@ -262,7 +454,14 @@
         "snippet": "then every nonzero element of the spectrum of"
       },
       "provenance": "ai-agent1",
-      "id": "ed0f855a114f"
+      "id": "ed0f855a114f",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.orthogonalComplement_iSup_eigenspaces_eq_bot",
+        "module": "Mathlib.Analysis.InnerProductSpace.Spectrum",
+        "match_kind": "exact"
+      },
+      "note": "The eigenspaces of a compact self-adjoint operator span the ambient Hilbert space; combined with `finite_dimensional_eigenspace` and `hasEigenvalue_iff_mem_spectrum`, this is the compact-self-adjoint spectral theorem."
     },
     {
       "kind": "proposition",
@@ -272,7 +471,14 @@
         "snippet": "decomposes as an orthogonal direct sum of the eigenspaces"
       },
       "provenance": "ai-agent1",
-      "id": "b05f226827f9"
+      "id": "b05f226827f9",
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.orthogonalComplement_iSup_eigenspaces_eq_bot",
+        "module": "Mathlib.Analysis.InnerProductSpace.Spectrum",
+        "match_kind": "generalization"
+      },
+      "note": "The proof that eigenspaces span the whole Hilbert space is present, but the explicit orthogonal-direct-sum decomposition (an `IsHilbertSum` statement) for a compact self-adjoint operator is not."
     },
     {
       "kind": "proposition",
@@ -282,7 +488,14 @@
         "snippet": "The same description applies, with complex eigenvalues, to compact normal operators"
       },
       "provenance": "ai-agent1",
-      "id": "c58c8115a0f9"
+      "id": "c58c8115a0f9",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No analogous spectral decomposition for compact normal (non-self-adjoint) operators is in Mathlib."
     },
     {
       "kind": "theorem",
@@ -292,7 +505,14 @@
         "snippet": "Nevertheless, it has a singular-value decomposition."
       },
       "provenance": "ai-agent1",
-      "id": "9bb34a69e785"
+      "id": "9bb34a69e785",
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.singularValues",
+        "module": "Mathlib.Analysis.InnerProductSpace.SingularValues",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib defines singular values only for maps between finite-dimensional inner-product spaces; SVD for general compact operators (the infinite-dimensional expansion) is not formalized."
     },
     {
       "kind": "definition",
@@ -302,7 +522,14 @@
         "snippet": "is Hilbert–Schmidt when"
       },
       "provenance": "ai-agent1",
-      "id": "a4526e07f6a4"
+      "id": "a4526e07f6a4",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hilbert–Schmidt and trace-class operators are not defined in Mathlib."
     },
     {
       "kind": "proposition",
@@ -312,7 +539,14 @@
         "snippet": "Every trace-class operator is Hilbert–Schmidt, and every Hilbert–Schmidt operator is compact."
       },
       "provenance": "ai-agent1",
-      "id": "256b823f342e"
+      "id": "256b823f342e",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the trace-class nor the Hilbert–Schmidt operator ideal is present, so this inclusion chain is not formalized."
     },
     {
       "kind": "definition",
@@ -322,7 +556,14 @@
         "snippet": "is called completely continuous if, for every weakly convergent sequence"
       },
       "provenance": "ai-agent1",
-      "id": "f5f77eda12c2"
+      "id": "f5f77eda12c2",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The completely-continuous-operator predicate (weak→norm sequential continuity) is not defined."
     },
     {
       "kind": "proposition",
@@ -332,7 +573,14 @@
         "snippet": "Compact operators between Banach spaces are always completely continuous"
       },
       "provenance": "ai-agent1",
-      "id": "c95a8901417b"
+      "id": "c95a8901417b",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No comparison between compact and completely continuous operators is stated in Mathlib."
     },
     {
       "kind": "example",
@@ -342,7 +590,14 @@
         "snippet": "Finite-rank operators are the simplest examples of compact operators."
       },
       "provenance": "ai-agent1",
-      "id": "48ae110e472c"
+      "id": "48ae110e472c",
+      "status": "partial",
+      "mathlib": {
+        "decl": "isCompactOperator_of_locallyCompactSpace_rng",
+        "module": "Mathlib.Analysis.Normed.Operator.Compact.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "No `FiniteRank` predicate exists, but any CLM into a locally compact (finite-dim) space is compact, which captures the finite-rank example."
     },
     {
       "kind": "example",
@@ -352,7 +607,14 @@
         "snippet": "One class of examples is given by diagonal or multiplication operators on sequence spaces."
       },
       "provenance": "ai-agent1",
-      "id": "5816f8522944"
+      "id": "5816f8522944",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Multiplication/diagonal operators on ℓᵖ with compactness characterization are not formalized."
     },
     {
       "kind": "example",
@@ -362,7 +624,30 @@
         "snippet": "Integral operators also provide compact operators in many important cases."
       },
       "provenance": "ai-agent1",
-      "id": "8a42c62003c8"
+      "id": "8a42c62003c8",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general integral-kernel operator with a compactness theorem is present in Mathlib."
+    },
+    {
+      "kind": "example",
+      "label": "Hilbert–Schmidt integral operator on L²",
+      "anchor": {
+        "section": "Examples and non-examples",
+        "snippet": "On Hilbert spaces, Hilbert–Schmidt integral operators are compact"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hilbert–Schmidt integral operators are not defined in Mathlib, and no compactness lemma for them exists."
     },
     {
       "kind": "example",
@@ -372,7 +657,14 @@
         "snippet": "The identity operator on an infinite-dimensional Banach space is a basic non-example."
       },
       "provenance": "ai-agent1",
-      "id": "c74f080b7a00"
+      "id": "c74f080b7a00",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isCompactOperator_id_iff_finiteDimensional",
+        "module": "Mathlib.Analysis.Normed.Operator.Compact.FiniteDimension",
+        "match_kind": "exact"
+      },
+      "note": "The identity of an infinite-dimensional Banach space fails to be compact by the contrapositive of `isCompactOperator_id_iff_finiteDimensional`."
     },
     {
       "kind": "example",
@@ -382,7 +674,14 @@
         "snippet": "The unilateral shift operators on sequence spaces are also not compact."
       },
       "provenance": "ai-agent1",
-      "id": "55a966a1dfcd"
+      "id": "55a966a1dfcd",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Unilateral shift operators on ℓᵖ are not treated as a named example in Mathlib."
     },
     {
       "kind": "proposition",
@@ -392,7 +691,14 @@
         "snippet": "Every bounded linear operator from a normed space into a complete nuclear space is compact"
       },
       "provenance": "ai-agent1",
-      "id": "2b516adcadb6"
+      "id": "2b516adcadb6",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Nuclear spaces are not defined in Mathlib."
     },
     {
       "kind": "example",
@@ -402,7 +708,14 @@
         "snippet": "A complex-analytic example is given by the Cauchy integral operator"
       },
       "provenance": "ai-agent1",
-      "id": "db42cc1f36c4"
+      "id": "db42cc1f36c4",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Cauchy integral operator as a specific compact-operator example is not present in Mathlib."
     },
     {
       "kind": "definition",
@@ -412,7 +725,14 @@
         "snippet": "The embedding is called compact if this inclusion map is a compact operator"
       },
       "provenance": "ai-agent1",
-      "id": "b6fc930b8e46"
+      "id": "b6fc930b8e46",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `CompactEmbedding` concept exists; one would have to state `IsCompactOperator (inclusion : X → Y)` by hand."
     },
     {
       "kind": "theorem",
@@ -422,7 +742,14 @@
         "snippet": "The Rellich–Kondrachov theorem yields other compact embeddings."
       },
       "provenance": "ai-agent1",
-      "id": "63b40a858723"
+      "id": "63b40a858723",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Rellich–Kondrachov theorem is present in Mathlib."
     },
     {
       "kind": "example",
@@ -432,7 +759,14 @@
         "snippet": "A non-example is the inclusion of Lebesgue spaces"
       },
       "provenance": "ai-agent1",
-      "id": "400840cbec98"
+      "id": "400840cbec98",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The failure of compactness for Lᵖ ↪ Lq inclusions is not stated in Mathlib."
     },
     {
       "kind": "example",
@@ -442,7 +776,14 @@
         "snippet": "Holomorphic function spaces provide another class of compact embeddings."
       },
       "provenance": "ai-agent1",
-      "id": "3e23709f5230"
+      "id": "3e23709f5230",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hardy spaces are not defined in Mathlib, so this compact-embedding example cannot be stated."
     },
     {
       "kind": "example",
@@ -452,7 +793,14 @@
         "snippet": "The same principle applies to Bergman spaces"
       },
       "provenance": "ai-agent1",
-      "id": "134a8657c064"
+      "id": "134a8657c064",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bergman spaces are not defined in Mathlib."
     }
   ]
 }

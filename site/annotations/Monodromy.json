@@ -3,6 +3,7 @@
   "wikipedia_title": "Monodromy",
   "display_title": "Monodromy",
   "schema_version": 3,
+  "annotation_style": "theorem_article",
   "annotations": [
     {
       "kind": "definition",
@@ -12,7 +13,14 @@
         "snippet": "monodromy is the study of how objects from mathematical analysis"
       },
       "provenance": "ai-agent1",
-      "id": "2b056e7600be"
+      "id": "2b056e7600be",
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsCoveringMap.monodromy",
+        "module": "Mathlib.Topology.Homotopy.Lifting",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib formalises the covering-space instance of monodromy via `IsCoveringMap.monodromy`, but not the informal umbrella concept spanning analysis/algebra/geometry."
     },
     {
       "kind": "definition",
@@ -22,7 +30,14 @@
         "snippet": "The failure of monodromy can be measured by defining a monodromy group"
       },
       "provenance": "ai-agent1",
-      "id": "95fe5261a30c"
+      "id": "95fe5261a30c",
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsCoveringMap.monodromyPerm",
+        "module": "Mathlib.Topology.Homotopy.Lifting",
+        "match_kind": "special_case"
+      },
+      "note": "The `monodromyPerm` homomorphism packages the fundamental-group action as permutations, whose image is the covering-space monodromy group; no general 'monodromy group' abstraction exists."
     },
     {
       "kind": "definition",
@@ -32,7 +47,14 @@
         "snippet": "Define its base fiber"
       },
       "provenance": "ai-agent1",
-      "id": "005b5c39e08d"
+      "id": "005b5c39e08d",
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsCoveringMap.monodromy",
+        "module": "Mathlib.Topology.Homotopy.Lifting",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib uses the raw preimage `p ⁻¹' {x}` (as in the codomain of `IsCoveringMap.monodromy`) rather than a named 'base fiber' abstraction."
     },
     {
       "kind": "definition",
@@ -42,7 +64,14 @@
         "snippet": "can be lifted through the covering map"
       },
       "provenance": "ai-agent1",
-      "id": "e6c89495d5dc"
+      "id": "e6c89495d5dc",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCoveringMap.liftPath",
+        "module": "Mathlib.Topology.Homotopy.Lifting",
+        "match_kind": "generalization"
+      },
+      "note": "`IsCoveringMap.liftPath` lifts any path (hence any loop) given a lift of the starting point, with `liftPath_lifts`/`liftPath_zero` witnessing the covering property."
     },
     {
       "kind": "proposition",
@@ -52,7 +81,14 @@
         "snippet": "the covering homotopy property shows they define the same action"
       },
       "provenance": "ai-agent1",
-      "id": "a9a3791e4835"
+      "id": "a9a3791e4835",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCoveringMap.liftPath_apply_one_eq_of_homotopicRel",
+        "module": "Mathlib.Topology.Homotopy.Lifting",
+        "match_kind": "exact"
+      },
+      "note": "Lifting two paths that are homotopic rel `{0,1}` from the same start-point yields lifts with the same endpoint, exactly the well-definedness invoked by `IsCoveringMap.monodromy` on `Path.Homotopic.Quotient`."
     },
     {
       "kind": "definition",
@@ -62,17 +98,31 @@
         "snippet": "This is the monodromy action on"
       },
       "provenance": "ai-agent1",
-      "id": "54db7cd05554"
+      "id": "54db7cd05554",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCoveringMap.fundamentalGroupMulAction",
+        "module": "Mathlib.Topology.Homotopy.Lifting",
+        "match_kind": "exact"
+      },
+      "note": "`IsCoveringMap.fundamentalGroupMulAction` supplies the `MulAction (FundamentalGroup X x) (p ⁻¹' {x})` directly from `IsCoveringMap.monodromy`."
     },
     {
       "kind": "proposition",
       "label": "Stabilizer of a point under monodromy",
       "anchor": {
         "section": "Definition",
-        "snippet": "an element"
+        "snippet": "The stabilizer of"
       },
-      "provenance": "ai-agent1",
-      "id": "7ceabf7b5500"
+      "provenance": "ai-moderated",
+      "id": "7ceabf7b5500",
+      "note": "For quotient covering maps Mathlib identifies `ker (monodromyPerm x) = range (mapOfEq p e.2)`; the general 'stabilizer of a fiber point equals image of `π₁(Y,ỹ)`' statement is not stated for arbitrary covers.",
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsQuotientCoveringMap.ker_monodromyPerm",
+        "module": "Mathlib.Topology.Homotopy.Lifting",
+        "match_kind": "special_case"
+      }
     },
     {
       "kind": "definition",
@@ -82,7 +132,14 @@
         "snippet": "is the topological monodromy group"
       },
       "provenance": "ai-agent1",
-      "id": "3fab9bfbbee5"
+      "id": "3fab9bfbbee5",
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsCoveringMap.monodromyPerm",
+        "module": "Mathlib.Topology.Homotopy.Lifting",
+        "match_kind": "invocation"
+      },
+      "note": "The image of `monodromyPerm x` is the topological monodromy group, but Mathlib does not name it as a distinct subgroup."
     },
     {
       "kind": "definition",
@@ -92,7 +149,14 @@
         "snippet": "is the algebraic monodromy"
       },
       "provenance": "ai-agent1",
-      "id": "8db1dc9e2550"
+      "id": "8db1dc9e2550",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Zariski-closure/algebraic-group notion of a monodromy representation exists in Mathlib."
     },
     {
       "kind": "example",
@@ -102,7 +166,30 @@
         "snippet": "analytic continuation anti-clockwise round the circle"
       },
       "provenance": "ai-agent1",
-      "id": "31bdabe5e860"
+      "id": "31bdabe5e860",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `Complex.log` and continuation lemmas for L-series but not this monodromy-of-logarithm example."
+    },
+    {
+      "kind": "proposition",
+      "label": "Monodromy group of the logarithm is infinite cyclic",
+      "anchor": {
+        "section": "Example",
+        "snippet": "In this case the monodromy group is the infinite cyclic group"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The specific computation π₁(ℂ\\{0}) ≅ ℤ acting by shifts on logarithm branches is not in Mathlib."
     },
     {
       "kind": "example",
@@ -112,7 +199,14 @@
         "snippet": "This cover can be visualized as the helicoid with parametric equations"
       },
       "provenance": "ai-agent1",
-      "id": "34bfd236486c"
+      "id": "34bfd236486c",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib contains no `helicoid` construction nor an explicit universal cover of the punctured plane."
     },
     {
       "kind": "definition",
@@ -122,7 +216,30 @@
         "snippet": "Linear differential equations defined in an open, connected set"
       },
       "provenance": "ai-agent1",
-      "id": "2fddf496a215"
+      "id": "2fddf496a215",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not develop the monodromy representation attached to solutions of a linear ODE on a complex domain."
+    },
+    {
+      "kind": "definition",
+      "label": "Riemann–Hilbert problem (inverse monodromy)",
+      "anchor": {
+        "section": "Differential equations in the complex domain",
+        "snippet": "is a Riemann–Hilbert problem"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `RiemannHilbert` or inverse-monodromy notion is present in Mathlib."
     },
     {
       "kind": "proposition",
@@ -132,7 +249,14 @@
         "snippet": "the only relation between the generators is the equality"
       },
       "provenance": "ai-agent1",
-      "id": "15eea61348f4"
+      "id": "15eea61348f4",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Fuchsian relation M₁···Mₙ = 1 among loop monodromies is not stated in Mathlib."
     },
     {
       "kind": "proposition",
@@ -142,7 +266,14 @@
         "snippet": "The Deligne–Simpson problem is the following realisation problem"
       },
       "provenance": "ai-agent1",
-      "id": "def36a1a2ad0"
+      "id": "def36a1a2ad0",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Deligne–Simpson realisability problem is absent from Mathlib."
     },
     {
       "kind": "definition",
@@ -152,7 +283,14 @@
         "snippet": "to code this one considers the action of the fundamental group"
       },
       "provenance": "ai-agent1",
-      "id": "1acf9c27ac5e"
+      "id": "1acf9c27ac5e",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCoveringMap.monodromyPerm",
+        "module": "Mathlib.Topology.Homotopy.Lifting",
+        "match_kind": "exact"
+      },
+      "note": "`IsCoveringMap.monodromyPerm x : FundamentalGroup X x →* Equiv.Perm (p ⁻¹' {x})` is exactly the permutation-action encoding."
     },
     {
       "kind": "definition",
@@ -162,7 +300,14 @@
         "snippet": "to define a holonomy group of translations of the fiber at"
       },
       "provenance": "ai-agent1",
-      "id": "9b5eb2d10ac2"
+      "id": "9b5eb2d10ac2",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `olonomy` in `Mathlib/` returned no files — Mathlib has no holonomy/parallel-transport formalisation."
     },
     {
       "kind": "definition",
@@ -172,7 +317,14 @@
         "snippet": "to define a monodromy groupoid"
       },
       "provenance": "ai-agent1",
-      "id": "0a50d6e63e36"
+      "id": "0a50d6e63e36",
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsCoveringMap.monodromyFunctor",
+        "module": "Mathlib.Topology.Homotopy.Lifting",
+        "match_kind": "invocation"
+      },
+      "note": "`monodromyFunctor : FundamentalGroupoid X ⥤ Type _` records the covering's monodromy as a groupoid representation but is not itself the monodromy groupoid as an object."
     },
     {
       "kind": "definition",
@@ -182,7 +334,14 @@
         "snippet": "the construction can also be generalized to foliations"
       },
       "provenance": "ai-agent1",
-      "id": "086914895d90"
+      "id": "086914895d90",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no geometric-foliation library (only a fleeting mention in `LieRinehartAlgebra`), so germ-based foliation monodromy is absent."
     },
     {
       "kind": "definition",
@@ -192,7 +351,14 @@
         "snippet": "determines a finite field extension"
       },
       "provenance": "ai-agent1",
-      "id": "e60dbe4b6d9e"
+      "id": "e60dbe4b6d9e",
+      "status": "partial",
+      "mathlib": {
+        "decl": "RatFunc",
+        "module": "Mathlib.FieldTheory.RatFunc.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has `RatFunc` and general finite field extensions but no packaged 'function field of a branched cover → finite extension' construction."
     },
     {
       "kind": "definition",
@@ -202,7 +368,14 @@
         "snippet": "is called the monodromy group of"
       },
       "provenance": "ai-agent1",
-      "id": "d0ca96584fdb"
+      "id": "d0ca96584fdb",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "General Galois-theoretic monodromy of a branched cover (as `Gal(L̃/K(X))`) is not stated in Mathlib, though `Gal` and normal closure are available."
     },
     {
       "kind": "definition",
@@ -212,7 +385,14 @@
         "snippet": "the associated monodromy group is sometimes called a group of deck transformations"
       },
       "provenance": "ai-agent1",
-      "id": "8a62b6f49c4f"
+      "id": "8a62b6f49c4f",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `deck`/`DeckTransformation` in `Mathlib/` shows no covering-space deck-transformation group."
     },
     {
       "kind": "theorem",
@@ -222,7 +402,14 @@
         "snippet": "leading to the Riemann existence theorem"
       },
       "provenance": "ai-agent1",
-      "id": "98fa0402a5ba"
+      "id": "98fa0402a5ba",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Riemann existence theorem linking finite étale covers of a Riemann surface and finite extensions of its function field is not in Mathlib."
     }
   ]
 }

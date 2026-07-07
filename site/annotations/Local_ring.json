@@ -3,6 +3,7 @@
   "wikipedia_title": "Local ring",
   "display_title": "Local ring",
   "schema_version": 3,
+  "annotation_style": "theorem_article",
   "annotations": [
     {
       "kind": "definition",
@@ -12,7 +13,14 @@
         "snippet": "A ring R is a local ring if it has any one of the following equivalent properties"
       },
       "provenance": "ai-agent1",
-      "id": "f9d36863a611"
+      "id": "f9d36863a611",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLocalRing",
+        "module": "Mathlib.RingTheory.LocalRing.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsLocalRing` is defined via the equivalent condition that for any a+b=1, one of a or b is a unit."
     },
     {
       "kind": "proposition",
@@ -22,7 +30,14 @@
         "snippet": "the unique maximal left ideal coincides with the unique maximal right ideal"
       },
       "provenance": "ai-agent1",
-      "id": "7d45a5fd6d47"
+      "id": "7d45a5fd6d47",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLocalRing.ringJacobson_eq_maximalIdeal",
+        "module": "Mathlib.RingTheory.LocalRing.MaximalIdeal.Basic",
+        "match_kind": "exact"
+      },
+      "note": "In a commutative local ring the Jacobson radical equals the maximal ideal."
     },
     {
       "kind": "proposition",
@@ -32,7 +47,14 @@
         "snippet": "a commutative ring is local if and only if it has a unique maximal ideal"
       },
       "provenance": "ai-agent1",
-      "id": "c2ac9715f93c"
+      "id": "c2ac9715f93c",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLocalRing.of_unique_max_ideal",
+        "module": "Mathlib.RingTheory.LocalRing.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Combined with `IsLocalRing.maximal_ideal_unique` this gives the iff characterization."
     },
     {
       "kind": "definition",
@@ -42,7 +64,14 @@
         "snippet": "A local ring that is an integral domain is called a local domain"
       },
       "provenance": "ai-agent1",
-      "id": "7805ce0f078d"
+      "id": "7805ce0f078d",
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not a distinct concept in Mathlib; expressible by combining `[IsLocalRing R] [IsDomain R]`."
     },
     {
       "kind": "example",
@@ -52,7 +81,14 @@
         "snippet": "All fields (and skew fields ) are local rings"
       },
       "provenance": "ai-agent1",
-      "id": "c88bd188a02d"
+      "id": "c88bd188a02d",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Field.instIsLocalRing",
+        "module": "Mathlib.RingTheory.LocalRing.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Every field is a local ring via the anonymous instance in `Field` namespace."
     },
     {
       "kind": "example",
@@ -62,7 +98,14 @@
         "snippet": "is a local ring ( p prime, n ≥ 1 )"
       },
       "provenance": "ai-agent1",
-      "id": "5ce5d8fed476"
+      "id": "5ce5d8fed476",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific `IsLocalRing (ZMod (p^n))` instance was found."
     },
     {
       "kind": "proposition",
@@ -72,7 +115,14 @@
         "snippet": "a nonzero ring in which every element is either a unit or nilpotent is a local ring"
       },
       "provenance": "ai-agent1",
-      "id": "0ac038241d66"
+      "id": "0ac038241d66",
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsLocalRing.of_nonunits_add",
+        "module": "Mathlib.RingTheory.LocalRing.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The exact statement was not found, but `of_nonunits_add` proves local from closure of nonunits under addition (which nilpotents satisfy)."
     },
     {
       "kind": "example",
@@ -82,7 +132,14 @@
         "snippet": "An important class of local rings are discrete valuation rings"
       },
       "provenance": "ai-agent1",
-      "id": "069a2cea798f"
+      "id": "069a2cea798f",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsDiscreteValuationRing",
+        "module": "Mathlib.RingTheory.DiscreteValuationRing.Basic",
+        "match_kind": "exact"
+      },
+      "note": "DVRs are formalized as `IsDiscreteValuationRing`, defined as a local PID that is not a field."
     },
     {
       "kind": "example",
@@ -92,7 +149,14 @@
         "snippet": "whose elements are infinite series"
       },
       "provenance": "ai-agent1",
-      "id": "2a25619b652e"
+      "id": "2a25619b652e",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MvPowerSeries.instIsLocalRing",
+        "module": "Mathlib.RingTheory.MvPowerSeries.Inverse",
+        "match_kind": "generalization"
+      },
+      "note": "Instance shows `IsLocalRing (MvPowerSeries σ R)` whenever `R` is local; specializes to F[[X]]."
     },
     {
       "kind": "proposition",
@@ -102,7 +166,14 @@
         "snippet": "every ring of formal power series over a local ring is local"
       },
       "provenance": "ai-agent1",
-      "id": "24ab17ce7883"
+      "id": "24ab17ce7883",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MvPowerSeries.instIsLocalRing",
+        "module": "Mathlib.RingTheory.MvPowerSeries.Inverse",
+        "match_kind": "exact"
+      },
+      "note": "The instance `[IsLocalRing R] : IsLocalRing (MvPowerSeries σ R)` is exactly this."
     },
     {
       "kind": "example",
@@ -112,7 +183,14 @@
         "snippet": "the algebra of dual numbers over any field is local"
       },
       "provenance": "ai-agent1",
-      "id": "ae016c6e8de7"
+      "id": "ae016c6e8de7",
+      "status": "partial",
+      "mathlib": {
+        "decl": "DualNumber.instIsLocalRing",
+        "module": "Mathlib.RingTheory.DualNumber",
+        "match_kind": "special_case"
+      },
+      "note": "Dual numbers are formalized as local (instance in DualNumber), but F[X]/(X^n) does not have an explicit `IsLocalRing` instance."
     },
     {
       "kind": "proposition",
@@ -122,7 +200,14 @@
         "snippet": "Nonzero quotient rings of local rings are local"
       },
       "provenance": "ai-agent1",
-      "id": "b1543c5ec077"
+      "id": "b1543c5ec077",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLocalRing.of_surjective'",
+        "module": "Mathlib.RingTheory.LocalRing.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Any surjective image (hence any nonzero quotient) of a local ring is local via `of_surjective'`."
     },
     {
       "kind": "example",
@@ -132,7 +217,14 @@
         "snippet": "The ring of rational numbers with odd denominator is local"
       },
       "provenance": "ai-agent1",
-      "id": "e9e30ac11aed"
+      "id": "e9e30ac11aed",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific ring Z_(2) is not defined as a named object; it would arise as `Localization.AtPrime (2)`."
     },
     {
       "kind": "example",
@@ -142,7 +234,14 @@
         "snippet": "the localization of R at P is local"
       },
       "provenance": "ai-agent1",
-      "id": "593fa26a8526"
+      "id": "593fa26a8526",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Localization.AtPrime.isLocalRing",
+        "module": "Mathlib.RingTheory.Localization.AtPrime.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The instance shows `IsLocalRing (Localization P.primeCompl)` for any prime ideal P."
     },
     {
       "kind": "example",
@@ -152,7 +251,14 @@
         "snippet": "is not local, since"
       },
       "provenance": "ai-agent1",
-      "id": "71639f260e43"
+      "id": "71639f260e43",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific `¬ IsLocalRing (Polynomial R)` lemma; general non-local infrastructure exists in `NonLocalRing.lean`."
     },
     {
       "kind": "example",
@@ -162,7 +268,14 @@
         "snippet": "is not local since it has a maximal ideal"
       },
       "provenance": "ai-agent1",
-      "id": "78b94751e6b2"
+      "id": "78b94751e6b2",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific `¬ IsLocalRing ℤ` lemma was found."
     },
     {
       "kind": "example",
@@ -172,7 +285,14 @@
         "snippet": "where p and q are distinct prime numbers"
       },
       "provenance": "ai-agent1",
-      "id": "cb5d038d2d16"
+      "id": "cb5d038d2d16",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific lemma about ZMod (p*q) with distinct primes not being local."
     },
     {
       "kind": "definition",
@@ -182,7 +302,14 @@
         "snippet": "the equivalence classes are what are called the"
       },
       "provenance": "ai-agent1",
-      "id": "b432c02cdef6"
+      "id": "b432c02cdef6",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has germs (`Germ`) and stalks but not a specific ring-of-germs-of-continuous-functions construction."
     },
     {
       "kind": "proposition",
@@ -192,7 +319,14 @@
         "snippet": "we need to characterize its invertible elements"
       },
       "provenance": "ai-agent1",
-      "id": "6daf92a26f65"
+      "id": "6daf92a26f65",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the ring of germs of continuous functions or invertibility characterization there."
     },
     {
       "kind": "proposition",
@@ -202,7 +336,14 @@
         "snippet": "the sum of any two non-invertible germs is again non-invertible"
       },
       "provenance": "ai-agent1",
-      "id": "cafb279716e3"
+      "id": "cafb279716e3",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The ring of germs of continuous functions is not set up as an `IsLocalRing` in Mathlib."
     },
     {
       "kind": "example",
@@ -212,7 +353,14 @@
         "snippet": "Exactly the same arguments work for the ring of germs of continuous real-valued functions"
       },
       "provenance": "ai-agent1",
-      "id": "f344696605c7"
+      "id": "f344696605c7",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalized ring-of-germs-of-continuous/smooth/holomorphic-functions instances of `IsLocalRing`."
     },
     {
       "kind": "definition",
@@ -222,7 +370,14 @@
         "snippet": "a valuation ring of a field K is a subring R such that for every non-zero element"
       },
       "provenance": "ai-agent1",
-      "id": "2c95385a23b8"
+      "id": "2c95385a23b8",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ValuationRing",
+        "module": "Mathlib.RingTheory.Valuation.ValuationRing",
+        "match_kind": "exact"
+      },
+      "note": "`ValuationRing` is the Mathlib predicate for valuation rings."
     },
     {
       "kind": "proposition",
@@ -232,7 +387,14 @@
         "snippet": "Any such subring will be a local ring"
       },
       "provenance": "ai-agent1",
-      "id": "72f2c62ba81f"
+      "id": "72f2c62ba81f",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ValuationRing.isLocalRing",
+        "module": "Mathlib.RingTheory.Valuation.ValuationRing",
+        "match_kind": "exact"
+      },
+      "note": "The instance `ValuationRing.isLocalRing` gives `IsLocalRing A` for a valuation ring `A`."
     },
     {
       "kind": "proposition",
@@ -242,7 +404,30 @@
         "snippet": "if the endomorphism ring of the module M is local, then M is indecomposable"
       },
       "provenance": "ai-agent1",
-      "id": "21bb5e546d3d"
+      "id": "21bb5e546d3d",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma tying local endomorphism ring to module indecomposability was found."
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite length indecomposable module has local endomorphism ring",
+      "anchor": {
+        "section": "Non-commutative",
+        "snippet": "if the module M has finite length and is indecomposable, then its endomorphism ring is local"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fitting's lemma for endomorphism rings of finite-length indecomposable modules is not formalized in Mathlib."
     },
     {
       "kind": "example",
@@ -252,7 +437,14 @@
         "snippet": "then the group algebra kG is local"
       },
       "provenance": "ai-agent1",
-      "id": "73ce0cfd1ebc"
+      "id": "73ce0cfd1ebc",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `IsLocalRing (MonoidAlgebra k G)` instance for p-group over char-p field was found."
     },
     {
       "kind": "definition",
@@ -262,7 +454,14 @@
         "snippet": "This is the m -adic topology on R"
       },
       "provenance": "ai-agent1",
-      "id": "05eeb03fb201"
+      "id": "05eeb03fb201",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.adicTopology",
+        "module": "Mathlib.Topology.Algebra.Nonarchimedean.AdicTopology",
+        "match_kind": "generalization"
+      },
+      "note": "`Ideal.adicTopology` gives the I-adic topology for any ideal; specializing to the maximal ideal gives the m-adic topology."
     },
     {
       "kind": "theorem",
@@ -272,7 +471,14 @@
         "snippet": "Krull's intersection theorem"
       },
       "provenance": "ai-agent1",
-      "id": "eda80189b2c1"
+      "id": "eda80189b2c1",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.iInf_pow_eq_bot_of_isLocalRing",
+        "module": "Mathlib.RingTheory.Filtration",
+        "match_kind": "exact"
+      },
+      "note": "Krull's intersection theorem for Noetherian local rings: `⨅ n, I^n = ⊥` for `I ≠ ⊤`."
     },
     {
       "kind": "example",
@@ -282,7 +488,14 @@
         "snippet": "let R be the ring of germs of infinitely differentiable functions at 0"
       },
       "provenance": "ai-agent1",
-      "id": "867063902e83"
+      "id": "867063902e83",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The ring of germs of smooth functions and its non-Noetherian local structure is not formalized."
     },
     {
       "kind": "theorem",
@@ -292,7 +505,14 @@
         "snippet": "Complete Noetherian local rings are classified by the Cohen structure theorem"
       },
       "provenance": "ai-agent1",
-      "id": "e3d206de99d6"
+      "id": "e3d206de99d6",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Cohen structure theorem for complete Noetherian local rings is not in Mathlib."
     },
     {
       "kind": "definition",
@@ -302,7 +522,14 @@
         "snippet": "is called the residue field of the local ring or residue field of the point P"
       },
       "provenance": "ai-agent1",
-      "id": "c441efbd59e7"
+      "id": "c441efbd59e7",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLocalRing.ResidueField",
+        "module": "Mathlib.RingTheory.LocalRing.ResidueField.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsLocalRing.ResidueField R := R ⧸ maximalIdeal R`, with a Field instance."
     },
     {
       "kind": "definition",
@@ -312,7 +539,30 @@
         "snippet": "a local ring homomorphism from R to S is a ring homomorphism"
       },
       "provenance": "ai-agent1",
-      "id": "85859e05067f"
+      "id": "85859e05067f",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLocalHom",
+        "module": "Mathlib.RingTheory.LocalRing.RingHom.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsLocalHom` predicate; used with `IsLocalRing` throughout the RingHom subfolder."
+    },
+    {
+      "kind": "proposition",
+      "label": "Local ring homomorphisms are exactly continuous ring homomorphisms",
+      "anchor": {
+        "section": "Commutative case",
+        "snippet": "These are precisely the ring homomorphisms that are continuous with respect to the given topologies"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The characterization of local ring hom as continuous for m-adic topologies was not found."
     },
     {
       "kind": "proposition",
@@ -322,7 +572,30 @@
         "snippet": "consists precisely of the non-units of the ring"
       },
       "provenance": "ai-agent1",
-      "id": "482dd9acc0d4"
+      "id": "482dd9acc0d4",
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsLocalRing.mem_maximalIdeal",
+        "module": "Mathlib.RingTheory.LocalRing.MaximalIdeal.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Combining `IsLocalRing.mem_maximalIdeal` (maximal ideal = nonunits) with `ringJacobson_eq_maximalIdeal` yields the statement, but no single lemma stated as Jacobson = nonunits."
+    },
+    {
+      "kind": "proposition",
+      "label": "Jacobson radical is the unique maximal two-sided ideal",
+      "anchor": {
+        "section": "General case",
+        "snippet": "it is the unique maximal two-sided ideal of R"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLocalRing.maximal_ideal_unique",
+        "module": "Mathlib.RingTheory.LocalRing.MaximalIdeal.Basic",
+        "match_kind": "exact"
+      },
+      "note": "In a commutative local ring the maximal ideal is unique; matches the two-sided statement in the commutative setting."
     },
     {
       "kind": "proposition",
@@ -332,7 +605,14 @@
         "snippet": "For an element x of the local ring R , the following are equivalent"
       },
       "provenance": "ai-agent1",
-      "id": "55d56804d603"
+      "id": "55d56804d603",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLocalRing.notMem_maximalIdeal",
+        "module": "Mathlib.RingTheory.LocalRing.MaximalIdeal.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`x ∉ maximalIdeal R ↔ IsUnit x` captures the invertibility characterization."
     },
     {
       "kind": "proposition",
@@ -342,7 +622,14 @@
         "snippet": "the factor ring R / m is a skew field"
       },
       "provenance": "ai-agent1",
-      "id": "cefa58d19288"
+      "id": "cefa58d19288",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLocalRing.ResidueField.field",
+        "module": "Mathlib.RingTheory.LocalRing.ResidueField.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The Field instance on `ResidueField R = R ⧸ maximalIdeal R` gives the (commutative) skew-field statement."
     },
     {
       "kind": "proposition",
@@ -352,7 +639,14 @@
         "snippet": "the factor ring R / J is again local"
       },
       "provenance": "ai-agent1",
-      "id": "a45b327197af"
+      "id": "a45b327197af",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLocalRing.of_surjective'",
+        "module": "Mathlib.RingTheory.LocalRing.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Applying `of_surjective'` to `Ideal.Quotient.mk` (as done in Quotient.lean) yields the local quotient."
     },
     {
       "kind": "theorem",
@@ -362,7 +656,14 @@
         "snippet": "A deep theorem by Irving Kaplansky says that any projective module over a local ring is free"
       },
       "provenance": "ai-agent1",
-      "id": "199fac88586a"
+      "id": "199fac88586a",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Kaplansky's theorem that projective modules over local rings are free is not in Mathlib."
     },
     {
       "kind": "proposition",
@@ -372,7 +673,14 @@
         "snippet": "the only rings Morita equivalent to a local ring R are (isomorphic to) the matrix rings over R"
       },
       "provenance": "ai-agent1",
-      "id": "4355a4fc8fc0"
+      "id": "4355a4fc8fc0",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Morita equivalence and matrix rings exist in Mathlib but the classification of rings Morita equivalent to a local ring is not formalized."
     }
   ]
 }

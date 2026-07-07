@@ -3,6 +3,7 @@
   "wikipedia_title": "Diophantine approximation",
   "display_title": "Diophantine approximation",
   "schema_version": 3,
+  "annotation_style": "theorem_article",
   "annotations": [
     {
       "kind": "definition",
@@ -11,6 +12,13 @@
         "section": "Best Diophantine approximations of a real number",
         "snippet": "the rational number p / q is a best Diophantine approximation of α if"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grepping Mathlib for `bestApprox`/`best_approx` in a Diophantine-approximation sense returns nothing; only Legendre's converse (`Real.exists_rat_eq_convergent`) and Dirichlet's theorem live in `DiophantineApproximation/Basic.lean`.",
       "provenance": "ai-agent1",
       "id": "6bf7d22d9c16"
     },
@@ -21,6 +29,13 @@
         "section": "Best Diophantine approximations of a real number",
         "snippet": "For the second definition,"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `bestApprox`-style definition (variant with |qα − p| minimization) appears in Mathlib.",
       "provenance": "ai-agent1",
       "id": "660e26cf23a1"
     },
@@ -31,6 +46,13 @@
         "section": "Best Diophantine approximations of a real number",
         "snippet": "A best approximation for the second definition is also a best approximation for the first one, but the converse is not true in general."
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Since neither notion of best Diophantine approximation is defined in Mathlib, the implication between them is not formalized either.",
       "provenance": "ai-agent1",
       "id": "640e55ae31f0"
     },
@@ -41,6 +63,13 @@
         "section": "Best Diophantine approximations of a real number",
         "snippet": "The theory of continued fractions allows us to compute the best approximations of a real number"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.exists_rat_eq_convergent",
+        "module": "Mathlib.NumberTheory.DiophantineApproximation.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib formalizes Legendre's converse (`Real.exists_rat_eq_convergent`) — any rational with |ξ − q| < 1/(2q.den²) is a convergent — but does not state the general theorem that convergents enumerate the best approximations.",
       "provenance": "ai-agent1",
       "id": "6883137d700c"
     },
@@ -51,6 +80,13 @@
         "section": "Best Diophantine approximations of a real number",
         "snippet": "the constant e = 2.718281828459045235... has the (regular) continued fraction representation"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The continued-fraction expansion of `Real.exp 1` and its list of best approximations are not developed in Mathlib.",
       "provenance": "ai-agent1",
       "id": "a8420df1ebd9"
     },
@@ -61,6 +97,13 @@
         "section": "Badly approximable numbers",
         "snippet": "A badly approximable number is an x for which there is a positive constant c such that for all rational p / q we have"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `badlyApproximable` / `BadlyApproximable` in Mathlib returns no hits; the definition is absent.",
       "provenance": "ai-agent1",
       "id": "8ea108959d50"
     },
@@ -71,6 +114,13 @@
         "section": "Badly approximable numbers",
         "snippet": "The badly approximable numbers are precisely those with bounded partial quotients"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without a `badlyApproximable` definition, the equivalence with boundedness of the partial quotients of the regular continued fraction is not formalized.",
       "provenance": "ai-agent1",
       "id": "9d9a07330986"
     },
@@ -81,6 +131,13 @@
         "section": "Badly approximable numbers",
         "snippet": "Equivalently, a number is badly approximable if and only if its Markov constant is finite or equivalently its simple continued fraction is bounded."
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the Markov constant of a real number nor this equivalence is present in Mathlib.",
       "provenance": "ai-agent1",
       "id": "3ac17624c3be"
     },
@@ -89,9 +146,16 @@
       "label": "Approximation of a rational by another rational",
       "anchor": {
         "section": "Approximation of a rational by other rationals",
-        "snippet": "because"
+        "snippet": "is a positive integer and is thus not lower than 1"
       },
-      "provenance": "ai-agent1",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Rat.finite_rat_abs_sub_lt_one_div_den_sq",
+        "module": "Mathlib.NumberTheory.DiophantineApproximation.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "The pigeonhole 'nonzero integer ⇒ ≥ 1' step underlies `Rat.finite_rat_abs_sub_lt_one_div_den_sq`, which realises the section's conclusion that a rational has only finitely many good rational approximations.",
+      "provenance": "ai-moderated",
       "id": "fffe6aecefd6"
     },
     {
@@ -101,6 +165,13 @@
         "section": "Approximation of algebraic numbers, Liouville's result",
         "snippet": "If x is an irrational algebraic number of degree n over the rational numbers, then there exists a constant c ( x ) > 0 such that"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Liouville.exists_pos_real_of_irrational_root",
+        "module": "Mathlib.NumberTheory.Transcendental.Liouville.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`Liouville.exists_pos_real_of_irrational_root` gives, for irrational α that is a root of any nonzero f ∈ ℤ[X], an A>0 with 1 ≤ (b+1)^{deg f} · |α − a/(b+1)| · A — the essential Liouville inequality (bounding by any witness polynomial's degree rather than the minimal one).",
       "provenance": "ai-agent1",
       "id": "60c4c7b3882b"
     },
@@ -111,6 +182,13 @@
         "section": "Approximation of algebraic numbers, Liouville's result",
         "snippet": "This result allowed him to produce the first proven example of a transcendental number, the Liouville constant"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "transcendental_liouvilleNumber",
+        "module": "Mathlib.NumberTheory.Transcendental.Liouville.LiouvilleNumber",
+        "match_kind": "generalization"
+      },
+      "note": "`liouvilleNumber m = ∑ 1/m^{i!}` is defined and `transcendental_liouvilleNumber` proves it is transcendental for every integer m ≥ 2, covering Liouville's classical m = 10 (and m = 2) constant.",
       "provenance": "ai-agent1",
       "id": "b51575c32376"
     },
@@ -121,6 +199,13 @@
         "section": "Approximation of algebraic numbers, Thue–Siegel–Roth theorem",
         "snippet": "If x is an irrational algebraic number and ε > 0 , then there exists a positive real number c ( x , ε ) such that"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Thue–Siegel–Roth theorem is only mentioned in a docstring comment of `LiouvilleWith.lean` and is not proved in Mathlib.",
       "provenance": "ai-agent1",
       "id": "c23ab45a038c"
     },
@@ -131,6 +216,13 @@
         "section": "Simultaneous approximations of algebraic numbers",
         "snippet": "If x 1 , ..., x n are algebraic numbers such that 1, x 1 , ..., x n are linearly independent over the rational numbers and ε is any given positive real number, then there are only finitely many rational n -tuples"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Schmidt's subspace / simultaneous approximation theorem is not in Mathlib.",
       "provenance": "ai-agent1",
       "id": "1f8e0c5e3772"
     },
@@ -141,6 +233,13 @@
         "section": "Effective bounds",
         "snippet": "a refinement of Baker's theorem by Feldman provides an effective bound: if x is an algebraic number of degree n over the rational numbers, then there exist effectively computable constants"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No results by Baker or Feldman on effective Diophantine approximation appear in Mathlib.",
       "provenance": "ai-agent1",
       "id": "090fffb1d777"
     },
@@ -151,6 +250,13 @@
         "section": "General upper bound",
         "snippet": "Dirichlet's approximation theorem , which implies that, for every irrational number α , there are infinitely many fractions"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.infinite_rat_abs_sub_lt_one_div_den_sq_of_irrational",
+        "module": "Mathlib.NumberTheory.DiophantineApproximation.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Real.infinite_rat_abs_sub_lt_one_div_den_sq_of_irrational` states that for irrational ξ the set {q : ℚ | |ξ − q| < 1/q.den²} is infinite, which is exactly the statement quoted; the underlying pigeonhole form is `Real.exists_int_int_abs_mul_sub_le`.",
       "provenance": "ai-agent1",
       "id": "4cd6d73d1985"
     },
@@ -161,6 +267,13 @@
         "section": "General upper bound",
         "snippet": "Adolf Hurwitz (1891)"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `Hurwitz` in Mathlib finds only Hurwitz zeta-related material; the Diophantine Hurwitz bound |α − p/q| < 1/(√5 q²) is absent.",
       "provenance": "ai-agent1",
       "id": "b0721c466e45"
     },
@@ -171,6 +284,13 @@
         "section": "General upper bound",
         "snippet": "Émile Borel (1903)"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The statement that among any three consecutive convergents at least one satisfies |α − p/q| < 1/(√5 q²) is not in Mathlib.",
       "provenance": "ai-agent1",
       "id": "38758330626a"
     },
@@ -181,6 +301,13 @@
         "section": "Equivalent real numbers",
         "snippet": "are called equivalent"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The GL₂(ℤ)-action equivalence of real numbers has no dedicated definition in Mathlib.",
       "provenance": "ai-agent1",
       "id": "7e04fd5f954e"
     },
@@ -191,6 +318,13 @@
         "section": "Equivalent real numbers",
         "snippet": "Two irrational numbers x and y are equivalent if and only if there exist two positive integers h and k such that the regular continued fraction representations of x and y"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The characterization of GL₂(ℤ)-equivalent irrationals via eventually-equal continued fraction tails is not formalized.",
       "provenance": "ai-agent1",
       "id": "dc728177dd24"
     },
@@ -199,9 +333,16 @@
       "label": "Hurwitz sharpness via golden ratio",
       "anchor": {
         "section": "Lagrange spectrum",
-        "snippet": "be the golden ratio"
+        "snippet": "there are only a finite number of rational numbers p / q such that"
       },
-      "provenance": "ai-agent1",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The sharpness statement — for the golden ratio only finitely many p/q satisfy |φ − p/q| < 1/(c q²) once c > √5 — is not in Mathlib.",
+      "provenance": "ai-moderated",
       "id": "c61b8bd870a2"
     },
     {
@@ -209,9 +350,16 @@
       "label": "Improved Hurwitz bound excluding golden-ratio class",
       "anchor": {
         "section": "Lagrange spectrum",
-        "snippet": "For every irrational number"
+        "snippet": "which is not equivalent to"
       },
-      "provenance": "ai-agent1",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The refined constant 1/(√8 q²) for numbers not equivalent to the golden ratio (start of the Lagrange spectrum) is not formalized.",
+      "provenance": "ai-moderated",
       "id": "b14269a41a39"
     },
     {
@@ -221,6 +369,13 @@
         "section": "Khinchin's theorem on metric Diophantine approximation and extensions",
         "snippet": "A real number x (not necessarily algebraic) is called"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "wellApproximable",
+        "module": "Mathlib.NumberTheory.WellApproximable",
+        "match_kind": "generalization"
+      },
+      "note": "`wellApproximable`/`addWellApproximable` in `Mathlib.NumberTheory.WellApproximable` defines the limsup set of points within δₙ of order-n rationals in a (semi)normed group — a group-theoretic version of the ψ-approximable set — but there is no direct real-number definition.",
       "provenance": "ai-agent1",
       "id": "2844b4581d1b"
     },
@@ -231,6 +386,13 @@
         "section": "Khinchin's theorem on metric Diophantine approximation and extensions",
         "snippet": "Aleksandr Khinchin proved in 1926 that if the series"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep finds no Khinchin/Khintchine theorem on metric Diophantine approximation in Mathlib; only Gallagher's ergodic theorem (`AddCircle.addWellApproximable_ae_empty_or_univ`) is present.",
       "provenance": "ai-agent1",
       "id": "69df6a71df87"
     },
@@ -241,6 +403,13 @@
         "section": "Khinchin's theorem on metric Diophantine approximation and extensions",
         "snippet": "Duffin & Schaeffer (1941) proved a generalization of Khinchin's result"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Koukoulopoulos–Maynard proof is explicitly noted as not included in `Mathlib.NumberTheory.WellApproximable`.",
       "provenance": "ai-agent1",
       "id": "17386884db7a"
     },
@@ -251,6 +420,13 @@
         "section": "Hausdorff dimension of exceptional sets",
         "snippet": "The Jarník-Besicovitch theorem, due to V. Jarník and A. S. Besicovitch , states that the Hausdorff dimension of this set is equal to"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The dim_H = 2/(1+β) formula for the set of β-approximable numbers is not in Mathlib.",
       "provenance": "ai-agent1",
       "id": "d464eedf11a1"
     },
@@ -261,6 +437,13 @@
         "section": "Hausdorff dimension of exceptional sets",
         "snippet": "V. Jarník proved that the Hausdorff dimension of this set is equal to one"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Since badly approximable numbers are not defined in Mathlib, the statement that their set has full Hausdorff dimension is absent.",
       "provenance": "ai-agent1",
       "id": "d73976aabc27"
     },
@@ -271,6 +454,13 @@
         "section": "Hausdorff dimension of exceptional sets",
         "snippet": "This result was improved by W. M. Schmidt , who showed that the set of badly approximable numbers is incompressible"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Schmidt's winning-set / incompressibility theorem is not in Mathlib.",
       "provenance": "ai-agent1",
       "id": "9f027aecbf90"
     },
@@ -281,8 +471,185 @@
         "section": "Uniform distribution",
         "snippet": "Hermann Weyl proved a basic result showing that this was equivalent to bounds for exponential sums formed from the sequence."
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of Weyl's equidistribution criterion (equivalence between equidistribution mod 1 and vanishing exponential sums) is present in Mathlib.",
       "provenance": "ai-agent1",
       "id": "69aefc2cabd2"
+    },
+    {
+      "kind": "definition",
+      "label": "Very well approximable numbers",
+      "anchor": {
+        "section": "Hausdorff dimension of exceptional sets",
+        "snippet": "known as the set of very well approximable numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LiouvilleWith",
+        "module": "Mathlib.NumberTheory.Transcendental.Liouville.LiouvilleWith",
+        "match_kind": "generalization"
+      },
+      "note": "The set of numbers which are ψ-approximable for ψ(q)=q^{-c} for some c>1; stated to have Hausdorff dimension one.",
+      "provenance": "ai",
+      "id": null
+    },
+    {
+      "kind": "definition",
+      "label": "Liouville numbers",
+      "anchor": {
+        "section": "Hausdorff dimension of exceptional sets",
+        "snippet": "known as the set of Liouville numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Liouville",
+        "module": "Mathlib.NumberTheory.Transcendental.Liouville.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Numbers ψ-approximable for ψ(q)=q^{-c} for all c>1; stated here to have Hausdorff dimension zero.",
+      "provenance": "ai",
+      "id": null
+    },
+    {
+      "kind": "definition",
+      "label": "Well approximable number",
+      "anchor": {
+        "section": "Hausdorff dimension of exceptional sets",
+        "snippet": "a number is called well approximable if it is not badly approximable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without a `badlyApproximable` predicate for reals in Mathlib, its complement 'well approximable' (in the sense of the Wikipedia article) is not defined either; the unrelated `wellApproximable` set is about limsups in seminormed groups.",
+      "provenance": "ai",
+      "id": null
+    },
+    {
+      "kind": "conjecture",
+      "label": "Duffin–Schaeffer conjecture",
+      "anchor": {
+        "section": "Khinchin's theorem on metric Diophantine approximation and extensions",
+        "snippet": "posed what is now known as the Duffin–Schaeffer conjecture on the analogue of Khinchin's dichotomy for general, not necessarily decreasing, sequences"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The original 1941 conjecture, later proved by Koukoulopoulos–Maynard (2019).",
+      "provenance": "ai",
+      "id": null
+    },
+    {
+      "kind": "theorem",
+      "label": "Beresnevich–Velani Hausdorff-measure equivalence",
+      "anchor": {
+        "section": "Khinchin's theorem on metric Diophantine approximation and extensions",
+        "snippet": "Beresnevich & Velani (2006) proved that a Hausdorff measure analogue of the Duffin–Schaeffer conjecture is equivalent to the original Duffin–Schaeffer conjecture"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Beresnevich–Velani mass-transference / Hausdorff-measure equivalence is not in Mathlib.",
+      "provenance": "ai",
+      "id": null
+    },
+    {
+      "kind": "theorem",
+      "label": "Schmidt's higher-dimensional generalization of Jarník's theorem",
+      "anchor": {
+        "section": "Hausdorff dimension of exceptional sets",
+        "snippet": "Schmidt also generalized Jarník's theorem to higher dimensions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No higher-dimensional Jarník/Schmidt Hausdorff-dimension result appears in Mathlib.",
+      "provenance": "ai",
+      "id": null
+    },
+    {
+      "kind": "conjecture",
+      "label": "Littlewood conjecture",
+      "anchor": {
+        "section": "Unsolved problems",
+        "snippet": "the Littlewood conjecture"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `Littlewood` in Mathlib returns no results.",
+      "provenance": "ai",
+      "id": null
+    },
+    {
+      "kind": "conjecture",
+      "label": "Lonely runner conjecture",
+      "anchor": {
+        "section": "Unsolved problems",
+        "snippet": "the lonely runner conjecture"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `LonelyRunner` / `lonely_runner` in Mathlib returns no results.",
+      "provenance": "ai",
+      "id": null
+    },
+    {
+      "kind": "theorem",
+      "label": "Margulis's proof of the Oppenheim conjecture",
+      "anchor": {
+        "section": "Recent developments",
+        "snippet": "the proof of the decades-old Oppenheim conjecture by Margulis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `Oppenheim` in Mathlib returns no results.",
+      "provenance": "ai",
+      "id": null
+    },
+    {
+      "kind": "theorem",
+      "label": "Kleinbock–Margulis proof of Baker–Sprindzhuk conjectures",
+      "anchor": {
+        "section": "Recent developments",
+        "snippet": "the proof of Baker and Sprindzhuk conjectures in the Diophantine approximations on manifolds by Kleinbock and Margulis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `Sprindzhuk`, `Kleinbock`, or a manifold-Diophantine result finds nothing in Mathlib.",
+      "provenance": "ai",
+      "id": null
     }
   ]
 }

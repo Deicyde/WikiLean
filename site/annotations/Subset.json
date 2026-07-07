@@ -397,6 +397,22 @@
       "id": "9fe799989297"
     },
     {
+      "kind": "definition",
+      "label": "Reverse set inclusion partial order",
+      "anchor": {
+        "section": "Power set",
+        "snippet": "We may also partially order"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "OrderDual",
+        "module": "Mathlib.Order.OrderDual",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes the reverse of any order via OrderDual; applied to `Set α` this is the reverse set-inclusion partial order.",
+      "provenance": "ai"
+    },
+    {
       "kind": "proposition",
       "label": "Power set order isomorphic to Cartesian product",
       "anchor": {
@@ -514,6 +530,22 @@
       "note": "The canonical `≤` on `Set α` is inclusion (Set.le_eq_subset), provided by its BooleanAlgebra/partial-order structure.",
       "provenance": "ai",
       "id": "d6f9505906f3"
+    },
+    {
+      "kind": "example",
+      "label": "Ordinals as sets ordered by inclusion",
+      "anchor": {
+        "section": "Other properties of inclusion",
+        "snippet": "The ordinal numbers are a simple example"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ordinal",
+        "module": "Mathlib.SetTheory.Ordinal.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's Ordinal type carries the canonical well-order, with ≤ corresponding (via the von Neumann encoding) to set inclusion of initial segments.",
+      "provenance": "ai"
     }
   ]
 }

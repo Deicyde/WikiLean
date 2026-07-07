@@ -956,6 +956,54 @@
       "note": "Sequential analysis / boundary-crossing probability with logistic is not in Mathlib.",
       "provenance": "ai",
       "id": "75350b9adf84"
+    },
+    {
+      "kind": "definition",
+      "label": "Expit (inverse of logit)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "It is also sometimes called the expit , being the inverse function of the logit"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.sigmoid",
+        "module": "Mathlib.Analysis.SpecialFunctions.Sigmoid",
+        "match_kind": "special_case"
+      },
+      "note": "`Real.sigmoid` is the expit; its identification as the inverse of the (not-yet-formalized) logit is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reciprocal logistic solves a linear ODE",
+      "anchor": {
+        "section": "Logistic differential equation",
+        "snippet": "the reciprocal logistic function is solution to a simple first-order linear ordinary differential equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The linear ODE for `1/sigmoid` is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sigmoid takes values in (0,1)",
+      "anchor": {
+        "section": "Probabilistic interpretation",
+        "snippet": "the two alternatives are complementary, so the probability of the other alternative is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.sigmoid_pos",
+        "module": "Mathlib.Analysis.SpecialFunctions.Sigmoid",
+        "match_kind": "exact"
+      },
+      "note": "`Real.sigmoid_pos` and `Real.sigmoid_lt_one` give `0 < sigmoid x < 1`; complementarity `sigmoid(-x) = 1 - sigmoid x` is `Real.sigmoid_neg`.",
+      "provenance": "ai"
     }
   ]
 }

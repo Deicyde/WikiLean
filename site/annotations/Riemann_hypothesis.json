@@ -177,6 +177,22 @@
     },
     {
       "kind": "definition",
+      "label": "Critical strip",
+      "anchor": {
+        "section": "Riemann zeta function",
+        "snippet": "all nontrivial zeros lie in the critical strip where"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The critical strip {s : 0 < re s < 1} is not given its own definition in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Riemann's prime/prime-power counting function",
       "anchor": {
         "section": "Origin",
@@ -208,6 +224,22 @@
       "note": "Mathlib has general Möbius inversion, but the specific recovery formula π(x) = Σ μ(n)/n · J(x^{1/n}) is not stated.",
       "provenance": "ai",
       "id": "69566f63a68d"
+    },
+    {
+      "kind": "definition",
+      "label": "Möbius function",
+      "anchor": {
+        "section": "Origin",
+        "snippet": "is the Möbius function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ArithmeticFunction.moebius",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Moebius",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines `ArithmeticFunction.moebius` (notation μ).",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",
@@ -412,6 +444,22 @@
       "note": "Robin's σ(n) < e^γ n log log n criterion is not in Mathlib.",
       "provenance": "ai",
       "id": "2b0c08ec9bd5"
+    },
+    {
+      "kind": "definition",
+      "label": "Sigma function (sum of divisors)",
+      "anchor": {
+        "section": "Growth of arithmetic functions",
+        "snippet": "if σ ( n ) is the sigma function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ArithmeticFunction.sigma",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Misc",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines `ArithmeticFunction.sigma k n` as the sum of k-th powers of divisors of n; σ(n) corresponds to `ArithmeticFunction.sigma 1 n`.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",
@@ -1566,7 +1614,8 @@
         "match_kind": null
       },
       "note": "Dirichlet L-functions are formalized in Mathlib (`DirichletCharacter.LSeries`) but a `GeneralizedRiemannHypothesis` proposition for them is not.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "13debb4666ce"
     },
     {
       "kind": "definition",
@@ -1582,7 +1631,8 @@
         "match_kind": null
       },
       "note": "Dedekind zeta functions are partially developed in Mathlib but the extended Riemann hypothesis is not stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "795f406a1f74"
     },
     {
       "kind": "definition",
@@ -1598,7 +1648,8 @@
         "match_kind": null
       },
       "note": "Automorphic L-functions and the grand Riemann hypothesis are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a3bdf144888d"
     },
     {
       "kind": "conjecture",
@@ -1614,7 +1665,8 @@
         "match_kind": null
       },
       "note": "The Hilbert–Pólya program (zeros of ζ as eigenvalues of a self-adjoint operator) is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "94de9c72bcc3"
     },
     {
       "kind": "theorem",
@@ -1630,7 +1682,8 @@
         "match_kind": null
       },
       "note": "The Lee–Yang circle theorem is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f79b421e7b81"
     },
     {
       "kind": "definition",
@@ -1639,14 +1692,15 @@
         "section": "Turán's result",
         "snippet": "where λ( n ) is the Liouville function given by (−1) r if n has r prime factors"
       },
-      "status": "not_formalized",
+      "status": "formalized",
       "mathlib": {
-        "decl": null,
-        "module": null,
-        "match_kind": null
+        "decl": "ArithmeticFunction.liouville",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Liouville",
+        "match_kind": "exact"
       },
-      "note": "The Liouville arithmetic function λ(n) does not appear to be defined in Mathlib (only an unrelated `Liouville` number class exists).",
-      "provenance": "ai"
+      "note": "Mathlib defines `ArithmeticFunction.liouville` as the Liouville arithmetic function λ(n).",
+      "provenance": "ai",
+      "id": "9fbe65612f8a"
     },
     {
       "kind": "theorem",
@@ -1662,7 +1716,8 @@
         "match_kind": null
       },
       "note": "Turán's criterion (and Haselgrove's refutation) is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ea6df7abb658"
     },
     {
       "kind": "theorem",
@@ -1678,7 +1733,8 @@
         "match_kind": null
       },
       "note": "Haselgrove's disproof of the Pólya conjecture is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2ae53b4e6848"
     },
     {
       "kind": "theorem",
@@ -1694,7 +1750,8 @@
         "match_kind": null
       },
       "note": "de Branges spaces and the conditional positivity criterion are not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fca628ce807e"
     },
     {
       "kind": "proposition",
@@ -1710,7 +1767,8 @@
         "match_kind": null
       },
       "note": "Dyson's quasicrystal characterization of the zeros is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5501645e18b8"
     },
     {
       "kind": "theorem",
@@ -1726,7 +1784,8 @@
         "match_kind": null
       },
       "note": "Connes' noncommutative-geometry approach is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "247cb25ad94f"
     },
     {
       "kind": "definition",
@@ -1742,7 +1801,8 @@
         "match_kind": null
       },
       "note": "Skewes' number is not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8aa9a98b4856"
     },
     {
       "kind": "theorem",
@@ -1758,6 +1818,55 @@
         "match_kind": null
       },
       "note": "Odlyzko's empirical GUE-statistics observation is not formalized.",
+      "provenance": "ai",
+      "id": "a2d1e73554e8"
+    },
+    {
+      "kind": "definition",
+      "label": "Euler–Mascheroni constant",
+      "anchor": {
+        "section": "Growth of arithmetic functions",
+        "snippet": "where γ is the Euler–Mascheroni constant"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.eulerMascheroniConstant",
+        "module": "Mathlib.NumberTheory.Harmonic.EulerMascheroni",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines `Real.eulerMascheroniConstant` as the Euler–Mascheroni constant γ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Harmonic number",
+      "anchor": {
+        "section": "Growth of arithmetic functions",
+        "snippet": "is the n th harmonic number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "harmonic",
+        "module": "Mathlib.NumberTheory.Harmonic.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines `harmonic n = ∑ i ∈ range n, 1/(i+1)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euler's totient",
+      "anchor": {
+        "section": "Growth of arithmetic functions",
+        "snippet": "where φ ( n ) is Euler's totient function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.totient",
+        "module": "Mathlib.Data.Nat.Totient",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines `Nat.totient n` (notation φ(n)).",
       "provenance": "ai"
     }
   ]
