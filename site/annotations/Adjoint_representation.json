@@ -49,10 +49,10 @@
       "status": "partial",
       "mathlib": {
         "decl": "MulAut.conj",
-        "module": "Mathlib.Algebra.Group.Aut",
+        "module": "Mathlib.Algebra.Group.End",
         "match_kind": "generalization"
       },
-      "note": "Mathlib has `MulAut.conj` for the abstract group inner-automorphism map, but not the smooth Lie group inner automorphism Ψ_g : G → Aut(G).",
+      "note": "Mathlib has `MulAut.conj : G →* MulAut G` (the abstract group inner-automorphism map) but not the smooth Lie group inner automorphism Ψ_g.",
       "provenance": "ai",
       "id": "35d66cf8bbeb"
     },
@@ -72,6 +72,22 @@
       "note": "Mathlib does not define Ad_g as the derivative at the identity of conjugation.",
       "provenance": "ai",
       "id": "bbf3a8c3d7bc"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ad_g is a Lie algebra automorphism",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "Ad g is a Lie algebra automorphism"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Since Ad_g on the Lie group side is not formalized, its Lie-algebra-automorphism property is not either.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -214,7 +230,7 @@
       "label": "ad_z is a derivation (Leibniz law)",
       "anchor": {
         "section": "Adjoint representation of a Lie algebra",
-        "snippet": "the linear mapping"
+        "snippet": "obeys the Leibniz' law"
       },
       "status": "formalized",
       "mathlib": {
@@ -223,7 +239,7 @@
         "match_kind": "exact"
       },
       "note": "`LieAlgebra.ad_lie` states `(ad R L x) ⁅y, z⁆ = ⁅ad R L x y, z⁆ + ⁅y, ad R L x z⁆`, the derivation property, and `LieDerivation.ad` packages ad as a Lie derivation.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "cac69131f0a5"
     },
     {
@@ -231,7 +247,7 @@
       "label": "ad is differential of Ad at identity",
       "anchor": {
         "section": "Adjoint representation of a Lie algebra",
-        "snippet": "When"
+        "snippet": "ad is the differential of Ad at the identity element of G"
       },
       "status": "not_formalized",
       "mathlib": {
@@ -240,7 +256,7 @@
         "match_kind": null
       },
       "note": "Mathlib does not relate ad to a derivative of `Ad` because Lie group Ad is not formalized.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "7ab9963a5d59"
     },
     {
@@ -363,6 +379,38 @@
       "id": "64a57fbeab09"
     },
     {
+      "kind": "proposition",
+      "label": "Kernel of Ad is centralizer of identity component",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "if G is not connected, then the kernel of the adjoint map is the centralizer of the identity component"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Non-connected generalization of the previous kernel-of-Ad statement; not formalized in Mathlib since Ad on Lie groups is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "First isomorphism theorem for Ad",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "By the first isomorphism theorem we have"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The identification G / ker(Ad) ≅ Ad(G) via the first isomorphism theorem is not formalized since Ad on Lie groups is absent, though `QuotientGroup.quotientKerEquivRange` gives the underlying group-theoretic statement.",
+      "provenance": "ai"
+    },
+    {
       "kind": "theorem",
       "label": "Adjoint group via Lie's third theorem",
       "anchor": {
@@ -384,7 +432,7 @@
       "label": "Image of adjoint representation equals adjoint group",
       "anchor": {
         "section": "Properties",
-        "snippet": "Now, if"
+        "snippet": "is the image of the adjoint representation of G"
       },
       "status": "not_formalized",
       "mathlib": {
@@ -393,7 +441,7 @@
         "match_kind": null
       },
       "note": "No formalization of the adjoint group as image of Ad in Mathlib.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "c423c0b94d13"
     },
     {
@@ -439,11 +487,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "LieAlgebra.sl2",
+        "decl": "IsSl2Triple",
         "module": "Mathlib.Algebra.Lie.Sl2",
         "match_kind": "generalization"
       },
-      "note": "`Mathlib.Algebra.Lie.Sl2` develops sl₂-triples, but the explicit A₁ root system computation for sl(2,ℝ) is not given.",
+      "note": "`Mathlib.Algebra.Lie.Sl2` develops `IsSl2Triple` and sl₂-triple theory, but the explicit A₁ root system computation for sl(2,ℝ) is not given.",
       "provenance": "ai",
       "id": "3dc08d4a6930"
     },

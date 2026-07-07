@@ -18,7 +18,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib has no curl operator on vector fields; only the more general exterior derivative `extDeriv` is defined.",
+      "note": "A grep over `Mathlib/` finds no curl operator on vector fields; only the more general exterior derivative `extDeriv` is defined.",
       "provenance": "ai",
       "id": "28c059018c21"
     },
@@ -614,7 +614,8 @@
         "match_kind": null
       },
       "note": "The physical interpretation ω = ½|curl F| is not formalized in Mathlib (curl is not defined).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f436f25d49ae"
     },
     {
       "kind": "definition",
@@ -630,7 +631,8 @@
         "match_kind": null
       },
       "note": "Magnetic vector potential is an electromagnetism notion not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f273e733714d"
     },
     {
       "kind": "theorem",
@@ -646,6 +648,87 @@
         "match_kind": null
       },
       "note": "Mathlib does not contain a general Stokes theorem for differential forms on manifolds; only the divergence theorem on Euclidean rectangles is present.",
+      "provenance": "ai",
+      "id": "8723026273de"
+    },
+    {
+      "kind": "definition",
+      "label": "Vorticity of a flow",
+      "anchor": {
+        "section": "Further examples",
+        "snippet": "the vorticity of the flow at that point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Vorticity (curl of the velocity field of a flow) is not formalized in Mathlib, as curl on vector fields is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Biot–Savart law (inverse curl)",
+      "anchor": {
+        "section": "Inverse",
+        "snippet": "the inverse curl of a three-dimensional vector field can be obtained up to an unknown irrotational field with the Biot–Savart law"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Biot–Savart formula recovering a vector potential from a divergence-free field is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Special orthogonal Lie algebra so(n)",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "the special orthogonal Lie algebra"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LieAlgebra.Orthogonal.so",
+        "module": "Mathlib.Algebra.Lie.Classical",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `LieAlgebra.Orthogonal.so` defines the orthogonal Lie subalgebra as skew-adjoint matrices w.r.t. the identity bilinear form, matching so(n); the connection to infinitesimal rotations / curl is not made explicit.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Curl as a chiral operation",
+      "anchor": {
+        "section": "Usage",
+        "snippet": "Since this depends on a choice of orientation, curl is a chiral operation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The orientation-dependence (chirality) of curl is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sequence of k-form spaces (de Rham complex on R^n)",
+      "anchor": {
+        "section": "Differential forms",
+        "snippet": "denoting the space of k -forms by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The full de Rham complex Ω⁰ → Ω¹ → … → Ωⁿ with exterior derivative is not assembled as such in Mathlib, though `extDeriv` and `extDeriv_extDeriv` give the underlying maps.",
       "provenance": "ai"
     }
   ]

@@ -316,7 +316,7 @@
       "label": "Quadratic extension of Q",
       "anchor": {
         "section": "Examples",
-        "snippet": "is an extension field of"
+        "snippet": "also clearly a simple extension. The degree is 2"
       },
       "status": "formalized",
       "mathlib": {
@@ -324,8 +324,8 @@
         "module": "Mathlib.NumberTheory.Zsqrtd.Basic",
         "match_kind": "special_case"
       },
-      "note": "Quadratic extensions like ℚ(√d) are realized via `Zsqrtd` and number-field machinery, with general adjoin available.",
-      "provenance": "ai",
+      "note": "Quadratic extensions like ℚ(√d) are realized via `Zsqrtd` and number-field machinery, with general adjoin available. (Anchor tightened — original 'is an extension field of' was ambiguous within the Examples section.)",
+      "provenance": "ai-moderated",
       "id": "f1e5afc8ccee"
     },
     {
@@ -465,6 +465,22 @@
       "id": "e5629822c744"
     },
     {
+      "kind": "proposition",
+      "label": "Minimal polynomial is irreducible",
+      "anchor": {
+        "section": "Algebraic extension",
+        "snippet": "This minimal polynomial is irreducible over K"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "minpoly.irreducible",
+        "module": "Mathlib.FieldTheory.Minpoly.Field",
+        "match_kind": "exact"
+      },
+      "note": "`minpoly.irreducible` formalizes that the minimal polynomial of an algebraic element over a field is irreducible.",
+      "provenance": "ai"
+    },
+    {
       "kind": "theorem",
       "label": "Algebraic iff simple extension finite",
       "anchor": {
@@ -546,7 +562,8 @@
         "match_kind": "exact"
       },
       "note": "`Algebra.IsAlgebraic.of_finite` is the instance deriving algebraicity from a finite extension.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "61c30a66cbf8"
     },
     {
       "kind": "theorem",
@@ -664,7 +681,8 @@
         "match_kind": "exact"
       },
       "note": "`IntermediateField.normalClosure K L M` is the minimal normal intermediate field of `M/K` containing the image of L.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "61a6fdcaf6ad"
     },
     {
       "kind": "definition",
@@ -765,7 +783,8 @@
         "match_kind": "exact"
       },
       "note": "`Quaternion ℝ` (i.e. ℍ) is constructed; central simple structure follows via `Algebra.IsCentral` and `IsSimpleRing` instances.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5e84b32380c8"
     },
     {
       "kind": "definition",
@@ -781,6 +800,23 @@
         "match_kind": "exact"
       },
       "note": "`BrauerGroup k` packages CSAs over k modulo Brauer equivalence.",
+      "provenance": "ai",
+      "id": "70a9aaa520aa"
+    },
+    {
+      "kind": "definition",
+      "label": "Azumaya algebra",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "CSAs can be further generalized to Azumaya algebras"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Azumaya algebras (CSA-analogue over commutative local rings) do not appear to have a dedicated definition in Mathlib at the time of review.",
       "provenance": "ai"
     },
     {

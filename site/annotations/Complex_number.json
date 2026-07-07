@@ -18,7 +18,7 @@
         "module": "Mathlib.Data.Complex.Basic",
         "match_kind": "exact"
       },
-      "note": "The structure `Complex` is defined with two real fields `re` and `im`.",
+      "note": "Verified: `Complex` structure with `re` and `im` real fields.",
       "provenance": "ai",
       "id": "e63b2361aa8a"
     },
@@ -35,7 +35,7 @@
         "module": "Mathlib.Data.Complex.Basic",
         "match_kind": "exact"
       },
-      "note": "Real/imaginary parts are the structure projections `Complex.re` and `Complex.im`.",
+      "note": "Verified: structure projections `Complex.re` and `Complex.im`.",
       "provenance": "ai",
       "id": "8a2c265b87b9"
     },
@@ -52,7 +52,7 @@
         "module": "Mathlib.Data.Complex.Basic",
         "match_kind": "invocation"
       },
-      "note": "Mathlib has the bijection `Complex.equivRealProd : ℂ ≃ ℝ × ℝ` but no named 'complex plane' definition.",
+      "note": "Verified: `Complex.equivRealProd : ℂ ≃ ℝ × ℝ` realises the Argand identification but no named 'complex plane' object.",
       "provenance": "ai",
       "id": "b1bb707a94fe"
     },
@@ -69,7 +69,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No dedicated 'purely imaginary' predicate; expressed via `z.re = 0`.",
+      "note": "No dedicated 'purely imaginary' predicate; expressed inline via `z.re = 0`.",
       "provenance": "ai",
       "id": "520de96e0c83"
     },
@@ -86,7 +86,7 @@
         "module": "Mathlib.Data.Complex.Basic",
         "match_kind": "exact"
       },
-      "note": "Addition is defined componentwise via the `Add ℂ` instance at line 164 of `Basic.lean`.",
+      "note": "Verified: componentwise addition is provided by the `Add ℂ` instance.",
       "provenance": "ai",
       "id": "06303230d81d"
     },
@@ -103,7 +103,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The geometric parallelogram visualization for complex addition is not stated as a lemma.",
+      "note": "The geometric parallelogram visualization is not stated as a lemma.",
       "provenance": "ai",
       "id": "be0b50134bb4"
     },
@@ -120,7 +120,7 @@
         "module": "Mathlib.Data.Complex.Basic",
         "match_kind": "exact"
       },
-      "note": "Multiplication is defined via the `Mul ℂ` instance at line 206 of `Basic.lean`.",
+      "note": "Verified: multiplication via the `Mul ℂ` instance gives the (ac-bd, ad+bc) formula.",
       "provenance": "ai",
       "id": "173b398002aa"
     },
@@ -137,9 +137,25 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Illustrative numeric example, no corresponding Mathlib lemma.",
+      "note": "Illustrative numeric example with no corresponding Mathlib lemma.",
       "provenance": "ai",
       "id": "bd39dd3a680b"
+    },
+    {
+      "kind": "proposition",
+      "label": "i squared equals -1",
+      "anchor": {
+        "section": "Multiplication",
+        "snippet": "this includes as a special case the fundamental formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.I_sq",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Verified: `Complex.I_sq : I ^ 2 = -1` (companion `Complex.I_mul_I` also exists).",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -154,7 +170,7 @@
         "module": "Mathlib.Data.Complex.Basic",
         "match_kind": "exact"
       },
-      "note": "The `Field ℂ` instance is established at line 678 of `Basic.lean`.",
+      "note": "Verified: `Field ℂ` instance is registered.",
       "provenance": "ai",
       "id": "a8ad76c01160"
     },
@@ -167,11 +183,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Complex.conj",
-        "module": "Mathlib.Data.Complex.Basic",
+        "decl": "starRingEnd",
+        "module": "Mathlib.Algebra.Star.Basic",
         "match_kind": "exact"
       },
-      "note": "Conjugation is the `star` operation on ℂ, available as `conj` in the `ComplexConjugate` scope.",
+      "note": "Conjugation on ℂ is `starRingEnd ℂ` (notation `conj` in the `ComplexConjugate` scope); a bare `Complex.conj` decl does not exist.",
       "provenance": "ai",
       "id": "b3b2d7b2d9d1"
     },
@@ -188,7 +204,7 @@
         "module": "Mathlib.Algebra.Star.Basic",
         "match_kind": "exact"
       },
-      "note": "Aliased as `Complex.conj_conj := starRingEnd_self_apply`.",
+      "note": "Verified: `Complex.conj_conj` (alias of `starRingEnd_self_apply`) gives `conj (conj x) = x`.",
       "provenance": "ai",
       "id": "b77546f80947"
     },
@@ -205,7 +221,7 @@
         "module": "Mathlib.Data.Complex.Basic",
         "match_kind": "exact"
       },
-      "note": "Stated at line 467 of `Basic.lean` as `conj z = z ↔ ∃ r : ℝ, z = r`.",
+      "note": "Verified: `conj z = z ↔ ∃ r : ℝ, z = r`.",
       "provenance": "ai",
       "id": "5528ea52d934"
     },
@@ -222,7 +238,7 @@
         "module": "Mathlib.Analysis.Complex.Norm",
         "match_kind": "exact"
       },
-      "note": "Modulus is the norm: `‖z‖ = √(normSq z)`, via the `NormedField ℂ` instance.",
+      "note": "Verified: modulus is the norm `‖z‖ = √(normSq z)` from the `NormedField ℂ` instance.",
       "provenance": "ai",
       "anchors": [
         {
@@ -249,7 +265,7 @@
         "module": "Mathlib.Analysis.Complex.Norm",
         "match_kind": "exact"
       },
-      "note": "`dist z w = ‖z - w‖` in ℂ; specialising to w = 0 gives the distance from origin.",
+      "note": "Verified: `dist z w = ‖z - w‖` on ℂ; specialising to w = 0 recovers distance from origin.",
       "provenance": "ai",
       "anchors": [
         {
@@ -276,7 +292,7 @@
         "module": "Mathlib.Data.Complex.Basic",
         "match_kind": "exact"
       },
-      "note": "`z⁻¹ = conj z * (normSq z)⁻¹` is proved at line 648 of `Basic.lean`.",
+      "note": "Verified: `Complex.inv_def` proves `z⁻¹ = conj z * (normSq z)⁻¹`.",
       "provenance": "ai",
       "id": "a9a1ef3942f2"
     },
@@ -293,7 +309,7 @@
         "module": "Mathlib.Data.Complex.Basic",
         "match_kind": "exact"
       },
-      "note": "Division is provided by the `Field ℂ` instance, giving `w / z = w * z⁻¹`.",
+      "note": "Verified: division is supplied by the `Field ℂ` instance via `w / z = w * z⁻¹`.",
       "provenance": "ai",
       "anchors": [
         {
@@ -324,7 +340,7 @@
         "module": "Mathlib.Analysis.SpecialFunctions.Complex.Arg",
         "match_kind": "exact"
       },
-      "note": "`Complex.arg : ℂ → ℝ` is defined at line 30 of `Arg.lean`.",
+      "note": "Verified: `Complex.arg : ℂ → ℝ` is defined as the principal-value argument.",
       "provenance": "ai",
       "id": "594a5407a051"
     },
@@ -341,7 +357,7 @@
         "module": "Mathlib.Analysis.SpecialFunctions.Complex.Arg",
         "match_kind": "exact"
       },
-      "note": "Mathlib's `Complex.arg` is the principal value: `arg_mem_Ioc` shows `arg z ∈ Set.Ioc (-π) π`.",
+      "note": "Verified: `arg_mem_Ioc` shows `arg z ∈ Set.Ioc (-π) π`, the principal range.",
       "provenance": "ai",
       "id": "415cce236c49"
     },
@@ -358,7 +374,7 @@
         "module": "Mathlib.Analysis.SpecialFunctions.Complex.Arg",
         "match_kind": "exact"
       },
-      "note": "`‖x‖ * (cos (arg x) + sin (arg x) * I) = x` is the polar form identity.",
+      "note": "Verified: `‖x‖ * (cos (arg x) + sin (arg x) * I) = x` is the polar form identity.",
       "provenance": "ai",
       "anchors": [
         {
@@ -385,7 +401,7 @@
         "module": "Mathlib.Analysis.SpecialFunctions.Complex.Arg",
         "match_kind": "special_case"
       },
-      "note": "Mathlib has `arg_mul_eq_add_arg_iff` and `norm_mul`, but the combined statement of the multiplicative polar law is split across lemmas.",
+      "note": "Verified: `arg_mul_eq_add_arg_iff` and `norm_mul` cover the pieces; no single combined polar product/quotient lemma.",
       "provenance": "ai",
       "anchors": [
         {
@@ -428,7 +444,7 @@
         "module": "Mathlib.Analysis.Complex.Trigonometric",
         "match_kind": "exact"
       },
-      "note": "`(cos θ + sin θ * I)^n` formula at line 539 of `Trigonometric.lean`.",
+      "note": "Verified: `(cos θ + sin θ * I)^n = cos (n*θ) + sin (n*θ) * I` is de Moivre's formula.",
       "provenance": "ai",
       "anchors": [
         {
@@ -452,10 +468,10 @@
       "status": "partial",
       "mathlib": {
         "decl": "Polynomial.nthRoots",
-        "module": "Mathlib.RingTheory.RootsOfUnity.Complex",
+        "module": "Mathlib.Algebra.Polynomial.Roots",
         "match_kind": "generalization"
       },
-      "note": "General `Polynomial.nthRoots` exists and roots-of-unity in ℂ are formalized, but no single named lemma listing the n distinct n-th roots of an arbitrary complex number.",
+      "note": "Verified: `Polynomial.nthRoots` (general definition) exists, but no single lemma enumerating the n distinct nth roots of an arbitrary complex number in polar form.",
       "provenance": "ai",
       "anchors": [
         {
@@ -509,7 +525,7 @@
         "module": "Mathlib.Analysis.Complex.Polynomial.Basic",
         "match_kind": "exact"
       },
-      "note": "`Complex.isAlgClosed : IsAlgClosed ℂ` is the formal statement of FTA.",
+      "note": "Verified: `Complex.isAlgClosed : IsAlgClosed ℂ` instance is the FTA in Mathlib.",
       "provenance": "ai",
       "anchors": [
         {
@@ -536,7 +552,7 @@
         "module": "Mathlib.Analysis.Complex.Polynomial.Basic",
         "match_kind": "exact"
       },
-      "note": "The `IsAlgClosed ℂ` instance is registered at line 50 of `Polynomial/Basic.lean`.",
+      "note": "Verified: the same `IsAlgClosed ℂ` instance witnesses that ℂ is algebraically closed.",
       "provenance": "ai",
       "id": "52edd5e9c4ec"
     },
@@ -553,7 +569,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib defines ℂ concretely as ℝ² rather than as a quadratic extension ℝ[X]/(X²+1).",
+      "note": "Mathlib defines ℂ concretely as a pair of reals, not as the quadratic extension ℝ[X]/(X²+1).",
       "provenance": "ai",
       "id": "213bb459f6d5"
     },
@@ -570,7 +586,7 @@
         "module": "Mathlib.Algebra.Polynomial.Basic",
         "match_kind": "exact"
       },
-      "note": "`structure Polynomial (R : Type*) [Semiring R]` is defined at line 71 of `Polynomial/Basic.lean`.",
+      "note": "Verified: `Polynomial R` is the standard polynomial-ring type over a semiring R.",
       "provenance": "ai",
       "anchors": [
         {
@@ -597,7 +613,7 @@
         "module": "Mathlib.RingTheory.Ideal.Quotient.Operations",
         "match_kind": "generalization"
       },
-      "note": "First isomorphism theorem for rings is in Mathlib, but no specific instance constructing ℂ as ℝ[X]/(X²+1).",
+      "note": "Verified: the first isomorphism theorem for rings is formalised; no specific construction of ℂ as ℝ[X]/(X²+1) is provided.",
       "provenance": "ai",
       "id": "7928e8c7cfcb"
     },
@@ -641,18 +657,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No corresponding ring isomorphism ℂ ≃+* (matrices) is formalized.",
+      "note": "No corresponding ring isomorphism between ℂ and the 2×2 real matrices is formalised.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Matrix representation of complex numbers",
-          "snippet": "is a ring isomorphism from the field of complex numbers to the ring of these matrices"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle a+ib\\mapsto {\\begin{pmatrix}a&amp;-b\\\\b&amp;\\;\\;a\\end{pmatrix}}}"
-        }
-      ],
       "id": "d9dd3fcbde54"
     },
     {
@@ -668,7 +674,7 @@
         "module": "Mathlib.Analysis.Complex.Basic",
         "match_kind": "invocation"
       },
-      "note": "Convergence in ℂ is via the metric/normed structure; the homeomorphism with ℝ × ℝ gives the componentwise characterization but it is not stated as a single named lemma.",
+      "note": "Verified: the homeomorphism `Complex.equivRealProdCLM` induces componentwise convergence; no single named lemma states the equivalence directly.",
       "provenance": "ai",
       "anchors": [
         {
@@ -699,7 +705,7 @@
         "module": "Mathlib.Analysis.Complex.Basic",
         "match_kind": "exact"
       },
-      "note": "`instance : CompleteSpace ℂ` at line 119 of `Analysis/Complex/Basic.lean`.",
+      "note": "Verified: the `CompleteSpace ℂ` instance is registered in `Analysis/Complex/Basic.lean`.",
       "provenance": "ai",
       "anchors": [
         {
@@ -718,6 +724,22 @@
       "id": "a32fa14c716c"
     },
     {
+      "kind": "proposition",
+      "label": "Triangle inequality on C",
+      "anchor": {
+        "section": "Convergence",
+        "snippet": "which notably includes the triangle inequality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "norm_add_le",
+        "module": "Mathlib.Analysis.Normed.Group.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Verified: `norm_add_le : ‖a + b‖ ≤ ‖a‖ + ‖b‖` holds in any seminormed group, applied to ℂ.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Complex exponential",
       "anchor": {
@@ -730,7 +752,7 @@
         "module": "Mathlib.Analysis.Complex.Exponential",
         "match_kind": "exact"
       },
-      "note": "`Complex.exp` is defined via Cauchy sequences at line 60 of `Exponential.lean`.",
+      "note": "Verified: `Complex.exp : ℂ → ℂ` is the standard complex exponential.",
       "provenance": "ai",
       "anchors": [
         {
@@ -765,7 +787,7 @@
         "module": "Mathlib.Analysis.Complex.Trigonometric",
         "match_kind": "exact"
       },
-      "note": "`exp (x * I) = cos x + sin x * I` at line 511 of `Trigonometric.lean`.",
+      "note": "Verified: `Complex.exp_mul_I : exp (x * I) = cos x + sin x * I`.",
       "provenance": "ai",
       "anchors": [
         {
@@ -800,7 +822,7 @@
         "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
         "match_kind": "exact"
       },
-      "note": "`exp (π * I) = -1` at line 1209 of `Trigonometric/Basic.lean`.",
+      "note": "Verified: `Complex.exp_pi_mul_I : exp (π * I) = -1` is Euler's identity.",
       "provenance": "ai",
       "anchors": [
         {
@@ -835,7 +857,7 @@
         "module": "Mathlib.Analysis.SpecialFunctions.Complex.Log",
         "match_kind": "exact"
       },
-      "note": "`Complex.log x : ℂ` is defined at line 30 of `Complex/Log.lean`.",
+      "note": "Verified: `Complex.log : ℂ → ℂ` is the principal branch of the complex logarithm.",
       "provenance": "ai",
       "anchors": [
         {
@@ -866,7 +888,7 @@
         "module": "Mathlib.Analysis.SpecialFunctions.Complex.Log",
         "match_kind": "exact"
       },
-      "note": "Mathlib's `Complex.log` is the principal branch: `log_im x = x.arg` lies in (-π, π].",
+      "note": "Verified: `Complex.log_im` shows `(log z).im = z.arg`, confirming the principal branch.",
       "provenance": "ai",
       "anchors": [
         {
@@ -897,7 +919,7 @@
         "module": "Mathlib.Analysis.SpecialFunctions.Pow.Complex",
         "match_kind": "exact"
       },
-      "note": "`Complex.cpow x y = exp (log x * y)` at line 25 of `Pow/Complex.lean`.",
+      "note": "Verified: `Complex.cpow x y = exp (log x * y)` is the standard complex power.",
       "provenance": "ai",
       "anchors": [
         {
@@ -924,7 +946,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No lemma in Mathlib explicitly exhibits the failure of `(zw)^c = z^c w^c` for complex exponents.",
+      "note": "No lemma in Mathlib explicitly exhibits the failure of `(zw)^c = z^c · w^c` for complex exponents.",
       "provenance": "ai",
       "anchors": [
         {
@@ -951,7 +973,7 @@
         "module": "Mathlib.Analysis.Complex.Trigonometric",
         "match_kind": "exact"
       },
-      "note": "`Complex.sin`, `cos`, `tan`, `sinh`, `cosh`, `tanh` are all defined via `exp` in `Trigonometric.lean`.",
+      "note": "Verified: `Complex.sin`, `Complex.cos`, `Complex.tan`, `Complex.sinh`, `Complex.cosh`, `Complex.tanh` are all defined via `Complex.exp`.",
       "provenance": "ai",
       "id": "0a5906f9063b"
     },
@@ -965,10 +987,10 @@
       "status": "partial",
       "mathlib": {
         "decl": "DifferentiableAt",
-        "module": "Mathlib.Analysis.Calculus.FDeriv.Basic",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Defs",
         "match_kind": "generalization"
       },
-      "note": "Holomorphic means `DifferentiableAt ℂ f x`; no dedicated `Holomorphic` predicate, but the concept is captured.",
+      "note": "Verified: holomorphic is `DifferentiableAt ℂ f x`; no separate `Holomorphic` predicate.",
       "provenance": "ai",
       "id": "3ad8243baa7f"
     },
@@ -985,7 +1007,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The explicit example (e.g. conjugation) is not formalized as a lemma.",
+      "note": "The explicit example (e.g. complex conjugation) is not isolated as a Mathlib lemma.",
       "provenance": "ai",
       "id": "cc80093d4092"
     },
@@ -998,11 +1020,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "DifferentiableAt.hasDerivAt_of_isLinearMap_of_cauchyRiemann",
+        "decl": "differentiableAt_complex_iff_differentiableAt_real",
         "module": "Mathlib.Analysis.Complex.Conformal",
         "match_kind": "exact"
       },
-      "note": "The `CauchyRiemann` section in `Analysis/Complex/Conformal.lean` proves the equivalence.",
+      "note": "Verified via semantic search: this lemma states complex-differentiability ↔ real-differentiability + the Cauchy–Riemann identity `D f (i) = i · D f (1)`.",
       "provenance": "ai",
       "id": "44e1f1a056c4"
     },
@@ -1019,7 +1041,7 @@
         "module": "Mathlib.Analysis.Analytic.IsolatedZeros",
         "match_kind": "exact"
       },
-      "note": "The identity theorem for analytic functions on connected open sets.",
+      "note": "Verified: identity theorem for analytic functions on preconnected open sets.",
       "provenance": "ai",
       "id": "006a475b50af"
     },
@@ -1036,7 +1058,7 @@
         "module": "Mathlib.Analysis.Meromorphic.Basic",
         "match_kind": "exact"
       },
-      "note": "`MeromorphicAt f x` is defined at line 36 of `Meromorphic/Basic.lean`.",
+      "note": "Verified: `MeromorphicAt f x` predicate is defined in `Meromorphic/Basic.lean`.",
       "provenance": "ai",
       "id": "981843ce3c0e"
     },
@@ -1053,7 +1075,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The complex-arithmetic 'shape' invariant of a triangle is not defined in Mathlib.",
+      "note": "The complex-arithmetic shape invariant S(u,v,w) is not defined in Mathlib.",
       "provenance": "ai",
       "anchors": [
         {
@@ -1114,7 +1136,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Marden's theorem is not formalized (only the related Gauss–Lucas theorem appears in `Polynomial/GaussLucas.lean`).",
+      "note": "Marden's theorem is not formalised (only the related Gauss–Lucas theorem is).",
       "provenance": "ai",
       "id": "926a5cc97378"
     },
@@ -1131,7 +1153,7 @@
         "module": "Mathlib.RingTheory.Algebraic.Defs",
         "match_kind": "exact"
       },
-      "note": "`IsAlgebraic R x` at line 45 of `Algebraic/Defs.lean`; algebraic numbers are elements with `IsAlgebraic ℚ x` (in ℂ).",
+      "note": "Verified: `IsAlgebraic R x` predicate; algebraic numbers are `IsAlgebraic ℚ x` for `x : ℂ`.",
       "provenance": "ai",
       "id": "18cc5e0f958b"
     },
@@ -1148,9 +1170,25 @@
         "module": "Mathlib.NumberTheory.Zsqrtd.GaussianInt",
         "match_kind": "exact"
       },
-      "note": "`GaussianInt := Zsqrtd (-1)` at line 51 of `GaussianInt.lean`.",
+      "note": "Verified: `GaussianInt := Zsqrtd (-1)` defines ℤ[i].",
       "provenance": "ai",
       "id": "23877d40d4be"
+    },
+    {
+      "kind": "definition",
+      "label": "Riemann zeta function",
+      "anchor": {
+        "section": "Analytic number theory",
+        "snippet": "the Riemann zeta function ζ( s ) is related to the distribution of prime numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "riemannZeta",
+        "module": "Mathlib.NumberTheory.LSeries.RiemannZeta",
+        "match_kind": "exact"
+      },
+      "note": "Verified: `riemannZeta : ℂ → ℂ` is the analytically continued zeta function.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -1165,9 +1203,41 @@
         "module": "Mathlib.LinearAlgebra.Eigenspace.Triangularizable",
         "match_kind": "exact"
       },
-      "note": "Existence of an eigenvalue over an algebraically closed field at line 63 (applies to ℂ since `IsAlgClosed ℂ`).",
+      "note": "Verified: existence of an eigenvalue over an algebraically closed field; specialises to ℂ.",
       "provenance": "ai",
       "id": "4ad74a3e9171"
+    },
+    {
+      "kind": "definition",
+      "label": "Hermitian matrix",
+      "anchor": {
+        "section": "Linear algebra",
+        "snippet": "hermitian matrices generalize symmetric matrices"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.IsHermitian",
+        "module": "Mathlib.LinearAlgebra.Matrix.Hermitian",
+        "match_kind": "exact"
+      },
+      "note": "Verified: `Matrix.IsHermitian A ↔ Aᴴ = A`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unitary matrix",
+      "anchor": {
+        "section": "Linear algebra",
+        "snippet": "unitary matrices generalize orthogonal matrices"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.unitaryGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "exact"
+      },
+      "note": "Verified: `Matrix.unitaryGroup n α` (lowercase u) is the group of unitary matrices; cited `Matrix.UnitaryGroup` is only a namespace.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",
@@ -1182,7 +1252,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The characterization 'characteristic 0, alg. closed, transcendence degree 𝔠 ⇒ iso ℂ' is not in Mathlib.",
+      "note": "The characterization 'characteristic 0, algebraically closed, transcendence degree 𝔠 over ℚ ⇒ ≅ ℂ' is not in Mathlib.",
       "provenance": "ai",
       "id": "fca0bee69d50"
     },
@@ -1199,7 +1269,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No theorem characterizing ℝ and ℂ as the only connected locally compact fields is formalized.",
+      "note": "No theorem characterising ℝ and ℂ as the only connected locally compact topological fields is formalised.",
       "provenance": "ai",
       "id": "7c936f8b2419"
     },
@@ -1216,9 +1286,25 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The Cayley–Dickson construction is not formalized in Mathlib.",
+      "note": "The Cayley–Dickson construction is not formalised in Mathlib.",
       "provenance": "ai",
       "id": "24403da9d092"
+    },
+    {
+      "kind": "definition",
+      "label": "Quaternions",
+      "anchor": {
+        "section": "Other number systems",
+        "snippet": "yields the quaternions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Quaternion",
+        "module": "Mathlib.Algebra.Quaternion",
+        "match_kind": "exact"
+      },
+      "note": "Verified: `Quaternion R` is the standard quaternion algebra.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -1250,7 +1336,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Hurwitz's theorem on normed division algebras over ℝ is not formalized.",
+      "note": "Hurwitz's theorem on normed division algebras over ℝ is not formalised.",
       "provenance": "ai",
       "id": "0b24c54f864a"
     },
@@ -1267,9 +1353,25 @@
         "module": "Mathlib.NumberTheory.Ostrowski",
         "match_kind": "exact"
       },
-      "note": "Ostrowski's theorem classifying absolute values on ℚ is formalized in `NumberTheory/Ostrowski.lean`.",
+      "note": "Verified: Ostrowski's classification of absolute values on ℚ.",
       "provenance": "ai",
       "id": "4dffb725acda"
+    },
+    {
+      "kind": "definition",
+      "label": "p-adic numbers",
+      "anchor": {
+        "section": "Other number systems",
+        "snippet": "lead to the fields"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Padic",
+        "module": "Mathlib.NumberTheory.Padics.PadicNumbers",
+        "match_kind": "exact"
+      },
+      "note": "Verified: `Padic p` is the completion of ℚ at the p-adic absolute value.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -1284,7 +1386,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Split-complex numbers are not defined in Mathlib (no `SplitComplex` type).",
+      "note": "Split-complex numbers (`ℝ[X]/(X² − 1)`) are not formalised in Mathlib.",
       "provenance": "ai",
       "id": "25b890c4711b"
     }

@@ -189,7 +189,8 @@
         "match_kind": "exact"
       },
       "note": "Cantor's diagonal result that no function `α → Set α` is surjective—the foundational theorem of his theory of infinite sets—is `Function.cantor_surjective`; the cardinal form is `Cardinal.cantor`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1f0c2c779250"
     },
     {
       "kind": "concept",
@@ -205,7 +206,8 @@
         "match_kind": null
       },
       "note": "The naive-set-theoretic Russell paradox is implicit in Lean's type-theoretic foundation (the set of all sets that do not contain themselves cannot be formed) but is not stated as a named declaration in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bab8a0176b3b"
     },
     {
       "kind": "concept",
@@ -221,7 +223,8 @@
         "match_kind": null
       },
       "note": "Mathlib has hyperbolic-trig functions and some inner-product geometry, but no axiomatic development of hyperbolic or elliptic (non-Euclidean) plane geometry.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b7b6a322ff98"
     },
     {
       "kind": "theorem",
@@ -237,7 +240,8 @@
         "match_kind": null
       },
       "note": "Gödel's first and second incompleteness theorems are not formalized in Mathlib; a separate project (FormalizingMathematics / Paulson's Isabelle work, and a Lean effort by Shing Tak Lam) exists outside Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cab258531e8f"
     },
     {
       "kind": "concept",
@@ -253,6 +257,71 @@
         "match_kind": null
       },
       "note": "A methodological notion rather than a mathematical statement; Mathlib itself is an instance of the axiomatic method but does not formalize the meta-concept.",
+      "provenance": "ai",
+      "id": "399411bebafd"
+    },
+    {
+      "kind": "concept",
+      "label": "Category theory",
+      "anchor": {
+        "section": "Generality and abstraction",
+        "snippet": "Category theory is one area of mathematics dedicated to exploring this commonality of structure"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Category",
+        "module": "Mathlib.CategoryTheory.Category.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The foundational notion of a category is formalized as `CategoryTheory.Category`, with an extensive library on functors, natural transformations, limits, and adjunctions built on top.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "concept",
+      "label": "Commutative ring (vs non-commutative ring)",
+      "anchor": {
+        "section": "Pure versus applied mathematics",
+        "snippet": "one has the subareas of commutative ring theory and non-commutative ring theory"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CommRing",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Magid's ring-theory analogy refers to the standard distinction between `Ring` (not-necessarily-commutative) and `CommRing` (commutative); both are core algebraic typeclasses in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "concept",
+      "label": "Conic sections",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "conic sections , geometrical curves that had been studied in antiquity by Apollonius"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has the individual conics (circle, ellipse, parabola, hyperbola) treated piecemeal via quadratic forms and affine geometry, but no unified Apollonian theory of conic sections as plane sections of a cone.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "concept",
+      "label": "Langlands program",
+      "anchor": {
+        "section": "Finiteness, Number theory and Algebraic geometry",
+        "snippet": "the unification of these two fields ultimately in the geometric Langlands program"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the classical nor the geometric Langlands correspondence is formalized in Mathlib; pieces of the prerequisite automorphic-forms and Galois-representations infrastructure exist but no Langlands-style functoriality statement.",
       "provenance": "ai"
     }
   ]

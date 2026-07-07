@@ -69,9 +69,25 @@
         "module": "Mathlib.Data.Finset.Powerset",
         "match_kind": "generalization"
       },
-      "note": "The count 2^6 − 1 = 63 nonempty subsets is a special case of `Finset.card_powerset`, but the specific story is not formalized.",
+      "note": "The count 2^6 − 1 = 63 nonempty subsets is a special case of `Finset.card_powerset` (verified to exist), but the specific story is not formalized.",
       "provenance": "ai",
       "id": "ef5a1b8a776e"
+    },
+    {
+      "kind": "example",
+      "label": "Schröder–Hipparchus numbers",
+      "anchor": {
+        "section": "History",
+        "snippet": "which was later shown to be related to Schröder–Hipparchus numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Schröder–Hipparchus number declaration found in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "example",
@@ -86,7 +102,7 @@
         "module": "Mathlib.Data.Nat.Choose.Basic",
         "match_kind": "exact"
       },
-      "note": "`Nat.choose_symm` states `choose n k = choose n (n-k)`, the symmetry of binomial coefficients.",
+      "note": "`Nat.choose_symm` (verified) states `choose n k = choose n (n-k)`, the symmetry of binomial coefficients.",
       "provenance": "ai",
       "id": "e3f039671d0f"
     },
@@ -103,8 +119,9 @@
         "module": "Mathlib.Data.Nat.Choose.Basic",
         "match_kind": "invocation"
       },
-      "note": "Pascal's rule `choose (n+1) (k+1) = choose n k + choose n (k+1)` underlies the triangle.",
-      "provenance": "ai"
+      "note": "Pascal's rule `Nat.choose_succ_succ` (verified) underlies the triangle.",
+      "provenance": "ai",
+      "id": "b30dc1ab24a7"
     },
     {
       "kind": "example",
@@ -119,8 +136,9 @@
         "module": "Mathlib.Combinatorics.SimpleGraph.Hamiltonian",
         "match_kind": "invocation"
       },
-      "note": "Hamiltonian cycles are formalized as `SimpleGraph.Walk.IsHamiltonianCycle`; the Cayley-graph-on-permutations specialization is not.",
-      "provenance": "ai"
+      "note": "Hamiltonian cycles are formalized as `SimpleGraph.Walk.IsHamiltonianCycle` (verified); the Cayley-graph-on-permutations specialization is not.",
+      "provenance": "ai",
+      "id": "50894132cc34"
     },
     {
       "kind": "example",
@@ -136,7 +154,8 @@
         "match_kind": null
       },
       "note": "The four color theorem is not formalized in Mathlib (Gonthier's Coq proof is separate).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "59c7173b5eff"
     },
     {
       "kind": "definition",
@@ -168,8 +187,9 @@
         "module": "Mathlib.Data.Nat.Fib.Basic",
         "match_kind": "exact"
       },
-      "note": "Fibonacci numbers are defined as `Nat.fib` in Mathlib.",
-      "provenance": "ai"
+      "note": "Fibonacci numbers are defined as `Nat.fib` (verified) in Mathlib.",
+      "provenance": "ai",
+      "id": "4ad42c38832e"
     },
     {
       "kind": "example",
@@ -184,7 +204,7 @@
         "module": "Mathlib.Data.Sym.Card",
         "match_kind": "invocation"
       },
-      "note": "`Mathlib/Data/Sym/Card.lean` cites the Twelvefold Way and formalizes one of its 12 cells, but the full framework is not unified.",
+      "note": "`Sym.card_sym_eq_choose` (verified) formalizes one cell of the twelvefold way, but the full unified framework is not.",
       "provenance": "ai",
       "id": "047368e1d9e4"
     },
@@ -218,9 +238,41 @@
         "module": "Mathlib.Combinatorics.Enumerative.Partition.Basic",
         "match_kind": "invocation"
       },
-      "note": "Integer partitions are defined in `Mathlib/Combinatorics/Enumerative/Partition/`, but the field itself is not a formal object.",
+      "note": "Integer partitions are defined as `Nat.Partition` (verified), but the subfield itself is not a formal object.",
       "provenance": "ai",
       "id": "6b3c87d14939"
+    },
+    {
+      "kind": "example",
+      "label": "Young diagrams",
+      "anchor": {
+        "section": "Partition theory",
+        "snippet": "Partitions can be graphically visualized with Young diagrams"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "YoungDiagram",
+        "module": "Mathlib.Combinatorics.Young.YoungDiagram",
+        "match_kind": "exact"
+      },
+      "note": "Young diagrams are formalized as the `YoungDiagram` structure (verified) in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Symmetric group",
+      "anchor": {
+        "section": "Partition theory",
+        "snippet": "the symmetric group and in group representation theory"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm",
+        "module": "Mathlib.Logic.Equiv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The symmetric group is formalized as `Equiv.Perm α` (verified), the type of permutations of `α`.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -235,7 +287,7 @@
         "module": "Mathlib.Combinatorics.SimpleGraph.Basic",
         "match_kind": "invocation"
       },
-      "note": "Graphs are formalized as `SimpleGraph`, but the meta-claim about their fundamental role is not a theorem.",
+      "note": "Graphs are formalized as `SimpleGraph` (verified), but the meta-claim about their fundamental role is not a theorem.",
       "provenance": "ai",
       "id": "ec8938b45482"
     },
@@ -253,7 +305,8 @@
         "match_kind": null
       },
       "note": "No Tutte polynomial declaration found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6b334f70ae3c"
     },
     {
       "kind": "definition",
@@ -290,6 +343,22 @@
       "id": "abcb9f6be4e6"
     },
     {
+      "kind": "example",
+      "label": "Steiner system",
+      "anchor": {
+        "section": "Design theory",
+        "snippet": "The solution of the problem is a special case of a Steiner system"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `SteinerSystem` declaration found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Finite geometry",
       "anchor": {
@@ -302,7 +371,7 @@
         "module": "Mathlib.Combinatorics.Configuration",
         "match_kind": "invocation"
       },
-      "note": "`Mathlib/Combinatorics/Configuration.lean` covers projective-plane-style finite incidence configurations via `Configuration.Nondegenerate`, but the field is not defined as such.",
+      "note": "`Configuration.Nondegenerate` (verified) covers projective-plane-style finite incidence configurations, but the field is not defined as such.",
       "provenance": "ai",
       "id": "e67bea3c51a7"
     },
@@ -319,7 +388,7 @@
         "module": "Mathlib.Order.Defs.PartialOrder",
         "match_kind": "invocation"
       },
-      "note": "Partial orders are extensively formalized under `Mathlib/Order/`, though the subfield itself is not a formal object.",
+      "note": "Partial orders are extensively formalized via `PartialOrder` (verified), though the subfield itself is not a formal object.",
       "provenance": "ai",
       "id": "c0ea7396a36e"
     },
@@ -336,8 +405,9 @@
         "module": "Mathlib.Order.Lattice",
         "match_kind": "exact"
       },
-      "note": "Lattices are formalized as the `Lattice` typeclass with extensive API.",
-      "provenance": "ai"
+      "note": "Lattices are formalized as the `Lattice` typeclass (verified) with extensive API.",
+      "provenance": "ai",
+      "id": "358dd41de240"
     },
     {
       "kind": "example",
@@ -352,8 +422,9 @@
         "module": "Mathlib.Order.BooleanAlgebra.Defs",
         "match_kind": "exact"
       },
-      "note": "Boolean algebras are formalized as the `BooleanAlgebra` typeclass.",
-      "provenance": "ai"
+      "note": "Boolean algebras are formalized as the `BooleanAlgebra` typeclass (verified).",
+      "provenance": "ai",
+      "id": "1c4d72de2a6f"
     },
     {
       "kind": "definition",
@@ -368,7 +439,7 @@
         "module": "Mathlib.Combinatorics.Matroid.Basic",
         "match_kind": "invocation"
       },
-      "note": "Matroids are defined in `Mathlib/Combinatorics/Matroid/Basic.lean` with substantial accompanying API.",
+      "note": "Matroids are defined as `Matroid` (verified) in `Mathlib/Combinatorics/Matroid/Basic.lean` with substantial API.",
       "provenance": "ai",
       "id": "26b1a934d0ed"
     },
@@ -402,7 +473,7 @@
         "module": "Mathlib.Combinatorics.SetFamily.LYM",
         "match_kind": "exact"
       },
-      "note": "`IsAntichain.sperner` bounds antichains in `Finset α` by the middle binomial coefficient — Sperner's theorem.",
+      "note": "`IsAntichain.sperner` (verified) bounds antichains in `Finset α` by the middle binomial coefficient — Sperner's theorem.",
       "provenance": "ai",
       "id": "efc6cc8d3d3b"
     },
@@ -419,7 +490,7 @@
         "module": "Mathlib.Combinatorics.SimpleGraph.Extremal.Turan",
         "match_kind": "generalization"
       },
-      "note": "Turán's theorem is formalized and specialises (r=2) to Mantel's theorem for triangle-free graphs.",
+      "note": "Turán's theorem is formalized (verified) and specialises (r=2) to Mantel's theorem for triangle-free graphs.",
       "provenance": "ai",
       "id": "39de432793f1"
     },
@@ -436,7 +507,7 @@
         "module": "Mathlib.Combinatorics.HalesJewett",
         "match_kind": "invocation"
       },
-      "note": "The Hales–Jewett theorem (a Ramsey-type result) is formalized, but Ramsey's theorem itself is not stated directly.",
+      "note": "The Hales–Jewett theorem (verified) — a Ramsey-type result — is formalized, but Ramsey's theorem itself is not stated directly.",
       "provenance": "ai",
       "id": "259ed965a5dc"
     },
@@ -453,8 +524,9 @@
         "module": "Mathlib.Data.Finset.Card",
         "match_kind": "exact"
       },
-      "note": "The pigeonhole principle is formalized as `Finset.exists_ne_map_eq_of_card_lt_of_maps_to`.",
-      "provenance": "ai"
+      "note": "The pigeonhole principle is formalized as `Finset.exists_ne_map_eq_of_card_lt_of_maps_to` (verified).",
+      "provenance": "ai",
+      "id": "84d417591f1c"
     },
     {
       "kind": "definition",
@@ -559,6 +631,22 @@
       "id": "9190283c61fe"
     },
     {
+      "kind": "example",
+      "label": "Convex sets",
+      "anchor": {
+        "section": "Geometric combinatorics",
+        "snippet": "convex geometry (the study of convex sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Convex",
+        "module": "Mathlib.Analysis.Convex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Convex sets are formalized as the predicate `Convex` (verified) over modules with scalar order structure.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Topological combinatorics",
       "anchor": {
@@ -605,7 +693,7 @@
         "module": "Mathlib.Combinatorics.Additive.CauchyDavenport",
         "match_kind": "invocation"
       },
-      "note": "Many additive number theory results are in `Mathlib/Combinatorics/Additive/` (e.g. `ZMod.cauchy_davenport`), but the subfield itself has no formal definition.",
+      "note": "Many additive number theory results are in `Mathlib/Combinatorics/Additive/` (e.g. `ZMod.cauchy_davenport`, verified), but the subfield itself has no formal definition.",
       "provenance": "ai",
       "id": "d7d8ed7ee9b9"
     },
@@ -640,7 +728,8 @@
         "match_kind": null
       },
       "note": "Grep finds no `MartinAxiom` declaration in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7afc111fb9a3"
     },
     {
       "kind": "definition",
@@ -655,7 +744,7 @@
         "module": "Mathlib.Combinatorics.Optimization.ValuedCSP",
         "match_kind": "invocation"
       },
-      "note": "`Mathlib/Combinatorics/Optimization/ValuedCSP.lean` covers valued constraint satisfaction, a slice of combinatorial optimization, but the field is not defined.",
+      "note": "`ValuedCSP` (verified) covers valued constraint satisfaction, a slice of combinatorial optimization, but the field is not defined.",
       "provenance": "ai",
       "id": "04bc5b2e8d28"
     },
@@ -741,7 +830,8 @@
         "match_kind": null
       },
       "note": "Neither the Potts model nor the chromatic/Tutte polynomial connection is formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "181e46d2e8bd"
     }
   ]
 }

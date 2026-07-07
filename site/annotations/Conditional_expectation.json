@@ -3,6 +3,7 @@
   "wikipedia_title": "Conditional expectation",
   "display_title": "Conditional expectation",
   "schema_version": 3,
+  "annotation_style": "theorem_article",
   "annotations": [
     {
       "kind": "example",
@@ -12,7 +13,14 @@
         "snippet": "Consider the roll of a fair dice"
       },
       "provenance": "ai-agent1",
-      "id": "50b41e35d75e"
+      "id": "50b41e35d75e",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Illustrative example; no such worked example lives in Mathlib."
     },
     {
       "kind": "example",
@@ -22,7 +30,14 @@
         "snippet": "Suppose we have daily rainfall data"
       },
       "provenance": "ai-agent1",
-      "id": "6e422ad44672"
+      "id": "6e422ad44672",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Illustrative example; not present as a formalized instance in Mathlib."
     },
     {
       "kind": "definition",
@@ -32,7 +47,14 @@
         "snippet": "the conditional expectation of X given A is"
       },
       "provenance": "ai-agent1",
-      "id": "64a35941e200"
+      "id": "64a35941e200",
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.cond",
+        "module": "Mathlib.Probability.ProbabilityTheory.ConditionalProbability",
+        "match_kind": "invocation"
+      },
+      "note": "E[X|A] itself is not a named Mathlib definition; it is expressible as an integral against the conditioned measure `ProbabilityTheory.cond`."
     },
     {
       "kind": "definition",
@@ -42,7 +64,14 @@
         "snippet": "the conditional expectation of X given Y is"
       },
       "provenance": "ai-agent1",
-      "id": "51fed9e8054a"
+      "id": "51fed9e8054a",
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.condExp",
+        "module": "Mathlib.MeasureTheory.Function.ConditionalExpectation.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has no per-value E[X|Y=y] discrete formula; it defines the σ-algebra-valued `condExp` from which the discrete formula is a special case."
     },
     {
       "kind": "definition",
@@ -52,7 +81,14 @@
         "snippet": "The conditional expectation of"
       },
       "provenance": "ai-agent1",
-      "id": "b2d8982db826"
+      "id": "b2d8982db826",
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.condDistrib",
+        "module": "Mathlib.Probability.Kernel.CondDistrib",
+        "match_kind": "generalization"
+      },
+      "note": "The density-based E[X|Y=y] formula is not defined directly; Mathlib provides the regular conditional distribution `condDistrib` from which it derives."
     },
     {
       "kind": "definition",
@@ -62,7 +98,14 @@
         "snippet": "The conditional expectation of X is defined analogously"
       },
       "provenance": "ai-agent1",
-      "id": "f9f5ab93738f"
+      "id": "f9f5ab93738f",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.condExpL2",
+        "module": "Mathlib.MeasureTheory.Function.ConditionalExpectation.CondexpL2",
+        "match_kind": "exact"
+      },
+      "note": "`condExpL2` is the orthogonal-projection L² conditional expectation."
     },
     {
       "kind": "example",
@@ -72,7 +115,14 @@
         "snippet": "Consider the case where Y is the constant random variable that is always 1"
       },
       "provenance": "ai-agent1",
-      "id": "f7e433412604"
+      "id": "f7e433412604",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Motivating example for non-uniqueness; not a Mathlib declaration."
     },
     {
       "kind": "example",
@@ -82,7 +132,14 @@
         "snippet": "Consider the case where Y is the 2-dimensional random vector"
       },
       "provenance": "ai-agent1",
-      "id": "0d9c112a760d"
+      "id": "0d9c112a760d",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Motivating example only; no Mathlib formalization."
     },
     {
       "kind": "proposition",
@@ -92,7 +149,14 @@
         "snippet": "Conditional expectation is unique up to a set of measure zero"
       },
       "provenance": "ai-agent1",
-      "id": "02541be891df"
+      "id": "02541be891df",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.ae_eq_condExp_of_forall_setIntegral_eq",
+        "module": "Mathlib.MeasureTheory.Function.ConditionalExpectation.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Characterizes a.e. uniqueness of `condExp` from the defining set-integral property."
     },
     {
       "kind": "theorem",
@@ -102,7 +166,14 @@
         "snippet": "By the Hilbert projection theorem"
       },
       "provenance": "ai-agent1",
-      "id": "13e0ecd8dc87"
+      "id": "13e0ecd8dc87",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.condExpL2",
+        "module": "Mathlib.MeasureTheory.Function.ConditionalExpectation.CondexpL2",
+        "match_kind": "exact"
+      },
+      "note": "`condExpL2` is literally defined as `orthogonalProjectionOnto` the `lpMeas` subspace via the Hilbert projection theorem."
     },
     {
       "kind": "proposition",
@@ -112,7 +183,14 @@
         "snippet": "An important special case is when X and Y are jointly normally distributed"
       },
       "provenance": "ai-agent1",
-      "id": "4bd798867f69"
+      "id": "4bd798867f69",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no multivariate Gaussian and hence no formalization of the jointly-normal linear-regression identity."
     },
     {
       "kind": "definition",
@@ -122,7 +200,14 @@
         "snippet": "A conditional expectation of X given"
       },
       "provenance": "ai-agent1",
-      "id": "22461ea4ad18"
+      "id": "22461ea4ad18",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.condExp",
+        "module": "Mathlib.MeasureTheory.Function.ConditionalExpectation.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`condExp m μ f` is exactly the conditional expectation of `f` w.r.t. the sub-σ-algebra `m`."
     },
     {
       "kind": "theorem",
@@ -132,7 +217,14 @@
         "snippet": "The existence of"
       },
       "provenance": "ai-agent1",
-      "id": "feac083eaf6e"
+      "id": "feac083eaf6e",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.rnDeriv_ae_eq_condExp",
+        "module": "Mathlib.MeasureTheory.Function.ConditionalExpectation.Real",
+        "match_kind": "exact"
+      },
+      "note": "Identifies `condExp` a.e. with the Radon–Nikodym derivative of `μ.withDensity f` restricted to the sub-σ-algebra."
     },
     {
       "kind": "definition",
@@ -142,7 +234,14 @@
         "snippet": "The conditional expectation of X given Y is defined by applying the above construction"
       },
       "provenance": "ai-agent1",
-      "id": "4eb0bef5515f"
+      "id": "4eb0bef5515f",
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.condExp",
+        "module": "Mathlib.MeasureTheory.Function.ConditionalExpectation.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib expresses E[X|Y] via `condExp (MeasurableSpace.comap Y ‹_›) μ X`; there is no dedicated `condExp Y` abbreviation."
     },
     {
       "kind": "theorem",
@@ -152,7 +251,30 @@
         "snippet": "By the Doob–Dynkin lemma"
       },
       "provenance": "ai-agent1",
-      "id": "feeb44f6a2bb"
+      "id": "feeb44f6a2bb",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Measurable.exists_eq_measurable_comp",
+        "module": "Mathlib.MeasureTheory.Function.FactorsThrough",
+        "match_kind": "exact"
+      },
+      "note": "Factorization of a σ(Y)-measurable function as a measurable function of Y — the Doob–Dynkin lemma."
+    },
+    {
+      "kind": "proposition",
+      "label": "Almost-sure uniqueness of conditional expectation",
+      "anchor": {
+        "section": "Discussion",
+        "snippet": "Uniqueness can be shown to be almost sure"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.ae_eq_condExp_of_forall_setIntegral_eq",
+        "module": "Mathlib.MeasureTheory.Function.ConditionalExpectation.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Same a.e. uniqueness characterization from the set-integral condition."
     },
     {
       "kind": "proposition",
@@ -162,7 +284,14 @@
         "snippet": "It can be shown that they form a Markov kernel"
       },
       "provenance": "ai-agent1",
-      "id": "10a1c6b0d26e"
+      "id": "10a1c6b0d26e",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.condExpKernel",
+        "module": "Mathlib.Probability.Kernel.Condexp",
+        "match_kind": "exact"
+      },
+      "note": "`condExpKernel` is defined and carries an `IsMarkovKernel` instance."
     },
     {
       "kind": "proposition",
@@ -172,7 +301,14 @@
         "snippet": "The Law of the unconscious statistician is then"
       },
       "provenance": "ai-agent1",
-      "id": "dde19fbdc321"
+      "id": "dde19fbdc321",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.condExp_ae_eq_integral_condExpKernel",
+        "module": "Mathlib.Probability.Kernel.Condexp",
+        "match_kind": "exact"
+      },
+      "note": "Expresses `μ[f | m]` a.e. as an integral against the conditional-expectation kernel."
     },
     {
       "kind": "definition",
@@ -182,7 +318,14 @@
         "snippet": "The conditional expectation of"
       },
       "provenance": "ai-agent1",
-      "id": "9a9f358cb7e5"
+      "id": "9a9f358cb7e5",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.condExp",
+        "module": "Mathlib.MeasureTheory.Function.ConditionalExpectation.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`condExp` is defined for functions into any Banach space `E` (`NormedAddCommGroup E`, `NormedSpace ℝ E`)."
     },
     {
       "kind": "proposition",
@@ -192,7 +335,14 @@
         "snippet": "Pulling out independent factors"
       },
       "provenance": "ai-agent1",
-      "id": "c2592fc79fe3"
+      "id": "c2592fc79fe3",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.condExp_indep_eq",
+        "module": "Mathlib.Probability.ConditionalExpectation",
+        "match_kind": "exact"
+      },
+      "note": "For `m₁`-measurable `f` with `m₁, m₂` independent, `μ[f | m₂] = μ[f]` a.e."
     },
     {
       "kind": "proposition",
@@ -202,7 +352,14 @@
         "snippet": "Stability"
       },
       "provenance": "ai-agent1",
-      "id": "8b77b78775b6"
+      "id": "8b77b78775b6",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.condExp_of_stronglyMeasurable",
+        "module": "Mathlib.MeasureTheory.Function.ConditionalExpectation.Basic",
+        "match_kind": "exact"
+      },
+      "note": "If `f` is already `m`-strongly measurable and integrable, `μ[f | m] = f` a.e."
     },
     {
       "kind": "proposition",
@@ -212,7 +369,14 @@
         "snippet": "Pulling out known factors"
       },
       "provenance": "ai-agent1",
-      "id": "c202706fe200"
+      "id": "c202706fe200",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.condExp_mul_of_stronglyMeasurable_left",
+        "module": "Mathlib.MeasureTheory.Function.ConditionalExpectation.PullOut",
+        "match_kind": "exact"
+      },
+      "note": "`m`-measurable factor `f` can be pulled out: `μ[f*g | m] = f * μ[g | m]` a.e.; there is also a bilinear form."
     },
     {
       "kind": "proposition",
@@ -222,7 +386,14 @@
         "snippet": "Law of total expectation"
       },
       "provenance": "ai-agent1",
-      "id": "40b15532d30f"
+      "id": "40b15532d30f",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_condExp",
+        "module": "Mathlib.MeasureTheory.Function.ConditionalExpectation.Basic",
+        "match_kind": "exact"
+      },
+      "note": "∫ μ[f|m] dμ = ∫ f dμ."
     },
     {
       "kind": "proposition",
@@ -232,7 +403,14 @@
         "snippet": "Tower property"
       },
       "provenance": "ai-agent1",
-      "id": "14e891696040"
+      "id": "14e891696040",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.condExp_condExp_of_le",
+        "module": "Mathlib.MeasureTheory.Function.ConditionalExpectation.Basic",
+        "match_kind": "exact"
+      },
+      "note": "For `m₁ ≤ m₂`, `μ[μ[f|m₂]|m₁] = μ[f|m₁]` a.e."
     },
     {
       "kind": "proposition",
@@ -242,7 +420,14 @@
         "snippet": "Doob martingale property"
       },
       "provenance": "ai-agent1",
-      "id": "13a606cc00e9"
+      "id": "13a606cc00e9",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.martingale_condExp",
+        "module": "Mathlib.Probability.Martingale.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`fun i => μ[f | ℱ i]` is a martingale — the Doob (Lévy) martingale."
     },
     {
       "kind": "proposition",
@@ -252,7 +437,14 @@
         "snippet": "Linearity"
       },
       "provenance": "ai-agent1",
-      "id": "5f447ef12b0b"
+      "id": "5f447ef12b0b",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.condExp_add",
+        "module": "Mathlib.MeasureTheory.Function.ConditionalExpectation.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`condExp_add` plus `condExp_smul`/`condExp_sub` give linearity."
     },
     {
       "kind": "proposition",
@@ -262,7 +454,14 @@
         "snippet": "Positivity"
       },
       "provenance": "ai-agent1",
-      "id": "4c162f1fd09b"
+      "id": "4c162f1fd09b",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.condExp_nonneg",
+        "module": "Mathlib.MeasureTheory.Function.ConditionalExpectation.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`0 ≤ᵐ f → 0 ≤ᵐ μ[f | m]`."
     },
     {
       "kind": "proposition",
@@ -272,7 +471,14 @@
         "snippet": "Monotonicity"
       },
       "provenance": "ai-agent1",
-      "id": "a53b3ba3ea96"
+      "id": "a53b3ba3ea96",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.condExp_mono",
+        "module": "Mathlib.MeasureTheory.Function.ConditionalExpectation.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`f ≤ᵐ g → μ[f|m] ≤ᵐ μ[g|m]` for integrable `f, g`."
     },
     {
       "kind": "theorem",
@@ -282,7 +488,14 @@
         "snippet": "Monotone convergence"
       },
       "provenance": "ai-agent1",
-      "id": "77d1aac653ac"
+      "id": "77d1aac653ac",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No conditional monotone convergence theorem for `condExp` was found in Mathlib."
     },
     {
       "kind": "theorem",
@@ -292,7 +505,14 @@
         "snippet": "Dominated convergence"
       },
       "provenance": "ai-agent1",
-      "id": "d586718d3768"
+      "id": "d586718d3768",
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.tendsto_condExpL1_of_dominated_convergence",
+        "module": "Mathlib.MeasureTheory.Function.ConditionalExpectation.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has an L¹-convergence version of dominated convergence for `condExpL1`, but not the pointwise-a.e. conditional DCT statement of the article."
     },
     {
       "kind": "theorem",
@@ -302,7 +522,14 @@
         "snippet": "Fatou's lemma"
       },
       "provenance": "ai-agent1",
-      "id": "49d22b66b791"
+      "id": "49d22b66b791",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No conditional Fatou lemma was located in Mathlib."
     },
     {
       "kind": "theorem",
@@ -312,7 +539,14 @@
         "snippet": "Jensen's inequality"
       },
       "provenance": "ai-agent1",
-      "id": "728c82b12e56"
+      "id": "728c82b12e56",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ConvexOn.map_condExp_le",
+        "module": "Mathlib.MeasureTheory.Function.ConditionalExpectation.CondJensen",
+        "match_kind": "exact"
+      },
+      "note": "`φ(μ[f|m]) ≤ᵐ μ[φ ∘ f | m]` for convex `φ`."
     },
     {
       "kind": "definition",
@@ -322,7 +556,14 @@
         "snippet": "Conditional variance"
       },
       "provenance": "ai-agent1",
-      "id": "54df37ec3d27"
+      "id": "54df37ec3d27",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.condVar",
+        "module": "Mathlib.Probability.CondVar",
+        "match_kind": "exact"
+      },
+      "note": "`condVar` is the conditional variance `Var[X; μ | m]`."
     },
     {
       "kind": "proposition",
@@ -332,7 +573,14 @@
         "snippet": "Algebraic formula for the variance"
       },
       "provenance": "ai-agent1",
-      "id": "9c21dd49e49f"
+      "id": "9c21dd49e49f",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.condVar_ae_eq_condExp_sq_sub_sq_condExp",
+        "module": "Mathlib.Probability.CondVar",
+        "match_kind": "exact"
+      },
+      "note": "`Var[X|m] =ᵐ μ[X²|m] − (μ[X|m])²`."
     },
     {
       "kind": "proposition",
@@ -342,7 +590,14 @@
         "snippet": "Law of total variance"
       },
       "provenance": "ai-agent1",
-      "id": "3c72bc16b7be"
+      "id": "3c72bc16b7be",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.integral_condVar_add_variance_condExp",
+        "module": "Mathlib.Probability.CondVar",
+        "match_kind": "exact"
+      },
+      "note": "`E[Var[X|m]] + Var[E[X|m]] = Var[X]`."
     },
     {
       "kind": "theorem",
@@ -352,7 +607,14 @@
         "snippet": "Martingale convergence"
       },
       "provenance": "ai-agent1",
-      "id": "18fdd696536f"
+      "id": "18fdd696536f",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Integrable.tendsto_ae_condExp",
+        "module": "Mathlib.Probability.Martingale.Convergence",
+        "match_kind": "exact"
+      },
+      "note": "L¹ (Lévy-type) martingale convergence: `μ[g | ℱ n]` converges a.e. to `μ[g | ⨆ n, ℱ n]`; `Submartingale.ae_tendsto_limitProcess` is the underlying submartingale form."
     },
     {
       "kind": "proposition",
@@ -362,7 +624,14 @@
         "snippet": "Conditional expectation as"
       },
       "provenance": "ai-agent1",
-      "id": "f1afe312d116"
+      "id": "f1afe312d116",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.condExpL2",
+        "module": "Mathlib.MeasureTheory.Function.ConditionalExpectation.CondexpL2",
+        "match_kind": "exact"
+      },
+      "note": "`condExpL2` is defined as the orthogonal projection onto `lpMeas E 𝕜 m 2 μ`."
     },
     {
       "kind": "proposition",
@@ -372,7 +641,14 @@
         "snippet": "the mapping"
       },
       "provenance": "ai-agent1",
-      "id": "ed71ad06423b"
+      "id": "ed71ad06423b",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.inner_condExpL2_left_eq_right",
+        "module": "Mathlib.MeasureTheory.Function.ConditionalExpectation.CondexpL2",
+        "match_kind": "exact"
+      },
+      "note": "⟨E[f|m], g⟩ = ⟨f, E[g|m]⟩ in L², the self-adjointness identity."
     },
     {
       "kind": "proposition",
@@ -382,7 +658,14 @@
         "snippet": "Conditioning is a contractive projection"
       },
       "provenance": "ai-agent1",
-      "id": "2ced8ccb4782"
+      "id": "2ced8ccb4782",
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.norm_condExpL2_le_one",
+        "module": "Mathlib.MeasureTheory.Function.ConditionalExpectation.CondexpL2",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has contractivity for p=1 (`eLpNorm_one_condExp_le_eLpNorm`) and p=2 (`norm_condExpL2_le_one`), but not a uniform L^p (1 ≤ p ≤ ∞) statement."
     },
     {
       "kind": "proposition",
@@ -392,7 +675,14 @@
         "snippet": "Doob's conditional independence property"
       },
       "provenance": "ai-agent1",
-      "id": "6d7d9906a530"
+      "id": "6d7d9906a530",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines `CondIndep`/`iCondIndep` but no theorem stating Doob's conditional-independence characterization of the conditional expectation was found."
     }
   ]
 }

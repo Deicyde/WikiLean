@@ -398,6 +398,22 @@
     },
     {
       "kind": "proposition",
+      "label": "Interval enclosure equals convex hull",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The interval enclosure of a subset"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "convexHull",
+        "module": "Mathlib.Analysis.Convex.Hull",
+        "match_kind": "invocation"
+      },
+      "note": "With `convex_iff_ordConnected`, the convex hull of `X ⊆ ℝ` is the smallest OrdConnected set containing X, matching the interval enclosure; no dedicated `intervalHull = convexHull` lemma is packaged.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
       "label": "Closure of an interval",
       "anchor": {
         "section": "Properties",
@@ -446,6 +462,22 @@
       "note": "`Real.ball_eq_Ioo` identifies open metric balls in ℝ with bounded open intervals.",
       "provenance": "ai",
       "id": "ac38a14eb2e6"
+    },
+    {
+      "kind": "proposition",
+      "label": "Metric and order topologies on ℝ coincide",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "the metric and order topologies in the real line coincide, which is the standard topology of the real line"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "instOrderTopologyReal",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "The `OrderTopology ℝ` instance `instOrderTopologyReal` proves the order topology agrees with the metric topology from `Real.instMetricSpace`.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -869,7 +901,8 @@
         "match_kind": "exact"
       },
       "note": "`Finset.Icc a b` (and `Ico`, `Ioc`, `Ioo`) on `ℤ` (via `LocallyFiniteOrder`) gives the finite integer interval; `Set.Icc` on `ℤ` is the set-level analogue.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c69f947a837c"
     },
     {
       "kind": "theorem",
@@ -885,7 +918,8 @@
         "match_kind": "generalization"
       },
       "note": "Combining `IsPreconnected.image` with `isPreconnected_iff_ordConnected` yields that a continuous image of a real interval is preconnected, hence an interval.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "db74b4c5f812"
     },
     {
       "kind": "definition",
@@ -901,7 +935,8 @@
         "match_kind": "invocation"
       },
       "note": "`Set.Icc`, `Ico`, `Ioc`, `Ioo` instantiated at `EReal` provide intervals on the extended reals, including `[−∞, +∞]`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "20f86fa161f7"
     }
   ]
 }

@@ -14,11 +14,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "FiniteField",
+        "decl": null,
         "module": "Mathlib.FieldTheory.Finite.Basic",
-        "match_kind": "exact"
+        "match_kind": null
       },
-      "note": "A finite field is encoded in Mathlib as a type with `[Field K] [Finite K]` (or `[Fintype K]`); the namespace `FiniteField` in `Mathlib/FieldTheory/Finite/Basic.lean` collects results under this assumption.",
+      "note": "Mathlib encodes finite fields via the combination of the typeclasses `[Field K] [Finite K]` (or `[Fintype K]`); there is no dedicated `FiniteField` definition decl, but the `FiniteField` namespace in `Mathlib/FieldTheory/Finite/Basic.lean` collects all results under this assumption.",
       "provenance": "ai",
       "id": "5a7c62e5da1a"
     },
@@ -32,10 +32,10 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Fintype.card",
-        "module": "Mathlib.FieldTheory.Finite.Basic",
+        "module": "Mathlib.Data.Fintype.Card",
         "match_kind": "exact"
       },
-      "note": "The order is just the cardinality `Fintype.card K` / `Nat.card K`; throughout `FiniteField` it is the abbreviation `q`.",
+      "note": "The order is the cardinality `Fintype.card K` (alias `Nat.card K`); throughout `FiniteField` results it is abbreviated `q`.",
       "provenance": "ai",
       "id": "5f4b62d0e2b4"
     },
@@ -66,7 +66,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Fintype.card",
-        "module": "Mathlib.FieldTheory.Finite.Basic",
+        "module": "Mathlib.Data.Fintype.Card",
         "match_kind": "exact"
       },
       "note": "Same notion as in the lead: `Fintype.card K` (notation `q`).",
@@ -86,7 +86,7 @@
         "module": "Mathlib.FieldTheory.Finite.Basic",
         "match_kind": "exact"
       },
-      "note": "`FiniteField.card` (and `FiniteField.card'`, `FiniteField.isPrimePow_card`) states that any finite field has cardinality a prime power.",
+      "note": "`FiniteField.card` (with `FiniteField.card'` and `FiniteField.isPrimePow_card`) states that any finite field has cardinality a prime power.",
       "provenance": "ai",
       "id": "cfefc57ce4a6"
     },
@@ -151,10 +151,10 @@
       "status": "partial",
       "mathlib": {
         "decl": "IsCyclic.exists_generator",
-        "module": "Mathlib.GroupTheory.SpecificGroups.Cyclic",
+        "module": "Mathlib.GroupTheory.SpecificGroups.Cyclic.Basic",
         "match_kind": "generalization"
       },
-      "note": "Mathlib expresses primitive elements through `IsCyclic.exists_generator` on `Kˣ`; there is no dedicated `primitiveElement` name for finite fields.",
+      "note": "Mathlib expresses primitive elements via `IsCyclic.exists_generator` on `Kˣ`; there is no dedicated `primitiveElement` name for finite fields.",
       "provenance": "ai",
       "id": "1e9b71ac638a"
     },
@@ -202,7 +202,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "add_pow_char",
-        "module": "Mathlib.Algebra.CharP.Frobenius",
+        "module": "Mathlib.Algebra.CharP.Lemmas",
         "match_kind": "exact"
       },
       "note": "`add_pow_char` (and `add_pow_expChar_pow`) gives `(x + y)^p = x^p + y^p` in characteristic `p`.",
@@ -266,7 +266,7 @@
         "module": "Mathlib.FieldTheory.ChevalleyWarning",
         "match_kind": "exact"
       },
-      "note": "Chevalley–Warning is formalized as `char_dvd_card_solutions_of_sum_lt`, but the abstract notion of a quasi-algebraically closed (C₁) field is not defined in Mathlib.",
+      "note": "Chevalley–Warning itself is formalized as `char_dvd_card_solutions_of_sum_lt`, but the abstract notion of a quasi-algebraically closed (C₁) field is not defined in Mathlib.",
       "provenance": "ai",
       "id": "28a1a508753a"
     },
@@ -310,7 +310,7 @@
         "module": "Mathlib.FieldTheory.Finite.GaloisField",
         "match_kind": "exact"
       },
-      "note": "`GaloisField.algEquivGaloisField` (and `FiniteField.algEquivOfCardEq`) realize this via the universal property of `IsSplittingField.algEquiv`.",
+      "note": "`GaloisField.algEquivGaloisField` (with `FiniteField.algEquivOfCardEq`) realizes this via the universal property of the splitting field.",
       "provenance": "ai",
       "id": "d81bf196db30"
     },
@@ -416,7 +416,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "frobenius",
-        "module": "Mathlib.Algebra.CharP.Frobenius",
+        "module": "Mathlib.Algebra.CharP.Lemmas",
         "match_kind": "generalization"
       },
       "note": "The generic `frobenius` ring hom exists but no instance is specialized as the nontrivial automorphism of `GaloisField 2 2`.",
@@ -559,7 +559,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "IsCyclic.exists_generator",
-        "module": "Mathlib.GroupTheory.SpecificGroups.Cyclic",
+        "module": "Mathlib.GroupTheory.SpecificGroups.Cyclic.Basic",
         "match_kind": "generalization"
       },
       "note": "Generators of the cyclic group `Kˣ` provide primitive elements via `IsCyclic.exists_generator`; no dedicated finite-field definition.",
@@ -674,7 +674,7 @@
         "module": "Mathlib.GroupTheory.SpecificGroups.Cyclic",
         "match_kind": "generalization"
       },
-      "note": "Follows from cyclicity of `Kˣ` and `IsCyclic.card_orderOf_eq_totient` plus `Fintype.card_units = q - 1`, but no dedicated `IsPrimitiveRoot.exists ↔ n ∣ q-1` for finite fields is isolated.",
+      "note": "Follows from cyclicity of `Kˣ` and `IsCyclic.card_orderOf_eq_totient` together with `Fintype.card_units = q - 1`, but no dedicated `∃ ζ, IsPrimitiveRoot ζ n ↔ n ∣ q-1` is isolated.",
       "provenance": "ai",
       "id": "7df0e8b00ca9"
     },
@@ -687,11 +687,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "frobenius_zmod",
+        "decl": "ZMod.frobenius_zmod",
         "module": "Mathlib.FieldTheory.Finite.Basic",
         "match_kind": "generalization"
       },
-      "note": "Follows from `a^p = a` (`ZMod.pow_card`/`FiniteField.pow_card`), but no isolated statement that there are no primitive `p`-th roots of unity in characteristic `p` was found.",
+      "note": "Follows from `a^p = a` (`ZMod.pow_card`/`FiniteField.pow_card`) and `ZMod.frobenius_zmod`, but no isolated statement that there are no primitive `p`-th roots of unity in characteristic `p` was found.",
       "provenance": "ai",
       "id": "817f436cac78"
     },
@@ -739,7 +739,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "frobenius",
-        "module": "Mathlib.Algebra.CharP.Frobenius",
+        "module": "Mathlib.Algebra.CharP.Lemmas",
         "match_kind": "exact"
       },
       "note": "`frobenius R p` is the `p`-th power ring endomorphism; `FiniteField.frobeniusAlgEquiv` packages it as an algebra automorphism for finite fields.",
@@ -800,7 +800,7 @@
         "module": "Mathlib.FieldTheory.Finite.Basic",
         "match_kind": "exact"
       },
-      "note": "Combined with the `IsCyclic Gal(L/K)` instance for finite extensions of finite fields (in `Basic.lean`) and `IsGalois.card_aut_eq_finrank`, this gives the full statement.",
+      "note": "Combined with the `IsCyclic Gal(L/K)` instance for finite extensions of finite fields and `IsGalois.card_aut_eq_finrank`, this gives the full statement.",
       "provenance": "ai",
       "anchors": [
         {
@@ -813,6 +813,22 @@
         }
       ],
       "id": "b0f393b69844"
+    },
+    {
+      "kind": "proposition",
+      "label": "GF(p^n) is a Galois extension of GF(p) with cyclic Galois group",
+      "anchor": {
+        "section": "Frobenius automorphism and Galois theory",
+        "snippet": "is a Galois extension of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GaloisField.instIsGaloisOfFinite",
+        "module": "Mathlib.FieldTheory.Finite.GaloisField",
+        "match_kind": "exact"
+      },
+      "note": "`GaloisField.instIsGaloisOfFinite` provides an `IsGalois K K'` instance for any finite extension between finite fields, and the cyclic-Galois-group instance for finite extensions of finite fields supplies cyclicity.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -841,7 +857,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Irreducible",
-        "module": "Mathlib.Algebra.Group.Irreducible",
+        "module": "Mathlib.Algebra.Group.Irreducible.Defs",
         "match_kind": "generalization"
       },
       "note": "The general `Irreducible` predicate applies to `Polynomial K`; no finite-field-specific definition is needed.",

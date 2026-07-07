@@ -4,7 +4,6 @@
   "display_title": "Banach fixed-point theorem",
   "schema_version": 3,
   "annotation_style": "theorem_article",
-  "last_ai_run": "2026-05-27T19:24:02+00:00",
   "annotations": [
     {
       "kind": "definition",
@@ -85,18 +84,6 @@
     {
       "kind": "example",
       "label": "Strict contraction without uniform constant: T(x)=x+1/x",
-      "anchor": {
-        "section": "Statement",
-        "snippet": "is in general not enough to ensure the existence of a fixed point"
-      },
-      "status": "not_formalized",
-      "mathlib": {
-        "decl": null,
-        "module": null,
-        "match_kind": null
-      },
-      "note": "Mathlib has no formalization of this specific counter-example showing that `d(T(x),T(y))<d(x,y)` alone (without a uniform `q<1`) is insufficient.",
-      "provenance": "ai",
       "anchors": [
         {
           "section": "Statement",
@@ -107,6 +94,14 @@
           "value": "{\\displaystyle T:[1,\\infty )\\to [1,\\infty ),\\,\\,T(x)=x+{\\tfrac {1}{x}}\\,,}"
         }
       ],
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no formalization of this specific counter-example showing that `d(T(x),T(y))<d(x,y)` alone (without a uniform `q<1`) is insufficient.",
+      "provenance": "ai-moderated",
       "id": "158881f71cbd"
     },
     {
@@ -138,10 +133,10 @@
       "status": "formalized",
       "mathlib": {
         "decl": "IsPicardLindelof.exists_eq_forall_mem_Icc_hasDerivWithinAt",
-        "module": "Mathlib.Analysis.ODE.PicardLindelof",
+        "module": "Mathlib.Analysis.ODE.ExistUnique",
         "match_kind": "exact"
       },
-      "note": "Mathlib's Picard–Lindelöf is proved exactly via Banach's theorem applied to the integral (Picard) operator; see `ODE.picard` and `FunSpace.exists_isFixedPt_next` which use `ContractingWith.isFixedPt_fixedPoint_iterate`.",
+      "note": "Mathlib's Picard–Lindelöf existence-uniqueness statement, proved via Banach's theorem applied to the Picard integral operator (with `ContractingWith.isFixedPt_fixedPoint_iterate` as the key step).",
       "provenance": "ai",
       "id": "462afb908a2c"
     },
@@ -309,6 +304,56 @@
       "note": "Banach FPT applied to f(x)=x+sin x on [3π/4, 5π/4]: starting from x₀=3, the iteration π = f(f(f(…f(3)…))) converges to π. Mathlib does not formalize this specific numerical example.",
       "provenance": "human",
       "id": "785eb35d1d12"
+    },
+    {
+      "kind": "definition",
+      "label": "Fixed point",
+      "anchor": {
+        "section": "Statement",
+        "snippet": "admits a unique fixed point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.IsFixedPt",
+        "module": "Mathlib.Logic.Function.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Function.IsFixedPt f x := f x = x`; the article's `T(x*) = x*` (defined in `Mathlib.Logic.Function.Defs`, re-exported by the FixedPoints library).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complete metric space",
+      "anchor": {
+        "section": "Statement",
+        "snippet": "non-empty complete metric space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompleteSpace",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "exact"
+      },
+      "note": "`CompleteSpace X` (uniform-space typeclass in `Mathlib.Topology.UniformSpace.Cauchy`); every Cauchy sequence converges — the completeness hypothesis used in the theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Proof: Picard iterates form a Cauchy sequence",
+      "anchor": {
+        "type": "prose_range",
+        "section": "Proof",
+        "from": "This proves that the sequence",
+        "to": "is Cauchy"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "cauchySeq_of_edist_le_geometric",
+        "module": "Mathlib.Analysis.SpecificLimits.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "There is no standalone `ContractingWith.cauchySeq_iterate`; the Cauchy claim is discharged inline inside `ContractingWith.exists_fixedPoint` by invoking the generic `cauchySeq_of_edist_le_geometric` on the geometric edist bound `edist_iterate_succ_le_geometric`.",
+      "provenance": "ai"
     }
   ]
 }

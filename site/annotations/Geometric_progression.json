@@ -444,7 +444,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no named definition packaging the geometric-sequence function `n ↦ a · r^n`; the term is just written inline using `HPow.hPow` and `HMul.hMul`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c0d1431f8e1a"
     },
     {
       "kind": "proposition",
@@ -460,6 +461,55 @@
         "match_kind": null
       },
       "note": "Mathlib does not formalize the qualitative comparison between exponential and linear growth rates of geometric vs arithmetic progressions.",
+      "provenance": "ai",
+      "id": "b049e23afdc8"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite geometric sum closed form",
+      "anchor": {
+        "section": "Geometric series",
+        "snippet": "A geometric series is a series derived from the number of terms"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "geom_sum_eq",
+        "module": "Mathlib.Algebra.Field.GeomSum",
+        "match_kind": "exact"
+      },
+      "note": "The finite closed form `∑ i ∈ range n, r^i = (r^n - 1)/(r - 1)` for `r ≠ 1` is `geom_sum_eq`; module corrected to `Mathlib.Algebra.Field.GeomSum`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum of convergent geometric series",
+      "anchor": {
+        "section": "Geometric series",
+        "snippet": "The infinite geometric series sums the infinitely many terms of a geometric progression"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tsum_geometric_of_norm_lt_one",
+        "module": "Mathlib.Analysis.SpecificLimits.Normed",
+        "match_kind": "exact"
+      },
+      "note": "The infinite sum `∑' n, r^n = (1 - r)⁻¹` for `‖r‖ < 1` is `tsum_geometric_of_norm_lt_one`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Powers of 2 as geometric progression",
+      "anchor": {
+        "section": "History",
+        "snippet": "such as the powers of two"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The identification of `n ↦ 2^n` as a geometric progression is not stated in Mathlib as a named example.",
       "provenance": "ai"
     }
   ]

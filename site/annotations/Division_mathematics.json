@@ -87,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "`EuclideanDomain` is a Mathlib typeclass capturing rings equipped with a Euclidean division (quotient + remainder with a well-founded size function).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "30abf6d600b7"
     },
     {
       "kind": "definition",
@@ -103,7 +104,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib provides a `EuclideanDomain` instance on `R[X]` (`Polynomial R`) when `R` is a field, formalizing the Euclidean-division structure on univariate polynomial rings.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3272384e1f31"
     },
     {
       "kind": "definition",
@@ -119,7 +121,8 @@
         "match_kind": "exact"
       },
       "note": "`DivisionRing` (and its commutative variant `Field`) formalize structures in which every nonzero element has a multiplicative inverse, so division by nonzero elements is total.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "da29565df80c"
     },
     {
       "kind": "definition",
@@ -135,7 +138,8 @@
         "match_kind": "exact"
       },
       "note": "`IsUnit` (and the type `αˣ` of units) formalize the invertible elements of a monoid/ring — those by which division is unambiguously possible.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "19cdeba5861a"
     },
     {
       "kind": "definition",
@@ -151,7 +155,8 @@
         "match_kind": "exact"
       },
       "note": "`QuotientGroup.Quotient.group` provides the `Group (G ⧸ N)` instance for a normal subgroup, formalizing the quotient group construction.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "88643358b125"
     },
     {
       "kind": "definition",
@@ -320,7 +325,8 @@
         "match_kind": "exact"
       },
       "note": "`ZMod.instField` provides a `Field` instance on `ZMod p` for prime `p`, giving multiplicative inverses for every nonzero element.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cc20ed9332d0"
     },
     {
       "kind": "theorem",
@@ -457,6 +463,22 @@
       "note": "Mathlib has matrix inversion `Matrix.inv` and `Matrix.mul`, so `A * B⁻¹` is expressible, but no dedicated `Div` instance / `A / B` notation for matrices is provided.",
       "provenance": "ai",
       "id": "c867ea21b607"
+    },
+    {
+      "kind": "definition",
+      "label": "Elementwise (Hadamard) matrix division",
+      "anchor": {
+        "section": "Of matrices",
+        "snippet": "An elementwise division can also be defined in terms of the Hadamard product"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.hadamard",
+        "module": "Mathlib.LinearAlgebra.Matrix.Hadamard",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib defines the Hadamard (entrywise) product `Matrix.hadamard`; entrywise division can be expressed as `A.hadamard B⁻¹` (entrywise), but no dedicated Hadamard-division operator is provided.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -610,6 +632,22 @@
       "note": "Mathlib defines `a / 0 = 0` in any `GroupWithZero` (via `inv_zero`/`div_zero`) rather than treating it as undefined, so the Wikipedia 'undefined' statement is not literally formalized.",
       "provenance": "ai",
       "id": "466bdabc70b6"
+    },
+    {
+      "kind": "definition",
+      "label": "Structures allowing division by zero (zero ring, wheels)",
+      "anchor": {
+        "section": "Division by zero",
+        "snippet": "in certain mathematical structures, division by zero is possible, such as in the zero ring and in algebraic structures such as wheels"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Subsingleton",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "The trivial (zero) ring, characterized by `Subsingleton` / `1 = 0`, is expressible in Mathlib and trivially admits `0 / 0 = 0`. Wheels are not formalized in Mathlib.",
+      "provenance": "ai"
     }
   ]
 }

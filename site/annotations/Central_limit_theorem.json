@@ -6,7 +6,7 @@
   "annotation_style": "theorem_article",
   "annotations": [
     {
-      "kind": "definition",
+      "kind": "theorem",
       "label": "Central limit theorem (informal)",
       "anchor": {
         "section": "(Lead)",
@@ -18,8 +18,8 @@
         "module": "Mathlib.Probability.CentralLimitTheorem",
         "match_kind": "exact"
       },
-      "note": "The informal statement is captured by Mathlib's 1D CLT for i.i.d. variables with mean μ and variance v.",
-      "provenance": "ai",
+      "note": "The informal statement matches Mathlib's 1D i.i.d. CLT giving convergence in distribution of the standardized sum to a Gaussian.",
+      "provenance": "ai-moderated",
       "id": "538b179931e6"
     },
     {
@@ -35,7 +35,7 @@
         "module": "Mathlib.Probability.CentralLimitTheorem",
         "match_kind": "exact"
       },
-      "note": "The standard CLT statement is formalized via convergence in distribution to gaussianReal.",
+      "note": "The standard CLT statement is formalized via `tendstoInDistribution_inv_sqrt_mul_sum_sub` to `gaussianReal`.",
       "provenance": "ai",
       "id": "88a3f8f9a89a"
     },
@@ -52,7 +52,7 @@
         "module": "Mathlib.Probability.CentralLimitTheorem",
         "match_kind": "generalization"
       },
-      "note": "Binomial distribution is defined in Mathlib but the de Moivre–Laplace special case is not separately stated; it follows from the general CLT.",
+      "note": "The binomial special case is not stated separately; it is subsumed by the general i.i.d. CLT.",
       "provenance": "ai",
       "id": "c0761c854448"
     },
@@ -69,7 +69,7 @@
         "module": "Mathlib.Probability.StrongLaw",
         "match_kind": "exact"
       },
-      "note": "The almost-sure convergence of the sample average is given by the strong law of large numbers in Mathlib.",
+      "note": "Almost-sure convergence of the sample average is Mathlib's strong law of large numbers.",
       "provenance": "ai",
       "id": "8c17ce194a4b"
     },
@@ -86,7 +86,7 @@
         "module": "Mathlib.Probability.CentralLimitTheorem",
         "match_kind": "exact"
       },
-      "note": "Convergence in distribution (which is equivalent to pointwise convergence of CDFs at continuity points) is the form used in the Mathlib statement.",
+      "note": "Mathlib's CLT is stated in the equivalent form of convergence in distribution (weak convergence of laws).",
       "provenance": "ai",
       "id": "a7e1604fa1b1"
     },
@@ -103,7 +103,7 @@
         "module": "Mathlib.Probability.CentralLimitTheorem",
         "match_kind": "exact"
       },
-      "note": "The Lindeberg–Lévy (i.i.d.) CLT is exactly what Mathlib's `tendstoInDistribution_inv_sqrt_mul_sum_sub` states.",
+      "note": "Lindeberg–Lévy is exactly what `tendstoInDistribution_inv_sqrt_mul_sum_sub` states.",
       "provenance": "ai",
       "id": "b4ab40cc40ea"
     },
@@ -120,7 +120,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No Lyapunov condition or non-i.i.d. CLT is present in Mathlib.",
+      "note": "No Lyapunov condition or Lyapunov CLT appears in Mathlib (loogle returns 0 hits for `Lyapunov`).",
       "provenance": "ai",
       "id": "02c1d31e2d6f"
     },
@@ -137,7 +137,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Neither the Lyapunov nor Lindeberg condition is defined in Mathlib.",
+      "note": "Neither the Lyapunov nor the Lindeberg condition is defined in Mathlib.",
       "provenance": "ai",
       "id": "048e79bb5b82"
     },
@@ -154,7 +154,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The Lindeberg condition itself is not defined in Mathlib.",
+      "note": "Loogle finds no declaration whose name contains `Lindeberg`.",
       "provenance": "ai",
       "id": "709fe4ba5121"
     },
@@ -171,7 +171,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The Lindeberg–Feller CLT is not formalized in Mathlib.",
+      "note": "The Lindeberg–Feller CLT for non-i.i.d. arrays is not formalized in Mathlib.",
       "provenance": "ai",
       "id": "7f12a8e832f1"
     },
@@ -188,7 +188,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Robbins' CLT for random sums is not formalized in Mathlib.",
+      "note": "Robbins' CLT for random sums is not formalized.",
       "provenance": "ai",
       "id": "04cfcce381c9"
     },
@@ -205,7 +205,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib's CLT is stated only in dimension 1; multivariate Gaussian is defined but no multidimensional CLT is proven.",
+      "note": "Mathlib's CLT is one-dimensional only; no multidimensional CLT is proven though `multivariateGaussian` is defined.",
       "provenance": "ai",
       "id": "2dcc3abb6692"
     },
@@ -222,7 +222,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No Berry–Esseen bound is present in Mathlib.",
+      "note": "No Berry–Esseen bound (univariate or multivariate) is in Mathlib.",
       "provenance": "ai",
       "id": "4fa6b3b85b61"
     },
@@ -239,7 +239,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The Cramér–Wold device (reducing multivariate convergence in distribution to one-dimensional projections) is not formalized in Mathlib.",
+      "note": "The Cramér–Wold device is not formalized (loogle returns 0 hits for `CramerWold`).",
       "provenance": "ai",
       "id": "f6162240a4da"
     },
@@ -256,7 +256,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The generalized CLT with stable laws is not formalized; stable distributions are absent from Mathlib.",
+      "note": "Stable distributions and the generalized CLT are not in Mathlib.",
       "provenance": "ai",
       "id": "24429ed7c66f"
     },
@@ -273,7 +273,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No α-mixing coefficient or related mixing definitions are present in Mathlib.",
+      "note": "No α-mixing coefficient is defined in Mathlib.",
       "provenance": "ai",
       "id": "5a0f355bad40"
     },
@@ -307,7 +307,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Martingale theory exists in Mathlib but no martingale CLT is proven.",
+      "note": "Mathlib has martingale theory but no martingale CLT (loogle finds no `centralLimit`/martingale match).",
       "provenance": "ai",
       "id": "c708422267a1"
     },
@@ -324,7 +324,7 @@
         "module": "Mathlib.Probability.CentralLimitTheorem",
         "match_kind": "exact"
       },
-      "note": "Mathlib's CLT proof uses characteristic functions, with the key limit `tendsto_charFun_inv_sqrt_mul_pow` and Lévy continuity theorem in `LevyConvergence`.",
+      "note": "Mathlib's proof goes via characteristic functions with this key pointwise limit and Lévy's continuity theorem.",
       "provenance": "ai",
       "id": "85733343d51f"
     },
@@ -341,7 +341,7 @@
         "module": "Mathlib.MeasureTheory.Measure.LevyConvergence",
         "match_kind": "exact"
       },
-      "note": "Lévy's continuity theorem (pointwise convergence of characteristic functions implies weak convergence) is formalized in Mathlib.",
+      "note": "Lévy's continuity theorem is formalized as the equivalence between weak convergence and pointwise convergence of characteristic functions.",
       "provenance": "ai",
       "id": "4e9c12f10bd3"
     },
@@ -358,7 +358,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The Berry–Esseen rate-of-convergence bound is not in Mathlib.",
+      "note": "Berry–Esseen rate bounds are not in Mathlib.",
       "provenance": "ai",
       "id": "e24fe4deb8f8"
     },
@@ -443,7 +443,7 @@
         "module": "Mathlib.Probability.CentralLimitTheorem",
         "match_kind": "exact"
       },
-      "note": "Mathlib computes the characteristic function of the normalized sum as a power and shows it converges to the Gaussian char function.",
+      "note": "Mathlib expresses the characteristic function of the normalized sum as a power and shows it converges to the Gaussian char function.",
       "provenance": "ai",
       "id": "9ad4f88c98f4"
     },
@@ -477,7 +477,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No log-normal distribution or multiplicative CLT is present in Mathlib.",
+      "note": "No log-normal distribution or multiplicative CLT is in Mathlib.",
       "provenance": "ai",
       "id": "223932743036"
     },
@@ -562,7 +562,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No CLT for entries/linear functionals of Haar-random orthogonal matrices is formalized.",
+      "note": "No CLT for linear functionals of Haar-random orthogonal matrices is formalized.",
       "provenance": "ai",
       "id": "0724c69f513c"
     },
@@ -596,7 +596,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Crystal lattices and random walks on them are not formalized.",
+      "note": "Crystal lattices and CLTs for random walks on them are not formalized.",
       "provenance": "ai",
       "id": "2d46c9a00256"
     },
@@ -630,9 +630,57 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Applications of CLT to regression error terms are not formalized in Mathlib.",
+      "note": "The CLT-for-regression-errors application is not formalized.",
       "provenance": "ai",
       "id": "c3b03b361131"
+    },
+    {
+      "kind": "definition",
+      "label": "Convergence in distribution",
+      "anchor": {
+        "section": "Classical CLT",
+        "snippet": "convergence in distribution means that the cumulative distribution functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.ProbabilityMeasure.tendsto_iff_forall_integral_tendsto",
+        "module": "Mathlib.MeasureTheory.Measure.ProbabilityMeasure",
+        "match_kind": "exact"
+      },
+      "note": "Weak convergence of probability measures (convergence in distribution) is formalized via the topology on `ProbabilityMeasure`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multivariate normal (Gaussian) distribution",
+      "anchor": {
+        "section": "Multidimensional CLT",
+        "snippet": "sums converge to a multivariate normal distribution"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.multivariateGaussian",
+        "module": "Mathlib.Probability.Distributions.Gaussian.Multivariate",
+        "match_kind": "exact"
+      },
+      "note": "Multivariate Gaussian distributions are defined in Mathlib though no multidimensional CLT targets them.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Characteristic function of a random variable",
+      "anchor": {
+        "section": "Proof of classical CLT",
+        "snippet": "The characteristic function of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.charFun",
+        "module": "Mathlib.MeasureTheory.Measure.CharacteristicFunction.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The characteristic function E[e^{itX}] is formalized as `MeasureTheory.charFun` (module corrected to `…CharacteristicFunction.Basic`).",
+      "provenance": "ai"
     }
   ]
 }

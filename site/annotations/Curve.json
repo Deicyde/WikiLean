@@ -66,7 +66,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "Differentiable",
-        "module": "Mathlib.Analysis.Calculus.FDeriv.Basic",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Defs",
         "match_kind": "generalization"
       },
       "note": "Mathlib has `Differentiable`/`ContDiff` for arbitrary maps but no dedicated 'differentiable curve' structure.",
@@ -197,7 +197,7 @@
       "label": "Closed curve / loop",
       "anchor": {
         "section": "Topological curve",
-        "snippet": "is closed"
+        "snippet": "is closed [ b ] or is a loop if"
       },
       "status": "not_formalized",
       "mathlib": {
@@ -206,7 +206,7 @@
         "match_kind": null
       },
       "note": "Mathlib's `Path` does not have a dedicated 'closed path/loop' subtype; loops appear implicitly via `Path x x`.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "9cf82076d205"
     },
     {
@@ -505,14 +505,14 @@
         "section": "Length of a curve",
         "snippet": "A rectifiable curve is a curve with finite length"
       },
-      "status": "partial",
+      "status": "formalized",
       "mathlib": {
         "decl": "BoundedVariationOn",
         "module": "Mathlib.Topology.EMetricSpace.BoundedVariation",
         "match_kind": "exact"
       },
       "note": "`BoundedVariationOn f s := eVariationOn f s ≠ ∞` matches the finite-length/rectifiable condition.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "5c9eb646839d"
     },
     {

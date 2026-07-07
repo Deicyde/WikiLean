@@ -14,12 +14,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Fourier.fourierIntegral",
+        "decl": "Real.fourierIntegral_eq",
         "module": "Mathlib.Analysis.Fourier.FourierTransform",
         "match_kind": "exact"
       },
-      "note": "`Fourier.fourierIntegral` (with the explicit unfolding `Real.fourierIntegral_eq`) defines the Fourier integral on ℝ via the standard additive character `Real.fourierChar`, exactly as in the article.",
-      "provenance": "ai",
+      "note": "`Real.fourierIntegral_eq` unfolds the real-variable Fourier transform `FourierTransform.fourier f w = ∫ v, Real.fourierChar (-⟪v,w⟫) • f v`, exactly the article's integral definition.",
+      "provenance": "ai-moderated",
       "id": "4471d8abf2f8"
     },
     {
@@ -733,7 +733,8 @@
         "match_kind": "exact"
       },
       "note": "`SchwartzMap.fourierTransformCLE` packages the Fourier transform on `𝓢(E, F)` as a continuous linear equivalence; by duality this gives an automorphism on the space of tempered distributions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7ebc2bbc555e"
     },
     {
       "kind": "definition",
@@ -783,7 +784,8 @@
         "match_kind": "exact"
       },
       "note": "`PontryaginDual A` is the topological group of continuous characters `A →* Circle`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9544db6f7f80"
     },
     {
       "kind": "definition",
@@ -886,6 +888,150 @@
       "note": "No wave-equation (or general PDE) solution via Fourier transform is formalized in Mathlib.",
       "provenance": "ai",
       "id": "92ad827b8851"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linearity of the Fourier transform",
+      "anchor": {
+        "section": "Linearity",
+        "snippet": "Linearity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "VectorFourier.fourierIntegral_add",
+        "module": "Mathlib.Analysis.Fourier.FourierTransform",
+        "match_kind": "exact"
+      },
+      "note": "Linearity of the Fourier integral is formalized via `VectorFourier.fourierIntegral_add` and `VectorFourier.fourierIntegral_smul`; equivalently, the L² FT is a `LinearIsometryEquiv`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Time-shifting property of the Fourier transform",
+      "anchor": {
+        "section": "Time shifting",
+        "snippet": "Time shifting"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Fourier.fourierIntegral_comp_add_right",
+        "module": "Mathlib.Analysis.Fourier.FourierTransform",
+        "match_kind": "special_case"
+      },
+      "note": "`Fourier.fourierIntegral_comp_add_right` proves that right-translation in the input corresponds to multiplication by a phase character on the Fourier side, the time-shifting identity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Frequency-shifting (modulation) property",
+      "anchor": {
+        "section": "Frequency shifting",
+        "snippet": "Frequency shifting"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The dual identity `𝓕(e^{2πi a x} f)(ξ) = 𝓕(f)(ξ - a)` is not present as a named lemma in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Time-scaling property of the Fourier transform",
+      "anchor": {
+        "section": "Time scaling",
+        "snippet": "The case"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The dilation identity `𝓕(f(a·))(ξ) = (1/|a|) 𝓕(f)(ξ/a)` is not packaged as a named lemma in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Gaussian is its own Fourier transform",
+      "anchor": {
+        "section": "Lebesgue integrable functions",
+        "snippet": "is its own Fourier transform"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fourierIntegral_gaussian",
+        "module": "Mathlib.Analysis.SpecialFunctions.Gaussian.FourierTransform",
+        "match_kind": "exact"
+      },
+      "note": "`fourierIntegral_gaussian` computes the Fourier transform of the Gaussian as another Gaussian, specializing to the self-Fourier-transform of e^{-π x²}.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Schwartz function space",
+      "anchor": {
+        "section": "Tempered distributions",
+        "snippet": "A Schwartz function is a smooth function that decays at infinity, along with all of its derivatives"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SchwartzMap",
+        "module": "Mathlib.Analysis.Distribution.SchwartzSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`SchwartzMap E F` is the space of smooth functions whose derivatives decay faster than any polynomial.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convolution of functions",
+      "anchor": {
+        "section": "Convolution theorem",
+        "snippet": "where ∗ denotes the convolution operation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.convolution",
+        "module": "Mathlib.Analysis.Convolution",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureTheory.convolution` defines `(f ⋆ g)(x) = ∫ f(t) · g(x - t) dt` under suitable bilinear-multiplication setup.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Haar measure on a locally compact group",
+      "anchor": {
+        "section": "Locally compact abelian groups",
+        "snippet": "it has a translation invariant measure μ , called Haar measure"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.haarMeasure",
+        "module": "Mathlib.MeasureTheory.Measure.Haar.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureTheory.Measure.haarMeasure` constructs the translation-invariant Haar measure on a locally compact group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hermite polynomials",
+      "anchor": {
+        "section": "Eigenfunctions",
+        "snippet": "the \"probabilist's\" Hermite polynomials"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.hermite",
+        "module": "Mathlib.RingTheory.Polynomial.Hermite.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Polynomial.hermite n` defines the probabilist's Hermite polynomials in Mathlib.",
+      "provenance": "ai"
     }
   ]
 }

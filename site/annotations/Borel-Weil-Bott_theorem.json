@@ -3,6 +3,7 @@
   "wikipedia_title": "Borel–Weil–Bott theorem",
   "display_title": "Borel–Weil–Bott theorem",
   "schema_version": 3,
+  "annotation_style": "theorem_article",
   "annotations": [
     {
       "kind": "theorem",
@@ -12,7 +13,14 @@
         "snippet": "the Borel–Weil–Bott theorem is a basic result in the representation theory of Lie groups"
       },
       "provenance": "ai-agent1",
-      "id": "28cbfe4ecd95"
+      "id": "28cbfe4ecd95",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Borel–Weil–Bott theorem or its sheaf-cohomology apparatus for flag varieties appears in Mathlib (grep for `Borel.Weil`, `BorelWeil`, `Bott` finds nothing relevant)."
     },
     {
       "kind": "definition",
@@ -22,7 +30,14 @@
         "snippet": "Let G be a semisimple Lie group or algebraic group"
       },
       "provenance": "ai-agent1",
-      "id": "ae9da7b54868"
+      "id": "ae9da7b54868",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has semisimple Lie algebras and root systems but no Borel subgroup, integral weight lattice, or line bundle L_λ on G/B."
     },
     {
       "kind": "definition",
@@ -32,7 +47,14 @@
         "snippet": "We first need to describe the Weyl group action centered at"
       },
       "provenance": "ai-agent1",
-      "id": "84dbd40d4e40"
+      "id": "84dbd40d4e40",
+      "status": "partial",
+      "mathlib": {
+        "decl": "RootPairing.weylGroup",
+        "module": "Mathlib.LinearAlgebra.RootSystem.WeylGroup",
+        "match_kind": null
+      },
+      "note": "The linear Weyl-group action on a root pairing exists (`RootPairing.weylGroup`), but the ρ-shifted dot action w·λ = w(λ+ρ)−ρ is not defined in Mathlib."
     },
     {
       "kind": "definition",
@@ -42,7 +64,14 @@
         "snippet": "a weight μ is said to be dominant"
       },
       "provenance": "ai-agent1",
-      "id": "c3e552a3a15e"
+      "id": "c3e552a3a15e",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of dominant integral weight (μ with ⟨μ,α∨⟩ ≥ 0 for all simple coroots) exists in Mathlib's root-system or Lie-algebra files."
     },
     {
       "kind": "proposition",
@@ -52,7 +81,14 @@
         "snippet": "Given an integral weight"
       },
       "provenance": "ai-agent1",
-      "id": "1c31af332191"
+      "id": "1c31af332191",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The dichotomy (either some w·λ is dominant with trivial stabilizer, or λ is fixed by a nontrivial reflection under the dot action) is not formalized."
     },
     {
       "kind": "theorem",
@@ -62,7 +98,14 @@
         "snippet": "The theorem states that in the first case"
       },
       "provenance": "ai-agent1",
-      "id": "f7a160e9f31e"
+      "id": "f7a160e9f31e",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The precise cohomology-shifting statement H^ℓ(w)(G/B, L_λ) ≅ H^0(G/B, L_{w·λ}) with vanishing in other degrees is absent from Mathlib."
     },
     {
       "kind": "proposition",
@@ -72,7 +115,14 @@
         "snippet": "Case (1) above occurs if and only if"
       },
       "provenance": "ai-agent1",
-      "id": "f5ecb34cd09a"
+      "id": "f5ecb34cd09a",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The identification of case (1) with λ dominant integral (w = e) recovering Borel–Weil is not formalized in Mathlib."
     },
     {
       "kind": "example",
@@ -82,7 +132,14 @@
         "snippet": "For example, consider"
       },
       "provenance": "ai-agent1",
-      "id": "119118a80737"
+      "id": "119118a80737",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not have the identification H^0(P^1, O(n)) ≅ Sym^n((C^2)*) as an SL_2(C)-representation."
     },
     {
       "kind": "example",
@@ -92,7 +149,14 @@
         "snippet": "This gives us at a stroke the representation theory of"
       },
       "provenance": "ai-agent1",
-      "id": "6e12afdf88ab"
+      "id": "6e12afdf88ab",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The full classification of finite-dimensional irreducible sl_2-representations via cohomology of line bundles on the Riemann sphere is not in Mathlib."
     },
     {
       "kind": "theorem",
@@ -102,7 +166,14 @@
         "snippet": "This is known as the Kempf vanishing theorem"
       },
       "provenance": "ai-agent1",
-      "id": "7951a565ec4f"
+      "id": "7951a565ec4f",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no formalization of Kempf's vanishing theorem (grep for `Kempf` returns no results)."
     },
     {
       "kind": "proposition",
@@ -112,7 +183,14 @@
         "snippet": "More explicitly, let"
       },
       "provenance": "ai-agent1",
-      "id": "48665c71afd0"
+      "id": "48665c71afd0",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mumford's example demonstrating non-simplicity of H^0(G/B, L_λ) in positive characteristic is not in Mathlib."
     },
     {
       "kind": "theorem",
@@ -122,7 +200,14 @@
         "snippet": "The Borel–Weil theorem provides a concrete model for irreducible representations of compact Lie groups"
       },
       "provenance": "ai-agent1",
-      "id": "aca023428456"
+      "id": "aca023428456",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the Borel–Weil model for irreducible representations of compact/complex semisimple Lie groups exists in Mathlib."
     },
     {
       "kind": "definition",
@@ -132,7 +217,14 @@
         "snippet": "Let G be a connected complex semisimple Lie group"
       },
       "provenance": "ai-agent1",
-      "id": "e15e28ce245b"
+      "id": "e15e28ce245b",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The flag variety G/B and the equivariant line bundle L_λ associated to a character of B are not constructed in Mathlib."
     },
     {
       "kind": "theorem",
@@ -142,7 +234,14 @@
         "snippet": "The Borel–Weil theorem states that if"
       },
       "provenance": "ai-agent1",
-      "id": "9bda6a415233"
+      "id": "9bda6a415233",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The isomorphism H^0(G/B, L_λ) ≅ V_λ* as G-representations for λ dominant integral is not formalized in Mathlib."
     },
     {
       "kind": "definition",
@@ -152,7 +251,14 @@
         "snippet": "The weight"
       },
       "provenance": "ai-agent1",
-      "id": "c497e279d950"
+      "id": "c497e279d950",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No construction of the character χ_λ of B or the concrete description of sections of L_λ as B-equivariant holomorphic functions G → C is present."
     },
     {
       "kind": "definition",
@@ -162,7 +268,14 @@
         "snippet": "The action of"
       },
       "provenance": "ai-agent1",
-      "id": "569c45ed4631"
+      "id": "569c45ed4631",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The G-action by left translation on B-equivariant holomorphic sections is not formalized in Mathlib."
     },
     {
       "kind": "example",
@@ -172,7 +285,14 @@
         "snippet": "Let G be the complex special linear group"
       },
       "provenance": "ai-agent1",
-      "id": "11409399b9da"
+      "id": "11409399b9da",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The concrete SL(2,C) computation of characters of the upper-triangular Borel, sections on CP^1, and weight vectors as monomials is not formalized."
     },
     {
       "kind": "example",
@@ -182,7 +302,14 @@
         "snippet": "Weight vectors are given by monomials"
       },
       "provenance": "ai-agent1",
-      "id": "db5b011c65d5"
+      "id": "db5b011c65d5",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Identification of weight vectors in H^0(CP^1, O(n)) with monomials z^i (weight 2i−n) is not formalized in Mathlib."
     }
   ]
 }

@@ -1132,7 +1132,7 @@
       "label": "Cyclotomic subfields of Q_p",
       "anchor": {
         "section": "Multiplicative group",
-        "snippet": "the field"
+        "snippet": "contains the n th cyclotomic field if and only if"
       },
       "status": "not_formalized",
       "mathlib": {
@@ -1140,8 +1140,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No statement classifying cyclotomic subfields inside ℚ_[p] is present.",
-      "provenance": "ai-agent1",
+      "note": "No statement classifying cyclotomic subfields inside ℚ_[p] is present. Anchor tightened from generic 'the field' to a unique phrase pointing at the actual claim.",
+      "provenance": "ai-moderated",
       "id": "faa2ff810974"
     },
     {
@@ -1294,7 +1294,8 @@
         "match_kind": "exact"
       },
       "note": "`hensels_lemma` in Mathlib.NumberTheory.Padics.Hensel produces an exact root in ℤ_[p] from a sufficiently good approximate solution, which is the lifting statement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ac25a017f575"
     },
     {
       "kind": "definition",
@@ -1310,7 +1311,8 @@
         "match_kind": null
       },
       "note": "Quote notation for p-adic rationals is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "24b7d414d073"
     },
     {
       "kind": "definition",
@@ -1326,7 +1328,8 @@
         "match_kind": null
       },
       "note": "While Mathlib has Witt-vector Teichmüller maps elsewhere, no formalization of Teichmüller representatives as p-adic integer digits was located in the Padics directory.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c7a2fda8241d"
     },
     {
       "kind": "proposition",
@@ -1342,7 +1345,8 @@
         "match_kind": null
       },
       "note": "No theorem in Mathlib states uniqueness of ℂ as the proper algebraic extension of ℝ; only `Complex.isAlgClosed` is present.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "51639c2c320c"
     },
     {
       "kind": "definition",
@@ -1358,7 +1362,8 @@
         "match_kind": "exact"
       },
       "note": "`PadicComplex p` (notation ℂ_[p]) is defined as `UniformSpace.Completion (PadicAlgCl p)`, exactly the metric completion of the algebraic closure of ℚ_[p].",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "05176684642c"
     },
     {
       "kind": "definition",
@@ -1374,7 +1379,8 @@
         "match_kind": null
       },
       "note": "The Volkenborn integral is not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "391cc05b4d3f"
     },
     {
       "kind": "definition",
@@ -1390,7 +1396,8 @@
         "match_kind": null
       },
       "note": "p-adic Hodge theory is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "670d78ecc6be"
     },
     {
       "kind": "definition",
@@ -1406,7 +1413,8 @@
         "match_kind": null
       },
       "note": "p-adic Teichmüller theory is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "01ac076d8315"
     },
     {
       "kind": "definition",
@@ -1422,7 +1430,8 @@
         "match_kind": null
       },
       "note": "p-adic quantum mechanics is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ba95f0effe72"
     },
     {
       "kind": "definition",
@@ -1438,6 +1447,23 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib has adic completions and infrastructure used to build adele/idele rings in `Mathlib.NumberTheory.NumberField.AdeleRing` and similar, but the exact 'adele/idele' definitions as a single decl were not verified in the Padics directory; treated as partial.",
+      "provenance": "ai",
+      "id": "6163d4a14518"
+    },
+    {
+      "kind": "proposition",
+      "label": "Q_p as fraction field of completion of localization of Z at (p)",
+      "anchor": {
+        "section": "p -adic integers",
+        "snippet": "the field of the p -adic numbers is the field of fractions of the completion of the localization of the integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Padic.adicCompletionEquiv",
+        "module": "Mathlib.NumberTheory.Padics.HeightOneSpectrum",
+        "match_kind": "exact"
+      },
+      "note": "`Padic.adicCompletionEquiv` identifies ℚ_[p] with the (p)-adic completion of ℚ; together with `PadicInt.adicCompletionIntegersEquiv` this exactly formalizes 'ℚ_[p] = Frac(completion of ℤ_(p))'.",
       "provenance": "ai"
     }
   ]

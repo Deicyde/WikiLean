@@ -18,7 +18,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Grep finds no Goldbach conjecture statement in Mathlib (the only 'Goldbach' hit is the unrelated Fermat-numbers reference in NumberTheory/Fermat.lean).",
+      "note": "Grep finds no Goldbach conjecture statement in Mathlib; the only 'Goldbach' hit is the unrelated Fermat-numbers reference in NumberTheory/Fermat.lean line 98.",
       "provenance": "ai",
       "id": "cccbb1c49952"
     },
@@ -121,7 +121,8 @@
         "match_kind": null
       },
       "note": "The ternary/weak Goldbach conjecture statement itself is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ef3eddb811ab"
     },
     {
       "kind": "theorem",
@@ -153,9 +154,25 @@
         "module": "Mathlib.Combinatorics.Schnirelmann",
         "match_kind": null
       },
-      "note": "Schnirelmann density is defined in Combinatorics/Schnirelmann.lean (decl_exists confirmed), but the file's TODO explicitly lists 'Prove Schnirelmann's theorem' so the theorem itself is not yet formalized.",
+      "note": "Schnirelmann density is defined in Combinatorics/Schnirelmann.lean, but the theorem itself (bounded representation by primes) is not yet formalized.",
       "provenance": "ai",
       "id": "44b30487b887"
+    },
+    {
+      "kind": "definition",
+      "label": "Schnirelmann density",
+      "anchor": {
+        "section": "Partial results",
+        "snippet": "see Schnirelmann density"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "schnirelmannDensity",
+        "module": "Mathlib.Combinatorics.Schnirelmann",
+        "match_kind": "exact"
+      },
+      "note": "Schnirelmann density is defined in Mathlib.Combinatorics.Schnirelmann as `schnirelmannDensity`.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",
@@ -341,7 +358,8 @@
         "match_kind": null
       },
       "note": "Helfgott's proof of ternary Goldbach is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4564fba6a2ac"
     },
     {
       "kind": "proposition",
@@ -458,8 +476,9 @@
         "module": "Mathlib.NumberTheory.PrimeCounting",
         "match_kind": null
       },
-      "note": "decl_exists confirms no `PrimeNumberTheorem` decl and no Mathlib/NumberTheory/LSeries/PrimeNumberTheorem.lean file; only prerequisites are present (Nat.primeCounting, Chebyshev bounds like Chebyshev.eventually_primeCounting_le, and zeta non-vanishing in LSeries/Nonvanishing.lean which explicitly calls itself a PNT prerequisite), so PNT itself is not yet formalized.",
-      "provenance": "ai"
+      "note": "Only PNT prerequisites (Nat.primeCounting, Chebyshev bounds, zeta non-vanishing) are present in Mathlib; the asymptotic π(n) ~ n/log n is not yet stated as a theorem.",
+      "provenance": "ai",
+      "id": "cd1f62412191"
     },
     {
       "kind": "proposition",
@@ -477,6 +496,22 @@
       "note": "The Hardy–Littlewood representation asymptotic is not formalized in Mathlib.",
       "provenance": "ai",
       "id": "6f0b745970c1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Vinogradov's asymptotic (c ≥ 3)",
+      "anchor": {
+        "section": "Heuristic justification",
+        "snippet": "This formula has been rigorously proven to be asymptotically valid for c ≥ 3 from the work of Ivan Matveevich Vinogradov"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Vinogradov's asymptotic for sums of c ≥ 3 primes is not formalized in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -511,6 +546,22 @@
       "note": "The extended (quantitative) Goldbach conjecture is not in Mathlib.",
       "provenance": "ai",
       "id": "7c1127d31be3"
+    },
+    {
+      "kind": "proposition",
+      "label": "Twin prime conjecture",
+      "anchor": {
+        "section": "Heuristic justification",
+        "snippet": "The Goldbach conjecture is in fact very similar to the twin prime conjecture"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for TwinPrime/twin.prime returns no hits; the twin prime conjecture is not formalized in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -559,9 +610,25 @@
         "module": "Mathlib.NumberTheory.SumFourSquares",
         "match_kind": "exact"
       },
-      "note": "Nat.sum_four_squares in NumberTheory/SumFourSquares.lean states ∃ a b c d, a^2 + b^2 + c^2 + d^2 = n (confirmed via decl_exists).",
+      "note": "Nat.sum_four_squares in NumberTheory/SumFourSquares.lean states ∃ a b c d, a^2 + b^2 + c^2 + d^2 = n.",
       "provenance": "ai",
       "id": "850222e8efeb"
+    },
+    {
+      "kind": "proposition",
+      "label": "Waring's problem",
+      "anchor": {
+        "section": "Related problems",
+        "snippet": "See Waring's problem and the related Waring–Goldbach problem on sums of powers of primes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Waring's problem (and the Waring–Goldbach variant) are not formalized in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -576,7 +643,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Lemoine/Levy's conjecture is not present in Mathlib.",
+      "note": "Grep for Lemoine returns no hits; the conjecture is not present in Mathlib.",
       "provenance": "ai",
       "id": "b1dd3898467a"
     },

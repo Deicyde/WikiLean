@@ -37,17 +37,23 @@
       },
       "note": "`Invertible A` packages a `⅟A` with `⅟A * A = 1` and `A * ⅟A = 1`, exactly the Wikipedia formal definition.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definition",
-          "snippet": "An n -by- n square matrix A is called invertible if there exists an n -by- n square matrix B such that"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\mathbf {AB} =\\mathbf {BA} =\\mathbf {I} _{n},}"
-        }
-      ],
       "id": "a6c848abc568"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniqueness of matrix inverse",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "the matrix B is uniquely determined by A , and is called the inverse of A"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.inv_eq_left_inv",
+        "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
+        "match_kind": "exact"
+      },
+      "note": "Uniqueness of the two-sided matrix inverse follows from `Matrix.inv_eq_left_inv`/`inv_eq_right_inv` (and the underlying group-of-units uniqueness for `Invertible`).",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -64,17 +70,23 @@
       },
       "note": "The noncomputable `Inv (Matrix n n α)` instance with `Matrix.inv_def : A⁻¹ = A.det⁻¹ʳ • A.adjugate` formalizes matrix inversion.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definition",
-          "snippet": "Matrix inversion is the process of finding the matrix which when multiplied by the original matrix gives the identity matrix"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\mathbf {AB} =\\mathbf {BA} =\\mathbf {I} _{n},}"
-        }
-      ],
       "id": "ac19024cb967"
+    },
+    {
+      "kind": "proposition",
+      "label": "Determinant-nonzero criterion (alternative definition)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "Alternatively A is also invertible if the following is staisfied,"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.isUnit_iff_isUnit_det",
+        "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
+        "match_kind": "exact"
+      },
+      "note": "Over a field, `Matrix.isUnit_iff_isUnit_det` together with `isUnit_iff_ne_zero` gives the `det A ≠ 0` characterization of invertibility used here.",
+      "provenance": "ai"
     },
     {
       "kind": "example",
@@ -486,6 +498,54 @@
     },
     {
       "kind": "proposition",
+      "label": "Columns of invertible matrix form a basis",
+      "anchor": {
+        "section": "Invertible matrix theorem",
+        "snippet": "The columns of A form a basis of K n ."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.linearIndependent_cols_iff_isUnit",
+        "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
+        "match_kind": "generalization"
+      },
+      "note": "`Matrix.linearIndependent_cols_iff_isUnit` shows column-linear-independence ↔ `IsUnit A`, which over a field gives the basis characterization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zero is not an eigenvalue of an invertible matrix",
+      "anchor": {
+        "section": "Invertible matrix theorem",
+        "snippet": "The number 0 is not an eigenvalue of A ."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.isUnit_iff_isUnit_det",
+        "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
+        "match_kind": "generalization"
+      },
+      "note": "Equivalent to `det A ≠ 0`, which is `Matrix.isUnit_iff_isUnit_det` over a field; eigenvalues of `A` are roots of `charpoly` and `0` is a root iff `det A = 0`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Invertible matrix is product of elementary matrices",
+      "anchor": {
+        "section": "Invertible matrix theorem",
+        "snippet": "The matrix A can be expressed as a finite product of elementary matrices ."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines `Matrix.TransvectionStruct` and proves every invertible matrix is a product of diagonal and transvection matrices (`diagonal_transvection_induction`), but no statement in terms of generic elementary matrices.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
       "label": "Properties of invertible matrices",
       "anchor": {
         "section": "Other properties",
@@ -636,6 +696,22 @@
       "note": "No statement explicitly addressing the existence/uniqueness of one-sided inverses for non-square matrices is in Mathlib.",
       "provenance": "ai",
       "id": "9bb7a52eb211"
+    },
+    {
+      "kind": "definition",
+      "label": "Moore–Penrose generalized inverse",
+      "anchor": {
+        "section": "Non-square matrices",
+        "snippet": "Some of the properties of inverse matrices are shared by generalized inverses (such as the Moore–Penrose inverse ), which can be defined for any m -by- n matrix."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Moore–Penrose pseudoinverse for arbitrary `m × n` matrices is not formalized in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
