@@ -40,6 +40,22 @@
       "id": "869bfc43eebd"
     },
     {
+      "kind": "theorem",
+      "label": "Church's theorem (Entscheidungsproblem unsolvable)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Church 's proof that Hilbert's Entscheidungsproblem is unsolvable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The unsolvability of the Entscheidungsproblem is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Formal system",
       "anchor": {
@@ -293,6 +309,22 @@
       "note": "Neither PA's consistency nor metatheoretic consistency proofs are formalized in Mathlib.",
       "provenance": "ai",
       "id": "db736ebc2732"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inaccessible cardinal yields a model of ZFC",
+      "anchor": {
+        "section": "Consistency",
+        "snippet": "ZFC + \"there exists an inaccessible cardinal \" proves ZFC is consistent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `Cardinal.IsInaccessible` but no V_κ-is-a-model-of-ZFC formalization or any Con(ZFC) statement.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",
@@ -805,6 +837,22 @@
       "id": "3088070ecbd1"
     },
     {
+      "kind": "proposition",
+      "label": "Wellfoundedness of ε₀",
+      "anchor": {
+        "section": "Implications for consistency proofs",
+        "snippet": "the ordinal called ε 0 is wellfounded"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Ordinal.epsilon",
+        "module": "Mathlib.SetTheory.Ordinal.Veblen",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines `Ordinal.epsilon` (with `ε₀ = epsilon 0`); wellfoundedness is automatic for ordinals as a class, but its specific role as a transfinite induction principle proving Con(PA) is not formalized.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Undecidable (proof-theoretic sense)",
       "anchor": {
@@ -925,6 +973,22 @@
     },
     {
       "kind": "theorem",
+      "label": "Graph minor theorem (Robertson–Seymour)",
+      "anchor": {
+        "section": "Undecidable statements provable in larger systems",
+        "snippet": "The related but more general graph minor theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Robertson–Seymour graph minor theorem (well-quasi-ordering of finite graphs under the minor relation) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
       "label": "Halting problem undecidable",
       "anchor": {
         "section": "Relationship with computability",
@@ -932,11 +996,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Nat.Partrec.Code.halting_problem",
+        "decl": "ComputablePred.halting_problem",
         "module": "Mathlib.Computability.Halting",
         "match_kind": "exact"
       },
-      "note": "`halting_problem` proves the predicate deciding whether a code halts on input n is not computable.",
+      "note": "`ComputablePred.halting_problem` proves that deciding whether a code halts on input n is not computable.",
       "provenance": "ai",
       "id": "242c13dd506d"
     },
@@ -949,11 +1013,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "pow_dioph",
+        "decl": "Dioph.pow_dioph",
         "module": "Mathlib.NumberTheory.Dioph",
         "match_kind": null
       },
-      "note": "Mathlib formalizes a key MRDP step (`pow_dioph`, the power function is Diophantine) but not the full theorem or the undecidability of Hilbert's tenth problem.",
+      "note": "Mathlib formalizes a key MRDP step (`Dioph.pow_dioph`, the power function is Diophantine) but not the full theorem or the undecidability of Hilbert's tenth problem.",
       "provenance": "ai",
       "id": "81d6ddc1c8b4"
     },
@@ -990,6 +1054,22 @@
       "note": "Recursively inseparable sets are not defined in Mathlib's computability library.",
       "provenance": "ai",
       "id": "aa914a07dd1b"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cantor's diagonal argument",
+      "anchor": {
+        "section": "Proof sketch for the first theorem",
+        "snippet": "Cantor's diagonal argument"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.cantor_injective",
+        "module": "Mathlib.Logic.Function.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib formalizes Cantor's diagonal argument as `Function.cantor_injective` (no injection from the powerset back into the set).",
+      "provenance": "ai"
     },
     {
       "kind": "definition",

@@ -3,6 +3,7 @@
   "wikipedia_title": "Lattice (group)",
   "display_title": "Lattice (group)",
   "schema_version": 3,
+  "annotation_style": "theorem_article",
   "annotations": [
     {
       "kind": "definition",
@@ -12,7 +13,14 @@
         "snippet": "is an infinite set of points in this space with these properties"
       },
       "provenance": "ai-agent1",
-      "id": "3fc16b995b77"
+      "id": "3fc16b995b77",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsZLattice",
+        "module": "Mathlib.Algebra.Module.ZLattice.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "IsZLattice K L characterizes a discrete Z-submodule whose K-span is the ambient space, generalizing the R^n definition."
     },
     {
       "kind": "example",
@@ -22,7 +30,14 @@
         "snippet": "One of the simplest examples of a lattice is the square lattice"
       },
       "provenance": "ai-agent1",
-      "id": "a48f77e93f99"
+      "id": "a48f77e93f99",
+      "status": "partial",
+      "mathlib": {
+        "decl": "instIsZLatticeRealSpan",
+        "module": "Mathlib.Algebra.Module.ZLattice.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "The Z-span of the standard basis in ι → ℝ is an IsZLattice instance, giving the integer lattice; no named `squareLattice` decl exists."
     },
     {
       "kind": "proposition",
@@ -32,7 +47,14 @@
         "snippet": "The requirements of minimum and maximum distance can be summarized by saying that a lattice is a Delone set"
       },
       "provenance": "ai-agent1",
-      "id": "c218652f9b19"
+      "id": "c218652f9b19",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Delone.DeloneSet",
+        "module": "Mathlib.Analysis.AperiodicOrder.Delone.Basic",
+        "match_kind": null
+      },
+      "note": "Delone sets are defined but there is no lemma exhibiting a ℤ-lattice as a Delone set."
     },
     {
       "kind": "definition",
@@ -42,7 +64,14 @@
         "snippet": "a lattice can be described as a free abelian group of dimension"
       },
       "provenance": "ai-agent1",
-      "id": "4e96c2662c3d"
+      "id": "4e96c2662c3d",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZLattice.module_free",
+        "module": "Mathlib.Algebra.Module.ZLattice.Basic",
+        "match_kind": "exact"
+      },
+      "note": "ZLattice.module_free states that any IsZLattice is a free ℤ-module, complementing IsZLattice.span_top for the spanning condition."
     },
     {
       "kind": "proposition",
@@ -52,7 +81,30 @@
         "snippet": "A lattice is the symmetry group of discrete translational symmetry in n directions"
       },
       "provenance": "ai-agent1",
-      "id": "b84c555bea75"
+      "id": "b84c555bea75",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of a translation-symmetry group of a subset of Euclidean space, so this characterization is not formalized."
+    },
+    {
+      "kind": "proposition",
+      "label": "Lattice is a finitely generated free abelian group",
+      "anchor": {
+        "section": "Symmetry considerations and examples",
+        "snippet": "As a group (dropping its geometric structure) a lattice is a finitely generated free abelian group"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZLattice.module_finite",
+        "module": "Mathlib.Algebra.Module.ZLattice.Basic",
+        "match_kind": "exact"
+      },
+      "note": "ZLattice.module_finite gives Module.Finite ℤ L and ZLattice.module_free gives freeness, jointly witnessing the finitely generated free abelian group structure."
     },
     {
       "kind": "example",
@@ -62,7 +114,30 @@
         "snippet": "More complicated examples include the E 8 lattice"
       },
       "provenance": "ai-agent1",
-      "id": "a232f44206c4"
+      "id": "a232f44206c4",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for E8/Leech turns up only ADE-inequality/root-system material, with no lattice construction."
+    },
+    {
+      "kind": "proposition",
+      "label": "Change of basis by integer transition matrix",
+      "anchor": {
+        "section": "Lattice basis tiling space",
+        "snippet": "Any other basis"
+      },
+      "provenance": "ai",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.Basis.isUnit_det",
+        "module": "Mathlib.LinearAlgebra.Determinant",
+        "match_kind": "generalization"
+      },
+      "note": "The general fact that a change-of-basis determinant is a unit specializes over ℤ to ±1 (unimodular), but no ZLattice-specific statement is stated."
     },
     {
       "kind": "definition",
@@ -72,7 +147,14 @@
         "snippet": "copies of the n -dimensional parallelepiped spanned by the basis vectors, known as the fundamental domain or primitive cell of the lattice"
       },
       "provenance": "ai-agent1",
-      "id": "8b2751337da8"
+      "id": "8b2751337da8",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZSpan.fundamentalDomain",
+        "module": "Mathlib.Algebra.Module.ZLattice.Basic",
+        "match_kind": "exact"
+      },
+      "note": "ZSpan.fundamentalDomain builds the parallelepiped for a basis and ZSpan.isAddFundamentalDomain shows it is a fundamental domain of the lattice action."
     },
     {
       "kind": "definition",
@@ -82,7 +164,14 @@
         "snippet": "The n -dimensional volume of this fundamental domain is sometimes called the covolume of the lattice"
       },
       "provenance": "ai-agent1",
-      "id": "00ee01218d0c"
+      "id": "00ee01218d0c",
+      "status": "partial",
+      "mathlib": {
+        "decl": "ZLattice.covolume",
+        "module": "Mathlib.Algebra.Module.ZLattice.Covolume",
+        "match_kind": "exact"
+      },
+      "note": "ZLattice.covolume defines the covolume; there is no `Unimodular` predicate for lattices in Mathlib."
     },
     {
       "kind": "theorem",
@@ -92,7 +181,46 @@
         "snippet": "Minkowski's theorem relates the number"
       },
       "provenance": "ai-agent1",
-      "id": "4010b777b32b"
+      "id": "4010b777b32b",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_ne_zero_mem_lattice_of_measure_mul_two_pow_lt_measure",
+        "module": "Mathlib.MeasureTheory.Group.GeometryOfNumbers",
+        "match_kind": "exact"
+      },
+      "note": "This file states the Minkowski Convex Body Theorem in both strict and compact-domain forms."
+    },
+    {
+      "kind": "definition",
+      "label": "Ehrhart polynomial of a lattice polytope",
+      "anchor": {
+        "section": "Lattice points in convex sets",
+        "snippet": "the number of lattice points it contains is described by the polytope's Ehrhart polynomial"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `Ehrhart` finds no Mathlib decls."
+    },
+    {
+      "kind": "definition",
+      "label": "LLL lattice basis reduction algorithm",
+      "anchor": {
+        "section": "Computational lattice problems",
+        "snippet": "the Lenstra–Lenstra–Lovász lattice basis reduction algorithm"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No LLL/Lenstra basis-reduction material exists in Mathlib."
     },
     {
       "kind": "theorem",
@@ -102,7 +230,14 @@
         "snippet": "There are five 2D lattice types as given by the crystallographic restriction theorem"
       },
       "provenance": "ai-agent1",
-      "id": "a1ea5069d2a9"
+      "id": "a1ea5069d2a9",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "IsCrystallographic exists only for root pairings; the 2D classification into five Bravais types is not present."
     },
     {
       "kind": "definition",
@@ -112,7 +247,14 @@
         "snippet": "The general case is known as a period lattice"
       },
       "provenance": "ai-agent1",
-      "id": "bf8df3aa1df9"
+      "id": "bf8df3aa1df9",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PeriodPair.lattice",
+        "module": "Mathlib.Analysis.SpecialFunctions.Elliptic.Weierstrass",
+        "match_kind": "exact"
+      },
+      "note": "PeriodPair.lattice defines the ℤ-submodule of ℂ generated by two periods ω₁, ω₂."
     },
     {
       "kind": "proposition",
@@ -122,7 +264,14 @@
         "snippet": "Each basis pair { p , q } defines a parallelogram, all with the same area given by the magnitude of the cross product"
       },
       "provenance": "ai-agent1",
-      "id": "e73dcc5e863a"
+      "id": "e73dcc5e863a",
+      "status": "partial",
+      "mathlib": {
+        "decl": "ZSpan.fundamentalDomain",
+        "module": "Mathlib.Algebra.Module.ZLattice.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "The general fundamental parallelepiped and its basis-independent volume via ZLattice.covolume_eq_det specialize to the 2D area-by-cross-product fact, but the 2D statement is not called out separately."
     },
     {
       "kind": "proposition",
@@ -132,7 +281,14 @@
         "snippet": "The basis vectors { p,q } can be represented by complex numbers"
       },
       "provenance": "ai-agent1",
-      "id": "7be67ca874e6"
+      "id": "7be67ca874e6",
+      "status": "partial",
+      "mathlib": {
+        "decl": "ModularGroup",
+        "module": "Mathlib.NumberTheory.Modular",
+        "match_kind": null
+      },
+      "note": "SL(2,ℤ) and its action on the upper half-plane are formalized, but no statement identifies its orbits with equivalence classes of 2D lattices."
     },
     {
       "kind": "theorem",
@@ -142,7 +298,14 @@
         "snippet": "The 14 lattice types in 3D are called Bravais lattices"
       },
       "provenance": "ai-agent1",
-      "id": "0f61882c0031"
+      "id": "0f61882c0031",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bravais lattices are not in Mathlib."
     },
     {
       "kind": "definition",
@@ -152,7 +315,30 @@
         "snippet": "is a discrete subgroup of"
       },
       "provenance": "ai-agent1",
-      "id": "50f4d177158b"
+      "id": "50f4d177158b",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsZLattice",
+        "module": "Mathlib.Algebra.Module.ZLattice.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "IsZLattice K L applies with K = ℝ and E = ℂ^n, capturing a discrete Z-submodule whose ℝ-span (dim 2n) is the whole space."
+    },
+    {
+      "kind": "proposition",
+      "label": "Rank of a lattice in complex n-space",
+      "anchor": {
+        "section": "Lattices in complex space",
+        "snippet": "will be a free abelian group of rank"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZLattice.rank",
+        "module": "Mathlib.Algebra.Module.ZLattice.Basic",
+        "match_kind": "exact"
+      },
+      "note": "ZLattice.rank K L states finrank ℤ L = finrank K E, which specializes to 2n over ℝ for E = ℂ^n."
     },
     {
       "kind": "example",
@@ -162,7 +348,14 @@
         "snippet": "the Gaussian integers"
       },
       "provenance": "ai-agent1",
-      "id": "ecb09fe875f4"
+      "id": "ecb09fe875f4",
+      "status": "partial",
+      "mathlib": {
+        "decl": "GaussianInt",
+        "module": "Mathlib.NumberTheory.Zsqrtd.GaussianInt",
+        "match_kind": "special_case"
+      },
+      "note": "GaussianInt = ℤ[i] is defined as a ring, but there is no explicit IsZLattice instance exhibiting its image in ℂ as a lattice."
     },
     {
       "kind": "definition",
@@ -172,7 +365,14 @@
         "snippet": "a lattice Γ in a Lie group G is a discrete subgroup"
       },
       "provenance": "ai-agent1",
-      "id": "3b9d2e7d458a"
+      "id": "3b9d2e7d458a",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general Lie-group lattice notion (discrete subgroup with finite Haar-covolume quotient) is defined in Mathlib."
     },
     {
       "kind": "definition",
@@ -182,7 +382,14 @@
         "snippet": "A lattice is said to be uniform or cocompact"
       },
       "provenance": "ai-agent1",
-      "id": "df43218f2f85"
+      "id": "df43218f2f85",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The concept of a cocompact/uniform lattice in a Lie group is not defined in Mathlib."
     },
     {
       "kind": "definition",
@@ -192,17 +399,31 @@
         "snippet": "Then the R lattice"
       },
       "provenance": "ai-agent1",
-      "id": "ce7c81e6ab7b"
+      "id": "ce7c81e6ab7b",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.IsLattice",
+        "module": "Mathlib.Algebra.Module.Lattice",
+        "match_kind": "exact"
+      },
+      "note": "Submodule.IsLattice A M asserts that an R-submodule M of a K-vector space is finitely generated with K-span equal to the whole space."
     },
     {
       "kind": "proposition",
-      "label": "Isomorphism of lattices under GL transition matrix",
+      "label": "Lattices generated by GL-related bases are isomorphic",
       "anchor": {
         "section": "Lattices in general vector spaces",
-        "snippet": "different bases B will generate different lattices"
+        "snippet": "then the lattices generated by these bases will be isomorphic"
       },
-      "provenance": "ai-agent1",
-      "id": "876ecd69b511"
+      "provenance": "ai-moderated",
+      "id": "876ecd69b511",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.Basis.isUnit_det",
+        "module": "Mathlib.LinearAlgebra.Determinant",
+        "match_kind": "generalization"
+      },
+      "note": "General basis-change-is-unit results specialize to give the equivalence of lattices related by an invertible R-matrix, but no dedicated lemma is stated for R-lattices."
     },
     {
       "kind": "definition",
@@ -212,7 +433,14 @@
         "snippet": "For a vector space which is also an inner product space , the dual lattice can be concretely described by the set"
       },
       "provenance": "ai-agent1",
-      "id": "bc8991465cf6"
+      "id": "bc8991465cf6",
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.dualSubmodule",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.DualLattice",
+        "match_kind": "generalization"
+      },
+      "note": "The dual submodule with respect to a bilinear form is defined generally; applied to the inner-product form on a lattice this gives the dual lattice."
     },
     {
       "kind": "definition",
@@ -222,7 +450,14 @@
         "snippet": "A primitive element of a lattice is an element"
       },
       "provenance": "ai-agent1",
-      "id": "b0d0ed3223be"
+      "id": "b0d0ed3223be",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `primitive element of a lattice` notion (indivisible vector in a ℤ-lattice) is present in Mathlib."
     },
     {
       "kind": "proposition",
@@ -232,17 +467,31 @@
         "snippet": "Every one-dimensional sublattice"
       },
       "provenance": "ai-agent1",
-      "id": "eb1ddce503a6"
+      "id": "eb1ddce503a6",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The statement that every rank-one sublattice is generated by a primitive vector is not present."
     },
     {
       "kind": "definition",
       "label": "Saturated sublattice (equivalent conditions)",
       "anchor": {
         "section": "Saturated lattices",
-        "snippet": "We say"
+        "snippet": "is a saturated sublattice whenever any of the following equivalent conditions holds"
       },
-      "provenance": "ai-agent1",
-      "id": "a646ae0f8f5e"
+      "provenance": "ai-moderated",
+      "id": "a646ae0f8f5e",
+      "status": "partial",
+      "mathlib": {
+        "decl": "AddSubmonoid.NSMulSaturated",
+        "module": "Mathlib.GroupTheory.Subgroup.Saturated",
+        "match_kind": "generalization"
+      },
+      "note": "The abstract saturated-subgroup notion (n·g ∈ H ⇒ n=0 ∨ g ∈ H) generalizes saturation for sublattices, but the multiple equivalent conditions bundle is not spelled out."
     }
   ]
 }

@@ -1,0 +1,553 @@
+{
+  "slug": "Curry-Howard_correspondence",
+  "wikipedia_title": "Curry–Howard correspondence",
+  "display_title": "Curry–Howard correspondence",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Curry–Howard correspondence (overview)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a direct relationship between computer programs and mathematical proofs"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib is a library of formalized mathematics built on Lean's dependent type theory, which itself embodies Curry–Howard, but the correspondence as a meta-theorem is not stated as a Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Curry's 1934 observation (combinator types as axiom-schemes)",
+      "anchor": {
+        "section": "Origin, scope, and consequences",
+        "snippet": "the types of the combinators could be seen as axiom-schemes for intuitionistic implicational logic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no formalization of combinatory logic or Hilbert-style axiom schemes, so this historical/meta observation is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Curry's 1958 observation (Hilbert-style deduction ~ combinatory logic)",
+      "anchor": {
+        "section": "Origin, scope, and consequences",
+        "snippet": "coincides on some fragment with the typed fragment of a standard model of computation known as combinatory logic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grepping Mathlib for combinatory logic yields nothing; this meta-mathematical coincidence result is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Howard's 1969 observation (natural deduction ~ lambda calculus)",
+      "anchor": {
+        "section": "Origin, scope, and consequences",
+        "snippet": "can be directly interpreted in its intuitionistic version as a typed variant of the model of computation known as lambda calculus"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize natural deduction or lambda calculus as syntactic objects, so this correspondence is not present as a decl.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Curry–Howard slogan: proofs as programs, formulas as types",
+      "anchor": {
+        "section": "Origin, scope, and consequences",
+        "snippet": "a proof is a program, and the formula it proves is the type for the program"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a meta-mathematical slogan describing Lean's own foundations, not a Mathlib theorem or definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Formulas-as-types correspondence table",
+      "anchor": {
+        "section": "General formulation",
+        "snippet": "implication behaves the same as a function type"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The formulas-as-types table is a meta-level dictionary about Lean's type theory itself, not a Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Curry's correspondence for axioms K and S",
+      "anchor": {
+        "section": "Intuitionistic Hilbert-style deduction systems and typed combinatory logic",
+        "snippet": "the simplest types for the basic combinators K and S of combinatory logic surprisingly corresponded to the respective axiom schemes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No K/S combinator or typed combinatory logic formalization exists in Mathlib (grep for \"combinatory logic\" returns no files).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hilbert-style derivability (Γ ⊢ δ)",
+      "anchor": {
+        "section": "Intuitionistic Hilbert-style deduction systems and typed combinatory logic",
+        "snippet": "Let Γ be a finite collection of formulas, considered as hypotheses"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no formalized Hilbert-style propositional derivability relation for this presentation of intuitionistic logic.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Typed combinatory logic typing judgment",
+      "anchor": {
+        "section": "Intuitionistic Hilbert-style deduction systems and typed combinatory logic",
+        "snippet": "let Γ be a finite collection of variables, annotated with their types"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Typed combinatory logic as a syntactic typing judgment is not present anywhere in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Peirce's law excluded from intuitionistic correspondence",
+      "anchor": {
+        "section": "Intuitionistic Hilbert-style deduction systems and typed combinatory logic",
+        "snippet": "some classical tautologies , such as Peirce's law"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "peirce",
+        "module": "Mathlib.Logic.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib's `peirce` states ((a→b)→a)→a using classical axioms, matching the formula, but the meta-fact that it is *not* derivable in intuitionistic Hilbert systems is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "No combinator typable with Peirce's law type",
+      "anchor": {
+        "section": "Intuitionistic Hilbert-style deduction systems and typed combinatory logic",
+        "snippet": "there is no typed term of combinatory logic that is typable with type"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This non-existence result about typed combinatory logic terms has no counterpart since combinatory logic is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Combinator X as one-point basis",
+      "anchor": {
+        "section": "Intuitionistic Hilbert-style deduction systems and typed combinatory logic",
+        "snippet": "the fact that the combinator X constitutes a one-point basis of (extensional) combinatory logic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Combinatory logic bases (like the single combinator X) are not part of Mathlib's scope.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Howard's correspondence (natural deduction ~ simply typed lambda calculus)",
+      "anchor": {
+        "section": "Intuitionistic natural deduction and typed lambda calculus",
+        "snippet": "a syntactic analogy between the programs of simply typed lambda calculus and the proofs of natural deduction"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes mathematics inside Lean's type theory but does not itself formalize simply typed lambda calculus or natural deduction as separate syntactic systems to state this analogy as a theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Normal forms correspond to normal deductions",
+      "anchor": {
+        "section": "Intuitionistic natural deduction and typed lambda calculus",
+        "snippet": "the notion of normal forms in lambda calculus matches Prawitz 's notion of normal deduction in natural deduction"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lambda-calculus normal form or natural-deduction normalization theory is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Griffin's extension of Curry–Howard to classical logic",
+      "anchor": {
+        "section": "Classical logic and control operators",
+        "snippet": "The extension of the correspondence to Peirce's law and hence to classical logic became clear from the work of Griffin"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Griffin's call/cc-typed-as-Peirce's-law result is a proof-theoretic/PL-theoretic fact outside Mathlib's scope.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finer classical correspondence (multiple conclusions)",
+      "anchor": {
+        "section": "Classical logic and control operators",
+        "snippet": "A finer Curry–Howard correspondence exists for classical logic if one defines classical logic not by adding an axiom such as Peirce's law"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Multiple-conclusion sequent-style classical Curry–Howard is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Proofs-as-programs correspondence for sequent calculus",
+      "anchor": {
+        "section": "Sequent calculus",
+        "snippet": "A proofs-as-programs correspondence can be settled for the formalism known as Gentzen 's sequent calculus"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gentzen's sequent calculus is not formalized anywhere in Mathlib (grep for \"sequent calculus\"/\"Gentzen\" is empty).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Prawitz's homomorphism (natural deduction to construction terms)",
+      "anchor": {
+        "section": "Prawitz's 1968 homomorphism",
+        "snippet": "Dag Prawitz defined a homomorphism between natural deduction derivations for minimal and intuitionistic first-order logic and construction terms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Prawitz's homomorphism between natural-deduction derivations and construction terms is a historical proof-theory result not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "de Bruijn's independent proofs-as-lambda-terms correspondence",
+      "anchor": {
+        "section": "The role of de Bruijn",
+        "snippet": "used the lambda notation for representing proofs of the theorem checker Automath"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a historical claim about the Automath system, not a mathematical statement Mathlib would formalize.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "BHK interpretation",
+      "anchor": {
+        "section": "BHK interpretation",
+        "snippet": "The BHK interpretation interprets intuitionistic proofs as functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib is built on classical logic and does not formalize the Brouwer–Heyting–Kolmogorov interpretation of intuitionistic proofs.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Kleene's recursive realizability",
+      "anchor": {
+        "section": "Realizability",
+        "snippet": "splits proofs of intuitionistic arithmetic into the pair of a recursive function and of a proof of a formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No realizability interpretation of intuitionistic arithmetic exists in Mathlib (grep for \"realizability\" is empty).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Kreisel's modified realizability",
+      "anchor": {
+        "section": "Realizability",
+        "snippet": "applies to intuitionistic higher-order predicate logic and shows that the simply typed lambda term inductively extracted from the proof realizes the initial formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Kreisel's modified realizability is absent from Mathlib, which has no proof-term extraction machinery for intuitionistic higher-order logic.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Gödel's dialectica interpretation",
+      "anchor": {
+        "section": "Realizability",
+        "snippet": "dialectica interpretation realizes (an extension of) intuitionistic arithmetic with computable functions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.Dial",
+        "module": "Mathlib.CategoryTheory.Dialectica.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes de Paiva's categorical Dialectica category `Dial` (a categorification inspired by the interpretation) but not Gödel's original proof-theoretic functional interpretation of intuitionistic arithmetic.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lambek's theorem (CCC equational theory)",
+      "anchor": {
+        "section": "Curry–Howard–Lambek correspondence",
+        "snippet": "the proofs of intuitionistic propositional logic and the combinators of typed combinatory logic share a common equational theory"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.MonoidalClosed",
+        "module": "Mathlib.CategoryTheory.Monoidal.Closed.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes the cartesian-closed-category side (`MonoidalClosed`/`CartesianMonoidalCategory`) but not typed combinatory logic or propositional-proof syntax, so Lambek's equational-theory-coincidence theorem itself is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cartesian closed category objects (propositions/types)",
+      "anchor": {
+        "section": "Curry–Howard–Lambek correspondence",
+        "snippet": "Objects (propositions/types) include"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.CartesianMonoidalCategory",
+        "module": "Mathlib.CategoryTheory.Monoidal.Cartesian.Basic",
+        "match_kind": "exact"
+      },
+      "note": "A cartesian closed category's objects (terminal object, products) are exactly given by `CartesianMonoidalCategory` combined with `MonoidalClosed` for exponentials.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cartesian closed category morphisms (deductions/terms)",
+      "anchor": {
+        "section": "Curry–Howard–Lambek correspondence",
+        "snippet": "Morphisms (deductions/terms) include"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.MonoidalClosed.curry",
+        "module": "Mathlib.CategoryTheory.Monoidal.Closed.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`MonoidalClosed.curry`/`uncurry` give the Hom(X⊗Y,Z) ≅ Hom(X, Y⟹Z) adjunction that models CCC morphisms (deduction/term formation), generalized to arbitrary monoidal closed categories.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Curry–Howard–Lambek iff (term exists iff provable)",
+      "anchor": {
+        "section": "Curry–Howard–Lambek correspondence",
+        "snippet": "Now, there exists t such that"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.MonoidalClosed.curry",
+        "module": "Mathlib.CategoryTheory.Monoidal.Closed.Basic",
+        "match_kind": null
+      },
+      "note": "The CCC-morphism side (Hom-set nonemptiness via curry/uncurry) is formalized, but the logical \"provable\" side of the biconditional has no counterpart since propositional provability isn't formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Identity combinator as proof of α → α",
+      "anchor": {
+        "section": "The identity combinator seen as a proof of α → α in Hilbert-style logic",
+        "snippet": "As an example, consider a proof of the theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This worked Hilbert-style-derivation example is expository and has no Hilbert-system decl in Mathlib to match against.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Composition combinator (B) as proof of (β→α)→(γ→β)→γ→α",
+      "anchor": {
+        "section": "The composition combinator seen as a proof of ( β → α ) → ( γ → β ) → γ → α in Hilbert-style logic",
+        "snippet": "let's look at the theorem that corresponds to the B function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a worked combinatory-logic example, and combinatory logic is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Natural deduction proof of (β→α)→(γ→β)→γ→α as a λ-term",
+      "anchor": {
+        "section": "The normal proof of ( β → α ) → ( γ → β ) → γ → α in natural deduction seen as a λ -term",
+        "snippet": "The diagram below gives proof of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This natural-deduction/lambda-term worked example has no formalized natural-deduction system in Mathlib to correspond to.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "CCCs generalized by closed monoidal categories",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "cartesian closed categories are generalized by closed monoidal categories"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.MonoidalClosed",
+        "module": "Mathlib.CategoryTheory.Monoidal.Closed.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib literally structures cartesian closed categories as `CartesianMonoidalCategory` plus `MonoidalClosed`, with `MonoidalClosed` alone giving the more general closed monoidal category notion, mirroring this exact generalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Correspondence to cobordisms",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "these can be shown to correspond to cobordisms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no cobordism category or TQFT formalization (grep for \"cobordism\" returns no files).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Univalence axiom",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "type theory is extended by the univalence axiom"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib is built on classical Lean foundations (propext, choice) and does not adopt or formalize the univalence axiom (grep for \"univalence\" is empty).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Homotopy type theory generalization (proofs as paths)",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "the Curry–Howard correspondence that proofs are elements of inhabited types is generalized to the notion of homotopic equivalence of proofs"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not implement homotopy type theory (no univalence, no proofs-as-paths machinery), so this generalization is absent.",
+      "provenance": "ai"
+    }
+  ]
+}

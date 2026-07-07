@@ -120,6 +120,23 @@
       "id": "a76596fa8f55"
     },
     {
+      "kind": "proposition",
+      "label": "Equivalence of limit and series definitions",
+      "anchor": {
+        "section": "History",
+        "snippet": "The equivalence of the two characterizations using the limit and the infinite series can be proved via the binomial theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Both representations exist in Mathlib but no lemma directly proves their equivalence via the binomial theorem.",
+      "provenance": "ai",
+      "id": "e90ea08a2681"
+    },
+    {
       "kind": "example",
       "label": "Compound interest account",
       "anchor": {
@@ -257,6 +274,22 @@
     },
     {
       "kind": "proposition",
+      "label": "Derangement probability tends to 1/e",
+      "anchor": {
+        "section": "Derangements",
+        "snippet": "As n tends to infinity, p n approaches 1/"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "numDerangements_tendsto_inv_e",
+        "module": "Mathlib.Combinatorics.Derangements.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "`numDerangements n / n! → 1/e` is formalized; equivalently p_n → 1/e.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
       "label": "Derangement count is n!/e rounded",
       "anchor": {
         "section": "Derangements",
@@ -342,6 +375,23 @@
     },
     {
       "kind": "proposition",
+      "label": "Exponential identity for derivative",
+      "anchor": {
+        "section": "Calculus",
+        "snippet": "Thus, when the value of a is set to e , this limit is equal to 1"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.hasDerivAt_exp",
+        "module": "Mathlib.Analysis.SpecialFunctions.ExpDeriv",
+        "match_kind": "exact"
+      },
+      "note": "Choosing base e gives `d/dx e^x = e^x`, formalized as `HasDerivAt exp (exp x) x`.",
+      "provenance": "ai",
+      "id": "ea2c9ef39f3d"
+    },
+    {
+      "kind": "proposition",
       "label": "Derivative of base-a logarithm",
       "anchor": {
         "section": "Calculus",
@@ -390,6 +440,23 @@
       "note": "`∫_a^b 1/x dx = log(b/a)` is proved, but log is defined via exp in Mathlib rather than as this integral.",
       "provenance": "ai",
       "id": "cbe913c4ac7f"
+    },
+    {
+      "kind": "definition",
+      "label": "Natural logarithm as inverse of exp",
+      "anchor": {
+        "section": "Calculus",
+        "snippet": "The number e is the value of the exponential function evaluated at"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.exp_log",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Real.log` is the inverse of `Real.exp` on positives, with `Real.log_one = 0` and `Real.exp_log` establishing the inverse relation.",
+      "provenance": "ai",
+      "id": "d9d3d30cfa75"
     },
     {
       "kind": "proposition",
@@ -461,6 +528,23 @@
     },
     {
       "kind": "proposition",
+      "label": "Bernoulli's inequality limiting case",
+      "anchor": {
+        "section": "Inequalities",
+        "snippet": "This is a limiting case of Bernoulli's inequality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.add_one_le_exp",
+        "module": "Mathlib.Analysis.Complex.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "Bernoulli's inequality `(1 + x)^n ≥ 1 + n*x` is in Mathlib; its exponential limit is `Real.add_one_le_exp`.",
+      "provenance": "ai",
+      "id": "735c3708ba99"
+    },
+    {
+      "kind": "proposition",
       "label": "Steiner's problem maximum",
       "anchor": {
         "section": "Exponential-like functions",
@@ -526,6 +610,56 @@
       "note": "Only the analytical part of Lindemann–Weierstrass is in Mathlib; the conclusion that e is transcendental is not stated.",
       "provenance": "ai",
       "id": "b9492ad4203e"
+    },
+    {
+      "kind": "conjecture",
+      "label": "Algebraic independence of e and π",
+      "anchor": {
+        "section": "Number theory",
+        "snippet": "the question of whether or not the numbers e and π are algebraically independent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Open problem; would follow from Schanuel's conjecture, which is not in Mathlib.",
+      "provenance": "ai",
+      "id": "33ab0a0f2975"
+    },
+    {
+      "kind": "conjecture",
+      "label": "e is normal",
+      "anchor": {
+        "section": "Number theory",
+        "snippet": "It is conjectured that e is normal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Open conjecture; Mathlib does not define normality of e.",
+      "provenance": "ai",
+      "id": "58581373c2c3"
+    },
+    {
+      "kind": "conjecture",
+      "label": "e is not a period",
+      "anchor": {
+        "section": "Number theory",
+        "snippet": "it is conjectured that e is not"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Open conjecture; periods and this specific conjecture about e are not formalized in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",
@@ -594,6 +728,23 @@
       "note": "Stated for ℕ as `(cos z + sin z * I)^n = cos (n z) + sin (n z) * I`.",
       "provenance": "ai",
       "id": "f399ef83905c"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cosine and sine via exponential",
+      "anchor": {
+        "section": "Complex numbers",
+        "snippet": "The expressions of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.cos",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.cos z = (exp (z*I) + exp (-z*I))/2` and `Complex.sin z = (exp (-z*I) - exp (z*I))*I/2` are the defining identities.",
+      "provenance": "ai",
+      "id": "8caa4cac0360"
     },
     {
       "kind": "definition",
@@ -711,7 +862,8 @@
         "match_kind": null
       },
       "note": "No `Irrational (Real.exp 1)` declaration found in Mathlib; the irrationality statement is reiterated in the lead.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e57d25a9ceae"
     },
     {
       "kind": "proposition",
@@ -727,7 +879,8 @@
         "match_kind": "generalization"
       },
       "note": "Transcendence of e follows from Lindemann–Weierstrass; only the analytical part is in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "50815191bea9"
     },
     {
       "kind": "theorem",
@@ -743,119 +896,8 @@
         "match_kind": "exact"
       },
       "note": "`Complex.exp_pi_mul_I` gives `exp (π * I) = -1`, the core content of Euler's identity.",
-      "provenance": "ai"
-    },
-    {
-      "kind": "proposition",
-      "label": "Equivalence of limit and series definitions",
-      "anchor": {
-        "section": "History",
-        "snippet": "The equivalence of the two characterizations using the limit and the infinite series can be proved via the binomial theorem"
-      },
-      "status": "not_formalized",
-      "mathlib": {
-        "decl": null,
-        "module": null,
-        "match_kind": null
-      },
-      "note": "Both representations exist in Mathlib but no lemma directly proves their equivalence via the binomial theorem.",
-      "provenance": "ai"
-    },
-    {
-      "kind": "proposition",
-      "label": "Exponential identity for derivative",
-      "anchor": {
-        "section": "Calculus",
-        "snippet": "Thus, when the value of a is set to e , this limit is equal to 1"
-      },
-      "status": "formalized",
-      "mathlib": {
-        "decl": "Real.hasDerivAt_exp",
-        "module": "Mathlib.Analysis.SpecialFunctions.ExpDeriv",
-        "match_kind": "exact"
-      },
-      "note": "Choosing base e gives `d/dx e^x = e^x`, formalized as `HasDerivAt exp (exp x) x`.",
-      "provenance": "ai"
-    },
-    {
-      "kind": "definition",
-      "label": "Natural logarithm as inverse of exp",
-      "anchor": {
-        "section": "Calculus",
-        "snippet": "The number e is the value of the exponential function evaluated at"
-      },
-      "status": "formalized",
-      "mathlib": {
-        "decl": "Real.exp_log",
-        "module": "Mathlib.Analysis.SpecialFunctions.Log.Basic",
-        "match_kind": "exact"
-      },
-      "note": "`Real.log` is the inverse of `Real.exp` on positives, with `Real.log_one = 0` and `Real.exp_log` establishing the inverse relation.",
-      "provenance": "ai"
-    },
-    {
-      "kind": "proposition",
-      "label": "Bernoulli's inequality limiting case",
-      "anchor": {
-        "section": "Inequalities",
-        "snippet": "This is a limiting case of Bernoulli's inequality"
-      },
-      "status": "formalized",
-      "mathlib": {
-        "decl": "Real.add_one_le_exp",
-        "module": "Mathlib.Analysis.Complex.Exponential",
-        "match_kind": "exact"
-      },
-      "note": "Bernoulli's inequality `(1 + x)^n ≥ 1 + n*x` is in Mathlib; its exponential limit is `Real.add_one_le_exp`.",
-      "provenance": "ai"
-    },
-    {
-      "kind": "proposition",
-      "label": "Cosine and sine via exponential",
-      "anchor": {
-        "section": "Complex numbers",
-        "snippet": "The expressions of"
-      },
-      "status": "formalized",
-      "mathlib": {
-        "decl": "Complex.cos",
-        "module": "Mathlib.Analysis.Complex.Trigonometric",
-        "match_kind": "exact"
-      },
-      "note": "`Complex.cos z = (exp (z*I) + exp (-z*I))/2` and `Complex.sin z = (exp (-z*I) - exp (z*I))*I/2` are the defining identities.",
-      "provenance": "ai"
-    },
-    {
-      "kind": "conjecture",
-      "label": "Algebraic independence of e and π",
-      "anchor": {
-        "section": "Number theory",
-        "snippet": "the question of whether or not the numbers e and π are algebraically independent"
-      },
-      "status": "not_formalized",
-      "mathlib": {
-        "decl": null,
-        "module": null,
-        "match_kind": null
-      },
-      "note": "Open problem; would follow from Schanuel's conjecture, which is not in Mathlib.",
-      "provenance": "ai"
-    },
-    {
-      "kind": "conjecture",
-      "label": "e is normal",
-      "anchor": {
-        "section": "Number theory",
-        "snippet": "It is conjectured that e is normal"
-      },
-      "status": "not_formalized",
-      "mathlib": {
-        "decl": null,
-        "module": null,
-        "match_kind": null
-      },
-      "note": "Open conjecture; Mathlib does not define normality of e.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b8848ad890fa"
     }
   ]
 }

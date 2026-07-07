@@ -252,11 +252,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "PseudoMetrizableSpace.toMetrizableSpace",
+        "decl": "TopologicalSpace.PseudoMetrizableSpace.toMetrizableSpace",
         "module": "Mathlib.Topology.Metrizable.Basic",
         "match_kind": null
       },
-      "note": "Both implications exist as instances (T0/Hausdorff pseudometrizable → metrizable, and metrizable → T2), but not packaged as a single biconditional.",
+      "note": "The T0/Hausdorff pseudometrizable → metrizable direction exists as an instance, and metrizable → T2 holds, but the biconditional is not packaged as one statement.",
       "provenance": "ai",
       "id": "7837043b7fc1"
     },
@@ -446,6 +446,22 @@
       "note": "Mathlib proves continuity of linear maps from a finite-dimensional domain, not continuity of a closed operator into a finite-dimensional codomain.",
       "provenance": "ai",
       "id": "c41bacee0588"
+    },
+    {
+      "kind": "definition",
+      "label": "Closed linear operator",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "such an operator is called a closed linear operator"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearPMap.IsClosed",
+        "module": "Mathlib.Topology.Algebra.Module.LinearPMap",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines a (possibly partially-defined) linear operator to be closed exactly when its graph is closed.",
+      "provenance": "ai"
     }
   ]
 }

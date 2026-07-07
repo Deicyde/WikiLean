@@ -121,7 +121,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib's `angle_add_angle_add_angle_eq_pi` states that the three angles of a non-degenerate triangle sum to π.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "17f9d9b90646"
     },
     {
       "kind": "proposition",
@@ -247,7 +248,7 @@
       "label": "Converse of the Pythagorean theorem",
       "anchor": {
         "section": "Converse",
-        "snippet": "if the angle between sides"
+        "snippet": "the angle between sides a and b is a right angle"
       },
       "status": "formalized",
       "mathlib": {
@@ -256,7 +257,7 @@
         "match_kind": "exact"
       },
       "note": "Mathlib's Pythagorean iff statement gives both directions, including the converse (a²+b²=c² implies right angle).",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "be479cf6252f"
     },
     {
@@ -921,6 +922,22 @@
       "note": "A Riemannian metric is formalized as a family of inner products on the fibers of a vector bundle via `Bundle.RiemannianMetric` (with `Bundle.RiemannianBundle` for typeclass inference).",
       "provenance": "ai",
       "id": "fc85ea5ecbeb"
+    },
+    {
+      "kind": "definition",
+      "label": "Infinitesimal Euclidean line element",
+      "anchor": {
+        "section": "Differential geometry",
+        "snippet": "the distance between two infinitesimally separated points"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.dist_sq_eq",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "generalization"
+      },
+      "note": "The Euclidean line element ds² = dx² + dy² + dz² is the infinitesimal form of the finite Pythagorean distance formula `EuclideanSpace.dist_sq_eq`.",
+      "provenance": "ai"
     }
   ]
 }

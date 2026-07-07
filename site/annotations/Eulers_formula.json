@@ -189,7 +189,8 @@
         "match_kind": "exact"
       },
       "note": "States `Complex.exp z ≠ 0`, the fact cited in the differentiation proof to justify dividing by exp.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8e345162fa60"
     },
     {
       "kind": "proposition",
@@ -224,6 +225,22 @@
       "note": "The polar-coordinates proof of Euler's formula is not formalized as a distinct Mathlib statement.",
       "provenance": "ai",
       "id": "931db3f178e8"
+    },
+    {
+      "kind": "proposition",
+      "label": "Derivative of e^{ix} is i·e^{ix}",
+      "anchor": {
+        "section": "Using polar coordinates",
+        "snippet": "the derivative of e ix is ie ix"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.hasDerivAt_exp",
+        "module": "Mathlib.Analysis.SpecialFunctions.ExpDeriv",
+        "match_kind": "invocation"
+      },
+      "note": "Combined with the chain rule, `Complex.hasDerivAt_exp` gives d/dx exp(ix) = i·exp(ix), the key fact used in the polar-coordinates proof.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -273,6 +290,23 @@
         "match_kind": "exact"
       },
       "note": "`Complex.arg z` is the principal argument in (-π, π], defined via `Real.arccos`/`Real.arcsin` and matching the `atan2(y,x)` convention described.",
+      "provenance": "ai",
+      "id": "67a770328620"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exponential addition law",
+      "anchor": {
+        "section": "Use of the formula to define the logarithm of complex numbers",
+        "snippet": "Finally, the other exponential law"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp_add",
+        "module": "Mathlib.Analysis.Complex.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "States exp(a + b) = exp a * exp b for complex a, b — the exponential law combined with Euler's formula to derive de Moivre's identity.",
       "provenance": "ai"
     },
     {
@@ -357,7 +391,8 @@
         "match_kind": "exact"
       },
       "note": "States cos(y * I) = cosh y, with `Complex.sin_mul_I` giving sin(y * I) = sinh y * I; these are the identities relating complex trig at imaginary argument to hyperbolic functions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2ab53362d8f3"
     },
     {
       "kind": "example",

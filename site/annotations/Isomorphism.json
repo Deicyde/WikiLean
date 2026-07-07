@@ -74,6 +74,38 @@
       "id": "1b0b4a95754d"
     },
     {
+      "kind": "example",
+      "label": "Fields with p elements are canonically isomorphic",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "for every prime number p , all fields with p elements are canonically isomorphic, with a unique isomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.ringEquivOfPrime",
+        "module": "Mathlib.FieldTheory.Finite.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Any field of prime cardinality p is uniquely ring-isomorphic to `ZMod p`; Mathlib provides `ZMod.ringEquivOfPrime` and related uniqueness results for prime-order fields.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Isomorphism theorems",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The isomorphism theorems provide canonical isomorphisms that are not unique"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuotientGroup.quotientKerEquivRange",
+        "module": "Mathlib.GroupTheory.QuotientGroup.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib formalizes the group/ring isomorphism theorems (first: `QuotientGroup.quotientKerEquivRange`, `RingHom.quotientKerEquivRange`; second and third theorems appear as `QuotientGroup.quotientInfEquivProdNormalQuotient` and `QuotientGroup.quotientQuotientEquivQuotient`).",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Homomorphism is isomorphism iff bijective",
       "anchor": {
@@ -308,7 +340,8 @@
         "match_kind": "exact"
       },
       "note": "`LinearEquiv` (notation `≃ₗ`) is the bundled type of invertible linear maps between modules/vector spaces.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0c745cf702ce"
     },
     {
       "kind": "definition",
@@ -324,7 +357,8 @@
         "match_kind": "exact"
       },
       "note": "`MulEquiv` (notation `≃*`) is the bundled multiplicative-structure-preserving equivalence; the additive analog is `AddEquiv`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ca1b7c82b975"
     },
     {
       "kind": "definition",
@@ -340,7 +374,8 @@
         "match_kind": "exact"
       },
       "note": "`RingEquiv` (notation `≃+*`) bundles an equivalence preserving both addition and multiplication.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ae08c6884174"
     },
     {
       "kind": "definition",
@@ -356,7 +391,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib has no separate `FieldEquiv`; field isomorphisms are simply `RingEquiv` between field-typed objects.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6518e57e7637"
     },
     {
       "kind": "proposition",
@@ -372,6 +408,23 @@
         "match_kind": "exact"
       },
       "note": "The `Group (Aut X)` instance lives in `Mathlib.CategoryTheory.Endomorphism`; concrete analogs include `Equiv.Perm` (with `Equiv.Perm.permGroup`), `MulAut`, `RingAut`, etc.",
+      "provenance": "ai",
+      "id": "bae2fc9b90f6"
+    },
+    {
+      "kind": "example",
+      "label": "Laplace transform as isomorphism",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "the Laplace transform is an isomorphism mapping hard differential equations into easier algebraic equations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not currently formalize the Laplace transform as an isomorphism between function spaces suitable for turning ODEs into algebraic equations.",
       "provenance": "ai"
     },
     {
@@ -526,6 +579,22 @@
       "note": "`isIsomorphicSetoid C` packages `IsIsomorphic` as an equivalence relation on the objects of a category.",
       "provenance": "ai",
       "id": "bc9a3062e993"
+    },
+    {
+      "kind": "proposition",
+      "label": "Composition, identity, and inverse of isomorphisms",
+      "anchor": {
+        "section": "Isomorphism classes",
+        "snippet": "a composition of isomorphisms is an isomorphism, the identity is an isomorphism, and the inverse of an isomorphism is an isomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Iso.trans",
+        "module": "Mathlib.CategoryTheory.Iso",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib provides `Iso.refl`, `Iso.symm`, and `Iso.trans` on `CategoryTheory.Iso`, showing identity, inverse, and composition of isomorphisms are again isomorphisms.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",

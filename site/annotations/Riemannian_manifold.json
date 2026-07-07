@@ -3,6 +3,7 @@
   "wikipedia_title": "Riemannian manifold",
   "display_title": "Riemannian manifold",
   "schema_version": 3,
+  "annotation_style": "theorem_article",
   "annotations": [
     {
       "kind": "definition",
@@ -12,7 +13,14 @@
         "snippet": "a Riemannian manifold (or Riemann space ) is a geometric space on which many geometric notions such as distance, angles, length, volume, and curvature are defined"
       },
       "provenance": "ai-agent1",
-      "id": "8f489a8ac27e"
+      "id": "8f489a8ac27e",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsRiemannianManifold",
+        "module": "Mathlib.Geometry.Manifold.Riemannian.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsRiemannianManifold I M` is the Prop-valued typeclass registering the Riemannian-manifold predicate on a manifold equipped with an emetric structure and a Riemannian bundle on its tangent bundle."
     },
     {
       "kind": "definition",
@@ -22,7 +30,14 @@
         "snippet": "a Riemannian metric (or just a metric ) on a smooth manifold is a smoothly varying choice of inner product for each tangent space"
       },
       "provenance": "ai-agent1",
-      "id": "a54850aeefc7"
+      "id": "a54850aeefc7",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Bundle.ContMDiffRiemannianMetric",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.Riemannian",
+        "match_kind": "exact"
+      },
+      "note": "`ContMDiffRiemannianMetric IB n F E` is a family of inner products on the fibers of a vector bundle varying `C^n`-smoothly with the base point; applied to the tangent bundle it is exactly a Riemannian metric."
     },
     {
       "kind": "theorem",
@@ -32,7 +47,14 @@
         "snippet": "the Theorema Egregium says that the Gaussian curvature is an intrinsic property of surfaces"
       },
       "provenance": "ai-agent1",
-      "id": "33041a26c564"
+      "id": "33041a26c564",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gaussian curvature of surfaces is not formalized in Mathlib, so Theorema Egregium is absent."
     },
     {
       "kind": "definition",
@@ -42,7 +64,14 @@
         "snippet": "A map that preserves the local measurements of a surface is called a local isometry"
       },
       "provenance": "ai-agent1",
-      "id": "c2055187b47b"
+      "id": "c2055187b47b",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of local isometry between Riemannian manifolds/surfaces exists in Mathlib; only the metric-space `Isometry` predicate is available."
     },
     {
       "kind": "definition",
@@ -52,17 +81,32 @@
         "snippet": "A property of a surface is called an intrinsic property if it is preserved by local isometries and it is called an extrinsic property if it is not"
       },
       "provenance": "ai-agent1",
-      "id": "a713aeb65d6a"
+      "id": "a713aeb65d6a",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of intrinsic vs extrinsic property of a surface."
     },
     {
       "kind": "definition",
       "label": "Riemannian metric and Riemannian manifold",
       "anchor": {
         "section": "Riemannian metrics and Riemannian manifolds",
-        "snippet": "assigns to each"
+        "snippet": "A Riemannian metric"
       },
-      "provenance": "ai-agent1",
-      "id": "e5873192f9b0"
+      "provenance": "ai-moderated",
+      "id": "e5873192f9b0",
+      "note": "Anchor tightened to point to the definitional sentence.",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Bundle.RiemannianMetric",
+        "module": "Mathlib.Topology.VectorBundle.Riemannian",
+        "match_kind": "exact"
+      },
+      "note_annotation": "`Bundle.RiemannianMetric E` gives a family of inner products on the fibers of a vector bundle (and `IsRiemannianManifold` packages the manifold-level assertion)."
     },
     {
       "kind": "definition",
@@ -72,7 +116,14 @@
         "snippet": "one can define the Riemannian metric's components at each point"
       },
       "provenance": "ai-agent1",
-      "id": "c9d2a2980add"
+      "id": "c9d2a2980add",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's Riemannian metrics are coordinate-free bilinear forms on fibers; the classical `g_{ij}` coordinate components are not defined."
     },
     {
       "kind": "definition",
@@ -82,7 +133,14 @@
         "snippet": "is continuous if its components"
       },
       "provenance": "ai-agent1",
-      "id": "31459bcceb44"
+      "id": "31459bcceb44",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsContMDiffRiemannianBundle",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.Riemannian",
+        "match_kind": "exact"
+      },
+      "note": "`IsContinuousRiemannianBundle` and `IsContMDiffRiemannianBundle` express, respectively, that the inner product on fibers varies continuously / `C^n`-smoothly with the base point."
     },
     {
       "kind": "definition",
@@ -92,17 +150,32 @@
         "snippet": "a Riemannian metric induces an isomorphism of bundles between the tangent bundle and the cotangent bundle"
       },
       "provenance": "ai-agent1",
-      "id": "7d805eedbdd5"
+      "id": "7d805eedbdd5",
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDual",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "special_case"
+      },
+      "note": "The pointwise `InnerProductSpace.toDual` gives the fiberwise flat isomorphism of a Hilbert space with its dual, but the bundle-level musical isomorphism between the tangent and cotangent bundles is not built in Mathlib."
     },
     {
       "kind": "definition",
       "label": "Isometry",
       "anchor": {
         "section": "Isometries",
-        "snippet": "a diffeomorphism"
+        "snippet": "An isometry is a function between Riemannian manifolds which preserves all of the structure of Riemannian manifolds"
       },
-      "provenance": "ai-agent1",
-      "id": "944442fb5605"
+      "provenance": "ai-moderated",
+      "id": "944442fb5605",
+      "note": "Anchor changed to the primary definitional sentence; the previous snippet 'a diffeomorphism' was too generic.",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Isometry",
+        "module": "Mathlib.Topology.MetricSpace.Isometry",
+        "match_kind": "generalization"
+      },
+      "note_annotation": "Mathlib's `Isometry` for (pseudo)emetric spaces applies at the level of the induced distance, but there is no dedicated `RiemannianIsometry` preserving the smooth structure and the metric tensor."
     },
     {
       "kind": "definition",
@@ -112,7 +185,14 @@
         "snippet": "is a local isometry if every"
       },
       "provenance": "ai-agent1",
-      "id": "7cbcb2601679"
+      "id": "7cbcb2601679",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No local-isometry notion for Riemannian manifolds is present in Mathlib."
     },
     {
       "kind": "definition",
@@ -122,7 +202,14 @@
         "snippet": "called the Riemannian volume form"
       },
       "provenance": "ai-agent1",
-      "id": "c4194010724b"
+      "id": "c4194010724b",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Riemannian volume form on an oriented Riemannian manifold is not defined in Mathlib; only the pointwise `Orientation.volumeForm` on a single inner product space exists."
     },
     {
       "kind": "definition",
@@ -132,17 +219,32 @@
         "snippet": "The (canonical) Euclidean metric"
       },
       "provenance": "ai-agent1",
-      "id": "bf6af90d7432"
+      "id": "bf6af90d7432",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "riemannianMetricVectorSpace",
+        "module": "Mathlib.Geometry.Manifold.Riemannian.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`riemannianMetricVectorSpace F` is the canonical Riemannian metric on an inner product space given by its inner product on each tangent space, and `EuclideanSpace` is the standard inner-product model."
     },
     {
       "kind": "definition",
       "label": "Riemannian submanifold",
       "anchor": {
         "section": "Submanifolds",
-        "snippet": "is a Riemannian metric on"
+        "snippet": "is said to be a Riemannian submanifold"
       },
-      "provenance": "ai-agent1",
-      "id": "dbd786d7968d"
+      "provenance": "ai-moderated",
+      "id": "dbd786d7968d",
+      "note": "Anchor sharpened to the defining phrase.",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note_annotation": "Riemannian submanifolds and the induced metric are not formalized."
     },
     {
       "kind": "example",
@@ -152,7 +254,14 @@
         "snippet": "The Riemannian metric this induces on"
       },
       "provenance": "ai-agent1",
-      "id": "11c8cae37637"
+      "id": "11c8cae37637",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The round Riemannian metric on the sphere is not defined in Mathlib."
     },
     {
       "kind": "example",
@@ -162,7 +271,14 @@
         "snippet": "The ellipsoid"
       },
       "provenance": "ai-agent1",
-      "id": "b73e482cfb25"
+      "id": "b73e482cfb25",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ellipsoids as Riemannian submanifolds are not in Mathlib."
     },
     {
       "kind": "example",
@@ -172,7 +288,14 @@
         "snippet": "The graph of a smooth function"
       },
       "provenance": "ai-agent1",
-      "id": "85ba61b72989"
+      "id": "85ba61b72989",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The graph of a smooth function as an embedded Riemannian submanifold is not treated in Mathlib."
     },
     {
       "kind": "example",
@@ -182,7 +305,14 @@
         "snippet": "any smooth covering space of a Riemannian manifold inherits a Riemannian metric"
       },
       "provenance": "ai-agent1",
-      "id": "08cb80b46618"
+      "id": "08cb80b46618",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not construct a Riemannian metric on a smooth covering space by pullback."
     },
     {
       "kind": "definition",
@@ -192,7 +322,14 @@
         "snippet": "is called an isometric immersion (or isometric embedding )"
       },
       "provenance": "ai-agent1",
-      "id": "e5ed66c3c8cf"
+      "id": "e5ed66c3c8cf",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Isometric immersions/embeddings between Riemannian manifolds are not defined in Mathlib."
     },
     {
       "kind": "definition",
@@ -202,27 +339,50 @@
         "snippet": "naturally put a Riemannian metric"
       },
       "provenance": "ai-agent1",
-      "id": "169c939d49f8"
+      "id": "169c939d49f8",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The product Riemannian metric on a product of Riemannian manifolds is not constructed in Mathlib."
     },
     {
       "kind": "example",
       "label": "Flat torus",
       "anchor": {
         "section": "Products",
-        "snippet": "the product Riemannian manifold"
+        "snippet": "is called the flat torus"
       },
-      "provenance": "ai-agent1",
-      "id": "c8404234c778"
+      "provenance": "ai-moderated",
+      "id": "c8404234c778",
+      "note": "Anchor tightened to the naming phrase.",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note_annotation": "The flat torus as a Riemannian manifold is not present in Mathlib."
     },
     {
       "kind": "proposition",
       "label": "Positive combinations of metrics",
       "anchor": {
         "section": "Positive combinations of metrics",
-        "snippet": "are any positive smooth functions on"
+        "snippet": "is another Riemannian metric on"
       },
-      "provenance": "ai-agent1",
-      "id": "edcae84901d7"
+      "provenance": "ai-moderated",
+      "id": "edcae84901d7",
+      "note": "Anchor moved to the conclusion of the proposition.",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note_annotation": "No lemma stating that positive linear combinations of Riemannian metrics remain Riemannian is in Mathlib."
     },
     {
       "kind": "theorem",
@@ -232,7 +392,14 @@
         "snippet": "Every smooth manifold admits a (non-canonical) Riemannian metric"
       },
       "provenance": "ai-agent1",
-      "id": "40ba7cadcc2f"
+      "id": "40ba7cadcc2f",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib only constructs the canonical Riemannian metric on inner product spaces; the general existence result for arbitrary smooth manifolds (via partitions of unity) is not there."
     },
     {
       "kind": "theorem",
@@ -242,7 +409,14 @@
         "snippet": "the Nash embedding theorem states that, given any smooth Riemannian manifold"
       },
       "provenance": "ai-agent1",
-      "id": "9739c3853f35"
+      "id": "9739c3853f35",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Nash embedding theorem is not in Mathlib."
     },
     {
       "kind": "definition",
@@ -252,7 +426,14 @@
         "snippet": "An admissible curve is a piecewise smooth curve"
       },
       "provenance": "ai-agent1",
-      "id": "b7b2cc5ecf22"
+      "id": "b7b2cc5ecf22",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Manifold.pathELength",
+        "module": "Mathlib.Geometry.Manifold.Riemannian.PathELength",
+        "match_kind": "generalization"
+      },
+      "note": "`Manifold.pathELength` gives the length integral of a `C^1` path in a manifold whose tangent spaces have an `ENorm`; piecewise-smooth admissible curves are subsumed as `C^1` paths."
     },
     {
       "kind": "theorem",
@@ -262,7 +443,14 @@
         "snippet": "is a metric space , and the metric topology on"
       },
       "provenance": "ai-agent1",
-      "id": "6a1a9fe3536b"
+      "id": "6a1a9fe3536b",
+      "status": "partial",
+      "mathlib": {
+        "decl": "EMetricSpace.ofRiemannianMetric",
+        "module": "Mathlib.Geometry.Manifold.Riemannian.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`EMetricSpace.ofRiemannianMetric` builds an emetric space structure whose topology agrees with the manifold's, using `riemannianEDist`; positivity/triangle inequality are proved but only an `ℝ≥0∞`-valued distance is provided."
     },
     {
       "kind": "definition",
@@ -272,17 +460,32 @@
         "snippet": "The diameter of the metric space"
       },
       "provenance": "ai-agent1",
-      "id": "49115a34eab4"
+      "id": "49115a34eab4",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.diam",
+        "module": "Mathlib.Topology.MetricSpace.Bounded",
+        "match_kind": "generalization"
+      },
+      "note": "`Metric.diam` is defined for arbitrary (pseudo)metric spaces, subsuming the diameter of a Riemannian manifold under its induced distance."
     },
     {
       "kind": "proposition",
       "label": "Compactness iff finite diameter (complete)",
       "anchor": {
         "section": "Diameter",
-        "snippet": "If"
+        "snippet": "is complete, then it is compact if and only if it has finite diameter"
       },
-      "provenance": "ai-agent1",
-      "id": "f00e371f344e"
+      "provenance": "ai-moderated",
+      "id": "f00e371f344e",
+      "note": "Anchor sharpened from the generic 'If' to the actual proposition text.",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note_annotation": "The Riemannian statement 'complete ∧ finite diameter ↔ compact' (invoking Hopf–Rinow) is not in Mathlib."
     },
     {
       "kind": "definition",
@@ -292,7 +495,14 @@
         "snippet": "An (affine) connection is an additional structure on a Riemannian manifold that defines differentiation of one vector field with respect to another"
       },
       "provenance": "ai-agent1",
-      "id": "3a218351b067"
+      "id": "3a218351b067",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CovariantDerivative",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`CovariantDerivative I F V` is a bundled Koszul connection on a vector bundle; taking `V = TangentSpace I` recovers an affine connection on a manifold."
     },
     {
       "kind": "definition",
@@ -302,7 +512,14 @@
         "snippet": "is called the covariant derivative of"
       },
       "provenance": "ai-agent1",
-      "id": "7a3f66b1d0c3"
+      "id": "7a3f66b1d0c3",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CovariantDerivative",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`CovariantDerivative` is Mathlib's bundled covariant-derivative structure on a vector bundle over a manifold."
     },
     {
       "kind": "definition",
@@ -312,7 +529,14 @@
         "snippet": "is said to preserve the metric if"
       },
       "provenance": "ai-agent1",
-      "id": "ddd759c2b339"
+      "id": "ddd759c2b339",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CovariantDerivative.IsMetricCompatible",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Metric",
+        "match_kind": "exact"
+      },
+      "note": "`CovariantDerivative.IsMetricCompatible cov` states that a connection on a Riemannian bundle preserves the metric (its `derivMetricTensor` vanishes)."
     },
     {
       "kind": "definition",
@@ -322,7 +546,14 @@
         "snippet": "is torsion-free if"
       },
       "provenance": "ai-agent1",
-      "id": "240091057396"
+      "id": "240091057396",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CovariantDerivative.torsion_eq_zero_iff",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Torsion",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines `CovariantDerivative.torsion` on the tangent bundle and characterizes torsion-freeness via `torsion_eq_zero_iff` (⇔ `∇_X Y - ∇_Y X = [X,Y]`)."
     },
     {
       "kind": "theorem",
@@ -332,7 +563,14 @@
         "snippet": "A Levi-Civita connection is a torsion-free connection that preserves the metric. Once a Riemannian metric is fixed, there exists a unique Levi-Civita connection"
       },
       "provenance": "ai-agent1",
-      "id": "2dfcff3c05eb"
+      "id": "2dfcff3c05eb",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Although metric-compatibility and torsion-freeness are defined, existence/uniqueness of the Levi-Civita connection is not proved in Mathlib."
     },
     {
       "kind": "definition",
@@ -342,7 +580,14 @@
         "snippet": "a smooth vector field along"
       },
       "provenance": "ai-agent1",
-      "id": "6ee36a88f485"
+      "id": "6ee36a88f485",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of a smooth vector field along a curve in a manifold appears in Mathlib."
     },
     {
       "kind": "definition",
@@ -352,7 +597,14 @@
         "snippet": "is called an extension of"
       },
       "provenance": "ai-agent1",
-      "id": "8924133b91ba"
+      "id": "8924133b91ba",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of extending a vector field along a curve is in Mathlib."
     },
     {
       "kind": "theorem",
@@ -362,7 +614,14 @@
         "snippet": "there is a unique operator"
       },
       "provenance": "ai-agent1",
-      "id": "0409620e858c"
+      "id": "0409620e858c",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The existence/uniqueness of the covariant derivative operator along a curve is not formalized."
     },
     {
       "kind": "definition",
@@ -372,7 +631,14 @@
         "snippet": "is called a geodesic"
       },
       "provenance": "ai-agent1",
-      "id": "db343c134220"
+      "id": "db343c134220",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Geodesics on Riemannian manifolds are not defined in Mathlib."
     },
     {
       "kind": "theorem",
@@ -382,7 +648,14 @@
         "snippet": "there exists a geodesic"
       },
       "provenance": "ai-agent1",
-      "id": "f88ba9f8e0b4"
+      "id": "f88ba9f8e0b4",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The local existence and uniqueness of geodesics is not in Mathlib."
     },
     {
       "kind": "definition",
@@ -392,7 +665,14 @@
         "snippet": "one obtains a geodesic called a maximal geodesic"
       },
       "provenance": "ai-agent1",
-      "id": "8080b5e738c4"
+      "id": "8080b5e738c4",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Maximal geodesics are not defined in Mathlib."
     },
     {
       "kind": "theorem",
@@ -402,7 +682,14 @@
         "snippet": "Every curve"
       },
       "provenance": "ai-agent1",
-      "id": "0d8cf058dc88"
+      "id": "0d8cf058dc88",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The result identifying length-minimizing curves with geodesics is absent from Mathlib."
     },
     {
       "kind": "example",
@@ -412,7 +699,14 @@
         "snippet": "The nonconstant maximal geodesics of the Euclidean plane"
       },
       "provenance": "ai-agent1",
-      "id": "1aef34fa098e"
+      "id": "1aef34fa098e",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without a geodesic definition, the identification of Euclidean geodesics as affine lines is not in Mathlib."
     },
     {
       "kind": "example",
@@ -422,7 +716,14 @@
         "snippet": "are exactly the great circles"
       },
       "provenance": "ai-agent1",
-      "id": "8714e64bc491"
+      "id": "8714e64bc491",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The identification of great circles as sphere geodesics is not formalized."
     },
     {
       "kind": "definition",
@@ -432,17 +733,32 @@
         "snippet": "is geodesically complete if the domain of every maximal geodesic is"
       },
       "provenance": "ai-agent1",
-      "id": "1878b5dc0353"
+      "id": "1878b5dc0353",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Geodesic completeness is not defined in Mathlib."
     },
     {
       "kind": "theorem",
       "label": "Hopf–Rinow theorem",
       "anchor": {
         "section": "Hopf–Rinow theorem",
-        "snippet": "Let"
+        "snippet": "The Hopf–Rinow theorem characterizes geodesically complete manifolds"
       },
-      "provenance": "ai-agent1",
-      "id": "495aa58e4b6f"
+      "provenance": "ai-moderated",
+      "id": "495aa58e4b6f",
+      "note": "Anchor moved from the generic 'Let' to the theorem's characterizing sentence.",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note_annotation": "The Hopf–Rinow theorem is not in Mathlib."
     },
     {
       "kind": "definition",
@@ -452,7 +768,14 @@
         "snippet": "call a smooth vector field"
       },
       "provenance": "ai-agent1",
-      "id": "e3c779515c3d"
+      "id": "e3c779515c3d",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Parallel vector fields along a curve are not defined in Mathlib."
     },
     {
       "kind": "definition",
@@ -462,7 +785,14 @@
         "snippet": "to parallel transport a vector"
       },
       "provenance": "ai-agent1",
-      "id": "315bdcc1d773"
+      "id": "315bdcc1d773",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Parallel transport is not defined in Mathlib (the file `CovariantDerivative/Metric.lean` even notes it as a TODO)."
     },
     {
       "kind": "definition",
@@ -472,7 +802,14 @@
         "snippet": "The Riemann curvature tensor is the map"
       },
       "provenance": "ai-agent1",
-      "id": "32d0d2eb4d30"
+      "id": "32d0d2eb4d30",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Riemann curvature tensor is not defined in Mathlib."
     },
     {
       "kind": "theorem",
@@ -482,7 +819,14 @@
         "snippet": "The Riemann curvature tensor is 0 at every point if and only if the manifold is locally isometric to Euclidean space"
       },
       "provenance": "ai-agent1",
-      "id": "7234eca45be6"
+      "id": "7234eca45be6",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized: neither the curvature tensor nor local Riemannian isometries are in Mathlib."
     },
     {
       "kind": "definition",
@@ -492,7 +836,14 @@
         "snippet": "The Ricci curvature tensor is"
       },
       "provenance": "ai-agent1",
-      "id": "8b8f9fa879d9"
+      "id": "8b8f9fa879d9",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Ricci curvature tensor is not defined in Mathlib."
     },
     {
       "kind": "definition",
@@ -502,7 +853,14 @@
         "snippet": "is called an Einstein metric if Einstein's equation"
       },
       "provenance": "ai-agent1",
-      "id": "339fbf46408c"
+      "id": "339fbf46408c",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Einstein manifolds are not defined in Mathlib."
     },
     {
       "kind": "definition",
@@ -512,7 +870,14 @@
         "snippet": "A Riemannian manifold is said to have constant curvature κ if every sectional curvature equals the number κ"
       },
       "provenance": "ai-agent1",
-      "id": "4f09d256d55e"
+      "id": "4f09d256d55e",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Sectional and constant curvatures are not defined in Mathlib."
     },
     {
       "kind": "proposition",
@@ -522,7 +887,14 @@
         "snippet": "every Riemannian manifold of constant curvature is an Einstein manifold"
       },
       "provenance": "ai-agent1",
-      "id": "f781e34fc019"
+      "id": "f781e34fc019",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib: prerequisites (constant curvature, Einstein) are missing."
     },
     {
       "kind": "definition",
@@ -532,7 +904,14 @@
         "snippet": "A Riemannian space form is a Riemannian manifold with constant curvature which is additionally connected and geodesically complete"
       },
       "provenance": "ai-agent1",
-      "id": "4f56a1bbdf6b"
+      "id": "4f56a1bbdf6b",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Riemannian space forms are not defined in Mathlib."
     },
     {
       "kind": "theorem",
@@ -542,7 +921,14 @@
         "snippet": "the Killing–Hopf theorem says that any simply connected spherical space form is homothetic to the sphere"
       },
       "provenance": "ai-agent1",
-      "id": "2d19f141a247"
+      "id": "2d19f141a247",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Killing–Hopf classification of space forms is not in Mathlib."
     },
     {
       "kind": "definition",
@@ -552,7 +938,14 @@
         "snippet": "the inner product on the tangent space at an arbitrary point p is defined by"
       },
       "provenance": "ai-agent1",
-      "id": "fff138786d08"
+      "id": "fff138786d08",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Left-invariant Riemannian metrics on Lie groups are not constructed in Mathlib."
     },
     {
       "kind": "proposition",
@@ -562,7 +955,14 @@
         "snippet": "a Lie group can be given a bi-invariant Riemannian metric if and only if it is the product of a compact Lie group with an abelian Lie group"
       },
       "provenance": "ai-agent1",
-      "id": "67212202f752"
+      "id": "67212202f752",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The characterization of Lie groups admitting a bi-invariant metric is not in Mathlib."
     },
     {
       "kind": "definition",
@@ -572,7 +972,14 @@
         "snippet": "is said to be homogeneous if for every pair of points x and y in M , there is some isometry f of the Riemannian manifold sending x to y"
       },
       "provenance": "ai-agent1",
-      "id": "6092325a24c6"
+      "id": "6092325a24c6",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Homogeneous Riemannian manifolds are not defined in Mathlib."
     },
     {
       "kind": "proposition",
@@ -582,7 +989,14 @@
         "snippet": "Every homogeneous Riemannian manifold is geodesically complete and has constant scalar curvature"
       },
       "provenance": "ai-agent1",
-      "id": "6a594da2c18c"
+      "id": "6a594da2c18c",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib: homogeneity, geodesic completeness, and scalar curvature are all missing."
     },
     {
       "kind": "theorem",
@@ -592,7 +1006,14 @@
         "snippet": "Up to isometry, all homogeneous Riemannian manifolds arise by the following construction"
       },
       "provenance": "ai-agent1",
-      "id": "8cdd0bcab58d"
+      "id": "8cdd0bcab58d",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Lie-theoretic classification of homogeneous Riemannian manifolds is not in Mathlib."
     },
     {
       "kind": "definition",
@@ -602,7 +1023,14 @@
         "snippet": "is said to be symmetric if for every point p of M there exists some isometry of the manifold with p as a fixed point and for which the negation of the differential at p is the identity map"
       },
       "provenance": "ai-agent1",
-      "id": "bee20dd180e2"
+      "id": "bee20dd180e2",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Riemannian symmetric spaces are not defined in Mathlib."
     },
     {
       "kind": "theorem",
@@ -612,7 +1040,14 @@
         "snippet": "Élie Cartan proved in the 1920s that a locally symmetric Riemannian manifold which is geodesically complete and simply-connected must in fact be symmetric"
       },
       "provenance": "ai-agent1",
-      "id": "a220e1650d32"
+      "id": "a220e1650d32",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cartan's local-to-global theorem for symmetric spaces is not in Mathlib."
     },
     {
       "kind": "theorem",
@@ -622,7 +1057,14 @@
         "snippet": "any Riemannian manifold which is simply connected and irreducible is either a symmetric space or has Riemannian holonomy belonging to a list of only seven possibilities"
       },
       "provenance": "ai-agent1",
-      "id": "35015a6ed188"
+      "id": "35015a6ed188",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Berger's holonomy classification is not in Mathlib (no holonomy group is defined)."
     },
     {
       "kind": "definition",
@@ -632,7 +1074,14 @@
         "snippet": "A weak Riemannian metric on"
       },
       "provenance": "ai-agent1",
-      "id": "d640181d4a27"
+      "id": "d640181d4a27",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Weak vs strong Riemannian metrics on infinite-dimensional manifolds are not treated in Mathlib."
     },
     {
       "kind": "example",
@@ -642,7 +1091,14 @@
         "snippet": "is a strong Riemannian metric"
       },
       "provenance": "ai-agent1",
-      "id": "fa761a441e63"
+      "id": "fa761a441e63",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This infinite-dimensional example is not in Mathlib."
     },
     {
       "kind": "example",
@@ -652,7 +1108,14 @@
         "snippet": "weak Riemannian metric on"
       },
       "provenance": "ai-agent1",
-      "id": "c69f0fa06343"
+      "id": "c69f0fa06343",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The L² weak metric on a diffeomorphism group is not in Mathlib."
     },
     {
       "kind": "proposition",
@@ -662,7 +1125,14 @@
         "snippet": "is a strong Riemannian metric on"
       },
       "provenance": "ai-agent1",
-      "id": "2bac47e40d4b"
+      "id": "2bac47e40d4b",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized in Mathlib."
     },
     {
       "kind": "proposition",
@@ -672,7 +1142,14 @@
         "snippet": "may fail to separate points. In fact, it may even be identically 0"
       },
       "provenance": "ai-agent1",
-      "id": "01b99036b8ed"
+      "id": "01b99036b8ed",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Michor–Mumford vanishing-distance phenomenon is not in Mathlib."
     },
     {
       "kind": "theorem",
@@ -682,7 +1159,222 @@
         "snippet": "metric completeness (in the metric"
       },
       "provenance": "ai-agent1",
-      "id": "c588a1456cac"
+      "id": "c588a1456cac",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The infinite-dimensional Hopf–Rinow theorem is not in Mathlib."
+    },
+    {
+      "kind": "definition",
+      "label": "Tangent space",
+      "anchor": {
+        "section": "Riemannian metrics and Riemannian manifolds",
+        "snippet": "there is an associated vector space"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TangentSpace",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`TangentSpace I x` is Mathlib's tangent space of a manifold at a point."
+    },
+    {
+      "kind": "definition",
+      "label": "Induced norm from Riemannian metric",
+      "anchor": {
+        "section": "Riemannian metrics and Riemannian manifolds",
+        "snippet": "This induces a norm"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Bundle.instNormedAddCommGroup",
+        "module": "Mathlib.Topology.VectorBundle.Riemannian",
+        "match_kind": "exact"
+      },
+      "note": "Under `[RiemannianBundle E]`, Mathlib installs a `NormedAddCommGroup (E b)` and `InnerProductSpace ℝ (E b)` on each fiber via `RiemannianMetric.toCore`, giving the induced norm on tangent spaces."
+    },
+    {
+      "kind": "proposition",
+      "label": "Riemannian volume form preserved by orientation-preserving isometries",
+      "anchor": {
+        "section": "Volume",
+        "snippet": "The Riemannian volume form is preserved by orientation-preserving isometries"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Riemannian volume form is not defined in Mathlib, so its invariance under orientation-preserving isometries is not stated."
+    },
+    {
+      "kind": "definition",
+      "label": "Volume of a compact Riemannian manifold",
+      "anchor": {
+        "section": "Volume",
+        "snippet": "the volume of"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Riemannian volume of a compact Riemannian manifold is not defined in Mathlib."
+    },
+    {
+      "kind": "definition",
+      "label": "Pullback Riemannian metric",
+      "anchor": {
+        "section": "Submanifolds",
+        "snippet": "The pullback"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Pullback of a Riemannian metric along an immersion is not defined in Mathlib."
+    },
+    {
+      "kind": "example",
+      "label": "n-sphere as embedded submanifold",
+      "anchor": {
+        "section": "Submanifolds",
+        "snippet": "is a smooth embedded submanifold of Euclidean space"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The n-sphere as a smooth embedded Riemannian submanifold of Euclidean space is not constructed in Mathlib."
+    },
+    {
+      "kind": "example",
+      "label": "Product of Euclidean lines is Euclidean",
+      "anchor": {
+        "section": "Products",
+        "snippet": "is isometric to"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Riemannian isometry `ℝ × ⋯ × ℝ ≃ ℝⁿ` is not formalized; only the linear/inner-product identification via `EuclideanSpace` exists."
+    },
+    {
+      "kind": "definition",
+      "label": "Riemannian distance function",
+      "anchor": {
+        "section": "Metric space structure",
+        "snippet": "For"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Manifold.riemannianEDist",
+        "module": "Mathlib.Geometry.Manifold.Riemannian.PathELength",
+        "match_kind": "exact"
+      },
+      "note": "`Manifold.riemannianEDist I x y` is the infimum of `pathELength` over `C^1` paths between `x` and `y`, i.e., the Riemannian (extended) distance."
+    },
+    {
+      "kind": "theorem",
+      "label": "Whitney embedding gives a Riemannian metric",
+      "anchor": {
+        "section": "Every smooth manifold admits a Riemannian metric",
+        "snippet": "An alternative proof uses the Whitney embedding theorem to embed"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the Whitney embedding theorem for smooth manifolds nor the resulting induced Riemannian metric is in Mathlib."
+    },
+    {
+      "kind": "proposition",
+      "label": "Constant curvature: Ricci and scalar formulas",
+      "anchor": {
+        "section": "Constant curvature and space forms",
+        "snippet": "This implies that the Ricci curvature is given by R jk = ( n − 1) κg jk and the scalar curvature is n ( n − 1) κ"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No curvature tensors are defined in Mathlib, so these formulas are not stated."
+    },
+    {
+      "kind": "proposition",
+      "label": "Left-invariant metrics have constant scalar curvature",
+      "anchor": {
+        "section": "Left-invariant metrics on Lie groups",
+        "snippet": "All left-invariant metrics have constant scalar curvature"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Left-invariant metrics and scalar curvature are both absent from Mathlib."
+    },
+    {
+      "kind": "proposition",
+      "label": "Bi-invariant metrics have nonnegative sectional curvature",
+      "anchor": {
+        "section": "Left-invariant metrics on Lie groups",
+        "snippet": "Any bi-invariant Riemannian metric on a Lie group has nonnegative sectional curvature"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Sectional curvature and bi-invariant metrics are not in Mathlib."
+    },
+    {
+      "kind": "proposition",
+      "label": "Symmetric spaces are homogeneous",
+      "anchor": {
+        "section": "Symmetric spaces",
+        "snippet": "Every Riemannian symmetric space is homogeneous"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither symmetric nor homogeneous Riemannian manifolds are defined in Mathlib."
     }
   ]
 }

@@ -3,6 +3,7 @@
   "wikipedia_title": "Characterizations of the exponential function",
   "display_title": "Characterizations of the exponential function",
   "schema_version": 3,
+  "annotation_style": "theorem_article",
   "annotations": [
     {
       "kind": "definition",
@@ -12,7 +13,14 @@
         "snippet": "Product limit. Define"
       },
       "provenance": "ai-agent1",
-      "id": "c4445c768190"
+      "id": "c4445c768190",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines Real.exp / NormedSpace.exp via a power series, not as the product limit (1 + x/n)^n; no declaration formalizes this alternative definition."
     },
     {
       "kind": "definition",
@@ -22,7 +30,14 @@
         "snippet": "Power series . Define e x as the value of the infinite series"
       },
       "provenance": "ai-agent1",
-      "id": "a4786e492fc8"
+      "id": "a4786e492fc8",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedSpace.exp_eq_tsum_div",
+        "module": "Mathlib.Analysis.Normed.Algebra.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's canonical definition of the exponential (NormedSpace.exp via NormedSpace.expSeries) is exactly this power series, and NormedSpace.exp_eq_tsum_div/NormedSpace.exp_eq_tsum witness the tsum form."
     },
     {
       "kind": "definition",
@@ -32,7 +47,14 @@
         "snippet": "Inverse of logarithm integral. Define"
       },
       "provenance": "ai-agent1",
-      "id": "b04efe385120"
+      "id": "b04efe385120",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.exp_log",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "match_kind": null
+      },
+      "note": "Real.log is defined via the exponential order-iso (not as ∫1/t) but Real.exp_log gives the inverse relationship and integral_one_div_of_pos ties the integral to log, so only the definitional route is missing."
     },
     {
       "kind": "definition",
@@ -42,7 +64,14 @@
         "snippet": "Differential equation. Define"
       },
       "provenance": "ai-agent1",
-      "id": "226abe8ecd65"
+      "id": "226abe8ecd65",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.hasDerivAt_exp",
+        "module": "Mathlib.Analysis.SpecialFunctions.ExpDeriv",
+        "match_kind": null
+      },
+      "note": "Mathlib proves Real.hasDerivAt_exp (exp'=exp) and Real.exp_zero=1, but does not define exp as the unique solution of y'=y with y(0)=1."
     },
     {
       "kind": "definition",
@@ -52,7 +81,14 @@
         "snippet": "Functional equation. The exponential function"
       },
       "provenance": "ai-agent1",
-      "id": "cfa33d9399e0"
+      "id": "cfa33d9399e0",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.exp_add",
+        "module": "Mathlib.Analysis.Complex.Exponential",
+        "match_kind": null
+      },
+      "note": "Real.exp_add / Complex.exp_add formalize the multiplicative property, but exp is not defined by this functional equation plus a regularity+normalization condition."
     },
     {
       "kind": "definition",
@@ -62,7 +98,14 @@
         "snippet": "Elementary definition by powers. Define the exponential function with base"
       },
       "provenance": "ai-agent1",
-      "id": "81e4cd89a413"
+      "id": "81e4cd89a413",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's Real.rpow routes through exp/log rather than through a distinguished base b characterized by lim (b^h−1)/h = 1, so this elementary characterization is not present as a definition."
     },
     {
       "kind": "proposition",
@@ -72,7 +115,14 @@
         "snippet": "The error of the product limit expression is described by"
       },
       "provenance": "ai-agent1",
-      "id": "fe414e0329c1"
+      "id": "fe414e0329c1",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib lemma bounds the difference exp(x) − (1+x/n)^n by the leading O(x^2/n) term of this expansion."
     },
     {
       "kind": "proposition",
@@ -82,7 +132,14 @@
         "snippet": "it follows from the ratio test that"
       },
       "provenance": "ai-agent1",
-      "id": "f6f4a29b9204"
+      "id": "f6f4a29b9204",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedSpace.expSeries_radius_eq_top",
+        "module": "Mathlib.Analysis.Normed.Algebra.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "NormedSpace.expSeries_radius_eq_top shows the exponential series has infinite radius of convergence, i.e. converges for every argument."
     },
     {
       "kind": "proposition",
@@ -92,7 +149,14 @@
         "snippet": "It must be shown that the function from"
       },
       "provenance": "ai-agent1",
-      "id": "d23570e890ed"
+      "id": "d23570e890ed",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.expOrderIso",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "match_kind": null
+      },
+      "note": "Real.expOrderIso (exp: ℝ ≃ ℝ>0) and Real.log_injOn_pos witness that log is a bijection ℝ>0 → ℝ, but not via the integral characterization."
     },
     {
       "kind": "proposition",
@@ -102,7 +166,14 @@
         "snippet": "This limit can be shown to exist for any"
       },
       "provenance": "ai-agent1",
-      "id": "1be8e2b41ceb"
+      "id": "1be8e2b41ceb",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The claim that lim (b^h−1)/h exists for every b>0 and yields ln b is not stated in Mathlib as a standalone existence result driving an alternative definition."
     },
     {
       "kind": "theorem",
@@ -112,7 +183,14 @@
         "snippet": "The following argument is adapted from Rudin"
       },
       "provenance": "ai-agent1",
-      "id": "922ce2cad937"
+      "id": "922ce2cad937",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib theorem proves the product-limit form equals the power-series form of exp."
     },
     {
       "kind": "theorem",
@@ -122,7 +200,14 @@
         "snippet": "Here, the natural logarithm function is defined in terms of a definite integral"
       },
       "provenance": "ai-agent1",
-      "id": "cf9903c8ea65"
+      "id": "cf9903c8ea65",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib equivalence between the product-limit characterization and the inverse-of-∫1/t characterization is stated."
     },
     {
       "kind": "theorem",
@@ -132,7 +217,14 @@
         "snippet": "Applying the simplest form of Euler's method"
       },
       "provenance": "ai-agent1",
-      "id": "34462eba89b5"
+      "id": "34462eba89b5",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Euler-method argument connecting the product-limit definition to the ODE definition is not formalized."
     },
     {
       "kind": "theorem",
@@ -142,7 +234,14 @@
         "snippet": "This shows that definition 4 implies definition 2."
       },
       "provenance": "ai-agent1",
-      "id": "ade61e640a81"
+      "id": "ade61e640a81",
+      "status": "partial",
+      "mathlib": {
+        "decl": "hasDerivAt_exp",
+        "module": "Mathlib.Analysis.SpecialFunctions.Exponential",
+        "match_kind": null
+      },
+      "note": "hasDerivAt_exp + NormedSpace.exp_zero establish that the power-series exp satisfies the ODE, but the reverse direction (uniqueness giving 4 ⇒ 2) is not packaged as an equivalence."
     },
     {
       "kind": "theorem",
@@ -152,7 +251,14 @@
         "snippet": "follows from the term-by-term manipulation of power series justified by uniform convergence"
       },
       "provenance": "ai-agent1",
-      "id": "d9039f2a5992"
+      "id": "d9039f2a5992",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.exp_add",
+        "module": "Mathlib.Analysis.Complex.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "Real.exp_add (and Complex.exp_add / NormedSpace.exp_add_of_commute) prove multiplicativity directly from the power-series definition."
     },
     {
       "kind": "theorem",
@@ -162,7 +268,14 @@
         "snippet": "Characterisation 3 first defines the natural logarithm"
       },
       "provenance": "ai-agent1",
-      "id": "7d329fb4d53f"
+      "id": "7d329fb4d53f",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib theorem states the equivalence of the inverse-of-∫1/t definition and the ODE definition of exp."
     },
     {
       "kind": "theorem",
@@ -172,7 +285,14 @@
         "snippet": "imply both conditions in characterization 4"
       },
       "provenance": "ai-agent1",
-      "id": "779ed6faadb6"
+      "id": "779ed6faadb6",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib result derives the ODE characterization from the multiplicative-plus-regularity characterization."
     },
     {
       "kind": "theorem",
@@ -182,7 +302,14 @@
         "snippet": "Assume characterization 5, the multiplicative property together with the initial condition"
       },
       "provenance": "ai-agent1",
-      "id": "55cf619eb130"
+      "id": "55cf619eb130",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The alternate proof deducing y'=y from f(x+y)=f(x)f(y) plus f'(0)=1 is not present in Mathlib."
     },
     {
       "kind": "theorem",
@@ -192,7 +319,14 @@
         "snippet": "By inductively applying the multiplication rule"
       },
       "provenance": "ai-agent1",
-      "id": "685624a9c9c1"
+      "id": "685624a9c9c1",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not link the multiplicative-property characterization to the b^x elementary characterization as an if-and-only-if."
     },
     {
       "kind": "theorem",
@@ -202,7 +336,14 @@
         "snippet": "we will prove that Lebesgue-integrability implies continuity"
       },
       "provenance": "ai-agent1",
-      "id": "64ba9e10bcbe"
+      "id": "64ba9e10bcbe",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib lemma proves that a Lebesgue-integrable solution of the Cauchy multiplicative functional equation is continuous."
     },
     {
       "kind": "example",
@@ -212,7 +353,222 @@
         "snippet": "satisfies the three listed regularity conditions in (5) but is not equal to"
       },
       "provenance": "ai-agent1",
-      "id": "96b81fb5a6db"
+      "id": "96b81fb5a6db",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The counterexample showing that the characterizations fail on ℂ without further conditions is not formalized in Mathlib."
+    },
+    {
+      "kind": "definition",
+      "label": "Natural logarithm as integral",
+      "anchor": {
+        "section": "Characterizations",
+        "snippet": "is the inverse of the natural logarithm function"
+      },
+      "provenance": "ai",
+      "status": "partial",
+      "mathlib": {
+        "decl": "integral_one_div_of_pos",
+        "module": "Mathlib.Analysis.SpecialFunctions.Integrals.Basic",
+        "match_kind": null
+      },
+      "note": "Real.log is not defined as ∫1/t in Mathlib, but integral_one_div_of_pos proves ∫ 1/x from a..b = log(b/a) so the integral identity is available."
+    },
+    {
+      "kind": "proposition",
+      "label": "Extension to complex domain via analytic continuation",
+      "anchor": {
+        "section": "Larger domains",
+        "snippet": "and then extend it as an analytic function"
+      },
+      "provenance": "ai",
+      "status": "partial",
+      "mathlib": {
+        "decl": "analyticAt_cexp",
+        "module": "Mathlib.Analysis.SpecialFunctions.ExpDeriv",
+        "match_kind": null
+      },
+      "note": "analyticAt_cexp shows Complex.exp is entire, but Mathlib constructs Complex.exp directly from its series rather than by analytic continuation from Real.exp."
+    },
+    {
+      "kind": "proposition",
+      "label": "Definitions (1), (2), (4) extend to Banach algebras",
+      "anchor": {
+        "section": "Larger domains",
+        "snippet": "Definitions (1), (2), and (4) all make sense for arbitrary Banach algebras"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedSpace.exp",
+        "module": "Mathlib.Analysis.Normed.Algebra.Exponential",
+        "match_kind": "generalization"
+      },
+      "note": "NormedSpace.exp and its ODE/series lemmas (hasDerivAt_exp, NormedSpace.exp_eq_tsum) formalize exp on any Banach algebra via the power-series and ODE routes."
+    },
+    {
+      "kind": "proposition",
+      "label": "Integrand 1/t is integrable, integral well-defined",
+      "anchor": {
+        "section": "Characterization 3",
+        "snippet": "Since the integrand is an integrable function of t , the integral expression is well-defined"
+      },
+      "provenance": "ai",
+      "status": "partial",
+      "mathlib": {
+        "decl": "integral_one_div_of_pos",
+        "module": "Mathlib.Analysis.SpecialFunctions.Integrals.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib has integrability of 1/x on intervals avoiding 0 (used implicitly by integral_one_div_of_pos) but no standalone lemma phrased as `1/t is integrable, so the log integral is well-defined`."
+    },
+    {
+      "kind": "proposition",
+      "label": "Surjectivity via divergence of harmonic series",
+      "anchor": {
+        "section": "Characterization 3",
+        "snippet": "they follow from the integral test and the divergence of the harmonic series"
+      },
+      "provenance": "ai",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.expOrderIso",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "match_kind": null
+      },
+      "note": "Surjectivity of log ℝ>0 → ℝ is available via Real.expOrderIso, but Mathlib does not derive it from the integral-test/divergence-of-harmonic-series argument."
+    },
+    {
+      "kind": "proposition",
+      "label": "Intermediate value theorem guarantees existence of base",
+      "anchor": {
+        "section": "Characterization 6",
+        "snippet": "the Intermediate value theorem guarantees the existence of such a value"
+      },
+      "provenance": "ai",
+      "status": "partial",
+      "mathlib": {
+        "decl": "intermediate_value_univ",
+        "module": "Mathlib.Topology.Order.IntermediateValue",
+        "match_kind": null
+      },
+      "note": "The Intermediate Value Theorem is formalized as intermediate_value_univ / IsPreconnected.intermediate_value, but its application to produce the exponential base is not."
+    },
+    {
+      "kind": "proposition",
+      "label": "Binomial theorem bound in Rudin's argument",
+      "anchor": {
+        "section": "Characterization 1 ⇔ characterization 2",
+        "snippet": "By the binomial theorem"
+      },
+      "provenance": "ai",
+      "status": "partial",
+      "mathlib": {
+        "decl": "add_pow",
+        "module": "Mathlib.Algebra.BigOperators.NatAntidiagonal",
+        "match_kind": null
+      },
+      "note": "The general binomial theorem (add_pow / Commute.add_pow) is formalized, but its specific use to bound (1+x/n)^n vs the partial sums of exp(x) is not."
+    },
+    {
+      "kind": "proposition",
+      "label": "Extension of equivalence to negative reals",
+      "anchor": {
+        "section": "Characterization 1 ⇔ characterization 2",
+        "snippet": "This equivalence can be extended to the negative real numbers"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The extension of the product-limit ⇔ power-series equivalence to negative arguments is not formalized."
+    },
+    {
+      "kind": "proposition",
+      "label": "Fundamental theorem of calculus applied to ln",
+      "anchor": {
+        "section": "Characterization 1 ⇔ characterization 3",
+        "snippet": "By the first part of fundamental theorem of calculus"
+      },
+      "provenance": "ai",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.hasDerivAt_log",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Deriv",
+        "match_kind": null
+      },
+      "note": "The FTC (intervalIntegral.integral_eq_sub_of_hasDerivAt) and Real.hasDerivAt_log are both formalized, so the specific derivation (d/dx ∫₁^x 1/t = 1/x) is a routine composition, but not packaged as one lemma."
+    },
+    {
+      "kind": "proposition",
+      "label": "Logarithm power rule ln(a^n) = n ln(a)",
+      "anchor": {
+        "section": "Characterization 1 ⇔ characterization 3",
+        "snippet": "the result ln a n = n ln a has been used"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.log_pow",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Real.log_pow states log(x^n) = n * log x exactly."
+    },
+    {
+      "kind": "proposition",
+      "label": "Euler's method converges to exact solution",
+      "anchor": {
+        "section": "Characterization 1 ⇔ characterization 4",
+        "snippet": "since Euler's Method is known to converge to the exact solution"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has ODE_solution_unique but no formalization of the convergence of the Euler discretization to the exact ODE solution."
+    },
+    {
+      "kind": "proposition",
+      "label": "Nonzero function is nonzero everywhere",
+      "anchor": {
+        "section": "Characterization 5 ⇒ characterization 6",
+        "snippet": "If [MATH] is nonzero anywhere (say at [MATH] ), then it is non-zero everywhere"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib lemma proves that a solution of the multiplicative Cauchy equation nonzero at one point is nonzero everywhere."
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuity at one point implies continuity everywhere",
+      "anchor": {
+        "section": "Characterization 5 ⇒ characterization 6",
+        "snippet": "If [MATH] is continuous anywhere (say at [MATH] ), then it is continuous everywhere"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib lemma establishes that a solution of the multiplicative Cauchy equation continuous at one point is continuous everywhere."
     }
   ]
 }

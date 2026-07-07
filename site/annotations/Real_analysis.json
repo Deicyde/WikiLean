@@ -53,7 +53,8 @@
         "match_kind": "exact"
       },
       "note": "tendsto_atTop_ciSup proves a monotone sequence bounded above converges to its supremum.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "73db57c980a7"
     },
     {
       "kind": "theorem",
@@ -69,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "intermediate_value_Icc states the IVT for continuous functions on a closed interval.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5040814bbfd8"
     },
     {
       "kind": "theorem",
@@ -85,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "exists_hasDerivAt_eq_slope is the mean value theorem for real-valued differentiable functions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "24390521a279"
     },
     {
       "kind": "definition",
@@ -113,12 +116,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": null,
+        "decl": "instOrderTopologyReal",
         "module": "Mathlib.Topology.MetricSpace.Pseudo.Lemmas",
-        "match_kind": "exact"
+        "match_kind": "invocation"
       },
-      "note": "The `instance : OrderTopology ℝ` establishes that the order topology coincides with ℝ's metric-induced topology.",
-      "provenance": "ai",
+      "note": "The `instOrderTopologyReal : OrderTopology ℝ` instance combined with ℝ's metric structure establishes that ℝ's order and metric topologies coincide.",
+      "provenance": "ai-moderated",
       "id": "144a7732bcbd"
     },
     {
@@ -373,7 +376,8 @@
         "match_kind": "exact"
       },
       "note": "TendstoUniformly.continuous shows the uniform limit of continuous functions is continuous.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5b8ceaeae02b"
     },
     {
       "kind": "example",
@@ -603,14 +607,14 @@
         "section": "Absolute continuity",
         "snippet": "is said to be absolutely continuous on"
       },
-      "status": "formalized",
+      "status": "partial",
       "mathlib": {
-        "decl": "AbsolutelyContinuousOnInterval",
-        "module": "Mathlib.MeasureTheory.Function.AbsolutelyContinuous",
-        "match_kind": "exact"
+        "decl": null,
+        "module": null,
+        "match_kind": null
       },
-      "note": "AbsolutelyContinuousOnInterval formalizes absolute continuity of a function on an interval, with the ε-δ form in absolutelyContinuousOnInterval_iff.",
-      "provenance": "ai",
+      "note": "Mathlib has `MeasureTheory.Measure.AbsolutelyContinuous` for measures, but absolute continuity of a function on an interval is not yet a named Mathlib definition.",
+      "provenance": "ai-moderated",
       "id": "965ccf380227"
     },
     {
@@ -620,14 +624,14 @@
         "section": "Absolute continuity",
         "snippet": "Absolutely continuous functions are continuous"
       },
-      "status": "formalized",
+      "status": "partial",
       "mathlib": {
-        "decl": "AbsolutelyContinuousOnInterval.uniformContinuousOn",
-        "module": "Mathlib.MeasureTheory.Function.AbsolutelyContinuous",
-        "match_kind": "generalization"
+        "decl": null,
+        "module": null,
+        "match_kind": null
       },
-      "note": "AbsolutelyContinuousOnInterval.uniformContinuousOn proves absolutely continuous functions are uniformly (hence) continuous.",
-      "provenance": "ai",
+      "note": "Without a named definition of absolutely continuous functions on intervals, the corollary that they are continuous is not a single named Mathlib lemma.",
+      "provenance": "ai-moderated",
       "id": "7a0c89b42844"
     },
     {
@@ -678,7 +682,8 @@
         "match_kind": null
       },
       "note": "Mathlib has not yet formalized a named version of Weierstrass's nowhere-differentiable continuous function.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8c7175fa4eb8"
     },
     {
       "kind": "definition",
@@ -796,7 +801,8 @@
         "match_kind": null
       },
       "note": "Mathlib has lemmas on rearrangements of conditionally convergent series but no single named Riemann rearrangement theorem.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ce1e9e1a05c8"
     },
     {
       "kind": "example",
@@ -931,7 +937,8 @@
         "match_kind": "exact"
       },
       "note": "FormalMultilinearSeries.radius gives the radius of convergence of a formal power series.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f3d77fa262e5"
     },
     {
       "kind": "definition",
@@ -1100,7 +1107,8 @@
         "match_kind": "generalization"
       },
       "note": "MeasureTheory.integral is the (Bochner) Lebesgue integral, defined for a wide class of measurable functions on a measure space.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bdf44e279297"
     },
     {
       "kind": "definition",
@@ -1167,7 +1175,8 @@
         "match_kind": "generalization"
       },
       "note": "Every bounded sequence in ℝⁿ has a convergent subsequence via tendsto_subseq_of_bounded, the Bolzano–Weierstrass statement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1c4744bb7de0"
     },
     {
       "kind": "theorem",
@@ -1183,7 +1192,8 @@
         "match_kind": "exact"
       },
       "note": "BaireSpace instance on complete metric / locally compact Hausdorff spaces, with the countable-intersection-of-dense-opens statement dense_iInter_of_isOpen.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "54fca6a13966"
     },
     {
       "kind": "theorem",
@@ -1199,7 +1209,8 @@
         "match_kind": "exact"
       },
       "note": "HasDerivAt.lhopital_zero_nhds (and atTop variants) formalize L'Hôpital's rule.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e318dd215cf5"
     },
     {
       "kind": "theorem",
@@ -1215,7 +1226,8 @@
         "match_kind": "exact"
       },
       "note": "taylor_mean_remainder_lagrange (and Cauchy form) give Taylor's theorem with the explicit remainder.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "380618d3847a"
     },
     {
       "kind": "theorem",
@@ -1231,7 +1243,8 @@
         "match_kind": null
       },
       "note": "Dini's theorem (monotone pointwise convergence to a continuous limit on a compact set is uniform) does not appear to have a single named declaration in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "65b376e0a999"
     },
     {
       "kind": "theorem",
@@ -1247,7 +1260,8 @@
         "match_kind": "exact"
       },
       "note": "BoundedContinuousFunction.arzela_ascoli formalizes the Arzelà–Ascoli compactness criterion for equicontinuous families of continuous functions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4521babf18c6"
     },
     {
       "kind": "theorem",
@@ -1263,7 +1277,8 @@
         "match_kind": "exact"
       },
       "note": "ContinuousMap.subalgebra_topologicalClosure_eq_top_of_separatesPoints is the Stone–Weierstrass theorem (real form), with polynomial special case polynomialFunctions_closure_eq_top.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6d969e68a5f1"
     },
     {
       "kind": "theorem",
@@ -1279,7 +1294,8 @@
         "match_kind": "exact"
       },
       "note": "ContractingWith.fixedPoint / exists_fixedPoint give the Banach contraction mapping theorem on complete metric spaces.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "155171f7ecc4"
     },
     {
       "kind": "theorem",
@@ -1295,7 +1311,8 @@
         "match_kind": "exact"
       },
       "note": "HasStrictFDerivAt.localInverse / to_localHomeomorph formalizes the inverse function theorem in Banach spaces.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e508b275ebc0"
     },
     {
       "kind": "theorem",
@@ -1311,7 +1328,8 @@
         "match_kind": "exact"
       },
       "note": "HasStrictFDerivAt.implicitFunction states the implicit function theorem in Banach spaces.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "316e097b56b9"
     },
     {
       "kind": "theorem",
@@ -1327,7 +1345,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib has the divergence/Stokes theorem on rectangles (and the BoxIntegral GP form) but no general Stokes' theorem on manifolds yet.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "99a9ab1ebb38"
     },
     {
       "kind": "theorem",
@@ -1343,7 +1362,8 @@
         "match_kind": "exact"
       },
       "note": "MeasureTheory.Egorov.tendstoUniformlyOn_sdiff_iUnionNotConvergentSeq states Egorov's theorem: a.e.-convergent measurable functions converge uniformly off a small-measure set.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9aba369cf433"
     },
     {
       "kind": "theorem",
@@ -1359,7 +1379,8 @@
         "match_kind": null
       },
       "note": "Lusin's theorem (measurable functions agree with continuous functions off small-measure sets) is not yet a named declaration in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1124ad61c6e4"
     },
     {
       "kind": "theorem",
@@ -1375,7 +1396,8 @@
         "match_kind": "exact"
       },
       "note": "MeasureTheory.lintegral_liminf_le states Fatou's lemma for the Lebesgue (lower-integral) version.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dedcbe979f41"
     },
     {
       "kind": "theorem",
@@ -1391,7 +1413,8 @@
         "match_kind": "exact"
       },
       "note": "MeasureTheory.lintegral_iSup is the monotone convergence theorem for the Lebesgue integral.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "78e309cc19d1"
     },
     {
       "kind": "theorem",
@@ -1407,7 +1430,8 @@
         "match_kind": "exact"
       },
       "note": "MeasureTheory.tendsto_integral_of_dominated_convergence is the Lebesgue/Bochner dominated convergence theorem.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9cd28eb2b58e"
     },
     {
       "kind": "theorem",
@@ -1423,7 +1447,8 @@
         "match_kind": "exact"
       },
       "note": "MeasureTheory.integral_prod is Fubini's theorem for product integrals.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2a9cf2a440c0"
     },
     {
       "kind": "theorem",
@@ -1439,7 +1464,8 @@
         "match_kind": "exact"
       },
       "note": "rnDeriv / Measure.withDensity_rnDeriv_eq give the Radon–Nikodym derivative and theorem for σ-finite measures.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4e97b0c159a4"
     },
     {
       "kind": "theorem",
@@ -1455,7 +1481,8 @@
         "match_kind": null
       },
       "note": "Mathlib has Vitali-family differentiation lemmas (tendsto_ae limits of averages over shrinking balls) but no single named 'Lebesgue differentiation theorem'.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c5d50fb93f9a"
     },
     {
       "kind": "theorem",
@@ -1471,7 +1498,8 @@
         "match_kind": "exact"
       },
       "note": "exists_extension_norm_eq formalizes the analytic Hahn–Banach extension theorem on normed spaces.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "87d45235f5c8"
     },
     {
       "kind": "theorem",
@@ -1487,7 +1515,8 @@
         "match_kind": "exact"
       },
       "note": "WeakDual.isCompact_polar / isCompact_closedBall give the Banach–Alaoglu theorem on weak-* compactness of the closed unit ball of the dual.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2e71767f6560"
     },
     {
       "kind": "theorem",
@@ -1503,7 +1532,8 @@
         "match_kind": "generalization"
       },
       "note": "InnerProductSpace.toDual is the Riesz representation theorem for Hilbert spaces; rieszContent gives the measure-theoretic Riesz–Markov–Kakutani form.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b18f07581113"
     },
     {
       "kind": "theorem",
@@ -1519,6 +1549,119 @@
         "match_kind": null
       },
       "note": "Mathlib has partial Fourier-isometry results for L² but no single named Plancherel theorem declaration.",
+      "provenance": "ai",
+      "id": "c4a6c0c77986"
+    },
+    {
+      "kind": "definition",
+      "label": "Ordered field structure on ℝ",
+      "anchor": {
+        "section": "Construction of the real numbers",
+        "snippet": "The operations make the real numbers a field , and, along with the order, an ordered field"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.instIsStrictOrderedRing",
+        "module": "Mathlib.Data.Real.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "ℝ has `Real.instField` plus `Real.instLinearOrder` and `Real.instIsStrictOrderedRing`, the modern Mathlib refactoring of the former `LinearOrderedField` typeclass into separate field/order/strict-ordered-ring instances.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Total order on ℝ",
+      "anchor": {
+        "section": "Order properties of the real numbers",
+        "snippet": "the ordering of the real numbers is total"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearOrder",
+        "module": "Mathlib.Order.Defs.LinearOrder",
+        "match_kind": "generalization"
+      },
+      "note": "The total order on ℝ is captured by the `LinearOrder ℝ` instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Open cover",
+      "anchor": {
+        "section": "Compactness",
+        "snippet": "is said to be an open cover of set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.sUnion_eq_univ_iff",
+        "module": "Mathlib.Data.Set.Lattice",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib expresses an open cover inline as a family of opens with `s ⊆ ⋃ i, U i` rather than a named `OpenCover` predicate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Banach space",
+      "anchor": {
+        "section": "Generalizations and related areas of mathematics",
+        "snippet": "the concepts of Banach spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedSpace",
+        "module": "Mathlib.Analysis.Normed.Module.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "A Banach space is a complete normed space — `NormedSpace 𝕜 E` together with `CompleteSpace E`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hilbert space",
+      "anchor": {
+        "section": "Generalizations and related areas of mathematics",
+        "snippet": "and Hilbert spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "A Hilbert space is an `InnerProductSpace 𝕜 E` with `CompleteSpace E`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Extended real line",
+      "anchor": {
+        "section": "Relation to complex analysis",
+        "snippet": "often including positive and negative infinity to form the extended real line"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EReal",
+        "module": "Mathlib.Data.EReal.Basic",
+        "match_kind": "exact"
+      },
+      "note": "EReal is Mathlib's extended real line ℝ ∪ {±∞}.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Holomorphic function",
+      "anchor": {
+        "section": "Relation to complex analysis",
+        "snippet": "it is natural to define differentiation via holomorphic functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DifferentiableOn",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Complex differentiability/holomorphy is `DifferentiableOn ℂ f s` (equivalently `AnalyticOn ℂ f s` on open sets).",
       "provenance": "ai"
     }
   ]

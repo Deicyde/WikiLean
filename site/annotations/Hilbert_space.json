@@ -295,6 +295,22 @@
       "id": "41ba29ea7504"
     },
     {
+      "kind": "proposition",
+      "label": "Triangle inequality for the inner-product norm",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "the triangle inequality holds, meaning that the length of one leg of a triangle xyz cannot exceed the sum of the lengths of the other two legs"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "norm_add_le",
+        "module": "Mathlib.Analysis.Normed.Group.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`norm_add_le` is the triangle inequality in any (semi)normed group, which the inner-product norm specializes.",
+      "provenance": "ai"
+    },
+    {
       "kind": "theorem",
       "label": "Cauchy–Schwarz inequality",
       "anchor": {
@@ -1060,6 +1076,22 @@
       "id": "597bd61953a8"
     },
     {
+      "kind": "proposition",
+      "label": "Orthonormal sequences converge weakly to zero",
+      "anchor": {
+        "section": "Weakly convergent sequences",
+        "snippet": "any orthonormal sequence { f n } converges weakly to 0, as a consequence of Bessel's inequality"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Weak convergence to zero of orthonormal sequences is not explicitly stated; it would follow from `Orthonormal.tsum_inner_products_le`.",
+      "provenance": "ai"
+    },
+    {
       "kind": "theorem",
       "label": "Alaoglu's theorem (weak compactness of bounded sets)",
       "anchor": {
@@ -1197,6 +1229,22 @@
     },
     {
       "kind": "proposition",
+      "label": "Adjoint is involutive (A** = A)",
+      "anchor": {
+        "section": "Bounded operators",
+        "snippet": "The adjoint satisfies A ** = A"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.adjoint_adjoint",
+        "module": "Mathlib.Analysis.InnerProductSpace.Adjoint",
+        "match_kind": "exact"
+      },
+      "note": "`adjoint_adjoint` gives `A.adjoint.adjoint = A` for bounded operators between Hilbert spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
       "label": "B(H) is a C*-algebra",
       "anchor": {
         "section": "Bounded operators",
@@ -1311,7 +1359,8 @@
         "match_kind": null
       },
       "note": "Hilbert–Schmidt operators are not defined as a class in Mathlib (referenced in tensor-product identifications but no dedicated definition).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "aa766fc0ad8a"
     },
     {
       "kind": "definition",
@@ -2024,7 +2073,8 @@
         "match_kind": "exact"
       },
       "note": "`Module.End.eigenspace` defines the λ-eigenspace `ker (T - λ • 1)`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "614d1693e0bc"
     },
     {
       "kind": "theorem",
@@ -2039,7 +2089,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The unbounded spectral theorem (resolution of identity for unbounded self-adjoint operators) is not in Mathlib.",
+      "note": "The unbounded spectral theorem (resolution of identity for unbounded self-adjoint operators) is notin Mathlib.",
       "provenance": "ai",
       "id": "6c20e7031758"
     }

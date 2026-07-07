@@ -1243,7 +1243,8 @@
         "match_kind": "exact"
       },
       "note": "`Polynomial.IsEisensteinAt.irreducible` gives Eisenstein's criterion: an Eisenstein polynomial is irreducible.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dc2d843384af"
     },
     {
       "kind": "theorem",
@@ -1276,7 +1277,8 @@
         "match_kind": "exact"
       },
       "note": "`Lagrange.interpolate` constructs the unique polynomial of bounded degree passing through given points.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0fdd56dad81f"
     },
     {
       "kind": "theorem",
@@ -1379,6 +1381,102 @@
       "note": "Computational complexity classes such as polynomial time are not formalized in Mathlib.",
       "provenance": "ai",
       "id": "5b28580a4c54"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum of polynomials is a polynomial",
+      "anchor": {
+        "section": "Addition and subtraction",
+        "snippet": "When polynomials are added together, the result is another polynomial."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.instAdd",
+        "module": "Mathlib.Algebra.Polynomial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Closure of polynomials under addition is the additive structure on `R[X]`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Product of polynomials is a polynomial",
+      "anchor": {
+        "section": "Multiplication",
+        "snippet": "the product of polynomials is always a polynomial"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.instMul",
+        "module": "Mathlib.Algebra.Polynomial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Closure of polynomials under multiplication is the multiplicative structure on `R[X]`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Composition of polynomials is a polynomial",
+      "anchor": {
+        "section": "Composition",
+        "snippet": "The composition of two polynomials is another polynomial."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.comp",
+        "module": "Mathlib.Algebra.Polynomial.Eval.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Polynomial.comp p q : R[X]` lives in the polynomial ring, so composition is closed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multiplicity (root multiplicity)",
+      "anchor": {
+        "section": "Solving equations",
+        "snippet": "which is called the multiplicity of a as a root of P"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.rootMultiplicity",
+        "module": "Mathlib.Algebra.Polynomial.Div",
+        "match_kind": "exact"
+      },
+      "note": "`Polynomial.rootMultiplicity a p` is the largest `m` with `(X - C a) ^ m ∣ p`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Roots-with-multiplicity equals degree over an algebraically closed field",
+      "anchor": {
+        "section": "Solving equations",
+        "snippet": "the number of (complex) roots counted with their multiplicities is exactly equal to the degree of the polynomial"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.Splits.natDegree_eq_card_roots",
+        "module": "Mathlib.Algebra.Polynomial.Splits",
+        "match_kind": "generalization"
+      },
+      "note": "`Polynomial.Splits.natDegree_eq_card_roots` shows for a splitting polynomial the multiset of roots has cardinality equal to the degree (FTA gives this over `ℂ`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Polynomial evaluation at a matrix (aeval)",
+      "anchor": {
+        "section": "Matrix polynomials",
+        "snippet": "this polynomial evaluated at a matrix A is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.aeval",
+        "module": "Mathlib.Algebra.Polynomial.AlgebraMap",
+        "match_kind": "exact"
+      },
+      "note": "`Polynomial.aeval A p` evaluates a scalar polynomial at a matrix (or any algebra element), substituting `I` for the constant.",
+      "provenance": "ai"
     }
   ]
 }

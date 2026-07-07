@@ -3,6 +3,7 @@
   "wikipedia_title": "Covariant derivative",
   "display_title": "Covariant derivative",
   "schema_version": 3,
+  "annotation_style": "theorem_article",
   "annotations": [
     {
       "kind": "definition",
@@ -12,7 +13,14 @@
         "snippet": "the covariant derivative is a way of specifying a derivative along tangent vectors of a manifold"
       },
       "provenance": "ai-agent1",
-      "id": "f68b76a0ef43"
+      "id": "f68b76a0ef43",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CovariantDerivative",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `CovariantDerivative` structure defines a bundled Koszul connection on an arbitrary vector bundle, generalizing the tangent-bundle case in the lead."
     },
     {
       "kind": "proposition",
@@ -22,7 +30,14 @@
         "snippet": "the covariant derivative transforms covariantly under a general coordinate transformation"
       },
       "provenance": "ai-agent1",
-      "id": "0a65faf04e40"
+      "id": "0a65faf04e40",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's covariant derivative is coordinate-free; there is no lemma stating the transformation law of Christoffel symbols under coordinate changes."
     },
     {
       "kind": "definition",
@@ -32,7 +47,14 @@
         "snippet": "the covariant derivative is a rule"
       },
       "provenance": "ai-agent1",
-      "id": "1ea0ee677eed"
+      "id": "1ea0ee677eed",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCovariantDerivativeOn",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsCovariantDerivativeOn` axiomatizes the rule assigning to a section `σ` and vector `X x` the vector `∇_X σ x`, matching the informal rule-based definition."
     },
     {
       "kind": "example",
@@ -42,7 +64,14 @@
         "snippet": "Consider the example of a particle moving along a curve"
       },
       "provenance": "ai-agent1",
-      "id": "8cbd812bd5ac"
+      "id": "8cbd812bd5ac",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This motivating physics example (acceleration in polar coordinates) is not formalized in Mathlib."
     },
     {
       "kind": "example",
@@ -52,7 +81,30 @@
         "snippet": "A vector on a globe on the equator at point"
       },
       "provenance": "ai-agent1",
-      "id": "fcd36349edb8"
+      "id": "fcd36349edb8",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Parallel transport itself is absent from Mathlib, so this expository example on the sphere is not formalized."
+    },
+    {
+      "kind": "proposition",
+      "label": "Infinitesimal parallel transport measures curvature",
+      "anchor": {
+        "section": "Motivation",
+        "snippet": "This infinitesimal change of the vector is a measure of the curvature"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither parallel transport nor the Riemann curvature tensor is defined in Mathlib, so this qualitative curvature statement is unformalized."
     },
     {
       "kind": "proposition",
@@ -62,7 +114,14 @@
         "snippet": "for each metric there is a unique torsion -free covariant derivative called the Levi-Civita connection"
       },
       "provenance": "ai-agent1",
-      "id": "ba8068f1ec35"
+      "id": "ba8068f1ec35",
+      "status": "partial",
+      "mathlib": {
+        "decl": "CovariantDerivative.IsMetricCompatible",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Metric",
+        "match_kind": null
+      },
+      "note": "Mathlib has `IsMetricCompatible` and `CovariantDerivative.torsion`, but the existence/uniqueness theorem for the Levi-Civita connection itself is not yet proved."
     },
     {
       "kind": "proposition",
@@ -72,7 +131,14 @@
         "snippet": "depends on the values of u in a neighborhood of a point"
       },
       "provenance": "ai-agent1",
-      "id": "7356b0a115fa"
+      "id": "7356b0a115fa",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCovariantDerivativeOn.congr_of_eventuallyEq",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`congr_of_eventuallyEq` proves `cov σ x = cov σ' x` when `σ` and `σ'` agree on a neighborhood of `x`, i.e. `∇σ` depends only on the germ."
     },
     {
       "kind": "definition",
@@ -82,7 +148,14 @@
         "snippet": "Suppose an open subset"
       },
       "provenance": "ai-agent1",
-      "id": "5caf4129eff3"
+      "id": "5caf4129eff3",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib takes an intrinsic vector-bundle approach; the concrete embedded-submanifold-in-ℝⁿ setup used here is not developed."
     },
     {
       "kind": "definition",
@@ -92,7 +165,14 @@
         "snippet": "The last term is not tangential to M"
       },
       "provenance": "ai-agent1",
-      "id": "0a34316c3b78"
+      "id": "0a34316c3b78",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Christoffel symbols are not defined in Mathlib."
     },
     {
       "kind": "definition",
@@ -102,7 +182,14 @@
         "snippet": "is defined as the orthogonal projection of the usual derivative onto tangent space"
       },
       "provenance": "ai-agent1",
-      "id": "6614c893c4ab"
+      "id": "6614c893c4ab",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The extrinsic tangential-projection construction of the Levi-Civita connection is not in Mathlib."
     },
     {
       "kind": "proposition",
@@ -112,7 +199,14 @@
         "snippet": "Thus the Christoffel symbols for the Levi-Civita connection are related to the metric"
       },
       "provenance": "ai-agent1",
-      "id": "d3b1f0fcb0cf"
+      "id": "d3b1f0fcb0cf",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Koszul-type formula expressing Christoffel symbols via metric derivatives is not formalized."
     },
     {
       "kind": "example",
@@ -122,7 +216,14 @@
         "snippet": "For a very simple example that captures the essence of the description above"
       },
       "provenance": "ai-agent1",
-      "id": "37a18a5a4693"
+      "id": "37a18a5a4693",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This illustrative example is not in Mathlib."
     },
     {
       "kind": "definition",
@@ -132,7 +233,30 @@
         "snippet": "A covariant derivative is a (Koszul) connection on the tangent bundle"
       },
       "provenance": "ai-agent1",
-      "id": "eac834db4f90"
+      "id": "eac834db4f90",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CovariantDerivative",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The docstring of `CovariantDerivative` explicitly calls it a Koszul connection, defined on any vector bundle (thus generalizing the tangent-bundle case)."
+    },
+    {
+      "kind": "proposition",
+      "label": "Compatibility with tensor product and trace",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "in a unique way that ensures compatibility with the tensor product and trace operations"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not yet define the induced covariant derivative on tensor products / traces of bundles (mentioned as a TODO in `Metric.lean`)."
     },
     {
       "kind": "definition",
@@ -142,7 +266,14 @@
         "snippet": "the covariant derivative of f at p along v is the scalar at p"
       },
       "provenance": "ai-agent1",
-      "id": "e0aeb7a63ad9"
+      "id": "e0aeb7a63ad9",
+      "status": "partial",
+      "mathlib": {
+        "decl": "mfderiv",
+        "module": "Mathlib.Geometry.Manifold.MFDeriv.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib's `mfderiv` gives the differential of a function on a manifold, which coincides with the covariant derivative on functions, but is not packaged under that name."
     },
     {
       "kind": "definition",
@@ -152,7 +283,14 @@
         "snippet": "is the function that associates with each point"
       },
       "provenance": "ai-agent1",
-      "id": "a84a815e6416"
+      "id": "a84a815e6416",
+      "status": "partial",
+      "mathlib": {
+        "decl": "mfderiv",
+        "module": "Mathlib.Geometry.Manifold.MFDeriv.Basic",
+        "match_kind": null
+      },
+      "note": "This is `x ↦ mfderiv I 𝓘(𝕜) f x (X x)` in Mathlib, but there is no dedicated declaration for the pointwise-along-a-vector-field construction."
     },
     {
       "kind": "proposition",
@@ -162,7 +300,14 @@
         "snippet": "coincides with the Lie derivative"
       },
       "provenance": "ai-agent1",
-      "id": "c5ce29ddd98e"
+      "id": "c5ce29ddd98e",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib lacks a defined Lie derivative on scalar functions and any statement equating it with the covariant/exterior derivative on functions."
     },
     {
       "kind": "definition",
@@ -172,7 +317,30 @@
         "snippet": "the covariant derivative of u at p along v is the tangent vector at p"
       },
       "provenance": "ai-agent1",
-      "id": "9709a091e040"
+      "id": "9709a091e040",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CovariantDerivative",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Taking `V = TangentSpace I` in `CovariantDerivative I E V` gives the covariant derivative of a vector field along another; `cov σ x (X x)` corresponds to `∇_X σ x`."
+    },
+    {
+      "kind": "proposition",
+      "label": "Leibniz (product) rule for covariant derivative",
+      "anchor": {
+        "section": "Vector fields",
+        "snippet": "obeys the product rule"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCovariantDerivativeOn.leibniz",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The `leibniz` field of `IsCovariantDerivativeOn` is exactly the product rule `cov (g • σ) = g • cov σ + (d g).smulRight σ`."
     },
     {
       "kind": "proposition",
@@ -182,7 +350,14 @@
         "snippet": "depends not only on the value of u at p but also on values of u in a neighborhood"
       },
       "provenance": "ai-agent1",
-      "id": "1b97a4fa0e9c"
+      "id": "1b97a4fa0e9c",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCovariantDerivativeOn.congr_of_eventuallyEq",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The proved germ-locality lemma `congr_of_eventuallyEq` captures dependence only on a neighborhood of the point."
     },
     {
       "kind": "definition",
@@ -192,7 +367,14 @@
         "snippet": "denotes the vector field whose value at each point"
       },
       "provenance": "ai-agent1",
-      "id": "3ae0f4edb9f4"
+      "id": "3ae0f4edb9f4",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCovariantDerivativeOn",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsCovariantDerivativeOn` takes a set parameter `s : Set M`, giving a covariant-derivative rule restricted to a domain."
     },
     {
       "kind": "definition",
@@ -202,7 +384,14 @@
         "snippet": "is defined as the unique one-form at p such that the following identity is satisfied"
       },
       "provenance": "ai-agent1",
-      "id": "6fe3a9c32585"
+      "id": "6fe3a9c32585",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define the induced covariant derivative on the cotangent bundle."
     },
     {
       "kind": "proposition",
@@ -212,7 +401,14 @@
         "snippet": "The covariant derivative of a covector field along a vector field v is again a covector field"
       },
       "provenance": "ai-agent1",
-      "id": "8d6af362e6e7"
+      "id": "8d6af362e6e7",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No covector-field covariant derivative is defined, so its type-preserving property is not stated."
     },
     {
       "kind": "definition",
@@ -222,7 +418,14 @@
         "snippet": "it can be defined for arbitrary tensor fields by imposing the following identities"
       },
       "provenance": "ai-agent1",
-      "id": "523e3f0d0a08"
+      "id": "523e3f0d0a08",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The extension of the covariant derivative to general tensor fields via tensor-product and trace compatibility is not in Mathlib."
     },
     {
       "kind": "proposition",
@@ -232,7 +435,14 @@
         "snippet": "Explicitly, let T be a tensor field of type"
       },
       "provenance": "ai-agent1",
-      "id": "1ead24c92896"
+      "id": "1ead24c92896",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No such coordinate formula exists in Mathlib."
     },
     {
       "kind": "definition",
@@ -242,7 +452,14 @@
         "snippet": "are the components of the connection with respect to a system of local coordinates"
       },
       "provenance": "ai-agent1",
-      "id": "2842d021f586"
+      "id": "2842d021f586",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Christoffel symbols / connection coefficients are not defined in Mathlib."
     },
     {
       "kind": "proposition",
@@ -252,7 +469,14 @@
         "snippet": "Then using the rules in the definition"
       },
       "provenance": "ai-agent1",
-      "id": "464b684e2229"
+      "id": "464b684e2229",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No index-formula `(∇_j v)^i = ∂_j v^i + Γ^i_{jk} v^k` is present in Mathlib."
     },
     {
       "kind": "proposition",
@@ -262,7 +486,14 @@
         "snippet": "For covectors similarly we have"
       },
       "provenance": "ai-agent1",
-      "id": "3b055885bb68"
+      "id": "3b055885bb68",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No coordinate formula for covariant derivatives of covector fields is in Mathlib."
     },
     {
       "kind": "proposition",
@@ -272,7 +503,14 @@
         "snippet": "The covariant derivative of a type"
       },
       "provenance": "ai-agent1",
-      "id": "e54e09ce4a4e"
+      "id": "e54e09ce4a4e",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general (r,s)-tensor coordinate formula is present in Mathlib."
     },
     {
       "kind": "proposition",
@@ -282,7 +520,14 @@
         "snippet": "If instead of a tensor, one is trying to differentiate a tensor density"
       },
       "provenance": "ai-agent1",
-      "id": "45af55ccb801"
+      "id": "45af55ccb801",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Tensor densities are not treated in Mathlib."
     },
     {
       "kind": "example",
@@ -292,7 +537,14 @@
         "snippet": "is a scalar density (of weight +1)"
       },
       "provenance": "ai-agent1",
-      "id": "7237b480a76f"
+      "id": "7237b480a76f",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The weight-1 scalar density from `det g` is not formalized."
     },
     {
       "kind": "definition",
@@ -302,7 +554,14 @@
         "snippet": "the covariant derivative is given with a semicolon"
       },
       "provenance": "ai-agent1",
-      "id": "af2f93915dbd"
+      "id": "af2f93915dbd",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classical `T^i_{;j}` / `T^i_{,j}` index notation is not adopted in Mathlib."
     },
     {
       "kind": "definition",
@@ -312,7 +571,14 @@
         "snippet": "In case two or more indexes appear after the semicolon"
       },
       "provenance": "ai-agent1",
-      "id": "350c0c6c6f0e"
+      "id": "350c0c6c6f0e",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Iterated-semicolon notation is a syntactic convention absent from Mathlib."
     },
     {
       "kind": "definition",
@@ -322,7 +588,14 @@
         "snippet": "the covariant derivative is denoted by a double pipe"
       },
       "provenance": "ai-agent1",
-      "id": "964e30aa20c3"
+      "id": "964e30aa20c3",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Alternative double-pipe notation is not adopted."
     },
     {
       "kind": "proposition",
@@ -332,7 +605,14 @@
         "snippet": "covariant differentiation is simply partial differentiation"
       },
       "provenance": "ai-agent1",
-      "id": "6442b00d9108"
+      "id": "6442b00d9108",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `mfderiv` for functions but no statement identifying the covariant derivative of a scalar with partial differentiation in coordinates."
     },
     {
       "kind": "proposition",
@@ -342,7 +622,14 @@
         "snippet": "For a contravariant vector field"
       },
       "provenance": "ai-agent1",
-      "id": "0a32f0026175"
+      "id": "0a32f0026175",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No coordinate-index expansion of `∇_μ T^ν` is available."
     },
     {
       "kind": "proposition",
@@ -352,7 +639,14 @@
         "snippet": "For a covariant vector field"
       },
       "provenance": "ai-agent1",
-      "id": "23fe8b0faaa8"
+      "id": "23fe8b0faaa8",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No coordinate expression for `∇_μ T_ν` in Mathlib."
     },
     {
       "kind": "proposition",
@@ -362,7 +656,14 @@
         "snippet": "For a type (2,0) tensor field"
       },
       "provenance": "ai-agent1",
-      "id": "3416a05c7328"
+      "id": "3416a05c7328",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Coordinate formula for `∇_μ T^{αβ}` is not formalized."
     },
     {
       "kind": "proposition",
@@ -372,7 +673,14 @@
         "snippet": "For a type (0,2) tensor field"
       },
       "provenance": "ai-agent1",
-      "id": "84273168669e"
+      "id": "84273168669e",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Coordinate formula for `∇_μ T_{αβ}` is not formalized."
     },
     {
       "kind": "proposition",
@@ -382,7 +690,14 @@
         "snippet": "For a type (1,1) tensor field"
       },
       "provenance": "ai-agent1",
-      "id": "242abefad399"
+      "id": "242abefad399",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Coordinate formula for `∇_μ T^α_β` is not formalized."
     },
     {
       "kind": "definition",
@@ -392,7 +707,14 @@
         "snippet": "The Riemann tensor"
       },
       "provenance": "ai-agent1",
-      "id": "b2742fc6b57d"
+      "id": "b2742fc6b57d",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Riemann curvature tensor is not defined in Mathlib."
     },
     {
       "kind": "proposition",
@@ -402,7 +724,14 @@
         "snippet": "The covariant derivative of a (2,0)-tensor field fulfills"
       },
       "provenance": "ai-agent1",
-      "id": "4567372ff3c4"
+      "id": "4567372ff3c4",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without a Riemann tensor, the Ricci identity for (2,0) tensor commutators is absent."
     },
     {
       "kind": "definition",
@@ -412,7 +741,14 @@
         "snippet": "one can define the covariant derivative along a smooth curve"
       },
       "provenance": "ai-agent1",
-      "id": "5ed9235452f4"
+      "id": "5ed9235452f4",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define the covariant derivative operator `D/dt` acting on curves' vector fields."
     },
     {
       "kind": "definition",
@@ -422,7 +758,14 @@
         "snippet": "then the curve is called a geodesic of the covariant derivative"
       },
       "provenance": "ai-agent1",
-      "id": "95c26211ef49"
+      "id": "95c26211ef49",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Geodesics of a connection are not defined in Mathlib."
     },
     {
       "kind": "proposition",
@@ -432,7 +775,14 @@
         "snippet": "the geodesics for the connection are precisely the geodesics of the metric"
       },
       "provenance": "ai-agent1",
-      "id": "4340bf109e09"
+      "id": "4340bf109e09",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither Levi-Civita geodesics nor Riemannian metric geodesics are available in Mathlib's manifold library."
     },
     {
       "kind": "definition",
@@ -442,7 +792,14 @@
         "snippet": "Sometimes the covariant derivative along a curve is called absolute or intrinsic derivative"
       },
       "provenance": "ai-agent1",
-      "id": "d1fe1cdced05"
+      "id": "d1fe1cdced05",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An alternate name for the (unformalized) covariant derivative along a curve."
     },
     {
       "kind": "proposition",
@@ -452,7 +809,14 @@
         "snippet": "the antisymmetrized covariant derivative"
       },
       "provenance": "ai-agent1",
-      "id": "637225fa5198"
+      "id": "637225fa5198",
+      "status": "partial",
+      "mathlib": {
+        "decl": "CovariantDerivative.torsion_eq_zero_iff",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Torsion",
+        "match_kind": null
+      },
+      "note": "`torsion_eq_zero_iff` states `∇_X Y − ∇_Y X = [X,Y]` iff torsion vanishes, which is the torsion-free case of the antisymmetrized-covariant-vs-Lie identity, but the general formula with a torsion term is not stated."
     }
   ]
 }

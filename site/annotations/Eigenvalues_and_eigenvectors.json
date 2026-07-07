@@ -1649,7 +1649,8 @@
         "match_kind": "exact"
       },
       "note": "`eigenvectors_linearIndependent` is a direct consequence of the direct-sum independence of eigenspaces.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6944762ed5e9"
     },
     {
       "kind": "proposition",
@@ -1665,7 +1666,8 @@
         "match_kind": "exact"
       },
       "note": "`instFintypeEigenvalues` makes `f.Eigenvalues` a `Fintype` for an endomorphism of a finite-dimensional module.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "34e9947f1947"
     },
     {
       "kind": "proposition",
@@ -1681,7 +1683,8 @@
         "match_kind": "generalization"
       },
       "note": "`spectrum.inv_mem_iff` shows `↑r ∈ spectrum R ↑a ↔ ↑r⁻¹ ∈ spectrum R ↑a⁻¹`, giving the reciprocal-eigenvalues fact for units.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "00ffc4baf231"
     },
     {
       "kind": "proposition",
@@ -1697,6 +1700,71 @@
         "match_kind": "special_case"
       },
       "note": "A real symmetric matrix is Hermitian over ℝ; its eigenvalues are real by `IsHermitian.eigenvalues : n → ℝ`.",
+      "provenance": "ai",
+      "id": "6f56152a60d5"
+    },
+    {
+      "kind": "definition",
+      "label": "Generalized eigenvectors and generalized eigenspaces",
+      "anchor": {
+        "section": "Diagonalization and the eigendecomposition",
+        "snippet": "the notion of eigenvectors generalizes to generalized eigenvectors and the diagonal matrix of eigenvalues generalizes to the Jordan normal form"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.End.genEigenspace",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Module.End.genEigenspace f μ k` defines the generalized eigenspaces; `iSup_genEigenspace_eq_top_of_isAlgClosed` decomposes the whole space over an algebraically closed field.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Decomposition into generalized eigenspaces over algebraically closed fields",
+      "anchor": {
+        "section": "Diagonalization and the eigendecomposition",
+        "snippet": "Over an algebraically closed field, any matrix A has a Jordan normal form and therefore admits a basis of generalized eigenvectors and a decomposition into generalized eigenspaces"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.End.iSup_maxGenEigenspace_eq_top",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Triangularizable",
+        "match_kind": "exact"
+      },
+      "note": "The decomposition into generalized eigenspaces is formalized over algebraically closed fields (in `Eigenspace.Triangularizable`); the full Jordan normal form classification itself is not yet in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Generalized eigenvalue problem",
+      "anchor": {
+        "section": "Vibration analysis",
+        "snippet": "Admissible solutions are then a linear combination of solutions to the generalized eigenvalue problem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The generalized eigenvalue problem `Av = λBv` (for a pair of matrices) is not formalized as a named concept in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Eigenvalue equation (general definition)",
+      "anchor": {
+        "section": "General definition",
+        "snippet": "This equation is called the eigenvalue equation for T , and the scalar λ is the eigenvalue of T corresponding to the eigenvector v"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.End.HasEigenvalue",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`HasEigenvalue f μ` is defined as `eigenspace f μ ≠ ⊥`, matching the existence of a nonzero `v` with `T v = μ • v`.",
       "provenance": "ai"
     }
   ]

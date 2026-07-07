@@ -52,7 +52,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib treats radius only as a scalar in `Sphere.radius`, not as a line segment from center to surface.",
+      "note": "Mathlib treats radius only as a scalar field of `EuclideanGeometry.Sphere`, not as a line segment from center to surface.",
       "provenance": "ai",
       "id": "31d7bf6733c8"
     },
@@ -240,17 +240,7 @@
         "match_kind": null
       },
       "note": "The trigonometric latitude/longitude parametrization is not present; only stereographic charts are formalized.",
-      "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Parametric",
-          "snippet": "A parametric equation for the sphere with radius"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}x&amp;=x_{0}+r\\sin \\theta \\;\\cos \\varphi \\\\y&amp;=y_{0}+r\\sin \\theta \\;\\sin \\varphi \\\\z&amp;=z_{0}+r\\cos \\theta \\,\\end{aligned}}}"
-        }
-      ],
+      "provenance": "ai-moderated",
       "id": "658593bf20ad"
     },
     {
@@ -284,7 +274,8 @@
         "match_kind": null
       },
       "note": "Archimedes' classical result that V(sphere) = 2·V(cylinder minus sphere) is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6139208dffec"
     },
     {
       "kind": "example",
@@ -334,7 +325,8 @@
         "match_kind": null
       },
       "note": "The identity A(r) = dV/dr relating sphere surface area to ball volume is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7d9b023ec4bd"
     },
     {
       "kind": "theorem",
@@ -508,6 +500,38 @@
     },
     {
       "kind": "proposition",
+      "label": "All points of a sphere are umbilics",
+      "anchor": {
+        "section": "Properties of the sphere",
+        "snippet": "All points of a sphere are umbilics"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no theory of umbilical points or principal curvatures characterizing the sphere.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sphere has constant mean curvature",
+      "anchor": {
+        "section": "Properties of the sphere",
+        "snippet": "The sphere has constant mean curvature"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mean curvature of surfaces is not formalized in Mathlib, so the constancy on the sphere is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
       "label": "Rotation group SO(3) acts on the sphere",
       "anchor": {
         "section": "Properties of the sphere",
@@ -520,7 +544,8 @@
         "match_kind": null
       },
       "note": "Mathlib defines `SO(n)` (`Matrix.specialOrthogonalGroup`) and has the orthogonal action on Euclidean space; the smooth action on `S²` is not packaged as a named result.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0e4511197f72"
     },
     {
       "kind": "definition",
@@ -570,7 +595,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no formal spherical geometry, so the parallel postulate's failure on the sphere is not stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f262b09a407b"
     },
     {
       "kind": "theorem",
@@ -639,6 +665,22 @@
       "note": "Mathlib has no Gaussian curvature, so the constant-curvature property of the sphere is absent.",
       "provenance": "ai",
       "id": "3251cd8e62eb"
+    },
+    {
+      "kind": "theorem",
+      "label": "Theorema Egregium",
+      "anchor": {
+        "section": "Differential geometry",
+        "snippet": "As per Gauss's Theorema Egregium , this curvature is independent of the sphere's embedding"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gauss's Theorema Egregium (intrinsic invariance of Gaussian curvature) is not formalized in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",
@@ -943,7 +985,8 @@
         "match_kind": null
       },
       "note": "Exotic spheres (smooth manifolds homeomorphic but not diffeomorphic to the standard sphere) are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e869b6caf2d3"
     },
     {
       "kind": "proposition",

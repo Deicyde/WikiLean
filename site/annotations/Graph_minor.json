@@ -18,7 +18,7 @@
         "module": "Mathlib.Combinatorics.Matroid.Minor.Order",
         "match_kind": null
       },
-      "note": "Graph minors are not formalized (explicitly flagged as future work in Combinatorics/Graph/Basic.lean); only the analogous matroid minor relation exists.",
+      "note": "Graph minors are not formalized in Mathlib; only the analogous matroid minor relation `Matroid.IsMinor` exists.",
       "provenance": "ai",
       "id": "e040838337d7"
     },
@@ -35,7 +35,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Planar graphs are not defined in Mathlib (listed as a TODO), so this characterization is absent.",
+      "note": "Planar graphs are not defined in Mathlib (only mentioned as a TODO in `SimpleGraph/Coloring/Vertex.lean`), so Wagner's planarity theorem is absent.",
       "provenance": "ai",
       "id": "4bd130217d84"
     },
@@ -86,7 +86,7 @@
         "module": "Mathlib.Combinatorics.Matroid.Minor.Contract",
         "match_kind": null
       },
-      "note": "Graph edge contraction is not defined; the analogous matroid contraction operation `Matroid.contract` (／) exists instead.",
+      "note": "Graph edge contraction is not defined; only the analogous matroid contraction operation `Matroid.contract` exists.",
       "provenance": "ai",
       "id": "d2f63c264ff2"
     },
@@ -120,7 +120,7 @@
         "module": "Mathlib.Combinatorics.Matroid.Minor.Contract",
         "match_kind": null
       },
-      "note": "Order-independence of contractions/deletions is proven for matroids (`contract_delete_comm`, `contract_comm`, `contract_delete_contract_delete`), but not for graphs.",
+      "note": "Order-independence of contractions/deletions is proven for matroids, but the graph version is not formalized.",
       "provenance": "ai",
       "id": "cabb628d6ed5"
     },
@@ -146,7 +146,7 @@
       "label": "Minor-monotone function",
       "anchor": {
         "section": "Definitions",
-        "snippet": "is referred to as"
+        "snippet": "A function f is referred to as \"minor-monotone\""
       },
       "status": "not_formalized",
       "mathlib": {
@@ -155,7 +155,7 @@
         "match_kind": null
       },
       "note": "No notion of a minor-monotone graph parameter exists in Mathlib.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "4d1e5b473b3d"
     },
     {
@@ -188,7 +188,7 @@
         "module": "Mathlib.Combinatorics.Matroid.Minor.Order",
         "match_kind": null
       },
-      "note": "A `PartialOrder` instance for the minor order exists for matroids (refl/trans/antisymm lemmas), but not for graphs.",
+      "note": "Reflexivity/transitivity/antisymmetry of the minor order exist for matroids, but not for graphs.",
       "provenance": "ai",
       "id": "c24b2dc5de2b"
     },
@@ -310,6 +310,22 @@
       "note": "The four color theorem is not present in Mathlib.",
       "provenance": "ai",
       "id": "16189da037cf"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hadwiger conjecture proven for k ≤ 6",
+      "anchor": {
+        "section": "Major results and conjectures",
+        "snippet": "The Hadwiger conjecture has been proven for"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The proof of Hadwiger's conjecture in the cases k ≤ 6 is not formalized in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",

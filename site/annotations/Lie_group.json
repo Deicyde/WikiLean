@@ -384,7 +384,7 @@
       "label": "Symplectic group",
       "anchor": {
         "section": "Additional examples",
-        "snippet": "The symplectic group [MATH] consists of all"
+        "snippet": "matrices preserving the symplectic form"
       },
       "status": "formalized",
       "mathlib": {
@@ -393,7 +393,7 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.symplecticGroup` is defined as matrices preserving the canonical symplectic form.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "84643b591fc9"
     },
     {
@@ -520,7 +520,7 @@
       "label": "Simply connected Lie group",
       "anchor": {
         "section": "Simply connected Lie groups",
-        "snippet": "A Lie group [MATH] is said to be simply connected if every loop in"
+        "snippet": "is said to be simply connected if every loop in"
       },
       "status": "partial",
       "mathlib": {
@@ -529,7 +529,7 @@
         "match_kind": null
       },
       "note": "Mathlib has the general `SimplyConnectedSpace` typeclass but no specific `SimplyConnectedLieGroup` notion.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "2e7f71ccaeae"
     },
     {
@@ -537,7 +537,7 @@
       "label": "Lifting Lie algebra homomorphisms to simply connected groups",
       "anchor": {
         "section": "Simply connected Lie groups",
-        "snippet": "Suppose [MATH] and [MATH] are Lie groups with Lie algebras"
+        "snippet": "there is a unique Lie group homomorphism"
       },
       "status": "not_formalized",
       "mathlib": {
@@ -546,7 +546,7 @@
         "match_kind": null
       },
       "note": "The lifting of Lie algebra homomorphisms to Lie group homomorphisms from a simply connected group is not formalized.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "572c722a63ff"
     },
     {
@@ -554,7 +554,7 @@
       "label": "Exponential map (matrix case)",
       "anchor": {
         "section": "Exponential map",
-        "snippet": "The exponential map from the Lie algebra [MATH] of the general linear group [MATH] to [MATH] is defined by the matrix exponential"
+        "snippet": "is defined by the matrix exponential , given by the usual power series"
       },
       "status": "formalized",
       "mathlib": {
@@ -563,7 +563,7 @@
         "match_kind": "invocation"
       },
       "note": "The matrix exponential is `NormedSpace.exp` applied to matrices, with dedicated lemmas like `Matrix.exp_add_of_commute` in `Mathlib.Analysis.Normed.Algebra.MatrixExponential`.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "099fc3616837"
     },
     {
@@ -622,7 +622,7 @@
       "label": "Lie subgroup",
       "anchor": {
         "section": "Lie subgroup",
-        "snippet": "A Lie subgroup [MATH] of a Lie group [MATH] is a Lie group that is a subset of"
+        "snippet": "is an injective immersion and group homomorphism"
       },
       "status": "not_formalized",
       "mathlib": {
@@ -631,7 +631,7 @@
         "match_kind": null
       },
       "note": "No `LieSubgroup` notion was found; only general `Subgroup` and `ClosedSubgroup` exist.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "8a5df4364aa6"
     },
     {
@@ -639,7 +639,7 @@
       "label": "Cartan's closed subgroup theorem",
       "anchor": {
         "section": "Lie subgroup",
-        "snippet": "According to Cartan's theorem , a closed subgroup of [MATH] admits a unique smooth structure"
+        "snippet": "admits a unique smooth structure which makes it an embedded Lie subgroup"
       },
       "status": "not_formalized",
       "mathlib": {
@@ -648,7 +648,7 @@
         "match_kind": null
       },
       "note": "Cartan's closed subgroup theorem (closed subgroup of a Lie group is a Lie subgroup) is not formalized.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "e8123dfcfa0e"
     },
     {
@@ -801,7 +801,8 @@
         "match_kind": null
       },
       "note": "No formalization of the universal cover of a Lie group equipped with a compatible Lie group structure was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b20a0642e1e3"
     },
     {
       "kind": "proposition",
@@ -817,7 +818,8 @@
         "match_kind": null
       },
       "note": "No formalization of the Lie group structure on the quotient by a closed normal subgroup was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "aa2830029c83"
     },
     {
       "kind": "proposition",
@@ -833,7 +835,8 @@
         "match_kind": "generalization"
       },
       "note": "Square matrices inherit the commutator Lie bracket via `LieRing.ofAssociativeRing` applied to the matrix associative ring (see `Mathlib.Algebra.Lie.Matrix`, where the instance is enabled).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "49e2db396b3a"
     },
     {
       "kind": "proposition",
@@ -849,7 +852,8 @@
         "match_kind": null
       },
       "note": "The non-simply-connectedness of SO(3) (π₁(SO(3)) ≅ ℤ/2) is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7d7552a7a8bd"
     },
     {
       "kind": "proposition",
@@ -865,7 +869,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib has the identity component of a topological group as an open normal subgroup in general; the Lie-specific statement about discreteness of the quotient follows but is not stated as a Lie group result.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ec6b7596db50"
     },
     {
       "kind": "proposition",
@@ -881,6 +886,55 @@
         "match_kind": null
       },
       "note": "Transitivity of the diffeomorphism group action on a Lie group is not formalized.",
+      "provenance": "ai",
+      "id": "ee787055f931"
+    },
+    {
+      "kind": "proposition",
+      "label": "Connected abelian Lie group is a product of copies of R and the circle",
+      "anchor": {
+        "section": "Classification",
+        "snippet": "A connected abelian Lie group is isomorphic to a product of copies of R and the circle group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classification of connected abelian Lie groups as products of ℝ and S¹ is not formalized as a Lie group result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Product of two Lie groups is a Lie group",
+      "anchor": {
+        "section": "Constructions",
+        "snippet": "The product of two Lie groups is a Lie group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Prod.instLieGroup",
+        "module": "Mathlib.Geometry.Manifold.Algebra.LieGroup",
+        "match_kind": "exact"
+      },
+      "note": "The product of two `LieGroup` instances is again a `LieGroup` via `Prod.instLieGroup`, using the product manifold and product group structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lie bracket of a connected Lie group is zero iff the group is abelian",
+      "anchor": {
+        "section": "The Lie algebra associated with a Lie group",
+        "snippet": "the Lie bracket of a connected Lie group is always 0 if and only if the Lie group is abelian"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The characterization of abelian connected Lie groups by vanishing Lie bracket on the associated Lie algebra is not formalized as such in Mathlib.",
       "provenance": "ai"
     }
   ]

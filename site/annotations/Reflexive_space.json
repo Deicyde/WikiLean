@@ -3,6 +3,7 @@
   "wikipedia_title": "Reflexive space",
   "display_title": "Reflexive space",
   "schema_version": 3,
+  "annotation_style": "theorem_article",
   "annotations": [
     {
       "kind": "definition",
@@ -12,7 +13,14 @@
         "snippet": "a reflexive space is a locally convex topological vector space for which the canonical evaluation map from"
       },
       "provenance": "ai-agent1",
-      "id": "9314cdefdb26"
+      "id": "9314cdefdb26",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.IsReflexive",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the purely algebraic `Module.IsReflexive` (bijection to double dual as R-modules) but no analytic reflexive locally convex TVS class using the strong bidual topology."
     },
     {
       "kind": "definition",
@@ -22,7 +30,14 @@
         "snippet": "denote the strong dual of"
       },
       "provenance": "ai-agent1",
-      "id": "b22260e5ba3a"
+      "id": "b22260e5ba3a",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "StrongDual",
+        "module": "Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`StrongDual 𝕜 E := E →SL[σ] 𝕜` is Mathlib's continuous dual with the strong (operator-norm) topology in the normed setting."
     },
     {
       "kind": "definition",
@@ -32,7 +47,14 @@
         "snippet": "The bidual of"
       },
       "provenance": "ai-agent1",
-      "id": "66e4972c39a4"
+      "id": "66e4972c39a4",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "StrongDual",
+        "module": "Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The bidual `StrongDual 𝕜 (StrongDual 𝕜 E)` is expressible directly by iterating `StrongDual`."
     },
     {
       "kind": "definition",
@@ -42,7 +64,14 @@
         "snippet": "is a linear map called the evaluation map at"
       },
       "provenance": "ai-agent1",
-      "id": "8e9f0cd73424"
+      "id": "8e9f0cd73424",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedSpace.inclusionInDoubleDual",
+        "module": "Mathlib.Analysis.Normed.Module.DoubleDual",
+        "match_kind": "exact"
+      },
+      "note": "`NormedSpace.inclusionInDoubleDual` is the canonical evaluation map into the double strong dual (as a bounded linear map); the algebraic version is `Module.Dual.eval`."
     },
     {
       "kind": "definition",
@@ -52,7 +81,14 @@
         "snippet": "semi-reflexive if"
       },
       "provenance": "ai-agent1",
-      "id": "5fd8fc0904a4"
+      "id": "5fd8fc0904a4",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not have separate `SemiReflexive` / `Reflexive` TVS classes distinguishing bijection of evaluation from being a topological isomorphism."
     },
     {
       "kind": "proposition",
@@ -62,7 +98,14 @@
         "snippet": "A normable space is reflexive if and only if it is semi-reflexive"
       },
       "provenance": "ai-agent1",
-      "id": "c2b8bd2cf73d"
+      "id": "c2b8bd2cf73d",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not present: no semi-reflexive/reflexive TVS distinction is formalized in Mathlib."
     },
     {
       "kind": "definition",
@@ -72,7 +115,14 @@
         "snippet": "Consider its dual normed space"
       },
       "provenance": "ai-agent1",
-      "id": "e66c6463c837"
+      "id": "e66c6463c837",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "StrongDual",
+        "module": "Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Basic",
+        "match_kind": "exact"
+      },
+      "note": "For a normed space `E`, `StrongDual 𝕜 E = E →L[𝕜] 𝕜` is the dual normed space with the operator-norm topology."
     },
     {
       "kind": "definition",
@@ -82,7 +132,14 @@
         "snippet": "is called bidual space for"
       },
       "provenance": "ai-agent1",
-      "id": "f7c3e7659e02"
+      "id": "f7c3e7659e02",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "StrongDual",
+        "module": "Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The bidual `StrongDual 𝕜 (StrongDual 𝕜 E)` is directly available; `NormedSpace.inclusionInDoubleDual` uses it."
     },
     {
       "kind": "proposition",
@@ -92,7 +149,14 @@
         "snippet": "It follows from the Hahn–Banach theorem that"
       },
       "provenance": "ai-agent1",
-      "id": "8eb3a6e1c50f"
+      "id": "8eb3a6e1c50f",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedSpace.inclusionInDoubleDualLi",
+        "module": "Mathlib.Analysis.Normed.Module.DoubleDual",
+        "match_kind": "exact"
+      },
+      "note": "`NormedSpace.inclusionInDoubleDualLi` bundles the canonical evaluation as a linear isometry `E →ₗᵢ[𝕜] StrongDual 𝕜 (StrongDual 𝕜 E)`."
     },
     {
       "kind": "definition",
@@ -102,7 +166,14 @@
         "snippet": "A normed space"
       },
       "provenance": "ai-agent1",
-      "id": "d793e43042fb"
+      "id": "d793e43042fb",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.IsReflexive",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Only the algebraic `Module.IsReflexive` exists; there is no dedicated Mathlib class for a reflexive normed/Banach space via the isometric double-dual embedding being surjective."
     },
     {
       "kind": "proposition",
@@ -112,7 +183,14 @@
         "snippet": "A reflexive space"
       },
       "provenance": "ai-agent1",
-      "id": "07b9abe30b10"
+      "id": "07b9abe30b10",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Requires a reflexive-normed-space class, which Mathlib does not have."
     },
     {
       "kind": "definition",
@@ -122,7 +200,30 @@
         "snippet": "is called quasi-reflexive (of order"
       },
       "provenance": "ai-agent1",
-      "id": "354b43c24c81"
+      "id": "354b43c24c81",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No quasi-reflexive concept in Mathlib."
+    },
+    {
+      "kind": "example",
+      "label": "James' space (non-reflexive, isometric to bidual)",
+      "anchor": {
+        "section": "Remark",
+        "snippet": "James' space is an example of a non-reflexive space which is linearly isometric to its bidual"
+      },
+      "provenance": "ai",
+      "note": "James' space is not constructed in Mathlib.",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      }
     },
     {
       "kind": "example",
@@ -132,7 +233,14 @@
         "snippet": "Every finite-dimensional normed space is reflexive"
       },
       "provenance": "ai-agent1",
-      "id": "33210b3252cb"
+      "id": "33210b3252cb",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.IsReflexive.of_finite_of_free",
+        "module": "Mathlib.LinearAlgebra.Dual.Lemmas",
+        "match_kind": "generalization"
+      },
+      "note": "Algebraically finite free modules are `Module.IsReflexive`, but Mathlib has no analytic finite-dim ⇒ reflexive-normed-space statement."
     },
     {
       "kind": "example",
@@ -142,7 +250,14 @@
         "snippet": "of scalar sequences tending to 0 at infinity, equipped with the supremum norm, is not reflexive"
       },
       "provenance": "ai-agent1",
-      "id": "91b7ed73758c"
+      "id": "91b7ed73758c",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Non-reflexivity of the classical sequence spaces is not stated in Mathlib."
     },
     {
       "kind": "example",
@@ -152,7 +267,14 @@
         "snippet": "All Hilbert spaces are reflexive"
       },
       "provenance": "ai-agent1",
-      "id": "69516f668d49"
+      "id": "69516f668d49",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `InnerProductSpace.toDual` and Lp duality lemmas, but no theorem asserting `Hilbert`/`Lp` are reflexive normed spaces."
     },
     {
       "kind": "theorem",
@@ -162,7 +284,14 @@
         "snippet": "all uniformly convex Banach spaces are reflexive according to the Milman–Pettis theorem"
       },
       "provenance": "ai-agent1",
-      "id": "3ad37e825afa"
+      "id": "3ad37e825afa",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`UniformConvexSpace` exists but the Milman–Pettis theorem (uniform convexity ⇒ reflexivity) is not proved in Mathlib."
     },
     {
       "kind": "example",
@@ -172,7 +301,14 @@
         "snippet": "Likewise, the Banach space"
       },
       "provenance": "ai-agent1",
-      "id": "7df7e4c27894"
+      "id": "7df7e4c27894",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No non-reflexivity results for `L¹`, `L∞`, or `C[0,1]` are in Mathlib."
     },
     {
       "kind": "example",
@@ -182,7 +318,14 @@
         "snippet": "of operators in the Schatten class on a Hilbert space"
       },
       "provenance": "ai-agent1",
-      "id": "e0262cfcd4ce"
+      "id": "e0262cfcd4ce",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Schatten classes are not defined in Mathlib."
     },
     {
       "kind": "proposition",
@@ -192,7 +335,14 @@
         "snippet": "Since every finite-dimensional normed space is a reflexive Banach space"
       },
       "provenance": "ai-agent1",
-      "id": "ad4bdbc4f92d"
+      "id": "ad4bdbc4f92d",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.instFiniteDimensionalOfIsReflexive",
+        "module": "Mathlib.LinearAlgebra.Dual.Lemmas",
+        "match_kind": "generalization"
+      },
+      "note": "Algebraically, `Module.IsReflexive` over a field forces `FiniteDimensional`; no analytic counterpart for reflexive Banach spaces."
     },
     {
       "kind": "proposition",
@@ -202,7 +352,14 @@
         "snippet": "If a Banach space"
       },
       "provenance": "ai-agent1",
-      "id": "7eb7e86c0a1c"
+      "id": "7eb7e86c0a1c",
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearEquiv.isReflexive_of_equiv_dual_of_isReflexive",
+        "module": "Mathlib.LinearAlgebra.PerfectPairing.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Reflexivity transports along algebraic linear equivalences (`Module.IsReflexive.equiv`-style lemmas in `Dual/Defs`), but the topological Banach-space version is not."
     },
     {
       "kind": "proposition",
@@ -212,7 +369,14 @@
         "snippet": "Every closed linear subspace of a reflexive space is reflexive"
       },
       "provenance": "ai-agent1",
-      "id": "945ed88b0b9e"
+      "id": "945ed88b0b9e",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No results on closed-subspace/quotient/dual preservation of Banach-space reflexivity in Mathlib."
     },
     {
       "kind": "theorem",
@@ -222,7 +386,14 @@
         "snippet": "The continuous dual of"
       },
       "provenance": "ai-agent1",
-      "id": "e6cef2da137d"
+      "id": "e6cef2da137d",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.Dual.instIsReflecive",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "The algebraic statement that the dual of a reflexive module is reflexive is present; the Banach-space iff-statement is not."
     },
     {
       "kind": "theorem",
@@ -232,7 +403,14 @@
         "snippet": "This is known as Kakutani's Theorem."
       },
       "provenance": "ai-agent1",
-      "id": "6f8f820a8123"
+      "id": "6f8f820a8123",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Kakutani's characterization of reflexivity by weak compactness of the unit ball is absent from Mathlib."
     },
     {
       "kind": "theorem",
@@ -242,7 +420,14 @@
         "snippet": "Every bounded sequence in"
       },
       "provenance": "ai-agent1",
-      "id": "9a685c53c9ba"
+      "id": "9a685c53c9ba",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `WeakDual.isSeqCompact_of_isBounded_of_isClosed` on the weak-* side, but no reflexive-Banach weak sequential compactness theorem."
     },
     {
       "kind": "theorem",
@@ -252,7 +437,14 @@
         "snippet": "The statement of Riesz's lemma holds when the real number"
       },
       "provenance": "ai-agent1",
-      "id": "c3054c11deb1"
+      "id": "c3054c11deb1",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `riesz_lemma_of_lt_one` covers only `r<1`; the reflexive-space improvement to `r=1` is not proved."
     },
     {
       "kind": "example",
@@ -262,7 +454,14 @@
         "snippet": "For example, if the reflexive Banach space"
       },
       "provenance": "ai-agent1",
-      "id": "9c830b0827b8"
+      "id": "9c830b0827b8",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib."
     },
     {
       "kind": "theorem",
@@ -272,7 +471,14 @@
         "snippet": "Every continuous linear functional on"
       },
       "provenance": "ai-agent1",
-      "id": "e6fefcdf03f6"
+      "id": "e6fefcdf03f6",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "James' theorem is absent from Mathlib."
     },
     {
       "kind": "proposition",
@@ -282,7 +488,14 @@
         "snippet": "Since norm-closed convex subsets in a Banach space are weakly closed"
       },
       "provenance": "ai-agent1",
-      "id": "9af7614e8ad5"
+      "id": "9af7614e8ad5",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The reflexive-space consequence for nested closed convex sets is not proved in Mathlib."
     },
     {
       "kind": "proposition",
@@ -292,7 +505,14 @@
         "snippet": "The promised geometric property of reflexive Banach spaces is the following"
       },
       "provenance": "ai-agent1",
-      "id": "acc260b3a4cd"
+      "id": "acc260b3a4cd",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib proves best approximation for complete convex sets only in inner-product spaces (`exists_norm_eq_iInf_of_complete_convex`), not for general reflexive Banach spaces."
     },
     {
       "kind": "proposition",
@@ -302,7 +522,14 @@
         "snippet": "A reflexive Banach space is separable if and only if its continuous dual is separable"
       },
       "provenance": "ai-agent1",
-      "id": "195555402a44"
+      "id": "195555402a44",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not stated in Mathlib."
     },
     {
       "kind": "definition",
@@ -312,7 +539,14 @@
         "snippet": "Informally, a super-reflexive Banach space"
       },
       "provenance": "ai-agent1",
-      "id": "b7aabb8fbb7c"
+      "id": "b7aabb8fbb7c",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Super-reflexivity is not defined in Mathlib."
     },
     {
       "kind": "definition",
@@ -322,7 +556,14 @@
         "snippet": "is finitely representable"
       },
       "provenance": "ai-agent1",
-      "id": "9178b04344df"
+      "id": "9178b04344df",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Finite representability of Banach spaces is not formalized."
     },
     {
       "kind": "proposition",
@@ -332,7 +573,14 @@
         "snippet": "A Banach space finitely representable in"
       },
       "provenance": "ai-agent1",
-      "id": "787ddf82afbd"
+      "id": "787ddf82afbd",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib."
     },
     {
       "kind": "definition",
@@ -342,7 +590,14 @@
         "snippet": "is super-reflexive if all Banach spaces"
       },
       "provenance": "ai-agent1",
-      "id": "c1cbd8c27d7c"
+      "id": "c1cbd8c27d7c",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formal super-reflexivity in Mathlib."
     },
     {
       "kind": "theorem",
@@ -352,7 +607,14 @@
         "snippet": "James proved that a space is super-reflexive if and only if its dual is super-reflexive"
       },
       "provenance": "ai-agent1",
-      "id": "b5d0a6d02aab"
+      "id": "b5d0a6d02aab",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib."
     },
     {
       "kind": "definition",
@@ -362,7 +624,14 @@
         "snippet": "The description of a vectorial binary tree begins with a rooted binary tree labeled by vectors"
       },
       "provenance": "ai-agent1",
-      "id": "591e69a59499"
+      "id": "591e69a59499",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib."
     },
     {
       "kind": "definition",
@@ -372,7 +641,14 @@
         "snippet": "the tree is said to be"
       },
       "provenance": "ai-agent1",
-      "id": "40ee4a00af47"
+      "id": "40ee4a00af47",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib."
     },
     {
       "kind": "theorem",
@@ -382,7 +658,14 @@
         "snippet": "is super-reflexive if and only if for every"
       },
       "provenance": "ai-agent1",
-      "id": "69269cbee6df"
+      "id": "69269cbee6df",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib."
     },
     {
       "kind": "proposition",
@@ -392,7 +675,14 @@
         "snippet": "Uniformly convex spaces are super-reflexive."
       },
       "provenance": "ai-agent1",
-      "id": "2ed7cab7f5fc"
+      "id": "2ed7cab7f5fc",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not proved in Mathlib."
     },
     {
       "kind": "theorem",
@@ -402,7 +692,14 @@
         "snippet": "Enflo proved"
       },
       "provenance": "ai-agent1",
-      "id": "21c9dd93a006"
+      "id": "21c9dd93a006",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Enflo's renorming theorem is not in Mathlib."
     },
     {
       "kind": "theorem",
@@ -412,7 +709,14 @@
         "snippet": "Pisier improved Enflo's result by showing"
       },
       "provenance": "ai-agent1",
-      "id": "d65bd3bccca9"
+      "id": "d65bd3bccca9",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib."
     },
     {
       "kind": "definition",
@@ -422,7 +726,14 @@
         "snippet": "semi-reflexive if the evaluation map"
       },
       "provenance": "ai-agent1",
-      "id": "2b44b7f945e7"
+      "id": "2b44b7f945e7",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `SemiReflexive`/`Reflexive` LCS classes in Mathlib."
     },
     {
       "kind": "theorem",
@@ -432,7 +743,14 @@
         "value": "Theorem [ 19 ]"
       },
       "provenance": "ai-agent1",
-      "id": "fa4b831213ac"
+      "id": "fa4b831213ac",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib."
     },
     {
       "kind": "theorem",
@@ -442,7 +760,14 @@
         "value": "Theorem [ 20 ] [ 21 ]"
       },
       "provenance": "ai-agent1",
-      "id": "a04cf27804bb"
+      "id": "a04cf27804bb",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib; `BarrelledSpace` exists but the equivalence is not proved."
     },
     {
       "kind": "theorem",
@@ -452,7 +777,14 @@
         "value": "Theorem [ 22 ]"
       },
       "provenance": "ai-agent1",
-      "id": "0fb450ab73df"
+      "id": "0fb450ab73df",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib."
     },
     {
       "kind": "theorem",
@@ -462,7 +794,14 @@
         "value": "Theorem [ 23 ]"
       },
       "provenance": "ai-agent1",
-      "id": "f5a7840a97d0"
+      "id": "f5a7840a97d0",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Infrabarrelled spaces are not defined in Mathlib."
     },
     {
       "kind": "proposition",
@@ -472,7 +811,14 @@
         "snippet": "is a Hausdorff locally convex space then the following are equivalent"
       },
       "provenance": "ai-agent1",
-      "id": "49179b73b49e"
+      "id": "49179b73b49e",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib."
     },
     {
       "kind": "proposition",
@@ -482,7 +828,14 @@
         "snippet": "is a Hausdorff locally convex space then the following are equivalent"
       },
       "provenance": "ai-agent1",
-      "id": "a7dd0163cd71"
+      "id": "a7dd0163cd71",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib."
     },
     {
       "kind": "proposition",
@@ -492,7 +845,14 @@
         "snippet": "is a normed space then the following are equivalent"
       },
       "provenance": "ai-agent1",
-      "id": "742453b2b30b"
+      "id": "742453b2b30b",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib."
     },
     {
       "kind": "theorem",
@@ -502,7 +862,14 @@
         "value": "Theorem [ 29 ]"
       },
       "provenance": "ai-agent1",
-      "id": "c4a24ab922f0"
+      "id": "c4a24ab922f0",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib."
     },
     {
       "kind": "theorem",
@@ -512,7 +879,14 @@
         "value": "James' theorem — A Banach space [MATH] i"
       },
       "provenance": "ai-agent1",
-      "id": "9a840eb22995"
+      "id": "9a840eb22995",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "James' theorem is not proved in Mathlib."
     },
     {
       "kind": "proposition",
@@ -522,7 +896,14 @@
         "snippet": "A normed space that is semireflexive is a reflexive Banach space."
       },
       "provenance": "ai-agent1",
-      "id": "c12eefc47b01"
+      "id": "c12eefc47b01",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized in Mathlib."
     },
     {
       "kind": "proposition",
@@ -532,7 +913,14 @@
         "snippet": "A closed vector subspace of a reflexive Banach space is reflexive."
       },
       "provenance": "ai-agent1",
-      "id": "9d039ab496e0"
+      "id": "9d039ab496e0",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib."
     },
     {
       "kind": "proposition",
@@ -542,7 +930,14 @@
         "snippet": "This is why reflexivity is referred to as a three-space property"
       },
       "provenance": "ai-agent1",
-      "id": "0702a0391f82"
+      "id": "0702a0391f82",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib."
     },
     {
       "kind": "proposition",
@@ -552,7 +947,14 @@
         "snippet": "If a barreled locally convex Hausdorff space is semireflexive then it is reflexive."
       },
       "provenance": "ai-agent1",
-      "id": "684099ca199e"
+      "id": "684099ca199e",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib."
     },
     {
       "kind": "proposition",
@@ -562,7 +964,14 @@
         "snippet": "The strong dual of a reflexive space is reflexive."
       },
       "provenance": "ai-agent1",
-      "id": "70cbd5abd74f"
+      "id": "70cbd5abd74f",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`MontelSpace` exists but neither reflexivity of Montel spaces nor stability of reflexivity under strong dual is proved."
     },
     {
       "kind": "proposition",
@@ -572,7 +981,14 @@
         "snippet": "A locally convex Hausdorff reflexive space is barrelled"
       },
       "provenance": "ai-agent1",
-      "id": "4ff0a4af53f4"
+      "id": "4ff0a4af53f4",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib."
     },
     {
       "kind": "theorem",
@@ -582,7 +998,14 @@
         "snippet": "Then the unit ball of"
       },
       "provenance": "ai-agent1",
-      "id": "42b3e849e7bc"
+      "id": "42b3e849e7bc",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Goldstine's theorem is not in Mathlib."
     },
     {
       "kind": "example",
@@ -592,7 +1015,14 @@
         "snippet": "Every finite-dimensional Hausdorff topological vector space is reflexive"
       },
       "provenance": "ai-agent1",
-      "id": "a2fd9b7ba9f3"
+      "id": "a2fd9b7ba9f3",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.IsReflexive.of_finite_of_free",
+        "module": "Mathlib.LinearAlgebra.Dual.Lemmas",
+        "match_kind": "generalization"
+      },
+      "note": "Only the algebraic reflexivity of finite free modules is formalized; the topological version for finite-dim Hausdorff TVS is not."
     },
     {
       "kind": "proposition",
@@ -602,7 +1032,14 @@
         "snippet": "is reflexive as a normed space if and only if it is reflexive as a locally convex space"
       },
       "provenance": "ai-agent1",
-      "id": "45d8994bafe9"
+      "id": "45d8994bafe9",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib."
     },
     {
       "kind": "example",
@@ -612,7 +1049,14 @@
         "snippet": "A (somewhat artificial) example of a semi-reflexive space that is not reflexive is obtained as follows"
       },
       "provenance": "ai-agent1",
-      "id": "29bddf605f1b"
+      "id": "29bddf605f1b",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib."
     },
     {
       "kind": "example",
@@ -622,7 +1066,14 @@
         "snippet": "Montel spaces are reflexive locally convex topological vector spaces."
       },
       "provenance": "ai-agent1",
-      "id": "a302d8ec6933"
+      "id": "a302d8ec6933",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`MontelSpace` is defined but not shown reflexive (no reflexive LCS class exists to compare against)."
     },
     {
       "kind": "example",
@@ -632,7 +1083,14 @@
         "snippet": "There exists a non-reflexive locally convex TVS whose strong dual is reflexive."
       },
       "provenance": "ai-agent1",
-      "id": "933847fb9aa2"
+      "id": "933847fb9aa2",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib."
     },
     {
       "kind": "definition",
@@ -642,7 +1100,14 @@
         "snippet": "A stereotype space, or polar reflexive space, is defined as a topological vector space"
       },
       "provenance": "ai-agent1",
-      "id": "456580e20143"
+      "id": "456580e20143",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib."
     },
     {
       "kind": "definition",
@@ -652,7 +1117,14 @@
         "snippet": "the spaces defined by the corresponding reflexivity condition are called reflective"
       },
       "provenance": "ai-agent1",
-      "id": "d28f2ad6ca1d"
+      "id": "d28f2ad6ca1d",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib."
     }
   ]
 }
