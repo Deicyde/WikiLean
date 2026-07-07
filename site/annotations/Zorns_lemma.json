@@ -24,6 +24,54 @@
     },
     {
       "kind": "theorem",
+      "label": "Hahn–Banach theorem (application)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the Hahn–Banach theorem in functional analysis"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_extension_of_le_sublinear",
+        "module": "Mathlib.Analysis.Convex.Cone.Extension",
+        "match_kind": "exact"
+      },
+      "note": "`exists_extension_of_le_sublinear` is the Hahn–Banach extension theorem, a key application of Zorn's lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Every field has an algebraic closure",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "every field has an algebraic closure"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgebraicClosure",
+        "module": "Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure",
+        "match_kind": "exact"
+      },
+      "note": "`AlgebraicClosure k` constructs an algebraic closure of any field `k`, an application of Zorn's lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Well-ordering theorem (equivalent to Zorn)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Zorn's lemma is equivalent to the well-ordering theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_wellOrder",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "The well-ordering theorem (every set admits a well-order) is proved in Mathlib using choice.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
       "label": "Hausdorff maximal principle (earlier formulation)",
       "anchor": {
         "section": "(Lead)",
@@ -66,7 +114,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "GE.ge",
-        "module": null,
+        "module": "Init.Prelude",
         "match_kind": "exact"
       },
       "note": "The relation `a ≥ b ↔ b ≤ a` is core notation `GE.ge` on top of the order `≤` provided by `Preorder`/`PartialOrder`.",
@@ -295,6 +343,22 @@
       "id": "41d346c2b5ef"
     },
     {
+      "kind": "definition",
+      "label": "Linearly independent set",
+      "anchor": {
+        "section": "Every vector space has a basis",
+        "snippet": "all linearly independent subsets of V"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearIndependent",
+        "module": "Mathlib.LinearAlgebra.LinearIndependent.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`LinearIndependent` is the standard Mathlib predicate for linear independence of an indexed family of vectors.",
+      "provenance": "ai"
+    },
+    {
       "kind": "theorem",
       "label": "Nontrivial ring with unity contains a maximal ideal",
       "anchor": {
@@ -327,6 +391,22 @@
       "note": "`isCompact_univ_pi` (Tychonoff) proves a product of compact sets is compact.",
       "provenance": "ai",
       "id": "394764ce136c"
+    },
+    {
+      "kind": "definition",
+      "label": "Finite intersection property",
+      "anchor": {
+        "section": "A proof of Tychonoff's theorem",
+        "snippet": "with the finite intersection property"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CompactSpace.iInter_nonempty",
+        "module": "Mathlib.Topology.Compactness.Compact",
+        "match_kind": null
+      },
+      "note": "Mathlib has no standalone `FiniteIntersectionProperty` definition, but the FIP characterization of compactness is expressed via `CompactSpace.iInter_nonempty`.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -412,6 +492,38 @@
       "note": "`IsChain.exists_maxChain` is the Hausdorff maximal principle: every chain extends to a maximal chain.",
       "provenance": "ai",
       "id": "59c0f4a8ec10"
+    },
+    {
+      "kind": "theorem",
+      "label": "Bourbaki–Witt theorem",
+      "anchor": {
+        "section": "Proof from the Hausdorff maximal principle",
+        "snippet": "The Bourbaki–Witt theorem can also be used"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ChainCompletePartialOrder.nonempty_fixedPoints_of_inflationary",
+        "module": "Mathlib.Order.BourbakiWitt",
+        "match_kind": "exact"
+      },
+      "note": "Bourbaki–Witt: an inflationary map on a chain-complete poset has a fixed point; used here as an alternative route to Zorn's lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Pataraia's theorem",
+      "anchor": {
+        "section": "Proof from the Hausdorff maximal principle",
+        "snippet": "Pataraia's theorem can be used instead"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Pataraia's fixed-point theorem (monotone maps on a dcpo with a least element have a fixed point) does not have a direct Mathlib formalization.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",

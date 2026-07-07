@@ -35,7 +35,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "This is a worked numerical example, not a named theorem; no dedicated Mathlib statement was located.",
+      "note": "Worked numerical example, not a named theorem; no dedicated Mathlib statement located.",
       "provenance": "ai",
       "id": "0cd8765320cf"
     },
@@ -86,7 +86,7 @@
         "module": "Mathlib.Topology.Defs.Filter",
         "match_kind": "invocation"
       },
-      "note": "Mathlib's `𝓝[≠] p` filter encodes the deleted neighborhood used to ignore `f p`, but the article's specific example itself is not formalized.",
+      "note": "Mathlib's `𝓝[≠] p` filter (built from `nhdsWithin`) encodes the deleted neighborhood used to ignore `f p`, but the article's specific example itself is not formalized.",
       "provenance": "ai",
       "id": "1e648b21e6f8"
     },
@@ -103,7 +103,7 @@
         "module": "Mathlib.Order.Filter.Defs",
         "match_kind": "invocation"
       },
-      "note": "Mathlib uses `(𝓝[s \\ {p}] p).NeBot` (cluster-point conditions) for the analogous existence requirement, but the article's exact closure/interior-based statement is not stated as a single lemma.",
+      "note": "Mathlib uses `(𝓝[s \\ {p}] p).NeBot` (cluster-point conditions) for the analogous existence requirement, but the article's exact closure/interior-based statement is not a single named lemma.",
       "provenance": "ai",
       "id": "f10056af019e"
     },
@@ -120,7 +120,7 @@
         "module": "Mathlib.Topology.Order.LeftRightLim",
         "match_kind": "exact"
       },
-      "note": "`Function.rightLim` and `Tendsto f (𝓝[>] p) (𝓝 L)` (with `nhdsGT` notation in `Mathlib.Topology.Defs.Filter`) capture the right-handed limit.",
+      "note": "`Function.rightLim` and `Tendsto f (𝓝[>] p) (𝓝 L)` capture the right-handed limit.",
       "provenance": "ai",
       "id": "07fd91316c99"
     },
@@ -150,7 +150,7 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "eq_zero_iff_continuousAt",
+        "decl": "Oscillation.eq_zero_iff_continuousAt",
         "module": "Mathlib.Analysis.Oscillation",
         "match_kind": "generalization"
       },
@@ -304,7 +304,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Filter.atTop",
-        "module": "Mathlib.Order.Filter.AtTopBot.Basic",
+        "module": "Mathlib.Order.Filter.AtTopBot.Defs",
         "match_kind": "exact"
       },
       "note": "Limits at +∞ are formalized as `Tendsto f atTop (𝓝 L)` using the `Filter.atTop` filter.",
@@ -321,7 +321,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Filter.atBot",
-        "module": "Mathlib.Order.Filter.AtTopBot.Basic",
+        "module": "Mathlib.Order.Filter.AtTopBot.Defs",
         "match_kind": "exact"
       },
       "note": "Limits at -∞ are formalized as `Tendsto f atBot (𝓝 L)` using the `Filter.atBot` filter.",
@@ -358,7 +358,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Specific worked example; the general limit `Real.tendsto_exp_atBot` is in Mathlib but this exact computation is not.",
+      "note": "Specific worked example; the general limit `Real.tendsto_exp_atBot` exists but this exact computation does not.",
       "provenance": "ai",
       "id": "ab1a6d4ec615"
     },
@@ -524,11 +524,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Filter.prod",
-        "module": "Mathlib.Order.Filter.Prod",
+        "decl": "Filter.instSProd",
+        "module": "Mathlib.Order.Filter.Defs",
         "match_kind": "exact"
       },
-      "note": "The double/multiple limit is `Tendsto f (𝓝 p ×ˢ 𝓝 q) (𝓝 L)` using the product `Filter.prod`.",
+      "note": "The double/multiple limit is `Tendsto f (𝓝 p ×ˢ 𝓝 q) (𝓝 L)`, with the product filter supplied by `Filter.instSProd`.",
       "provenance": "ai",
       "id": "87d451fd6c88"
     },
@@ -558,11 +558,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Filter.prod",
-        "module": "Mathlib.Order.Filter.Prod",
+        "decl": "Filter.instSProd",
+        "module": "Mathlib.Order.Filter.Defs",
         "match_kind": "exact"
       },
-      "note": "Expressed as `Tendsto f (atTop ×ˢ atTop) (𝓝 L)`.",
+      "note": "Expressed as `Tendsto f (atTop ×ˢ atTop) (𝓝 L)` via the product filter from `Filter.instSProd`.",
       "provenance": "ai",
       "id": "e01e24e15cae"
     },
@@ -575,11 +575,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Filter.prod",
-        "module": "Mathlib.Order.Filter.Prod",
+        "decl": "Filter.instSProd",
+        "module": "Mathlib.Order.Filter.Defs",
         "match_kind": "exact"
       },
-      "note": "Expressed as `Tendsto f (atBot ×ˢ atBot) (𝓝 L)`.",
+      "note": "Expressed as `Tendsto f (atBot ×ˢ atBot) (𝓝 L)` via the product filter from `Filter.instSProd`.",
       "provenance": "ai",
       "id": "01295098304b"
     },
@@ -712,7 +712,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "EuclideanSpace",
-        "module": "Mathlib.Analysis.InnerProductSpace.EuclideanDist",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
         "match_kind": "invocation"
       },
       "note": "`EuclideanSpace ℝ (Fin n)` carries the Euclidean metric, and `Tendsto f l (𝓝 L)` on it captures vector-valued limits.",
@@ -749,7 +749,7 @@
         "module": "Mathlib.Analysis.Normed.Lp.PiLp",
         "match_kind": "invocation"
       },
-      "note": "`PiLp 1 fun i => ℝ` is the Manhattan metric instance; convergence reduces (via `PiLp.equiv`) to the usual product convergence.",
+      "note": "`PiLp 1 fun i => ℝ` provides the Manhattan (L¹) metric instance; convergence reduces to the usual product convergence.",
       "provenance": "ai",
       "id": "0619e3985ff1"
     },
@@ -1024,6 +1024,54 @@
       "note": "Mathlib uses `HasSum`/`tsum` and improper-integral limits (via `Tendsto` on `atTop`), so this notational shorthand is implicit in those definitions rather than a standalone item.",
       "provenance": "ai",
       "id": "7ef74a88c7b8"
+    },
+    {
+      "kind": "definition",
+      "label": "Indeterminate forms",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "called an indeterminate form , does not allow one to determine the result"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib treats indeterminate forms operationally via L'Hôpital and limit-arithmetic lemmas, but does not define `IndeterminateForm` as a named concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniqueness of limit in Hausdorff space",
+      "anchor": {
+        "section": "Functions on topological spaces",
+        "snippet": "the requirement that [MATH] be a Hausdorff space can be relaxed to the assumption that [MATH] be a general topological space, but then the limit of a function may not be unique"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tendsto_nhds_unique",
+        "module": "Mathlib.Topology.Separation.Hausdorff",
+        "match_kind": "exact"
+      },
+      "note": "`tendsto_nhds_unique` states that in a T2 (Hausdorff) space, if `Tendsto f l (𝓝 a)` and `Tendsto f l (𝓝 b)` with `l ≠ ⊥`, then `a = b`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuity at limit point characterized by limit",
+      "anchor": {
+        "section": "Functions on topological spaces",
+        "snippet": "A function is continuous at a limit point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "continuousAt_iff_punctured_nhds",
+        "module": "Mathlib.Topology.NhdsWithin",
+        "match_kind": "exact"
+      },
+      "note": "`continuousAt_iff_punctured_nhds` characterizes `ContinuousAt f a` as `Tendsto f (𝓝[≠] a) (𝓝 (f a))`, the limit-from-punctured-nhds form.",
+      "provenance": "ai"
     }
   ]
 }

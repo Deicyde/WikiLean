@@ -3,6 +3,7 @@
   "wikipedia_title": "Separable space",
   "display_title": "Separable space",
   "schema_version": 3,
+  "annotation_style": "theorem_article",
   "annotations": [
     {
       "kind": "definition",
@@ -11,8 +12,15 @@
         "section": "(Lead)",
         "snippet": "a topological space is called separable if it contains a countable dense subset"
       },
-      "provenance": "ai-agent1",
-      "id": "3ccf7d75d4c8"
+      "provenance": "ai",
+      "id": "3ccf7d75d4c8",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopologicalSpace.SeparableSpace",
+        "module": "Mathlib.Topology.Bases",
+        "match_kind": "exact"
+      },
+      "note": "Class `SeparableSpace` in Mathlib.Topology.Bases states existence of a countable dense subset."
     },
     {
       "kind": "proposition",
@@ -21,8 +29,15 @@
         "section": "(Lead)",
         "snippet": "every continuous function on a separable space whose image is a subset of a Hausdorff space is determined by its values on the countable dense subset"
       },
-      "provenance": "ai-agent1",
-      "id": "7ebffe7019ad"
+      "provenance": "ai",
+      "id": "7ebffe7019ad",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Continuous.ext_on",
+        "module": "Mathlib.Topology.Separation.Hausdorff",
+        "match_kind": "generalization"
+      },
+      "note": "`Continuous.ext_on` proves two continuous maps into a T2 space agree everywhere if they agree on a dense set — generalizes the countable-dense version."
     },
     {
       "kind": "example",
@@ -31,8 +46,15 @@
         "section": "First examples",
         "snippet": "Any topological space that is itself finite or countably infinite is separable"
       },
-      "provenance": "ai-agent1",
-      "id": "47647609dc85"
+      "provenance": "ai",
+      "id": "47647609dc85",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopologicalSpace.Countable.to_separableSpace",
+        "module": "Mathlib.Topology.Bases",
+        "match_kind": "exact"
+      },
+      "note": "Instance `Countable.to_separableSpace` gives `SeparableSpace α` from `[Countable α]`."
     },
     {
       "kind": "example",
@@ -41,8 +63,15 @@
         "section": "First examples",
         "snippet": "the real line , in which the rational numbers form a countable dense subset"
       },
-      "provenance": "ai-agent1",
-      "id": "e6a4fb628269"
+      "provenance": "ai",
+      "id": "e6a4fb628269",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Rat.denseRange_cast",
+        "module": "Mathlib.Topology.Algebra.Order.Archimedean",
+        "match_kind": "invocation"
+      },
+      "note": "No standalone `SeparableSpace ℝ` instance exists, but it is inferable from `Rat.denseRange_cast` via `SeparableSpace.of_denseRange` (also derivable from `SecondCountableTopology ℝ`)."
     },
     {
       "kind": "example",
@@ -51,8 +80,15 @@
         "section": "First examples",
         "snippet": "-dimensional Euclidean space is separable"
       },
-      "provenance": "ai-agent1",
-      "id": "18c5c8b714d8"
+      "provenance": "ai",
+      "id": "18c5c8b714d8",
+      "status": "partial",
+      "mathlib": {
+        "decl": "TopologicalSpace.SecondCountableTopology.to_separableSpace",
+        "module": "Mathlib.Topology.Bases",
+        "match_kind": "invocation"
+      },
+      "note": "No direct `SeparableSpace (EuclideanSpace ℝ (Fin n))` instance, but derivable via second-countability of Euclidean space and `SecondCountableTopology.to_separableSpace`."
     },
     {
       "kind": "example",
@@ -61,8 +97,15 @@
         "section": "First examples",
         "snippet": "A simple example of a space that is not separable is a discrete space of uncountable cardinality"
       },
-      "provenance": "ai-agent1",
-      "id": "f76cc11c7c27"
+      "provenance": "ai",
+      "id": "f76cc11c7c27",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopologicalSpace.separableSpace_iff_countable",
+        "module": "Mathlib.Topology.Bases",
+        "match_kind": "exact"
+      },
+      "note": "`separableSpace_iff_countable` for `[DiscreteTopology α]` gives `SeparableSpace α ↔ Countable α`, so uncountable discrete is not separable."
     },
     {
       "kind": "proposition",
@@ -71,8 +114,15 @@
         "section": "Separability versus second countability",
         "snippet": "Any second-countable space is separable"
       },
-      "provenance": "ai-agent1",
-      "id": "708c48e35ec9"
+      "provenance": "ai",
+      "id": "708c48e35ec9",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopologicalSpace.SecondCountableTopology.to_separableSpace",
+        "module": "Mathlib.Topology.Bases",
+        "match_kind": "exact"
+      },
+      "note": "Priority-100 instance `SecondCountableTopology.to_separableSpace` gives exactly this."
     },
     {
       "kind": "proposition",
@@ -81,8 +131,15 @@
         "section": "Separability versus second countability",
         "snippet": "a metrizable space is separable if and only if it is second countable, which is the case if and only if it is Lindelöf"
       },
-      "provenance": "ai-agent1",
-      "id": "d5f93a007a4f"
+      "provenance": "ai",
+      "id": "d5f93a007a4f",
+      "status": "partial",
+      "mathlib": {
+        "decl": "TopologicalSpace.instSecondCountableTopologyOfLindelofSpaceOfPseudoMetrizableSpace",
+        "module": "Mathlib.Topology.Metrizable.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The Lindelöf→second-countable direction for (pseudo)metrizable spaces is available, and separable metric→second-countable is `UniformSpace.secondCountable_of_separable`; the full three-way biconditional is not packaged as a single lemma."
     },
     {
       "kind": "proposition",
@@ -91,8 +148,15 @@
         "section": "Separability versus second countability",
         "snippet": "Any continuous image of a separable space is separable"
       },
-      "provenance": "ai-agent1",
-      "id": "920acbff70de"
+      "provenance": "ai",
+      "id": "920acbff70de",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopologicalSpace.isSeparable_range",
+        "module": "Mathlib.Topology.Bases",
+        "match_kind": "exact"
+      },
+      "note": "`isSeparable_range` (and `DenseRange.separableSpace`) proves the continuous image of a separable space is separable."
     },
     {
       "kind": "proposition",
@@ -101,8 +165,15 @@
         "section": "Separability versus second countability",
         "snippet": "A product of at most continuum many separable spaces is separable"
       },
-      "provenance": "ai-agent1",
-      "id": "cbe90d700f6b"
+      "provenance": "ai",
+      "id": "cbe90d700f6b",
+      "status": "partial",
+      "mathlib": {
+        "decl": "TopologicalSpace.instSeparableSpaceForallOfCountable",
+        "module": "Mathlib.Topology.Bases",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib only proves separability of countable products (Hewitt–Marczewski–Pondiczery's continuum-many strengthening not present)."
     },
     {
       "kind": "example",
@@ -111,8 +182,15 @@
         "section": "Separability versus second countability",
         "snippet": "We can construct an example of a separable topological space that is not second countable"
       },
-      "provenance": "ai-agent1",
-      "id": "875d7835f479"
+      "provenance": "ai",
+      "id": "875d7835f479",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit example construction found showing separable but not second-countable."
     },
     {
       "kind": "proposition",
@@ -121,8 +199,15 @@
         "section": "Cardinality",
         "snippet": "any set endowed with the trivial topology is separable, as well as second countable, quasi-compact , and connected"
       },
-      "provenance": "ai-agent1",
-      "id": "6124d0793d0b"
+      "provenance": "ai",
+      "id": "6124d0793d0b",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma stating that the indiscrete/`⊥`-topology is separable was found."
     },
     {
       "kind": "proposition",
@@ -131,8 +216,15 @@
         "section": "Cardinality",
         "snippet": "A first-countable , separable Hausdorff space (in particular, a separable metric space) has at most the continuum cardinality"
       },
-      "provenance": "ai-agent1",
-      "id": "56f394568fbe"
+      "provenance": "ai",
+      "id": "56f394568fbe",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cardinality bound `#X ≤ 𝔠` for first-countable separable Hausdorff spaces not found in Mathlib."
     },
     {
       "kind": "proposition",
@@ -141,8 +233,15 @@
         "section": "Cardinality",
         "snippet": "A separable Hausdorff space has cardinality at most"
       },
-      "provenance": "ai-agent1",
-      "id": "bf0d741a8d99"
+      "provenance": "ai",
+      "id": "bf0d741a8d99",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The `2^𝔠` cardinality bound for separable Hausdorff spaces is not present."
     },
     {
       "kind": "proposition",
@@ -151,8 +250,15 @@
         "section": "Cardinality",
         "snippet": "The same arguments establish a more general result"
       },
-      "provenance": "ai-agent1",
-      "id": "06fc6df056d6"
+      "provenance": "ai",
+      "id": "06fc6df056d6",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "General Hausdorff cardinality bound in terms of density character not found."
     },
     {
       "kind": "theorem",
@@ -161,28 +267,51 @@
         "section": "Cardinality",
         "snippet": "Hewitt–Marczewski–Pondiczery theorem"
       },
-      "provenance": "ai-agent1",
-      "id": "399c4c71fc20"
+      "provenance": "ai",
+      "id": "399c4c71fc20",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No trace of Hewitt–Marczewski–Pondiczery in Mathlib; only countable-index products of separable spaces are handled."
     },
     {
-      "kind": "example",
+      "kind": "theorem",
       "label": "Hahn–Banach theorem (constructive context)",
       "anchor": {
         "section": "Constructive mathematics",
         "snippet": "A famous example of a theorem of this sort is the Hahn–Banach theorem"
       },
-      "provenance": "ai-agent1",
-      "id": "56b384e45ab1"
+      "provenance": "ai-moderated",
+      "id": "56b384e45ab1",
+      "note": "Kind moderated from 'example' to 'theorem' — Hahn–Banach is a named theorem.",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.exists_extension_norm_eq",
+        "module": "Mathlib.Analysis.Normed.Module.HahnBanach",
+        "match_kind": "exact"
+      },
+      "note_extra": "Classical Hahn–Banach (norm-preserving extension) is in `Mathlib.Analysis.Normed.Module.HahnBanach`."
     },
     {
-      "kind": "example",
+      "kind": "proposition",
       "label": "Compact metric space is separable",
       "anchor": {
         "section": "Separable spaces",
         "snippet": "Every compact metric space (or metrizable space) is separable"
       },
-      "provenance": "ai-agent1",
-      "id": "0bc36ee50b53"
+      "provenance": "ai-moderated",
+      "id": "0bc36ee50b53",
+      "note": "Kind moderated from 'example' to 'proposition' — this is a general statement, not an example.",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompact.isSeparable",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Basic",
+        "match_kind": "exact"
+      },
+      "note_extra": "`IsCompact.isSeparable` proves every compact set in a pseudometrizable space is separable."
     },
     {
       "kind": "proposition",
@@ -191,18 +320,32 @@
         "section": "Separable spaces",
         "snippet": "Any topological space that is the union of a countable number of separable subspaces is separable"
       },
-      "provenance": "ai-agent1",
-      "id": "399f6b52967a"
+      "provenance": "ai",
+      "id": "399f6b52967a",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopologicalSpace.IsSeparable.iUnion",
+        "module": "Mathlib.Topology.Bases",
+        "match_kind": "exact"
+      },
+      "note": "`IsSeparable.iUnion` proves that a countable union of separable subsets is separable."
     },
     {
       "kind": "example",
-      "label": "Continuous functions on compact subset are separable",
+      "label": "C(K,ℝ) is separable",
       "anchor": {
         "section": "Separable spaces",
         "snippet": "of all continuous functions from a compact subset"
       },
-      "provenance": "ai-agent1",
-      "id": "5e2400d7f54b"
+      "provenance": "ai",
+      "id": "5e2400d7f54b",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousMap.instSeparableSpace",
+        "module": "Mathlib.Topology.ContinuousMap.SecondCountableSpace",
+        "match_kind": "generalization"
+      },
+      "note": "Instance provides `SeparableSpace C(X,Y)` when X is second-countable locally compact and Y is second-countable — covers `C(K,ℝ)` with K compact metric."
     },
     {
       "kind": "example",
@@ -211,8 +354,15 @@
         "section": "Separable spaces",
         "snippet": "The Lebesgue spaces"
       },
-      "provenance": "ai-agent1",
-      "id": "9449208b94da"
+      "provenance": "ai",
+      "id": "9449208b94da",
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.Lp.SecondCountableTopology",
+        "module": "Mathlib.MeasureTheory.Measure.SeparableMeasure",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib proves `Lp E p μ` has second-countable (hence separable) topology when the measure is separable and E is separable; not a bare `SeparableSpace (Lᵖ)` instance."
     },
     {
       "kind": "example",
@@ -221,8 +371,15 @@
         "section": "Separable spaces",
         "snippet": "of continuous real-valued functions on the unit interval"
       },
-      "provenance": "ai-agent1",
-      "id": "3cc9c9be6eea"
+      "provenance": "ai",
+      "id": "3cc9c9be6eea",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousMap.instSeparableSpace",
+        "module": "Mathlib.Topology.ContinuousMap.SecondCountableSpace",
+        "match_kind": "special_case"
+      },
+      "note": "Direct consequence of the general `ContinuousMap.instSeparableSpace` since [0,1] is second-countable locally compact."
     },
     {
       "kind": "theorem",
@@ -231,8 +388,15 @@
         "section": "Separable spaces",
         "snippet": "The Banach–Mazur theorem asserts that any separable Banach space is isometrically isomorphic to a closed linear subspace of"
       },
-      "provenance": "ai-agent1",
-      "id": "858cb08e2537"
+      "provenance": "ai",
+      "id": "858cb08e2537",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Banach–Mazur embedding of separable Banach spaces into C[0,1] found in Mathlib."
     },
     {
       "kind": "proposition",
@@ -241,8 +405,15 @@
         "section": "Separable spaces",
         "snippet": "A Hilbert space is separable if and only if it has a countable orthonormal basis"
       },
-      "provenance": "ai-agent1",
-      "id": "dd0c65c88e0f"
+      "provenance": "ai",
+      "id": "dd0c65c88e0f",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `exists_hilbertBasis` (arbitrary index), but no biconditional linking separability with countability of the Hilbert basis."
     },
     {
       "kind": "proposition",
@@ -251,8 +422,15 @@
         "section": "Separable spaces",
         "snippet": "any separable, infinite-dimensional Hilbert space is isometric to the space"
       },
-      "provenance": "ai-agent1",
-      "id": "224954221816"
+      "provenance": "ai",
+      "id": "224954221816",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`HilbertBasis.repr` gives an isometry to `lp (fun _ => 𝕜) 2` for an arbitrary index, but a specialized statement for separable infinite-dimensional Hilbert spaces isometric to ℓ²(ℕ) is not present."
     },
     {
       "kind": "example",
@@ -261,8 +439,15 @@
         "section": "Separable spaces",
         "snippet": "An example of a separable space that is not second-countable is the Sorgenfrey line"
       },
-      "provenance": "ai-agent1",
-      "id": "2f62b01dbd05"
+      "provenance": "ai",
+      "id": "2f62b01dbd05",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Sorgenfrey line construction found in Mathlib."
     },
     {
       "kind": "definition",
@@ -271,8 +456,15 @@
         "section": "Separable spaces",
         "snippet": "A separable σ-algebra is a σ-algebra"
       },
-      "provenance": "ai-agent1",
-      "id": "4d317e017466"
+      "provenance": "ai",
+      "id": "4d317e017466",
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasurableSpace.CountablyGenerated",
+        "module": "Mathlib.MeasureTheory.MeasurableSpace.CountablyGenerated",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has `CountablyGenerated` σ-algebras and `MeasureTheory.IsSeparable` for measures, but not the classical pseudometric-based `separable σ-algebra` definition."
     },
     {
       "kind": "example",
@@ -281,8 +473,15 @@
         "section": "Non-separable spaces",
         "snippet": "The first uncountable ordinal"
       },
-      "provenance": "ai-agent1",
-      "id": "07a8c2dde9ac"
+      "provenance": "ai",
+      "id": "07a8c2dde9ac",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Non-separability of ω₁ with the order topology is not formalized."
     },
     {
       "kind": "example",
@@ -291,8 +490,15 @@
         "section": "Non-separable spaces",
         "snippet": "The Banach space"
       },
-      "provenance": "ai-agent1",
-      "id": "fe5b7915936d"
+      "provenance": "ai",
+      "id": "fe5b7915936d",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`lp E ∞` exists in Mathlib but no lemma stating it is non-separable."
     },
     {
       "kind": "example",
@@ -301,8 +507,15 @@
         "section": "Non-separable spaces",
         "snippet": "The Banach space of functions of bounded variation is not separable"
       },
-      "provenance": "ai-agent1",
-      "id": "bbb87516dd62"
+      "provenance": "ai",
+      "id": "bbb87516dd62",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No BV-as-Banach-space non-separability result found."
     },
     {
       "kind": "proposition",
@@ -311,8 +524,47 @@
         "section": "Properties",
         "snippet": "A subspace of a separable space need not be separable"
       },
-      "provenance": "ai-agent1",
-      "id": "14cafbe01f3e"
+      "provenance": "ai",
+      "id": "14cafbe01f3e",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No counterexample formalized showing a subspace of a separable space need not be separable."
+    },
+    {
+      "kind": "proposition",
+      "label": "Open subspace of separable is separable",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "every open subspace of a separable space is separable"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Topology.IsOpenEmbedding.separableSpace",
+        "module": "Mathlib.Topology.Bases",
+        "match_kind": "exact"
+      },
+      "note": "`IsOpenEmbedding.separableSpace` yields separability of the domain from separability of the codomain via an open embedding — applies to open subspaces."
+    },
+    {
+      "kind": "proposition",
+      "label": "Every subspace of a separable metric space is separable",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "every subspace of a separable metric space is separable"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopologicalSpace.IsSeparable.of_separableSpace",
+        "module": "Mathlib.Topology.Bases",
+        "match_kind": "generalization"
+      },
+      "note": "In pseudometrizable spaces `IsSeparable.separableSpace` upgrades an `IsSeparable` set to a `SeparableSpace` subtype, so every subset of a separable metric space is separable."
     },
     {
       "kind": "proposition",
@@ -321,8 +573,15 @@
         "section": "Properties",
         "snippet": "every topological space is a subspace of a separable space of the same cardinality"
       },
-      "provenance": "ai-agent1",
-      "id": "24935fe796d3"
+      "provenance": "ai",
+      "id": "24935fe796d3",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No embedding result of an arbitrary space into a separable space of the same cardinality."
     },
     {
       "kind": "proposition",
@@ -331,8 +590,15 @@
         "section": "Properties",
         "snippet": "The set of all real-valued continuous functions on a separable space has a cardinality equal to"
       },
-      "provenance": "ai-agent1",
-      "id": "d19593ea1151"
+      "provenance": "ai",
+      "id": "d19593ea1151",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cardinality bound on C(X,ℝ) for separable X not found."
     },
     {
       "kind": "proposition",
@@ -341,8 +607,15 @@
         "section": "Properties",
         "snippet": "If X is a separable space having an uncountable closed discrete subspace, then X cannot be normal"
       },
-      "provenance": "ai-agent1",
-      "id": "4ba1936b58fd"
+      "provenance": "ai",
+      "id": "4ba1936b58fd",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsClosed.mk_lt_continuum",
+        "module": "Mathlib.Topology.Separation.NotNormal",
+        "match_kind": "exact"
+      },
+      "note": "`IsClosed.mk_lt_continuum` (module `Topology.Separation.NotNormal`) shows a closed discrete subset of a separable normal space has cardinality < continuum, contradicting uncountability of size ≥ 𝔠 — this is the Jones lemma content."
     },
     {
       "kind": "theorem",
@@ -351,8 +624,15 @@
         "section": "Properties",
         "snippet": "For a compact Hausdorff space X , the following are equivalent"
       },
-      "provenance": "ai-agent1",
-      "id": "7e4081c985a0"
+      "provenance": "ai",
+      "id": "7e4081c985a0",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The compact-Hausdorff equivalence package (separable/metrizable/second-countable via continuous functions) is not present as a single theorem."
     },
     {
       "kind": "theorem",
@@ -361,8 +641,15 @@
         "section": "Embedding separable metric spaces",
         "snippet": "Every separable metric space is homeomorphic to a subset of the Hilbert cube"
       },
-      "provenance": "ai-agent1",
-      "id": "9653e2e0e8c5"
+      "provenance": "ai",
+      "id": "9653e2e0e8c5",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.PiNatEmbed.exists_embedding_to_hilbert_cube",
+        "module": "Mathlib.Topology.MetricSpace.PiNat",
+        "match_kind": "exact"
+      },
+      "note": "`exists_embedding_to_hilbert_cube` for `[MetricSpace X] [SeparableSpace X]` gives an embedding into `ℕ → I`."
     },
     {
       "kind": "theorem",
@@ -371,8 +658,15 @@
         "section": "Embedding separable metric spaces",
         "snippet": "this is known as the Fréchet embedding"
       },
-      "provenance": "ai-agent1",
-      "id": "dcb97c3332d2"
+      "provenance": "ai",
+      "id": "dcb97c3332d2",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "KuratowskiEmbedding.exists_isometric_embedding",
+        "module": "Mathlib.Topology.MetricSpace.Kuratowski",
+        "match_kind": "exact"
+      },
+      "note": "The Kuratowski (a.k.a. Fréchet) embedding gives an isometric embedding of any separable metric space into ℓ^∞(ℕ,ℝ)."
     },
     {
       "kind": "theorem",
@@ -381,8 +675,15 @@
         "section": "Embedding separable metric spaces",
         "snippet": "Every separable metric space is isometric to a subset of C([0,1])"
       },
-      "provenance": "ai-agent1",
-      "id": "d23cd34c8e7c"
+      "provenance": "ai",
+      "id": "d23cd34c8e7c",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No isometric embedding of separable metric spaces into C([0,1]) found."
     },
     {
       "kind": "theorem",
@@ -391,8 +692,15 @@
         "section": "Embedding separable metric spaces",
         "snippet": "Every separable metric space is isometric to a subset of the Urysohn universal space"
       },
-      "provenance": "ai-agent1",
-      "id": "9cdfbd39341e"
+      "provenance": "ai",
+      "id": "9cdfbd39341e",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Urysohn universal metric space is not in Mathlib."
     },
     {
       "kind": "theorem",
@@ -401,8 +709,15 @@
         "section": "Embedding separable metric spaces",
         "snippet": "A metric space of density equal to an infinite cardinal α is isometric to a subspace of"
       },
-      "provenance": "ai-agent1",
-      "id": "b96f56b8c36d"
+      "provenance": "ai",
+      "id": "b96f56b8c36d",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Density character and its associated ℓ^∞(α) embedding are not formalized in Mathlib."
     }
   ]
 }

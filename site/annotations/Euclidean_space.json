@@ -308,7 +308,8 @@
         "match_kind": null
       },
       "note": "Corollary of line-through-two-points uniqueness; no dedicated lemma found in Mathlib's affine API.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7587a5ff88d4"
     },
     {
       "kind": "definition",
@@ -834,7 +835,8 @@
         "match_kind": "exact"
       },
       "note": "`polarCoord` is an `OpenPartialHomeomorph` between `ℝ²` and `(0,∞) × (-π, π)`; spherical/cylindrical coordinates are not packaged.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7b70dff0b2f9"
     },
     {
       "kind": "definition",
@@ -988,6 +990,22 @@
       "note": "`AffineIsometryEquiv P P` with its group instance is exactly the Euclidean group of `P` (listed in `docs/undergrad.yaml`).",
       "provenance": "ai",
       "id": "505a30ea1a61"
+    },
+    {
+      "kind": "definition",
+      "label": "Translation as Euclidean transformation",
+      "anchor": {
+        "section": "Euclidean group",
+        "snippet": "The simplest Euclidean transformations are translations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AffineIsometryEquiv.constVAdd",
+        "module": "Mathlib.Analysis.Normed.Affine.Isometry",
+        "match_kind": "exact"
+      },
+      "note": "`AffineIsometryEquiv.constVAdd ℝ P v` is the translation `x ↦ v +ᵥ x` as a self-isometry of `P`.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -1156,7 +1174,8 @@
         "match_kind": "invocation"
       },
       "note": "`EuclideanSpace.equiv` is a continuous linear equivalence between `EuclideanSpace 𝕜 ι` and `ι → 𝕜`, so the `PiLp 2` topology agrees with the product topology.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b4c6dfdff576"
     },
     {
       "kind": "definition",
@@ -1242,6 +1261,22 @@
       "note": "Artin's meta-theorem comparing synthetic vs analytic axiomatizations of Euclidean geometry is not formalized.",
       "provenance": "ai",
       "id": "ad85ed0df24a"
+    },
+    {
+      "kind": "definition",
+      "label": "Manifold (locally Euclidean)",
+      "anchor": {
+        "section": "Curved spaces",
+        "snippet": "A manifold is a space that in the neighborhood of each point resembles a Euclidean space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ChartedSpace",
+        "module": "Mathlib.Geometry.Manifold.ChartedSpace",
+        "match_kind": "generalization"
+      },
+      "note": "`ChartedSpace H M` axiomatises a space locally modelled on `H`; specialising to `H = EuclideanSpace ℝ (Fin n)` gives a topological manifold.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",

@@ -3,7 +3,24 @@
   "wikipedia_title": "Signal processing",
   "display_title": "Signal processing",
   "schema_version": 3,
+  "annotation_style": "theorem_article",
   "annotations": [
+    {
+      "kind": "definition",
+      "label": "Signal processing",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Signal processing is an electrical engineering subfield that focuses on analyzing, modifying and synthesizing signals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Signal processing is an engineering discipline, not a mathematical object formalizable in Mathlib.",
+      "provenance": "ai"
+    },
     {
       "kind": "definition",
       "label": "Signal as a function of time",
@@ -11,6 +28,13 @@
         "section": "Definition of a signal",
         "snippet": "a signal is represented as a function of time"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A signal as a real-valued function of time is not a distinguished Mathlib concept (it is just a function).",
       "provenance": "ai-agent1",
       "id": "08f89e63667b"
     },
@@ -21,6 +45,13 @@
         "section": "Definition of a signal",
         "snippet": "deterministic (then one speaks of a deterministic signal)"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion labeling a function as a deterministic signal.",
       "provenance": "ai-agent1",
       "id": "52e557e986f0"
     },
@@ -31,6 +62,13 @@
         "section": "Definition of a signal",
         "snippet": "a realization of a stochastic process"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.Probability.Process",
+        "match_kind": null
+      },
+      "note": "Mathlib has stochastic process infrastructure (filtrations, stopping, Kolmogorov) but no explicit `stochasticProcess`/signal-realization definition.",
       "provenance": "ai-agent1",
       "id": "c49eeeedcfda"
     },
@@ -41,6 +79,13 @@
         "section": "Analog",
         "snippet": "Analog signal processing is for signals that have not been digitized"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Analog signal processing is an engineering technology outside Mathlib's scope.",
       "provenance": "ai-agent1",
       "id": "997cf6a546e7"
     },
@@ -51,6 +96,13 @@
         "section": "Continuous time",
         "snippet": "Continuous-time signal processing is for signals that vary continuously in time"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Continuous-time signal processing is an engineering discipline, not a Mathlib definition.",
       "provenance": "ai-agent1",
       "id": "fb78160236a7"
     },
@@ -61,6 +113,13 @@
         "section": "Continuous time",
         "snippet": "passing through a linear time-invariant filter/system"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "convolution",
+        "module": "Mathlib.Analysis.Convolution",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib defines `convolution` and many properties, but does not package the LTI-system/impulse-response equation as a distinguished result.",
       "provenance": "ai-agent1",
       "id": "8ee7b7d9d048"
     },
@@ -71,8 +130,31 @@
         "section": "Continuous time",
         "snippet": "is referred to as the impulse response of the system"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of an impulse response for an LTI system.",
       "provenance": "ai-agent1",
       "id": "f07182a955d2"
+    },
+    {
+      "kind": "definition",
+      "label": "Convolution of input and system",
+      "anchor": {
+        "section": "Continuous time",
+        "snippet": "The above convolution operation is conducted between the input and the system"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "convolution",
+        "module": "Mathlib.Analysis.Convolution",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines `convolution f g L` in `Mathlib.Analysis.Convolution` for functions on an additive group, generalizing the signal-processing convolution.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -81,6 +163,13 @@
         "section": "Discrete time",
         "snippet": "Discrete-time signal processing is for sampled signals"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Discrete-time signal processing is an engineering discipline, not a Mathlib definition.",
       "provenance": "ai-agent1",
       "id": "269a3bfd5ab7"
     },
@@ -91,6 +180,13 @@
         "section": "Discrete time",
         "snippet": "Analog discrete-time signal processing is a technology based on electronic devices"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This describes analog hardware technology, outside Mathlib's scope.",
       "provenance": "ai-agent1",
       "id": "0fb42d540c17"
     },
@@ -101,6 +197,13 @@
         "section": "Discrete time",
         "snippet": "also refers to a theoretical discipline that establishes a mathematical basis for digital signal processing"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib definition captures this meta-level discipline.",
       "provenance": "ai-agent1",
       "id": "0f8cc67e7364"
     },
@@ -111,6 +214,13 @@
         "section": "Digital",
         "snippet": "Digital signal processing is the processing of digitized discrete-time sampled signals"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Digital signal processing is an engineering discipline, not a Mathlib concept.",
       "provenance": "ai-agent1",
       "id": "c9391828a310"
     },
@@ -121,6 +231,13 @@
         "section": "Nonlinear",
         "snippet": "Nonlinear signal processing involves the analysis and processing of signals produced from nonlinear systems"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define nonlinear signal processing as such.",
       "provenance": "ai-agent1",
       "id": "df65022ad7a3"
     },
@@ -131,6 +248,13 @@
         "section": "Nonlinear",
         "snippet": "Polynomial signal processing is a type of non-linear signal processing"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of polynomial signal processing.",
       "provenance": "ai-agent1",
       "id": "335c149433f3"
     },
@@ -141,6 +265,13 @@
         "section": "Statistical",
         "snippet": "Statistical signal processing is an approach which treats signals as stochastic processes"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has probability infrastructure but no notion labeled statistical signal processing.",
       "provenance": "ai-agent1",
       "id": "e9d45827c74b"
     },
@@ -151,6 +282,13 @@
         "section": "Statistical",
         "snippet": "one can model the probability distribution of noise incurred when photographing an image"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Image noise modeling is not a Mathlib formalizable statement.",
       "provenance": "ai-agent1",
       "id": "e708e1c27073"
     },
@@ -161,6 +299,13 @@
         "section": "Graph",
         "snippet": "Graph signal processing generalizes signal processing tasks to signals living on non-Euclidean domains"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has graph theory but no graph signal processing definition.",
       "provenance": "ai-agent1",
       "id": "340b4369f5a6"
     }

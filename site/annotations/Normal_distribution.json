@@ -767,7 +767,8 @@
         "match_kind": null
       },
       "note": "The Hellinger distance and its closed form for normals are not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8523bd4a487b"
     },
     {
       "kind": "proposition",
@@ -817,7 +818,8 @@
         "match_kind": null
       },
       "note": "Information geometry / statistical manifolds are not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "19ae89e119fe"
     },
     {
       "kind": "theorem",
@@ -1394,7 +1396,8 @@
         "match_kind": null
       },
       "note": "Pearson and generalized normal families are not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d0aeba7aedc4"
     },
     {
       "kind": "proposition",
@@ -1973,6 +1976,102 @@
       "note": "The modern 1D CLT in Mathlib subsumes Laplace's original statement.",
       "provenance": "ai",
       "id": "16b9dae3f673"
+    },
+    {
+      "kind": "proposition",
+      "label": "Mean equals median and mode",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The parameter ⁠ ⁠ is the mean or expectation of the distribution (and also its median and mode )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes the mean of `gaussianReal μ v` (as expectation) but neither the median nor the mode of the Gaussian are named lemmas.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Log-concavity of Gaussian density",
+      "anchor": {
+        "section": "Symmetries and derivatives",
+        "snippet": "Its density is log-concave"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Log-concavity of the Gaussian pdf is not stated as a named lemma in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "nth derivative of standard normal density via Hermite polynomials",
+      "anchor": {
+        "section": "Symmetries and derivatives",
+        "snippet": "More generally, its n th derivative is"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.deriv_gaussian_eq_hermite_mul_gaussian",
+        "module": "Mathlib.RingTheory.Polynomial.Hermite.Gaussian",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib expresses iterated derivatives of the Gaussian pdf via probabilist Hermite polynomials.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Isserlis's theorem",
+      "anchor": {
+        "section": "Fourier transform and characteristic function",
+        "snippet": "which also could be seen as consequences of the Isserlis's theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Isserlis's / Wick's theorem for Gaussian moments is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Only first two cumulants are nonzero",
+      "anchor": {
+        "section": "Moment- and cumulant-generating functions",
+        "snippet": "only the first two cumulants are nonzero, namely the mean"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.cgf_gaussianReal",
+        "module": "Mathlib.Probability.Distributions.Gaussian.Real",
+        "match_kind": "generalization"
+      },
+      "note": "Follows from the closed-form `cgf_gaussianReal = μt + v t²/2` being a quadratic polynomial, but no dedicated cumulant lemma is stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Gaussian is an eigenfunction of the Fourier transform",
+      "anchor": {
+        "section": "Fourier transform and characteristic function",
+        "snippet": "the standard normal distribution ⁠ ⁠ is an eigenfunction of the Fourier transform"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "fourierIntegral_gaussian",
+        "module": "Mathlib.Analysis.SpecialFunctions.Gaussian.FourierTransform",
+        "match_kind": "generalization"
+      },
+      "note": "The eigenfunction property is an immediate consequence of the general Fourier-of-Gaussian formula, but no specialized eigenfunction lemma is stated.",
+      "provenance": "ai"
     }
   ]
 }

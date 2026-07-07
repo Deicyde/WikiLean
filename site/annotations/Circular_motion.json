@@ -19,7 +19,8 @@
         "match_kind": "generalization"
       },
       "note": "`circleMap c R θ = c + R·exp(θ·i)` parametrizes a circular path, but Mathlib has no notion of time-evolution motion of an object.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f70b00806026"
     },
     {
       "kind": "example",
@@ -35,7 +36,8 @@
         "match_kind": null
       },
       "note": "Physical examples like satellite orbits are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e430ce4997e6"
     },
     {
       "kind": "proposition",
@@ -51,7 +53,8 @@
         "match_kind": null
       },
       "note": "Centripetal force/acceleration is a physics concept absent from Mathlib (loogle finds no `centripetal` decls).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c35e8f6a53a8"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "generalization"
       },
       "note": "`circleMap c R θ` with linear `θ` is mathematically equivalent to uniform circular motion, but Mathlib does not name it as such.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "293b189128a3"
     },
     {
       "kind": "proposition",
@@ -83,7 +87,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no formalization of rigid bodies or axis-of-rotation kinematics.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2726913ba1ee"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": null
       },
       "note": "The relation ω = 2π/T is a physics definition not present in Mathlib (no `angularVelocity` decls).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a6e216572130"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": null
       },
       "note": "Speed v = 2πr/T as a physics quantity is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9a06219410a2"
     },
     {
       "kind": "definition",
@@ -131,7 +138,8 @@
         "match_kind": null
       },
       "note": "The kinematic identity θ = ωt is not a Mathlib definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "babb1bab9231"
     },
     {
       "kind": "definition",
@@ -147,7 +155,8 @@
         "match_kind": null
       },
       "note": "Angular acceleration α = dω/dt is a physics quantity absent from Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3c3b7c87cf9f"
     },
     {
       "kind": "proposition",
@@ -163,7 +172,8 @@
         "match_kind": null
       },
       "note": "Depends on the absent notion of angular acceleration.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a51673a5385a"
     },
     {
       "kind": "definition",
@@ -179,14 +189,15 @@
         "match_kind": null
       },
       "note": "The formula a = v²/r = ω²r as a physics statement is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "30981e71c400"
     },
     {
       "kind": "definition",
       "label": "Centripetal force from Newton's second law",
       "anchor": {
         "section": "Basic formulas",
-        "snippet": "for a body of mass m , the centripetal force is, by Newton's second law"
+        "snippet": "For a body of mass m , the centripetal force is, by Newton's second law"
       },
       "status": "not_formalized",
       "mathlib": {
@@ -194,8 +205,9 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Newton's second law and force are not formalized in Mathlib.",
-      "provenance": "ai"
+      "note": "Newton's second law and force are not formalized in Mathlib. Snippet capitalization corrected to match source.",
+      "provenance": "ai-moderated",
+      "id": "61fa926782fb"
     },
     {
       "kind": "example",
@@ -211,7 +223,8 @@
         "match_kind": null
       },
       "note": "A physical worked example with units; not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f169ef4cbc62"
     },
     {
       "kind": "definition",
@@ -227,7 +240,8 @@
         "match_kind": null
       },
       "note": "Mathlib has `crossProduct` but no formulation of v = ω × r for circular motion.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d12d69d5c03c"
     },
     {
       "kind": "definition",
@@ -243,7 +257,8 @@
         "match_kind": null
       },
       "note": "The identity a = ω × v for circular motion is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1c7c902f68fb"
     },
     {
       "kind": "definition",
@@ -259,7 +274,8 @@
         "match_kind": "generalization"
       },
       "note": "`polarCoord.symm (r,θ) = (r cos θ, r sin θ)` gives the radial position vector, though not framed as a moving particle.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c01bb1e714e1"
     },
     {
       "kind": "proposition",
@@ -275,7 +291,8 @@
         "match_kind": "generalization"
       },
       "note": "The Fréchet derivative of `polarCoord.symm` provides the underlying calculus but not the kinematic decomposition into radial/tangential velocity components.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "312b82baf124"
     },
     {
       "kind": "proposition",
@@ -291,7 +308,8 @@
         "match_kind": "special_case"
       },
       "note": "`deriv_circleMap` gives d/dθ (c + R e^{iθ}) = R e^{iθ}·i, which when R=1 is exactly the rotated radial unit vector.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "87a83d162b65"
     },
     {
       "kind": "proposition",
@@ -307,7 +325,8 @@
         "match_kind": null
       },
       "note": "The polar-coordinate acceleration decomposition with radial and tangential components is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "adc4c335e5d8"
     },
     {
       "kind": "proposition",
@@ -323,7 +342,8 @@
         "match_kind": null
       },
       "note": "Kinematic decomposition of acceleration is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9fb9aec5862a"
     },
     {
       "kind": "definition",
@@ -339,7 +359,8 @@
         "match_kind": "exact"
       },
       "note": "`circleMap c R θ = c + R·exp(θ·i)` is exactly the complex-number parametrization given in the article.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d7c3056d2eef"
     },
     {
       "kind": "proposition",
@@ -355,7 +376,8 @@
         "match_kind": "special_case"
       },
       "note": "`deriv_circleMap` yields velocity i·R·e^{iθ}; the second derivative (acceleration −R·e^{iθ}) is not separately named.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e73a254bc8e2"
     },
     {
       "kind": "proposition",
@@ -371,7 +393,8 @@
         "match_kind": null
       },
       "note": "Arc-length relation s = rθ and v = rω for a moving particle is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "02db12723db9"
     },
     {
       "kind": "proposition",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "Geometric derivation of |a| = v²/r is a physics argument not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "26da02e6bdb4"
     },
     {
       "kind": "proposition",
@@ -403,7 +427,8 @@
         "match_kind": null
       },
       "note": "Special relativity kinematics are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b772b5580c34"
     },
     {
       "kind": "definition",
@@ -419,7 +444,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not formalize variable-speed circular trajectories as a named concept.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b8d120e67057"
     },
     {
       "kind": "proposition",
@@ -435,7 +461,8 @@
         "match_kind": null
       },
       "note": "Geometric/physical claim about acceleration direction is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2f168d954fbb"
     },
     {
       "kind": "proposition",
@@ -451,7 +478,8 @@
         "match_kind": null
       },
       "note": "Acceleration-decomposition kinematics not present.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0e50f56302c4"
     },
     {
       "kind": "proposition",
@@ -467,7 +495,8 @@
         "match_kind": null
       },
       "note": "Force decomposition is a physics notion absent from Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9f1181da0955"
     },
     {
       "kind": "proposition",
@@ -483,7 +512,8 @@
         "match_kind": null
       },
       "note": "Higher kinematic quantities (jerk) and these formulas are not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b8e41bc0748e"
     },
     {
       "kind": "proposition",
@@ -499,7 +529,8 @@
         "match_kind": null
       },
       "note": "Newtonian force-balance statement is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8024599d055a"
     },
     {
       "kind": "proposition",
@@ -515,7 +546,8 @@
         "match_kind": null
       },
       "note": "Vector sum of kinematic components not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f564730f85c5"
     },
     {
       "kind": "proposition",
@@ -531,6 +563,39 @@
         "match_kind": null
       },
       "note": "Defines a physics quantity (tangential acceleration) not present in Mathlib.",
+      "provenance": "ai",
+      "id": "bc61ad2be411"
+    },
+    {
+      "kind": "proposition",
+      "label": "Right-hand rule for axis of rotation direction",
+      "anchor": {
+        "section": "In vector form",
+        "snippet": "The direction of ω is chosen using the right-hand rule"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Right-hand rule as a directional convention for the angular velocity pseudovector is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Coriolis correction term for general planar motion",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "for general motion within a plane with polar coordinates"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Coriolis term 2(dr/dt)(dθ/dt) added to tangential acceleration in general planar polar kinematics is not formalized.",
       "provenance": "ai"
     }
   ]

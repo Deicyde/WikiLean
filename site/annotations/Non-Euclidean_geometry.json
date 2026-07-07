@@ -172,7 +172,8 @@
         "match_kind": null
       },
       "note": "Riemann's parametric family of Riemannian metrics on the unit ball (yielding non-Euclidean geometries including elliptic) is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9bcf8e946c98"
     },
     {
       "kind": "definition",
@@ -188,7 +189,8 @@
         "match_kind": null
       },
       "note": "The Cayley–Klein metric (distance via logarithm of a projective cross-ratio) is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "879d2a7be360"
     },
     {
       "kind": "definition",
@@ -639,14 +641,15 @@
         "section": "Planar algebras",
         "snippet": "this quantity is the square of the Euclidean distance between z and the origin"
       },
-      "status": "partial",
+      "status": "formalized",
       "mathlib": {
         "decl": "Complex.normSq",
         "module": "Mathlib.Data.Complex.Basic",
         "match_kind": "exact"
       },
-      "note": "`Complex.normSq z = z.re^2 + z.im^2` is the squared Euclidean distance from z to 0; the Wikipedia 'modulus' here means z·z* (= normSq).",
-      "provenance": "ai"
+      "note": "`Complex.normSq z = z.re^2 + z.im^2` is the squared Euclidean distance from z to 0; the Wikipedia 'modulus' here means z·z* (= normSq). Status upgraded to formalized to match the exact match_kind.",
+      "provenance": "ai-moderated",
+      "id": "e9d425796c79"
     },
     {
       "kind": "example",
@@ -817,6 +820,70 @@
       "note": "Dual numbers are formalized, but their kinematic use as Galilean shear mappings is not.",
       "provenance": "ai",
       "id": "b0e67a80b64a"
+    },
+    {
+      "kind": "definition",
+      "label": "Riemannian geometry",
+      "anchor": {
+        "section": "Development of non-Euclidean geometry",
+        "snippet": "founded the field of Riemannian geometry , discussing in particular the ideas now called manifolds , Riemannian metric , and curvature"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsRiemannianManifold",
+        "module": "Mathlib.Geometry.Manifold.Riemannian.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes smooth manifolds and the `IsRiemannianManifold` predicate via Riemannian bundle structures on the tangent bundle, providing the modern foundation of Riemannian geometry.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Curvature tensor",
+      "anchor": {
+        "section": "Development of non-Euclidean geometry",
+        "snippet": "By formulating the geometry in terms of a curvature tensor , Riemann allowed non-Euclidean geometry to apply to higher dimensions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Riemann curvature tensor of a Riemannian manifold is not yet formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Antipodal points on a sphere",
+      "anchor": {
+        "section": "Elliptic geometry",
+        "snippet": "points opposite each other (called antipodal points )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "instInvolutiveNegElemSphereOfNat",
+        "module": "Mathlib.Analysis.Normed.Group.BallSphere",
+        "match_kind": "exact"
+      },
+      "note": "The antipodal map is formalized as the `InvolutiveNeg` instance on `Metric.sphere 0 r`, sending v to -v.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hyperbolic plane",
+      "anchor": {
+        "section": "Fiction",
+        "snippet": "roguelike game set on the hyperbolic plane"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "UpperHalfPlane",
+        "module": "Mathlib.Analysis.Complex.UpperHalfPlane.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib's `UpperHalfPlane` with its hyperbolic metric provides one formalization of the hyperbolic plane.",
+      "provenance": "ai"
     }
   ]
 }

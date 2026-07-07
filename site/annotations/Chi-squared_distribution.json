@@ -3,6 +3,7 @@
   "wikipedia_title": "Chi-squared distribution",
   "display_title": "Chi-squared distribution",
   "schema_version": 3,
+  "annotation_style": "theorem_article",
   "annotations": [
     {
       "kind": "definition",
@@ -12,7 +13,14 @@
         "snippet": "is the distribution of a sum of the squares of"
       },
       "provenance": "ai-agent1",
-      "id": "d70f4612c4e3"
+      "id": "d70f4612c4e3",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no chi-squared distribution declaration; grep for chi/ChiSquared in Mathlib/Probability returns nothing relevant."
     },
     {
       "kind": "proposition",
@@ -22,7 +30,14 @@
         "snippet": "is a special case of the gamma distribution and the univariate Wishart distribution"
       },
       "provenance": "ai-agent1",
-      "id": "6bbd256ef800"
+      "id": "6bbd256ef800",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gamma distribution exists (ProbabilityTheory.gammaMeasure) but no chi-squared definition or Wishart distribution is present in Mathlib."
     },
     {
       "kind": "proposition",
@@ -32,7 +47,14 @@
         "snippet": "is a reparametrization of the gamma distribution and the univariate Wishart distribution"
       },
       "provenance": "ai-agent1",
-      "id": "b23d887dd90b"
+      "id": "b23d887dd90b",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No chi-squared or Wishart distribution is present in Mathlib to state the reparametrization."
     },
     {
       "kind": "definition",
@@ -42,7 +64,14 @@
         "snippet": "is distributed according to the chi-squared distribution with k degrees of freedom"
       },
       "provenance": "ai-agent1",
-      "id": "90a68497814f"
+      "id": "90a68497814f",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No chi-squared measure or PDF definition appears in Mathlib."
     },
     {
       "kind": "example",
@@ -52,7 +81,14 @@
         "snippet": "The distribution of the random variable"
       },
       "provenance": "ai-agent1",
-      "id": "f762b3eb5026"
+      "id": "f762b3eb5026",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma identifies the pushforward of a standard Gaussian under squaring as a chi-squared/gamma measure in Mathlib."
     },
     {
       "kind": "definition",
@@ -62,7 +98,14 @@
         "snippet": "The probability density function (pdf) of the chi-squared distribution is"
       },
       "provenance": "ai-agent1",
-      "id": "2f05fbf8340a"
+      "id": "2f05fbf8340a",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No chi-squared PDF is defined in Mathlib; only the general gammaPDFReal exists in Mathlib.Probability.Distributions.Gamma."
     },
     {
       "kind": "definition",
@@ -72,7 +115,14 @@
         "snippet": "Its cumulative distribution function is:"
       },
       "provenance": "ai-agent1",
-      "id": "a29f7cb280b5"
+      "id": "a29f7cb280b5",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No chi-squared CDF is defined; Mathlib has a general cdf and cdf_gammaMeasure_eq_integral but no chi-squared specialization."
     },
     {
       "kind": "proposition",
@@ -82,7 +132,14 @@
         "snippet": "Chernoff bounds on the lower and upper tails of the CDF may be obtained"
       },
       "provenance": "ai-agent1",
-      "id": "221a841a16d0"
+      "id": "221a841a16d0",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has generic subgaussian/moment machinery in Mathlib.Probability.Moments but no Chernoff tail bound stated for chi-squared."
     },
     {
       "kind": "theorem",
@@ -92,7 +149,14 @@
         "snippet": "The following is a special case of Cochran's theorem"
       },
       "provenance": "ai-agent1",
-      "id": "94473cbe9071"
+      "id": "94473cbe9071",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cochran's theorem is not in Mathlib; no chi-squared statement to specialize it to."
     },
     {
       "kind": "proposition",
@@ -102,7 +166,14 @@
         "snippet": "the sum of independent chi-squared variables is also chi-squared distributed"
       },
       "provenance": "ai-agent1",
-      "id": "e83daf414d70"
+      "id": "e83daf414d70",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No chi-squared additivity or gamma-convolution-of-independents lemma appears in Mathlib.Probability.Distributions."
     },
     {
       "kind": "proposition",
@@ -112,7 +183,14 @@
         "snippet": "is distributed according to a gamma distribution with shape"
       },
       "provenance": "ai-agent1",
-      "id": "9f575d886e87"
+      "id": "9f575d886e87",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Requires chi-squared and rescaling lemmas for gammaMeasure, neither of which is present in Mathlib."
     },
     {
       "kind": "proposition",
@@ -122,7 +200,14 @@
         "snippet": "The differential entropy is given by"
       },
       "provenance": "ai-agent1",
-      "id": "29c7e76fe536"
+      "id": "29c7e76fe536",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No chi-squared distribution and no computed differential entropy formula for it appears in Mathlib."
     },
     {
       "kind": "proposition",
@@ -132,7 +217,14 @@
         "snippet": "is the maximum entropy probability distribution for a random variate"
       },
       "provenance": "ai-agent1",
-      "id": "bf1c841cd906"
+      "id": "bf1c841cd906",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No maximum-entropy characterization for chi-squared is present in Mathlib."
     },
     {
       "kind": "proposition",
@@ -142,7 +234,14 @@
         "snippet": "The noncentral moments (raw moments) of a chi-squared distribution with"
       },
       "provenance": "ai-agent1",
-      "id": "0ee3c13d59ae"
+      "id": "0ee3c13d59ae",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no chi-squared distribution to which such a moment formula could be attached."
     },
     {
       "kind": "proposition",
@@ -152,7 +251,14 @@
         "snippet": "The cumulants are readily obtained by a power series expansion of the logarithm of the characteristic function"
       },
       "provenance": "ai-agent1",
-      "id": "9b395e058ff4"
+      "id": "9b395e058ff4",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No cumulants of the chi-squared distribution are computed in Mathlib."
     },
     {
       "kind": "theorem",
@@ -162,7 +268,14 @@
         "snippet": "The standard Laurent-Massart"
       },
       "provenance": "ai-agent1",
-      "id": "48508320b298"
+      "id": "48508320b298",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Laurent–Massart chi-squared concentration bounds are not stated in Mathlib."
     },
     {
       "kind": "proposition",
@@ -172,7 +285,14 @@
         "snippet": "the standard Chernoff bound yields"
       },
       "provenance": "ai-agent1",
-      "id": "a7797dc1028c"
+      "id": "a7797dc1028c",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Chernoff bound specialized to a chi-squared random variable appears in Mathlib."
     },
     {
       "kind": "theorem",
@@ -182,7 +302,14 @@
         "snippet": "it converges to a normal distribution for large"
       },
       "provenance": "ai-agent1",
-      "id": "9e215f49513b"
+      "id": "9e215f49513b",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No CLT specialization to the chi-squared distribution exists in Mathlib (no chi-squared object to converge)."
     },
     {
       "kind": "proposition",
@@ -192,7 +319,14 @@
         "snippet": "This is known as the Wilson–Hilferty transformation"
       },
       "provenance": "ai-agent1",
-      "id": "733dbbdea3f4"
+      "id": "733dbbdea3f4",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Wilson–Hilferty cube-root normal approximation is not in Mathlib."
     },
     {
       "kind": "proposition",
@@ -202,7 +336,14 @@
         "snippet": "The squared norm of k standard normally distributed variables is a chi-squared distribution with k degrees of freedom"
       },
       "provenance": "ai-agent1",
-      "id": "f55314543b1e"
+      "id": "f55314543b1e",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma links the squared Euclidean norm of iid standard Gaussians to a chi-squared/gamma distribution in Mathlib."
     },
     {
       "kind": "definition",
@@ -212,7 +353,14 @@
         "snippet": "is defined as the sum of the squares of"
       },
       "provenance": "ai-agent1",
-      "id": "e1a81a219b5d"
+      "id": "e1a81a219b5d",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no such definition of the chi-squared distribution."
     },
     {
       "kind": "proposition",
@@ -222,7 +370,14 @@
         "snippet": "is chi-squared distributed with"
       },
       "provenance": "ai-agent1",
-      "id": "daaf66168ec6"
+      "id": "daaf66168ec6",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No distributional result about Gaussian quadratic forms being chi-squared is present in Mathlib."
     },
     {
       "kind": "definition",
@@ -232,7 +387,14 @@
         "snippet": "yields a generalization of the chi-squared distribution called the noncentral chi-squared distribution"
       },
       "provenance": "ai-agent1",
-      "id": "2b31225f0fb4"
+      "id": "2b31225f0fb4",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Noncentral chi-squared distribution is not defined in Mathlib (grep for 'noncentral' finds only Mathlib/LinearAlgebra/Center.lean)."
     },
     {
       "kind": "proposition",
@@ -242,7 +404,14 @@
         "snippet": "symmetric , idempotent matrix with rank"
       },
       "provenance": "ai-agent1",
-      "id": "2864fce27f48"
+      "id": "2864fce27f48",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This special case of Cochran's theorem is not formalized in Mathlib."
     },
     {
       "kind": "proposition",
@@ -252,7 +421,14 @@
         "snippet": "is F-distributed"
       },
       "provenance": "ai-agent1",
-      "id": "78be8d41cf1f"
+      "id": "78be8d41cf1f",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the chi-squared nor the F-distribution is defined in Mathlib."
     },
     {
       "kind": "proposition",
@@ -262,7 +438,14 @@
         "snippet": "is a special case of the generalized chi-squared distribution"
       },
       "provenance": "ai-agent1",
-      "id": "7326447c0e54"
+      "id": "7326447c0e54",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The generalized chi-squared distribution is not defined in Mathlib."
     },
     {
       "kind": "definition",
@@ -272,7 +455,14 @@
         "snippet": "is obtained from the sum of the squares of independent Gaussian random variables having unit variance and nonzero means"
       },
       "provenance": "ai-agent1",
-      "id": "91de1b1e9269"
+      "id": "91de1b1e9269",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No noncentral chi-squared distribution is defined in Mathlib."
     },
     {
       "kind": "definition",
@@ -282,7 +472,14 @@
         "snippet": "is obtained from the quadratic form z'Az where z is a zero-mean Gaussian vector"
       },
       "provenance": "ai-agent1",
-      "id": "52470939c7b5"
+      "id": "52470939c7b5",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No generalized chi-squared distribution is defined in Mathlib."
     },
     {
       "kind": "proposition",
@@ -292,7 +489,14 @@
         "snippet": "is a special case of the gamma distribution"
       },
       "provenance": "ai-agent1",
-      "id": "1c4a0b67437b"
+      "id": "1c4a0b67437b",
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.gammaMeasure",
+        "module": "Mathlib.Probability.Distributions.Gamma",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines the general gamma measure but does not identify chi-squared as its specialization at shape k/2, rate 1/2."
     },
     {
       "kind": "proposition",
@@ -302,7 +506,14 @@
         "snippet": "Because the exponential distribution is also a special case of the gamma distribution"
       },
       "provenance": "ai-agent1",
-      "id": "7e577be3b45b"
+      "id": "7e577be3b45b",
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.exponentialPDF",
+        "module": "Mathlib.Probability.Distributions.Exponential",
+        "match_kind": "generalization"
+      },
+      "note": "Exponential and gamma measures both exist in Mathlib but their identification as gamma with shape 1 is not proven as a lemma."
     },
     {
       "kind": "proposition",
@@ -312,7 +523,142 @@
         "snippet": "The Erlang distribution is also a special case of the gamma distribution"
       },
       "provenance": "ai-agent1",
-      "id": "3ff48db02551"
+      "id": "3ff48db02551",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Erlang distribution is not defined in Mathlib."
+    },
+    {
+      "kind": "proposition",
+      "label": "Concentration of squared Gaussian vector length",
+      "anchor": {
+        "section": "Concentration",
+        "snippet": "the squared length of the vector is concentrated tightly around"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No concentration inequality for the squared norm of a Gaussian vector appears in Mathlib."
+    },
+    {
+      "kind": "proposition",
+      "label": "Fisher's square-root normal approximation",
+      "anchor": {
+        "section": "Asymptotic properties",
+        "snippet": "is approximately normally distributed with mean"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fisher's √(2χ²) − √(2k−1) approximation is not stated in Mathlib."
+    },
+    {
+      "kind": "proposition",
+      "label": "Chi-squared relates to chi distribution via square root",
+      "anchor": {
+        "section": "Related distributions",
+        "snippet": "chi distribution"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the chi distribution nor its relation to chi-squared is in Mathlib."
+    },
+    {
+      "kind": "proposition",
+      "label": "Chi-squared and Rayleigh distribution relation",
+      "anchor": {
+        "section": "Related distributions",
+        "snippet": "Rayleigh distribution"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Rayleigh distribution is not defined in Mathlib."
+    },
+    {
+      "kind": "proposition",
+      "label": "Chi-squared and Maxwell distribution relation",
+      "anchor": {
+        "section": "Related distributions",
+        "snippet": "Maxwell distribution"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Maxwell–Boltzmann distribution is not defined in Mathlib."
+    },
+    {
+      "kind": "proposition",
+      "label": "Inverse-chi-squared distribution relation",
+      "anchor": {
+        "section": "Related distributions",
+        "snippet": "Inverse-chi-squared distribution"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The inverse-chi-squared distribution is not defined in Mathlib."
+    },
+    {
+      "kind": "proposition",
+      "label": "Chi-squared as type III Pearson distribution",
+      "anchor": {
+        "section": "Related distributions",
+        "snippet": "The chi-squared distribution is a special case of type III Pearson distribution"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Pearson type III distributions are not defined in Mathlib."
+    },
+    {
+      "kind": "proposition",
+      "label": "Ratio of independent chi-squared gives beta distribution",
+      "anchor": {
+        "section": "Related distributions",
+        "snippet": "beta distribution"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The beta distribution is defined (Mathlib.Probability.Distributions.Beta) but no result deriving it from a ratio of chi-squared variables is present."
     }
   ]
 }

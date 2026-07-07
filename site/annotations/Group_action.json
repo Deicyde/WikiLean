@@ -176,6 +176,22 @@
       "id": "9be66343f2b1"
     },
     {
+      "kind": "theorem",
+      "label": "Cayley's theorem",
+      "anchor": {
+        "section": "Notable properties of actions",
+        "snippet": "implies Cayley's theorem that any group can be embedded in a symmetric group"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MulAction.toPermHom",
+        "module": "Mathlib.Algebra.Group.Action.End",
+        "match_kind": "invocation"
+      },
+      "note": "Cayley's theorem (every group embeds in a symmetric group) follows from `MulAction.toPermHom` being injective for the faithful regular action `Monoid.toMulAction`, but there is no named `Cayley` theorem in Mathlib.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Transitive action",
       "anchor": {
@@ -490,11 +506,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "IsSemisimpleRepresentation",
+        "decl": "Representation.IsSemisimpleRepresentation",
         "module": "Mathlib.RepresentationTheory.Semisimple",
         "match_kind": "exact"
       },
-      "note": "`IsSemisimpleRepresentation` (equiv. `IsSemisimpleModule` over `k[G]`) is the semisimplicity of a linear action.",
+      "note": "`Representation.IsSemisimpleRepresentation ρ` (equivalent to `IsSemisimpleModule` over `MonoidAlgebra k G`) is the semisimplicity of a linear action.",
       "provenance": "ai",
       "id": "3ee25c6b77dd"
     },
@@ -697,6 +713,22 @@
         }
       ],
       "id": "a37227672d67"
+    },
+    {
+      "kind": "proposition",
+      "label": "Kernel of action equals intersection of stabilizers",
+      "anchor": {
+        "section": "Fixed points and stabilizer subgroups",
+        "snippet": "The kernel N of the homomorphism with the symmetric group"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MulAction.stabilizer",
+        "module": "Mathlib.GroupTheory.GroupAction.Defs",
+        "match_kind": null
+      },
+      "note": "The kernel of `MulAction.toPermHom G α` equals `⨅ x, MulAction.stabilizer G x`, and the action is faithful iff this kernel is trivial; no single named lemma packages this identity.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -1145,11 +1177,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "CategoryTheory.Action",
+        "decl": "Action",
         "module": "Mathlib.CategoryTheory.Action.Basic",
         "match_kind": "special_case"
       },
-      "note": "`Action (Type u) G` is the category of G-sets (the docstring notes `V = Type` gives G-actions).",
+      "note": "`Action (Type u) G` is the category of G-sets (specializing the general `Action V G` structure to `V = Type u`).",
       "provenance": "ai",
       "id": "398a7ba11287"
     },
@@ -1268,7 +1300,7 @@
         "module": "Mathlib.CategoryTheory.Action",
         "match_kind": "exact"
       },
-      "note": "`CategoryTheory.ActionCategory M X` is the action groupoid (groupoid when `M` is a group).",
+      "note": "`CategoryTheory.ActionCategory M X` is the action groupoid (a groupoid when `M` is a group).",
       "provenance": "ai",
       "id": "4198f868bafc"
     },
@@ -1332,7 +1364,7 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "CategoryTheory.Action",
+        "decl": "Action",
         "module": "Mathlib.CategoryTheory.Action.Basic",
         "match_kind": null
       },
@@ -1366,7 +1398,7 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "CategoryTheory.Action",
+        "decl": "Action",
         "module": "Mathlib.CategoryTheory.Action.Basic",
         "match_kind": "exact"
       },

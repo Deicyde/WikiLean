@@ -613,6 +613,38 @@
       "id": "3dfceeef3d6d"
     },
     {
+      "kind": "definition",
+      "label": "Coroot lattice",
+      "anchor": {
+        "section": "The dual root system",
+        "snippet": "The lattice in E spanned by Φ ∨ is called the coroot lattice"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RootPairing.corootSpan",
+        "module": "Mathlib.LinearAlgebra.RootSystem.IsValuedIn",
+        "match_kind": "special_case"
+      },
+      "note": "corootSpan ℤ is the ℤ-span of coroots, i.e. the coroot lattice (the general S-span specializes to S = ℤ).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Φ and Φ∨ have the same Weyl group",
+      "anchor": {
+        "section": "The dual root system",
+        "snippet": "Both Φ and Φ ∨ have the same Weyl group W"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "RootPairing.weylGroup",
+        "module": "Mathlib.LinearAlgebra.RootSystem.WeylGroup",
+        "match_kind": null
+      },
+      "note": "The Weyl group of P and of P.flip are built from the same reflections (via reflection_flip), so they coincide, but no direct equality lemma is isolated.",
+      "provenance": "ai"
+    },
+    {
       "kind": "proposition",
       "label": "Dual of simple roots are simple roots of the dual",
       "anchor": {
@@ -672,6 +704,22 @@
         }
       ],
       "id": "83f3d9c280d7"
+    },
+    {
+      "kind": "proposition",
+      "label": "Integrality is sufficient to check on simple roots",
+      "anchor": {
+        "section": "Integral elements",
+        "snippet": "it suffices to check the above condition for"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Since simple coroots form a base for the dual, integrality reduces to checking pairings with simple coroots — not formalized in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",

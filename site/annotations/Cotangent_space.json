@@ -3,6 +3,7 @@
   "wikipedia_title": "Cotangent space",
   "display_title": "Cotangent space",
   "schema_version": 3,
+  "annotation_style": "theorem_article",
   "annotations": [
     {
       "kind": "definition",
@@ -12,7 +13,14 @@
         "snippet": "the cotangent space, "
       },
       "provenance": "ai-agent1",
-      "id": "57e9fc9d1164"
+      "id": "57e9fc9d1164",
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsLocalRing.CotangentSpace",
+        "module": "Mathlib.RingTheory.Ideal.Cotangent",
+        "match_kind": null
+      },
+      "note": "Mathlib has the algebraic cotangent space `m/m²` for local rings but no dedicated cotangent space on smooth manifolds (only `TangentSpace`/`TangentBundle`)."
     },
     {
       "kind": "definition",
@@ -22,7 +30,14 @@
         "snippet": "The elements of the cotangent space are called cotangent vectors or tangent covectors"
       },
       "provenance": "ai-agent1",
-      "id": "ee94f2bf1860"
+      "id": "ee94f2bf1860",
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsLocalRing.CotangentSpace",
+        "module": "Mathlib.RingTheory.Ideal.Cotangent",
+        "match_kind": null
+      },
+      "note": "Elements of `IsLocalRing.CotangentSpace R` are algebraic cotangent vectors; no manifold-level covector type exists."
     },
     {
       "kind": "proposition",
@@ -32,17 +47,31 @@
         "snippet": "All cotangent spaces at points on a connected manifold have the same dimension"
       },
       "provenance": "ai-agent1",
-      "id": "cf459a725494"
+      "id": "cf459a725494",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No cotangent space is defined on smooth manifolds in Mathlib, so this constancy-of-dimension statement is not present."
     },
     {
-      "kind": "proposition",
+      "kind": "definition",
       "label": "Cotangent bundle",
       "anchor": {
         "section": "Properties",
         "snippet": "can be \"glued together\""
       },
-      "provenance": "ai-agent1",
-      "id": "3de5f53d4a17"
+      "provenance": "ai-moderated",
+      "id": "3de5f53d4a17",
+      "note": "Changed kind from proposition to definition — the sentence introduces the cotangent bundle as a new differentiable manifold.",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      }
     },
     {
       "kind": "proposition",
@@ -52,7 +81,14 @@
         "snippet": "The introduction of a Riemannian metric or a symplectic form gives rise to a natural isomorphism"
       },
       "provenance": "ai-agent1",
-      "id": "fb870856c8b6"
+      "id": "fb870856c8b6",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No cotangent bundle on manifolds and no musical isomorphism between tangent and cotangent bundles is defined."
     },
     {
       "kind": "definition",
@@ -62,7 +98,14 @@
         "snippet": "the cotangent space at "
       },
       "provenance": "ai-agent1",
-      "id": "19eddb7864be"
+      "id": "19eddb7864be",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `TangentSpace I x` for manifolds but does not define its dual as a named cotangent-space construction."
     },
     {
       "kind": "definition",
@@ -72,7 +115,14 @@
         "snippet": "elements of the cotangent space are linear functionals"
       },
       "provenance": "ai-agent1",
-      "id": "d5063de4e5f0"
+      "id": "d5063de4e5f0",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No manifold cotangent-vector type in Mathlib to characterise as linear functionals on the tangent space."
     },
     {
       "kind": "definition",
@@ -82,7 +132,14 @@
         "snippet": "Such a definition can be formulated in terms of equivalence classes of smooth functions"
       },
       "provenance": "ai-agent1",
-      "id": "e4aac75630e9"
+      "id": "e4aac75630e9",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not have germs of smooth functions modulo the square of the vanishing ideal as a cotangent-space construction."
     },
     {
       "kind": "definition",
@@ -92,7 +149,30 @@
         "snippet": "the cotangent space can be defined as the quotient space"
       },
       "provenance": "ai-agent1",
-      "id": "83475da6bcfb"
+      "id": "83475da6bcfb",
+      "mathlib": {
+        "decl": "IsLocalRing.CotangentSpace",
+        "module": "Mathlib.RingTheory.Ideal.Cotangent",
+        "match_kind": "exact"
+      },
+      "status": "formalized",
+      "note": "`IsLocalRing.CotangentSpace R := (maximalIdeal R).Cotangent` is exactly `m/m²` as an `R/m`-vector space (renamed from the older `LocalRing.CotangentSpace`)."
+    },
+    {
+      "kind": "remark",
+      "label": "Analogy with Zariski tangent space",
+      "anchor": {
+        "section": "Alternative definition",
+        "snippet": "This formulation is analogous to the construction of the cotangent space to define the Zariski tangent space"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a comparative remark rather than a formalizable statement; no analogy lemma is stated."
     },
     {
       "kind": "definition",
@@ -102,7 +182,14 @@
         "snippet": "The differential of "
       },
       "provenance": "ai-agent1",
-      "id": "3477e37953a9"
+      "id": "3477e37953a9",
+      "status": "partial",
+      "mathlib": {
+        "decl": "mfderiv",
+        "module": "Mathlib.Geometry.Manifold.MFDeriv.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "For `f : M → 𝕜`, `mfderiv I 𝓘(𝕜) f x : TangentSpace I x →L[𝕜] 𝕜` is the differential at `x`, though it is not labelled `df` and cotangent-space typing is absent."
     },
     {
       "kind": "proposition",
@@ -112,7 +199,14 @@
         "snippet": "is a linear map on "
       },
       "provenance": "ai-agent1",
-      "id": "12cb8ee453d7"
+      "id": "12cb8ee453d7",
+      "status": "partial",
+      "mathlib": {
+        "decl": "mfderiv",
+        "module": "Mathlib.Geometry.Manifold.MFDeriv.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`mfderiv I 𝓘(𝕜) f x` is by construction a continuous linear map on the tangent space, but the tangent-covector interpretation is not spelled out."
     },
     {
       "kind": "definition",
@@ -122,7 +216,30 @@
         "snippet": "We can then define the differential map"
       },
       "provenance": "ai-agent1",
-      "id": "ca9a0044d4ce"
+      "id": "ca9a0044d4ce",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The map `f ↦ df` from smooth functions to sections of the cotangent bundle is not defined in Mathlib (no cotangent bundle)."
+    },
+    {
+      "kind": "proposition",
+      "label": "Linearity of the differential map",
+      "anchor": {
+        "section": "The differential of a function",
+        "snippet": "Properties of the differential map include: "
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Linearity of `d : C^∞(M) → Ω¹(M)` is not stated since the differential map is not defined at manifold level."
     },
     {
       "kind": "proposition",
@@ -132,7 +249,30 @@
         "snippet": "We can now construct an isomorphism between"
       },
       "provenance": "ai-agent1",
-      "id": "ac67b10167e9"
+      "id": "ac67b10167e9",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No isomorphism between the dual-of-tangent and the germs-modulo-`I²` definitions of the manifold cotangent space is available."
+    },
+    {
+      "kind": "definition",
+      "label": "Pushforward (derivative) between tangent spaces",
+      "anchor": {
+        "section": "The pullback of a smooth map",
+        "snippet": "induces a linear map (called the pushforward or derivative "
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mfderiv",
+        "module": "Mathlib.Geometry.Manifold.MFDeriv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`mfderiv I I' f x : TangentSpace I x →L[𝕜] TangentSpace I' (f x)` is the pushforward/derivative between tangent spaces."
     },
     {
       "kind": "definition",
@@ -142,7 +282,14 @@
         "snippet": "every such map induces a linear map (called the pullback )"
       },
       "provenance": "ai-agent1",
-      "id": "9ce119271228"
+      "id": "9ce119271228",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The pullback of cotangent vectors under a smooth map is not defined in Mathlib; `VectorField.mpullback` is for vector fields, not covectors."
     },
     {
       "kind": "proposition",
@@ -152,7 +299,14 @@
         "snippet": "The pullback is naturally defined as the dual (or transpose) of the pushforward"
       },
       "provenance": "ai-agent1",
-      "id": "0cdb1afe42e4"
+      "id": "0cdb1afe42e4",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without a cotangent-space pullback in Mathlib, its characterization as the transpose of `mfderiv` is not stated."
     },
     {
       "kind": "definition",
@@ -162,7 +316,30 @@
         "snippet": "the definition of the pullback is even more straightforward"
       },
       "provenance": "ai-agent1",
-      "id": "a5ea2fbfefe6"
+      "id": "a5ea2fbfefe6",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No germ-based cotangent-pullback construction is present in Mathlib."
+    },
+    {
+      "kind": "definition",
+      "label": "k-th exterior power of the cotangent space",
+      "anchor": {
+        "section": "Exterior powers",
+        "snippet": "-th exterior power of the cotangent space"
+      },
+      "provenance": "ai",
+      "status": "partial",
+      "mathlib": {
+        "decl": "exteriorPower",
+        "module": "Mathlib.LinearAlgebra.ExteriorPower.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib has `exteriorPower` on general modules, but not applied to a manifold cotangent space (which does not exist as a type)."
     },
     {
       "kind": "definition",
@@ -172,7 +349,14 @@
         "snippet": "are called differential "
       },
       "provenance": "ai-agent1",
-      "id": "d5f7d63da2fd"
+      "id": "d5f7d63da2fd",
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.Analysis.Calculus.DifferentialForm.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib represents a differential `k`-form on a normed space as `E → E [⋀^Fin k]→L[𝕜] F` and defines its exterior derivative, but has no bundled type or manifold-level version yet."
     },
     {
       "kind": "definition",
@@ -182,7 +366,14 @@
         "snippet": "tangent covectors are frequently called one-forms"
       },
       "provenance": "ai-agent1",
-      "id": "6c723033e84d"
+      "id": "6c723033e84d",
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.Analysis.Calculus.DifferentialForm.Basic",
+        "match_kind": null
+      },
+      "note": "One-forms fit in the same normed-space differential-form framework (`E → E [⋀^Fin 1]→L[𝕜] F`) but are not given a dedicated name or manifold definition."
     }
   ]
 }

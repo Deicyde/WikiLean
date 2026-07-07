@@ -1,0 +1,1177 @@
+{
+  "slug": "Propositional_calculus",
+  "wikipedia_title": "Propositional calculus",
+  "display_title": "Propositional calculus",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Proposition (truth-bearer)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "which can be true or false"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no dedicated declaration for 'proposition as truth-bearer'; it simply works inside Lean's core Prop sort rather than formalizing this philosophical notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Compound proposition via connectives",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Compound propositions are formed by connecting propositions by logical connectives"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This lead-level description has no dedicated Mathlib declaration; the closer technical match (BoundedFormula/IsQF) is recorded against the later 'Well-formed formula' entry.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Classical truth-functional propositional logic",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "having precisely one of two possible truth values"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No single Mathlib declaration characterizes classical truth-functional propositional logic as a field; Mathlib simply works inside classical Prop throughout.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Statement (declarative sentence)",
+      "anchor": {
+        "section": "Declarative sentences",
+        "snippet": "which are defined as declarative sentences having truth value"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib declaration formalizes 'declarative sentence' as a linguistic truth-bearer distinct from core Prop.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Example statements",
+      "anchor": {
+        "section": "Declarative sentences",
+        "snippet": "Examples of statements might include"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Illustrative natural-language examples with no corresponding Mathlib artifact to cite.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Compound sentence",
+      "anchor": {
+        "section": "Compounding sentences with connectives",
+        "snippet": "Compound sentences are formed from simpler sentences and express relationships among the constituent sentences"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated Mathlib declaration for 'compound sentence' as a linguistic notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Example compound sentences",
+      "anchor": {
+        "section": "Compounding sentences with connectives",
+        "snippet": "Examples of such compound sentences might include"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Illustrative examples with no corresponding Mathlib artifact.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Simple/atomic sentence",
+      "anchor": {
+        "section": "Compounding sentences with connectives",
+        "snippet": "they are called simple sentences"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated Mathlib declaration for 'simple/atomic sentence' as a natural-language notion (compare the technical Atomic-formula entry below).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sentential connective",
+      "anchor": {
+        "section": "Compounding sentences with connectives",
+        "snippet": "Sentential connectives are a broader category that includes logical connectives"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize the broader linguistic category of 'sentential connective' distinct from logical connectives.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Logical connective",
+      "anchor": {
+        "section": "Compounding sentences with connectives",
+        "snippet": "is a kind of sentential connective with the characteristic feature"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize 'logical connective' as an object-level concept distinct from the built-in Prop operators ∧, ∨, ¬, →, ↔.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Argument (premises and conclusion)",
+      "anchor": {
+        "section": "Arguments",
+        "snippet": "An argument is defined as a pair of things, namely a set of sentences"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory.ModelsBoundedFormula",
+        "module": "Mathlib.ModelTheory.Satisfiability",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has no bespoke 'Argument' type, but Theory.ModelsBoundedFormula (T ⊨ᵇ φ, 'every model of T realizes φ') generalizes the premises-set/conclusion pairing to first-order theories.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Example argument (modus ponens)",
+      "anchor": {
+        "section": "Example argument",
+        "snippet": "The following is an example of an argument within the scope of propositional logic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Worked example; modus ponens itself is just function application in Lean, not a citable standalone Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Valid argument",
+      "anchor": {
+        "section": "Validity and soundness",
+        "snippet": "it is necessary that, if all its premises are true, its conclusion is true"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory.ModelsBoundedFormula",
+        "module": "Mathlib.ModelTheory.Satisfiability",
+        "match_kind": "generalization"
+      },
+      "note": "T ⊨ᵇ φ ('every model of T realizes φ') is exactly 'if all premises true then conclusion true', generalized from propositional to first-order theories.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sound argument",
+      "anchor": {
+        "section": "Validity and soundness",
+        "snippet": "An argument is sound if, and only if, it is valid and all its premises are true"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Soundness (validity plus actually-true premises) is not formalizable as a standalone Mathlib declaration since it depends on the real-world truth of the premises.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Propositional variable",
+      "anchor": {
+        "section": "Propositional variables",
+        "snippet": "which are interpreted as variables representing statements"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated Mathlib decl for 'propositional variable'; FirstOrder.Language's arity-0 relation symbols could stand in generically, but there is no named construct for this specific concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Syntactic consequence (inference line)",
+      "anchor": {
+        "section": "Gentzen notation",
+        "snippet": "The inference line represents syntactic consequence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's ModelTheory library has no syntactic derivability/turnstile relation (no Provable/⊢), so Gentzen-style syntactic consequence is unformalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Atomic formula (primitive symbols)",
+      "anchor": {
+        "section": "Language",
+        "snippet": "a set of primitive symbols, called atomic formulas"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.BoundedFormula.IsAtomic",
+        "module": "Mathlib.ModelTheory.Complexity",
+        "match_kind": "generalization"
+      },
+      "note": "IsAtomic (an equality or relation-symbol application) generalizes 'atomic formula' from propositional calculus to arbitrary first-order languages.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Connective (operator symbols)",
+      "anchor": {
+        "section": "Language",
+        "snippet": "a set of operator symbols, called connectives"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.BoundedFormula.imp",
+        "module": "Mathlib.ModelTheory.Syntax",
+        "match_kind": "generalization"
+      },
+      "note": "BoundedFormula's imp and not constructors (with derived ⊓, ⊔, ↔) generalize propositional connectives to first-order formulas.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Well-formed formula",
+      "anchor": {
+        "section": "Language",
+        "snippet": "A well-formed formula is any atomic formula, or any formula that can be built up from atomic formulas"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.BoundedFormula.IsQF",
+        "module": "Mathlib.ModelTheory.Complexity",
+        "match_kind": "generalization"
+      },
+      "note": "IsQF (quantifier-free = Boolean combination of atomic formulas) generalizes the propositional well-formed-formula grammar to first-order languages.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Definition 1: atomic formulas are formulas",
+      "anchor": {
+        "section": "Syntax",
+        "snippet": "Atomic propositional variables are formulas"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.BoundedFormula.IsAtomic",
+        "module": "Mathlib.ModelTheory.Complexity",
+        "match_kind": "generalization"
+      },
+      "note": "Matches the base-case clause (equal/rel constructors) of the general first-order BoundedFormula inductive definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Definition 2: composition of formulas",
+      "anchor": {
+        "section": "Syntax",
+        "snippet": "possibly but not necessarily atomic, possibly but not necessarily distinct, formulas"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.BoundedFormula.imp",
+        "module": "Mathlib.ModelTheory.Syntax",
+        "match_kind": "generalization"
+      },
+      "note": "The imp constructor of the BoundedFormula inductive type generalizes this recursive connective-composition clause to first-order syntax.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Definition 3: closure clause",
+      "anchor": {
+        "section": "Syntax",
+        "snippet": "Nothing else is a formula"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.BoundedFormula",
+        "module": "Mathlib.ModelTheory.Syntax",
+        "match_kind": "generalization"
+      },
+      "note": "As a Lean inductive type, BoundedFormula automatically satisfies 'nothing else is a formula', generalizing the closure clause to first-order syntax.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Well-formed formula examples",
+      "anchor": {
+        "section": "Syntax",
+        "snippet": "we have the following as examples of well-formed formulas"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Illustrative examples; no specific Mathlib artifact to cite.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Context-free (BNF) grammar for the language",
+      "anchor": {
+        "section": "CF grammar in BNF",
+        "snippet": "to write a context-free (CF) grammar for the language"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has a general theory of context-free grammars (Mathlib/Computability/ContextFreeGrammar.lean) but it is never instantiated for this propositional-formula grammar.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Propositional constants, variables, schemata",
+      "anchor": {
+        "section": "Constants and schemata",
+        "snippet": "Propositional constants represent some particular proposition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib declaration corresponds to schematic propositional constants/schemata as used here.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Truth/falsity constants",
+      "anchor": {
+        "section": "Constants and schemata",
+        "snippet": "which always evaluates to True"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.BoundedFormula.realize_top",
+        "module": "Mathlib.ModelTheory.Semantics",
+        "match_kind": "generalization"
+      },
+      "note": "realize_top and realize_bot show ⊤/⊥ always realize to True/False, generalizing the propositional truth/falsity constants to first-order BoundedFormula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bivalence, noncontradiction, excluded middle",
+      "anchor": {
+        "section": "Semantics",
+        "snippet": "there are only two semantic values"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bivalence/excluded middle is a foundational assumption of Mathlib's classical logic rather than a stated propositional-calculus theorem in the library.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Interpretation (case)",
+      "anchor": {
+        "section": "Interpretation (case) and argument",
+        "snippet": "is an assignment of semantic values to each formula"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Structure",
+        "module": "Mathlib.ModelTheory.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "FirstOrder.Language.Structure (paired with BoundedFormula.Realize) generalizes the notion of an interpretation/case assigning semantic values to formulas.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Number of possible interpretations",
+      "anchor": {
+        "section": "Interpretation (case) and argument",
+        "snippet": "distinct possible interpretations"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Fintype.card_fun",
+        "module": "Mathlib.Data.Fintype.BigOperators",
+        "match_kind": "generalization"
+      },
+      "note": "Fintype.card_fun (card (α → β) = card β ^ card α) gives 2^n interpretations of n atoms as a special case of this general cardinality lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Counterexample",
+      "anchor": {
+        "section": "Interpretation (case) and argument",
+        "snippet": "a counterexample is defined as a case"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib declaration named for a falsifying interpretation of an argument.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Truth-functionality of connectives",
+      "anchor": {
+        "section": "Propositional connective semantics",
+        "snippet": "the assumption of the truth-functionality of the connectives"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.BoundedFormula.Realize",
+        "module": "Mathlib.ModelTheory.Semantics",
+        "match_kind": "generalization"
+      },
+      "note": "Realize is defined by structural recursion on connectives (realize_inf/realize_sup/realize_imp/realize_not), so connective semantics is truth-functional by construction, generalized to first-order formulas.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Truth table determines connective semantics",
+      "anchor": {
+        "section": "Semantics via truth tables",
+        "snippet": "It is sufficient for determining the semantics of each of these operators"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.BoundedFormula.Realize",
+        "module": "Mathlib.ModelTheory.Semantics",
+        "match_kind": "generalization"
+      },
+      "note": "The recursive Realize definition plays the truth-table role (output determined by inputs), but Mathlib has no explicit finite-table object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Semantics of the five connectives (assignment style)",
+      "anchor": {
+        "section": "Semantics via assignment expressions",
+        "snippet": "the five connectives are defined as"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.BoundedFormula.realize_imp",
+        "module": "Mathlib.ModelTheory.Semantics",
+        "match_kind": "generalization"
+      },
+      "note": "realize_not/realize_inf/realize_sup/realize_imp/realize_iff give exactly this connective-by-connective semantics, generalized from Prop assignments to first-order Realize.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Functional completeness with minimal connectives",
+      "anchor": {
+        "section": "Connective definition methods",
+        "snippet": "a truth-functionally complete system"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No functional-completeness or Sheffer-stroke theorem for propositional connectives was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equivalence vs biconditional",
+      "anchor": {
+        "section": "Connective definition methods",
+        "snippet": "distinguish equivalence from the biconditional"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory.Iff",
+        "module": "Mathlib.ModelTheory.Equivalence",
+        "match_kind": "generalization"
+      },
+      "note": "Theory.Iff (notation ⇔[T], semantic equivalence) is kept distinct from BoundedFormula's object-level biconditional constructor, mirroring this equivalence/biconditional distinction at the first-order level.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Truth-in-a-case",
+      "anchor": {
+        "section": "Semantic truth, validity, consequence",
+        "snippet": "is true under an interpretation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.BoundedFormula.Realize",
+        "module": "Mathlib.ModelTheory.Semantics",
+        "match_kind": "generalization"
+      },
+      "note": "φ.Realize v xs generalizes 'φ is true under interpretation' to first-order formulas.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Falsity-in-a-case",
+      "anchor": {
+        "section": "Semantic truth, validity, consequence",
+        "snippet": "is false under an interpretation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.BoundedFormula.realize_not",
+        "module": "Mathlib.ModelTheory.Semantics",
+        "match_kind": "generalization"
+      },
+      "note": "realize_not (φ.not.Realize ↔ ¬φ.Realize) generalizes 'φ is false under interpretation'.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Semantic consequence",
+      "anchor": {
+        "section": "Semantic truth, validity, consequence",
+        "snippet": "is a semantic consequence"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory.ModelsBoundedFormula",
+        "module": "Mathlib.ModelTheory.Satisfiability",
+        "match_kind": "generalization"
+      },
+      "note": "T ⊨ᵇ φ generalizes propositional semantic consequence to first-order theories.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Valid formula (tautology)",
+      "anchor": {
+        "section": "Semantic truth, validity, consequence",
+        "snippet": "is logically valid"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory.ModelsBoundedFormula",
+        "module": "Mathlib.ModelTheory.Satisfiability",
+        "match_kind": "generalization"
+      },
+      "note": "Logical validity ('true in every case') is the T = ∅ instance of T ⊨ᵇ φ, generalized to first-order theories.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Consistent sentence",
+      "anchor": {
+        "section": "Semantic truth, validity, consequence",
+        "snippet": "is consistent if it is true under at least one interpretation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory.IsSatisfiable",
+        "module": "Mathlib.ModelTheory.Satisfiability",
+        "match_kind": "generalization"
+      },
+      "note": "A formula is consistent iff {φ} is satisfiable, i.e. Theory.IsSatisfiable, generalized to first-order theories.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complete case / consistent case",
+      "anchor": {
+        "section": "Semantic truth, validity, consequence",
+        "snippet": "Complete case"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory.IsComplete",
+        "module": "Mathlib.ModelTheory.Satisfiability",
+        "match_kind": "generalization"
+      },
+      "note": "Theory.IsComplete/IsMaximal generalize the notion of a complete, consistent case deciding every sentence, to first-order theories.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Classical logic metatheorems (bivalence consequences)",
+      "anchor": {
+        "section": "Semantic truth, validity, consequence",
+        "snippet": "For any given interpretation, a given formula is either true or false under it"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory.IsMaximal.mem_or_not_mem",
+        "module": "Mathlib.ModelTheory.Satisfiability",
+        "match_kind": "generalization"
+      },
+      "note": "IsMaximal.mem_or_not_mem (φ ∈ T ∨ φ.not ∈ T for maximal T) generalizes the bivalence fact that every formula is true or false under a given complete case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Semantic vs syntactic proof systems",
+      "anchor": {
+        "section": "Proof systems",
+        "snippet": "semantic proof systems rely on semantic consequence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's ModelTheory only has semantic apparatus (Realize/IsSatisfiable) with no syntactic derivability relation, so this semantic/syntactic dichotomy is not represented.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Truth table (semantic proof method)",
+      "anchor": {
+        "section": "Truth tables",
+        "snippet": "A truth table is a semantic proof method used to determine the truth value"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit truth-table data structure or algorithm for propositional formulas exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Semantic tableau",
+      "anchor": {
+        "section": "Semantic tableaux",
+        "snippet": "A semantic tableau is another semantic proof technique that systematically explores the truth of a proposition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No tableau (refutation-tree) proof system is formalized in Mathlib for classical propositional or first-order logic.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hilbert-style axiomatic system",
+      "anchor": {
+        "section": "Axiomatic systems",
+        "snippet": "is a set of axioms or assumptions from which other statements"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Hilbert-style axiom system for propositional logic is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Natural deduction (proof method)",
+      "anchor": {
+        "section": "Natural deduction",
+        "snippet": "Natural deduction is a syntactic method of proof that emphasizes the derivation of conclusions from premises"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize natural deduction as an object-level proof calculus; Lean's own tactic framework is used directly instead.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sequent calculus",
+      "anchor": {
+        "section": "Sequent calculus",
+        "snippet": "represents logical deductions as sequences or"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Mathlib.Tactic.ITauto.IProp",
+        "module": "Mathlib.Tactic.ITauto",
+        "match_kind": "invocation"
+      },
+      "note": "The itauto tactic internally implements Dyckhoff's G4ip contraction-free sequent calculus for intuitionistic propositional tautologies, but this is proof-search automation, not a formalized object-level classical sequent calculus as described here.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Validity criterion via truth table",
+      "anchor": {
+        "section": "Semantic proof via truth tables",
+        "snippet": "all the lines of a truth table come out true"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit truth-table validity procedure is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Truth table invalidity example",
+      "anchor": {
+        "section": "Semantic proof via truth tables",
+        "snippet": "this table shows that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Worked example; no corresponding Mathlib artifact.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Semantic consequence via truth table",
+      "anchor": {
+        "section": "Semantic proof via truth tables",
+        "snippet": "we can use a truth table to prove that a formula is a semantic consequence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit truth-table-based consequence procedure is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Analytic tableaux",
+      "anchor": {
+        "section": "Semantic proof via tableaux",
+        "snippet": "a more efficient, but nevertheless mechanical"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No analytic-tableaux proof system is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Signed formula",
+      "anchor": {
+        "section": "Semantic proof via tableaux",
+        "snippet": "where a signed formula is an expression"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No signed-formula construct exists in Mathlib's ModelTheory or elsewhere.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Closure of a tableau branch/tree",
+      "anchor": {
+        "section": "Semantic proof via tableaux",
+        "snippet": "the branch is said to close"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No tableau branch/tree closure notion is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closed tableau proves contradiction/tautology",
+      "anchor": {
+        "section": "Semantic proof via tableaux",
+        "snippet": "a closed tree is a proof that the original formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No tableau proof system is formalized in Mathlib, so this soundness-of-closure fact is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Tableau proof of argument validity",
+      "anchor": {
+        "section": "Semantic proof via tableaux",
+        "snippet": "one first writes out the set of premise formulas"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No tableau-based argument-validity procedure is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Classically valid argument forms",
+      "anchor": {
+        "section": "List of classically valid argument forms",
+        "snippet": "these tautologies and semantic consequences hold"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No single Mathlib declaration catalogues this list of named classical argument forms, though individual instances (e.g. modus ponens) are trivial via Lean's function application.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Natural deduction: rules of proof, no axioms",
+      "anchor": {
+        "section": "Syntactic proof via natural deduction",
+        "snippet": "no axioms are used other than these rules"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No natural-deduction rule system for propositional logic is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Proof (Suppes–Lemmon notation)",
+      "anchor": {
+        "section": "Notation styles",
+        "snippet": "is a sequence of lines containing sentences"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Suppes–Lemmon style proof-line formalism exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ten primitive rules of proof",
+      "anchor": {
+        "section": "Inference rules",
+        "snippet": "There are ten primitive rules of proof"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalized catalogue of these ten inference rules exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Natural deduction proof example (MTT derivation)",
+      "anchor": {
+        "section": "Natural deduction proof example",
+        "snippet": "which shows that MTT is not a primitive rule"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Worked example within an unformalized proof system; no corresponding Mathlib artifact.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Axiomatic proof (tautologies + modus ponens)",
+      "anchor": {
+        "section": "Syntactic proof via axioms",
+        "snippet": "certain tautologies are taken as self-evident"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Hilbert-style axiomatic proof system for propositional logic is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Frege's six axioms (Begriffsschrift)",
+      "anchor": {
+        "section": "Frege's Begriffsschrift",
+        "snippet": "Frege's system used only implication and negation as connectives"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Frege's Begriffsschrift axiom system is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Łukasiewicz's reduction of Frege's axioms",
+      "anchor": {
+        "section": "Łukasiewicz's P 2",
+        "snippet": "the third axiom is superfluous since it can be derived from the preceding two axioms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This historical independence result about Frege's axiom system is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Łukasiewicz's P2 axiom system",
+      "anchor": {
+        "section": "Łukasiewicz's P 2",
+        "snippet": "ukasiewicz is credited"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Łukasiewicz's P2 axiom system is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Schematic form of P2 axioms",
+      "anchor": {
+        "section": "Schematic form of P 2",
+        "snippet": "using them to generate an infinite set of axioms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized; no schema-generation construct for P2's axioms exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Proof example in P2",
+      "anchor": {
+        "section": "Proof example in P 2",
+        "snippet": "As an example, a proof of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Worked example in an unformalized axiom system; no corresponding Mathlib artifact.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Soundness of classical propositional logic",
+      "anchor": {
+        "section": "Metalogic",
+        "snippet": "it is sound"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no syntactic proof-derivability relation for propositional (or first-order) logic, so a soundness theorem (⊢φ → ⊨φ) cannot be, and is not, stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Completeness of classical propositional logic",
+      "anchor": {
+        "section": "Metalogic",
+        "snippet": "It is also complete"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without a syntactic ⊢ relation in Mathlib's ModelTheory library, a completeness theorem (⊨φ → ⊢φ) is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Compactness theorem",
+      "anchor": {
+        "section": "Metalogic",
+        "snippet": "A further central result is compactness"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory.isSatisfiable_iff_isFinitelySatisfiable",
+        "module": "Mathlib.ModelTheory.Satisfiability",
+        "match_kind": "generalization"
+      },
+      "note": "The Compactness Theorem for first-order theories (satisfiable iff finitely satisfiable) generalizes propositional compactness, the special case of a language with only nullary relation symbols.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Syntactic consistency coincides with satisfiability",
+      "anchor": {
+        "section": "Metalogic",
+        "snippet": "syntactic consistency coincides with satisfiability"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Requires a syntactic derivability relation, which Mathlib's ModelTheory library lacks; only the semantic side (IsSatisfiable) is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Decidability of classical propositional logic",
+      "anchor": {
+        "section": "Metalogic",
+        "snippet": "Classical propositional logic is also decidable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general decidability-of-propositional-satisfiability metatheorem exists in Mathlib; per-instance Decidable Prop instances do not constitute this result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "NP-completeness of propositional satisfiability",
+      "anchor": {
+        "section": "Solvers",
+        "snippet": "Deciding satisfiability of propositional logic formulas is an NP-complete problem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No complexity-theoretic (Cook–Levin/NP-completeness) formalization of SAT exists in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

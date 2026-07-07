@@ -202,7 +202,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "Orientation.volumeForm",
-        "module": "Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.Orientation",
         "match_kind": null
       },
       "note": "`Orientation.volumeForm` gives signed volume via determinants, but signed-volume-of-parallelotope is not stated verbatim.",
@@ -377,16 +377,6 @@
       },
       "note": "`det_smul` shows `det (c • A) = c ^ Fintype.card n * det A`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Immediate consequences",
-          "snippet": "The determinant is a homogeneous function"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\det(cA)=c^{n}\\det(A)}"
-        }
-      ],
       "id": "b0652f76a89b"
     },
     {
@@ -404,20 +394,6 @@
       },
       "note": "`det_permute` shows permuting columns by σ multiplies the determinant by `sign σ`; a swap gives `-1`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Immediate consequences",
-          "snippet": "Interchanging any pair of columns of a matrix multiplies its determinant by"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle |a_{1},\\dots ,a_{j},\\dots a_{i},\\dots ,a_{n}|=-|a_{1},\\dots ,a_{i},\\dots ,a_{j},\\dots ,a_{n}|.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle |a_{3},a_{1},a_{2},a_{4}\\dots ,a_{n}|=-|a_{1},a_{3},a_{2},a_{4},\\dots ,a_{n}|=|a_{1},a_{2},a_{3},a_{4},\\dots ,a_{n}|.}"
-        }
-      ],
       "id": "d1bcd5492f7b"
     },
     {
@@ -469,16 +445,6 @@
       },
       "note": "`det_of_upperTriangular` (and its lower analogue) give the product-of-diagonal formula.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Immediate consequences",
-          "snippet": "its determinant equals the product of the diagonal entries"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\det(A)=a_{11}a_{22}\\cdots a_{nn}=\\prod _{i=1}^{n}a_{ii}.}"
-        }
-      ],
       "id": "31d422a7fef4"
     },
     {
@@ -627,7 +593,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "Matrix.submatrix",
-        "module": "Mathlib.Data.Matrix.Basic",
+        "module": "Mathlib.LinearAlgebra.Matrix.Defs",
         "match_kind": null
       },
       "note": "Minors are taken via `Matrix.submatrix` (used inside `det_succ_row`), but no named `cofactor` or `minor` definitions exist.",
@@ -717,20 +683,6 @@
       },
       "note": "Mathlib has PSD matrix infrastructure (`Matrix.PosSemidef`) but no `det(A + B) ≥ det A + det B` style inequality was found.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Sum",
-          "snippet": "for positive semidefinite matrices"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\det(A+B+C)+\\det(C)\\geq \\det(A+C)+\\det(B+C){\\text{,}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\det(A+B)\\geq \\det(A)+\\det(B){\\text{.}}}"
-        }
-      ],
       "id": "cab9aca640e2"
     },
     {
@@ -748,16 +700,6 @@
       },
       "note": "Concavity of `(det A)^(1/n)` on PSD matrices was not located.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Sum",
-          "snippet": "Brunn–Minkowski theorem implies that the n th root of determinant is a concave function"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\sqrt[{n}]{\\det(A+B)}}\\geq {\\sqrt[{n}]{\\det(A)}}+{\\sqrt[{n}]{\\det(B)}},}"
-        }
-      ],
       "id": "315b55dbd260"
     },
     {
@@ -962,16 +904,6 @@
       },
       "note": "`crossProduct` is defined and appears (e.g. in `triple_product_eq_det`-style lemmas using `det_fin_three`) but it is not defined or characterized as a 'formal' 3×3 determinant explicitly.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Cross Product",
-          "snippet": "The computation of a cross product is equivalent to finding the formal determinant"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\mathbf {a\\times b} =\\det {\\begin{pmatrix}\\mathbf {i} &amp;\\mathbf {j} &amp;\\mathbf {k} \\\\a_{1}&amp;a_{2}&amp;a_{3}\\\\b_{1}&amp;b_{2}&amp;b_{3}\\\\\\end{pmatrix}}}"
-        }
-      ],
       "id": "c9543af48021"
     },
     {
@@ -1018,7 +950,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "fderiv",
-        "module": "Mathlib.Analysis.Calculus.FDeriv.Basic",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Defs",
         "match_kind": null
       },
       "note": "Mathlib uses the coordinate-free `fderiv` rather than an explicit Jacobian matrix; `(fderiv 𝕜 f x).det` plays the Jacobian determinant role.",
@@ -1364,6 +1296,54 @@
       "note": "`Matrix.aeval_self_charpoly` states that a matrix satisfies its own characteristic polynomial.",
       "provenance": "ai",
       "id": "af60cb675639"
+    },
+    {
+      "kind": "proposition",
+      "label": "Trace equals sum of eigenvalues",
+      "anchor": {
+        "section": "Trace",
+        "snippet": "by definition the sum of the diagonal entries of A and also equals the sum of the eigenvalues"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.trace_eq_sum_roots_charpoly",
+        "module": "Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.trace_eq_sum_roots_charpoly` (alg. closed) gives `trace A = ∑ eigenvalues`; `IsHermitian.sum_eigenvalues_eq_trace` is the Hermitian version.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Singularity iff zero is an eigenvalue",
+      "anchor": {
+        "section": "Eigenvalues and characteristic polynomial",
+        "snippet": "is invertible if and only if"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.hasEigenvalue_zero_tfae",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Zero",
+        "match_kind": null
+      },
+      "note": "`LinearMap.hasEigenvalue_zero_tfae` lists `LinearMap.det φ = 0 ↔ HasEigenvalue φ 0` for endomorphisms; the direct matrix-singularity-iff-0-eigenvalue is not stated as a single named lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quotient GL/SL ≅ multiplicative group of units",
+      "anchor": {
+        "section": "Multiplicativity and matrix groups",
+        "snippet": "the quotient group"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.GeneralLinearGroup.det",
+        "module": "Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs",
+        "match_kind": null
+      },
+      "note": "`Matrix.GeneralLinearGroup.det` is surjective with kernel `SpecialLinearGroup`; the first-isomorphism-theorem identification `GLₙ / SLₙ ≃* Rˣ` is derivable but not packaged as a single named lemma.",
+      "provenance": "ai"
     }
   ]
 }

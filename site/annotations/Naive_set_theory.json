@@ -3,6 +3,7 @@
   "wikipedia_title": "Naive set theory",
   "display_title": "Naive set theory",
   "schema_version": 3,
+  "annotation_style": "theorem_article",
   "annotations": [
     {
       "kind": "definition",
@@ -12,7 +13,14 @@
         "snippet": "Naive set theory is any of several set theories used in the discussion of the foundations of mathematics"
       },
       "provenance": "ai-agent1",
-      "id": "3d82b0f650ee"
+      "id": "3d82b0f650ee",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A meta-level historical/foundational label for informal set theories; not itself a Mathlib object (Mathlib.Data.Set.Defs provides the type-theoretic Set instead)."
     },
     {
       "kind": "definition",
@@ -22,7 +30,14 @@
         "snippet": "A naive theory in the sense of \"naive set theory\" is a non-formalized theory"
       },
       "provenance": "ai-agent1",
-      "id": "89af48ecc7c0"
+      "id": "89af48ecc7c0",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A meta-mathematical description of non-formal theories, with no counterpart declaration in Mathlib."
     },
     {
       "kind": "example",
@@ -32,7 +47,14 @@
         "snippet": "One common example is Russell's paradox : there is no set consisting of \"all sets that do not contain themselves\""
       },
       "provenance": "ai-agent1",
-      "id": "bf0b33a9ddf6"
+      "id": "bf0b33a9ddf6",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Class.univ_notMem_univ",
+        "module": "Mathlib.SetTheory.ZFC.Class",
+        "match_kind": "special_case"
+      },
+      "note": "The paradox's conclusion that no universal set exists is captured in ZFC by Class.univ_notMem_univ (verified) and ZFSet.mem_irrefl, but the paradoxical set itself is not formally constructed."
     },
     {
       "kind": "example",
@@ -42,7 +64,14 @@
         "snippet": "Cantor's paradox can actually be derived from the above (false) assumption"
       },
       "provenance": "ai-agent1",
-      "id": "b96eb7971206"
+      "id": "b96eb7971206",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Cardinal.cantor",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "special_case"
+      },
+      "note": "Cantor's theorem a < 2^a underpinning the paradox is formalized as Cardinal.cantor (verified); the paradox as a naive-set derivation is not itself stated."
     },
     {
       "kind": "theorem",
@@ -52,7 +81,14 @@
         "snippet": "It follows from Gödel's incompleteness theorems that a sufficiently complicated first-order logic system"
       },
       "provenance": "ai-agent1",
-      "id": "8b9166f42252"
+      "id": "8b9166f42252",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gödel's incompleteness theorems are not present in Mathlib; only unrelated first-order model-theory infrastructure (e.g., FirstOrder.Language.Theory.IsComplete) exists."
     },
     {
       "kind": "definition",
@@ -62,7 +98,14 @@
         "snippet": "In naive set theory, a set is described as a well-defined collection of objects"
       },
       "provenance": "ai-agent1",
-      "id": "9ce8a08e9a3d"
+      "id": "9ce8a08e9a3d",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Sets over a type are `Set α := α → Prop` in Mathlib.Data.Set.Defs (verified)."
     },
     {
       "kind": "example",
@@ -72,7 +115,14 @@
         "snippet": "For instance, 4 is a member of the set of all even integers"
       },
       "provenance": "ai-agent1",
-      "id": "e5579101ce77"
+      "id": "e5579101ce77",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A pedagogical example illustrating membership; not a stand-alone Mathlib fact (though Even 4 is trivially provable)."
     },
     {
       "kind": "definition",
@@ -82,7 +132,14 @@
         "snippet": "If x is a member of a set A , then it is also said that x belongs to A"
       },
       "provenance": "ai-agent1",
-      "id": "78261a5a2294"
+      "id": "78261a5a2294",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.Mem",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Set membership is `Set.Mem` with the standard `Membership` instance in Mathlib.Data.Set.Defs (verified)."
     },
     {
       "kind": "definition",
@@ -92,7 +149,14 @@
         "snippet": "Two sets A and B are defined to be equal when they have precisely the same elements"
       },
       "provenance": "ai-agent1",
-      "id": "f40221559369"
+      "id": "f40221559369",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.ext",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Set.ext in Mathlib.Data.Set.Defs proves two sets equal iff they share the same members (verified)."
     },
     {
       "kind": "example",
@@ -102,7 +166,14 @@
         "snippet": "the set with elements 2, 3, and 5 is equal to the set of all prime numbers less than 6"
       },
       "provenance": "ai-agent1",
-      "id": "6301d7fa9921"
+      "id": "6301d7fa9921",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A pedagogical example illustrating extensionality with no dedicated Mathlib lemma."
     },
     {
       "kind": "definition",
@@ -112,7 +183,30 @@
         "snippet": "is a set with no members at all"
       },
       "provenance": "ai-agent1",
-      "id": "7132304e044e"
+      "id": "7132304e044e",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.instEmptyCollection",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The empty set on `Set α` is provided by the `EmptyCollection` instance (`∅ = fun _ ↦ False`) in Mathlib.Data.Set.Defs (read directly)."
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniqueness of the empty set",
+      "anchor": {
+        "section": "Empty set",
+        "snippet": "Because a set is determined completely by its elements, there can be only one empty set"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.eq_empty_of_forall_notMem",
+        "module": "Mathlib.Data.Set.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Set.eq_empty_of_forall_notMem shows any set with no members equals ∅ (verified via loogle), giving uniqueness of the empty set."
     },
     {
       "kind": "definition",
@@ -122,7 +216,14 @@
         "snippet": "The simplest way to describe a set is to list its elements between curly braces"
       },
       "provenance": "ai-agent1",
-      "id": "b4534f2ba978"
+      "id": "b4534f2ba978",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.instSingletonSet",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Roster notation `{a, b, ...}` is provided by the `Singleton` and `Insert` instances on `Set α` in Mathlib.Data.Set.Defs (read directly)."
     },
     {
       "kind": "definition",
@@ -132,7 +233,14 @@
         "snippet": "is used to denote the set containing all objects for which the condition P holds"
       },
       "provenance": "ai-agent1",
-      "id": "6efe2670f6b4"
+      "id": "6efe2670f6b4",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "setOf",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`{x | p x}` desugars to `setOf p` with the elaborator defined in Mathlib.Data.Set.Defs (read directly)."
     },
     {
       "kind": "definition",
@@ -142,7 +250,30 @@
         "snippet": "A is a subset of B if every element of A is also an element of B"
       },
       "provenance": "ai-agent1",
-      "id": "1c1707364a24"
+      "id": "1c1707364a24",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.Subset",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Set.Subset in Mathlib.Data.Set.Defs is defined as `∀ ⦃a⦄, a ∈ s₁ → a ∈ s₂` (read directly)."
+    },
+    {
+      "kind": "definition",
+      "label": "Proper subset",
+      "anchor": {
+        "section": "Subsets",
+        "snippet": "a subset of B that is not equal to B is called a proper subset"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.instHasSSubsetSet",
+        "module": "Mathlib.Order.SetNotation",
+        "match_kind": "exact"
+      },
+      "note": "Proper subset `⊂` on `Set α` is provided through the `HasSSubset` instance (`a ⊂ b ↔ a ⊆ b ∧ ¬ b ⊆ a`) available on any preorder including `Set α`."
     },
     {
       "kind": "definition",
@@ -152,7 +283,14 @@
         "snippet": "If A is a subset of B , then one can also say that B is a superset of A"
       },
       "provenance": "ai-agent1",
-      "id": "bdca51707ce3"
+      "id": "bdca51707ce3",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.instHasSubsetSet",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`⊇` is the flip of `⊆` on `Set α`, available via the `HasSubset`/`LE` instances defined in Mathlib.Data.Set.Defs (read directly)."
     },
     {
       "kind": "proposition",
@@ -162,7 +300,14 @@
         "snippet": "A = B if and only if A ⊆ B and B ⊆ A"
       },
       "provenance": "ai-agent1",
-      "id": "4b78ddce6ed1"
+      "id": "4b78ddce6ed1",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.Subset.antisymm",
+        "module": "Mathlib.Data.Set.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Set.Subset.antisymm gives A = B from A ⊆ B and B ⊆ A (verified via decl_exists)."
     },
     {
       "kind": "proposition",
@@ -172,7 +317,14 @@
         "snippet": "The empty set is a subset of every set"
       },
       "provenance": "ai-agent1",
-      "id": "fcc1521cabbf"
+      "id": "fcc1521cabbf",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.empty_subset",
+        "module": "Mathlib.Data.Set.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Set.empty_subset proves `∅ ⊆ s` for any set (verified via decl_exists)."
     },
     {
       "kind": "definition",
@@ -182,7 +334,30 @@
         "snippet": "The set of all subsets of a given set A is called the power set of A"
       },
       "provenance": "ai-agent1",
-      "id": "6b91aad747d4"
+      "id": "6b91aad747d4",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.powerset",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Set.powerset (`𝒫 s`) is `{t | t ⊆ s}` in Mathlib.Data.Set.Defs (read directly)."
+    },
+    {
+      "kind": "proposition",
+      "label": "Cardinality of power set",
+      "anchor": {
+        "section": "Subsets",
+        "snippet": "If the set A has n elements, then"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.ncard_powerset",
+        "module": "Mathlib.Data.Set.Card",
+        "match_kind": "exact"
+      },
+      "note": "Set.ncard_powerset gives `|𝒫 s| = 2^|s|` for a finite set (verified via decl_exists)."
     },
     {
       "kind": "definition",
@@ -192,7 +367,14 @@
         "snippet": "one may consider all sets under consideration as being subsets of some given universal set"
       },
       "provenance": "ai-agent1",
-      "id": "ffec1d33e8e4"
+      "id": "ffec1d33e8e4",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.univ",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Set.univ := `{_a | True}` is defined in Mathlib.Data.Set.Defs (read directly)."
     },
     {
       "kind": "definition",
@@ -202,7 +384,14 @@
         "snippet": "the complement of A (in U ) is defined as"
       },
       "provenance": "ai-agent1",
-      "id": "0322a468434d"
+      "id": "0322a468434d",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.compl",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Set.compl := `{a | a ∉ s}` is defined in Mathlib.Data.Set.Defs (read directly)."
     },
     {
       "kind": "definition",
@@ -212,7 +401,14 @@
         "snippet": "their union is the set consisting of all objects which are elements of A or of B or of both"
       },
       "provenance": "ai-agent1",
-      "id": "3ab6f4548b68"
+      "id": "3ab6f4548b68",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.union",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Set.union := `{a | a ∈ s₁ ∨ a ∈ s₂}` is defined in Mathlib.Data.Set.Defs (read directly)."
     },
     {
       "kind": "definition",
@@ -222,7 +418,14 @@
         "snippet": "The intersection of A and B is the set of all objects which are both in A and in B"
       },
       "provenance": "ai-agent1",
-      "id": "23f092becd9a"
+      "id": "23f092becd9a",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.inter",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Set.inter := `{a | a ∈ s₁ ∧ a ∈ s₂}` is defined in Mathlib.Data.Set.Defs (read directly)."
     },
     {
       "kind": "definition",
@@ -232,7 +435,14 @@
         "snippet": "the relative complement of B relative to A , also known as the set theoretic difference of A and B"
       },
       "provenance": "ai-agent1",
-      "id": "f77b9d4711b4"
+      "id": "f77b9d4711b4",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.diff",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Set.diff := `{a ∈ s | a ∉ t}` (i.e. `s \\ t`) is defined in Mathlib.Data.Set.Defs (read directly)."
     },
     {
       "kind": "example",
@@ -242,7 +452,14 @@
         "snippet": "let A be the set of left-handed people, and let B be the set of people with blond hair"
       },
       "provenance": "ai-agent1",
-      "id": "4b59cd58e655"
+      "id": "4b59cd58e655",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Pedagogical illustration of union/intersection with no formal counterpart."
     },
     {
       "kind": "example",
@@ -252,7 +469,14 @@
         "snippet": "Now let E be the set of all human beings, and let F be the set of all living things over 1000 years old"
       },
       "provenance": "ai-agent1",
-      "id": "3512088c3be3"
+      "id": "3512088c3be3",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Pedagogical illustration with no Mathlib analogue."
     },
     {
       "kind": "proposition",
@@ -262,7 +486,14 @@
         "snippet": "the power set [MATH] is a Boolean algebra under the operations of union and intersection"
       },
       "provenance": "ai-agent1",
-      "id": "aa78c9bafbbd"
+      "id": "aa78c9bafbbd",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.instBooleanAlgebra",
+        "module": "Mathlib.Order.SetNotation",
+        "match_kind": "exact"
+      },
+      "note": "`Set α` carries a `BooleanAlgebra` instance under ∪, ∩, and complement in Mathlib's set order/lattice API."
     },
     {
       "kind": "definition",
@@ -272,7 +503,14 @@
         "snippet": "an ordered pair is simply a collection of two objects such that one can be distinguished as the first element and the other as the second element"
       },
       "provenance": "ai-agent1",
-      "id": "f6beeca14177"
+      "id": "f6beeca14177",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Prod",
+        "module": "Init.Prelude",
+        "match_kind": "exact"
+      },
+      "note": "Ordered pairs are `Prod α β` from Init.Prelude (verified via decl_exists)."
     },
     {
       "kind": "proposition",
@@ -282,7 +520,14 @@
         "snippet": "two ordered pairs ( a , b ) and ( c , d ) are equal if and only if a = c and b = d"
       },
       "provenance": "ai-agent1",
-      "id": "51896d79a19e"
+      "id": "51896d79a19e",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Prod.mk.injEq",
+        "module": "Init.Core",
+        "match_kind": "exact"
+      },
+      "note": "Prod.mk.injEq: `((a,b) = (c,d)) = (a = c ∧ b = d)` (verified via loogle)."
     },
     {
       "kind": "definition",
@@ -292,7 +537,14 @@
         "snippet": "If A and B are sets, then the Cartesian product (or simply product ) is defined to be:"
       },
       "provenance": "ai-agent1",
-      "id": "19ad1317c001"
+      "id": "19ad1317c001",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.prod",
+        "module": "Mathlib.Data.Set.Operations",
+        "match_kind": "exact"
+      },
+      "note": "Set.prod builds `s ×ˢ t = {p | p.1 ∈ s ∧ p.2 ∈ t}` in Mathlib.Data.Set.Operations (verified via decl_exists)."
     },
     {
       "kind": "definition",
@@ -302,7 +554,14 @@
         "snippet": "Natural numbers are used for counting"
       },
       "provenance": "ai-agent1",
-      "id": "afcbb297eda7"
+      "id": "afcbb297eda7",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat",
+        "module": "Init.Prelude",
+        "match_kind": "exact"
+      },
+      "note": "Nat is the core natural-number type (verified via decl_exists)."
     },
     {
       "kind": "definition",
@@ -312,7 +571,14 @@
         "snippet": "Integers appear as solutions for x in equations like x + a = b"
       },
       "provenance": "ai-agent1",
-      "id": "ec654ab3fbcb"
+      "id": "ec654ab3fbcb",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int",
+        "module": "Init.Data.Int.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Int is the core integer inductive type (verified via decl_exists)."
     },
     {
       "kind": "definition",
@@ -322,7 +588,14 @@
         "snippet": "Rational numbers appear as solutions to equations like a + bx = c"
       },
       "provenance": "ai-agent1",
-      "id": "cd1aec381bdf"
+      "id": "cd1aec381bdf",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Rat",
+        "module": "Init.Data.Rat.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Rat is the core rationals type (verified via decl_exists)."
     },
     {
       "kind": "definition",
@@ -332,7 +605,14 @@
         "snippet": "Algebraic numbers appear as solutions to polynomial equations (with integer coefficients)"
       },
       "provenance": "ai-agent1",
-      "id": "b12532a3fd0d"
+      "id": "b12532a3fd0d",
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlgebraicClosure",
+        "module": "Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes `IsAlgebraic` and `AlgebraicClosure ℚ`, but there is no distinguished type `𝔸` of algebraic numbers as a named subfield of ℂ (verified via decl_exists)."
     },
     {
       "kind": "definition",
@@ -342,7 +622,14 @@
         "snippet": "Real numbers represent the \"real line\" and include all numbers that can be approximated by rationals"
       },
       "provenance": "ai-agent1",
-      "id": "d6cc5cb09dc7"
+      "id": "d6cc5cb09dc7",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real",
+        "module": "Mathlib.Data.Real.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Real is Mathlib's Cauchy-completion of ℚ (verified via decl_exists)."
     },
     {
       "kind": "definition",
@@ -352,7 +639,46 @@
         "snippet": "Complex numbers are sums of a real and an imaginary number"
       },
       "provenance": "ai-agent1",
-      "id": "cb2e8c14bb4d"
+      "id": "cb2e8c14bb4d",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Complex is Mathlib's field of complex numbers (verified via decl_exists)."
+    },
+    {
+      "kind": "definition",
+      "label": "Axiom schema of unrestricted comprehension",
+      "anchor": {
+        "section": "Paradoxes in early set theory",
+        "snippet": "The unrestricted formation principle of sets referred to as the axiom schema of unrestricted comprehension"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Unrestricted comprehension is inconsistent, and Mathlib's foundations (Lean type theory) do not state it as an axiom schema."
+    },
+    {
+      "kind": "definition",
+      "label": "Axiom schema of specification",
+      "anchor": {
+        "section": "Paradoxes in early set theory",
+        "snippet": "If the axiom schema of unrestricted comprehension is weakened to the axiom schema of specification or axiom schema of separation"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZFSet.sep",
+        "module": "Mathlib.SetTheory.ZFC.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The separation/specification schema is realized as ZFSet.sep with `ZFSet.mem_sep` giving `y ∈ sep p x ↔ y ∈ x ∧ p y` (verified via decl_exists)."
     },
     {
       "kind": "example",
@@ -362,7 +688,14 @@
         "snippet": "is an ordinal} led, in the year 1897, to the Burali-Forti paradox"
       },
       "provenance": "ai-agent1",
-      "id": "6cdf8b808e4a"
+      "id": "6cdf8b808e4a",
+      "status": "partial",
+      "mathlib": {
+        "decl": "ZFSet.isOrdinal_notMem_univ",
+        "module": "Mathlib.SetTheory.ZFC.Class",
+        "match_kind": "special_case"
+      },
+      "note": "The conclusion of Burali–Forti — that the ordinals form a proper class — is captured by ZFSet.isOrdinal_notMem_univ (verified); the paradox itself is not named."
     },
     {
       "kind": "example",
@@ -372,7 +705,14 @@
         "snippet": "is a cardinal} produced Cantor's paradox in 1897"
       },
       "provenance": "ai-agent1",
-      "id": "d06a9064eb06"
+      "id": "d06a9064eb06",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Cardinal.cantor",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "special_case"
+      },
+      "note": "Cantor's theorem `a < 2^a` behind the paradox is Cardinal.cantor (verified); the naive-set paradox itself is not stated."
     },
     {
       "kind": "example",
@@ -382,7 +722,14 @@
         "snippet": "the set of all sets that do not contain themselves as elements, gave Russell's paradox in 1902"
       },
       "provenance": "ai-agent1",
-      "id": "0118f98ffe87"
+      "id": "0118f98ffe87",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Class.univ_notMem_univ",
+        "module": "Mathlib.SetTheory.ZFC.Class",
+        "match_kind": "special_case"
+      },
+      "note": "The Russell class of non-self-membered sets isn't constructed, but `Class.univ_notMem_univ` and `ZFSet.mem_irrefl` (verified) show the paradoxical set cannot exist."
     },
     {
       "kind": "theorem",
@@ -392,7 +739,14 @@
         "snippet": "There is no universe"
       },
       "provenance": "ai-agent1",
-      "id": "f1adc581fe99"
+      "id": "f1adc581fe99",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Class.univ_notMem_univ",
+        "module": "Mathlib.SetTheory.ZFC.Class",
+        "match_kind": "special_case"
+      },
+      "note": "That the universal class is not itself a set is formalized as Class.univ_notMem_univ (verified via decl_exists)."
     },
     {
       "kind": "example",
@@ -402,7 +756,30 @@
         "snippet": "This is Curry's paradox"
       },
       "provenance": "ai-agent1",
-      "id": "80460b8995aa"
+      "id": "80460b8995aa",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Curry's paradox has no counterpart declaration in Mathlib."
+    },
+    {
+      "kind": "definition",
+      "label": "Axiom of regularity",
+      "anchor": {
+        "section": "Paradoxes in early set theory",
+        "snippet": "by demanding the axiom of regularity to hold"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZFSet.regularity",
+        "module": "Mathlib.SetTheory.ZFC.Basic",
+        "match_kind": "exact"
+      },
+      "note": "ZFSet.regularity states every non-empty ZFC set has an ∈-minimal element (verified via decl_exists)."
     },
     {
       "kind": "proposition",
@@ -412,7 +789,14 @@
         "snippet": "no set is an element of itself"
       },
       "provenance": "ai-agent1",
-      "id": "afeec20c1173"
+      "id": "afeec20c1173",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZFSet.mem_irrefl",
+        "module": "Mathlib.SetTheory.ZFC.Basic",
+        "match_kind": "exact"
+      },
+      "note": "ZFSet.mem_irrefl: `∀ (x : ZFSet), x ∉ x` (verified via decl_exists)."
     }
   ]
 }

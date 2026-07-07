@@ -41,6 +41,38 @@
     },
     {
       "kind": "definition",
+      "label": "Power series",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a generalized hypergeometric series is a power series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FormalMultilinearSeries",
+        "module": "Mathlib.Analysis.Calculus.FormalMultilinearSeries",
+        "match_kind": "exact"
+      },
+      "note": "Formal power series are represented by `FormalMultilinearSeries` (defined in `Mathlib.Analysis.Calculus.FormalMultilinearSeries`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Analytic continuation",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "may then be defined over a wider domain of the argument by analytic continuation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AnalyticOnNhd.eqOn_of_preconnected_of_eventuallyEq",
+        "module": "Mathlib.Analysis.Analytic.Uniqueness",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has the identity theorem for analytic functions (`AnalyticOnNhd.eqOn_of_preconnected_of_eventuallyEq`), the basic mechanism of analytic continuation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Hypergeometric series (formal definition)",
       "anchor": {
         "section": "Notation",
@@ -69,7 +101,7 @@
         "module": "Mathlib.Analysis.Normed.Algebra.Exponential",
         "match_kind": "exact"
       },
-      "note": "`exp_eq_tsum` gives the standard `∑ xⁿ/n!` expansion.",
+      "note": "`NormedSpace.exp_eq_tsum` gives the standard `∑ xⁿ/n!` expansion.",
       "provenance": "ai",
       "id": "ad3b3770efdb"
     },
@@ -104,7 +136,8 @@
         "match_kind": "exact"
       },
       "note": "The gamma function is formalized as `Real.Gamma` and `Complex.Gamma`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b4dd15c13851"
     },
     {
       "kind": "definition",
@@ -122,6 +155,38 @@
       "note": "Only the ₂F₁ analytic function is defined; no analytic continuation theory or general pFq.",
       "provenance": "ai",
       "id": "e37e22bd18b4"
+    },
+    {
+      "kind": "definition",
+      "label": "Analytic function",
+      "anchor": {
+        "section": "Terminology",
+        "snippet": "then the series defines an analytic function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AnalyticOn",
+        "module": "Mathlib.Analysis.Analytic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Analytic functions are formalized as `AnalyticAt`/`AnalyticOn`/`AnalyticOnNhd`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Radius of convergence",
+      "anchor": {
+        "section": "Terminology",
+        "snippet": "and it has a non-zero radius of convergence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FormalMultilinearSeries.radius",
+        "module": "Mathlib.Analysis.Analytic.ConvergenceRadius",
+        "match_kind": "exact"
+      },
+      "note": "The radius of convergence of a formal multilinear series is `FormalMultilinearSeries.radius`.",
+      "provenance": "ai"
     },
     {
       "kind": "example",
@@ -190,6 +255,22 @@
       "note": "Mathlib's ₂F₁ assigns junk values via inverse-of-zero, so the undefinedness statement is not formalized.",
       "provenance": "ai",
       "id": "47432e7012ba"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ratio test for radius of convergence",
+      "anchor": {
+        "section": "Convergence conditions",
+        "snippet": "the ratio test can be applied to determine the radius of convergence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "summable_of_ratio_test_tendsto_lt_one",
+        "module": "Mathlib.Analysis.SpecificLimits.Normed",
+        "match_kind": "invocation"
+      },
+      "note": "The ratio test for series convergence is available in Mathlib as `summable_of_ratio_test_tendsto_lt_one`.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -409,7 +490,8 @@
         "match_kind": null
       },
       "note": "Gauss's continued fraction for hypergeometric functions is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c3913da9599c"
     },
     {
       "kind": "theorem",
@@ -697,7 +779,8 @@
         "match_kind": "invocation"
       },
       "note": "Hermite polynomials exist in Mathlib (`Polynomial.hermite`), but the ₁F₁ representation is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a4b00bdd3cbe"
     },
     {
       "kind": "example",
@@ -815,7 +898,8 @@
         "match_kind": "invocation"
       },
       "note": "Chebyshev polynomials (`Polynomial.Chebyshev.T`, `U`) exist in Mathlib; Legendre polynomials and the ₂F₁ representations are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b98237a54ff0"
     },
     {
       "kind": "example",
@@ -1018,7 +1102,8 @@
         "match_kind": null
       },
       "note": "Meijer G-function and MacRobert E-function are not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1c71a8c3fe83"
     },
     {
       "kind": "definition",

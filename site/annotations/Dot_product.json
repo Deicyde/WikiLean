@@ -14,11 +14,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Matrix.dotProduct",
+        "decl": "dotProduct",
         "module": "Mathlib.Data.Matrix.Mul",
         "match_kind": "exact"
       },
-      "note": "`Matrix.dotProduct v w := ∑ i, v i * w i` is exactly the algebraic coordinate definition.",
+      "note": "`dotProduct v w := ∑ i, v i * w i` (root namespace, not `Matrix.dotProduct`) is exactly the algebraic coordinate definition.",
       "provenance": "ai",
       "id": "dc295b54b347"
     },
@@ -121,7 +121,8 @@
         "match_kind": "exact"
       },
       "note": "`real_inner_self_eq_norm_mul_norm` gives `⟪x, x⟫_ℝ = ‖x‖ * ‖x‖`, i.e. `‖x‖ = √(x · x)`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e224618f1273"
     },
     {
       "kind": "definition",
@@ -166,11 +167,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Matrix.add_dotProduct",
+        "decl": "add_dotProduct",
         "module": "Mathlib.Data.Matrix.Mul",
         "match_kind": "exact"
       },
-      "note": "`Matrix.add_dotProduct`, `dotProduct_add`, `smul_dotProduct`, `dotProduct_smul` (and corresponding inner-product lemmas) give bilinearity.",
+      "note": "`add_dotProduct`, `dotProduct_add`, `smul_dotProduct`, `dotProduct_smul` (root namespace) give bilinearity of `⬝ᵥ`.",
       "provenance": "ai",
       "id": "c8c94f0ada2f"
     },
@@ -251,12 +252,13 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Matrix.dotProduct_comm",
+        "decl": "dotProduct_comm",
         "module": "Mathlib.Data.Matrix.Mul",
         "match_kind": "exact"
       },
-      "note": "`Matrix.dotProduct_comm` proves `v ⬝ᵥ w = w ⬝ᵥ v` over commutative magmas; the inner-product version is `real_inner_comm`.",
-      "provenance": "ai"
+      "note": "`dotProduct_comm` (root namespace) proves `v ⬝ᵥ w = w ⬝ᵥ v` over commutative magmas; the inner-product version is `real_inner_comm`.",
+      "provenance": "ai",
+      "id": "44c1ed45fbb3"
     },
     {
       "kind": "proposition",
@@ -267,11 +269,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Matrix.smul_dotProduct",
+        "decl": "smul_dotProduct",
         "module": "Mathlib.Data.Matrix.Mul",
         "match_kind": "exact"
       },
-      "note": "`Matrix.smul_dotProduct` and `Matrix.dotProduct_smul` give `(c • v) ⬝ᵥ w = c • (v ⬝ᵥ w)`.",
+      "note": "`smul_dotProduct` and `dotProduct_smul` (root namespace) give `(c • v) ⬝ᵥ w = c • (v ⬝ᵥ w)`.",
       "provenance": "ai",
       "id": "6175746c1f03"
     },
@@ -301,11 +303,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Matrix.exists_ne_zero_dotProduct_eq_zero",
+        "decl": "exists_ne_zero_dotProduct_eq_zero",
         "module": "Mathlib.Data.Matrix.Mul",
         "match_kind": "invocation"
       },
-      "note": "`Matrix.exists_ne_zero_dotProduct_eq_zero` shows nonzero vectors with zero dot product exist, witnessing the failure of cancellation.",
+      "note": "`exists_ne_zero_dotProduct_eq_zero` (root namespace) shows nonzero vectors with zero dot product exist, witnessing the failure of cancellation.",
       "provenance": "ai",
       "id": "10210add0410"
     },
@@ -631,6 +633,22 @@
       "note": "`TensorProduct.instInnerProductSpace` puts an inner product on `E ⊗[𝕜] F` extending the inner products on the factors.",
       "provenance": "ai",
       "id": "ae99548a268f"
+    },
+    {
+      "kind": "proposition",
+      "label": "Catastrophic cancellation in floating-point dot product",
+      "anchor": {
+        "section": "Algorithms",
+        "snippet": "The straightforward algorithm for calculating a floating-point dot product"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Numerical analysis of floating-point dot product and Kahan summation has no Mathlib formalization.",
+      "provenance": "ai"
     }
   ]
 }
