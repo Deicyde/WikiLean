@@ -1,0 +1,551 @@
+{
+  "slug": "Nonlinear_programming",
+  "wikipedia_title": "Nonlinear programming",
+  "display_title": "Nonlinear programming",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "nonlinear programming",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "nonlinear programming ( NLP ), also known as nonlinear optimization"
+      },
+      "status": "not_formalized",
+      "note": "No declaration in Mathlib/ defines nonlinear programming or nonlinear optimization as a mathematical object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "optimization problem",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "An optimization problem is one of calculation of the extrema"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsExtrOn",
+        "module": "Mathlib.Order.Filter.Extr",
+        "match_kind": "generalization"
+      },
+      "note": "IsExtrOn formalizes a point being a minimum or maximum of a function on a set, but Mathlib has no OptimizationProblem structure or calculation problem declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "nonlinear programming subfield",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "It is the sub-field of mathematical optimization"
+      },
+      "status": "not_formalized",
+      "note": "No declaration in Mathlib/ formalizes subject-area containment such as nonlinear programming being a subfield of mathematical optimization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "nonlinear programming problem setup",
+      "anchor": {
+        "section": "Definition and discussion",
+        "snippet": "Let n , m , and p be positive integers."
+      },
+      "status": "not_formalized",
+      "note": "No declaration in Mathlib/ packages an NLP datum with positive integers n, m, p and associated objective and constraint maps.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "nonlinear programming problem form",
+      "anchor": {
+        "section": "Definition and discussion",
+        "snippet": "A nonlinear programming problem is an optimization problem of the form"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsMinOn",
+        "module": "Mathlib.Order.Filter.Extr",
+        "match_kind": "generalization"
+      },
+      "note": "IsMinOn formalizes minimizing an objective over an arbitrary feasible set, but Mathlib has no nonlinear-program form with equality and inequality constraints.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "feasible problem",
+      "anchor": {
+        "section": "Definition and discussion",
+        "snippet": "feasible problem is one for which there exists at least one set of values"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Set.Nonempty",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Set.Nonempty exactly expresses existence of a feasible point once constraints are encoded as a set, but Mathlib has no FeasibleProblem declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "infeasible problem",
+      "anchor": {
+        "section": "Definition and discussion",
+        "snippet": "an infeasible problem is one for which no set of values"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Set.not_nonempty_iff_eq_empty",
+        "module": "Mathlib.Data.Set.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Set.not_nonempty_iff_eq_empty identifies no feasible point with an empty feasible set, but Mathlib has no infeasible-problem declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "infeasible constraints are contradictory",
+      "anchor": {
+        "section": "Definition and discussion",
+        "snippet": "the constraints are mutually contradictory, and no solution exists"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Set.not_nonempty_iff_eq_empty",
+        "module": "Mathlib.Data.Set.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Set.not_nonempty_iff_eq_empty formalizes the no-solution part as emptiness of the feasible set, but it does not define mutually contradictory NLP constraints.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "unbounded problem",
+      "anchor": {
+        "section": "Definition and discussion",
+        "snippet": "unbounded problem is a feasible problem for which the objective function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "BddBelow",
+        "module": "Mathlib.Order.Bounds.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "BddBelow formalizes bounded-below objective images, but Mathlib has no declaration for unbounded optimization problems.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "unbounded problem has no optimum",
+      "anchor": {
+        "section": "Definition and discussion",
+        "snippet": "there is no optimal solution"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsMinOn.bddBelow",
+        "module": "Mathlib.Order.Filter.Extr",
+        "match_kind": "generalization"
+      },
+      "note": "For minimization, IsMinOn.bddBelow gives the contrapositive that an objective image unbounded below cannot have an optimum.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "feasibility violation handling",
+      "anchor": {
+        "section": "Definition and discussion",
+        "snippet": "infeasible problems are handled by minimizing a sum of feasibility violations"
+      },
+      "status": "not_formalized",
+      "note": "No declaration in Mathlib/ formalizes handling infeasible NLPs by minimizing a sum of feasibility violations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "convex nonlinear program",
+      "anchor": {
+        "section": "Definition and discussion",
+        "snippet": "then the program is called convex"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ConvexOn",
+        "module": "Mathlib.Analysis.Convex.Function",
+        "match_kind": "generalization"
+      },
+      "note": "ConvexOn formalizes convex objective functions on convex sets, but Mathlib has no full convex nonlinear program definition with constraints.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "convex optimization methods apply",
+      "anchor": {
+        "section": "Definition and discussion",
+        "snippet": "general methods from convex optimization can be used in most cases"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsMinOn.of_isLocalMinOn_of_convexOn",
+        "module": "Mathlib.Analysis.Convex.Extrema",
+        "match_kind": "generalization"
+      },
+      "note": "IsMinOn.of_isLocalMinOn_of_convexOn captures a key convex-optimization consequence, but Mathlib does not formalize the meta-claim that convex methods apply.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "quadratic programming case",
+      "anchor": {
+        "section": "Definition and discussion",
+        "snippet": "If the objective function is quadratic and the constraints are linear"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "QuadraticMap",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "QuadraticMap formalizes quadratic maps, but Mathlib has no quadratic programming case definition with linear constraints.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "fractional programming transformation",
+      "anchor": {
+        "section": "Definition and discussion",
+        "snippet": "then the problem can be transformed to a convex optimization problem"
+      },
+      "status": "not_formalized",
+      "note": "No declaration in Mathlib/ formalizes fractional programming or its transformation to a convex optimization problem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "transportation cost optimization",
+      "anchor": {
+        "section": "Applicability",
+        "snippet": "A typical non- convex problem is that of optimizing transportation costs"
+      },
+      "status": "not_formalized",
+      "note": "No declaration in Mathlib/ formalizes transportation cost optimization as a nonlinear programming example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "petroleum product transport",
+      "anchor": {
+        "section": "Applicability",
+        "snippet": "An example would be petroleum product transport"
+      },
+      "status": "not_formalized",
+      "note": "No declaration in Mathlib/ formalizes petroleum product transport as an optimization example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "batch size discontinuities",
+      "anchor": {
+        "section": "Applicability",
+        "snippet": "the cost functions may have discontinuities"
+      },
+      "status": "not_formalized",
+      "note": "No declaration in Mathlib/ states that batch-size transportation cost functions may be discontinuous.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "linear data analysis example",
+      "anchor": {
+        "section": "Applicability",
+        "snippet": "some simple data analysis"
+      },
+      "status": "not_formalized",
+      "note": "No declaration in Mathlib/ formalizes the article's simple linear data analysis example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "data fitting is generally nonlinear",
+      "anchor": {
+        "section": "Applicability",
+        "snippet": "in general these problems are also nonlinear"
+      },
+      "status": "not_formalized",
+      "note": "No declaration in Mathlib/ states that data-fitting problems are generally nonlinear.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "numerical best fit",
+      "anchor": {
+        "section": "Applicability",
+        "snippet": "One tries to find a best fit numerically."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Function.argminOn",
+        "module": "Mathlib.Order.WellFounded",
+        "match_kind": "generalization"
+      },
+      "note": "Function.argminOn selects an exact minimizer on a nonempty set under a well-founded order, but Mathlib has no numerical best-fit procedure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "KKT necessary conditions",
+      "anchor": {
+        "section": "Analytic methods",
+        "snippet": "the Karush–Kuhn–Tucker (KKT) conditions provide necessary conditions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsLocalExtrOn.exists_multipliers_of_hasStrictFDerivAt",
+        "module": "Mathlib.Analysis.Calculus.LagrangeMultipliers",
+        "match_kind": "special_case"
+      },
+      "note": "IsLocalExtrOn.exists_multipliers_of_hasStrictFDerivAt gives equality-constrained Lagrange multiplier necessary conditions, which are only a special case of full KKT inequality and complementarity conditions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "subdifferential KKT conditions",
+      "anchor": {
+        "section": "Analytic methods",
+        "snippet": "subdifferential versions of Karush–Kuhn–Tucker (KKT) conditions are available"
+      },
+      "status": "not_formalized",
+      "note": "Searches found no subdifferential, subgradient, or subdifferential KKT declarations in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "KKT sufficient under convexity",
+      "anchor": {
+        "section": "Analytic methods",
+        "snippet": "the KKT conditions are sufficient for a global optimum"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsMinOn.of_isLocalMinOn_of_convexOn",
+        "module": "Mathlib.Analysis.Convex.Extrema",
+        "match_kind": "generalization"
+      },
+      "note": "IsMinOn.of_isLocalMinOn_of_convexOn proves a convex local minimum is global, but no declaration states KKT conditions are sufficient under convexity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "KKT local sufficiency without convexity",
+      "anchor": {
+        "section": "Analytic methods",
+        "snippet": "these conditions are sufficient only for a local optimum"
+      },
+      "status": "not_formalized",
+      "note": "No declaration in Mathlib/ establishes KKT local sufficiency without convexity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "finite local optima can be enumerated",
+      "anchor": {
+        "section": "Analytic methods",
+        "snippet": "one can find all of them analytically"
+      },
+      "status": "not_formalized",
+      "note": "No declaration in Mathlib/ states that finitely many local optima can be analytically enumerated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "iterative numerical methods",
+      "anchor": {
+        "section": "Numeric methods",
+        "snippet": "These methods are iterative"
+      },
+      "status": "not_formalized",
+      "note": "No declaration in Mathlib/ defines nonlinear programming numerical methods as iterative procedures.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "zero-order routines",
+      "anchor": {
+        "section": "Numeric methods",
+        "snippet": "Zero-order routines - use only the values"
+      },
+      "status": "not_formalized",
+      "note": "No declaration in Mathlib/ defines zero-order optimization routines that use only objective values.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "first-order routines",
+      "anchor": {
+        "section": "Numeric methods",
+        "snippet": "First-order routines - use also the values"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HasFDerivAt",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "HasFDerivAt formalizes first derivatives of functions, but Mathlib has no declaration classifying first-order numerical routines.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "second-order routines",
+      "anchor": {
+        "section": "Numeric methods",
+        "snippet": "Second-order routines - use also the values"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "iteratedFDeriv",
+        "module": "Mathlib.Analysis.Calculus.ContDiff.FTaylorSeries",
+        "match_kind": "generalization"
+      },
+      "note": "iteratedFDeriv formalizes arbitrary-order derivatives, including second derivatives, but Mathlib has no declaration classifying second-order numerical routines.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "higher-order routines not used",
+      "anchor": {
+        "section": "Numeric methods",
+        "snippet": "Third-order routines (and higher) are theoretically possible"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "iteratedFDeriv",
+        "module": "Mathlib.Analysis.Calculus.ContDiff.FTaylorSeries",
+        "match_kind": "generalization"
+      },
+      "note": "iteratedFDeriv supplies higher derivatives in principle, but no declaration states that higher-order optimization routines are unused in practice.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "branch and bound method",
+      "anchor": {
+        "section": "Branch and bound",
+        "snippet": "Another method involves the use of branch and bound techniques"
+      },
+      "status": "not_formalized",
+      "note": "No branch-and-bound method declaration was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "branch and bound optimality certificate",
+      "anchor": {
+        "section": "Branch and bound",
+        "snippet": "This solution is optimal, although possibly not unique."
+      },
+      "status": "not_formalized",
+      "note": "No declaration in Mathlib/ formalizes a branch-and-bound optimality certificate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "ε-optimal point",
+      "anchor": {
+        "section": "Branch and bound",
+        "snippet": "such points are called ε-optimal"
+      },
+      "status": "not_formalized",
+      "note": "No declaration in Mathlib/ defines ε-optimal points for optimization problems.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "ε-optimal termination",
+      "anchor": {
+        "section": "Branch and bound",
+        "snippet": "Terminating to ε-optimal points is typically necessary"
+      },
+      "status": "not_formalized",
+      "note": "No declaration in Mathlib/ states that branch-and-bound termination to ε-optimal points is necessary.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "ALGLIB nonlinear programming solver",
+      "anchor": {
+        "section": "Implementations",
+        "snippet": "ALGLIB (C++, C#, Java, Python API) implements several first-order and derivative-free nonlinear programming solvers"
+      },
+      "status": "not_formalized",
+      "note": "No declaration in Mathlib/ records ALGLIB or its nonlinear programming solvers.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "NLopt nonlinear programming solver",
+      "anchor": {
+        "section": "Implementations",
+        "snippet": "NLopt (C/C++ implementation, with numerous interfaces including Julia, Python, R, MATLAB/Octave), includes various nonlinear programming solvers"
+      },
+      "status": "not_formalized",
+      "note": "No declaration in Mathlib/ records NLopt or its nonlinear programming solvers.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "SciPy nonlinear programming solver",
+      "anchor": {
+        "section": "Implementations",
+        "snippet": "SciPy (de facto standard for scientific Python) has scipy.optimize solver"
+      },
+      "status": "not_formalized",
+      "note": "No declaration in Mathlib/ records SciPy or scipy.optimize as a nonlinear programming solver.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "IPOPT nonlinear programming solver",
+      "anchor": {
+        "section": "Implementations",
+        "snippet": "IPOPT (C++ implementation, with numerous interfaces including C, Fortran, Java, AMPL, R, Python, etc.) is an interior point method solver"
+      },
+      "status": "not_formalized",
+      "note": "No declaration in Mathlib/ records IPOPT or its interior-point nonlinear programming solver role.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "SNOPT proprietary solver",
+      "anchor": {
+        "section": "Implementations",
+        "snippet": "Proprietary solvers include SNOPT"
+      },
+      "status": "not_formalized",
+      "note": "No declaration in Mathlib/ records SNOPT as a proprietary nonlinear programming solver.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "2-dimensional nonlinear programming problem",
+      "anchor": {
+        "section": "2-dimensional example",
+        "snippet": "A simple problem (shown in the diagram) can be defined by the constraints"
+      },
+      "status": "not_formalized",
+      "note": "No declaration in Mathlib/ formalizes the article's specific two-dimensional nonlinear programming example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "3-dimensional nonlinear programming problem",
+      "anchor": {
+        "section": "3-dimensional example",
+        "snippet": "Another simple problem (see diagram) can be defined by the constraints"
+      },
+      "status": "not_formalized",
+      "note": "No declaration in Mathlib/ formalizes the article's specific three-dimensional nonlinear programming example.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "slug": "Quadratic_sieve",
+  "wikipedia_title": "Quadratic sieve",
+  "display_title": "Quadratic sieve",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Quadratic sieve",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The quadratic sieve algorithm ( QS ) is an integer factorization algorithm"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.factorization",
+        "module": "Mathlib.Data.Nat.Factorization.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has `Nat.factorization` for prime factorizations of natural numbers, but I found no declaration defining the quadratic sieve algorithm or proving its correctness as a factorization algorithm.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "QS practical speed",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "in practice, the second-fastest method known"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib declaration about quadratic-sieve performance or comparative practical speed among factorization methods.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "QS under 100 digits",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "It is still the fastest for integers under 100 decimal digits"
+      },
+      "status": "not_formalized",
+      "note": "I found no declaration combining the quadratic sieve with a 100-decimal-digit threshold or a fastest-factorization claim.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "General-purpose factorization algorithm",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "It is a general-purpose factorization algorithm"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.factorization",
+        "module": "Mathlib.Data.Nat.Factorization.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib formalizes natural-number prime factorization via `Nat.factorization`, but I found no declaration classifying algorithms as general-purpose factorization algorithms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "General-purpose running time dependence",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "its running time depends solely on the size of the integer to be factored"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AkraBazziRecurrence",
+        "module": "Mathlib.Computability.AkraBazzi.SumTransform",
+        "match_kind": "generalization"
+      },
+      "note": "`AkraBazziRecurrence` models some running-time recurrences as functions of a natural-number size parameter, but I found no factorization-specific general-purpose dependence criterion.",
+      "provenance": "ai"
+    }
+  ]
+}

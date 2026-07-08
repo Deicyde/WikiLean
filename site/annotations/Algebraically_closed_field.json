@@ -1,0 +1,1002 @@
+{
+  "slug": "Algebraically_closed_field",
+  "wikipedia_title": "Algebraically closed field",
+  "display_title": "Algebraically closed field",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Algebraically closed field",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a field F is algebraically closed if every non-constant polynomial with coefficients in F has a root in F"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsAlgClosed",
+        "module": "Mathlib.FieldTheory.IsAlgClosed.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines `IsAlgClosed` by polynomial splitting and proves the root formulation as `IsAlgClosed.exists_root`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fundamental theorem formulation",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a field is algebraically closed if the fundamental theorem of algebra holds for it"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsAlgClosed.exists_root",
+        "module": "Mathlib.FieldTheory.IsAlgClosed.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the root-existence property for algebraically closed fields, but not this phrasing as a separate fundamental-theorem equivalence for an arbitrary field.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Real numbers not algebraically closed",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the field of real numbers is not algebraically closed because the polynomial"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsSemireal.not_isSumSq_neg_one",
+        "module": "Mathlib.Algebra.Ring.Semireal.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has semireal obstruction infrastructure implying negative one is not a sum of squares in ordered contexts, but I found no direct `¬ IsAlgClosed ℝ` declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Complex numbers algebraically closed",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the field of complex numbers is algebraically closed"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.isAlgClosed",
+        "module": "Mathlib.Analysis.Complex.Polynomial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.isAlgClosed` is the Mathlib instance that the complex numbers are algebraically closed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Algebraic closure exists",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Every field"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgebraicClosure",
+        "module": "Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib constructs `AlgebraicClosure k` and provides algebraic and algebraically closed instances for it.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraic closure",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the roots in"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsAlgClosure",
+        "module": "Mathlib.FieldTheory.IsAlgClosed.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsAlgClosure F E` formalizes an algebraic closure as an algebraic algebra over `F` that is algebraically closed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Algebraic closure uniqueness",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Given two algebraic closures of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsAlgClosure.equiv",
+        "module": "Mathlib.FieldTheory.IsAlgClosed.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsAlgClosure.equiv` gives an algebra equivalence between two algebraic closures over the same base field.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Algebraically closed fields in class hierarchy",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Algebraically closed fields appear in the following chain of class inclusions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsAlgClosed.perfectField",
+        "module": "Mathlib.FieldTheory.IsAlgClosed.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib records some hierarchy consequences such as algebraically closed fields being perfect, but I found no formalized chain matching the article statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Real numbers example",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "the field of real numbers is not algebraically closed, because the polynomial equation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsSemireal.not_isSumSq_neg_one",
+        "module": "Mathlib.Algebra.Ring.Semireal.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "The semireal theorem gives related obstruction infrastructure for ordered fields, but I found no direct theorem stating that `ℝ` is not algebraically closed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "No real subfield is algebraically closed",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "no subfield of the real field is algebraically closed"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsSemireal.not_isSumSq_neg_one",
+        "module": "Mathlib.Algebra.Ring.Semireal.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has semireal obstruction lemmas relevant to subfields of ordered fields, but I found no direct declaration that every subfield of `ℝ` is not algebraically closed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Rational numbers not algebraically closed",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "the field of rational numbers is not algebraically closed"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.X_pow_sub_X_sub_one_irreducible_rat",
+        "module": "Mathlib.RingTheory.Polynomial.Selmer",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has explicit irreducible rational polynomials of degree greater than one, but I found no direct `¬ IsAlgClosed ℚ` theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fundamental theorem of algebra",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "the fundamental theorem of algebra states that the field of complex numbers is algebraically closed"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.isAlgClosed",
+        "module": "Mathlib.Analysis.Complex.Polynomial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.isAlgClosed` is Mathlib's formalization of the fundamental theorem of algebra in algebraically closed field form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Algebraic numbers algebraically closed",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Another example of an algebraically closed field is the field of (complex) algebraic numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlgebraicClosure.isAlgClosed",
+        "module": "Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves an abstract algebraic closure is algebraically closed, but I found no declaration identifying the complex algebraic numbers as that field.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "No finite field is algebraically closed",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "No finite field F is algebraically closed"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsAlgClosed.instInfinite",
+        "module": "Mathlib.FieldTheory.IsAlgClosed.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsAlgClosed.instInfinite` proves every algebraically closed field is infinite, which is equivalent to excluding algebraically closed finite fields.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Union of finite fields fixed characteristic",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "the union of all finite fields of a fixed characteristic p ( p prime) is an algebraically closed field"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "GaloisField",
+        "module": "Mathlib.FieldTheory.Finite.GaloisField",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has finite Galois fields as splitting fields of `X^(p^n)-X`, but I found no theorem forming their union and proving it algebraically closed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Algebraic closure of finite field",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "which is, in fact, the algebraic closure of the field"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlgebraicClosure",
+        "module": "Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has general algebraic closures, but I found no declaration identifying the fixed-characteristic finite-field union with `AlgebraicClosure (ZMod p)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Complex rational function field not algebraically closed",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "of rational functions with complex coefficients is not closed"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "RatFunc.irreducible_minpolyX",
+        "module": "Mathlib.FieldTheory.RatFunc.AsPolynomial",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has rational-function-field and minpoly infrastructure, but I found no direct theorem that `RatFunc ℂ` is not algebraically closed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Square root rational function roots absent",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "for example, the polynomial"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "RatFunc.inftyValuation.X_zpow",
+        "module": "Mathlib.FieldTheory.RatFunc.Valuation",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has valuations on rational functions that can support such square-root obstructions, but I found no direct statement that the indicated polynomial has no root in `RatFunc ℂ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Algebraic closedness has equivalent assertions",
+      "anchor": {
+        "section": "Equivalent properties",
+        "snippet": "the assertion \" F is algebraically closed\" is equivalent to other assertions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsAlgClosed.algebraMap_bijective_of_isIntegral",
+        "module": "Mathlib.FieldTheory.IsAlgClosed.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib formalizes several equivalent-looking consequences of algebraic closedness, but I found no bundled theorem listing all article equivalences.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Irreducible polynomials have degree one",
+      "anchor": {
+        "section": "The only irreducible polynomials are those of degree one",
+        "snippet": "The field F is algebraically closed if and only if the only irreducible polynomials in the polynomial ring F [ x ] are those of degree one"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsAlgClosed.degree_eq_one_of_irreducible",
+        "module": "Mathlib.FieldTheory.IsAlgClosed.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves the algebraically-closed-to-linear-irreducible direction, but I found no exact iff theorem under this statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linear polynomials irreducible",
+      "anchor": {
+        "section": "The only irreducible polynomials are those of degree one",
+        "snippet": "the polynomials of degree one are irreducible"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.irreducible_of_degree_eq_one",
+        "module": "Mathlib.Algebra.Polynomial.FieldDivision",
+        "match_kind": "exact"
+      },
+      "note": "`Polynomial.irreducible_of_degree_eq_one` states that a polynomial over a field with degree one is irreducible.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Irreducible polynomial over algebraically closed field is linear",
+      "anchor": {
+        "section": "The only irreducible polynomials are those of degree one",
+        "snippet": "If F is algebraically closed and p ( x ) is an irreducible polynomial of F [ x ]"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsAlgClosed.degree_eq_one_of_irreducible",
+        "module": "Mathlib.FieldTheory.IsAlgClosed.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsAlgClosed.degree_eq_one_of_irreducible` proves that irreducible polynomials over an algebraically closed field have degree one.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-algebraically closed field has irreducible polynomial of degree greater than one",
+      "anchor": {
+        "section": "The only irreducible polynomials are those of degree one",
+        "snippet": "if F is not algebraically closed, then there is some non-constant polynomial p ( x ) in F [ x ] without roots in F"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.exists_irreducible_of_degree_pos",
+        "module": "Mathlib.RingTheory.Polynomial.UniqueFactorization",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has irreducible-factor existence for positive-degree polynomials, but I found no direct contrapositive statement from `¬ IsAlgClosed` to a nonlinear irreducible polynomial.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Irreducible factor of rootless polynomial has no roots",
+      "anchor": {
+        "section": "The only irreducible polynomials are those of degree one",
+        "snippet": "Since p ( x ) has no roots in F , q ( x ) also has no roots in F"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.IsRoot.dvd",
+        "module": "Mathlib.Algebra.Polynomial.Eval.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Polynomial.IsRoot.dvd` gives the divisibility/root transfer whose contrapositive yields that a factor of a rootless polynomial has no root.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "First degree polynomial has a root",
+      "anchor": {
+        "section": "The only irreducible polynomials are those of degree one",
+        "snippet": "every first degree polynomial has one root in F"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.exists_root_of_degree_eq_one",
+        "module": "Mathlib.Algebra.Polynomial.FieldDivision",
+        "match_kind": "exact"
+      },
+      "note": "`Polynomial.exists_root_of_degree_eq_one` proves that every degree-one polynomial over a field has a root.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Polynomial splitting criterion",
+      "anchor": {
+        "section": "Every polynomial is a product of first degree polynomials",
+        "snippet": "The field F is algebraically closed if and only if every polynomial p ( x ) of degree n ≥ 1, with coefficients in F , splits into linear factors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsAlgClosed",
+        "module": "Mathlib.FieldTheory.IsAlgClosed.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines `IsAlgClosed` by the condition that every polynomial over the field splits.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linear factor form",
+      "anchor": {
+        "section": "Every polynomial is a product of first degree polynomials",
+        "snippet": "there are elements k , x 1 , x 2 , ..., x n of the field F such that p ( x ) = k ( x − x 1 )( x − x 2 ) ⋯ ( x − x n )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.splits_iff_exists_multiset",
+        "module": "Mathlib.Algebra.Polynomial.Splits",
+        "match_kind": "exact"
+      },
+      "note": "`Polynomial.splits_iff_exists_multiset` expresses splitting as a product of linear factors indexed by roots with a leading coefficient.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Root from splitting property",
+      "anchor": {
+        "section": "Every polynomial is a product of first degree polynomials",
+        "snippet": "If F has this property, then clearly every non-constant polynomial in F [ x ] has some root in F"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.Splits.exists_eval_eq_zero",
+        "module": "Mathlib.Algebra.Polynomial.Splits",
+        "match_kind": "exact"
+      },
+      "note": "`Polynomial.Splits.exists_eval_eq_zero` proves that a nonconstant split polynomial has a root.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Factorization into irreducibles",
+      "anchor": {
+        "section": "Every polynomial is a product of first degree polynomials",
+        "snippet": "for any field K , any polynomial in K [ x ] can be written as a product of irreducible polynomials"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.uniqueFactorizationMonoid",
+        "module": "Mathlib.RingTheory.Polynomial.UniqueFactorization",
+        "match_kind": "generalization"
+      },
+      "note": "`Polynomial.uniqueFactorizationMonoid` gives the unique-factorization structure on polynomial rings over fields, implying factorization into irreducibles.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Prime degree root criterion",
+      "anchor": {
+        "section": "Polynomials of prime degree have roots",
+        "snippet": "If every polynomial over F of prime degree has a root in F , then every non-constant polynomial has a root in F"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.exists_irreducible_of_degree_pos",
+        "module": "Mathlib.RingTheory.Polynomial.UniqueFactorization",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has irreducible-factor infrastructure for positive-degree polynomials, but I found no theorem reducing root existence to prime-degree polynomials.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Algebraically closed iff prime degree roots",
+      "anchor": {
+        "section": "Polynomials of prime degree have roots",
+        "snippet": "a field is algebraically closed if and only if every polynomial over F of prime degree has a root in F"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsAlgClosed.exists_root",
+        "module": "Mathlib.FieldTheory.IsAlgClosed.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves root existence for all positive-degree polynomials over algebraically closed fields, but I found no iff using only prime degrees.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "No proper algebraic extension criterion",
+      "anchor": {
+        "section": "The field has no proper algebraic extension",
+        "snippet": "The field F is algebraically closed if and only if it has no proper algebraic extension"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsAlgClosed.algebraMap_bijective_of_isIntegral",
+        "module": "Mathlib.FieldTheory.IsAlgClosed.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves that an integral algebra over an algebraically closed field has bijective algebra map, but I found no exact iff packaged as no proper algebraic extensions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quotient by irreducible polynomial is algebraic extension",
+      "anchor": {
+        "section": "The field has no proper algebraic extension",
+        "snippet": "the quotient of F [ x ] modulo the ideal generated by p ( x ) is an algebraic extension of F whose degree is equal to the degree of p ( x )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.finrank_quotient_span_eq_natDegree",
+        "module": "Mathlib.RingTheory.AdjoinRoot",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves the quotient by the span of a polynomial has finrank equal to its natDegree, with field structure for irreducible polynomials via `AdjoinRoot.instField`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Proper algebraic extension contains element with nonlinear minimal polynomial",
+      "anchor": {
+        "section": "The field has no proper algebraic extension",
+        "snippet": "if F has some proper algebraic extension K , then the minimal polynomial of an element in K \\ F is irreducible and its degree is greater than 1"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "minpoly.two_le_natDegree_iff",
+        "module": "Mathlib.FieldTheory.Minpoly.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`minpoly.two_le_natDegree_iff` characterizes elements not coming from the base by minimal polynomial degree at least two, alongside the standard irreducibility of `minpoly`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "No proper finite extension criterion",
+      "anchor": {
+        "section": "The field has no proper finite extension",
+        "snippet": "The field F is algebraically closed if and only if it has no proper finite extension"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsAlgClosed.algebraMap_bijective_of_isIntegral",
+        "module": "Mathlib.FieldTheory.IsAlgClosed.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has the algebraically-closed-to-trivial-integral-extension direction and finite extensions are algebraic, but I found no exact finite-extension iff theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite extensions algebraic",
+      "anchor": {
+        "section": "The field has no proper finite extension",
+        "snippet": "Finite extensions are necessarily algebraic"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebra.IsAlgebraic.of_finite",
+        "module": "Mathlib.RingTheory.Algebraic.Integral",
+        "match_kind": "exact"
+      },
+      "note": "`Algebra.IsAlgebraic.of_finite` proves that a finite algebra extension is algebraic.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Eigenvector criterion",
+      "anchor": {
+        "section": "Every endomorphism of F n has some eigenvector",
+        "snippet": "The field F is algebraically closed if and only if, for each natural number n , every linear map from F n into itself has some eigenvector"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.End.exists_eigenvalue",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Triangularizable",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves the algebraically-closed-to-eigenvalue direction for finite-dimensional nontrivial spaces, but I found no converse iff criterion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Eigenvector iff characteristic polynomial has root",
+      "anchor": {
+        "section": "Every endomorphism of F n has some eigenvector",
+        "snippet": "An endomorphism of F n has an eigenvector if and only if its characteristic polynomial has some root"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.End.hasEigenvalue_iff_isRoot_charpoly",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Charpoly",
+        "match_kind": "exact"
+      },
+      "note": "`Module.End.hasEigenvalue_iff_isRoot_charpoly` formalizes the equivalence between eigenvalues and roots of the characteristic polynomial.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Algebraic closedness gives eigenvectors",
+      "anchor": {
+        "section": "Every endomorphism of F n has some eigenvector",
+        "snippet": "when F is algebraically closed, every endomorphism of F n has some eigenvector"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.End.exists_eigenvalue",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Triangularizable",
+        "match_kind": "generalization"
+      },
+      "note": "`Module.End.exists_eigenvalue` proves that an endomorphism over an algebraically closed field on a nontrivial finite-dimensional space has an eigenvalue, yielding an eigenvector by existing eigenspace lemmas.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Monic rescaling preserves roots",
+      "anchor": {
+        "section": "Every endomorphism of F n has some eigenvector",
+        "snippet": "Dividing by its leading coefficient, we get another polynomial q ( x ) which has roots if and only if p ( x ) has roots"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.roots_C_mul",
+        "module": "Mathlib.Algebra.Polynomial.Roots",
+        "match_kind": "generalization"
+      },
+      "note": "`Polynomial.roots_C_mul` shows multiplication by a nonzero scalar does not change roots, which is the substance of monic rescaling preserving roots.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Companion matrix characteristic polynomial",
+      "anchor": {
+        "section": "Every endomorphism of F n has some eigenvector",
+        "snippet": "q ( x ) is the characteristic polynomial of the n×n companion matrix"
+      },
+      "status": "not_formalized",
+      "note": "I found characteristic-polynomial infrastructure but no verified companion-matrix declaration with this characteristic-polynomial theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Partial fractions criterion",
+      "anchor": {
+        "section": "Decomposition of rational expressions",
+        "snippet": "The field F is algebraically closed if and only if every rational function in one variable x , with coefficients in F , can be written as the sum of a polynomial function with rational functions of the form a /( x − b ) n"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.div_prod_eq_quo_add_sum_rem_div",
+        "module": "Mathlib.Algebra.Polynomial.PartialFractions",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has a general partial-fraction decomposition theorem, but I found no iff criterion characterizing algebraically closed fields by linear-denominator decompositions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Partial fractions over algebraically closed fields",
+      "anchor": {
+        "section": "Decomposition of rational expressions",
+        "snippet": "If F is algebraically closed then, since the irreducible polynomials in F [ x ] are all of degree 1, the property stated above holds by the theorem on partial fraction decomposition"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.div_prod_eq_quo_add_sum_rem_div",
+        "module": "Mathlib.Algebra.Polynomial.PartialFractions",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has the needed partial-fraction theorem and the linearity of irreducibles over algebraically closed fields, but I found no combined statement for this property.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Partial fractions force irreducibles linear",
+      "anchor": {
+        "section": "Decomposition of rational expressions",
+        "snippet": "suppose that the property stated above holds for the field F"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.div_prod_eq_quo_add_sum_rem_div",
+        "module": "Mathlib.Algebra.Polynomial.PartialFractions",
+        "match_kind": "special_case"
+      },
+      "note": "The partial-fraction machinery is present, but I found no theorem deriving linearity of irreducibles from the stated rational-function decomposition property.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Denominator product of linear polynomials",
+      "anchor": {
+        "section": "Decomposition of rational expressions",
+        "snippet": "can be written as a quotient of two polynomials in which the denominator is a product of first degree polynomials"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.splits_iff_exists_multiset",
+        "module": "Mathlib.Algebra.Polynomial.Splits",
+        "match_kind": "generalization"
+      },
+      "note": "`Polynomial.splits_iff_exists_multiset` formalizes products of linear factors, but I found no exact denominator-normalization theorem in the partial-fractions context.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Relatively prime polynomials have no common root",
+      "anchor": {
+        "section": "Relatively prime polynomials and roots",
+        "snippet": "For any field F , if two polynomials p ( x ), q ( x ) ∈ F [ x ] are relatively prime then they do not have a common root"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.aeval_ne_zero_of_isCoprime",
+        "module": "Mathlib.FieldTheory.IsAlgClosed.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Polynomial.aeval_ne_zero_of_isCoprime` proves that coprime polynomials cannot vanish at the same element.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Common-root converse characterizes algebraically closed fields",
+      "anchor": {
+        "section": "Relatively prime polynomials and roots",
+        "snippet": "The fields for which the reverse implication holds"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.isCoprime_iff_aeval_ne_zero_of_isAlgClosed",
+        "module": "Mathlib.FieldTheory.IsAlgClosed.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves the coprime/common-root criterion over an algebraically closed field, but I found no theorem that the converse property characterizes algebraic closedness.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-coprime polynomials over algebraically closed field have common root",
+      "anchor": {
+        "section": "Relatively prime polynomials and roots",
+        "snippet": "If the field F is algebraically closed, let p ( x ) and q ( x ) be two polynomials which are not relatively prime"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.isCoprime_iff_aeval_ne_zero_of_isAlgClosed",
+        "module": "Mathlib.FieldTheory.IsAlgClosed.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Polynomial.isCoprime_iff_aeval_ne_zero_of_isAlgClosed` gives the equivalence over algebraically closed fields, including the common-root consequence for non-coprime polynomials.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-algebraically closed counterexample to common-root converse",
+      "anchor": {
+        "section": "Relatively prime polynomials and roots",
+        "snippet": "If F is not algebraically closed, let p ( x ) be a polynomial whose degree is at least 1 without roots"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsAlgClosed.of_exists_root",
+        "module": "Mathlib.FieldTheory.IsAlgClosed.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has a constructor from root existence for monic irreducibles to algebraic closedness, but I found no direct counterexample theorem for the failed common-root converse.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Algebraically closed fields contain roots of unity",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "If F is an algebraically closed field and n is a natural number, then F contains all n th roots of unity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsSepClosed.hasEnoughRootsOfUnity",
+        "module": "Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed",
+        "match_kind": "generalization"
+      },
+      "note": "`IsSepClosed.hasEnoughRootsOfUnity`, together with the instance from algebraically closed to separably closed, gives roots-of-unity existence under the usual nonzero-characteristic hypothesis for `n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cyclotomic extension",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "A field extension that is contained in an extension generated by the roots of unity is a cyclotomic extension"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCyclotomicExtension",
+        "module": "Mathlib.NumberTheory.Cyclotomic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsCyclotomicExtension` formalizes cyclotomic extensions using primitive roots of unity and generation by those roots.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cyclotomic closure",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "the extension of a field generated by all roots of unity is sometimes called its cyclotomic closure"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsCyclotomicExtension.iff_adjoin_eq_top",
+        "module": "Mathlib.NumberTheory.Cyclotomic.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has cyclotomic-extension generation criteria, but I found no separate `CyclotomicClosure` definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Algebraically closed fields cyclotomically closed",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "Thus algebraically closed fields are cyclotomically closed"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsSepClosed.isCyclotomicExtension",
+        "module": "Mathlib.NumberTheory.Cyclotomic.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves separably closed fields give cyclotomic extensions in the formal `IsCyclotomicExtension` sense, but I found no statement using a `cyclotomically closed` predicate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cyclotomically closed converse false",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "The converse is not true"
+      },
+      "status": "not_formalized",
+      "note": "I found no verified Mathlib counterexample showing a cyclotomically closed field that is not algebraically closed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Binomial splitting insufficient",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "Even assuming that every polynomial of the form x n − a splits into linear factors is not enough to assure that the field is algebraically closed"
+      },
+      "status": "not_formalized",
+      "note": "I found no verified Mathlib theorem or counterexample formalizing that splitting all binomials `X^n - a` is insufficient for algebraic closedness.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "First-order transfer for same characteristic",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "If a proposition which can be expressed in the language of first-order logic is true for an algebraically closed field, then it is true for every algebraically closed field with the same characteristic"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Field.ACF_isComplete",
+        "module": "Mathlib.ModelTheory.Algebra.Field.IsAlgClosed",
+        "match_kind": "generalization"
+      },
+      "note": "`FirstOrder.Field.ACF_isComplete` formalizes completeness of the theory of algebraically closed fields of fixed characteristic, giving the first-order transfer principle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lefschetz principle finite characteristic bound",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "if such a proposition is valid for an algebraically closed field with characteristic 0"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Field.ACF_zero_realize_iff_finite_ACF_prime_not_realize",
+        "module": "Mathlib.ModelTheory.Algebra.Field.IsAlgClosed",
+        "match_kind": "exact"
+      },
+      "note": "`FirstOrder.Field.ACF_zero_realize_iff_finite_ACF_prime_not_realize` formalizes the all-but-finitely-many-primes transfer from characteristic zero algebraically closed fields.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Algebraically closed extension exists",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "Every field F has some extension which is algebraically closed"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgebraicClosure",
+        "module": "Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure",
+        "match_kind": "exact"
+      },
+      "note": "`AlgebraicClosure k` provides an algebraically closed field extension of any field `k`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraically closed extension",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "Such an extension is called an algebraically closed extension"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsAlgClosed",
+        "module": "Mathlib.FieldTheory.IsAlgClosed.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib represents an algebraically closed extension by an algebra structure whose target has an `IsAlgClosed` instance, but I found no separate named definition `AlgebraicallyClosedExtension`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Algebraic closure existence and uniqueness",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "Among all such extensions there is one and only one"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsAlgClosure.equiv",
+        "module": "Mathlib.FieldTheory.IsAlgClosed.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Existence is provided by `AlgebraicClosure`, and `IsAlgClosure.equiv` gives uniqueness up to algebra equivalence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraic closure of a field",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "it is called the algebraic closure of F"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsAlgClosure",
+        "module": "Mathlib.FieldTheory.IsAlgClosed.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsAlgClosure F E` is the Mathlib predicate for `E` being an algebraic closure of `F`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Quantifier elimination for algebraically closed fields",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "The theory of algebraically closed fields has quantifier elimination"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory.ACF",
+        "module": "Mathlib.ModelTheory.Algebra.Field.IsAlgClosed",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib formalizes the first-order theory `ACF` and completeness results for it, but I found no quantifier-elimination theorem for algebraically closed fields.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "No algebraically closed finite field",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "There is no algebraically closed finite field"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsAlgClosed.instInfinite",
+        "module": "Mathlib.FieldTheory.IsAlgClosed.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsAlgClosed.instInfinite` directly rules out finite algebraically closed fields by providing an infinite instance for any algebraically closed field.",
+      "provenance": "ai"
+    }
+  ]
+}
