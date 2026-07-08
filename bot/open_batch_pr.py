@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Deterministically apply @[wikidata] tags from a frozen approved-list JSON and
+"""Deterministically apply cross-reference tags from a frozen approved-list JSON and
 open the PR. NO LLM in the loop — pure mechanical transformation of a fixed input.
 
 Pipeline phases (run individually or via --all):
-  --apply        insert @[wikidata Qxxx] above each approved decl (idempotent)
+  --apply        insert crossref attributes above each approved decl (idempotent)
   --check        print the resulting git diff --stat
   --build        add `public import Mathlib.Tactic.CrossRefAttribute` to the tagged
-                 files (the only error a @[wikidata] doc-attribute can cause); NO local
+                 files (the only error a crossref doc-attribute can cause); NO local
                  compile — mathlib CI verifies (see add_crossref_imports for why)
   --open-pr      git branch/commit/push to the fork + gh pr create
   --all          apply → build → open-pr
@@ -16,9 +16,9 @@ Determinism guarantees:
     by a real terminator (whitespace / : ( { [ / EOL) — never a bare \\b, which
     would wrongly match `Foo.bar`, `Foo_term`, `Foo.Core`.
   * Stacking rules are fixed:
-      - existing single-line `@[attrs]` above the decl  → `@[attrs, wikidata Q]`
-      - `@[to_additive ...]`                            → `@[to_additive (attr := wikidata Q)]`
-      - otherwise                                       → new `@[wikidata Q]` line
+      - existing single-line `@[attrs]` above the decl  → `@[attrs, <db> ID]`
+      - `@[to_additive ...]`                            → `@[to_additive (attr := <db> ID)]`
+      - otherwise                                       → new `@[<db> ID]` line
   * Re-running is a no-op if the tag is already present (idempotent).
 
 Usage:
@@ -28,6 +28,10 @@ Usage:
 from __future__ import annotations
 import argparse, json, re, subprocess, sys, time
 from pathlib import Path
+try:
+    from crossref import all_attr_regex, normalize_tag, spec, tag_label, tag_text
+except ModuleNotFoundError:  # importable as bot.open_batch_pr
+    from .crossref import all_attr_regex, normalize_tag, spec, tag_label, tag_text
 
 # --- decl targeting -------------------------------------------------------
 
@@ -56,14 +60,15 @@ def _anchor_above_modifiers(lines: list[str], idx: int) -> int:
         a -= 1
     return a
 
-def already_tagged(lines: list[str], idx: int, qid: str) -> bool:
-    """True if a wikidata tag (this qid) is already on the attribute block above
+def already_tagged(lines: list[str], idx: int, tag: dict) -> bool:
+    """True if this crossref tag is already on the attribute block above
     the decl (anchoring past any bare modifier lines)."""
-    if f"wikidata {qid}" in lines[idx]:
+    txt = tag_text(tag)
+    if txt in lines[idx]:
         return True
     j = _anchor_above_modifiers(lines, idx) - 1
     while j >= 0 and (lines[j].lstrip().startswith("@[") or lines[j].strip() in BARE_MODIFIERS):
-        if f"wikidata {qid}" in lines[j]:
+        if txt in lines[j]:
             return True
         j -= 1
     return False
@@ -76,8 +81,8 @@ def already_tagged(lines: list[str], idx: int, qid: str) -> bool:
 BARE_MODIFIERS = {"noncomputable", "private", "protected", "public",
                   "nonrec", "unsafe", "partial"}
 
-def apply_tag(lines: list[str], idx: int, qid: str) -> tuple[list[str], str]:
-    """Insert `@[wikidata qid]` for the decl whose signature is at line idx, per
+def apply_tag(lines: list[str], idx: int, tag: dict) -> tuple[list[str], str]:
+    """Insert this crossref tag for the decl whose signature is at line idx, per
     the fixed stacking rules. Returns (new_lines, description).
 
     First walk up past any bare modifier-only lines so the attribute anchors
@@ -86,6 +91,7 @@ def apply_tag(lines: list[str], idx: int, qid: str) -> tuple[list[str], str]:
     idx = _anchor_above_modifiers(lines, idx)
     prev = lines[idx - 1] if idx > 0 else ""
     prev_strip = prev.strip()
+    attr = tag_text(tag)
 
     # Case 1: a @[to_additive ...] line directly above → fold into (attr := ...)
     m_ta = re.match(r"^(\s*)@\[to_additive(.*)\]\s*$", prev)
@@ -96,12 +102,12 @@ def apply_tag(lines: list[str], idx: int, qid: str) -> tuple[list[str], str]:
             new = re.sub(r"\(attr\s*:=\s*", lambda mm: mm.group(0), prev)  # placeholder
             new = prev.rstrip()
             new = new[:new.rfind("]")] # strip trailing ]
-            # insert wikidata into the existing attr list: find '(attr := X' → 'X, wikidata Q'
-            new = re.sub(r"(\(attr\s*:=\s*[^)]*)", r"\1, wikidata " + qid, prev, count=1)
+            # insert into the existing attr list: find '(attr := X' -> 'X, attr ID'
+            new = re.sub(r"(\(attr\s*:=\s*[^)]*)", r"\1, " + attr, prev, count=1)
             lines[idx - 1] = new
             return lines, f"to_additive(attr+=): {prev_strip} -> {new.strip()}"
         else:
-            new = f"{indent}@[to_additive (attr := wikidata {qid}){inner}]"
+            new = f"{indent}@[to_additive (attr := {attr}){inner}]"
             lines[idx - 1] = new
             return lines, f"to_additive(attr:=): {prev_strip} -> {new.strip()}"
 
@@ -111,14 +117,14 @@ def apply_tag(lines: list[str], idx: int, qid: str) -> tuple[list[str], str]:
     m_attr = re.match(r"^(\s*)@\[(.*)\](.*)$", prev)
     if m_attr and prev_strip.startswith("@["):
         indent, contents, tail = m_attr.groups()
-        new = f"{indent}@[{contents.rstrip()}, wikidata {qid}]{tail}"
+        new = f"{indent}@[{contents.rstrip()}, {attr}]{tail}"
         lines[idx - 1] = new
         return lines, f"stacked: {prev_strip} -> {new.strip()}"
 
     # Case 3: no attribute above → new standalone line
     indent = re.match(r"^(\s*)", lines[idx]).group(1)
-    lines.insert(idx, f"{indent}@[wikidata {qid}]")
-    return lines, f"standalone: @[wikidata {qid}] above {lines[idx+1].strip()[:60]}"
+    lines.insert(idx, f"{indent}@[{attr}]")
+    return lines, f"standalone: @[{attr}] above {lines[idx+1].strip()[:60]}"
 
 def apply_all(approved: dict, mathlib: Path) -> list[dict]:
     results = []
@@ -130,9 +136,9 @@ def apply_all(approved: dict, mathlib: Path) -> list[dict]:
         idx = find_decl_line(lines, t["decl"])
         if idx is None:
             results.append({**t, "ok": False, "msg": "decl head not found"}); continue
-        if already_tagged(lines, idx, t["qid"]):
+        if already_tagged(lines, idx, t):
             results.append({**t, "ok": True, "msg": "already tagged (skip)"}); continue
-        new_lines, desc = apply_tag(lines, idx, t["qid"])
+        new_lines, desc = apply_tag(lines, idx, t)
         p.write_text("\n".join(new_lines) + "\n", encoding="utf-8")
         results.append({**t, "ok": True, "msg": desc})
     return results
@@ -166,10 +172,10 @@ def add_crossref_import(path: Path) -> bool:
 
 def add_crossref_imports(approved: dict, mathlib: Path) -> None:
     """Add `public import Mathlib.Tactic.CrossRefAttribute` to every tagged file that
-    lacks it — the ONLY error a @[wikidata] doc-attribute can introduce — and do NOT run
+    lacks it — the ONLY error a crossref doc-attribute can introduce — and do NOT run
     a local `lake build`.
 
-    Why no build: a @[wikidata] attribute changes the tagged file's source, which
+    Why no build: a crossref attribute changes the tagged file's source, which
     invalidates its olean the instant we edit it — so NO cached olean (on any master
     commit, old or new) matches, and `lake build` cold-recompiles the edited modules from
     source. #40970 spent 1h41m here against a 100%-cached master; the cost was the edited
@@ -196,7 +202,7 @@ def add_crossref_imports(approved: dict, mathlib: Path) -> None:
             noanchor.append(f)
     if noanchor:
         print("[import] WARNING: no `public import` anchor — import NOT added, CI may fail on "
-              "the unknown @[wikidata] attribute:\n    " + "\n    ".join(noanchor))
+              "the unknown crossref attribute:\n    " + "\n    ".join(noanchor))
     print(f"[import] CrossRefAttribute import added to {len(added)}/{len(files)} tagged "
           f"file(s); no local compile — mathlib CI verifies")
 
@@ -205,11 +211,11 @@ def add_crossref_imports(approved: dict, mathlib: Path) -> None:
 # Matches the batch-1/2 template (#40440/#40682). {n} = tag count, {pr} = PR
 # number (filled after creation, when the number is known, so the reviewer-UI
 # link is correct).
-PR_BODY_TMPL = """This PR adds a batch of {n} `@[wikidata]` attributes.
+PR_BODY_TMPL = """This PR adds a batch of {n} `{attr}` cross-reference attributes.
 
-Claude helped generate the list of crossrefs (by scanning Wikidata + Mathlib). Comments are generated by [crossref-report](https://github.com/jcommelin/mathlib-crossref-report) and Wikilean.
+Claude helped generate the list of crossrefs (by scanning external cross-reference data + Mathlib). Comments are generated by [crossref-report](https://github.com/jcommelin/mathlib-crossref-report) and Wikilean.
 
-See https://wikilean.jackmccarthy.org/review?pr={pr} for reviewer UI.
+See https://wikilean.jackmccarthy.org/review?pr={pr}{review_db} for reviewer UI.
 
 ---
 """
@@ -226,8 +232,19 @@ def fork_owner(mathlib: Path) -> str | None:
 
 CROSSREF_IMPORT = "public import Mathlib.Tactic.CrossRefAttribute"
 
-def assert_only_wikidata_changes(mathlib: Path, tagged_files: set):
-    """LEAK GUARD. Refuse to open unless the STAGED diff is exactly @[wikidata]
+def _is_standalone_crossref_attr(line: str) -> bool:
+    for sp in (spec(k) for k in ("wikidata", "lmfdb", "stacks", "kerodon")):
+        if re.fullmatch(rf"\s*@\[\s*{re.escape(sp.attr)}\s+{sp.id_re}\s*\]\s*", line):
+            return True
+    return False
+
+
+def _is_crossref_attr_addition(line: str, attr_rx: re.Pattern[str]) -> bool:
+    return line.lstrip().startswith("@[") and attr_rx.search(line) is not None
+
+
+def assert_only_crossref_changes(mathlib: Path, tagged_files: set):
+    """LEAK GUARD. Refuse to open unless the STAGED diff is exactly crossref
     attributes (standalone or stacked into an existing @[...]) + the CrossRefAttribute
     import, on EXISTING tagged files — nothing else. A foreign file from another
     project sharing this checkout leaked into #40747 via `git add -A`; this aborts the
@@ -242,13 +259,14 @@ def assert_only_wikidata_changes(mathlib: Path, tagged_files: set):
     diff = run(["git", "diff", "--cached", "--unified=0"], cwd=mathlib).stdout.splitlines()
     added   = [l[1:] for l in diff if l.startswith("+") and not l.startswith("+++")]
     removed = [l[1:] for l in diff if l.startswith("-") and not l.startswith("---")]
-    bad = [a for a in added if "wikidata " not in a and a.strip() != CROSSREF_IMPORT]
+    attr_rx = all_attr_regex()
+    bad = [a for a in added if not _is_crossref_attr_addition(a, attr_rx) and a.strip() != CROSSREF_IMPORT]
     if bad:
-        sys.exit("LEAK GUARD: staged addition(s) that aren't @[wikidata] tags / the import:\n  "
+        sys.exit("LEAK GUARD: staged addition(s) that aren't crossref tags / the import:\n  "
                  + "\n  ".join(repr(a) for a in bad[:10]))
-    # Removals happen ONLY when stacking wikidata into an existing @[...] line: each is
+    # Removals happen ONLY when stacking into an existing @[...] line: each is
     # an attribute line, one per stacked addition. Anything else is a foreign edit.
-    stacked = [a for a in added if ", wikidata Q" in a]
+    stacked = [a for a in added if _is_crossref_attr_addition(a, attr_rx) and not _is_standalone_crossref_attr(a)]
     bad_rm = [r for r in removed if not r.strip().startswith("@[")]
     if bad_rm or len(removed) != len(stacked):
         sys.exit(f"LEAK GUARD: unexpected removals (got {len(removed)}, expected {len(stacked)} stacked):\n  "
@@ -268,12 +286,12 @@ def open_pr(approved: dict, mathlib: Path, repo: str, base: str, create: bool = 
     print(f"[git] stage {len(files)} tagged file(s) (explicit paths, not -A)")
     if run(["git", "add", "--", *files], cwd=mathlib).returncode != 0:
         sys.exit("git add failed")
-    assert_only_wikidata_changes(mathlib, set(files))
+    assert_only_crossref_changes(mathlib, set(files))
     # Empty staged diff = every tag skipped (decls missing / already tagged on master /
     # pool drained). Exit cleanly instead of letting `gh pr create` fail later with the
     # cryptic "No commits between …".
     if run(["git", "diff", "--cached", "--quiet"], cwd=mathlib).returncode == 0:
-        sys.exit("no @[wikidata] tags applied (decls missing / already on master / pool drained) — nothing to open")
+        sys.exit("no crossref tags applied (decls missing / already on master / pool drained) — nothing to open")
     for desc, cmd in [
         ("commit",        ["git", "commit", "-m", title]),
         ("push",          ["git", "push", "-u", "origin", branch, "--force-with-lease"]),
@@ -291,12 +309,17 @@ def open_pr(approved: dict, mathlib: Path, repo: str, base: str, create: bool = 
     # tagged on master or no longer present, so this is usually < the approved count; the
     # body must say what's in the diff (#40970's body said 25, the diff had 21).
     shown = run(["git", "show", "HEAD", "--unified=0"], cwd=mathlib).stdout
-    n = sum(len(re.findall(r"wikidata\s+Q\d+", l)) for l in shown.splitlines()
+    attr_rx = all_attr_regex()
+    n = sum(len(attr_rx.findall(l)) for l in shown.splitlines()
             if l.startswith("+") and not l.startswith("+++") and "@[" in l) or len(approved["tags"])
+    attrs = sorted({spec(t["db"]).attr for t in approved["tags"]})
+    attr_label = "@[" + ", ".join(attrs) + "]"
+    dbs = sorted({t["db"] for t in approved["tags"]})
+    review_db = "" if len(dbs) != 1 or dbs[0] == "wikidata" else "&db=" + dbs[0]
     print(f"[gh] pr create (head {fo}:{branch} -> {repo}:{base})")
     r = run(["gh", "pr", "create", "--repo", repo, "--base", base,
              "--head", f"{fo}:{branch}",
-             "--title", title, "--body", PR_BODY_TMPL.format(n=n, pr="")], cwd=mathlib)
+             "--title", title, "--body", PR_BODY_TMPL.format(n=n, pr="", attr=attr_label, review_db=review_db)], cwd=mathlib)
     print((r.stdout + r.stderr).strip())
     if r.returncode != 0:
         sys.exit(1)
@@ -348,9 +371,11 @@ def main():
     args = ap.parse_args()
 
     approved = json.loads(args.approved.read_text(encoding="utf-8"))
+    default_db = approved.get("db") or "wikidata"
+    approved["tags"] = [normalize_tag(t, default_db) for t in approved.get("tags", [])]
 
     # Lean *core* decls (Rat, Dvd.dvd, HPow.hPow, …) live in Init/… inside the
-    # toolchain, NOT the mathlib repo, so they can't carry an @[wikidata] attribute
+    # toolchain, NOT the mathlib repo, so they can't carry a crossref attribute
     # from here — and apply_all would FileNotFoundError on the read, aborting the
     # WHOLE batch. Drop any tag whose file isn't present in the checkout, up front,
     # so it's excluded from apply, build, and the PR alike.
@@ -360,7 +385,7 @@ def main():
     if drop:
         print(f"  dropping {len(drop)} untaggable tag(s) — file not in mathlib tree:")
         for t in drop:
-            print(f"    - {t['qid']:10s} {t['decl']:28s} ({t['file']})")
+            print(f"    - {tag_label(t):18s} {t['decl']:28s} ({t['file']})")
         approved["tags"] = keep
 
     if args.apply or args.all:
@@ -368,7 +393,7 @@ def main():
         results = apply_all(approved, args.mathlib)
         for r in results:
             flag = "ok " if r["ok"] else "ERR"
-            print(f"  [{flag}] {r['qid']:10s} {r['decl']:30s} {r['msg']}")
+            print(f"  [{flag}] {tag_label(r):18s} {r['decl']:30s} {r['msg']}")
         if args.reapply:
             # Rebuilding an ALREADY-APPROVED PR off fresh master: every green tag must
             # still apply. If a decl was renamed/removed upstream, refuse to silently
@@ -377,7 +402,7 @@ def main():
             if dropped:
                 sys.exit("REAPPLY: %d approved tag(s) no longer apply on master (decl moved?) — "
                          "refusing to drop: %s" % (len(dropped),
-                         ", ".join(f"{r['qid']}({r['decl']})" for r in dropped)))
+                         ", ".join(f"{tag_label(r)}({r['decl']})" for r in dropped)))
             # Re-add the CrossRefAttribute import to the files that carried it on the old
             # branch (import_files) WITHOUT a build. A full `lake build` off the latest,
             # partly-uncached master cold-cascades for HOURS (observed 80m+ on #40861's

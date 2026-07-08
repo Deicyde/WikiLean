@@ -3,7 +3,7 @@
 
 Scans every .lean file under the mathlib4 checkout (read-only) for the
 `Mathlib/Tactic/CrossRefAttribute.lean` attributes — `@[stacks TAG]`,
-`@[kerodon TAG]`, `@[wikidata QID]` — and resolves each to the fully-qualified
+`@[kerodon TAG]`, `@[wikidata QID]`, `@[lmfdb knowl.id]` — and resolves each to the fully-qualified
 name of the declaration it annotates. These are the human-reviewed gold links
 (every one merged through mathlib review), so they outrank any agent grounding.
 
@@ -31,7 +31,7 @@ the oracle snapshot is known-incomplete, see mathlib_decl_oracle_incomplete).
 
 Output: catalog/data/mathlib_tag_xrefs.jsonl —
   {"_meta": {source, license, harvested_from, counts, ...}}
-  {"decl": FQ, "db": "stacks"|"kerodon"|"wikidata", "tag": "0BR2", "file": relpath, "line": n}
+  {"decl": FQ, "db": "stacks"|"kerodon"|"wikidata"|"lmfdb", "tag": "0BR2", "file": relpath, "line": n}
 
 Usage:
     python3 catalog/harvest_mathlib_tags.py
@@ -55,9 +55,11 @@ ORACLE = ROOT / ".claude" / "skills" / "mathlib-search" / ".cache" / "declaratio
 MATHLIB_DIR = Path(os.environ.get(
     "BRAIN_MATHLIB_CHECKOUT", "/Users/jack/Desktop/LEAN/mathlib4/Mathlib"))
 
-# stacks/kerodon tags are 4-char [0-9A-Z] Gerby ids; wikidata ids are QIDs.
+# stacks/kerodon tags are 4-char [0-9A-Z] Gerby ids; wikidata ids
+# are QIDs; LMFDB knowl ids use lowercase path-ish dotted ids.
 TAG_RE = re.compile(r"\b(stacks|kerodon)\s+([0-9A-Z]{4})(?![0-9A-Za-z])")
 QID_RE = re.compile(r"\bwikidata\s+(Q\d+)\b")
+LMFDB_RE = re.compile(r"\blmfdb\s+([a-z0-9_.]+)\b")
 
 # Lean idents are Unicode (δ, ₁₂, ₗᵢ, ...): [^\W\d] = any word char bar digits.
 IDENT = re.compile(r"[^\W\d][\w'!?.«»]*")
@@ -242,13 +244,14 @@ def tags_in(content: str) -> list[tuple[str, str, int]]:
     """(db, tag, offset-in-content) for every crossref tag in an attribute list."""
     found = [(m.group(1), m.group(2), m.start(1)) for m in TAG_RE.finditer(content)]
     found += [("wikidata", m.group(1), m.start()) for m in QID_RE.finditer(content)]
+    found += [("lmfdb", m.group(1), m.start()) for m in LMFDB_RE.finditer(content)]
     return found
 
 
 def harvest_file(path: Path, rel: str, oracle: set[str],
                  rows: list[dict], problems: list[str]) -> None:
     text = strip_noise(path.read_text(encoding="utf-8"))
-    if "stacks" not in text and "kerodon" not in text and "wikidata" not in text:
+    if "stacks" not in text and "kerodon" not in text and "wikidata" not in text and "lmfdb" not in text:
         return
     offs, parts = namespace_checkpoints(text)
 
@@ -323,7 +326,7 @@ def main() -> int:
     by_db = Counter(r["db"] for r in rows)
     n_unverified = sum(1 for r in rows if r.get("unverified"))
     meta = {
-        "source": "mathlib4 checkout @[stacks]/@[kerodon]/@[wikidata] attributes",
+        "source": "mathlib4 checkout @[stacks]/@[kerodon]/@[wikidata]/@[lmfdb] attributes",
         "license": "Apache-2.0",
         "harvested_from": str(MATHLIB_DIR),
         "oracle": str(ORACLE.relative_to(ROOT)),
