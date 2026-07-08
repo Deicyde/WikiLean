@@ -3,9 +3,9 @@
 
 Gated on merge so it's safe to run on a timer: it no-ops until the current PR
 (state.current_pr) lands, then assembles batch N+1 = requeued retargets (from
-triage) + fresh pool tags, opens the PR via open_batch_pr.py, posts the crossref
-comments + LLM-generated label + the deterministic reviewer table, advances the
-state, and refreshes /queue.
+triage) + Brain queue suggestions + fresh pool tags, opens the PR via
+open_batch_pr.py, posts the crossref comments + LLM-generated label + the
+deterministic reviewer table, advances the state, and refreshes /queue.
 
 Determinism: tag application is deterministic (open_batch_pr); the only LLM input
 is the per-tag retarget the triage already chose (recycle_queue.json).
@@ -20,6 +20,7 @@ import pool, settle
 HERE = Path(__file__).resolve().parent
 STATE = HERE / "state" / "bot_state.json"
 QUEUE = HERE / "state" / "recycle_queue.json"
+BRAIN_QUEUE = HERE / "state" / "brain_queue.json"
 CUTLOG = HERE / "state" / "cut_log.json"
 REPO = "leanprover-community/mathlib4"
 TITLE = "doc: add wikidata attributes"
@@ -34,8 +35,39 @@ def merged(pr):
     return settle.is_merged(pr, REPO)  # bors-aware (CLOSED + "[Merged by Bors]")
 
 
+def tagged_qids():
+    if not pool.TAGGED.exists():
+        return set()
+    return {l.strip() for l in pool.TAGGED.read_text().splitlines() if l.strip().startswith("Q")}
+
+
+def brain_tags_for_batch(limit, exclude=()):
+    """Return tag triplets from bot/state/brain_queue.json, still review-gated."""
+    if limit <= 0 or not BRAIN_QUEUE.exists():
+        return []
+    try:
+        rows = json.loads(BRAIN_QUEUE.read_text())
+    except Exception:
+        return []
+    excluded = set(exclude) | pool.seen_qids() | tagged_qids()
+    tags, seen = [], set()
+    for r in rows:
+        qid, file, decl = r.get("qid"), r.get("file"), r.get("decl")
+        if not (isinstance(qid, str) and qid.startswith("Q") and qid[1:].isdigit()):
+            continue
+        if qid in excluded or qid in seen or not decl or not file:
+            continue
+        if not str(file).startswith("Mathlib/"):
+            continue
+        tags.append({"qid": qid, "file": file, "decl": decl})
+        seen.add(qid)
+        if len(tags) >= limit:
+            break
+    return tags
+
+
 def assemble(batch_num):
-    """approved JSON for the next batch: requeued retargets + fresh, to pool.BATCH_SIZE (10)."""
+    """approved JSON for the next batch, to pool.BATCH_SIZE (10)."""
     requeued = json.loads(QUEUE.read_text()) if QUEUE.exists() else []
     cut = {e["qid"] for e in (json.loads(CUTLOG.read_text()) if CUTLOG.exists() else [])}
     # A requeued tag may correct the declaration, the QID (too-broad concept), or
@@ -50,8 +82,12 @@ def assemble(batch_num):
         if not decl:                       # can't tag without a target declaration
             continue
         tags.append({"qid": tr.get("suggested_qid") or e["qid"], "file": e["file"], "decl": decl})
+    n_requeued = len(tags)
     # Exclude both the original and corrected QIDs so the pool fill never re-proposes them.
     exclude = {t["qid"] for t in tags} | {e["qid"] for e in requeued} | cut
+    brain = brain_tags_for_batch(max(0, pool.BATCH_SIZE - len(tags)), exclude=exclude)
+    tags += brain
+    exclude |= {t["qid"] for t in brain}
     # max(0, …): a big carried-over requeue (e.g. from a pre-shrink 25-tag batch)
     # must never make the fresh count negative — pool.candidates()'s eligible[:n]
     # would then slice from the end and pull a huge fresh set instead of none.
@@ -59,7 +95,8 @@ def assemble(batch_num):
     tags += [{"qid": c["qid"], "file": c["file"], "decl": c["decl"]} for c in fresh]
     branch = f"wikilean/wikidata-batch-{batch_num}"
     return {"batch": batch_num, "title": TITLE, "branch": branch,
-            "source": "requeued retargets + most_used pool", "tags": tags}, len(requeued), len(fresh)
+            "source": "requeued retargets + Brain queue + Brain-ranked pool",
+            "tags": tags}, n_requeued, len(brain), len(fresh)
 
 
 def fill_review_link(prn):
@@ -101,8 +138,8 @@ def main():
         return
     print(f"PR #{cur} is MERGED ✓ — assembling batch {nxt}")
 
-    approved, nq, nf = assemble(nxt)
-    print(f"batch {nxt}: {nq} requeued retargets + {nf} fresh = {len(approved['tags'])}")
+    approved, nq, nb, nf = assemble(nxt)
+    print(f"batch {nxt}: {nq} requeued retargets + {nb} Brain + {nf} fresh = {len(approved['tags'])}")
     for t in approved["tags"]:
         print(f"  {t['qid']:11} -> {t['decl']}")
     apath = HERE / "state" / f"batch{nxt}_approved.json"
@@ -118,8 +155,8 @@ def main():
     # Refresh the merged-tag set FIRST (the previous batch just landed on master),
     # then RE-assemble so the pool can't re-propose a just-merged tag.
     sh(["python3", str(HERE / "refresh_tagged.py"), "--mathlib", str(args.mathlib)])
-    approved, nq, nf = assemble(nxt)
-    print(f"after refresh: {nq} requeued + {nf} fresh = {len(approved['tags'])}")
+    approved, nq, nb, nf = assemble(nxt)
+    print(f"after refresh: {nq} requeued + {nb} Brain + {nf} fresh = {len(approved['tags'])}")
     apath.write_text(json.dumps(approved, indent=1, ensure_ascii=False))
     # Branch the new batch off fresh upstream master.
     sh(["git", "-C", str(args.mathlib), "fetch", "https://github.com/leanprover-community/mathlib4", "master"])

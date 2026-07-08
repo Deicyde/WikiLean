@@ -76,13 +76,24 @@ def step_queue(pr, approved):
     import pool  # bot/ on sys.path
     batch_qids = {t["qid"] for t in (approved or {}).get("tags", [])}
     recycle = STATE / "recycle_queue.json"
-    rq = {e["qid"] for e in json.loads(recycle.read_text())} if recycle.exists() else set()
-    fresh = pool.candidates(20, exclude=batch_qids | rq)
+    brain = STATE / "brain_queue.json"
+    rq = set()
+    if recycle.exists():
+        for e in json.loads(recycle.read_text()):
+            rq.add(e["qid"])
+            sq = e.get("triage", {}).get("suggested_qid")
+            if sq:
+                rq.add(sq)
+    bq = {e.get("qid") for e in json.loads(brain.read_text())} if brain.exists() else set()
+    fresh = pool.candidates(20, exclude=batch_qids | rq | bq)
     cand = STATE / "pool_candidates.json"
     cand.write_text(json.dumps(fresh))
-    cmd = [sys.executable, str(HERE / "publish_queue.py"), "--candidates", str(cand)]
+    cmd = [sys.executable, str(HERE / "publish_queue.py"), "--candidates", str(cand),
+           "--exclude", ",".join(sorted(batch_qids))]
     if recycle.exists():
         cmd += ["--recycle", str(recycle)]
+    if brain.exists():
+        cmd += ["--brain", str(brain)]
     return run(cmd, check=False).returncode == 0
 
 

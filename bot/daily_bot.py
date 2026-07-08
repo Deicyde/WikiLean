@@ -9,8 +9,8 @@ Two phases per run:
   SETTLE the current PR (deterministic): if the gate is open, split it down to
     its green tags (force-push), then LLM-triage the recycled tags into the queue
     and post a ready-to-merge comment.
-  OPEN the next batch: requeued (retargeted) tags + fresh pool tags -> pool.BATCH_SIZE (10) ->
-    open_batch_pr.py.
+  OPEN the next batch: requeued (retargeted) tags + Brain queue suggestions +
+    fresh pool tags -> pool.BATCH_SIZE (10) -> open_batch_pr.py.
 
 Determinism boundary (Jack's rule): everything here is deterministic EXCEPT the
 recycle triage (triage.py), which is the one sanctioned LLM step. Tag generation
@@ -22,7 +22,7 @@ hand for the first cycles; only then wrap in cron.
 """
 import argparse, json, subprocess, sys
 from pathlib import Path
-import settle, pool
+import settle, pool, open_batch
 
 HERE = Path(__file__).resolve().parent
 STATE = HERE / "state" / "bot_state.json"          # {current_pr, batch_num, branch}
@@ -100,12 +100,24 @@ def main():
     requeued = json.loads(QUEUE.read_text()) if QUEUE.exists() else []  # triage output
     inflight = set(r["tags"]) if pr else set()
     inflight |= {e["qid"] for e in requeued}
-    need = max(0, pool.BATCH_SIZE - len(requeued))
     if not dry:  # keep the live tagged-set current before selecting (skips in dry-run)
         sh([sys.executable, str(HERE / "refresh_tagged.py"), "--mathlib", str(args.mathlib)])
+    for e in requeued:
+        sq = e.get("triage", {}).get("suggested_qid")
+        if sq:
+            inflight.add(sq)
+    brain_all = set()
+    if open_batch.BRAIN_QUEUE.exists():
+        try:
+            brain_all = {e.get("qid") for e in json.loads(open_batch.BRAIN_QUEUE.read_text())}
+        except Exception:
+            brain_all = set()
+    brain = open_batch.brain_tags_for_batch(max(0, pool.BATCH_SIZE - len(requeued)), exclude=inflight)
+    inflight |= brain_all
+    need = max(0, pool.BATCH_SIZE - len(requeued) - len(brain))
     fresh = pool.candidates(need, exclude=inflight)  # deterministic pool selector (+ P31 field filter)
-    print(f"\n{tag}NEXT BATCH: {len(requeued)} requeued (retargeted) + {len(fresh)} fresh = "
-          f"{len(requeued) + len(fresh)}/{pool.BATCH_SIZE}")
+    print(f"\n{tag}NEXT BATCH: {len(requeued)} requeued (retargeted) + {len(brain)} Brain + "
+          f"{len(fresh)} fresh = {len(requeued) + len(brain) + len(fresh)}/{pool.BATCH_SIZE}")
     for e in requeued:
         t = e.get("triage", {})
         print(f"  requeue {e['qid']} -> {t.get('suggested_decl','?')}")
@@ -116,7 +128,8 @@ def main():
 
     # Publish recycled + unreviewed to the wiki /queue page.
     cand_file = HERE / "state" / "pool_candidates.json"
-    print(f"\n{tag}PUBLISH queue (/queue): {len(requeued)} recycled + {len(fresh)} unreviewed")
+    print(f"\n{tag}PUBLISH queue (/queue): {len(requeued)} recycled + {len(brain_all)} Brain + "
+          f"{len(fresh)} unreviewed")
     if dry:
         print("  (dry-run) would POST recycled + unreviewed to /api/queue")
     else:
@@ -124,10 +137,12 @@ def main():
         cmd = [sys.executable, str(HERE / "publish_queue.py"), "--candidates", str(cand_file)]
         if QUEUE.exists():
             cmd += ["--recycle", str(QUEUE)]
+        if open_batch.BRAIN_QUEUE.exists():
+            cmd += ["--brain", str(open_batch.BRAIN_QUEUE)]
         sh(cmd)
 
     print(f"\n{tag}OPEN PR: open_batch_pr.py --apply --check --build --open-pr  "
-          f"(requeued retargets + fresh) + crossref comments + LLM-label + table")
+          f"(requeued retargets + Brain + fresh) + crossref comments + LLM-label + table")
     if dry:
         print("\n[dry-run] complete — nothing mutated. Re-run with --apply to act.")
 
