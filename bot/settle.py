@@ -86,6 +86,11 @@ def status_of(body):
     return m.group(1) if m else ""
 
 
+def is_attr_line(text):
+    t = text.lstrip()
+    return t.startswith("@[") or re.match(r"(?:local\s+|scoped\s+)?attribute\s*\[", t)
+
+
 def note_text_inline(body):
     # The blockquoted reviewer note in a wikilean-review comment.
     lines = [l[2:] if l.startswith("> ") else "" for l in body.split("\n")]
@@ -132,6 +137,8 @@ def classify(pr, repo="leanprover-community/mathlib4", db="wikidata"):
         if ln.startswith("+++ b/"):
             f = ln[6:]
         elif ln.startswith("+") and not ln.startswith("++"):
+            if not is_attr_line(ln[1:]):
+                continue
             for ident in find_ids(ln, sp.db):
                 tags.append(ident)
                 decl_line[ident] = (f, idx)
