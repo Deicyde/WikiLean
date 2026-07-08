@@ -1,16 +1,40 @@
 // Populates wiki/public/ (the Worker's static-asset dir) from the existing
 // static-site build: shared CSS/JS and the shell pages (index/concepts/about/
 // 404/sitemap/robots). Article pages are served dynamically by the Worker.
+import { execFileSync } from "node:child_process";
 import { mkdirSync, copyFileSync, cpSync, existsSync, rmSync } from "node:fs";
 import { resolve } from "node:path";
 import { buildMathlibIndex } from "./build-mathlib-index.ts";
 
 const wiki = process.cwd();
 const site = resolve(wiki, "..", "site");
+const root = resolve(wiki, "..");
 const pub = resolve(wiki, "public");
 const pubAssets = resolve(pub, "assets");
 
 mkdirSync(pubAssets, { recursive: true });
+
+function runFromRoot(label: string, args: string[]) {
+  console.log(`build-public: ${label}`);
+  execFileSync(args[0], args.slice(1), { cwd: root, stdio: "inherit" });
+}
+
+// The Brain page and its shards are generated artifacts, not committed assets.
+// Clean deploy worktrees must either rebuild them or be seeded with the generated
+// site/assets/brain directory, otherwise /brain and /assets/brain/* disappear.
+runFromRoot("building Brain page", ["python3", "site/build_brain_page.py"]);
+const brainShardInput = resolve(root, "brain", "data", "rollup_edges.tree.jsonl");
+const brainSrc = resolve(site, "assets", "brain");
+const brainSrcManifest = resolve(brainSrc, "manifest.json");
+if (existsSync(brainShardInput)) {
+  runFromRoot("building Brain shards", ["python3", "brain/build_shards.py"]);
+} else if (!existsSync(brainSrcManifest)) {
+  throw new Error(
+    "missing generated Brain shards: run python3 brain/build_shards.py, or seed site/assets/brain before build-public",
+  );
+} else {
+  console.log("build-public: using existing generated Brain shards");
+}
 
 // Shared article assets + editor styles come from the static site; the live
 // editor logic is wiki-specific.
@@ -43,15 +67,22 @@ for (const f of shellFiles) {
   const src = resolve(site, "out", f);
   if (existsSync(src)) copyFileSync(src, resolve(pub, f));
 }
+const brainPage = resolve(pub, "brain.html");
+if (!existsSync(brainPage)) {
+  throw new Error("missing public/brain.html after build; site/build_brain_page.py did not produce site/out/brain.html");
+}
 
 // BRAIN neighborhood shards (brain/build_shards.py → site/assets/brain/):
 // wipe-then-copy so renamed shard keys never leave stale files behind, the
 // same discipline as build-decl-index.ts. Scoped strictly to assets/brain/.
-const brainSrc = resolve(site, "assets", "brain");
 const brainDst = resolve(pubAssets, "brain");
 if (existsSync(brainSrc)) {
   rmSync(brainDst, { recursive: true, force: true });
   cpSync(brainSrc, brainDst, { recursive: true });
+}
+const brainManifest = resolve(brainDst, "manifest.json");
+if (!existsSync(brainManifest)) {
+  throw new Error("missing public/assets/brain/manifest.json after build; brain/build_shards.py did not produce site/assets/brain/");
 }
 
 // Retired page assets: /map, /graph, /atlas are now redirect routes in the
