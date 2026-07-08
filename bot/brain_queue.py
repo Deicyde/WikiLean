@@ -8,8 +8,9 @@ shape that open_batch.py can choose from.
 
 Input is intentionally the graduated static Brain layer, not the live edit table:
 `brain/harvest_community_edges.py` is responsible for validating/graduating live
-D1 brain_edges first. Human community edges are trusted after endpoint validation;
-AI community edges have already passed the harvester's oracle.
+D1 brain_edges first. By default this queue only admits explicit human community
+edges. AI community edges have already passed the harvester's oracle, but they
+stay out of the review queue unless `--include-ai` is passed.
 
   python3 bot/brain_queue.py --dry-run
   python3 bot/brain_queue.py
@@ -96,7 +97,18 @@ def tagged_qids() -> set[str]:
     return {l.strip() for l in pool.TAGGED.read_text().splitlines() if l.strip().startswith("Q")}
 
 
-def build(source: Path = COMMUNITY_EDGES, include_seen: bool = False, limit: int | None = None) -> list[dict]:
+def actor_type(edge: dict) -> str:
+    ev = edge.get("evidence") if isinstance(edge.get("evidence"), dict) else {}
+    actor = ev.get("actor_type") or edge.get("actor_type")
+    return actor if isinstance(actor, str) else ""
+
+
+def build(
+    source: Path = COMMUNITY_EDGES,
+    include_seen: bool = False,
+    limit: int | None = None,
+    include_ai: bool = False,
+) -> list[dict]:
     concepts, decls = load_nodes()
     centrality = load_centrality()
     excluded = set() if include_seen else (pool.seen_qids() | tagged_qids())
@@ -104,6 +116,9 @@ def build(source: Path = COMMUNITY_EDGES, include_seen: bool = False, limit: int
 
     for idx, edge in enumerate(read_jsonl(source)):
         if edge.get("kind") != "formalizes":
+            continue
+        actor = actor_type(edge)
+        if actor != "human" and not include_ai:
             continue
         qid, decl_node = parse_pair(edge)
         if not qid or not decl_node or qid in excluded:
@@ -119,7 +134,7 @@ def build(source: Path = COMMUNITY_EDGES, include_seen: bool = False, limit: int
             continue
         seen_pairs.add(pair)
         ev = edge.get("evidence") if isinstance(edge.get("evidence"), dict) else {}
-        actor = ev.get("actor_type") or "human"
+        actor = actor or "unknown"
         added_by = ev.get("added_by")
         tier = "community-human" if actor == "human" else "community-ai-verified"
         centrality_pct = centrality.get(qid)
@@ -168,10 +183,13 @@ def main() -> int:
     ap.add_argument("--limit", type=int)
     ap.add_argument("--include-seen", action="store_true",
                     help="include QIDs that were already seen/tagged (debugging only)")
+    ap.add_argument("--include-ai", action="store_true",
+                    help="also include AI-submitted community edges (human-only by default)")
     ap.add_argument("--dry-run", action="store_true", help="print payload instead of writing")
     args = ap.parse_args()
 
-    items = build(source=args.source, include_seen=args.include_seen, limit=args.limit)
+    items = build(source=args.source, include_seen=args.include_seen, limit=args.limit,
+                  include_ai=args.include_ai)
     if args.dry_run:
         print(json.dumps(items, ensure_ascii=False, indent=1))
         print(f"{len(items)} Brain queue item(s)", file=sys.stderr)
