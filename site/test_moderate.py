@@ -84,6 +84,42 @@ def test_anchor_sig_lockstep_with_batch_annotate():
         assert m._anchor_sig(s) == ba._anchor_sig(s), s
 
 
+def test_batch_agent2_validation_rejects_empty_annotation():
+    if ba is None:
+        raise unittest.SkipTest("claude-agent-sdk not installed")
+    reason = ba.invalid_agent2_annotations_reason([{"provenance": "ai"}], 12)
+    assert reason and "missing_kind" in reason
+
+
+def test_batch_agent2_validation_rejects_collapsed_payload():
+    if ba is None:
+        raise unittest.SkipTest("claude-agent-sdk not installed")
+    good = {
+        "kind": "definition",
+        "label": "x",
+        "anchor": {"section": "S", "snippet": "x is y"},
+        "status": "not_formalized",
+        "mathlib": {"decl": None, "module": None, "match_kind": None},
+        "note": "n",
+    }
+    reason = ba.invalid_agent2_annotations_reason([good], 12)
+    assert reason == "collapsed_count:1<3 from 12"
+
+
+def test_batch_agent2_validation_accepts_normal_payload():
+    if ba is None:
+        raise unittest.SkipTest("claude-agent-sdk not installed")
+    anns = [{
+        "kind": "definition",
+        "label": f"x{i}",
+        "anchor": {"section": "S", "snippet": f"x{i} is y"},
+        "status": "not_formalized",
+        "mathlib": {"decl": None, "module": None, "match_kind": None},
+        "note": "n",
+    } for i in range(3)]
+    assert ba.invalid_agent2_annotations_reason(anns, 12) is None
+
+
 def test_anchor_sig_anchors_contract():
     # F12 LOCKSTEP CONTRACT: plain-dict anchor unchanged; non-dict anchor
     # falls through to anchors[0] (when a plain dict) else all-null — and
@@ -905,6 +941,22 @@ def test_run_jobs_process_exception_counted_not_fatal():
     assert len(errs) == 1
     assert errs[0]["slug"] == "boom"
     assert errs[0]["error"].startswith("job_crashed: ValueError")
+
+
+def test_run_jobs_counts_brain_changed_successes_only():
+    jobs = [{"slug": f"s{i}"} for i in range(4)]
+    script = [
+        {"brain_changed": True},
+        {"brain_changed": True, "error": "post_500"},
+        {"brain_changed": True, "dry_run": True},
+        {},
+    ]
+    with _patched_log():
+        rc, stats = asyncio.run(m.run_jobs(
+            jobs, _jobs_ctx(), _scripted_process(script)))
+    assert rc == 0
+    assert stats["processed"] == 4 and stats["errors"] == 1
+    assert stats["changed"] == 1
 
 
 def test_run_jobs_non_window_errors_never_abort():
