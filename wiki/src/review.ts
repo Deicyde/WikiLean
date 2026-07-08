@@ -164,6 +164,10 @@ export interface DeclTag {
 export function parseCrossRefTags(diff: string, db = "wikidata"): DeclTag[] {
   const spec = crossRefSpec(db) ?? crossRefSpec("wikidata")!;
   const tagRe = crossRefTagRegex(spec.db);
+  const isAttrLine = (s: string) => {
+    const t = s.trimStart();
+    return t.startsWith("@[") || /^(?:local\s+|scoped\s+)?attribute\s*\[/.test(t);
+  };
   const tags: DeclTag[] = [];
   let file = "";
   let newLine = 0;
@@ -188,7 +192,7 @@ export function parseCrossRefTags(diff: string, db = "wikidata"): DeclTag[] {
     // "-" removed (does NOT advance the new-file counter).
     if (ln.startsWith("+") && !ln.startsWith("++")) {
       const content = ln.slice(1);
-      const m = content.match(tagRe);
+      const m = isAttrLine(content) ? content.match(tagRe) : null;
       if (m) {
         // Display hunk: this line + up to 7 following added/context lines.
         const hunk: string[] = [content];

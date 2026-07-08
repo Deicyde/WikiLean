@@ -78,6 +78,18 @@ describe("parseWikidataTags", () => {
     expect(tags).toHaveLength(1);
     expect(tags[0]).toMatchObject({ db: "lmfdb", id: "group.abelian", qid: "group.abelian" });
   });
+
+  it("does not treat implementation strings like 'lmfdb id' as LMFDB tags", () => {
+    const diff = [
+      "+++ b/Mathlib/Tactic/CrossRefAttribute.lean",
+      "@@ -190,2 +190,3 @@",
+      '+    ParserState.mkError s "lmfdb id"',
+      '+@[lmfdb group.abelian "A vacuous comment"]',
+      " example : True := by trivial",
+    ].join("\n");
+    const tags = parseCrossRefTags(diff, "lmfdb");
+    expect(tags.map((t) => t.id)).toEqual(["group.abelian"]);
+  });
 });
 
 describe("buildReviewCommentBody", () => {
