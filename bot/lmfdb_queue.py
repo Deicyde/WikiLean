@@ -8,6 +8,11 @@ The signal is deterministic:
 The output uses the database-agnostic queue shape consumed by publish_queue.py
 and the Worker queue/review UI:
   {"db":"lmfdb","id":"group.abelian","concept_qid":"Q181296","decl":...,"file":...}
+
+By default the Mathlib side is human-only: the formalizes edge must come from a
+merged Mathlib `@[wikidata]` source tag. Agent/oracle Brain formalizes edges can
+be included for debugging with `--include-ai-formalizes`, but they are not queued
+for review by default.
 """
 from __future__ import annotations
 
@@ -26,6 +31,7 @@ TAG_XREFS = ROOT / "catalog" / "data" / "mathlib_tag_xrefs.jsonl"
 OUT = HERE / "state" / "lmfdb_queue.json"
 
 CONF_RANK = {"high": 0, "medium": 1, "low": 2}
+HUMAN_WIKIDATA_METHOD = "@[wikidata] attribute (mathlib4 source)"
 
 
 def read_jsonl(path: Path) -> list[dict]:
@@ -106,11 +112,22 @@ def allowed(conf: str, min_confidence: str) -> bool:
     return CONF_RANK.get(conf, 1) <= CONF_RANK[min_confidence]
 
 
+def human_formalizes_edge(edge: dict) -> bool:
+    prov = edge.get("provenance") if isinstance(edge.get("provenance"), dict) else {}
+    ev = edge.get("evidence") if isinstance(edge.get("evidence"), dict) else {}
+    return prov.get("method") == HUMAN_WIKIDATA_METHOD or ev.get("source_tagged") is True
+
+
+def formalizes_tier(edge: dict) -> str:
+    return "wikidata-p12987+mathlib-source-wikidata" if human_formalizes_edge(edge) else "wikidata-p12987+brain-formalizes"
+
+
 def build(
     source: Path = EDGES,
     include_seen: bool = False,
     min_confidence: str = "medium",
     limit: int | None = None,
+    include_ai_formalizes: bool = False,
 ) -> list[dict]:
     concepts, decls = load_nodes()
     centrality = load_centrality()
@@ -127,7 +144,7 @@ def build(
                     xrefs[src].append((ident, edge))
         elif edge.get("kind") == "formalizes":
             qid, decl_node = parse_formalizes(edge)
-            if qid and decl_node:
+            if qid and decl_node and (include_ai_formalizes or human_formalizes_edge(edge)):
                 formalizes[qid].append((decl_node, edge))
 
     items: list[dict] = []
@@ -164,11 +181,13 @@ def build(
                     "status": "brain",
                     "source": "brain-lmfdb-xref",
                     "priority_source": "brain",
-                    "provenance_tier": "wikidata-p12987+brain-formalizes",
+                    "provenance_tier": formalizes_tier(fedge),
                     "brain_node": qid,
                     "decl_node": decl_node,
                     "confidence": combined,
-                    "review_reason": "LMFDB knowl from Wikidata P12987 joined to a Brain formalizes edge",
+                    "review_reason": "LMFDB knowl from Wikidata P12987 joined to a human-added Mathlib @[wikidata] tag"
+                    if human_formalizes_edge(fedge)
+                    else "LMFDB knowl from Wikidata P12987 joined to an AI-supported Brain formalizes edge",
                     "_order": order,
                 }
                 if qid in centrality:
@@ -200,6 +219,8 @@ def main() -> int:
                     help="include LMFDB ids already harvested from Mathlib (debugging only)")
     ap.add_argument("--min-confidence", choices=sorted(CONF_RANK, key=CONF_RANK.get),
                     default="medium")
+    ap.add_argument("--include-ai-formalizes", action="store_true",
+                    help="also include agent/oracle Brain formalizes edges (human-only by default)")
     ap.add_argument("--dry-run", action="store_true", help="print payload instead of writing")
     args = ap.parse_args()
 
@@ -208,6 +229,7 @@ def main() -> int:
         include_seen=args.include_seen,
         min_confidence=args.min_confidence,
         limit=args.limit,
+        include_ai_formalizes=args.include_ai_formalizes,
     )
     if args.dry_run:
         print(json.dumps(items, ensure_ascii=False, indent=1))
