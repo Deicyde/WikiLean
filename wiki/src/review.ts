@@ -1471,7 +1471,7 @@ async function githubAccountFor(c: Ctx): Promise<{ token?: string; scope?: strin
 // ---- page HTML ----------------------------------------------------------
 
 function reviewPageHtml(): string {
-  // Self-contained: warm palette to match the site; vanilla JS, no deps.
+  // Self-contained: Brain-family dark palette; vanilla JS, no deps.
   return `<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>WikiLean · crossref review</title>
@@ -1481,21 +1481,24 @@ function reviewPageHtml(): string {
    in a fallback, then swaps in once loaded (cached after first visit). */
 @font-face{font-family:"JuliaMono";font-style:normal;font-weight:400;font-display:swap;
   src:url("https://cdn.jsdelivr.net/gh/cormullion/juliamono@v0.058/webfonts/JuliaMono-Regular.woff2") format("woff2");}
-:root{--bg:#faf7f1;--card:#fffdf9;--rule:#e3dccb;--ink:#1f1d1a;--muted:#6b6457;--accent:#7a3d2a;--code:#f3efe6;
-      --g:#2d7a4a;--y:#b77a14;--r:#a02828;--gb:#e8f4ec;--yb:#fbf3e0;--rb:#fbe8e8;}
+:root{color-scheme:dark;--bg:#0b0e14;--card:#10141d;--card2:#151b28;--rule:#262c3a;--rule2:#33405c;--ink:#e6e4de;--muted:#9aa3b2;--accent:#7cb3ff;--accent2:#38bdf8;--code:#363333;
+      --g:#8fe388;--y:#f0a202;--r:#ff8b8b;--gb:rgba(143,227,136,.14);--yb:rgba(240,162,2,.16);--rb:rgba(255,139,139,.14);}
 *{box-sizing:border-box}
 body{font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;color:var(--ink);background:var(--bg);margin:0;padding:1.5rem 1rem 5rem}
 .wrap{max-width:1100px;margin:0 auto}
 h1{font-size:1.4rem;margin:0 0 .3rem}
+a{color:var(--accent)}
+a:hover{color:var(--accent2)}
+code{background:var(--code);color:#eee;padding:.05em .35em;border-radius:4px;font-family:"JuliaMono","SF Mono",Menlo,monospace;font-size:.92em}
 .lede{color:var(--muted);margin:0 0 1.3rem}
 form.load{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin:0 0 1.5rem;background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:.8rem}
-form.load input,form.load select{font:inherit;padding:.45rem .6rem;border:1px solid var(--rule);border-radius:6px;background:#fff}
+form.load input,form.load select{font:inherit;padding:.45rem .6rem;border:1px solid var(--rule2);border-radius:6px;background:var(--bg);color:var(--ink)}
 form.load input#repo{width:230px}form.load input#pr{width:90px}
-form.load button{font:inherit;font-weight:600;padding:.45rem 1rem;border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:6px;cursor:pointer}
+form.load button{font:inherit;font-weight:600;padding:.45rem 1rem;border:1px solid var(--accent);background:var(--accent);color:#07101e;border-radius:6px;cursor:pointer}
 #status{color:var(--muted);font-size:.9rem;margin:.5rem 0}
 .entry{background:var(--card);border:1px solid var(--rule);border-left:5px solid var(--rule);border-radius:6px;margin:1rem 0;overflow:hidden}
 .entry[data-status=approve]{border-left-color:var(--g)}.entry[data-status=revise]{border-left-color:var(--y)}.entry[data-status=reject]{border-left-color:var(--r)}
-.entry header{display:flex;gap:.5rem;align-items:baseline;flex-wrap:wrap;padding:.6rem .9rem;background:#f6f2e9;border-bottom:1px solid var(--rule)}
+.entry header{display:flex;gap:.5rem;align-items:baseline;flex-wrap:wrap;padding:.6rem .9rem;background:var(--card2);border-bottom:1px solid var(--rule)}
 .entry header .qid a{font-family:"SF Mono",Menlo,monospace;color:var(--accent);text-decoration:none;font-size:.85rem}
 .entry header .loc{color:var(--muted);font-size:.82rem;font-family:"SF Mono",Menlo,monospace;text-decoration:none}
 .entry header .loc:hover{color:var(--accent);text-decoration:underline}
@@ -1503,12 +1506,12 @@ form.load button{font:inherit;font-weight:600;padding:.45rem 1rem;border:1px sol
 .entry header .loc-src:hover{color:var(--accent);opacity:1;text-decoration:underline}
 pre.lean{font-family:"JuliaMono","JetBrains Mono","SF Mono",Menlo,Consolas,monospace;font-size:.82rem;background:var(--code);margin:0;padding:.7rem .9rem;overflow:auto;white-space:pre-wrap;border-bottom:1px solid var(--rule)}
 .comments{padding:.5rem .9rem;display:flex;flex-direction:column;gap:.5rem}
-.cmt{font-size:.88rem;background:#fbf9f3;border:1px solid var(--rule);border-radius:6px;padding:.45rem .6rem}
+.cmt{font-size:.88rem;background:var(--card2);border:1px solid var(--rule);border-radius:6px;padding:.45rem .6rem}
 .cmt .who{font-weight:600;font-size:.8rem;color:var(--muted)}
 .cmt .body{white-space:pre-wrap;margin-top:.2rem}
 .cmt .body.md{white-space:normal}
 .cmt .body.md p{margin:.2rem 0}
-.cmt .body.md blockquote{margin:.3rem 0;padding:.1rem .7rem;border-left:3px solid var(--rule);color:#4a463c}
+.cmt .body.md blockquote{margin:.3rem 0;padding:.1rem .7rem;border-left:3px solid var(--rule2);color:#c8d0dc}
 .cmt .body.md code{background:var(--code);padding:.05em .35em;border-radius:3px;font-family:"JuliaMono","SF Mono",Menlo,monospace;font-size:.92em}
 .cmt .body.md pre{background:var(--code);padding:.5rem .7rem;border-radius:5px;overflow:auto}
 .cmt .body.md a{color:var(--accent)}
@@ -1516,39 +1519,38 @@ pre.lean{font-family:"JuliaMono","JetBrains Mono","SF Mono",Menlo,Consolas,monos
 .cmt .body.md h1,.cmt .body.md h2,.cmt .body.md h3{font-size:1rem;margin:.3rem 0}
 .none{color:var(--muted);font-size:.85rem;font-style:italic;padding:.2rem .9rem .5rem}
 .panes{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--rule)}
-.src{border-right:1px solid var(--rule);background:#fdfcf8;overflow:auto}
+.src{border-right:1px solid var(--rule);background:var(--bg);overflow:auto}
 .src pre.lean{border-bottom:none;margin:0}
 .wiki-pane{padding:.7rem .9rem}
-.wd-desc{font-size:.95rem;line-height:1.45;margin:0 0 .7rem;padding:.5rem .7rem;background:#fbf6ec;border-left:3px solid var(--accent);border-radius:0 3px 3px 0;color:#3a2a20;font-style:italic}
+.wd-desc{font-size:.95rem;line-height:1.45;margin:0 0 .7rem;padding:.5rem .7rem;background:rgba(124,179,255,.09);border-left:3px solid var(--accent);border-radius:0 3px 3px 0;color:#dce9ff;font-style:italic}
 .wd-desc.empty{background:none;border-left:none;padding:0;color:var(--muted);font-style:italic}
 .wd-head{font-size:.9rem;margin:0 0 .3rem}.wd-head a{color:var(--ink);font-weight:600;text-decoration:none}.wd-head a:hover{text-decoration:underline}
 .wd-lead summary{cursor:pointer;color:var(--accent);font-weight:500;font-size:.85rem}
 .wd-lead p{font-size:.88rem;line-height:1.5;margin:.4rem 0 0}
 .wd-lead .more{font-size:.8rem;margin-top:.3rem}.wd-lead .more a{color:var(--accent)}
-/* Lean syntax palette (Mathlib-docs-derived) */
-/* Standard Lean palette — VS Code "Light+" token colors (how Lean looks in
-   the default editor). */
-pre.lean .sd{color:#008000;font-style:italic}
-pre.lean .c1{color:#008000;font-style:italic}
-pre.lean .kn{color:#0000ff}
-pre.lean .kt{color:#267f99}
-pre.lean .nf{color:#795e26}
-pre.lean .o{color:#000000}
-pre.lean .s{color:#a31515}
-pre.lean .mi{color:#098658}
-pre.lean .n{color:#1f1f1f}
+/* Lean syntax palette copied from Mathlib docs conventions:
+   dark code surface, JuliaMono, docs link blue, and declaration category colors. */
+pre.lean .sd{color:#9aa3b2;font-style:italic}
+pre.lean .c1{color:#9aa3b2;font-style:italic}
+pre.lean .kn{color:#58a6ff;font-weight:600}
+pre.lean .kt{color:#f0a202}
+pre.lean .nf{color:#92dce5;font-weight:600}
+pre.lean .o{color:#eee}
+pre.lean .s{color:#f0a202}
+pre.lean .mi{color:#8fe388}
+pre.lean .n{color:#eee}
 @media (max-width:820px){.panes{grid-template-columns:1fr}.src{border-right:none;border-bottom:1px solid var(--rule)}}
 #controls{margin:0 0 1rem;display:flex;gap:1rem;align-items:center;flex-wrap:wrap;font-size:.9rem}
-#controls select{font:inherit;padding:.25rem .4rem;border:1px solid var(--rule);border-radius:6px;background:#fff}
-#open-all{font:inherit;font-size:.83rem;padding:.3rem .7rem;border:1px solid var(--accent);background:#fff;color:var(--accent);border-radius:6px;cursor:pointer}
-#open-all:hover{background:#fbf6ec}
-.entry.pending{box-shadow:inset 3px 0 0 #1a4b8c}
+#controls select{font:inherit;padding:.25rem .4rem;border:1px solid var(--rule2);border-radius:6px;background:var(--bg);color:var(--ink)}
+#open-all{font:inherit;font-size:.83rem;padding:.3rem .7rem;border:1px solid var(--accent);background:transparent;color:var(--accent);border-radius:6px;cursor:pointer}
+#open-all:hover{background:var(--card2);color:var(--accent2)}
+.entry.pending{box-shadow:inset 3px 0 0 var(--accent)}
 .cur{font-size:.88rem;margin-bottom:.45rem}
 .cur-label{font-weight:600;color:var(--muted);margin-right:.4rem;font-size:.82rem;text-transform:uppercase;letter-spacing:.03em}
 .rev-item{margin:.25rem 0}
 .rev-note{margin:.15rem 0 .15rem 1.1rem;font-size:.9rem}
 .rev-note p{margin:.15rem 0}
-.rev-note blockquote{margin:.2rem 0;padding:.05rem .6rem;border-left:3px solid var(--rule);color:#4a463c}
+.rev-note blockquote{margin:.2rem 0;padding:.05rem .6rem;border-left:3px solid var(--rule2);color:#c8d0dc}
 .rev-note code{background:var(--code);padding:.05em .35em;border-radius:3px;font-family:"JuliaMono","SF Mono",Menlo,monospace;font-size:.92em}
 .rev-note a{color:var(--accent)}
 .comments-label{font-weight:600;color:var(--muted);font-size:.82rem;text-transform:uppercase;letter-spacing:.03em}
@@ -1556,28 +1558,33 @@ pre.lean .n{color:#1f1f1f}
 .cur .badge.approve{background:var(--gb);color:var(--g)}
 .cur .badge.revise{background:var(--yb);color:var(--y)}
 .cur .badge.reject{background:var(--rb);color:var(--r)}
-.cur .badge.flag{background:#f3e8fb;color:#6b1f9c}
-.cur .badge.none{background:#eee;color:var(--muted)}
+.cur .badge.flag{background:rgba(196,181,253,.16);color:#c4b5fd}
+.cur .badge.none{background:rgba(154,163,178,.14);color:var(--muted)}
 .cur .by{color:var(--muted)}
 .acts{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.4rem}
-.acts button{font:inherit;font-size:.83rem;padding:.3rem .7rem;border:1px solid var(--accent);background:#fff;color:var(--accent);border-radius:6px;cursor:pointer}
-.acts button:hover{background:#fbf6ec}
-.acts button.on{background:var(--accent);color:#fff}
+.acts button{font:inherit;font-size:.83rem;padding:.3rem .7rem;border:1px solid var(--accent);background:transparent;color:var(--accent);border-radius:6px;cursor:pointer}
+.acts button:hover{background:var(--card2);color:var(--accent2)}
+.acts button.on{background:var(--accent);color:#07101e}
 .acts button.act-clear{border-color:var(--rule);color:var(--muted)}
-.acts button.act-clear:hover{background:#f4efe6;color:var(--ink)}
-.form{padding:.6rem .9rem;border-top:1px dashed var(--rule);background:#fcfaf4}
+.acts button.act-clear:hover{background:var(--card2);color:var(--ink)}
+.form{padding:.6rem .9rem;border-top:1px dashed var(--rule);background:var(--card2)}
 .form .row{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-bottom:.4rem}
 .form .row[hidden]{display:none}
-.form label{display:inline-flex;align-items:center;gap:.3rem;padding:.15rem .55rem;border:1px solid var(--rule);border-radius:14px;background:#fff;cursor:pointer;font-size:.85rem}
+.form label{display:inline-flex;align-items:center;gap:.3rem;padding:.15rem .55rem;border:1px solid var(--rule);border-radius:14px;background:var(--bg);cursor:pointer;font-size:.85rem}
 .form label:has(input[value=approve]:checked){background:var(--gb);border-color:var(--g);color:var(--g);font-weight:600}
 .form label:has(input[value=revise]:checked){background:var(--yb);border-color:var(--y);color:var(--y);font-weight:600}
 .form label:has(input[value=reject]:checked){background:var(--rb);border-color:var(--r);color:var(--r);font-weight:600}
-.form textarea{width:100%;min-height:44px;font:inherit;font-size:.88rem;padding:.4rem .5rem;border:1px solid var(--rule);border-radius:6px;resize:vertical}
-#bar{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--rule);padding:.6rem 1.3rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;box-shadow:0 -2px 8px rgba(0,0,0,.06)}
+.form textarea{width:100%;min-height:44px;font:inherit;font-size:.88rem;padding:.4rem .5rem;border:1px solid var(--rule2);border-radius:6px;resize:vertical;background:var(--bg);color:var(--ink)}
+#bar{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--rule);padding:.6rem 1.3rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;box-shadow:0 -8px 24px rgba(0,0,0,.35)}
 #bar .counts span{padding:.1rem .5rem;border-radius:12px;font-size:.85rem;margin-right:.4rem}
-#bar button{font:inherit;font-weight:600;padding:.4rem 1rem;border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:6px;cursor:pointer}
-#bar #submit-gh{background:#fff;color:var(--accent)}
+#bar button{font:inherit;font-weight:600;padding:.4rem 1rem;border:1px solid var(--accent);background:var(--accent);color:#07101e;border-radius:6px;cursor:pointer}
+#bar #submit-gh{background:transparent;color:var(--accent)}
 #bar button:disabled{opacity:.5;cursor:default}
+#c-pending{background:rgba(124,179,255,.16);color:#c8ddff}
+#copybox{background:var(--card);color:var(--ink);border:1px solid var(--rule2);border-radius:8px}
+#copybox::backdrop{background:rgba(0,0,0,.55)}
+#copybox a{color:var(--accent)}
+#copytext{background:var(--bg);color:var(--ink)}
 .note{font-size:.8rem;color:var(--muted)}
 </style></head>
 <body><div class="wrap">
@@ -1611,7 +1618,7 @@ pre.lean .n{color:#1f1f1f}
 </div>
 <div id="bar" hidden>
   <div class="counts">
-    <span id="c-pending" style="background:#e8edf7;color:#1a4b8c">0 changes pending</span>
+    <span id="c-pending">0 changes pending</span>
   </div>
   <div>
     <span class="note" id="submit-note"></span>
@@ -1621,8 +1628,8 @@ pre.lean .n{color:#1f1f1f}
 </div>
 <dialog id="copybox">
   <p style="margin:.2rem 0 .5rem">Paste this as a comment on <a id="pr-link" href="#" target="_blank" rel="noopener">the PR ↗</a>:</p>
-  <textarea id="copytext" readonly style="width:min(80vw,640px);height:40vh;font:13px/1.5 'SF Mono',Menlo,monospace;border:1px solid #d8d0bd;border-radius:6px;padding:.6rem"></textarea>
-  <div style="text-align:right;margin-top:.5rem"><button id="copybox-close" style="font:inherit;padding:.4rem 1rem;border:1px solid #7a3d2a;background:#7a3d2a;color:#fff;border-radius:6px;cursor:pointer">Done</button></div>
+  <textarea id="copytext" readonly style="width:min(80vw,640px);height:40vh;font:13px/1.5 'SF Mono',Menlo,monospace;border:1px solid var(--rule2);border-radius:6px;padding:.6rem"></textarea>
+  <div style="text-align:right;margin-top:.5rem"><button id="copybox-close" style="font:inherit;padding:.4rem 1rem;border:1px solid var(--accent);background:var(--accent);color:#07101e;border-radius:6px;cursor:pointer">Done</button></div>
 </dialog>
 <script>
 ${reviewClientScript()}
