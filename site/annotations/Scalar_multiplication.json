@@ -1,0 +1,652 @@
+{
+  "slug": "Scalar_multiplication",
+  "wikipedia_title": "Scalar multiplication",
+  "display_title": "Scalar multiplication",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Scalar multiplication as vector space operation",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "scalar multiplication is one of the basic operations defining a vector space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module",
+        "module": "Mathlib.Algebra.Module.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `Module` typeclass is the scalar multiplication structure used for vector spaces by taking scalar type a field and vector type an additive group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Scalar multiplication as module operation",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a module in abstract algebra"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module",
+        "module": "Mathlib.Algebra.Module.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Module` directly formalizes scalar multiplication of a semiring on an additive commutative monoid as the module operation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Positive real scalar preserves Euclidean vector direction",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "multiplies the magnitude of the vector without changing its direction"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SameRay.sameRay_pos_smul_right",
+        "module": "Mathlib.LinearAlgebra.Ray",
+        "match_kind": "generalization"
+      },
+      "note": "`SameRay.sameRay_pos_smul_right` says a positive scalar multiple stays in the same ray, with `norm_smul_of_nonneg` giving the corresponding norm scaling in real normed spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Scalar multiplication product type",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Scalar multiplication is the multiplication of a vector by a scalar"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module",
+        "module": "Mathlib.Algebra.Module.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Module` provides the scalar multiplication operation `r • x : M`, generalizing scalar-times-vector multiplication beyond vector spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inner product distinction",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "inner product of two vectors"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Inner",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs"
+      },
+      "note": "Mathlib defines inner products separately via `Inner`, but I found no declaration whose statement is the explanatory distinction from scalar multiplication.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Scalar multiplication function",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "scalar multiplication is a function from K × V to V"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module",
+        "module": "Mathlib.Algebra.Module.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Module` represents this operation as the curried scalar action `r • x : M`, equivalent to a function on scalar-vector pairs.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Scalar multiplication notation",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The result of applying this function to k in K and v in V is denoted k v"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SMul",
+        "module": "Mathlib.Algebra.Notation.Defs"
+      },
+      "note": "Mathlib uses the `SMul` notation `k • v` for scalar multiplication rather than the article's juxtaposition `k v`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Scalar additivity",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Additivity in the scalar"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "add_smul",
+        "module": "Mathlib.Algebra.Module.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`add_smul` states `(r + s) • x = r • x + s • x` for modules.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Vector additivity",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Additivity in the vector"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "smul_add",
+        "module": "Mathlib.Algebra.GroupWithZero.Action.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`smul_add` states `a • (x + y) = a • x + a • y` for distributive scalar actions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Compatibility with scalar product",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Compatibility of product of scalars with scalar multiplication"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mul_smul",
+        "module": "Mathlib.Algebra.Group.Action.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`mul_smul` is the action axiom `(a * b) • x = a • b • x`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "One scalar identity",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Multiplying by 1 does not change a vector"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "one_smul",
+        "module": "Mathlib.Algebra.Group.Action.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`one_smul` states `(1 : R) • x = x` for a scalar action by a monoid.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zero scalar gives zero vector",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Multiplying by 0 gives the zero vector"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "zero_smul",
+        "module": "Mathlib.Algebra.GroupWithZero.Action.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`zero_smul` states `(0 : R) • x = 0` for scalar actions with zero.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Negative one gives additive inverse",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Multiplying by −1 gives the additive inverse"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "neg_one_smul",
+        "module": "Mathlib.Algebra.Module.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`neg_one_smul` states `(-1 : R) • x = -x` for modules over rings.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Plus sign convention",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Here, + is addition either in the field or in the vector space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "add_smul",
+        "module": "Mathlib.Algebra.Module.Defs"
+      },
+      "note": "The overloaded meanings of `+` are handled by Lean typeclasses and appear in `add_smul`, but the convention itself is not a separate theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Zero convention",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "0 is the additive identity in either"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "zero_smul",
+        "module": "Mathlib.Algebra.GroupWithZero.Action.Defs"
+      },
+      "note": "Mathlib has typeclass-polymorphic zeros and `zero_smul` for scalar zero acting on a vector, but the notation convention is not a standalone declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Juxtaposition convention",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Juxtaposition indicates either scalar multiplication or the multiplication operation in the field"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "smul_eq_mul",
+        "module": "Mathlib.Algebra.Group.Action.Defs"
+      },
+      "note": "Mathlib keeps scalar action `•` distinct from multiplication `*`, with `smul_eq_mul` only identifying them for the regular self-action.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Coordinate space interpretation",
+      "anchor": {
+        "section": "Interpretation",
+        "snippet": "The space of vectors may be considered a coordinate space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Pi.module",
+        "module": "Mathlib.Algebra.Module.Pi",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib models coordinate spaces as function types with `Pi.module`, but the broad interpretive sentence is not itself a formal statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Field units form group",
+      "anchor": {
+        "section": "Interpretation",
+        "snippet": "The units of the field form a group K ×"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Units.instGroup",
+        "module": "Mathlib.Algebra.Group.Units.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Units.instGroup` states that the units of any monoid, hence of a field's multiplicative monoid, form a group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Scalar multiplication as group action",
+      "anchor": {
+        "section": "Interpretation",
+        "snippet": "scalar-vector multiplication is a group action on the coordinate space by K ×"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Units.instDistribMulAction",
+        "module": "Mathlib.Algebra.GroupWithZero.Action.Units",
+        "match_kind": "generalization"
+      },
+      "note": "`Units.instDistribMulAction` gives units a distributive scalar action whenever the underlying monoid acts, covering nonzero field scalars acting on modules such as coordinate spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zero scalar collapses coordinate space",
+      "anchor": {
+        "section": "Interpretation",
+        "snippet": "The zero of the field acts on the coordinate space to collapse it to the zero vector"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "zero_smul",
+        "module": "Mathlib.Algebra.GroupWithZero.Action.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`zero_smul` says scalar zero sends every vector to the zero vector in any compatible scalar action.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Real scalar multiplication scales length",
+      "anchor": {
+        "section": "Interpretation",
+        "snippet": "it stretches or contracts vectors by a constant factor"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "norm_smul_of_nonneg",
+        "module": "Mathlib.Analysis.Normed.Module.RCLike.Real",
+        "match_kind": "generalization"
+      },
+      "note": "`norm_smul_of_nonneg` states that multiplying a vector in a real normed space by a nonnegative scalar scales its norm by that scalar.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Real scalar multiplication preserves or reverses direction",
+      "anchor": {
+        "section": "Interpretation",
+        "snippet": "it produces a vector in the same or opposite direction of the original vector but of a different length"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "sameRay_neg_smul_right_iff_of_ne",
+        "module": "Mathlib.LinearAlgebra.Ray",
+        "match_kind": "generalization"
+      },
+      "note": "`sameRay_neg_smul_right_iff_of_ne`, together with the positive-scalar ray lemmas, formalizes that nonzero real scalar multiples lie in the same ray or the ray of the negated vector according to the sign.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Field as vector space over itself",
+      "anchor": {
+        "section": "Interpretation",
+        "snippet": "V may be taken to be K itself"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Semiring.toModule",
+        "module": "Mathlib.Algebra.Module.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Semiring.toModule` makes any semiring a module over itself, specializing to a field as a vector space over itself.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Scalar multiplication in field case",
+      "anchor": {
+        "section": "Interpretation",
+        "snippet": "scalar multiplication may then be taken to be simply the multiplication in the field"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "smul_eq_mul",
+        "module": "Mathlib.Algebra.Group.Action.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`smul_eq_mul` identifies the scalar action of a multiplicative type on itself with its multiplication operation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Coordinate vector space",
+      "anchor": {
+        "section": "Interpretation",
+        "snippet": "When V is K n"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Pi.module",
+        "module": "Mathlib.Algebra.Module.Pi",
+        "match_kind": "generalization"
+      },
+      "note": "`Pi.module` gives coordinate function spaces `ι → K` the expected module structure, generalizing finite `K^n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Componentwise scalar multiplication",
+      "anchor": {
+        "section": "Interpretation",
+        "snippet": "scalar multiplication is equivalent to multiplication of each component with the scalar"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Pi.smul_apply",
+        "module": "Mathlib.Algebra.Notation.Pi.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Pi.smul_apply` states that scalar multiplication on a function space is evaluated componentwise.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Module scalar multiplication over commutative ring",
+      "anchor": {
+        "section": "Interpretation",
+        "snippet": "The same idea applies if K is a commutative ring and V is a module over K"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module",
+        "module": "Mathlib.Algebra.Module.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Module` is defined over a `Semiring`, so it includes modules over commutative rings as a special case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Scalar multiplication over a rig",
+      "anchor": {
+        "section": "Interpretation",
+        "snippet": "K can even be a rig"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module",
+        "module": "Mathlib.Algebra.Module.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `Module` uses `Semiring` scalars, which is the usual typeclass for rigs.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rig has no additive inverse",
+      "anchor": {
+        "section": "Interpretation",
+        "snippet": "then there is no additive inverse"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Semiring",
+        "module": "Mathlib.Algebra.Ring.Defs"
+      },
+      "note": "Mathlib's `Semiring` does not require additive inverses while `Ring` adds additive group structure, but there is no universal theorem that semirings have no additive inverses.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Left and right scalar multiplication",
+      "anchor": {
+        "section": "Interpretation",
+        "snippet": "the distinct operations left scalar multiplication c v and right scalar multiplication v c may be defined"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "op_smul_eq_mul",
+        "module": "Mathlib.Algebra.Group.Action.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib models right scalar multiplication using the opposite type, with `op_smul_eq_mul` identifying `MulOpposite.op a • b` with `b * a`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Left scalar multiplication of a matrix",
+      "anchor": {
+        "section": "Scalar multiplication of matrices",
+        "snippet": "The left scalar multiplication of a matrix A with a scalar λ gives another matrix of the same size as A"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.smul_apply",
+        "module": "Mathlib.LinearAlgebra.Matrix.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.smul_apply` defines scalar multiplication on matrices entrywise, and the result has the same `Matrix m n` type.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Left scalar multiplication notation",
+      "anchor": {
+        "section": "Scalar multiplication of matrices",
+        "snippet": "It is denoted by λ A"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.smul_apply",
+        "module": "Mathlib.LinearAlgebra.Matrix.Defs"
+      },
+      "note": "Mathlib has the operation formalized, but its notation is `λ • A` rather than juxtaposed `λ A`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Left scalar multiplication entries",
+      "anchor": {
+        "section": "Scalar multiplication of matrices",
+        "snippet": "whose entries of λ A are defined by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.smul_apply",
+        "module": "Mathlib.LinearAlgebra.Matrix.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.smul_apply` states `(r • A) i j = r • A i j`, the entrywise definition of left matrix scalar multiplication.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Right scalar multiplication of a matrix",
+      "anchor": {
+        "section": "Scalar multiplication of matrices",
+        "snippet": "the right scalar multiplication of a matrix A with a scalar λ could be defined to be"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.op_smul_eq_mul_diagonal",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.op_smul_eq_mul_diagonal` models right scalar multiplication as an opposite scalar action equal to multiplying by the scalar diagonal matrix on the right.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Left and right matrix scalar multiplication agree over commutative field",
+      "anchor": {
+        "section": "Scalar multiplication of matrices",
+        "snippet": "these two multiplications are the same"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.smul_eq_mul_diagonal",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "generalization"
+      },
+      "note": "`Matrix.smul_eq_mul_diagonal` proves the right-diagonal form agrees with scalar multiplication over any commutative semiring, hence over a commutative field.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Matrix scalar multiplication over commutative fields",
+      "anchor": {
+        "section": "Scalar multiplication of matrices",
+        "snippet": "can be simply called scalar multiplication"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.smul_eq_mul_diagonal",
+        "module": "Mathlib.Data.Matrix.Mul"
+      },
+      "note": "Mathlib formalizes the equality that justifies using one scalar multiplication over commutative scalars, but the naming convention is not a declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Left and right matrix scalar multiplication may differ over noncommutative fields",
+      "anchor": {
+        "section": "Scalar multiplication of matrices",
+        "snippet": "they may not be equal"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.scalar_comm_iff",
+        "module": "Mathlib.Data.Matrix.Basic"
+      },
+      "note": "`Matrix.scalar_comm_iff` relates equality of left and right scalar forms to commutation with matrix entries, but I found no explicit noncommutative-field counterexample declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Real scalar and matrix example",
+      "anchor": {
+        "section": "Scalar multiplication of matrices",
+        "snippet": "For a real scalar and matrix"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.smul_apply",
+        "module": "Mathlib.LinearAlgebra.Matrix.Defs"
+      },
+      "note": "`Matrix.smul_apply` provides the entrywise mechanism for real scalar matrix computations, but I found no declaration formalizing the article's specific numerical example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Quaternion scalar and matrix example",
+      "anchor": {
+        "section": "Scalar multiplication of matrices",
+        "snippet": "For quaternion scalars and matrices"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Quaternion",
+        "module": "Mathlib.Algebra.Quaternion"
+      },
+      "note": "Mathlib defines `Quaternion` and matrix scalar multiplication infrastructure exists, but I found no declaration formalizing the article's concrete quaternion matrix example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quaternion units",
+      "anchor": {
+        "section": "Scalar multiplication of matrices",
+        "snippet": "where i , j , k are the quaternion units"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "QuaternionAlgebra.basisOneIJK",
+        "module": "Mathlib.Algebra.Quaternion"
+      },
+      "note": "`QuaternionAlgebra.basisOneIJK` provides the one/i/j/k coordinate basis, but I found no separate named unit constants matching the prose exactly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quaternion noncommutativity blocks equality of left and right products",
+      "anchor": {
+        "section": "Scalar multiplication of matrices",
+        "snippet": "The non-commutativity of quaternion multiplication prevents the transition of changing ij = + k to ji = − k"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Quaternion.imK_mul",
+        "module": "Mathlib.Algebra.Quaternion"
+      },
+      "note": "Quaternion multiplication component formulas such as `Quaternion.imK_mul` support deriving the ij versus ji behavior, but I found no theorem stating this matrix-scalar obstruction directly.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,2273 @@
+{
+  "slug": "Euler_angles",
+  "wikipedia_title": "Euler angles",
+  "display_title": "Euler angles",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Euler angles",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The Euler angles are three angles"
+      },
+      "status": "not_formalized",
+      "note": "No Euler-angle-specific declaration matching this definition was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euler angles for frames",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "They can also represent the orientation of a mobile frame"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "OrthonormalBasis",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes orthonormal bases as frames, but I found no declaration representing frame orientation by Euler angles.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Classic vertical zero convention",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "zero degrees represent the vertical orientation"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for this Euler-angle zero convention was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Alternative horizontal zero convention",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "zero degrees represent the horizontal position"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for this alternative Euler-angle zero convention was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Definitions by geometry or rotations",
+      "anchor": {
+        "section": "Chained rotations equivalence",
+        "snippet": "Euler angles can be defined by elemental geometry or by composition of rotations"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.specialOrthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has special orthogonal matrices as rotation infrastructure, but no equivalence between geometric and chained-rotation Euler-angle definitions was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Three rotations suffice",
+      "anchor": {
+        "section": "Chained rotations equivalence",
+        "snippet": "three consecutive elemental rotations"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.specialOrthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "generalization"
+      },
+      "note": "The rotation group infrastructure exists, but I found no Euler decomposition theorem saying three elemental rotations suffice.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Extrinsic rotations",
+      "anchor": {
+        "section": "Chained rotations equivalence",
+        "snippet": "extrinsic (rotations about the axes xyz of the original coordinate system"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for extrinsic Euler rotations about fixed axes was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Intrinsic rotations",
+      "anchor": {
+        "section": "Chained rotations equivalence",
+        "snippet": "intrinsic (rotations about the axes of the rotating coordinate system XYZ"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for intrinsic Euler rotations about moving axes was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Primed axis notation",
+      "anchor": {
+        "section": "Chained rotations equivalence",
+        "snippet": "axis designation with a prime mark superscript"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for primed-axis notation in Euler-angle conventions was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euler angle symbols",
+      "anchor": {
+        "section": "Chained rotations equivalence",
+        "snippet": "Euler angles are typically denoted as"
+      },
+      "status": "not_formalized",
+      "note": "No Mathlib declaration for the conventional Euler-angle symbols was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Twelve rotation-axis sequences",
+      "anchor": {
+        "section": "Chained rotations equivalence",
+        "snippet": "there exist twelve possible sequences of rotation axes"
+      },
+      "status": "not_formalized",
+      "note": "No enumeration or theorem for the twelve Euler/Tait-Bryan axis sequences was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Proper Euler angles",
+      "anchor": {
+        "section": "Chained rotations equivalence",
+        "snippet": "Proper Euler angles"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for proper Euler angles was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tait-Bryan angles",
+      "anchor": {
+        "section": "Chained rotations equivalence",
+        "snippet": "Tait-Bryan angles"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for Tait-Bryan angles was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tait-Bryan aliases",
+      "anchor": {
+        "section": "Chained rotations equivalence",
+        "snippet": "Tait-Bryan angles are also called Cardan angles"
+      },
+      "status": "not_formalized",
+      "note": "No declaration recording Cardan-angle aliases for Tait-Bryan angles was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Broad Euler angle terminology",
+      "anchor": {
+        "section": "Chained rotations equivalence",
+        "snippet": "both kinds of sequences are called \"Euler angles\""
+      },
+      "status": "not_formalized",
+      "note": "No declaration formalizing this terminology convention was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Classic Euler angles",
+      "anchor": {
+        "section": "Classic Euler angles",
+        "snippet": "The Euler angles are three angles introduced by Swiss mathematician Leonhard Euler"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for classical Euler angles or their historical definition was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Line of nodes",
+      "anchor": {
+        "section": "Geometrical definition",
+        "snippet": "begins by defining the line of nodes (N) as the intersection of the planes xy and XY"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for the Euler-angle line of nodes was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Line of nodes as common perpendicular",
+      "anchor": {
+        "section": "Geometrical definition",
+        "snippet": "it can also be defined as the common perpendicular to the axes z and Z"
+      },
+      "status": "not_formalized",
+      "note": "No declaration equating the line of nodes with a common perpendicular to the two axes was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Geometric Euler angles",
+      "anchor": {
+        "section": "Geometrical definition",
+        "snippet": "the three Euler angles can be defined as follows"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for the three geometric Euler-angle definitions was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "First geometric Euler angle",
+      "anchor": {
+        "section": "Geometrical definition",
+        "snippet": "is the signed angle between the x axis and the N axis"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for this first geometric Euler angle was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Second geometric Euler angle",
+      "anchor": {
+        "section": "Geometrical definition",
+        "snippet": "is the angle between the z axis and the Z axis"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for this second geometric Euler angle was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Third geometric Euler angle",
+      "anchor": {
+        "section": "Geometrical definition",
+        "snippet": "is the signed angle between the N axis and the X axis"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for this third geometric Euler angle was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Same-handed frames condition",
+      "anchor": {
+        "section": "Geometrical definition",
+        "snippet": "Euler angles between two reference frames are defined only if both frames have the same handedness"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "OrthonormalBasis.det_to_matrix_orthonormalBasis_of_same_orientation",
+        "module": "Mathlib.Analysis.InnerProductSpace.Orientation",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves determinant-one change-of-basis for same-orientation orthonormal bases, but it does not define Euler angles only for same-handed frames.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Intrinsic rotations",
+      "anchor": {
+        "section": "Definition by intrinsic rotations",
+        "snippet": "Intrinsic rotations are elemental rotations that occur about the axes of a coordinate system XYZ attached to a moving body"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for body-attached intrinsic Euler rotations was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Intrinsic axes change orientation",
+      "anchor": {
+        "section": "Definition by intrinsic rotations",
+        "snippet": "they change their orientation after each elemental rotation"
+      },
+      "status": "not_formalized",
+      "note": "No declaration describing changing intrinsic axes after each Euler rotation was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Intrinsic rotations reach any orientation",
+      "anchor": {
+        "section": "Definition by intrinsic rotations",
+        "snippet": "a composition of three intrinsic rotations can be used to reach any target orientation for XYZ"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.specialOrthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines the special orthogonal group, but no theorem for reachability by three intrinsic rotations was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euler angles by intrinsic rotations",
+      "anchor": {
+        "section": "Definition by intrinsic rotations",
+        "snippet": "Euler angles can be defined by intrinsic rotations"
+      },
+      "status": "not_formalized",
+      "note": "No declaration defining Euler angles by intrinsic rotations was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Successive frame orientations",
+      "anchor": {
+        "section": "Definition by intrinsic rotations",
+        "snippet": "Its successive orientations may be denoted as follows"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for successive primed frame orientations in Euler-angle notation was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Intrinsic line of nodes",
+      "anchor": {
+        "section": "Definition by intrinsic rotations",
+        "snippet": "the line of nodes N can be simply defined as the orientation of X after the first elemental rotation"
+      },
+      "status": "not_formalized",
+      "note": "No declaration defining the line of nodes as the post-first-rotation axis was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Node as primed x-axis",
+      "anchor": {
+        "section": "Definition by intrinsic rotations",
+        "snippet": "N can be simply denoted x ′"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for denoting the Euler node line as x-prime was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Third rotation preserves Z orientation",
+      "anchor": {
+        "section": "Definition by intrinsic rotations",
+        "snippet": "the third elemental rotation occurs about Z"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for the axis-preservation property of the third intrinsic Euler rotation was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Final Z equals double-primed z",
+      "anchor": {
+        "section": "Definition by intrinsic rotations",
+        "snippet": "Z coincides with z ″"
+      },
+      "status": "not_formalized",
+      "note": "No declaration equating final Z with the double-primed z-axis was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "First intrinsic Euler rotation",
+      "anchor": {
+        "section": "Definition by intrinsic rotations",
+        "snippet": "represents a rotation around the z axis"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for the first intrinsic Euler rotation about z was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Second intrinsic Euler rotation",
+      "anchor": {
+        "section": "Definition by intrinsic rotations",
+        "snippet": "represents a rotation around the x ′ axis"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for the second intrinsic Euler rotation about x-prime was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Third intrinsic Euler rotation",
+      "anchor": {
+        "section": "Definition by intrinsic rotations",
+        "snippet": "represents a rotation around the z ″ axis"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for the third intrinsic Euler rotation about z-double-prime was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Wigner ZX'Z' convention",
+      "anchor": {
+        "section": "Definition by intrinsic rotations",
+        "snippet": "Wigner [ 2 ] uses a ZX'Z' order to define the Euler angles"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for Wigner's ZX'Z' Euler-angle convention was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Hirschfelder ZY'Z' convention",
+      "anchor": {
+        "section": "Definition by intrinsic rotations",
+        "snippet": "Hirschfelder at al. [ 3 ] use a ZY'Z' order to define the Euler angles"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for Hirschfelder's ZY'Z' Euler-angle convention was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Extrinsic rotations",
+      "anchor": {
+        "section": "Definition by extrinsic rotations",
+        "snippet": "Extrinsic rotations are elemental rotations that occur about the axes of the fixed coordinate system xyz"
+      },
+      "status": "not_formalized",
+      "note": "No declaration defining extrinsic Euler rotations about fixed axes was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Extrinsic fixed frame",
+      "anchor": {
+        "section": "Definition by extrinsic rotations",
+        "snippet": "The XYZ system rotates, while xyz is fixed"
+      },
+      "status": "not_formalized",
+      "note": "No declaration distinguishing a rotating XYZ frame from a fixed xyz frame was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Extrinsic rotations reach any orientation",
+      "anchor": {
+        "section": "Definition by extrinsic rotations",
+        "snippet": "a composition of three extrinsic rotations can be used to reach any target orientation for XYZ"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.specialOrthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines the special orthogonal group, but no theorem for reachability by three extrinsic rotations was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euler angles as rotation amplitudes",
+      "anchor": {
+        "section": "Definition by extrinsic rotations",
+        "snippet": "are the amplitudes of these elemental rotations"
+      },
+      "status": "not_formalized",
+      "note": "No declaration defining Euler angles as amplitudes of elemental rotations was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Extrinsic z rotation step",
+      "anchor": {
+        "section": "Definition by extrinsic rotations",
+        "snippet": "The XYZ system rotates about the z axis by γ"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for this extrinsic z-axis Euler rotation step was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Extrinsic x rotation step",
+      "anchor": {
+        "section": "Definition by extrinsic rotations",
+        "snippet": "The XYZ system rotates again, but this time about the x axis by β"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for this extrinsic x-axis Euler rotation step was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Final extrinsic z rotation step",
+      "anchor": {
+        "section": "Definition by extrinsic rotations",
+        "snippet": "The XYZ system rotates a third time, about the z axis again, by angle α"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for the final extrinsic z-axis Euler rotation step was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "ZXZ sequence notation",
+      "anchor": {
+        "section": "Definition by extrinsic rotations",
+        "snippet": "This sequence is often denoted z - x - z (or 3-1-3)"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for ZXZ or 3-1-3 Euler sequence notation was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Fixed-axis convention examples",
+      "anchor": {
+        "section": "Definition by extrinsic rotations",
+        "snippet": "rotations around fixed (non-primed) axes"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for fixed-axis Euler convention examples was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Intrinsic rotation from rotating frame action",
+      "anchor": {
+        "section": "Definition by extrinsic rotations",
+        "snippet": "If each step of the rotation acts on the rotating coordinate system XYZ"
+      },
+      "status": "not_formalized",
+      "note": "No declaration defining intrinsic rotation by action on the rotating coordinate system was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Intrinsic 3-1-3 notation",
+      "anchor": {
+        "section": "Definition by extrinsic rotations",
+        "snippet": "Intrinsic rotation can also be denoted 3-1-3"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for intrinsic 3-1-3 Euler notation was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Right-hand angle convention",
+      "anchor": {
+        "section": "Signs, ranges and conventions",
+        "snippet": "Angles are commonly defined according to the right-hand rule"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Orientation.rotation",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Oriented.Rotation",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib defines oriented two-dimensional rotations from an orientation, but it does not formalize the three-dimensional right-hand Euler-angle convention.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Positive angle sign",
+      "anchor": {
+        "section": "Signs, ranges and conventions",
+        "snippet": "they have positive values when they represent a rotation that appears clockwise"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for this visual positive-sign convention for Euler angles was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Negative angle sign",
+      "anchor": {
+        "section": "Signs, ranges and conventions",
+        "snippet": "negative values when the rotation appears counter-clockwise"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for this visual negative-sign convention for Euler angles was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Alpha and gamma range",
+      "anchor": {
+        "section": "Signs, ranges and conventions",
+        "snippet": "the range is defined modulo 2 π radians"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.Angle",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Angle",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines angles as ℝ modulo 2πℤ via `Real.Angle`, but not the α and γ Euler-angle ranges specifically.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Alpha and gamma valid range",
+      "anchor": {
+        "section": "Signs, ranges and conventions",
+        "snippet": "a valid range could be [− π , π ]"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.Angle",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Angle",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib provides a quotient type for angles modulo 2π, but I found no Euler-angle declaration choosing this α or γ interval.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Beta range",
+      "anchor": {
+        "section": "Signs, ranges and conventions",
+        "snippet": "for β , the range covers π radians"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for the β Euler-angle range was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Beta valid ranges",
+      "anchor": {
+        "section": "Signs, ranges and conventions",
+        "snippet": "it could be [0, π ] or [− π /2, π /2]"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for valid β intervals in Euler or Tait-Bryan conventions was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euler angle uniqueness except singular case",
+      "anchor": {
+        "section": "Signs, ranges and conventions",
+        "snippet": "The angles α , β and γ are uniquely determined except for the singular case"
+      },
+      "status": "not_formalized",
+      "note": "No Euler-angle uniqueness theorem with singular cases was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Aligned z axes ambiguity",
+      "anchor": {
+        "section": "Signs, ranges and conventions",
+        "snippet": "if the z axis and the Z axis are the same"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for the aligned-z-axis Euler-angle ambiguity was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Opposite z axes ambiguity",
+      "anchor": {
+        "section": "Signs, ranges and conventions",
+        "snippet": "if the z axis and the Z axis are opposite"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for the opposite-z-axis Euler-angle ambiguity was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Gimbal lock ambiguity",
+      "anchor": {
+        "section": "Signs, ranges and conventions",
+        "snippet": "These ambiguities are known as gimbal lock in applications"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for gimbal lock was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Proper Euler axis choices",
+      "anchor": {
+        "section": "Signs, ranges and conventions",
+        "snippet": "There are six possibilities of choosing the rotation axes for proper Euler angles"
+      },
+      "status": "not_formalized",
+      "note": "No declaration enumerating the six proper-Euler axis choices was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Proper Euler repeated axis",
+      "anchor": {
+        "section": "Signs, ranges and conventions",
+        "snippet": "the first and third rotation axes are the same"
+      },
+      "status": "not_formalized",
+      "note": "No declaration formalizing the repeated first-and-third axis condition for proper Euler angles was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Proper Euler sequence list",
+      "anchor": {
+        "section": "Signs, ranges and conventions",
+        "snippet": "The six possible sequences are:"
+      },
+      "status": "not_formalized",
+      "note": "No declaration listing the six proper-Euler sequences was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Precession, nutation, and intrinsic rotation",
+      "anchor": {
+        "section": "Precession, nutation and intrinsic rotation",
+        "snippet": "Precession , nutation , and intrinsic rotation are defined as the movements obtained by changing one of the Euler angles while leaving the other two constant"
+      },
+      "status": "not_formalized",
+      "note": "No declaration defining precession, nutation, and intrinsic rotation via changing single Euler angles was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Mixed axes of rotation system",
+      "anchor": {
+        "section": "Precession, nutation and intrinsic rotation",
+        "snippet": "They constitute a mixed axes of rotation system"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for this mixed-axes Euler-angle rotation system was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Precession motion",
+      "anchor": {
+        "section": "Precession, nutation and intrinsic rotation",
+        "snippet": "precession moves the line of nodes around the external axis z"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for this Euler-angle precession motion was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Nutation motion",
+      "anchor": {
+        "section": "Precession, nutation and intrinsic rotation",
+        "snippet": "nutation rotates around the line of nodes N"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for nutation as rotation around the Euler line of nodes was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Intrinsic rotation motion",
+      "anchor": {
+        "section": "Precession, nutation and intrinsic rotation",
+        "snippet": "intrinsic rotation is around Z"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for intrinsic rotation around the final Z axis was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Orientation-change decomposition depends on frame",
+      "anchor": {
+        "section": "Precession, nutation and intrinsic rotation",
+        "snippet": "this can be described as a combination of precession, nutation, and internal rotation"
+      },
+      "status": "not_formalized",
+      "note": "No declaration decomposing orientation changes into precession, nutation, and internal rotation was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Top intrinsic rotation",
+      "anchor": {
+        "section": "Precession, nutation and intrinsic rotation",
+        "snippet": "the top spinning around its own axis of symmetry corresponds to intrinsic rotation"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for this spinning-top interpretation of intrinsic rotation was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Top precession",
+      "anchor": {
+        "section": "Precession, nutation and intrinsic rotation",
+        "snippet": "this rotation is a precession"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for this spinning-top precession example was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Top nutation",
+      "anchor": {
+        "section": "Precession, nutation and intrinsic rotation",
+        "snippet": "the change of inclination angle is nutation"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for this spinning-top nutation example was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Precession matrix independence",
+      "anchor": {
+        "section": "Precession, nutation and intrinsic rotation",
+        "snippet": "only precession can be expressed in general as a matrix in the basis of the space without dependencies on the other angles"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for this matrix-independence property of precession was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Movements as gimbal set",
+      "anchor": {
+        "section": "Precession, nutation and intrinsic rotation",
+        "snippet": "These movements also behave as a gimbal set"
+      },
+      "status": "not_formalized",
+      "note": "No declaration modeling these Euler-angle movements as a gimbal set was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Intermediate frames",
+      "anchor": {
+        "section": "Precession, nutation and intrinsic rotation",
+        "snippet": "called \"intermediate frames\""
+      },
+      "status": "not_formalized",
+      "note": "No declaration for intermediate frames in Euler-angle or gimbal systems was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Gimbal rings reach any orientation",
+      "anchor": {
+        "section": "Precession, nutation and intrinsic rotation",
+        "snippet": "allow the last frame to reach any orientation in space"
+      },
+      "status": "not_formalized",
+      "note": "No declaration proving orientation reachability by gimbal rings was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tait-Bryan angles",
+      "anchor": {
+        "section": "Tait-Bryan angles",
+        "snippet": "The second type of formalism is called Tait-Bryan angles"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for Tait-Bryan-angle formalism was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Aerospace horizontal attitude convention",
+      "anchor": {
+        "section": "Tait-Bryan angles",
+        "snippet": "zero degrees elevation represents the horizontal attitude"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for this aerospace Tait-Bryan horizontal-zero convention was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Aircraft world-frame orientation",
+      "anchor": {
+        "section": "Tait-Bryan angles",
+        "snippet": "Tait-Bryan angles represent the orientation of the aircraft with respect to the world frame"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for aircraft/world-frame orientation by Tait-Bryan angles was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Vehicle axis convention variability",
+      "anchor": {
+        "section": "Tait-Bryan angles",
+        "snippet": "different axes conventions are possible"
+      },
+      "status": "not_formalized",
+      "note": "No declaration enumerating or comparing vehicle-axis conventions was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tait-Bryan distinct axes",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "Tait-Bryan angles represent rotations about three distinct axes"
+      },
+      "status": "not_formalized",
+      "note": "No declaration formalizing Tait-Bryan angles as three-distinct-axis rotations was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Proper Euler repeated first-third axis",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "proper Euler angles use the same axis for both the first and third elemental rotations"
+      },
+      "status": "not_formalized",
+      "note": "No declaration formalizing proper Euler angles by repeated first and third axes was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Proper Euler line of nodes planes",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "it was defined as the intersection between two homologous Cartesian planes"
+      },
+      "status": "not_formalized",
+      "note": "No declaration defining the proper-Euler line of nodes by homologous Cartesian planes was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tait-Bryan line of nodes",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "it is defined as the intersection of two non-homologous planes"
+      },
+      "status": "not_formalized",
+      "note": "No declaration defining the Tait-Bryan line of nodes by non-homologous planes was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tait-Bryan extrinsic rotations",
+      "anchor": {
+        "section": "Conventions",
+        "snippet": "The three elemental rotations may occur either about the axes of the original coordinate system"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for extrinsic Tait-Bryan rotations was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tait-Bryan intrinsic rotations",
+      "anchor": {
+        "section": "Conventions",
+        "snippet": "or about the axes of the rotating coordinate system"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for intrinsic Tait-Bryan rotations was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tait-Bryan axis choices",
+      "anchor": {
+        "section": "Conventions",
+        "snippet": "There are six possibilities of choosing the rotation axes for Tait-Bryan angles"
+      },
+      "status": "not_formalized",
+      "note": "No declaration enumerating the six Tait-Bryan axis choices was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Yaw, pitch, and roll convention",
+      "anchor": {
+        "section": "Conventions",
+        "snippet": "the intrinsic rotations are known as: yaw, pitch and roll"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for yaw, pitch, and roll as intrinsic Tait-Bryan rotations was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tait-Bryan sign conventions",
+      "anchor": {
+        "section": "Signs and ranges",
+        "snippet": "these conventions determine the signs of the angles"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for Tait-Bryan sign conventions was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Psi and phi range",
+      "anchor": {
+        "section": "Signs and ranges",
+        "snippet": "covers 2 π radians"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.Angle",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Angle",
+        "match_kind": "generalization"
+      },
+      "note": "`Real.Angle` formalizes angles modulo 2π, but not the ψ and φ Tait-Bryan ranges specifically.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Theta range",
+      "anchor": {
+        "section": "Signs and ranges",
+        "snippet": "For θ the range covers π radians"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for the θ Tait-Bryan range was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Heading, bank, and elevation frames",
+      "anchor": {
+        "section": "Alternative names",
+        "snippet": "These angles are normally taken as one in the external reference frame"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for heading, bank, and elevation frame assignments was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Middle-frame elevation",
+      "anchor": {
+        "section": "Alternative names",
+        "snippet": "one in a middle frame"
+      },
+      "status": "not_formalized",
+      "note": "No declaration assigning elevation to a middle frame was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Aircraft principal-axis rotations",
+      "anchor": {
+        "section": "As chained rotations",
+        "snippet": "they can be obtained with three rotations around its principal axes"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for aircraft orientation from three principal-axis rotations was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Yaw gives bearing",
+      "anchor": {
+        "section": "As chained rotations",
+        "snippet": "A yaw will obtain the bearing,"
+      },
+      "status": "not_formalized",
+      "note": "No declaration relating yaw to bearing was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pitch gives elevation",
+      "anchor": {
+        "section": "As chained rotations",
+        "snippet": "a pitch will yield the elevation"
+      },
+      "status": "not_formalized",
+      "note": "No declaration relating pitch to elevation was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Roll gives bank angle",
+      "anchor": {
+        "section": "As chained rotations",
+        "snippet": "a roll gives the bank angle"
+      },
+      "status": "not_formalized",
+      "note": "No declaration relating roll to bank angle was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Yaw, pitch, and roll name",
+      "anchor": {
+        "section": "As chained rotations",
+        "snippet": "in aerospace they are sometimes called yaw, pitch, and roll"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for this aerospace naming convention was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Yaw-pitch-roll order dependence",
+      "anchor": {
+        "section": "As chained rotations",
+        "snippet": "this will not work if the rotations are applied in any other order"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for yaw-pitch-roll order dependence was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Nautical angles",
+      "anchor": {
+        "section": "As chained rotations",
+        "snippet": "also known as nautical angles"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for nautical angles as an alias was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cardan angles",
+      "anchor": {
+        "section": "As chained rotations",
+        "snippet": "or Cardan angles"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for Cardan angles as an alias was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finding Euler angles of a frame",
+      "anchor": {
+        "section": "Angles of a given frame",
+        "snippet": "find the Euler angles of a given frame"
+      },
+      "status": "not_formalized",
+      "note": "No declaration computing Euler angles of a frame was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Matrix column method",
+      "anchor": {
+        "section": "Angles of a given frame",
+        "snippet": "write the three given vectors as columns of a matrix"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "OrthonormalBasis.toMatrix_orthonormalBasis_mem_orthogonal",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves change-of-basis matrices between orthonormal bases are orthogonal, but no Euler-angle column-extraction method was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Elemental geometry method",
+      "anchor": {
+        "section": "Angles of a given frame",
+        "snippet": "the same result can be reached avoiding matrix algebra and using only elemental geometry"
+      },
+      "status": "not_formalized",
+      "note": "No declaration proving equivalence of matrix and geometric methods for extracting Euler angles was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "ZXZ and ZYX conventions",
+      "anchor": {
+        "section": "Angles of a given frame",
+        "snippet": "two most commonly used conventions: ZXZ for proper Euler angles and ZYX for Tait-Bryan"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for the ZXZ and ZYX Euler/Tait-Bryan conventions was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Other conventions by axis renaming",
+      "anchor": {
+        "section": "Angles of a given frame",
+        "snippet": "any other convention can be obtained just changing the name of the axes"
+      },
+      "status": "not_formalized",
+      "note": "No declaration deriving other Euler-angle conventions by axis renaming was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Proper Euler frame-coordinate formulas",
+      "anchor": {
+        "section": "Proper Euler angles",
+        "snippet": "Assuming a frame with unit vectors ( X , Y , Z ) given by their coordinates as in the main diagram"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for the proper-Euler frame-coordinate formulas was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Proper Euler double projection",
+      "anchor": {
+        "section": "Proper Euler angles",
+        "snippet": "is the double projection of a unitary vector"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for the double-projection construction of proper Euler angles was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Proper Euler analogous construction",
+      "anchor": {
+        "section": "Proper Euler angles",
+        "snippet": "There is a similar construction for"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for the analogous proper-Euler construction alluded to here was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Proper Euler inverse cosine formulas",
+      "anchor": {
+        "section": "Proper Euler angles",
+        "snippet": "using the inverse cosine function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.cos_eq_cos_iff",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Complex",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has inverse-trigonometric and cosine equation infrastructure, but no proper-Euler arccos coordinate formulas were found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Tait-Bryan frame-coordinate formulas",
+      "anchor": {
+        "section": "Tait-Bryan angles (2)",
+        "snippet": "Assuming a frame with unit vectors ( X , Y , Z ) given by their coordinates as in this new diagram"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for the Tait-Bryan frame-coordinate formulas was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Negative theta convention",
+      "anchor": {
+        "section": "Tait-Bryan angles (2)",
+        "snippet": "notice that the angle theta is negative"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for this negative-theta Tait-Bryan convention was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Tait-Bryan analogous formulas",
+      "anchor": {
+        "section": "Tait-Bryan angles (2)",
+        "snippet": "in a way analogous to the former one:"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for these analogous Tait-Bryan formulas was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Tait-Bryan expression formulas",
+      "anchor": {
+        "section": "Tait-Bryan angles (2)",
+        "snippet": "Looking for similar expressions to the former ones:"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for the Tait-Bryan expression formulas was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inverse trigonometric ambiguity",
+      "anchor": {
+        "section": "Last remarks",
+        "snippet": "the inverse sine and cosine functions yield two possible values for the argument"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.sin_eq_sin_iff",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Complex",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has general real sine and cosine equality characterizations, but no Euler-angle-specific two-solution ambiguity theorem was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Geometric solution uniqueness",
+      "anchor": {
+        "section": "Last remarks",
+        "snippet": "only one of the solutions is valid"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for geometric selection of the valid Euler-angle inverse-trig solution was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rotation-sequence multiple solutions",
+      "anchor": {
+        "section": "Last remarks",
+        "snippet": "all the solutions can be valid"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for multiple valid solutions to Euler rotation sequences was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Angle-range unique solution",
+      "anchor": {
+        "section": "Last remarks",
+        "snippet": "there will be only one inside the angle ranges"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.Angle",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Angle",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has an angle quotient type and representatives, but no uniqueness theorem for Euler-angle ranges was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Nonunique sequence without ranges",
+      "anchor": {
+        "section": "Last remarks",
+        "snippet": "the sequence of rotations to reach the target frame is not unique"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for nonuniqueness of unrestricted Euler rotation sequences was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Atan2 angle representation",
+      "anchor": {
+        "section": "Last remarks",
+        "snippet": "represent the angles using atan2 ( y , x )"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "polarCoord",
+        "module": "Mathlib.Analysis.SpecialFunctions.PolarCoord",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has polar coordinates using `Complex.arg`, but I found no `atan2`-based Euler-angle representation declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euler angles as orientation representation",
+      "anchor": {
+        "section": "Conversion to other orientation representations",
+        "snippet": "Euler angles are one way to represent orientations"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.specialOrthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines rotation matrices through the special orthogonal group, but no Euler-angle orientation representation was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Change between orientation conventions",
+      "anchor": {
+        "section": "Conversion to other orientation representations",
+        "snippet": "it is possible to change to and from other conventions"
+      },
+      "status": "not_formalized",
+      "note": "No declaration converting to or from Euler-angle orientation conventions was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Three parameters for 3D orientation",
+      "anchor": {
+        "section": "Conversion to other orientation representations",
+        "snippet": "Three parameters are always required to describe orientations in a 3-dimensional Euclidean space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.specialOrthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has SO(n) as special orthogonal matrices, but no theorem that SO(3) orientations require three parameters was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Common orientation representations",
+      "anchor": {
+        "section": "Conversion to other orientation representations",
+        "snippet": "The most common orientation representations are the rotation matrices"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.specialOrthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib formalizes rotation-matrix infrastructure via special orthogonal matrices, but not the article's list of common orientation representations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euler-Rodrigues parameters",
+      "anchor": {
+        "section": "Conversion to other orientation representations",
+        "snippet": "also known as Euler-Rodrigues parameters"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Quaternion.linearIsometryEquivTuple",
+        "module": "Mathlib.Analysis.Quaternion",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has real quaternion infrastructure, but no declaration identifying unit quaternions as Euler-Rodrigues parameters was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quaternion rotation advantage",
+      "anchor": {
+        "section": "Conversion to other orientation representations",
+        "snippet": "Concatenating rotations is computationally faster and numerically more stable"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Quaternion.linearIsometryEquivTuple",
+        "module": "Mathlib.Analysis.Quaternion",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has quaternion infrastructure, but no theorem about computational speed or numerical stability of quaternion rotation concatenation was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quaternion angle-axis extraction",
+      "anchor": {
+        "section": "Conversion to other orientation representations",
+        "snippet": "Extracting the angle and axis of rotation is simpler"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Quaternion.exp_eq",
+        "module": "Mathlib.Analysis.Normed.Algebra.QuaternionExponential",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves closed forms for the quaternion exponential, but no angle-axis extraction theorem for rotations was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quaternion interpolation",
+      "anchor": {
+        "section": "Conversion to other orientation representations",
+        "snippet": "Interpolation is more straightforward"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for quaternion interpolation of orientations was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quaternions avoid gimbal lock",
+      "anchor": {
+        "section": "Conversion to other orientation representations",
+        "snippet": "Quaternions do not suffer from gimbal lock as Euler angles do"
+      },
+      "status": "not_formalized",
+      "note": "No declaration comparing quaternions and Euler angles with respect to gimbal lock was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rotation matrix as first conversion step",
+      "anchor": {
+        "section": "Conversion to other orientation representations",
+        "snippet": "the rotation matrix calculation is the first step for obtaining the other two representations"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.specialOrthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has rotation-matrix infrastructure, but no conversion pipeline from Euler angles through matrices to other representations was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Orientation by three elemental rotations",
+      "anchor": {
+        "section": "Rotation matrix",
+        "snippet": "Any orientation can be achieved by composing three elemental rotations"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.specialOrthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines the target rotation group, but no theorem decomposing any 3D orientation into three elemental rotations was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rotation matrix decomposition",
+      "anchor": {
+        "section": "Rotation matrix",
+        "snippet": "any rotation matrix R can be decomposed as a product of three elemental rotation matrices"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.specialOrthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines special orthogonal matrices, but no Euler-style product decomposition into three elemental rotation matrices was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Rotation matrix convention example",
+      "anchor": {
+        "section": "Rotation matrix",
+        "snippet": "is a rotation matrix that may be used to represent a composition of extrinsic rotations"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Orientation.rotation_eq_matrix_toLin",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Oriented.Rotation",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib gives a two-dimensional oriented rotation matrix formula, but no 3D extrinsic Euler matrix example was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Matrix convention dependence",
+      "anchor": {
+        "section": "Rotation matrix",
+        "snippet": "their multiplication order depend on the choices taken by the user"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for convention-dependent Euler rotation matrix multiplication order was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Column-vector matrix convention",
+      "anchor": {
+        "section": "Rotation matrix",
+        "snippet": "Each matrix is meant to operate by pre-multiplying column vectors"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Orientation.rotation_eq_matrix_toLin",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Oriented.Rotation",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib's 2D rotation theorem uses `Matrix.toLin` for matrix action on coordinates, but no Euler matrix convention declaration was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Active rotation matrix convention",
+      "anchor": {
+        "section": "Rotation matrix",
+        "snippet": "Each matrix is meant to represent an active rotation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Orientation.rotation",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Oriented.Rotation",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib defines active two-dimensional rotations as linear isometries, but no active Euler rotation-matrix convention was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Intrinsic matrix convention",
+      "anchor": {
+        "section": "Rotation matrix",
+        "snippet": "Each matrix is meant to represent, primarily, a composition of intrinsic rotations"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for intrinsic Euler rotation-matrix convention was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Right-handed matrix convention",
+      "anchor": {
+        "section": "Rotation matrix",
+        "snippet": "Right handed reference frames are adopted"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Orientation.finOrthonormalBasis",
+        "module": "Mathlib.Analysis.InnerProductSpace.Orientation",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes oriented orthonormal bases, but no right-handed Euler matrix convention declaration was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Elemental rotation matrices",
+      "anchor": {
+        "section": "Rotation matrix",
+        "snippet": "X , Y , Z are the matrices representing the elemental rotations about the axes x , y , z"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Orientation.rotation_eq_matrix_toLin",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Oriented.Rotation",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has a two-dimensional rotation matrix formula, but no 3D x/y/z elemental rotation matrices were found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sine and cosine abbreviations",
+      "anchor": {
+        "section": "Rotation matrix",
+        "snippet": "s and c represent sine and cosine"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for the article's `s` and `c` matrix-entry abbreviations was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Passive rotations by transpose",
+      "anchor": {
+        "section": "Rotation matrix",
+        "snippet": "transpose the matrices"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.mem_orthogonalGroup_iff'",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib characterizes orthogonal matrices by transpose multiplication, but no passive-rotation-by-transpose Euler convention theorem was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rotation matrix angle formulas",
+      "anchor": {
+        "section": "Rotation matrix",
+        "snippet": "from elements of a rotation matrix"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Orientation.rotation_eq_matrix_toLin",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Oriented.Rotation",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib's 2D rotation matrix exposes sine and cosine entries, but no 3D Euler angle extraction formulas from matrix entries were found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euler angles chart SO(3)",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The Euler angles form a chart on all of SO(3)"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.specialOrthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines special orthogonal matrices, but no Euler-angle chart on SO(3) was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euler chart singularity",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The chart is smooth except for a polar coordinate style singularity along β = 0"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for smoothness or singularities of an Euler-angle chart was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Spin(3) as hypersphere",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "the group Spin(3) is isometric to the hypersphere S 3"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CliffordAlgebra.spinGroup",
+        "module": "Mathlib.LinearAlgebra.CliffordAlgebra.SpinGroup",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines the Clifford-algebra spin group, but no isometry between Spin(3) and S^3 was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "SO(3) as real projective space",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "the rotation space SO(3) is instead isometric to the real projective space RP 3"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Projectivization",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines projectivization, but no isometry identifying SO(3) with real projective 3-space was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Two-to-one spin ambiguity",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "This 2-to-1 ambiguity is the mathematical origin of spin in physics"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CliffordAlgebra.spinGroup",
+        "module": "Mathlib.LinearAlgebra.CliffordAlgebra.SpinGroup",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines `spinGroup`, but I found no two-to-one Spin(3) to SO(3) covering or physics-origin statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "SU(2) three-angle decomposition",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "A similar three angle decomposition applies to SU(2)"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.specialUnitaryGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines special unitary groups, but no three-angle decomposition for SU(2) was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "SU(2) beta range",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "β ranges from 0 to 2 π"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for an SU(2) Euler-angle β range was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "SO(3) Haar measure",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The Haar measure for SO(3) in Euler angles is given by the Hopf angle parametrisation of SO(3)"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Measure.IsHaarMeasure",
+        "module": "Mathlib.MeasureTheory.Group.Measure",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines Haar measures on groups, but no SO(3) Euler/Hopf-angle Haar measure formula was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Uniform random orientation generation",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "to generate uniformly randomized orientations"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Measure.IsHaarMeasure",
+        "module": "Mathlib.MeasureTheory.Group.Measure",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has Haar-measure infrastructure, but no random-orientation generation algorithm was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Geometric algebra abstraction",
+      "anchor": {
+        "section": "Geometric algebra",
+        "snippet": "geometric algebra , a higher level abstraction"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CliffordAlgebra",
+        "module": "Mathlib.LinearAlgebra.CliffordAlgebra.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines Clifford algebras, but no geometric-algebra abstraction for Euler-angle rotations was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rotor",
+      "anchor": {
+        "section": "Geometric algebra",
+        "snippet": "The principal tool in geometric algebra is the rotor"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CliffordAlgebra.spinGroup",
+        "module": "Mathlib.LinearAlgebra.CliffordAlgebra.SpinGroup",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines spin groups in Clifford algebras, but no declaration named or defining rotors was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Higher-dimensional Euler analogues",
+      "anchor": {
+        "section": "Higher dimensions",
+        "snippet": "It is possible to define parameters analogous to the Euler angles in dimensions higher than three"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for higher-dimensional analogues of Euler angles was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rotation about an axis fails in high dimensions",
+      "anchor": {
+        "section": "Higher dimensions",
+        "snippet": "the concept of \"rotation about an axis\" loses meaning"
+      },
+      "status": "not_formalized",
+      "note": "No declaration stating that axis rotations lose meaning in higher dimensions was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rotation in a plane",
+      "anchor": {
+        "section": "Higher dimensions",
+        "snippet": "instead becomes \"rotation in a plane.\""
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Orientation.rotation",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Oriented.Rotation",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib defines rotations in oriented two-dimensional planes, but no higher-dimensional plane-rotation replacement for Euler axes was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Number of Euler angles for SO(n)",
+      "anchor": {
+        "section": "Higher dimensions",
+        "snippet": "The number of Euler angles needed to represent the group SO( n ) is n ( n − 1)/2"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LieAlgebra.Orthogonal.so",
+        "module": "Mathlib.Algebra.Lie.Classical",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines the orthogonal Lie algebra, but no SO(n) Euler-angle count formula n(n-1)/2 was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euler angles and coordinate planes",
+      "anchor": {
+        "section": "Higher dimensions",
+        "snippet": "equal to the number of planes containing two distinct coordinate axes in n -dimensional Euclidean space"
+      },
+      "status": "not_formalized",
+      "note": "No declaration equating higher-dimensional Euler-angle counts with coordinate-plane counts was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "SO(4) rotation matrix quaternions",
+      "anchor": {
+        "section": "Higher dimensions",
+        "snippet": "In SO(4) a rotation matrix is defined by two unit quaternions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Quaternion.linearIsometryEquivTuple",
+        "module": "Mathlib.Analysis.Quaternion",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes quaternions as a real four-dimensional normed algebra, but no SO(4) two-unit-quaternion rotation representation was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "SO(4) degrees of freedom",
+      "anchor": {
+        "section": "Higher dimensions",
+        "snippet": "therefore has six degrees of freedom"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.specialOrthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines SO(n) as special orthogonal matrices, but no theorem that SO(4) has six degrees of freedom was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Gimbal direct measurability",
+      "anchor": {
+        "section": "Vehicles and moving frames",
+        "snippet": "directly measurable from a gimbal mounted in a vehicle"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for direct measurability of Euler angles from a vehicle gimbal was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Gyro and lab frame equivalence",
+      "anchor": {
+        "section": "Vehicles and moving frames",
+        "snippet": "angles measured in a gyro frame are equivalent to angles measured in the lab frame"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for equivalence of gyro-frame and lab-frame Euler-angle measurements was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euler angles directly measurable",
+      "anchor": {
+        "section": "Vehicles and moving frames",
+        "snippet": "Euler angles are directly measurable"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for direct measurability of Euler angles was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Intrinsic rotation requires multiple gimbals",
+      "anchor": {
+        "section": "Vehicles and moving frames",
+        "snippet": "Intrinsic rotation angle cannot be read from a single gimbal"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for the gimbal-readability limitation of intrinsic rotation was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Space coordinates",
+      "anchor": {
+        "section": "Vehicles and moving frames",
+        "snippet": "the xyz system space coordinates"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "OrthonormalBasis",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes coordinate frames as orthonormal bases, but no specific space-coordinate convention for Euler angles was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Body coordinates",
+      "anchor": {
+        "section": "Vehicles and moving frames",
+        "snippet": "the XYZ system body coordinates"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "OrthonormalBasis",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes coordinate frames as orthonormal bases, but no specific body-coordinate convention for Euler angles was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Body-coordinate inertia tensor constancy",
+      "anchor": {
+        "section": "Vehicles and moving frames",
+        "snippet": "the moment of inertia tensor does not change in time"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for moment-of-inertia tensor constancy in body coordinates was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Principal axes",
+      "anchor": {
+        "section": "Vehicles and moving frames",
+        "snippet": "one has a set of coordinates (called the principal axes)"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "OrthonormalBasis",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has orthonormal bases as coordinate axes, but no inertia-tensor principal-axis declaration tied to Euler angles was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Angular velocity in moving frame",
+      "anchor": {
+        "section": "Vehicles and moving frames",
+        "snippet": "The angular velocity of a rigid body takes a simple form using Euler angles in the moving frame"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for angular velocity of a rigid body in Euler angles was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euler rigid body equations",
+      "anchor": {
+        "section": "Vehicles and moving frames",
+        "snippet": "Euler's rigid body equations are simpler because the inertia tensor is constant in that frame"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for Euler's rigid body equations or their body-frame simplification was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Crystallographic texture by Euler angles",
+      "anchor": {
+        "section": "Crystallographic texture",
+        "snippet": "crystallographic texture (or preferred orientation) can be described using Euler angles"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for crystallographic texture described by Euler angles was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Crystallite orientation depiction",
+      "anchor": {
+        "section": "Crystallographic texture",
+        "snippet": "the Euler angles provide a mathematical depiction of the orientation of individual crystallites"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for crystallite orientation depiction by Euler angles was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bunge ZXZ convention",
+      "anchor": {
+        "section": "Crystallographic texture",
+        "snippet": "corresponds to the ZXZ convention"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for the Bunge ZXZ convention was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Texture passive rotations",
+      "anchor": {
+        "section": "Crystallographic texture",
+        "snippet": "passive rotations"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for passive rotations in crystallographic texture Euler-angle conventions was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bunge matrix transpose",
+      "anchor": {
+        "section": "Crystallographic texture",
+        "snippet": "the matrix that corresponds to the Bunge Euler angles is the transpose of that shown in the table above"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for the Bunge Euler-angle matrix transpose convention was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Robotics wrist degrees of freedom",
+      "anchor": {
+        "section": "Others",
+        "snippet": "Euler angles, normally in the Tait-Bryan convention, are also used in robotics"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for robotics use of Euler or Tait-Bryan angles was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Electronic stability control",
+      "anchor": {
+        "section": "Others",
+        "snippet": "used in electronic stability control"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for electronic-stability-control use of Euler angles was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Camera pointing in 3D modeling",
+      "anchor": {
+        "section": "Others",
+        "snippet": "pointing a camera in 3D modeling"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for camera pointing by Euler angles in 3D modeling was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Gun fire control corrections",
+      "anchor": {
+        "section": "Others",
+        "snippet": "Gun fire control systems require corrections to gun-order angles"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for gun fire-control angle corrections was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Gun order Euler angle computations",
+      "anchor": {
+        "section": "Others",
+        "snippet": "those computations involve Euler angles"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for gun-order computations involving Euler angles was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Angular momentum quantum mechanics",
+      "anchor": {
+        "section": "Others",
+        "snippet": "Euler angles are also used extensively in the quantum mechanics of angular momentum"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for quantum-angular-momentum use of Euler angles was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "SO(3) representations in quantum mechanics",
+      "anchor": {
+        "section": "Others",
+        "snippet": "explicit descriptions of the representations of SO(3) are very important for calculations"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.specialOrthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines SO(n)-style special orthogonal matrices, but no explicit SO(3) representation theory for quantum calculations was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euler angles in SO(3) calculations",
+      "anchor": {
+        "section": "Others",
+        "snippet": "almost all the work has been done using Euler angles"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for using Euler angles in SO(3) representation calculations was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Mobile-device Euler angles",
+      "anchor": {
+        "section": "Others",
+        "snippet": "accelerometers which can determine these devices' Euler angles"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for accelerometer determination of mobile-device Euler angles was found in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Euler-angle mobile applications",
+      "anchor": {
+        "section": "Others",
+        "snippet": "These are used in applications such as games, bubble level simulations, and kaleidoscopes"
+      },
+      "status": "not_formalized",
+      "note": "No declaration for these mobile-application uses of Euler angles was found in Mathlib/.",
+      "provenance": "ai"
+    }
+  ]
+}
