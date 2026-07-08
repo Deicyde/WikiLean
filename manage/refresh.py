@@ -23,6 +23,8 @@ ROOT = Path(__file__).resolve().parent.parent
 HERE = Path(__file__).resolve().parent
 DATA = HERE / "data"
 GRAPH = ROOT / "catalog" / "data" / "concept_graph.json"
+sys.path.insert(0, str(ROOT / "bot"))
+import pool
 
 
 def _run(cmd: list[str], cwd: Path = ROOT, optional: bool = False) -> bool:
@@ -64,7 +66,7 @@ def refresh(pull: bool = False) -> dict:
             # annotation layer is newer, article-level coverage has moved under it.
             "graph_older_than_annotations": graph_mtime < ann_mtime,
         },
-        "pool": {"fresh_candidates": n_pool, "approx_batches": round(n_pool / 25, 1),
+        "pool": {"fresh_candidates": n_pool, "approx_batches": round(n_pool / pool.BATCH_SIZE, 1),
                  "field_qids_excluded": pipe["excluded_fields"]},
         # True totals per queue (never the capped list length), plus a small preview.
         "worklists": {

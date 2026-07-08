@@ -1,6 +1,6 @@
 # WikiLean daily `@[wikidata]` batch bot
 
-Runs one batch of 25 `@[wikidata]` cross-reference tags per day through review →
+Runs one batch of 10 `@[wikidata]` cross-reference tags per day through review →
 merge-or-recycle against `leanprover-community/mathlib4`.
 
 ## The loop
@@ -13,8 +13,8 @@ Each run does two phases:
      green tags (`split.py`, force-push), then post a ready-to-merge comment.
    - A maintainer (jcommelin) merges the now-all-green PR (bot can't merge upstream).
 2. **Open** the next batch (`open_batch_pr.py`): requeued (retargeted) recycled
-   tags + fresh pool tags → 25 → new PR + crossref comments + `LLM-generated`
-   label + side-by-side table.
+   tags + Brain-suggested `formalizes` edges + fresh pool tags → 10 → new PR +
+   crossref comments + `LLM-generated` label + side-by-side table.
 
 ## Per-tag rule (`settle.py`)
 
@@ -60,6 +60,11 @@ fetch/parse/git/gh — no LLM.
 
 `state/bot_state.json` tracks `{current_pr, batch_num, branch}`;
 `state/recycle_queue.json` carries requeued retargets to the next batch.
+`state/brain_queue.json` carries graduated Brain `formalizes` edges for the
+review-gated Brain lane:
+
+    python3 brain/harvest_community_edges.py   # graduate live Brain edits
+    python3 bot/brain_queue.py                 # refresh state/brain_queue.json
 
 ## Files
 
@@ -68,5 +73,6 @@ fetch/parse/git/gh — no LLM.
 | `settle.py` | gate + green/recycle classification | no |
 | `split.py` | remove recycled tags, rebuild, force-push to greens | no |
 | `triage.py` | requeue-vs-cut + retarget suggestion | **yes** |
+| `brain_queue.py` | graduated Brain formalizes edges → queue suggestions | no |
 | `daily_bot.py` | orchestrator (settle → split → triage → open) | only via triage |
 | `open_batch_pr.py` | apply tags + build + open PR (from the existing pipeline) | no |
