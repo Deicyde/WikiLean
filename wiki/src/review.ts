@@ -328,7 +328,12 @@ export interface ExternalInfo {
   lead: string | null;
 }
 
-function externalInfo(spec: CrossRefSpec, id: string, wd: WdInfo | null = null): ExternalInfo {
+export interface LmfdbInfo {
+  title: string | null;
+  description: string | null;
+}
+
+function externalInfo(spec: CrossRefSpec, id: string, wd: WdInfo | null = null, lmfdb: LmfdbInfo | null = null): ExternalInfo {
   if (spec.db === "wikidata") {
     return {
       db: spec.db,
@@ -345,8 +350,8 @@ function externalInfo(spec: CrossRefSpec, id: string, wd: WdInfo | null = null):
     db: spec.db,
     id,
     label: id,
-    title: id,
-    description: `${spec.label} knowl`,
+    title: lmfdb?.title ?? id,
+    description: lmfdb?.description ?? null,
     url: crossRefUrl(spec.db, id),
     contextUrl: crossRefUrl(spec.db, id),
     lead: null,
@@ -392,6 +397,40 @@ async function fetchWikidata(qids: string[], env: Env): Promise<Map<string, WdIn
       await env.RENDER_CACHE.put(`wd:${q}`, JSON.stringify(info), { expirationTtl: 60 * 60 * 24 * 7 });
     }
   }
+  return out;
+}
+
+// LMFDB knowl pages have one stable page-level title plus the actual knowl body
+// in `.knowl-content`.  Extract a compact plaintext summary from that body.
+export function parseLmfdbKnowlHtml(html: string): LmfdbInfo {
+  const titleHtml = (html.match(/<div\s+id=["']title["'][^>]*>([\s\S]*?)<\/div>/i) || [])[1] ?? "";
+  const rawTitle = cleanLead(htmlLeadToText(titleHtml || "")) || null;
+  const title = rawTitle ? rawTitle.replace(/\s*\((?:reviewed|beta|needs review)\)\s*$/i, "") : null;
+  const bodyHtml = (html.match(/<div\b[^>]*class=["'][^"']*\bknowl-content\b[^"']*["'][^>]*>([\s\S]*?)<\/div>/i) || [])[1] ?? "";
+  const description = cleanLead(htmlLeadToText(bodyHtml || "")) || null;
+  return { title, description };
+}
+
+async function fetchLmfdbKnowls(ids: string[], env: Env): Promise<Map<string, LmfdbInfo>> {
+  const out = new Map<string, LmfdbInfo>();
+  const missing: string[] = [];
+  for (const id of [...new Set(ids)]) {
+    const c = await env.RENDER_CACHE.get(`lmfdbk:v1:${id}`);
+    if (c !== null) out.set(id, JSON.parse(c) as LmfdbInfo);
+    else missing.push(id);
+  }
+  await runPool(missing, 4, async (id) => {
+    try {
+      const r = await fetch(crossRefUrl("lmfdb", id), { headers: { "User-Agent": UA } });
+      if (!r.ok) return;
+      const info = parseLmfdbKnowlHtml(await r.text());
+      if (!info.title && !info.description) return;
+      out.set(id, info);
+      await env.RENDER_CACHE.put(`lmfdbk:v1:${id}`, JSON.stringify(info), { expirationTtl: 60 * 60 * 24 * 7 });
+    } catch {
+      // Keep the review page usable if LMFDB is slow/unreachable.
+    }
+  });
   return out;
 }
 
@@ -934,6 +973,7 @@ async function buildReviewPayload(
   const sourceById = new Map<string, string>();
   const declById = new Map<string, string>();
   let wdById = new Map<string, WdInfo>();
+  let lmfdbById = new Map<string, LmfdbInfo>();
   if (renderMarkdown && env) {
     // Full bodies: fetch each unique file once, in parallel, then slice.
     const fileCache = new Map<string, string[] | null>();
@@ -957,6 +997,8 @@ async function buildReviewPayload(
       const titles = [...wdById.values()].map((w) => w.enwikiTitle).filter((x): x is string => !!x);
       const leads = await fetchLeads(titles, env);
       for (const [, w] of wdById) if (w.enwikiTitle) w.lead = leads.get(w.enwikiTitle) ?? null;
+    } else if (spec.db === "lmfdb") {
+      lmfdbById = await fetchLmfdbKnowls([...new Set(tags.map((t) => t.id))], env);
     }
   }
 
@@ -973,7 +1015,7 @@ async function buildReviewPayload(
       comments: [...(byLine.get(keyOf(t.file, t.line)) ?? []), ...(pastedById.get(t.id) ?? [])],
       source: sourceById.get(t.id) ?? t.hunk.join("\n"),
       wd: wdById.get(t.id) ?? null,
-      external: externalInfo(spec, t.id, wdById.get(t.id) ?? null),
+      external: externalInfo(spec, t.id, wdById.get(t.id) ?? null, lmfdbById.get(t.id) ?? null),
       decl: declById.get(t.id) ?? null,
     })),
   };
@@ -984,7 +1026,7 @@ async function buildReviewPayload(
 const OWNER_RE = /^[A-Za-z0-9_.-]+$/;
 
 function reviewCacheKey(owner: string, repo: string, pr: number, db = "wikidata"): string {
-  return `reviewpayload:${db}:${owner}/${repo}:${pr}`;
+  return `reviewpayload:v2:${db}:${owner}/${repo}:${pr}`;
 }
 
 export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {

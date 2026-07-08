@@ -12,6 +12,7 @@ import {
   mathToUnicode,
   htmlLeadToText,
   parseClipboardReview,
+  parseLmfdbKnowlHtml,
 } from "../src/review.js";
 
 describe("parseWikidataTags", () => {
@@ -214,6 +215,21 @@ describe("parseClipboardReview", () => {
     expect(parseClipboardReview(pasted, "lmfdb")).toEqual([
       { qid: "group.abelian", db: "lmfdb", status: "approve", note: "" },
     ]);
+  });
+});
+
+describe("parseLmfdbKnowlHtml", () => {
+  it("extracts the page title and actual knowl prose", () => {
+    const html = [
+      '<div id="title">Abelian group (reviewed)</div>',
+      '<div class="knowl"><div><div class="knowl-content">',
+      '<p>A <a knowl="group">group</a> is <strong>abelian</strong> if its operation is commutative.</p>',
+      "</div></div></div>",
+    ].join("");
+    expect(parseLmfdbKnowlHtml(html)).toEqual({
+      title: "Abelian group",
+      description: "A group is abelian if its operation is commutative.",
+    });
   });
 });
 
