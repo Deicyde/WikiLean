@@ -10,11 +10,15 @@ Auth: --token or $PIPELINE_TOKEN. --dry-run prints the payload instead of POSTin
 """
 import argparse, json, os, subprocess, sys
 from pathlib import Path
+try:
+    from crossref import normalize_tag, spec
+except ModuleNotFoundError:  # importable as bot.publish_queue
+    from .crossref import normalize_tag, spec
 
 DEV_VARS = Path(__file__).resolve().parent.parent / "wiki" / ".dev.vars"
 WD_API = "https://www.wikidata.org/w/api.php"
 META_FIELDS = {
-    "article_qid", "orig_qid", "centrality_pct", "brain_rank", "wikilink_rank",
+    "article_qid", "orig_qid", "orig_id", "concept_qid", "centrality_pct", "brain_rank", "wikilink_rank",
     "rank_delta", "provenance_tier", "source_file", "priority_source",
     "review_reason", "brain_node", "decl_node", "source", "actor_type",
     "added_by", "brain_edge_id", "confidence",
@@ -61,9 +65,18 @@ def read_items(path):
     return data if isinstance(data, list) else []
 
 
-def queue_item(src, status):
-    item = {"qid": src["qid"], "label": src.get("label"), "decl": src.get("decl", ""),
-            "file": src.get("file"), "status": status}
+def queue_item(src, status, default_db="wikidata"):
+    norm = normalize_tag(src, default_db)
+    item = {
+        "db": norm["db"],
+        "id": norm["id"],
+        "label": src.get("label"),
+        "decl": src.get("decl", ""),
+        "file": src.get("file"),
+        "status": status,
+    }
+    if norm["db"] == "wikidata":
+        item["qid"] = norm["id"]
     for field in META_FIELDS:
         if field in src and src[field] is not None:
             item[field] = src[field]
@@ -73,68 +86,81 @@ def queue_item(src, status):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--wiki", default="https://wikilean.jackmccarthy.org")
+    ap.add_argument("--db", default="wikidata", help="queue database to publish (default: wikidata)")
     ap.add_argument("--payload", type=Path)
     ap.add_argument("--recycle", type=Path)
     ap.add_argument("--brain", type=Path)
     ap.add_argument("--candidates", type=Path)
-    ap.add_argument("--exclude", default="", help="comma-separated qids to omit from the published queue")
+    ap.add_argument("--exclude", default="", help="comma-separated ids to omit from the published queue")
     ap.add_argument("--token", default="")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
+    sp = spec(args.db)
     token = args.token or find_token()
     exclude = {q.strip() for q in args.exclude.split(",") if q.strip()}
 
     items = []
     if args.payload and args.payload.exists():
-        items += [i for i in read_items(args.payload) if i.get("qid") not in exclude]
+        items += [queue_item(i, i.get("status", "unreviewed"), sp.db) for i in read_items(args.payload)
+                  if normalize_tag(i, sp.db)["id"] not in exclude]
     if args.recycle and args.recycle.exists():
         for e in read_items(args.recycle):
             t = e.get("triage", {})
             fix = t.get("fix_hint", "")
-            qid = t.get("suggested_qid") or e["qid"]
-            if qid in exclude:
+            ident = t.get("suggested_id") or t.get("suggested_qid") or e.get("id") or e.get("qid")
+            if not ident:
                 continue
-            items.append({
+            if ident in exclude:
+                continue
+            src = {
                 # The corrected concept (what will actually be re-tagged), not the
-                # original broad QID; keep the original as context.
-                "qid": qid,
-                "orig_qid": e["qid"],
+                # original broad id; keep the original as context.
+                "db": sp.db,
+                "id": ident,
+                "orig_id": e.get("id") or e.get("qid"),
                 "decl": t.get("suggested_decl") or e.get("decl") or e.get("current_decl", ""),
                 "file": e.get("file"),
-                "status": "recycled",
                 "source": "recycled-review",
                 "priority_source": "review-feedback",
                 "review_reason": "Reviewer recycle plus triage retarget",
                 "notes": e.get("notes", []),
                 "retarget": (((t.get("suggested_decl") or "") + (" — " + fix if fix else "")).strip(" —")),
-            })
+            }
+            if sp.db == "wikidata":
+                src["qid"] = ident
+                src["orig_qid"] = e.get("qid")
+            items.append(queue_item(src, "recycled", sp.db))
     if args.brain and args.brain.exists():
         for b in read_items(args.brain):
-            if b.get("qid") in exclude:
+            ident = normalize_tag(b, sp.db)["id"]
+            if ident in exclude:
                 continue
-            item = queue_item(b, "brain")
+            item = queue_item(b, "brain", sp.db)
             item.setdefault("source", "brain-community")
             item.setdefault("priority_source", "brain")
             items.append(item)
     if args.candidates and args.candidates.exists():
         for c in read_items(args.candidates):
-            if c.get("qid") in exclude:
+            ident = normalize_tag(c, sp.db)["id"]
+            if ident in exclude:
                 continue
-            item = queue_item(c, "unreviewed")
+            item = queue_item(c, "unreviewed", sp.db)
             item.setdefault("source", "catalog-pool")
             items.append(item)
 
-    # Stamp every item with the authoritative Wikidata label for its (tagged) QID.
-    labs = wikidata_labels([it.get("qid") for it in items])
-    for it in items:
-        it["label"] = labs.get(it.get("qid")) or it.get("label")
+    # Stamp Wikidata items with authoritative labels for their tagged QID.
+    if sp.db == "wikidata":
+        labs = wikidata_labels([it.get("qid") for it in items])
+        for it in items:
+            it["label"] = labs.get(it.get("qid")) or it.get("label")
 
     payload = {"items": items}
     if args.dry_run:
         print(json.dumps(payload, indent=1)); return
     if not token:
         sys.exit("no token: set WIKILEAN_API_TOKEN, pass --token, or add PIPELINE_TOKEN= to wiki/.dev.vars")
-    r = subprocess.run(["curl", "-sS", "-X", "POST", args.wiki + "/api/queue",
+    endpoint = args.wiki.rstrip("/") + "/api/queue" + ("" if sp.db == "wikidata" else f"/{sp.db}")
+    r = subprocess.run(["curl", "-sS", "-X", "POST", endpoint,
                         "-H", "Authorization: Bearer " + token,
                         "-H", "Content-Type: application/json", "-d", json.dumps(payload)],
                        capture_output=True, text=True)

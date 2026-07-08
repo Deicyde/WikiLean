@@ -66,6 +66,32 @@ review-gated Brain lane:
     python3 brain/harvest_community_edges.py   # graduate live Brain edits
     python3 bot/brain_queue.py                 # refresh state/brain_queue.json
 
+## Database-agnostic review/queue lane
+
+The daily loop above is still the Wikidata lane, but the lower-level queue and
+review pieces now work over a generic crossref shape: `{db, id, decl, file}`.
+Legacy `{qid, decl, file}` rows are normalized to `{db:"wikidata", id:qid}`.
+
+Supported queue/review databases:
+
+- `wikidata` → `@[wikidata Q...]`, `/queue`, `/api/queue`, `/review?...`
+- `lmfdb` → `@[lmfdb knowl.id]`, `/queue/lmfdb`, `/api/queue/lmfdb`,
+  `/review?...&db=lmfdb`
+
+LMFDB candidates can be built deterministically from the Brain graph by joining
+Wikidata P12987 knowl xrefs to Brain `formalizes` edges:
+
+    python3 bot/lmfdb_queue.py --dry-run
+    python3 bot/lmfdb_queue.py
+    python3 bot/publish_queue.py --db lmfdb --payload bot/state/lmfdb_queue.json
+
+For an approved LMFDB batch JSON, use the same PR applicator:
+
+    python3 bot/open_batch_pr.py --approved lmfdb_approved.json --mathlib ~/mathlib4 --all
+
+The generic settler/table/splitter take `--db lmfdb`; without `--db` they remain
+Wikidata-compatible.
+
 ## Files
 
 | file | role | LLM? |
@@ -74,5 +100,6 @@ review-gated Brain lane:
 | `split.py` | remove recycled tags, rebuild, force-push to greens | no |
 | `triage.py` | requeue-vs-cut + retarget suggestion | **yes** |
 | `brain_queue.py` | graduated Brain formalizes edges → queue suggestions | no |
+| `lmfdb_queue.py` | Brain LMFDB xrefs + formalizes edges → queue suggestions | no |
 | `daily_bot.py` | orchestrator (settle → split → triage → open) | only via triage |
 | `open_batch_pr.py` | apply tags + build + open PR (from the existing pipeline) | no |

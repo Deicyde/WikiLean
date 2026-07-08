@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Deterministic reviewer table for a PR's @[wikidata] tags.
+"""Deterministic reviewer table for a PR's cross-reference tags.
 
 Consumes the review tool's /api/review payload — which already derives each
 tag's namespace-qualified declaration (extractDeclName) and Wikidata label
@@ -9,7 +9,14 @@ no judgement: same PR in → same table out.
   pr_table.py <pr> [--repo owner/name] [--header "…"]
 """
 import argparse, json, re, subprocess, sys
-import settle
+try:
+    import settle
+except ModuleNotFoundError:  # importable as bot.pr_table
+    from . import settle
+try:
+    from crossref import spec
+except ModuleNotFoundError:  # importable as bot.pr_table
+    from .crossref import spec
 
 WIKI = "https://wikilean.jackmccarthy.org"
 # what reviewers put -> dot. A bare note (no verdict) shows as a comment marker.
@@ -27,9 +34,10 @@ def reviews_cell(verdicts):
     return " · ".join(parts)
 
 
-def table(pr, repo="leanprover-community/mathlib4", header=None, fresh=False):
+def table(pr, repo="leanprover-community/mathlib4", header=None, fresh=False, db="wikidata"):
+    sp = spec(db)
     owner, name = repo.split("/")
-    url = f"{WIKI}/api/review/{owner}/{name}/{pr}"
+    url = f"{WIKI}/api/review/{owner}/{name}/{pr}?db={sp.db}"
     out = subprocess.run(["curl", "-s", "-H", "User-Agent: WikiLean-bot/1.0", url],
                          capture_output=True, text=True).stdout
     data = json.loads(out)
@@ -37,24 +45,27 @@ def table(pr, repo="leanprover-community/mathlib4", header=None, fresh=False):
         raise SystemExit(f"/api/review error: {data.get('error')}")
     decls = data.get("decls", [])
     # per-tag reviewer verdicts (deterministic — same logic as the settler)
-    cls = settle.classify(pr, repo)
-    verdicts = {e["qid"]: e["verdicts"] for e in cls["green"] + cls["recycle"]}
+    cls = settle.classify(pr, repo, sp.db)
+    verdicts = {(e.get("id") or e.get("qid")): e["verdicts"] for e in cls["green"] + cls["recycle"]}
     rows = []
     for i, d in enumerate(decls, 1):
-        qid = d["qid"]
+        ident = d.get("id") or d.get("qid")
         decl = d.get("decl") or "?"
+        external = d.get("external") or {}
         wd = d.get("wd") or {}
-        concept = wd.get("enwikiTitle") or wd.get("label") or ""
-        wp = wd.get("enwikiUrl")
-        c = f"[{concept}]({wp})" if (concept and wp) else (concept or "—")
-        rows.append(f"| {i} | {c} | [{qid}](https://www.wikidata.org/wiki/{qid}) | `{decl}` | {reviews_cell(verdicts.get(qid, {}))} |")
+        concept = external.get("title") or wd.get("enwikiTitle") or external.get("label") or wd.get("label") or ""
+        concept_url = external.get("contextUrl") or wd.get("enwikiUrl")
+        c = f"[{concept}]({concept_url})" if (concept and concept_url) else (concept or "—")
+        link = external.get("url") or sp.link(ident)
+        rows.append(f"| {i} | {c} | [{ident}]({link}) | `{decl}` | {reviews_cell(verdicts.get(ident, {}))} |")
     head = header or (
-        f"This PR adds **{len(decls)}** `@[wikidata]` cross-reference tags." if fresh
-        else f"This PR was trimmed to the **{len(decls)}** `@[wikidata]` tags that were approved 🟢 in review.")
-    return (head + "\n\n| # | Concept | Wikidata | Mathlib declaration | Reviews |\n"
+        f"This PR adds **{len(decls)}** `@[{sp.attr}]` cross-reference tags." if fresh
+        else f"This PR was trimmed to the **{len(decls)}** `@[{sp.attr}]` tags that were approved 🟢 in review.")
+    queue_url = f"https://wikilean.jackmccarthy.org/queue" + ("" if sp.db == "wikidata" else f"/{sp.db}")
+    return (head + f"\n\n| # | Concept | {sp.label} | Mathlib declaration | Reviews |\n"
             "|--:|:--|:--|:--|:--|\n" + "\n".join(rows) +
             "\n\n<sub>Reviews: 🟢 approve · 🟡 revise · 🔴 reject · ⚠️ deletion-candidate · 💬 comment. \\* = maintainer. "
-            "Recycled tags: https://wikilean.jackmccarthy.org/queue</sub>"
+            f"Recycled tags: {queue_url}</sub>"
             "\n<!-- wikilean-tag-table -->")
 
 
@@ -85,25 +96,27 @@ def post(pr, repo, body):
     return action, p.returncode, (p.stderr or p.stdout)[:200]
 
 
-def sync_body_count(pr, repo, n=None):
-    """Keep the PR body's 'adds a batch of N `@[wikidata]` attributes' line in sync with
+def sync_body_count(pr, repo, n=None, db="wikidata"):
+    """Keep the PR body's 'adds a batch of N ... attributes' line in sync with
     the tags ACTUALLY in the PR's current diff. That line is written once at open; the
     settle-trim (split.py) and the conflict-rebuild (poll.resolve_conflicts) both shrink
     the diff but never touch the body, so without this it overstates after a trim.
 
-    n defaults to a fresh count of @[wikidata] attribute occurrences in `gh pr diff`:
-    anchored to `@[` so a QID mentioned in added prose isn't counted, and via findall so a
-    co-located `@[wikidata Q1, wikidata Q2]` counts as 2 — matching the ENTRY counts the
+    n defaults to a fresh count of target attribute occurrences in `gh pr diff`:
+    anchored to `@[` so an id mentioned in added prose isn't counted, and via findall so a
+    co-located `@[attr ID1, attr ID2]` counts as 2 — matching the ENTRY counts the
     explicit-n callers pass. Callers that already know the exact post-edit count (settle,
     conflict-resolver) pass it to skip the fetch AND any GitHub diff-recompute lag right
     after a force-push. Idempotent; best-effort (never raises), but a real `gh pr edit`
     failure is surfaced loudly — it would otherwise leave a settled PR's body wrong with no
     later re-sync (refresh_table skips settled PRs)."""
+    sp = spec(db)
     try:
         if n is None:
             diff = subprocess.run(["gh", "pr", "diff", str(pr), "--repo", repo],
                                   capture_output=True, text=True).stdout
-            n = sum(len(re.findall(r"wikidata\s+Q\d+", l)) for l in diff.splitlines()
+            tag_rx = re.compile(rf"{re.escape(sp.attr)}\s+{sp.id_re}")
+            n = sum(len(tag_rx.findall(l)) for l in diff.splitlines()
                     if l.startswith("+") and not l.startswith("+++") and "@[" in l)
         if not n:
             return  # empty / failed diff — don't clobber the body with "batch of 0"
@@ -143,13 +156,14 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("pr", type=int)
     ap.add_argument("--repo", default="leanprover-community/mathlib4")
+    ap.add_argument("--db", default="wikidata")
     ap.add_argument("--header", default=None)
     ap.add_argument("--fresh", action="store_true", help="freshly-opened batch header (adds N tags)")
     ap.add_argument("--post", action="store_true", help="post/update the comment on the PR (idempotent)")
     ap.add_argument("--no-body-sync", action="store_true",
                     help="skip the PR-body 'batch of N' count sync (caller syncs it with an exact count)")
     args = ap.parse_args()
-    md = table(args.pr, args.repo, args.header, args.fresh)
+    md = table(args.pr, args.repo, args.header, args.fresh, args.db)
     if args.post:
         action, rc, msg = post(args.pr, args.repo, md)
         print(f"{action} tag-table comment on #{args.pr}" + (f" (error: {msg})" if rc else ""))
@@ -158,7 +172,7 @@ if __name__ == "__main__":
         # force-pushed (settle, conflict-resolve) pass --no-body-sync and sync the exact
         # count themselves, to avoid recounting a possibly-lagged post-push `gh pr diff`.
         if not args.no_body_sync:
-            sync_body_count(args.pr, args.repo)
+            sync_body_count(args.pr, args.repo, db=args.db)
         sync_review_link(args.pr, args.repo)   # self-heal a blank ?pr= the open-time fill missed
     else:
         print(md)

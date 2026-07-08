@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Settle the brain of the daily @[wikidata] batch bot — DETERMINISTIC.
+"""Settle the brain of the daily crossref batch bot — DETERMINISTIC.
 
 Reads an upstream PR's reviews and computes the gate + per-tag green/recycle
 split. No mutations. Importable (`classify(pr)`) and runnable (prints a report).
@@ -10,7 +10,11 @@ Rule (see bot/README.md):
   - A maintainer's explicit approve/reject/revise/flag TRUMPS.
   - Else: any reject/revise/flag -> recycle; else >=1 approve -> green; else recycle.
 """
-import json, subprocess, re, sys, datetime as dt
+import argparse, json, subprocess, re, sys, datetime as dt
+try:
+    from crossref import find_ids, parse_crossref_bot_marker, parse_review_marker, spec
+except ModuleNotFoundError:  # importable as bot.settle
+    from .crossref import find_ids, parse_crossref_bot_marker, parse_review_marker, spec
 
 MAINTAINERS = {"jcommelin"}          # allowlist seed (always treated as maintainer)
 # GitHub author_association values that mark a Mathlib maintainer/reviewer.
@@ -88,14 +92,15 @@ def note_text_inline(body):
     return "\n".join(l for l in lines if l).strip()
 
 
-def parse_pasted(body):
+def parse_pasted(body, db="wikidata"):
+    sp = spec(db)
     body = body.replace("\r\n", "\n").replace("\r", "\n")
     out, cur, note, st = {}, None, [], [""]
     def flush():
         if cur:
             out[cur] = {"status": st[0], "note": " ".join(note).strip()}
     for ln in body.split("\n"):
-        h = re.match(r"^-\s*\*\*\[(Q\d+)\]", ln)
+        h = re.match(rf"^-\s*\*\*\[({sp.id_re})\]", ln)
         if h:
             flush(); cur = h.group(1); st = [""]; note = []; continue
         if not cur:
@@ -112,7 +117,8 @@ def parse_pasted(body):
     return out
 
 
-def classify(pr, repo="leanprover-community/mathlib4"):
+def classify(pr, repo="leanprover-community/mathlib4", db="wikidata"):
+    sp = spec(db)
     meta = gh_obj(repo, f"pulls/{pr}")
     created = dt.datetime.fromisoformat(meta["created_at"].replace("Z", "+00:00"))
     age_h = (dt.datetime.now(dt.timezone.utc) - created).total_seconds() / 3600
@@ -126,13 +132,12 @@ def classify(pr, repo="leanprover-community/mathlib4"):
         if ln.startswith("+++ b/"):
             f = ln[6:]
         elif ln.startswith("+") and not ln.startswith("++"):
-            m = re.search(r"wikidata\s+(Q\d+)", ln)
-            if m:
-                tags.append(m.group(1))
-                decl_line[m.group(1)] = (f, idx)
+            for ident in find_ids(ln, sp.db):
+                tags.append(ident)
+                decl_line[ident] = (f, idx)
     tags = list(dict.fromkeys(tags))
 
-    # explicit[(qid, login)] = (status, ts); notes[(qid, login)] = text
+    # explicit[(id, login)] = (status, ts); notes[(id, login)] = text
     explicit, notes, reviewers = {}, {}, set()
     # Maintainers/reviewers: anyone whose GitHub author_association on the PR is an
     # org role, seeded by the explicit allowlist. Their verdict trumps, and the
@@ -141,11 +146,11 @@ def classify(pr, repo="leanprover-community/mathlib4"):
     def record_assoc(login, assoc):
         if login and login not in BOTS and assoc in ORG_ROLES:
             maint.add(login)
-    def note_explicit(qid, login, status, ts, text=""):
+    def note_explicit(ident, login, status, ts, text=""):
         if not login or login in BOTS:
             return
         reviewers.add(login)
-        k = (qid, login)
+        k = (ident, login)
         if k not in explicit or ts > explicit[k][1]:
             explicit[k] = (status, ts)
             if text:
@@ -155,19 +160,18 @@ def classify(pr, repo="leanprover-community/mathlib4"):
         u = (c.get("user") or {}).get("login", "")
         record_assoc(u, c.get("author_association"))
         b = c.get("body", "") or ""
-        m = re.search(r"wikilean-review:(Q\d+)", b)
-        if m:
-            note_explicit(m.group(1), u, status_of(b) or "(note)", c.get("created_at", ""),
+        ident = parse_review_marker(b, sp.db)
+        if ident:
+            note_explicit(ident, u, status_of(b) or "(note)", c.get("created_at", ""),
                           note_text_inline(b))
         # 👍/👎 reactions on the crossref bot's per-tag comment count as approve/reject
         # by the REACTOR, for that tag — a lightweight alternative to a written verdict.
         # Latest-wins (note_explicit keys by ts), so a reaction can overturn an earlier
         # comment by the same login and vice-versa. Only the crossref per-tag comment
-        # (`crossref-bot:Q…`) is harvested — reacting to a verdict note would be ambiguous.
-        cr = re.search(r"crossref-bot:(Q\d+)", b)
+        # (`crossref-bot:...`) is harvested — reacting to a verdict note would be ambiguous.
+        cr = parse_crossref_bot_marker(b, sp.db)
         rx = c.get("reactions") or {}
         if cr and (rx.get("+1", 0) + rx.get("-1", 0)) > 0:
-            qid = cr.group(1)
             for r in gh_reactions(repo, c.get("id")):
                 v = REACTION_VERDICT.get(r.get("content"))
                 ru = (r.get("user") or {}).get("login", "")
@@ -175,7 +179,7 @@ def classify(pr, repo="leanprover-community/mathlib4"):
                     continue
                 if ru not in maint and is_org_member(repo, ru):
                     maint.add(ru)  # a maintainer's reaction trumps, like a maintainer comment
-                note_explicit(qid, ru, v, r.get("created_at", ""))
+                note_explicit(cr, ru, v, r.get("created_at", ""))
     for c in gh_list(repo, f"issues/{pr}/comments"):
         u = (c.get("user") or {}).get("login", "")
         record_assoc(u, c.get("author_association"))
@@ -183,7 +187,7 @@ def classify(pr, repo="leanprover-community/mathlib4"):
         if u in BOTS:
             continue
         if re.search(r"##\s*WikiLean review", b) or "wikilean.jackmccarthy.org/review" in b:
-            for q, info in parse_pasted(b).items():
+            for q, info in parse_pasted(b, sp.db).items():
                 note_explicit(q, u, info["status"] or "(note)", c.get("created_at", ""), info["note"])
 
     pr_state = {}
@@ -198,8 +202,8 @@ def classify(pr, repo="leanprover-community/mathlib4"):
     blanket = {u for u, (stt, _) in pr_state.items() if stt == "APPROVED"}
     reviewers |= blanket
 
-    def decide(qid):
-        ex = {u: stt for (q, u), (stt, _) in explicit.items() if q == qid}
+    def decide(ident):
+        ex = {u: stt for (q, u), (stt, _) in explicit.items() if q == ident}
         real = {u: stt for u, stt in ex.items() if stt != "(note)"}
         mver = [stt for u, stt in real.items() if u in maint]
         if mver:
@@ -221,7 +225,8 @@ def classify(pr, repo="leanprover-community/mathlib4"):
     for q in tags:
         verdict, ex, why = decide(q)
         rec = {
-            "qid": q,
+            "db": sp.db,
+            "id": q,
             "file": decl_line.get(q, (None, None))[0],
             "verdicts": ex,
             "reason": why,
@@ -230,12 +235,14 @@ def classify(pr, repo="leanprover-community/mathlib4"):
                 for u in ex if notes.get((q, u))
             ],
         }
+        if sp.db == "wikidata":
+            rec["qid"] = q
         (green if verdict == "green" else recycle).append(rec)
 
     maint_reviewers = sorted(reviewers & maint)
     gate_ok = len(reviewers) >= 2 and bool(maint_reviewers)
     return {
-        "pr": pr, "repo": repo, "head_sha": head_sha, "age_h": round(age_h, 1),
+        "pr": pr, "repo": repo, "db": sp.db, "head_sha": head_sha, "age_h": round(age_h, 1),
         "reviewers": sorted(reviewers), "blanket_approvers": sorted(blanket),
         "maintainer_reviewers": maint_reviewers,
         "gate": gate_ok,
@@ -245,13 +252,17 @@ def classify(pr, repo="leanprover-community/mathlib4"):
 
 
 if __name__ == "__main__":
-    pr = int([a for a in sys.argv[1:] if a.isdigit()][0]) if any(a.isdigit() for a in sys.argv[1:]) else 40682
-    r = classify(pr)
+    ap = argparse.ArgumentParser()
+    ap.add_argument("pr", nargs="?", type=int, default=40682)
+    ap.add_argument("--repo", default="leanprover-community/mathlib4")
+    ap.add_argument("--db", default="wikidata")
+    args = ap.parse_args()
+    r = classify(args.pr, args.repo, args.db)
     print(f"PR #{r['pr']} · reviewers {r['reviewers']} · maintainer-reviewers {r['maintainer_reviewers']}")
     print(f"GATE: 2-reviewers={r['gate_reasons']['two_reviewers']} >=1-maintainer={r['gate_reasons']['has_maintainer']} -> {'OPEN' if r['gate'] else 'WAIT'}")
-    print(f"\nGREEN ({len(r['green'])}/{len(r['tags'])}): {[g['qid'] for g in r['green']]}")
+    print(f"\nGREEN ({len(r['green'])}/{len(r['tags'])}): {[g['id'] for g in r['green']]}")
     print(f"\nRECYCLE ({len(r['recycle'])}):")
     for e in r["recycle"]:
-        print(f"  {e['qid']} ({e['file']}): {e['reason']}  {e['verdicts']}")
+        print(f"  {e['id']} ({e['file']}): {e['reason']}  {e['verdicts']}")
         for nt in e["notes"]:
             print(f"      {nt['login']} [{nt['status']}]: {nt['text'][:100]}")

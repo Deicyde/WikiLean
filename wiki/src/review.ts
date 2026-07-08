@@ -1,7 +1,7 @@
-// WikiLean @[wikidata] review tool.
+// WikiLean crossref review tool.
 //
 // A logged-in reviewer pastes a PR (owner/repo/number); the page fetches the
-// PR's `@[wikidata Q…]` tags + any existing inline review comments from GitHub
+// PR's crossref tags + any existing inline review comments from GitHub
 // (via the Worker, server-side) and renders each tagged declaration with the
 // comments underneath and a decision/notes form. Submitting posts the decision
 // as inline review comments on GitHub.
@@ -16,6 +16,15 @@ import type { Context, Hono } from "hono";
 import { getCookie, setCookie, deleteCookie } from "hono/cookie";
 import type { Env } from "./env.js";
 import { getUser } from "./auth.js";
+import {
+  type CrossRefSpec,
+  crossRefBotMarkerRegex,
+  crossRefReviewMarker,
+  crossRefReviewMarkerRegex,
+  crossRefSpec,
+  crossRefTagRegex,
+  crossRefUrl,
+} from "./crossref.js";
 
 const GH_API = "https://api.github.com";
 const UA = "WikiLean-review/0.1 (+https://wikilean.jackmccarthy.org)";
@@ -137,22 +146,24 @@ async function ghPaginate<T>(url: string, token?: string): Promise<T[]> {
   return out;
 }
 
-// ---- diff parsing: find every +@[wikidata Q…] line + its hunk context ----
-
-const WIKIDATA_RE = /wikidata\s+(Q\d+)/;
+// ---- diff parsing: find every added crossref attr line + its hunk context ----
 
 export interface DeclTag {
-  qid: string;
+  db: string;
+  id: string;
+  qid: string; // legacy UI key alias: QID for Wikidata, id for other databases
   file: string;
   line: number; // 1-based new-file line of the attribute
   hunk: string[]; // a few source lines starting at the tag (for display)
 }
 
-// Parse a unified diff: track the current file (+++ b/…) and new-file line
+// Parse a unified diff: track the current file (+++ b/...) and new-file line
 // counter (from @@ -a,b +c,d @@), and for each added line containing
-// `wikidata Q…` record (qid, file, line) plus the next few added/context lines
+// the selected crossref attribute record (id, file, line) plus the next few added/context lines
 // as a display hunk.
-export function parseWikidataTags(diff: string): DeclTag[] {
+export function parseCrossRefTags(diff: string, db = "wikidata"): DeclTag[] {
+  const spec = crossRefSpec(db) ?? crossRefSpec("wikidata")!;
+  const tagRe = crossRefTagRegex(spec.db);
   const tags: DeclTag[] = [];
   let file = "";
   let newLine = 0;
@@ -177,7 +188,7 @@ export function parseWikidataTags(diff: string): DeclTag[] {
     // "-" removed (does NOT advance the new-file counter).
     if (ln.startsWith("+") && !ln.startsWith("++")) {
       const content = ln.slice(1);
-      const m = content.match(WIKIDATA_RE);
+      const m = content.match(tagRe);
       if (m) {
         // Display hunk: this line + up to 7 following added/context lines.
         const hunk: string[] = [content];
@@ -187,7 +198,7 @@ export function parseWikidataTags(diff: string): DeclTag[] {
           else if (nx.startsWith(" ")) hunk.push(nx.slice(1));
           else break;
         }
-        tags.push({ qid: m[1], file, line: newLine, hunk });
+        tags.push({ db: spec.db, id: m[1], qid: m[1], file, line: newLine, hunk });
       }
       newLine++;
     } else if (ln.startsWith(" ")) {
@@ -196,6 +207,10 @@ export function parseWikidataTags(diff: string): DeclTag[] {
     // "-" lines and others: no new-line advance.
   }
   return tags;
+}
+
+export function parseWikidataTags(diff: string): DeclTag[] {
+  return parseCrossRefTags(diff, "wikidata");
 }
 
 // ---- existing inline review comments, grouped by path:line ----
@@ -278,7 +293,7 @@ function keyOf(path: string, line: number): string {
 // client drops these (the status shows in the "Existing review" row), so we
 // skip rendering their markdown.
 function statusOnlyReviewComment(body: string): boolean {
-  if (!/wikilean-review:Q/.test(body)) return false;
+  if (!/wikilean-review:/.test(body)) return false;
   const rest = body
     .split("\n")
     .filter((l) => !/^\s*\*\*/.test(l) && !/<sub>/.test(l) && l.trim() !== "")
@@ -296,6 +311,42 @@ export interface WdInfo {
   enwikiUrl: string | null;
   enwikiTitle: string | null;
   lead: string | null;
+}
+
+export interface ExternalInfo {
+  db: string;
+  id: string;
+  label: string | null;
+  title: string | null;
+  description: string | null;
+  url: string;
+  contextUrl: string | null;
+  lead: string | null;
+}
+
+function externalInfo(spec: CrossRefSpec, id: string, wd: WdInfo | null = null): ExternalInfo {
+  if (spec.db === "wikidata") {
+    return {
+      db: spec.db,
+      id,
+      label: wd?.label ?? id,
+      title: wd?.enwikiTitle ?? wd?.label ?? id,
+      description: wd?.description ?? null,
+      url: crossRefUrl(spec.db, id),
+      contextUrl: wd?.enwikiUrl ?? null,
+      lead: wd?.lead ?? null,
+    };
+  }
+  return {
+    db: spec.db,
+    id,
+    label: id,
+    title: id,
+    description: `${spec.label} knowl`,
+    url: crossRefUrl(spec.db, id),
+    contextUrl: crossRefUrl(spec.db, id),
+    lead: null,
+  };
 }
 
 const WD_API = "https://www.wikidata.org/w/api.php";
@@ -635,10 +686,11 @@ function isTopLevel(line: string): boolean {
   return TOPLEVEL_PREFIXES.some((p) => line.startsWith(p));
 }
 
-// Given file lines and a qid, return the full declaration slice (docstring +
-// attributes + modifiers + signature + body) around its @[wikidata Qxxx] tag.
-export function extractDeclBody(lines: string[], qid: string): string | null {
-  const pat = new RegExp(`wikidata\\s+${qid}\\b`);
+// Given file lines and a crossref id, return the full declaration slice
+// (docstring + attributes + modifiers + signature + body) around its tag.
+export function extractCrossRefDeclBody(lines: string[], db: string, id: string): string | null {
+  const spec = crossRefSpec(db) ?? crossRefSpec("wikidata")!;
+  const pat = new RegExp(`${spec.attr}\\s+${id.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`);
   const idx = lines.findIndex((l) => pat.test(l));
   if (idx < 0) return null;
   // Forward: skip the attribute block + bare-modifier lines to the signature,
@@ -668,15 +720,20 @@ export function extractDeclBody(lines: string[], qid: string): string | null {
   return lines.slice(start, end).join("\n");
 }
 
+export function extractDeclBody(lines: string[], qid: string): string | null {
+  return extractCrossRefDeclBody(lines, "wikidata", qid);
+}
+
 const DECL_SIG_RE =
   /^(?:protected\s+|private\s+|noncomputable\s+|public\s+|nonrec\s+|unsafe\s+|partial\s+|scoped\s+|local\s+)*(?:irreducible_def|def|theorem|lemma|class|structure|inductive|abbrev|instance|opaque|axiom)\s+([^\s:({\[]+)/;
 
-// Given file lines and a qid, return the fully-qualified declaration name around
-// its @[wikidata Qxxx] tag (e.g. "Module.Projective"), by reading the signature
+// Given file lines and a crossref id, return the fully-qualified declaration name around
+// its tag (e.g. "Module.Projective"), by reading the signature
 // line and prepending any enclosing `namespace`s. Used to anchor the Mathlib
 // docs link. Null when there is no named signature (e.g. an anonymous instance).
-export function extractDeclName(lines: string[], qid: string): string | null {
-  const pat = new RegExp(`wikidata\\s+${qid}\\b`);
+export function extractCrossRefDeclName(lines: string[], db: string, id: string): string | null {
+  const spec = crossRefSpec(db) ?? crossRefSpec("wikidata")!;
+  const pat = new RegExp(`${spec.attr}\\s+${id.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`);
   const idx = lines.findIndex((l) => pat.test(l));
   if (idx < 0) return null;
   let sig = idx + 1;
@@ -699,6 +756,10 @@ export function extractDeclName(lines: string[], qid: string): string | null {
     if (!short.startsWith(prefix + ".") && short !== prefix) return prefix + "." + short;
   }
   return short;
+}
+
+export function extractDeclName(lines: string[], qid: string): string | null {
+  return extractCrossRefDeclName(lines, "wikidata", qid);
 }
 
 // Fetch a file's text at a commit (raw contents API), KV-cached by sha+path.
@@ -731,9 +792,12 @@ async function fetchFileLines(
 export interface ReviewPayload {
   repo: string;
   pr: number;
+  db: string;
+  attr: string;
+  dbLabel: string;
   head_sha: string;
   title: string;
-  decls: Array<DeclTag & { comments: ReviewComment[]; source: string; wd: WdInfo | null; decl: string | null }>;
+  decls: Array<DeclTag & { comments: ReviewComment[]; source: string; wd: WdInfo | null; external: ExternalInfo; decl: string | null }>;
 }
 
 async function buildReviewPayload(
@@ -743,7 +807,9 @@ async function buildReviewPayload(
   token?: string,
   env?: Env,
   renderMarkdown = false,
+  db = "wikidata",
 ): Promise<ReviewPayload> {
+  const spec = crossRefSpec(db) ?? crossRefSpec("wikidata")!;
   const full = `${owner}/${repo}`;
   const meta = await ghJson<{ head: { sha: string }; title: string }>(
     `${GH_API}/repos/${full}/pulls/${pr}`,
@@ -754,7 +820,7 @@ async function buildReviewPayload(
   });
   if (!diffResp.ok) throw new Error(`GitHub diff ${diffResp.status}`);
   const diff = await diffResp.text();
-  const tags = parseWikidataTags(diff);
+  const tags = parseCrossRefTags(diff, spec.db);
 
   const comments = await ghPaginate<GhReviewComment>(
     `${GH_API}/repos/${full}/pulls/${pr}/comments`,
@@ -781,7 +847,7 @@ async function buildReviewPayload(
   if (renderMarkdown) {
     const withThumbs = comments.filter(
       (c) =>
-        /crossref-bot:Q\d+/.test(c.body || "") &&
+        crossRefBotMarkerRegex(spec.db).test(c.body || "") &&
         c.reactions &&
         ((c.reactions["+1"] ?? 0) + (c.reactions["-1"] ?? 0)) > 0,
     );
@@ -830,9 +896,9 @@ async function buildReviewPayload(
   }
 
   // Page mode: also pull top-level "## WikiLean review" comments (the pasted
-  // copy-paste reviews) and fold their per-qid entries into the matching cards,
+  // copy-paste reviews) and fold their per-id entries into the matching cards,
   // in the same inline shape the client renders.
-  const pastedByQid = new Map<string, ReviewComment[]>();
+  const pastedById = new Map<string, ReviewComment[]>();
   if (renderMarkdown) {
     const issueComments = await ghPaginate<{
       id: number;
@@ -843,11 +909,11 @@ async function buildReviewPayload(
     }>(`${GH_API}/repos/${full}/issues/${pr}/comments`, token);
     for (const ic of issueComments) {
       if (!ic.body || !isWikiLeanReview(ic.body)) continue;
-      for (const e of parseClipboardReview(ic.body)) {
-        const body = synthReviewBody(e.qid, e.status, e.note);
+      for (const e of parseClipboardReview(ic.body, spec.db)) {
+        const body = synthReviewBody(spec.db, e.qid, e.status, e.note);
         const bodyHtml = e.note && env ? await ghRenderMarkdown(body, full, token, env) : null;
-        if (!pastedByQid.has(e.qid)) pastedByQid.set(e.qid, []);
-        pastedByQid.get(e.qid)!.push({
+        if (!pastedById.has(e.qid)) pastedById.set(e.qid, []);
+        pastedById.get(e.qid)!.push({
           id: ic.id,
           user: ic.user?.login ?? "unknown",
           body,
@@ -860,10 +926,10 @@ async function buildReviewPayload(
   }
 
   // Page mode (renderMarkdown): also fetch the full decl body per tag and the
-  // Wikidata description + Wikipedia lead per qid. Skipped for the POST path.
-  const sourceByQid = new Map<string, string>();
-  const declByQid = new Map<string, string>();
-  let wdByQid = new Map<string, WdInfo>();
+  // Wikidata description + Wikipedia lead per id. Skipped for the POST path.
+  const sourceById = new Map<string, string>();
+  const declById = new Map<string, string>();
+  let wdById = new Map<string, WdInfo>();
   if (renderMarkdown && env) {
     // Full bodies: fetch each unique file once, in parallel, then slice.
     const fileCache = new Map<string, string[] | null>();
@@ -875,30 +941,36 @@ async function buildReviewPayload(
     );
     for (const t of tags) {
       const lines = fileCache.get(t.file) ?? null;
-      const body = lines ? extractDeclBody(lines, t.qid) : null;
-      if (body) sourceByQid.set(t.qid, body);
-      const name = lines ? extractDeclName(lines, t.qid) : null;
-      if (name) declByQid.set(t.qid, name);
+      const body = lines ? extractCrossRefDeclBody(lines, spec.db, t.id) : null;
+      if (body) sourceById.set(t.id, body);
+      const name = lines ? extractCrossRefDeclName(lines, spec.db, t.id) : null;
+      if (name) declById.set(t.id, name);
     }
     // Wikidata + Wikipedia leads.
-    const qids = [...new Set(tags.map((t) => t.qid))];
-    wdByQid = await fetchWikidata(qids, env);
-    const titles = [...wdByQid.values()].map((w) => w.enwikiTitle).filter((x): x is string => !!x);
-    const leads = await fetchLeads(titles, env);
-    for (const [, w] of wdByQid) if (w.enwikiTitle) w.lead = leads.get(w.enwikiTitle) ?? null;
+    if (spec.db === "wikidata") {
+      const ids = [...new Set(tags.map((t) => t.id))];
+      wdById = await fetchWikidata(ids, env);
+      const titles = [...wdById.values()].map((w) => w.enwikiTitle).filter((x): x is string => !!x);
+      const leads = await fetchLeads(titles, env);
+      for (const [, w] of wdById) if (w.enwikiTitle) w.lead = leads.get(w.enwikiTitle) ?? null;
+    }
   }
 
   return {
     repo: full,
     pr,
+    db: spec.db,
+    attr: spec.attr,
+    dbLabel: spec.label,
     head_sha: meta.head.sha,
     title: meta.title,
     decls: tags.map((t) => ({
       ...t,
-      comments: [...(byLine.get(keyOf(t.file, t.line)) ?? []), ...(pastedByQid.get(t.qid) ?? [])],
-      source: sourceByQid.get(t.qid) ?? t.hunk.join("\n"),
-      wd: wdByQid.get(t.qid) ?? null,
-      decl: declByQid.get(t.qid) ?? null,
+      comments: [...(byLine.get(keyOf(t.file, t.line)) ?? []), ...(pastedById.get(t.id) ?? [])],
+      source: sourceById.get(t.id) ?? t.hunk.join("\n"),
+      wd: wdById.get(t.id) ?? null,
+      external: externalInfo(spec, t.id, wdById.get(t.id) ?? null),
+      decl: declById.get(t.id) ?? null,
     })),
   };
 }
@@ -907,8 +979,8 @@ async function buildReviewPayload(
 
 const OWNER_RE = /^[A-Za-z0-9_.-]+$/;
 
-function reviewCacheKey(owner: string, repo: string, pr: number): string {
-  return `reviewpayload:${owner}/${repo}:${pr}`;
+function reviewCacheKey(owner: string, repo: string, pr: number, db = "wikidata"): string {
+  return `reviewpayload:${db}:${owner}/${repo}:${pr}`;
 }
 
 export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
@@ -921,10 +993,12 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
     if (!OWNER_RE.test(owner) || !OWNER_RE.test(repo) || !Number.isInteger(pr) || pr <= 0) {
       return c.json({ ok: false, error: "bad owner/repo/pr" }, 400);
     }
+    const spec = crossRefSpec(c.req.query("db") || "wikidata");
+    if (!spec) return c.json({ ok: false, error: "unknown crossref database" }, 404);
     // Full-payload cache (60s) — a refresh within the window returns instantly
     // from KV with zero GitHub calls. Busted on POST so a just-submitted review
     // shows immediately; external comments are at most 60s stale.
-    const pageKey = reviewCacheKey(owner, repo, pr);
+    const pageKey = reviewCacheKey(owner, repo, pr, spec.db);
     const cached = await c.env.RENDER_CACHE.get(pageKey);
     if (cached) return c.body(cached, 200, { "Content-Type": "application/json" });
 
@@ -934,7 +1008,7 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
     const { token } = await githubAccountFor(c);
     const readToken = token || c.env.GITHUB_API_TOKEN;
     try {
-      const payload = await buildReviewPayload(owner, repo, pr, readToken, c.env, true);
+      const payload = await buildReviewPayload(owner, repo, pr, readToken, c.env, true, spec.db);
       const json = JSON.stringify({ ok: true, ...payload });
       await c.env.RENDER_CACHE.put(pageKey, json, { expirationTtl: 60 });
       return c.body(json, 200, { "Content-Type": "application/json" });
@@ -958,6 +1032,8 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
     if (!OWNER_RE.test(owner) || !OWNER_RE.test(repo) || !Number.isInteger(pr) || pr <= 0) {
       return c.json({ ok: false, error: "bad owner/repo/pr" }, 400);
     }
+    const spec = crossRefSpec(c.req.query("db") || "wikidata");
+    if (!spec) return c.json({ ok: false, error: "unknown crossref database" }, 404);
     if (!c.env.REVIEW_GITHUB_CLIENT_ID || !c.env.REVIEW_GITHUB_CLIENT_SECRET) {
       return c.json(
         { ok: false, error: "in-app posting isn't configured — use Copy review.", needsConnect: false },
@@ -980,14 +1056,14 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
     }
     const decisions = body.decisions ?? {};
 
-    // Resolve qid → (file, line) + head sha + already-posted markers from the PR.
+    // Resolve id -> (file, line) + head sha + already-posted markers from the PR.
     let payload: ReviewPayload;
     try {
-      payload = await buildReviewPayload(owner, repo, pr, token);
+      payload = await buildReviewPayload(owner, repo, pr, token, undefined, false, spec.db);
     } catch (e) {
       return c.json({ ok: false, error: String(e instanceof Error ? e.message : e) }, 502);
     }
-    const tagByQid = new Map(payload.decls.map((d) => [d.qid, d]));
+    const tagById = new Map(payload.decls.map((d) => [d.id, d]));
     // Idempotency by GitHub login (comment author), tracking my LATEST status per
     // tag so a reviewer can still change their mind (revise→approve) or add a
     // note — we only skip a true no-op (same status, no new note).
@@ -1007,7 +1083,7 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
     const myLatest = new Map<string, { status: string; at: string }>();
     for (const d of payload.decls) {
       for (const cm of d.comments) {
-        const m = cm.body.match(/wikilean-review:(Q\d+)/);
+        const m = cm.body.match(crossRefReviewMarkerRegex(spec.db));
         if (!m || !myLogin || cm.user !== myLogin) continue;
         let st = "";
         if (/Deletion candidate/.test(cm.body)) st = "flag";
@@ -1032,7 +1108,7 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
         results.push({ qid, posted: false, skipped: "no change from your last review" });
         continue;
       }
-      const tag = tagByQid.get(qid);
+      const tag = tagById.get(qid);
       if (!tag) {
         // A stored decision for a tag that's since been TRIMMED from the PR (a
         // recycled/rejected tag). Not an error — nothing to post. Skip it so it
@@ -1043,7 +1119,7 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
       // "changed from" should reflect MY own prior status when I've reviewed
       // this tag before; else fall back to the client-sent prior.
       const prior = mine ? mine.status : was;
-      const commentBody = buildReviewCommentBody(qid, status, notes, prior);
+      const commentBody = buildReviewCommentBody(qid, status, notes, prior, spec.db);
       const r = await fetch(`${GH_API}/repos/${owner}/${repo}/pulls/${pr}/comments`, {
         method: "POST",
         headers: { ...ghHeaders(postToken), "Content-Type": "application/json" },
@@ -1065,7 +1141,7 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
     const posted = results.filter((x) => x.posted).length;
     // Invalidate the page cache so the submitter's refresh shows the new
     // comments immediately (rather than the up-to-60s-stale cached page).
-    if (posted > 0) await c.env.RENDER_CACHE.delete(reviewCacheKey(owner, repo, pr));
+    if (posted > 0) await c.env.RENDER_CACHE.delete(reviewCacheKey(owner, repo, pr, spec.db));
     // Top-level "Reviewed" summary comment (one per submission that posted
     // anything), so the PR thread logs each review pass.
     if (posted > 0) {
@@ -1234,6 +1310,7 @@ export function buildReviewCommentBody(
   status: string,
   notes: string,
   wasStatus = "",
+  db = "wikidata",
 ): string {
   const em = EMOJI[status] ?? "";
   let label = status ? `${em} WikiLean reviewer note (${status})`.trim() : "WikiLean reviewer note";
@@ -1244,8 +1321,8 @@ export function buildReviewCommentBody(
   const quoted = notes ? notes.split("\n").map((l) => "> " + l).join("\n") : "_(no note)_";
   return (
     `**${label}**\n\n${quoted}\n\n` +
-    `<sub><a href="https://www.wikidata.org/wiki/${qid}">${qid}</a> ` +
-    `<!-- wikilean-review:${qid} --></sub>`
+    `<sub><a href="${crossRefUrl(db, qid)}">${qid}</a> ` +
+    `<!-- ${crossRefReviewMarker(db, qid)} --></sub>`
   );
 }
 
@@ -1264,6 +1341,7 @@ function isWikiLeanReview(body: string): boolean {
 
 export interface PastedEntry {
   qid: string;
+  db: string;
   status: string; // approve | revise | reject | flag | ""
   note: string;
 }
@@ -1271,7 +1349,8 @@ export interface PastedEntry {
 // Parse a pasted "## WikiLean review" comment back into per-qid {status, note}.
 // Mirrors the client's buildClipboardReview format (entry header + indented
 // `- status:` and note sub-bullets).
-export function parseClipboardReview(body: string): PastedEntry[] {
+export function parseClipboardReview(body: string, db = "wikidata"): PastedEntry[] {
+  const spec = crossRefSpec(db) ?? crossRefSpec("wikidata")!;
   const out: PastedEntry[] = [];
   let cur: PastedEntry | null = null;
   let note: string[] = [];
@@ -1285,10 +1364,10 @@ export function parseClipboardReview(body: string): PastedEntry[] {
   // trailing \r breaks the note regex's `$` anchor (`.` doesn't match \r),
   // which would drop every note (and any note-only entry entirely).
   for (const ln of body.replace(/\r\n?/g, "\n").split("\n")) {
-    const h = ln.match(/^-\s*\*\*\[(Q\d+)\]/);
+    const h = ln.match(new RegExp(`^-\\s*\\*\\*\\[(${spec.idSource})\\]`));
     if (h) {
       flush();
-      cur = { qid: h[1], status: "", note: "" };
+      cur = { qid: h[1], db: spec.db, status: "", note: "" };
       note = [];
       continue;
     }
@@ -1312,15 +1391,15 @@ export function parseClipboardReview(body: string): PastedEntry[] {
 
 // Re-emit a parsed pasted entry in the inline-comment body shape so the client's
 // parseStatus/reviewNote handle it identically to a real inline review comment.
-function synthReviewBody(qid: string, status: string, note: string): string {
+function synthReviewBody(db: string, qid: string, status: string, note: string): string {
   if (status === "flag") {
     const quoted = note ? note.split("\n").map((l) => "> " + l).join("\n") : "_(no note)_";
     return (
       `**⚠️ WikiLean reviewer note (Deletion candidate)**\n\n${quoted}\n\n` +
-      `<sub><a href="https://www.wikidata.org/wiki/${qid}">${qid}</a> <!-- wikilean-review:${qid} --></sub>`
+      `<sub><a href="${crossRefUrl(db, qid)}">${qid}</a> <!-- ${crossRefReviewMarker(db, qid)} --></sub>`
     );
   }
-  return buildReviewCommentBody(qid, status, note);
+  return buildReviewCommentBody(qid, status, note, "", db);
 }
 
 // Read the logged-in user's stored GitHub OAuth token + granted scope
@@ -1349,7 +1428,7 @@ function reviewPageHtml(): string {
   // Self-contained: warm palette to match the site; vanilla JS, no deps.
   return `<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>WikiLean · @[wikidata] review</title>
+<title>WikiLean · crossref review</title>
 <style>
 /* JuliaMono — full Lean glyph coverage (subscript letters like ₗ in →ₗ, 𝕜, ↪, ⋀, …)
    that system monospace fonts lack. font-display:swap → text shows immediately
@@ -1364,7 +1443,7 @@ body{font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-s
 h1{font-size:1.4rem;margin:0 0 .3rem}
 .lede{color:var(--muted);margin:0 0 1.3rem}
 form.load{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin:0 0 1.5rem;background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:.8rem}
-form.load input{font:inherit;padding:.45rem .6rem;border:1px solid var(--rule);border-radius:6px;background:#fff}
+form.load input,form.load select{font:inherit;padding:.45rem .6rem;border:1px solid var(--rule);border-radius:6px;background:#fff}
 form.load input#repo{width:230px}form.load input#pr{width:90px}
 form.load button{font:inherit;font-weight:600;padding:.45rem 1rem;border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:6px;cursor:pointer}
 #status{color:var(--muted);font-size:.9rem;margin:.5rem 0}
@@ -1456,9 +1535,13 @@ pre.lean .n{color:#1f1f1f}
 .note{font-size:.8rem;color:var(--muted)}
 </style></head>
 <body><div class="wrap">
-<h1>WikiLean · <code>@[wikidata]</code> review</h1>
+<h1>WikiLean · <code id="attr-title">crossref</code> review</h1>
 <p class="lede">Paste a pull request; review each tagged declaration with its existing GitHub comments, then submit your decisions.</p>
 <form class="load" onsubmit="return false">
+  <select id="db" autocomplete="off">
+    <option value="wikidata">Wikidata</option>
+    <option value="lmfdb">LMFDB</option>
+  </select>
   <input id="repo" placeholder="owner/repo" value="leanprover-community/mathlib4" autocomplete="off">
   <input id="pr" placeholder="PR #" inputmode="numeric" autocomplete="off">
   <button id="load">Load PR</button>
@@ -1506,26 +1589,32 @@ function reviewClientScript(): string {
   return String.raw`
 const $ = (s) => document.querySelector(s);
 const esc = (s) => (s||"").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const reEsc = (s) => (s||"").replace(/[.*+?^$()|[\]\\]/g, "\\$&").replace(/[{}]/g, "\\$&");
+const DB = {
+  wikidata: {label:"Wikidata", attr:"wikidata", url:"https://www.wikidata.org/wiki/"},
+  lmfdb: {label:"LMFDB", attr:"lmfdb", url:"https://www.lmfdb.org/knowledge/show/"}
+};
 let STATE = {};   // qid -> {status, notes}
 let KEY = "";
 let CUR = null;   // {owner, repo, pr} of the loaded PR
 let DATA = null;  // last loaded payload (for re-render on filter change)
 
-function storageKey(repo, pr){ return "wl-review:" + repo + "#" + pr; }
+function storageKey(repo, pr, db){ return "wl-review:" + (db||"wikidata") + ":" + repo + "#" + pr; }
 function load(){ try { return JSON.parse(localStorage.getItem(KEY) || "{}"); } catch(e){ return {}; } }
 function save(){ localStorage.setItem(KEY, JSON.stringify(STATE)); }
 
 async function loadPR(){
   const repo = $("#repo").value.trim();
   const pr = $("#pr").value.trim();
+  const db = ($("#db") && $("#db").value) || "wikidata";
   const m = repo.match(/^([\w.-]+)\/([\w.-]+)$/);
   if(!m || !pr){ $("#status").textContent = "Enter owner/repo and a PR number."; return; }
-  KEY = storageKey(repo, pr); STATE = load();
-  CUR = { owner: m[1], repo: m[2], pr: pr };
+  KEY = storageKey(repo, pr, db); STATE = load();
+  CUR = { owner: m[1], repo: m[2], pr: pr, db: db };
   $("#status").textContent = "Loading " + repo + " #" + pr + "…";
   $("#entries").innerHTML = "";
   try {
-    const r = await fetch("/api/review/" + m[1] + "/" + m[2] + "/" + pr);
+    const r = await fetch("/api/review/" + m[1] + "/" + m[2] + "/" + pr + "?db=" + encodeURIComponent(db));
     const data = await r.json();
     if(!data.ok){ $("#status").textContent = "Error: " + data.error; return; }
     render(data);
@@ -1558,11 +1647,22 @@ function hl(src){
 
 const EMO = {approve:"🟢",revise:"🟡",reject:"🔴",flag:"⚠️"};
 
+function selectedDb(){ return (DATA && DATA.db) || (($("#db") && $("#db").value) || "wikidata"); }
+function reviewMarkerRe(){
+  const db = selectedDb();
+  return db === "wikidata" ? /wikilean-review:(?:wikidata:)?Q\d+/ : new RegExp("wikilean-review:"+reEsc(db)+":");
+}
+function crossrefBotRe(){
+  const db = selectedDb();
+  return db === "wikidata" ? /crossref-bot:(?:wikidata:)?Q\d+/ : new RegExp("crossref-bot:"+reEsc(db)+":");
+}
+function isReviewCommentBody(body){ return reviewMarkerRe().test(body||""); }
+
 // Your existing review status for a decl, parsed from the latest
 // wikilean-review GitHub comment (the one you posted via the CLI/web tool).
 function parseStatus(comments){
   let best=null;
-  (comments||[]).forEach(c=>{ if(/wikilean-review:Q/.test(c.body||"")){
+  (comments||[]).forEach(c=>{ if(isReviewCommentBody(c.body)){
     if(!best || (c.created_at||"") > (best.created_at||"")) best=c; } });
   if(!best) return {status:"", by:""};
   let status="";
@@ -1595,7 +1695,7 @@ function reviewNote(c){
 }
 // Render one comment; review comments show note-only (or are dropped), others full.
 function commentHtml(c){
-  if(/wikilean-review:Q/.test(c.body||"")){
+  if(isReviewCommentBody(c.body)){
     const note = reviewNote(c);
     if(!note) return "";
     return '<div class="cmt"><div class="who">'+esc(c.user)+'</div><div class="body md">'+note+'</div></div>';
@@ -1610,7 +1710,7 @@ function commentHtml(c){
 function declVerdicts(d){
   const by = {}; // login -> {status, at, note, reaction}
   (d.comments||[]).forEach(c => {
-    if(/wikilean-review:Q/.test(c.body||"")){
+    if(isReviewCommentBody(c.body)){
       let s=""; if(/Deletion candidate/.test(c.body)) s="flag";
       else { const m=c.body.match(/\((approve|revise|reject)\)/); if(m) s=m[1]; }
       const login=c.user||"", at=c.created_at||"";
@@ -1632,6 +1732,8 @@ function declStatus(d){
 
 function render(data){
   DATA = data;
+  const dbInfo = DB[data.db] || {label:data.dbLabel||data.db||"Crossref", attr:data.attr||"crossref", url:""};
+  const titleAttr = $("#attr-title"); if(titleAttr) titleAttr.textContent = "@[" + dbInfo.attr + "]";
   // Per-decl existing status (latest verdict — comment OR reaction).
   const cur = data.decls.map(declStatus);
   // Distribution across ALL decls.
@@ -1641,7 +1743,7 @@ function render(data){
     " · ⚠️ "+dist.flag+" · ◯ "+dist.none;
   $("#controls").hidden = false;
   $("#status").innerHTML = "<b>" + esc(data.title) + "</b> — " + data.decls.length +
-    " tagged declarations · commit <code>" + data.head_sha.slice(0,10) + "</code>" +
+    " <code>@[" + esc(dbInfo.attr) + "]</code> declarations · commit <code>" + data.head_sha.slice(0,10) + "</code>" +
     ' · <a href="' + prUrl() + '" target="_blank" rel="noopener">' + esc(data.repo) + ' #' + data.pr + ' ↗</a>';
 
   const filter = $("#filter").value;
@@ -1656,9 +1758,9 @@ function render(data){
     // Split existing comments: WikiLean reviews (folded into the "Reviews"
     // block, status + note together) vs. other discussion. Johan's crossref-bot
     // comments are dropped from "Other comments" — they just restate the
-    // Wikidata label/description already shown in the card's Wikidata pane.
+    // external database label/description already shown in the card pane.
     const otherCmts = d.comments.filter(c =>
-      !/wikilean-review:Q/.test(c.body||"") && !/crossref-bot:Q/.test(c.body||""));
+      !isReviewCommentBody(c.body) && !crossrefBotRe().test(c.body||""));
     const otherHtml = otherCmts.map(commentHtml).filter(Boolean).join("");
     // Reviews block: one row per reviewer, written verdicts AND 👍/👎 reactions, newest first.
     const verds = declVerdicts(d);
@@ -1675,24 +1777,24 @@ function render(data){
     } else {
       reviewBlock = '<div class="cur"><span class="cur-label">Reviews</span> ' + statusBadge("") + '</div>';
     }
-    const wd = d.wd || {};
-    const wikiHead = wd.enwikiUrl
-      ? '<p class="wd-head"><a href="' + wd.enwikiUrl + '" target="_blank">' + esc(wd.enwikiTitle || wd.label || d.qid) + '</a></p>'
-      : (wd.label ? '<p class="wd-head">' + esc(wd.label) + '</p>' : '');
-    const descHtml = wd.description
-      ? '<p class="wd-desc">' + esc(wd.description) + '</p>'
-      : '<p class="wd-desc empty">(no Wikidata description)</p>';
-    const leadHtml = wd.lead
-      ? '<details class="wd-lead"><summary>Wikipedia lead ↓</summary><p>' + esc(wd.lead.slice(0,900)) + '</p>' +
-        (wd.enwikiUrl ? '<p class="more"><a href="' + wd.enwikiUrl + '" target="_blank">Read full article ↗</a></p>' : '') +
+    const ext = d.external || {};
+    const extUrl = ext.url || (dbInfo.url ? dbInfo.url + encodeURIComponent(d.id || d.qid) : "#");
+    const contextUrl = ext.contextUrl || extUrl;
+    const wikiHead = '<p class="wd-head"><a href="' + contextUrl + '" target="_blank">' + esc(ext.title || ext.label || d.id || d.qid) + '</a></p>';
+    const descHtml = ext.description
+      ? '<p class="wd-desc">' + esc(ext.description) + '</p>'
+      : '<p class="wd-desc empty">(no ' + esc(dbInfo.label) + ' description)</p>';
+    const leadHtml = ext.lead
+      ? '<details class="wd-lead"><summary>Wikipedia lead ↓</summary><p>' + esc(ext.lead.slice(0,900)) + '</p>' +
+        (contextUrl ? '<p class="more"><a href="' + contextUrl + '" target="_blank">Read full article ↗</a></p>' : '') +
         '</details>'
-      : (wd.enwikiUrl ? '<p class="wd-lead"><a href="' + wd.enwikiUrl + '" target="_blank">Read on Wikipedia ↗</a></p>' : '');
+      : (contextUrl ? '<p class="wd-lead"><a href="' + contextUrl + '" target="_blank">Open in ' + esc(dbInfo.label) + ' ↗</a></p>' : '');
     const showStatus = !!st.changeStatus;
     const showNote = !!(st.note && st.note.length);
     // file:line links to the Mathlib docs for the decl (module page + #name
     // anchor); a small "src ↗" links to the exact line of GitHub source. For a
     // non-Mathlib file (no docs page) the location itself links to source.
-    // Link to the canonical decl on master (not the PR branch): the @[wikidata]
+    // Link to the canonical decl on master (not the PR branch): the crossref
     // PR only ADDS the attribute line; the reviewer wants the merged declaration.
     const srcUrl = "https://github.com/" + data.repo + "/blob/master/" + d.file + "#L" + d.line;
     const docsUrl = /^Mathlib\//.test(d.file || "")
@@ -1704,8 +1806,8 @@ function render(data){
         ' <a class="loc-src" href="' + srcUrl + '" target="_blank" rel="noopener" title="View source on GitHub">src&nbsp;↗</a>'
       : '<a class="loc" href="' + srcUrl + '" target="_blank" rel="noopener" title="View source on GitHub">' + esc(d.file) + ':' + d.line + '</a>';
     el.innerHTML =
-      '<header><span class="qid"><a href="https://www.wikidata.org/wiki/' + d.qid +
-        '" target="_blank">' + d.qid + '</a></span>' +
+      '<header><span class="qid"><a href="' + extUrl +
+        '" target="_blank">' + esc(d.id || d.qid) + '</a></span>' +
         locHtml + '</header>' +
       '<div class="panes">' +
         '<section class="src"><pre class="lean">' + hl(d.source || "") + '</pre></section>' +
@@ -1798,9 +1900,11 @@ function counts(){
 // the GitHub-App TODO in auth.ts.)
 function buildClipboardReview(){
   if(!DATA) return "";
+  const dbInfo = DB[DATA.db] || {label:DATA.dbLabel||DATA.db||"Crossref", attr:DATA.attr||"crossref", url:""};
   const meta = {};
   DATA.decls.forEach(d => { meta[d.qid] = {
-    label: (d.wd && (d.wd.enwikiTitle || d.wd.label)) || "",
+    label: (d.external && (d.external.title || d.external.label)) || (d.wd && (d.wd.enwikiTitle || d.wd.label)) || "",
+    url: (d.external && d.external.url) || (dbInfo.url ? dbInfo.url + encodeURIComponent(d.id || d.qid) : ""),
     loc: d.file + ":" + d.line,
     was: parseStatus(d.comments).status,
   };});
@@ -1809,8 +1913,8 @@ function buildClipboardReview(){
   Object.keys(STATE).forEach(qid => {
     const s = STATE[qid] || {}; const ch=(s.changeStatus||"").trim(); const note=(s.note||"").trim();
     if(!ch && !note) return;
-    const m = meta[qid] || {label:"",loc:"",was:""};
-    let line = "- **["+qid+"](https://www.wikidata.org/wiki/"+qid+")**" +
+    const m = meta[qid] || {label:"",url:"",loc:"",was:""};
+    let line = "- **["+qid+"]("+(m.url||"#")+")**" +
       (m.label?(" "+m.label):"") + (m.loc?(" — "+bt+m.loc+bt):"");
     if(ch){ const e=EMO[ch]||""; line += "\n  - status: "+e+" **"+ch+"**" +
       (m.was && m.was!==ch ? (" _(was "+(EMO[m.was]||"")+" "+m.was+")_") : ""); }
@@ -1824,7 +1928,7 @@ function buildClipboardReview(){
   // "wikilean.jackmccarthy.org/review" substring also keeps isWikiLeanReview()
   // recognizing the pasted comment.
   const reviewUrl = "https://wikilean.jackmccarthy.org/review?repo=" +
-    encodeURIComponent(DATA.repo) + "&pr=" + DATA.pr;
+    encodeURIComponent(DATA.repo) + "&pr=" + DATA.pr + (DATA.db && DATA.db!=="wikidata" ? "&db="+encodeURIComponent(DATA.db) : "");
   return "## WikiLean review\n\n" + items.join("\n") +
     "\n\n<sub>Generated by the WikiLean review tool — [review this PR](" + reviewUrl + ")</sub>";
 }
@@ -1887,7 +1991,8 @@ function updateSubmitBtn(){
 function connectGitHub(){
   // Carry the loaded PR in returnTo so the page re-loads it after the OAuth
   // round-trip; pending decisions persist in localStorage (keyed by repo#pr).
-  const ret = DATA ? ("/review?repo="+encodeURIComponent(DATA.repo)+"&pr="+DATA.pr) : (location.pathname+location.search);
+  const ret = DATA ? ("/review?repo="+encodeURIComponent(DATA.repo)+"&pr="+DATA.pr+
+    (DATA.db && DATA.db!=="wikidata" ? "&db="+encodeURIComponent(DATA.db) : "")) : (location.pathname+location.search);
   location.href = "/review/auth/start?returnTo=" + encodeURIComponent(ret);
 }
 
@@ -1912,7 +2017,7 @@ async function submitToGitHub(){
   if(!Object.keys(decisions).length){ note.textContent = "Nothing to submit — set a status change or add a note first."; return; }
   note.textContent = "Posting to GitHub…";
   try {
-    const r = await fetch("/api/review/"+owner+"/"+repo+"/"+DATA.pr,
+    const r = await fetch("/api/review/"+owner+"/"+repo+"/"+DATA.pr+"?db="+encodeURIComponent(DATA.db||"wikidata"),
       {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({decisions})});
     let j = {}; try { j = await r.json(); } catch(e){}
     if(j.needsConnect){ note.textContent = "Connecting to GitHub…"; connectGitHub(); return; }
@@ -1953,6 +2058,7 @@ $("#pr").addEventListener("keydown", e => { if(e.key==="Enter") loadPR(); });
 $("#submit").addEventListener("click", copyReview);
 $("#submit-gh").addEventListener("click", submitToGitHub);
 $("#filter").addEventListener("change", () => { if(DATA) render(DATA); });
+$("#db").addEventListener("change", () => { if($("#pr").value.trim()) loadPR(); });
 $("#open-all").addEventListener("click", toggleAllReviews);
 const cbClose = document.getElementById("copybox-close");
 if(cbClose) cbClose.addEventListener("click", () => { const d=$("#copybox"); if(d.close) d.close(); });
@@ -1961,6 +2067,7 @@ const qp = new URLSearchParams(location.search);
 // Always default to upstream Mathlib on load (overriding any browser session
 // restore); a ?repo= deep-link still wins.
 $("#repo").value = qp.get("repo") || "leanprover-community/mathlib4";
+if(qp.get("db") && DB[qp.get("db")]) $("#db").value = qp.get("db");
 if(qp.get("pr")){ $("#pr").value = qp.get("pr"); loadPR(); }
 refreshConnected();
 `;

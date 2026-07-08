@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Split a batch PR down to its GREEN tags — FULLY DETERMINISTIC (no LLM).
 
-Given the recycle qids, remove their `@[wikidata Q…]` from the branch's Lean
+Given the recycled ids, remove their crossref attributes from the branch's Lean
 files (handling standalone + stacked forms), drop a now-unused CrossRefAttribute
 import, then (with --apply) `lake build`, amend the commit, and force-push so
 the open PR becomes the clean green-only set.
@@ -15,6 +15,10 @@ Usage:
 """
 import argparse, subprocess, re, sys
 from pathlib import Path
+try:
+    from crossref import all_attr_regex, coerce_ids, spec
+except ModuleNotFoundError:  # importable as bot.split
+    from .crossref import all_attr_regex, coerce_ids, spec
 
 IMPORT_LINE = "public import Mathlib.Tactic.CrossRefAttribute"
 
@@ -26,49 +30,53 @@ def run(cmd, cwd=None, check=True):
     return r
 
 
-def strip_tag(line, qid):
-    """Return the line with `wikidata <qid>` removed, or None to delete the line.
+def strip_tag(line, db, ident):
+    """Return the line with `<attr> <id>` removed, or None to delete the line.
 
-    Handles: standalone `@[wikidata Q]`; stacked `@[a, wikidata Q]` /
-    `@[wikidata Q, a]`; and `(attr := … wikidata Q …)` (to_additive)."""
-    q = re.escape(qid)
+    Handles: standalone `@[attr ID]`; stacked `@[a, attr ID]` /
+    `@[attr ID, a]`; and `(attr := ... attr ID ...)` (to_additive)."""
+    sp = spec(db)
+    attr = re.escape(sp.attr)
+    q = re.escape(ident)
     # standalone attribute line -> delete
-    if re.fullmatch(rf"\s*@\[\s*wikidata\s+{q}\s*\]\s*", line):
+    if re.fullmatch(rf"\s*@\[\s*{attr}\s+{q}\s*\]\s*", line):
         return None
     new = line
-    # `, wikidata Q`  (tag not first in a list)
-    new = re.sub(rf",\s*wikidata\s+{q}\b", "", new)
-    # `wikidata Q, `  (tag first in a list)
-    new = re.sub(rf"\bwikidata\s+{q}\s*,\s*", "", new)
-    # `(attr := wikidata Q)` -> drop the whole attr clause (to_additive)
-    new = re.sub(rf"\s*\(attr\s*:=\s*wikidata\s+{q}\s*\)", "", new)
+    # `, attr ID`  (tag not first in a list)
+    new = re.sub(rf",\s*{attr}\s+{q}\b", "", new)
+    # `attr ID, `  (tag first in a list)
+    new = re.sub(rf"\b{attr}\s+{q}\s*,\s*", "", new)
+    # `(attr := attr ID)` -> drop the whole attr clause (to_additive)
+    new = re.sub(rf"\s*\(attr\s*:=\s*{attr}\s+{q}\s*\)", "", new)
     if new == line:
-        # bare `wikidata Q` with no neighbours left -> e.g. `@[wikidata Q]` caught
+        # bare `attr ID` with no neighbours left -> e.g. `@[attr ID]` caught
         # above; otherwise remove the token itself defensively.
-        new = re.sub(rf"\bwikidata\s+{q}\b", "", new)
+        new = re.sub(rf"\b{attr}\s+{q}\b", "", new)
     # if the attribute list is now empty, delete the line
     if re.fullmatch(r"\s*@\[\s*\]\s*", new):
         return None
     return new
 
 
-def plan(mathlib: Path, recycle):
+def plan(mathlib: Path, recycle, db="wikidata"):
     """Return [(relpath, [(op, lineno, old, new)])] edits; op = 'del'|'edit'|'import'."""
     edits = {}
-    # locate each qid in the checkout
-    for qid in recycle:
-        hit = run(["grep", "-rln", f"wikidata {qid}", str(mathlib / "Mathlib")], check=False).stdout.split()
+    sp = spec(db)
+    # locate each id in the checkout
+    for ident in recycle:
+        hit = run(["grep", "-rln", f"{sp.attr} {ident}", str(mathlib / "Mathlib")], check=False).stdout.split()
         if not hit:
-            print(f"  !! {qid}: not found in checkout (already removed?)", file=sys.stderr)
+            print(f"  !! {ident}: not found in checkout (already removed?)", file=sys.stderr)
             continue
         path = Path(hit[0])
         lines = path.read_text(encoding="utf-8").split("\n")
         for i, ln in enumerate(lines):
-            if re.search(rf"wikidata\s+{re.escape(qid)}\b", ln):
-                new = strip_tag(ln, qid)
+            if re.search(rf"{re.escape(sp.attr)}\s+{re.escape(ident)}\b", ln):
+                new = strip_tag(ln, db, ident)
                 edits.setdefault(path, []).append(("del" if new is None else "edit", i, ln, new))
                 break
-    # drop a now-unused import where no wikidata tag will remain in the file
+    # drop a now-unused import where no crossref tag will remain in the file
+    attr_rx = all_attr_regex()
     for path, ops in list(edits.items()):
         lines = path.read_text(encoding="utf-8").split("\n")
         deleted = {i for op, i, _, _ in ops if op == "del"}
@@ -78,7 +86,7 @@ def plan(mathlib: Path, recycle):
             if i in deleted:
                 continue
             cur = edited.get(i, ln)
-            if re.search(r"\bwikidata\s+Q\d+", cur):
+            if attr_rx.search(cur):
                 remaining.append(cur)
         if not remaining:
             for i, ln in enumerate(lines):
@@ -137,14 +145,15 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--mathlib", type=Path, required=True)
     ap.add_argument("--branch", required=True)
-    ap.add_argument("--recycle", required=True, help="comma-separated qids to remove")
+    ap.add_argument("--db", default="wikidata", help="crossref database to trim (default: wikidata)")
+    ap.add_argument("--recycle", required=True, help="comma-separated ids to remove")
     ap.add_argument("--apply", action="store_true", help="write + build + amend + force-push")
     ap.add_argument("--no-build", action="store_true", help="skip the local build (CI verifies)")
     args = ap.parse_args()
-    recycle = [q.strip() for q in args.recycle.split(",") if q.strip()]
+    recycle = coerce_ids([q.strip() for q in args.recycle.split(",") if q.strip()], args.db)
 
-    print(f"# split: keep greens, remove {len(recycle)} recycled tags from {args.branch}")
-    edits = plan(args.mathlib, recycle)
+    print(f"# split: keep greens, remove {len(recycle)} recycled {spec(args.db).label} tags from {args.branch}")
+    edits = plan(args.mathlib, recycle, args.db)
     rel = lambda p: str(p).replace(str(args.mathlib) + "/", "")
     for path, ops in edits.items():
         print(f"\n{rel(path)}")
@@ -160,7 +169,7 @@ def main():
         print(f"  git fetch origin {args.branch} && git reset --hard origin/{args.branch}")
         print("  git merge upstream/master   (freshen so the cache-verify passes)")
         print("  <re-apply removals>  +  lake build <touched modules>")
-        print('  git commit -m "doc: drop recycled @[wikidata] tags pending re-review"')
+        print('  git commit -m "doc: drop recycled crossref tags pending re-review"')
         print(f"  git push origin {args.branch}   (fast-forward, no --force)")
         return
 
@@ -179,7 +188,7 @@ def main():
     # passes (a stale merged-master leaves core-file oleans uncached).
     print("  freshened against upstream/master" if freshen_master(args.mathlib)
           else "  (upstream/master merge conflicted — trimming on the branch tip)")
-    edits = plan(args.mathlib, recycle)  # re-plan against the fresh tip
+    edits = plan(args.mathlib, recycle, args.db)  # re-plan against the fresh tip
     if not edits:
         print("nothing to remove on the current tip — done."); return
     apply_edits(edits)
@@ -205,7 +214,7 @@ def main():
     nonmod = [l for l in ns if l and not l.startswith("M\t")]
     if nonmod:
         sys.exit("LEAK GUARD: trim staged new/deleted/renamed file(s) — refusing to push:\n  " + "\n  ".join(nonmod))
-    run(["git", "commit", "-m", "doc: drop recycled @[wikidata] tags pending re-review"], cwd=args.mathlib)
+    run(["git", "commit", "-m", "doc: drop recycled crossref tags pending re-review"], cwd=args.mathlib)
     run(["git", "push", "origin", args.branch], cwd=args.mathlib)  # fast-forward, no force
     print("pushed — PR now reflects the green-only set.")
 
