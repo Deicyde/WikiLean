@@ -167,31 +167,32 @@ function queuePageHtml(blob: QueueBlob, spec: CrossRefSpec): string {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>WikiLean · ${htmlEscape(spec.label)} tag queue</title>
 <style>
-:root{--bg:#faf7f1;--card:#fffdf9;--rule:#e3dccb;--ink:#1f1d1a;--muted:#6b6457;--accent:#7a3d2a}
+:root{color-scheme:dark;--bg:#0b0e14;--card:#10141d;--card2:#151b28;--rule:#262c3a;--rule2:#33405c;--ink:#e6e4de;--muted:#9aa3b2;--accent:#7cb3ff;--accent2:#38bdf8;--code:#363333;--g:#8fe388;--y:#f0a202}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);margin:0;padding:2rem 1rem;line-height:1.5}
 main{max-width:820px;margin:0 auto}
 h1{font-size:1.5rem;margin:0 0 .2rem}.sub{color:var(--muted);margin:0 0 1.5rem;font-size:.9rem}
 h2{font-size:1rem;margin:1.6rem 0 .6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
-.ct{background:#e8edf7;color:#1a4b8c;border-radius:10px;padding:0 .5rem;font-size:.8rem}
+.ct{background:rgba(124,179,255,.14);color:#c8ddff;border-radius:10px;padding:0 .5rem;font-size:.8rem}
 .qitem{background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:.7rem .9rem;margin:.5rem 0}
-.qitem.recycled{border-left:3px solid #c98a2b}
-.qitem.brain{border-left:3px solid #4f7d64}
+.qitem.recycled{border-left:3px solid var(--y)}
+.qitem.brain{border-left:3px solid var(--g)}
 .qhead{font-size:.95rem}
 .qid,.qid a{font-family:"SF Mono",Menlo,monospace;color:var(--accent);text-decoration:none;font-weight:600}
 .qid a:hover{text-decoration:underline}
 .qlabel{color:var(--muted)}
-code{font-family:"SF Mono",Menlo,monospace;font-size:.85em;background:#f3efe6;padding:.05rem .3rem;border-radius:4px}
+code{font-family:"SF Mono",Menlo,monospace;font-size:.85em;background:var(--code);color:#eee;padding:.05rem .3rem;border-radius:4px}
 .qb{font-size:.75rem;border-radius:10px;padding:.05rem .45rem;margin-right:.3rem}
-.qb.un{background:#eef2f6;color:#54606b}.qb.re{background:#fbf0db;color:#8a5a14}.qb.br{background:#e6f2eb;color:#276047}
+.qb.un{background:rgba(154,163,178,.14);color:#c3cad6}.qb.re{background:rgba(240,162,2,.16);color:#f6cb72}.qb.br{background:rgba(143,227,136,.14);color:#b8f5b3}
 .qmeta{display:flex;flex-wrap:wrap;gap:.25rem;margin:.45rem 0 0}
-.qchip{display:inline-flex;gap:.25rem;align-items:center;border:1px solid var(--rule);border-radius:8px;padding:.08rem .4rem;font-size:.76rem;color:var(--muted);background:#fffaf1}
-.qchip b{color:#403a30;font-weight:600}.qchip a{text-decoration:none}.qchip a:hover{text-decoration:underline}
-.qnotes{margin:.5rem 0 0;padding-left:1.1rem;font-size:.88rem;color:#403a30}
+.qchip{display:inline-flex;gap:.25rem;align-items:center;border:1px solid var(--rule);border-radius:8px;padding:.08rem .4rem;font-size:.76rem;color:var(--muted);background:var(--card2)}
+.qchip b{color:var(--ink);font-weight:600}.qchip a{text-decoration:none}.qchip a:hover{text-decoration:underline}
+.qnotes{margin:.5rem 0 0;padding-left:1.1rem;font-size:.88rem;color:var(--ink)}
 .qnotes .who{color:var(--accent)}
-.qfix{margin-top:.35rem;font-size:.85rem;color:#1a6b3a}
+.qfix{margin-top:.35rem;font-size:.85rem;color:var(--g)}
 .qreason{margin-top:.35rem;font-size:.84rem;color:var(--muted)}
 .empty{color:var(--muted)}
-a{color:#1a4b8c}
+a{color:var(--accent)}
+a:hover{color:var(--accent2)}
 </style></head><body><main>
 <h1>${htmlEscape(spec.label)} tag queue</h1>
 <p class="sub">Pending <code>@[${htmlEscape(spec.attr)}]</code> tags for the next Mathlib batch. ${when}</p>
