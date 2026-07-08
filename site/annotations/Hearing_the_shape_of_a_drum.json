@@ -1,0 +1,570 @@
+{
+  "slug": "Hearing_the_shape_of_a_drum",
+  "wikipedia_title": "Hearing the shape of a drum",
+  "display_title": "Hearing the shape of a drum",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Hearing the shape problem",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the conceptual problem of \" hearing the shape of a drum \" refers to the prospect of inferring information"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib declaration formalizing Kac's inverse spectral problem of hearing the shape of a drum.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Frequencies depend on shape",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The frequencies at which a drumhead can vibrate depend on its shape"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib formalization of drumhead vibration frequencies depending on planar shape.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Helmholtz equation frequencies",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The Helmholtz equation calculates the frequencies if the shape is known"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductSpace.laplacianWithin",
+        "module": "Mathlib.Analysis.InnerProductSpace.Laplacian",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines the Laplacian on finite-dimensional real inner product spaces, but I found no Helmholtz-equation frequency theorem for drum domains.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Frequencies as Laplacian eigenvalues",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "These frequencies are the eigenvalues of the Laplacian in the space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.End.eigenspace",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has general eigenspaces and Laplacian definitions, but no theorem identifying physical drum frequencies with Laplacian eigenvalues.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Central inverse question",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A central question is whether the shape can be predicted if the frequencies are known"
+      },
+      "status": "not_formalized",
+      "note": "I found no declaration stating the inverse problem of recovering a shape from its frequency spectrum.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Reuleaux triangle example",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "whether a Reuleaux triangle can be recognized in this way"
+      },
+      "status": "not_formalized",
+      "note": "I found no Reuleaux-triangle inverse-spectral example or Reuleaux-triangle declaration in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Negative answer to Kac question",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the frequencies determine the shape was finally answered in the negative"
+      },
+      "status": "not_formalized",
+      "note": "I found no formal statement of the negative answer to Kac's question in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Clamped membrane model",
+      "anchor": {
+        "section": "Formal statement",
+        "snippet": "the drum is conceived as an elastic membrane whose boundary is clamped"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib model of an elastic membrane with clamped boundary conditions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Drum domain",
+      "anchor": {
+        "section": "Formal statement",
+        "snippet": "represented as a domain D in the plane"
+      },
+      "status": "not_formalized",
+      "note": "I found no dedicated declaration for a drum domain as a planar domain in the inverse-spectral setting.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dirichlet eigenvalues",
+      "anchor": {
+        "section": "Formal statement",
+        "snippet": "Denote by λ n the Dirichlet eigenvalues for D"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.End.HasEigenvalue",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes eigenvalues of linear endomorphisms, but I found no Dirichlet Laplacian eigenvalue sequence for a domain.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Isospectral domains",
+      "anchor": {
+        "section": "Formal statement",
+        "snippet": "Two domains are said to be isospectral (or homophonic) if they have the same eigenvalues"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "spectrum",
+        "module": "Mathlib.Algebra.Algebra.Spectrum.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines spectra of algebra elements, but I found no isospectral-domain relation for Laplacian eigenvalues of planar domains.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Eigenvalues as tones",
+      "anchor": {
+        "section": "Formal statement",
+        "snippet": "the Dirichlet eigenvalues are precisely the fundamental tones"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.End.HasEigenvalue",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has eigenvalue infrastructure, but I found no formalization relating Dirichlet eigenvalues to fundamental tones.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fourier coefficient occurrence",
+      "anchor": {
+        "section": "Formal statement",
+        "snippet": "they appear naturally as Fourier coefficients"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "fourierCoeff",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib defines Fourier coefficients on the additive circle, but I found no theorem that drum Dirichlet eigenvalues appear as such coefficients.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inverse spectral formulation",
+      "anchor": {
+        "section": "Formal statement",
+        "snippet": "what can be inferred on D if one knows only the values of λ n"
+      },
+      "status": "not_formalized",
+      "note": "I found no declaration formalizing the inverse spectral question for a domain from the values of its Dirichlet eigenvalues.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Isospectral nonuniqueness question",
+      "anchor": {
+        "section": "Formal statement",
+        "snippet": "are there two distinct domains that are isospectral"
+      },
+      "status": "not_formalized",
+      "note": "I found no formalized existence question or theorem about distinct isospectral planar domains.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Higher-dimensional related problems",
+      "anchor": {
+        "section": "Formal statement",
+        "snippet": "Dirichlet problem for the Laplacian on domains in higher dimensions or on Riemannian manifolds"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsRiemannianManifold",
+        "module": "Mathlib.Geometry.Manifold.Riemannian.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has Riemannian manifolds and Euclidean Laplacian infrastructure, but I found no Dirichlet spectral problem for higher-dimensional domains or manifolds.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Other elliptic operators",
+      "anchor": {
+        "section": "Formal statement",
+        "snippet": "Cauchy–Riemann operator or Dirac operator"
+      },
+      "status": "not_formalized",
+      "note": "I found no Cauchy-Riemann or Dirac elliptic-operator declarations corresponding to this example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Neumann boundary condition",
+      "anchor": {
+        "section": "Formal statement",
+        "snippet": "the Neumann boundary condition"
+      },
+      "status": "not_formalized",
+      "note": "I found no Neumann boundary-condition formalization for PDE eigenvalue problems in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Milnor isospectral tori",
+      "anchor": {
+        "section": "The answer",
+        "snippet": "the existence of a pair of 16-dimensional flat tori"
+      },
+      "status": "not_formalized",
+      "note": "I found no formalization of Milnor's pair of 16-dimensional isospectral flat tori.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gordon-Webb-Wolpert domains",
+      "anchor": {
+        "section": "The answer",
+        "snippet": "a pair of regions in the plane that have different shapes but identical eigenvalues"
+      },
+      "status": "not_formalized",
+      "note": "I found no declaration for the Gordon-Webb-Wolpert noncongruent isospectral planar domains.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Concave polygon regions",
+      "anchor": {
+        "section": "The answer",
+        "snippet": "The regions are concave polygons"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polygon",
+        "module": "Mathlib.Geometry.Polygon.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines general polygons, but I found no concave-polygon classification of the Gordon-Webb-Wolpert regions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Similar isospectral examples",
+      "anchor": {
+        "section": "The answer",
+        "snippet": "constructed numerous similar examples"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib declarations for families of planar isospectral examples similar to Gordon-Webb-Wolpert.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Inaudibility for many shapes",
+      "anchor": {
+        "section": "The answer",
+        "snippet": "for many shapes, one cannot hear the shape of the drum completely"
+      },
+      "status": "not_formalized",
+      "note": "I found no theorem in Mathlib stating non-uniqueness of shape from spectrum for many drums.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Partial spectral information",
+      "anchor": {
+        "section": "The answer",
+        "snippet": "some information can be inferred"
+      },
+      "status": "not_formalized",
+      "note": "I found no formal statement of geometric information inferable from the Dirichlet spectrum of a drum domain.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Zelditch positive result",
+      "anchor": {
+        "section": "The answer",
+        "snippet": "the answer to Kac's question is positive if one imposes restrictions to certain convex planar regions with analytic boundary"
+      },
+      "status": "not_formalized",
+      "note": "I found no formalization of Zelditch's positive inverse-spectral result for restricted convex analytic planar domains.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-convex analytic open problem",
+      "anchor": {
+        "section": "The answer",
+        "snippet": "two non-convex analytic domains can have the same eigenvalues"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib statement of the open problem about isospectral non-convex analytic domains.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Compact isospectral domains",
+      "anchor": {
+        "section": "The answer",
+        "snippet": "the set of domains isospectral with a given one is compact"
+      },
+      "status": "not_formalized",
+      "note": "I found no theorem that the class of domains isospectral to a fixed domain is compact.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Sphere spectral rigidity",
+      "anchor": {
+        "section": "The answer",
+        "snippet": "the sphere (for instance) is spectrally rigid"
+      },
+      "status": "not_formalized",
+      "note": "I found no spectral-rigidity theorem for spheres in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "No continuous isospectral flow",
+      "anchor": {
+        "section": "The answer",
+        "snippet": "the moduli space of Riemann surfaces of a given genus does not admit a continuous isospectral flow"
+      },
+      "status": "not_formalized",
+      "note": "I found no formalization of a no-continuous-isospectral-flow theorem for moduli spaces of Riemann surfaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Compact moduli space",
+      "anchor": {
+        "section": "The answer",
+        "snippet": "is compact in the Fréchet–Schwartz topology"
+      },
+      "status": "not_formalized",
+      "note": "I found no declaration for the relevant moduli space or its compactness in the Frechet-Schwartz topology.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Weyl area formula",
+      "anchor": {
+        "section": "Weyl's formula",
+        "snippet": "Weyl's formula states that one can infer the area A of the drum"
+      },
+      "status": "not_formalized",
+      "note": "I found no Weyl eigenvalue-counting asymptotic that recovers the area of a drum domain.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Eigenvalue counting function",
+      "anchor": {
+        "section": "Weyl's formula",
+        "snippet": "N ( R ) to be the number of eigenvalues smaller than R"
+      },
+      "status": "not_formalized",
+      "note": "I found no eigenvalue-counting function for spectra of Dirichlet Laplacians in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dimension parameter",
+      "anchor": {
+        "section": "Weyl's formula",
+        "snippet": "d is the dimension"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.finrank",
+        "module": "Mathlib.LinearAlgebra.Dimension.Finrank",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes finite dimension as the natural number `Module.finrank`, though not specifically as the parameter in Weyl's formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unit ball volume",
+      "anchor": {
+        "section": "Weyl's formula",
+        "snippet": "volume of the d -dimensional unit ball"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.volume_ball",
+        "module": "Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls",
+        "match_kind": "generalization"
+      },
+      "note": "`EuclideanSpace.volume_ball` gives the volume formula for Euclidean balls, including the d-dimensional unit ball as a special invocation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Weyl perimeter conjecture",
+      "anchor": {
+        "section": "Weyl's formula",
+        "snippet": "the next term in the approximation below would give the perimeter of D"
+      },
+      "status": "not_formalized",
+      "note": "I found no statement of Weyl's perimeter-term conjecture for drum spectra.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Perimeter length notation",
+      "anchor": {
+        "section": "Weyl's formula",
+        "snippet": "L denotes the length of the perimeter"
+      },
+      "status": "not_formalized",
+      "note": "I found no perimeter-length notation or perimeter functional for planar drum domains tied to this formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Weyl two-term asymptotic",
+      "anchor": {
+        "section": "Weyl's formula",
+        "snippet": "then one should have"
+      },
+      "status": "not_formalized",
+      "note": "I found no two-term Weyl asymptotic for the Dirichlet eigenvalue counting function in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Ivrii smooth-boundary theorem",
+      "anchor": {
+        "section": "Weyl's formula",
+        "snippet": "For a smooth boundary, this was proved"
+      },
+      "status": "not_formalized",
+      "note": "I found no formalization of Ivrii's smooth-boundary two-term Weyl theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Periodic geodesic exclusion",
+      "anchor": {
+        "section": "Weyl's formula",
+        "snippet": "not allowed to have a two-parameter family of periodic geodesics"
+      },
+      "status": "not_formalized",
+      "note": "I found no theorem excluding two-parameter families of periodic geodesics for Weyl asymptotics.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sphere periodic geodesics",
+      "anchor": {
+        "section": "Weyl's formula",
+        "snippet": "such as a sphere would have"
+      },
+      "status": "not_formalized",
+      "note": "I found no formal statement that spheres have the relevant two-parameter family of periodic geodesics.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Weyl-Berry correction",
+      "anchor": {
+        "section": "The Weyl–Berry conjecture",
+        "snippet": "the correction should be of the order of"
+      },
+      "status": "not_formalized",
+      "note": "I found no statement of the Weyl-Berry spectral correction order in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Boundary Hausdorff dimension",
+      "anchor": {
+        "section": "The Weyl–Berry conjecture",
+        "snippet": "D is the Hausdorff dimension of the boundary"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "dimH",
+        "module": "Mathlib.Topology.MetricSpace.HausdorffDimension",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines Hausdorff dimension of arbitrary metric-space sets via `dimH`, but I found no Weyl-Berry boundary-dimension parameterization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Brossard-Carmona disproof",
+      "anchor": {
+        "section": "The Weyl–Berry conjecture",
+        "snippet": "This was disproved by J. Brossard and R. A. Carmona"
+      },
+      "status": "not_formalized",
+      "note": "I found no formalization of the Brossard-Carmona disproof of the Weyl-Berry conjecture.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Upper box dimension replacement",
+      "anchor": {
+        "section": "The Weyl–Berry conjecture",
+        "snippet": "replace the Hausdorff dimension with the upper box dimension"
+      },
+      "status": "not_formalized",
+      "note": "I found no upper box dimension replacement statement, and no upper box dimension declaration, in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Planar dimension-one case",
+      "anchor": {
+        "section": "The Weyl–Berry conjecture",
+        "snippet": "this was proved if the boundary has dimension 1"
+      },
+      "status": "not_formalized",
+      "note": "I found no theorem proving the Weyl-Berry replacement in the planar boundary-dimension-one case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Higher-dimensional disproof",
+      "anchor": {
+        "section": "The Weyl–Berry conjecture",
+        "snippet": "mostly disproved for higher dimensions"
+      },
+      "status": "not_formalized",
+      "note": "I found no higher-dimensional disproof theorem for the Weyl-Berry conjectural correction in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}
