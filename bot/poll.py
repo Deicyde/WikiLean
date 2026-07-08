@@ -16,7 +16,7 @@ re-open). Dry-run by default — prints the decision; --apply acts.
 """
 import argparse, json, os, subprocess, sys, time
 from pathlib import Path
-import settle, pool, split
+import settle, pool, split, open_batch
 
 HERE = Path(__file__).resolve().parent
 STATE = HERE / "state" / "bot_state.json"
@@ -90,9 +90,24 @@ def do_settle(pr, branch, mathlib, cls, dry):
     # pre-trim diff for a moment after split's push, and a settled PR never re-syncs.
     import pr_table
     pr_table.sync_body_count(pr, REPO, n=green)
-    fresh = pool.candidates(20, exclude=set(cls["tags"]) | {e["qid"] for e in recycle})
+    recycle_qids = {e["qid"] for e in recycle}
+    for e in recycle:
+        sq = e.get("triage", {}).get("suggested_qid")
+        if sq:
+            recycle_qids.add(sq)
+    brain_qids = set()
+    if open_batch.BRAIN_QUEUE.exists():
+        try:
+            brain_qids = {e.get("qid") for e in json.loads(open_batch.BRAIN_QUEUE.read_text())}
+        except Exception:
+            brain_qids = set()
+    fresh = pool.candidates(20, exclude=set(cls["tags"]) | recycle_qids | brain_qids)
     CANDS.write_text(json.dumps(fresh))
-    sh([sys.executable, str(HERE / "publish_queue.py"), "--recycle", str(QUEUE), "--candidates", str(CANDS)])
+    cmd = [sys.executable, str(HERE / "publish_queue.py"), "--recycle", str(QUEUE),
+           "--candidates", str(CANDS), "--exclude", ",".join(sorted(set(cls["tags"])))]
+    if open_batch.BRAIN_QUEUE.exists():
+        cmd += ["--brain", str(open_batch.BRAIN_QUEUE)]
+    sh(cmd)
 
 
 def pr_conflicting(pr):

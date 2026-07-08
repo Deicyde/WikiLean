@@ -4,7 +4,8 @@
 Sources (any/all):
   --payload FILE       a ready {"items":[…]} blob (e.g. state/seed_queue.json)
   --recycle FILE       triage output (recycle_queue.json) -> recycled items
-  --candidates FILE    [{qid,label,decl,file}] -> unreviewed items
+  --brain FILE         bot/brain_queue.py output -> Brain-suggested items
+  --candidates FILE    pool.py output -> unreviewed items
 Auth: --token or $PIPELINE_TOKEN. --dry-run prints the payload instead of POSTing.
 """
 import argparse, json, os, subprocess, sys
@@ -12,6 +13,12 @@ from pathlib import Path
 
 DEV_VARS = Path(__file__).resolve().parent.parent / "wiki" / ".dev.vars"
 WD_API = "https://www.wikidata.org/w/api.php"
+META_FIELDS = {
+    "article_qid", "orig_qid", "centrality_pct", "brain_rank", "wikilink_rank",
+    "rank_delta", "provenance_tier", "source_file", "priority_source",
+    "review_reason", "brain_node", "decl_node", "source", "actor_type",
+    "added_by", "brain_edge_id", "confidence",
+}
 
 
 def wikidata_labels(qids):
@@ -47,39 +54,75 @@ def find_token():
     return ""
 
 
+def read_items(path):
+    data = json.loads(path.read_text())
+    if isinstance(data, dict):
+        return data.get("items", [])
+    return data if isinstance(data, list) else []
+
+
+def queue_item(src, status):
+    item = {"qid": src["qid"], "label": src.get("label"), "decl": src.get("decl", ""),
+            "file": src.get("file"), "status": status}
+    for field in META_FIELDS:
+        if field in src and src[field] is not None:
+            item[field] = src[field]
+    return item
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--wiki", default="https://wikilean.jackmccarthy.org")
     ap.add_argument("--payload", type=Path)
     ap.add_argument("--recycle", type=Path)
+    ap.add_argument("--brain", type=Path)
     ap.add_argument("--candidates", type=Path)
+    ap.add_argument("--exclude", default="", help="comma-separated qids to omit from the published queue")
     ap.add_argument("--token", default="")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
     token = args.token or find_token()
+    exclude = {q.strip() for q in args.exclude.split(",") if q.strip()}
 
     items = []
     if args.payload and args.payload.exists():
-        items += json.loads(args.payload.read_text()).get("items", [])
+        items += [i for i in read_items(args.payload) if i.get("qid") not in exclude]
     if args.recycle and args.recycle.exists():
-        for e in json.loads(args.recycle.read_text()):
+        for e in read_items(args.recycle):
             t = e.get("triage", {})
             fix = t.get("fix_hint", "")
+            qid = t.get("suggested_qid") or e["qid"]
+            if qid in exclude:
+                continue
             items.append({
                 # The corrected concept (what will actually be re-tagged), not the
                 # original broad QID; keep the original as context.
-                "qid": t.get("suggested_qid") or e["qid"],
+                "qid": qid,
                 "orig_qid": e["qid"],
                 "decl": t.get("suggested_decl") or e.get("decl") or e.get("current_decl", ""),
                 "file": e.get("file"),
                 "status": "recycled",
+                "source": "recycled-review",
+                "priority_source": "review-feedback",
+                "review_reason": "Reviewer recycle plus triage retarget",
                 "notes": e.get("notes", []),
                 "retarget": (((t.get("suggested_decl") or "") + (" — " + fix if fix else "")).strip(" —")),
             })
+    if args.brain and args.brain.exists():
+        for b in read_items(args.brain):
+            if b.get("qid") in exclude:
+                continue
+            item = queue_item(b, "brain")
+            item.setdefault("source", "brain-community")
+            item.setdefault("priority_source", "brain")
+            items.append(item)
     if args.candidates and args.candidates.exists():
-        for c in json.loads(args.candidates.read_text()):
-            items.append({"qid": c["qid"], "label": c.get("label"), "decl": c.get("decl", ""),
-                          "file": c.get("file"), "status": "unreviewed"})
+        for c in read_items(args.candidates):
+            if c.get("qid") in exclude:
+                continue
+            item = queue_item(c, "unreviewed")
+            item.setdefault("source", "catalog-pool")
+            items.append(item)
 
     # Stamp every item with the authoritative Wikidata label for its (tagged) QID.
     labs = wikidata_labels([it.get("qid") for it in items])

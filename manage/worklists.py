@@ -125,9 +125,11 @@ def pipeline_worklist(centrality: dict, p31: dict) -> dict:
     wikilink_order = list(json.loads(pool.MOST_USED.read_text()).keys())
     wikilink_rank = {q: i for i, q in enumerate(wikilink_order)}
 
-    # All eligible candidates; we apply the field filter locally (offline) rather
-    # than pool's network P31 call.
-    cands = pool.candidates(n=10_000, require_high=True, p31_filter=False)
+    # All eligible candidates in the historical wikilink order; we apply the
+    # field filter locally (offline) rather than pool's network P31 call. Keep
+    # this off the Brain-ranked order so this artifact does not rank itself.
+    cands = pool.candidates(n=10_000, require_high=True, p31_filter=False,
+                            order_source="wikilink")
 
     kept, excluded_fields = [], 0
     for c in cands:
