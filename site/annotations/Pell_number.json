@@ -1,0 +1,104 @@
+{
+  "slug": "Pell_number",
+  "wikipedia_title": "Pell number",
+  "display_title": "Pell number",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Pell numbers as approximation denominators",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the Pell numbers are an infinite sequence of integers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "GenContFract.dens",
+        "module": "Mathlib.Algebra.ContinuedFractions.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines denominators of general continued-fraction convergents via `GenContFract.dens`, but I found no declaration identifying the denominators for `√2` with the Pell numbers.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Initial Pell approximation sequence",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "This sequence of approximations begins"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "GenContFract.convs",
+        "module": "Mathlib.Algebra.ContinuedFractions.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines the general convergent stream `GenContFract.convs`, but I found no formalized concrete initial sequence of the Pell approximations to `√2`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Companion Pell numbers",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The numerators of the same sequence of approximations are half the companion Pell numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Pell.xn",
+        "module": "Mathlib.NumberTheory.PellMatiyasevic"
+      },
+      "note": "Mathlib has a Pell `x` sequence `Pell.xn` for a class of Pell-equation solutions, but I found no companion-Pell or numerator-halving theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Pell numbers have Fibonacci-like recurrences",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Both the Pell numbers and the companion Pell numbers may be calculated by means of a recurrence relation similar to that for the Fibonacci numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Pell.xy_succ_succ",
+        "module": "Mathlib.NumberTheory.PellMatiyasevic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves a second-order recurrence for its parameterized Pell `x` and `y` sequences in `Pell.xy_succ_succ`, but not the classical Pell and companion-Pell recurrence for `√2`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Pell growth by silver ratio powers",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "both sequences of numbers grow exponentially"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Pell.xn_ge_a_pow",
+        "module": "Mathlib.NumberTheory.PellMatiyasevic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has an exponential lower bound `Pell.xn_ge_a_pow` for a parameterized Pell `x` sequence, but no silver-ratio closed form or asymptotic growth theorem for the Pell and companion Pell numbers was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Pell numbers approximate square root of two",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Pell numbers can be used to find square triangular numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "GenContFract.of_convergence",
+        "module": "Mathlib.Algebra.ContinuedFractions.Computation.ApproximationCorollaries",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves general convergence of continued-fraction convergents in `GenContFract.of_convergence`, but I found no declaration connecting Pell numbers to `√2` approximations or square triangular numbers.",
+      "provenance": "ai"
+    }
+  ]
+}

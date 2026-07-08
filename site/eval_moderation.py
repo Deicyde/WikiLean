@@ -92,8 +92,9 @@ def run_moderate_pipeline(fix: dict, live: bool = False) -> tuple[dict, list]:
 
     queue = [copy.deepcopy(fix["agent1_output"]), copy.deepcopy(fix["agent2_output"])]
 
-    async def planted_agent(system, user, cwd, tools, max_turns, mcp_servers=None):
-        return queue.pop(0), {"n_tool_calls": 0, "tools_used": {}, "cost_usd_equiv": 0.0,
+    async def planted_agent(system, user, cwd, tools, max_turns, mcp_servers=None, **kwargs):
+        return queue.pop(0), {"provider": kwargs.get("provider", "fixture"),
+                              "n_tool_calls": 0, "tools_used": {}, "cost_usd_equiv": 0.0,
                               "tokens": 0, "duration_ms": 1}
 
     def planted_script(script: str, slug_: str) -> tuple[int, str]:

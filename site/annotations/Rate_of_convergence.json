@@ -1,0 +1,1558 @@
+{
+  "slug": "Rate_of_convergence",
+  "wikipedia_title": "Rate of convergence",
+  "display_title": "Rate of convergence",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Rate and order of convergence",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the rate of convergence and order of convergence of a sequence that converges to a limit are any of several characterizations"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.IsBigO",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has general Landau asymptotic relations such as `Asymptotics.IsBigO`, but no verified unified definition of convergence rate or order for convergent sequences.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Asymptotic rates and orders",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "called asymptotic rates and orders of convergence"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.IsLittleO",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Asymptotics.IsLittleO`, `IsBigO`, `IsTheta`, and `IsEquivalent` give the general asymptotic comparison infrastructure, but not this named convergence-rate taxonomy.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Non-asymptotic rates and orders",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "called non-asymptotic rates and orders of convergence"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib declaration in `Mathlib/` defining non-asymptotic convergence rates or orders.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Big O notation",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "asymptotic notation commonly called \" big O notation ,\""
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsBigO",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Asymptotics.IsBigO` is Mathlib's formal definition of Landau big-O notation along a filter.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Iterative asymptotic order and rate",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "For iterative methods, a sequence"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.IsBigOWith",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Asymptotics.IsBigOWith` can express bounded error ratios with a constant, but Mathlib has no verified iterative order/rate definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Q-convergence",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "known specifically as the rates and orders of Q-convergence"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.isBigO_of_div_tendsto_nhds",
+        "module": "Mathlib.Analysis.Asymptotics.Lemmas",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has quotient-limit-to-big-O infrastructure via `Asymptotics.isBigO_of_div_tendsto_nhds`, but no named Q-convergence classes were found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Asymptotic error constant",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "may also be called the asymptotic error constant"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.IsEquivalent",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Asymptotics.IsEquivalent` captures leading asymptotic equality of errors, but Mathlib has no named asymptotic error constant definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Series acceleration",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Series acceleration methods are techniques for improving the rate of convergence"
+      },
+      "status": "not_formalized",
+      "note": "Searches for series acceleration and Aitken-style terminology found no Mathlib formalization of this definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Grid discretization convergence",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A sequence of approximate grid solutions"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib declaration defining convergence rates for approximate grid solutions or discretization grids.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Metric interpretation of error",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the absolute value symbols stand for a metric for the space of solutions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Metric.tendsto_atTop",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Metric.tendsto_atTop` characterizes sequence convergence by the metric distance to the limit, but it is not a discretization-error notation definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Non-grid discretization convergence",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Similar definitions also apply for non-grid discretization schemes"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib declaration for non-grid discretization convergence rates or orders.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Asymptotically faster convergence",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is said to asymptotically converge more quickly than another sequence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsLittleO",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Asymptotics.IsLittleO` formalizes one error term being asymptotically negligible relative to another, which is the standard faster-convergence comparison.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Same asymptotic order",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "said to asymptotically converge with the same order of convergence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsTheta",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Asymptotics.IsTheta` formalizes mutual big-O comparison, matching the same asymptotic order relation for error functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Asymptotic equivalence",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "said to be asymptotically equivalent"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsEquivalent",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Asymptotics.IsEquivalent` is Mathlib's definition of asymptotic equivalence along a filter.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Q-order and Q-rate",
+      "anchor": {
+        "section": "Q-convergence",
+        "snippet": "The sequence is said to converge with order"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.IsBigOWith",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Asymptotics.IsBigOWith` can state the bounded quotient with a rate constant, but Mathlib has no named Q-order or Q-rate definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Need for technical rate definitions",
+      "anchor": {
+        "section": "Q-convergence",
+        "snippet": "Other more technical rate definitions are needed"
+      },
+      "status": "not_formalized",
+      "note": "This is explanatory prose rather than a mathematical statement I found as a Mathlib theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Q-convergence name",
+      "anchor": {
+        "section": "Q-convergence",
+        "snippet": "This definition is technically called Q-convergence"
+      },
+      "status": "not_formalized",
+      "note": "I found no declaration or namespace in Mathlib defining the term Q-convergence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Larger orders converge faster",
+      "anchor": {
+        "section": "Q-convergence",
+        "snippet": "Sequences with larger orders"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.isLittleO_pow_pow_atTop_of_lt",
+        "module": "Mathlib.Analysis.Asymptotics.SpecificAsymptotics",
+        "match_kind": "special_case"
+      },
+      "note": "`Asymptotics.isLittleO_pow_pow_atTop_of_lt` compares powers asymptotically, but Mathlib has no Q-order speed theorem for iterative sequences.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Smaller rates converge faster",
+      "anchor": {
+        "section": "Q-convergence",
+        "snippet": "those with smaller rates"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "tendsto_pow_atTop_nhds_zero_of_lt_one",
+        "module": "Mathlib.Analysis.SpecificLimits.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`tendsto_pow_atTop_nhds_zero_of_lt_one` gives geometric decay for rates below one, but no theorem compares Q-rates as a named convergence class.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Extra decimals rate",
+      "anchor": {
+        "section": "Q-convergence",
+        "snippet": "number of extra decimals of precision per iterate"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib declaration formalizing decimal-precision gain per iteration as a convergence rate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear convergence",
+      "anchor": {
+        "section": "Q-convergence",
+        "snippet": "is called linear convergence"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContractingWith.apriori_dist_iterate_fixedPoint_le",
+        "module": "Mathlib.Topology.MetricSpace.Contracting",
+        "match_kind": "special_case"
+      },
+      "note": "`ContractingWith.apriori_dist_iterate_fixedPoint_le` proves a geometric fixed-point error bound, but Mathlib has no named linear-convergence definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quadratic convergence",
+      "anchor": {
+        "section": "Q-convergence",
+        "snippet": "is called quadratic convergence"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.IsBigO",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Asymptotics.IsBigO` can express an error bound by the square of the previous error, but no named quadratic-convergence definition was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cubic convergence",
+      "anchor": {
+        "section": "Q-convergence",
+        "snippet": "is called cubic convergence"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.IsBigO",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Asymptotics.IsBigO` can express an error bound by a cube of the previous error, but no named cubic-convergence definition was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Secant method order",
+      "anchor": {
+        "section": "Q-convergence",
+        "snippet": "the secant method , when converging to a regular, simple root , has an order of the golden ratio"
+      },
+      "status": "not_formalized",
+      "note": "Searches found golden-ratio facts but no Mathlib formalization of the secant method or its convergence order.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Q-limit implies big O error",
+      "anchor": {
+        "section": "Q-convergence",
+        "snippet": "the convergence of the quotient implies"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.isBigO_of_div_tendsto_nhds",
+        "module": "Mathlib.Analysis.Asymptotics.Lemmas",
+        "match_kind": "generalization"
+      },
+      "note": "`Asymptotics.isBigO_of_div_tendsto_nhds` proves that a quotient tending to a finite value gives a big-O relation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Leading order Q-error",
+      "anchor": {
+        "section": "Q-convergence",
+        "snippet": "the leading order error is exactly"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.isEquivalent_of_tendsto_one",
+        "module": "Mathlib.Analysis.Asymptotics.AsymptoticEquivalent",
+        "match_kind": "generalization"
+      },
+      "note": "`Asymptotics.isEquivalent_of_tendsto_one` converts a quotient limit of one into asymptotic equivalence, but the Q-error formulation itself is not named.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Superlinear convergence",
+      "anchor": {
+        "section": "Q-convergence",
+        "snippet": "those sequences are said to converge superlinearly"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.IsLittleO",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Asymptotics.IsLittleO` can express the usual superlinear error-ratio condition, but no named superlinear-convergence definition was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sublinear convergence",
+      "anchor": {
+        "section": "Q-convergence",
+        "snippet": "A sequence is said to converge sublinearly"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.IsBigOWith",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Asymptotics.IsBigOWith` supports explicit asymptotic error bounds, but Mathlib has no named sublinear-convergence definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sublinear is not linear rate one",
+      "anchor": {
+        "section": "Q-convergence",
+        "snippet": "it is incorrect to say that these sublinear-order sequences converge linearly"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib theorem distinguishing sublinear convergence from linear convergence with rate one.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Logarithmic convergence",
+      "anchor": {
+        "section": "Q-convergence",
+        "snippet": "converges logarithmically to"
+      },
+      "status": "not_formalized",
+      "note": "Searches found logarithm analysis but no declaration defining logarithmic convergence as a convergence-rate class.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Q-convergence shortcoming",
+      "anchor": {
+        "section": "R-convergence",
+        "snippet": "do not naturally capture the convergence behavior of sequences"
+      },
+      "status": "not_formalized",
+      "note": "This qualitative limitation of Q-convergence is not present as a Mathlib theorem or definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Staggered geometric progression class",
+      "anchor": {
+        "section": "R-convergence",
+        "snippet": "One class of examples is the staggered geometric progressions"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib definition or example family for staggered geometric progressions in this convergence-rate sense.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Staggered progression lacks Q-linear limit",
+      "anchor": {
+        "section": "R-convergence",
+        "snippet": "The defining Q-linear convergence limits do not exist for this sequence"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib theorem about Q-linear limits failing for staggered geometric progressions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Divergent subsequential limits prevent convergence",
+      "anchor": {
+        "section": "R-convergence",
+        "snippet": "When two subsequences of a sequence converge to different limits"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tendsto_nhds_unique",
+        "module": "Mathlib.Topology.Separation.Hausdorff",
+        "match_kind": "generalization"
+      },
+      "note": "`tendsto_nhds_unique` gives uniqueness of limits in Hausdorff spaces, which rules out convergence when subsequential limits are different.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "R-linear convergence",
+      "anchor": {
+        "section": "R-convergence",
+        "snippet": "is said to converge at least R-linearly"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.IsBigO",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Asymptotics.IsBigO` can state the bounding-sequence condition behind R-linear convergence, but Mathlib has no named R-linear definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Other R-convergence classes",
+      "anchor": {
+        "section": "R-convergence",
+        "snippet": "analogous definitions hold for R-superlinear convergence"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.IsLittleO",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Asymptotics.IsLittleO` and related relations can express analogous asymptotic bounds, but no named R-superlinear or R-order classes were found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "R-error bound lower bound",
+      "anchor": {
+        "section": "R-convergence",
+        "snippet": "provides a lower bound on the rate and order of R-convergence"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib theorem about lower bounds for the rate or order of R-convergence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exact R-rate greatest lower bound",
+      "anchor": {
+        "section": "R-convergence",
+        "snippet": "the greatest lower bound gives the exact rate and order of R-convergence"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib formalization of exact R-rates or orders via greatest lower bounds.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "R-order and R-rate comparison",
+      "anchor": {
+        "section": "R-convergence",
+        "snippet": "As for Q-convergence, sequences with larger orders"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.isLittleO_pow_pow_atTop_of_lt",
+        "module": "Mathlib.Analysis.Asymptotics.SpecificAsymptotics",
+        "match_kind": "special_case"
+      },
+      "note": "`Asymptotics.isLittleO_pow_pow_atTop_of_lt` supplies a power-comparison lemma, but not a theorem comparing R-orders and R-rates.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Tight R-bounding sequence",
+      "anchor": {
+        "section": "R-convergence",
+        "snippet": "the tight bounding sequence"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib example formalizing a tight bounding sequence for R-convergence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "General staggered R-linear convergence",
+      "anchor": {
+        "section": "R-convergence",
+        "snippet": "will not converge Q-linearly but will converge R-linearly"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib theorem for the Q-linear failure and R-linear success of staggered geometric progressions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Geometric progression limit",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The geometric progression"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tendsto_pow_atTop_nhds_zero_of_norm_lt_one",
+        "module": "Mathlib.Analysis.SpecificLimits.Normed",
+        "match_kind": "generalization"
+      },
+      "note": "`tendsto_pow_atTop_nhds_zero_of_norm_lt_one` proves that powers of an element of norm less than one tend to zero, covering geometric progressions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Geometric progression Q-linear rate",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "converges Q-linearly with a convergence rate"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "tendsto_pow_atTop_nhds_zero_of_norm_lt_one",
+        "module": "Mathlib.Analysis.SpecificLimits.Normed",
+        "match_kind": "special_case"
+      },
+      "note": "`tendsto_pow_atTop_nhds_zero_of_norm_lt_one` formalizes geometric convergence to zero, but Mathlib does not name the Q-linear rate classification.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Real geometric progression linear rate",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "for any initial value"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "tendsto_pow_atTop_nhds_zero_of_lt_one",
+        "module": "Mathlib.Analysis.SpecificLimits.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`tendsto_pow_atTop_nhds_zero_of_lt_one` proves real geometric decay for ratios in `[0,1)`, but not the named linear-rate statement for all initial values.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Geometric series partial sums rate",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "sequence of partial sums of a geometric series"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "hasSum_geometric_of_norm_lt_one",
+        "module": "Mathlib.Analysis.SpecificLimits.Normed",
+        "match_kind": "generalization"
+      },
+      "note": "`hasSum_geometric_of_norm_lt_one` proves convergence of geometric series in normed rings, but not a named rate for their partial sums.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Complex geometric convergence rate",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The same holds also for geometric progressions and geometric series parameterized by any complex numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "tendsto_pow_atTop_nhds_zero_of_norm_lt_one",
+        "module": "Mathlib.Analysis.SpecificLimits.Normed",
+        "match_kind": "generalization"
+      },
+      "note": "`tendsto_pow_atTop_nhds_zero_of_norm_lt_one` covers complex powers by the norm condition, but Mathlib does not formulate the Q-rate conclusion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Staggered geometric progression R-linear",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The staggered geometric progression"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib example of staggered geometric progression R-linear convergence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Staggered progression not Q-linear",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "it does not converge Q-linearly"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib theorem showing a staggered progression is not Q-linear.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "General staggered geometric R-rate",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Generally, for any staggered geometric progression"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib statement about general staggered geometric progressions and their R-rates.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Q-superlinear sequence",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "converges to zero Q-superlinearly"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.IsLittleO",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Asymptotics.IsLittleO` can express superlinear error-ratio decay, but this specific Q-superlinear example is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Quadratic sequence rate one",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "it is quadratically convergent with a quadratic convergence rate of 1"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.isEquivalent_of_tendsto_one",
+        "module": "Mathlib.Analysis.Asymptotics.AsymptoticEquivalent",
+        "match_kind": "generalization"
+      },
+      "note": "`Asymptotics.isEquivalent_of_tendsto_one` can express a leading constant of one, but the specific quadratic-convergence example is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Q-sublinear logarithmic sequence",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "converges to zero Q-sublinearly and logarithmically"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib example classified as Q-sublinear or logarithmic convergence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fixed point iteration",
+      "anchor": {
+        "section": "Convergence rates to fixed points of recurrent sequences",
+        "snippet": "called fixed point iterations , define discrete time autonomous dynamical systems"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Flow.fromIter",
+        "module": "Mathlib.Dynamics.Flow",
+        "match_kind": "generalization"
+      },
+      "note": "`Flow.fromIter` formalizes iterations of a continuous self-map as a semiflow by `ℕ`, matching the discrete-time dynamical-system interpretation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Attractive fixed point criterion",
+      "anchor": {
+        "section": "Convergence rates to fixed points of recurrent sequences",
+        "snippet": "the fixed point is an attractive fixed point"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContractingWith.tendsto_iterate_fixedPoint",
+        "module": "Mathlib.Topology.MetricSpace.Contracting",
+        "match_kind": "special_case"
+      },
+      "note": "`ContractingWith.tendsto_iterate_fixedPoint` proves attraction for contractions, but Mathlib has no derivative-based attractive fixed point criterion from the article.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Linear fixed point convergence",
+      "anchor": {
+        "section": "Convergence rates to fixed points of recurrent sequences",
+        "snippet": "recurrent sequence will converge at least linearly to p"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContractingWith.apriori_dist_iterate_fixedPoint_le",
+        "module": "Mathlib.Topology.MetricSpace.Contracting",
+        "match_kind": "special_case"
+      },
+      "note": "`ContractingWith.apriori_dist_iterate_fixedPoint_le` gives a geometric error estimate for contraction iterates, a special case of at-least-linear fixed-point convergence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Quadratic fixed point convergence",
+      "anchor": {
+        "section": "Convergence rates to fixed points of recurrent sequences",
+        "snippet": "then the recurrent sequence will converge at least quadratically"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib theorem giving the quadratic fixed-point convergence criterion for recurrent sequences.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Repulsive fixed point criterion",
+      "anchor": {
+        "section": "Convergence rates to fixed points of recurrent sequences",
+        "snippet": "the fixed point is a repulsive fixed point"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib definition or theorem for repulsive fixed points in this iterative-convergence setting.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "No local convergence to repulsive fixed point",
+      "anchor": {
+        "section": "Convergence rates to fixed points of recurrent sequences",
+        "snippet": "sequences cannot converge to p from its immediate neighborhoods"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib theorem stating local nonconvergence to a repulsive fixed point.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Direct jump to fixed point",
+      "anchor": {
+        "section": "Convergence rates to fixed points of recurrent sequences",
+        "snippet": "may still jump to p directly from outside of its local neighborhoods"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib statement about an iterate jumping directly to a repulsive fixed point from outside local neighborhoods.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Order estimation sequence",
+      "anchor": {
+        "section": "Order estimation",
+        "snippet": "following sequence, which converges to the order"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib formalization of the numerical order-estimation sequence for convergence order.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Acceleration by transformation",
+      "anchor": {
+        "section": "Accelerating convergence rates",
+        "snippet": "to transform one sequence into a second sequence that converges more quickly to the same limit"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib definition of convergence acceleration by sequence transformation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Series acceleration methods",
+      "anchor": {
+        "section": "Accelerating convergence rates",
+        "snippet": "known as \" series acceleration \" methods"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib declaration defining series acceleration methods.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Aitken delta-squared process",
+      "anchor": {
+        "section": "Accelerating convergence rates",
+        "snippet": "One example of series acceleration by sequence transformation is Aitken's delta-squared process"
+      },
+      "status": "not_formalized",
+      "note": "Searches found no Mathlib definition or theorem for Aitken's delta-squared process.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Aitken usually does not increase order",
+      "anchor": {
+        "section": "Accelerating convergence rates",
+        "snippet": "do not typically increase the order of convergence"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib theorem about Aitken acceleration usually not increasing convergence order.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Aitken transform of linear convergence",
+      "anchor": {
+        "section": "Accelerating convergence rates",
+        "snippet": "Aitken's method transforms it into a sequence"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib theorem for the Aitken transform of a linearly convergent sequence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Aitken transformed sequence remains linear",
+      "anchor": {
+        "section": "Accelerating convergence rates",
+        "snippet": "that still converges linearly"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib result stating that an Aitken-transformed sequence remains linearly convergent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Aitken no improvement for higher order",
+      "anchor": {
+        "section": "Accelerating convergence rates",
+        "snippet": "if the convergence is already of order ≥ 2"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib theorem about Aitken's method failing to improve convergence already of order at least two.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Discretized approximation convergence",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "A sequence of discretized approximations"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib definition of convergence for sequences of discretized approximations with scale parameters.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Discretization scale parameters",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "Discretization scale parameters may be spacings of a regular grid"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib declaration formalizing discretization scale parameters such as grid spacings for this rate theory.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Method asymptotic order and rate",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "the method is said to have asymptotic order of convergence"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.IsBigO",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Asymptotics.IsBigO` can express asymptotic discretization error bounds, but Mathlib has no named method order/rate definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Discretization error scaling",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "the error of a discretization asymptotically scales"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.IsBigO",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Asymptotics.IsBigO` formalizes asymptotic scaling bounds for error functions, but not a discretization-specific theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Leading discretization error",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "the leading order error is"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.IsEquivalent",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Asymptotics.IsEquivalent` can state a leading-order error equivalence, but no discretization-leading-error theorem was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Multiple scale choices affect order",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "multiple rates and orders for the same method but with different choices of scale parameter may be important"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib statement about different discretization scale choices yielding multiple rates and orders for the same method.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Several-scale-parameter convergence",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "characterized by several scale parameters at once"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.IsBigO",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Asymptotics.IsBigO` works over arbitrary index types and filters, but Mathlib has no named several-scale-parameter convergence definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Ordinary differential equation example",
+      "anchor": {
+        "section": "Example",
+        "snippet": "Consider the ordinary differential equation"
+      },
+      "status": "not_formalized",
+      "note": "Mathlib has ODE theory, but I found no verified declaration formalizing the article's specific forward-Euler ODE example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Initial condition",
+      "anchor": {
+        "section": "Example",
+        "snippet": "with initial condition"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsPicardLindelof.exists_eq_forall_mem_Icc_hasDerivWithinAt",
+        "module": "Mathlib.Analysis.ODE.ExistUnique",
+        "match_kind": "generalization"
+      },
+      "note": "`IsPicardLindelof.exists_eq_forall_mem_Icc_hasDerivWithinAt` includes an initial-value condition for local ODE solutions, but not the article's specific example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Forward Euler approximation",
+      "anchor": {
+        "section": "Example",
+        "snippet": "We can approximate a solution to this one-dimensional equation"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib definition or convergence theorem for the forward Euler approximation in this example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euler recurrence",
+      "anchor": {
+        "section": "Example",
+        "snippet": "which implies the first-order linear recurrence with constant coefficients"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "arithGeom_succ",
+        "module": "Mathlib.Analysis.SpecificLimits.ArithmeticGeometric",
+        "match_kind": "generalization"
+      },
+      "note": "`arithGeom_succ` formalizes a first-order affine recurrence, but Mathlib does not derive it from the forward Euler scheme in the article.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Recurrence solution",
+      "anchor": {
+        "section": "Example",
+        "snippet": "the sequence satisfying that recurrence is the geometric progression"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "arithGeom_eq",
+        "module": "Mathlib.Analysis.SpecificLimits.ArithmeticGeometric",
+        "match_kind": "generalization"
+      },
+      "note": "`arithGeom_eq` gives the closed form for first-order arithmetic-geometric recurrences, with the homogeneous case yielding a geometric progression.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exact ODE solution",
+      "anchor": {
+        "section": "Example",
+        "snippet": "The exact analytical solution to the differential equation is"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.hasDerivAt_exp",
+        "module": "Mathlib.Analysis.SpecialFunctions.ExpDeriv",
+        "match_kind": "special_case"
+      },
+      "note": "`Real.hasDerivAt_exp` supplies the derivative fact behind elementary exponential ODE solutions, but the article's exact analytical solution is not stated as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Discrete approximation error",
+      "anchor": {
+        "section": "Example",
+        "snippet": "the error of the discrete approximation at each discrete point is"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib theorem giving the pointwise forward-Euler approximation error formula from the article.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Forward Euler asymptotic limit",
+      "anchor": {
+        "section": "Example",
+        "snippet": "given a sequence of forward Euler approximations"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib statement proving the asymptotic limit of a sequence of forward Euler approximations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Pointwise Euler convergence order",
+      "anchor": {
+        "section": "Example",
+        "snippet": "pointwise with a convergence order"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib theorem assigning a pointwise convergence order to the forward Euler example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniform Euler convergence on bounded intervals",
+      "anchor": {
+        "section": "Example",
+        "snippet": "converges uniformly with the same order"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib theorem proving uniform forward-Euler convergence with that order on bounded intervals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euler not uniformly convergent on positive reals",
+      "anchor": {
+        "section": "Example",
+        "snippet": "does not converge uniformly on the unbounded set of all positive real values"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib theorem stating non-uniform convergence of the forward Euler example on all positive reals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Faster comparative order",
+      "anchor": {
+        "section": "Definitions (2)",
+        "snippet": "with a faster order of convergence than another sequence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsLittleO",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Asymptotics.IsLittleO` formalizes the faster comparative asymptotic-order relation for error functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Same comparative order",
+      "anchor": {
+        "section": "Definitions (2)",
+        "snippet": "with the same order of convergence if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsTheta",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Asymptotics.IsTheta` formalizes same comparative asymptotic order as mutual big-O.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Same comparative rate and order",
+      "anchor": {
+        "section": "Definitions (2)",
+        "snippet": "with the same rate and order of convergence if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsEquivalent",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Asymptotics.IsEquivalent` formalizes equality of leading asymptotic behavior, matching same rate and order for error functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Small o characterization",
+      "anchor": {
+        "section": "Definitions (2)",
+        "snippet": "the first is that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsLittleO",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Asymptotics.IsLittleO` is Mathlib's formal small-o relation along a filter.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Knuth notation characterization",
+      "anchor": {
+        "section": "Definitions (2)",
+        "snippet": "the second is that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsTheta",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Asymptotics.IsTheta` formalizes the big-Theta comparison corresponding to the Knuth-style same-order characterization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Asymptotic equivalence notation",
+      "anchor": {
+        "section": "Definitions (2)",
+        "snippet": "The third is also called asymptotic equivalence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsEquivalent",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Asymptotics.IsEquivalent` is the verified Mathlib definition of asymptotic equivalence notation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Geometric progressions asymptotic equivalence",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "the two sequences are asymptotically equivalent if and only if both"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.IsEquivalent",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Asymptotics.IsEquivalent` can state the equivalence relation, but I found no theorem characterizing it specifically for pairs of geometric progressions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Geometric progressions same order",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "They converge with the same order if and only if"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.IsTheta",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Asymptotics.IsTheta` can state same order, but no verified Mathlib theorem gives the iff criterion for geometric progressions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Geometric progression faster order",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "converges with a faster order than"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "tendsto_pow_atTop_nhds_zero_of_norm_lt_one",
+        "module": "Mathlib.Analysis.SpecificLimits.Normed",
+        "match_kind": "special_case"
+      },
+      "note": "`tendsto_pow_atTop_nhds_zero_of_norm_lt_one` supplies the geometric decay needed for such comparisons, but the faster-order geometric-progressions theorem is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Geometric series errors",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "error terms that are equal to a geometric progression"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "hasSum_geometric_of_norm_lt_one",
+        "module": "Mathlib.Analysis.SpecificLimits.Normed",
+        "match_kind": "generalization"
+      },
+      "note": "`hasSum_geometric_of_norm_lt_one` formalizes geometric series convergence, but I found no theorem identifying their partial-sum errors as a geometric progression in this context.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Geometric or exponential convergence",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "may be either be said to \"converge geometrically\" or \"converge exponentially\""
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "tendsto_pow_atTop_nhds_zero_of_norm_lt_one",
+        "module": "Mathlib.Analysis.SpecificLimits.Normed",
+        "match_kind": "generalization"
+      },
+      "note": "`tendsto_pow_atTop_nhds_zero_of_norm_lt_one` proves geometric decay, but Mathlib has no named geometric or exponential convergence definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear convergence relative to precision logarithm",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "may be said to \"converge linearly\" relative to a logarithm"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib definition of linear convergence relative to a logarithmic precision scale.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inverse-power sequences asymptotic equivalence",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "For any two sequences of elements proportional to an inverse power"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.IsEquivalent",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Asymptotics.IsEquivalent` can express inverse-power asymptotic equivalence, but I found no theorem characterizing proportional inverse-power sequences exactly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inverse-power sequences same order",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "They converge with the same order if and only if"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.isBigO_pow_pow_cobounded_of_le",
+        "module": "Mathlib.Analysis.Asymptotics.SpecificAsymptotics",
+        "match_kind": "special_case"
+      },
+      "note": "`Asymptotics.isBigO_pow_pow_cobounded_of_le` compares powers asymptotically, but the inverse-power same-order iff theorem is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inverse-power sequence faster order",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "converges with a faster order than"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.isLittleO_pow_pow_atTop_of_lt",
+        "module": "Mathlib.Analysis.Asymptotics.SpecificAsymptotics",
+        "match_kind": "special_case"
+      },
+      "note": "`Asymptotics.isLittleO_pow_pow_atTop_of_lt` gives the relevant power comparison, but not the exact inverse-power convergence-order statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Comparison with shifted sequence",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "its convergence can be compared to the convergence of the shifted sequence"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.IsBigO",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Asymptotics.IsBigO` can compare a sequence with its shift as functions on `ℕ`, but no Q-classification shift-comparison theorem was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Q-classification basis",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "These comparisons are the basis for the Q-convergence classifications"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.IsBigO",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Asymptotics.IsBigO` provides the general comparison infrastructure, but Mathlib has no Q-convergence classification framework.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Q-classification by shifted rescaled errors",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "it is said to converge with order"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.IsBigOWith",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Asymptotics.IsBigOWith` can express shifted rescaled error bounds, but Mathlib has no named Q-classification by those errors.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-asymptotic rates lack standard definitions",
+      "anchor": {
+        "section": "Non-asymptotic rates of convergence",
+        "snippet": "do not have the common, standard definitions"
+      },
+      "status": "not_formalized",
+      "note": "This meta-level claim about lack of standard definitions is not a Mathlib theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lyapunov theory framework",
+      "anchor": {
+        "section": "Non-asymptotic rates of convergence",
+        "snippet": "Lyapunov theory is one of the most powerful and widely applied frameworks"
+      },
+      "status": "not_formalized",
+      "note": "Searches for Lyapunov terminology found no matching Mathlib formalization in `Mathlib/`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Practical iterative non-asymptotic rate",
+      "anchor": {
+        "section": "Non-asymptotic rates of convergence",
+        "snippet": "one common practical approach is to discuss these rates"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib definition of practical non-asymptotic iterative rates based on steps or time to accuracy.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Non-asymptotic rate inverse",
+      "anchor": {
+        "section": "Non-asymptotic rates of convergence",
+        "snippet": "The non-asymptotic rate is then an inverse"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib declaration defining a non-asymptotic rate as the inverse of a required step or time count.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Practical faster iterative convergence",
+      "anchor": {
+        "section": "Non-asymptotic rates of convergence",
+        "snippet": "required fewer steps or less computer time than another"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib definition comparing practical iterative convergence by fewer steps or less runtime.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-asymptotic rates depend on starts",
+      "anchor": {
+        "section": "Non-asymptotic rates of convergence",
+        "snippet": "These rates will generally be different for different starting points"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib theorem stating that practical non-asymptotic rates generally depend on starting points.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Average median worst-case rates",
+      "anchor": {
+        "section": "Non-asymptotic rates of convergence",
+        "snippet": "summaries of statistical distributions of these single point rates"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib definition of average, median, or worst-case summaries of non-asymptotic convergence rates.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Discretization non-asymptotic approach",
+      "anchor": {
+        "section": "Non-asymptotic rates of convergence",
+        "snippet": "similar approaches can be used with a discretization scale parameter"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib theorem applying practical non-asymptotic rates to discretization scale parameters.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Accuracy-compatible discretization scale",
+      "anchor": {
+        "section": "Non-asymptotic rates of convergence",
+        "snippet": "there is a greatest discretization scale parameter compatible with a desired accuracy"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib statement about a greatest discretization scale compatible with a requested accuracy.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Asymptotic estimate scale may be too small",
+      "anchor": {
+        "section": "Non-asymptotic rates of convergence",
+        "snippet": "it may not be as small as required for the asymptotic rate and order of convergence"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib theorem comparing a practical scale for accuracy with the scale required for asymptotic convergence estimates.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Practical faster discretization convergence",
+      "anchor": {
+        "section": "Non-asymptotic rates of convergence",
+        "snippet": "gives a desired accuracy with a larger discretization scale parameter than another"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib definition of practical faster discretization convergence by allowing a larger scale parameter for a target accuracy.",
+      "provenance": "ai"
+    }
+  ]
+}

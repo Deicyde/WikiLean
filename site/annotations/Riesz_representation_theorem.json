@@ -1,0 +1,1848 @@
+{
+  "slug": "Riesz_representation_theorem",
+  "wikipedia_title": "Riesz representation theorem",
+  "display_title": "Riesz representation theorem",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "theorem",
+      "label": "Riesz representation theorem connection",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The Riesz representation theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDual",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes the Frechet-Riesz isometric equivalence between a Hilbert space and its strong dual.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complex and real Hilbert spaces",
+      "anchor": {
+        "section": "Preliminaries and notation",
+        "snippet": "is called a complex Hilbert space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HilbertSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "The `HilbertSpace` structure covers complete real and complex inner product spaces over `RCLike` scalar fields.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Complexification of real Hilbert space",
+      "anchor": {
+        "section": "Preliminaries and notation",
+        "snippet": "Every real Hilbert space can be extended"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductSpace.rclikeToReal",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib verifies the reverse scalar-restriction construction from complex or `RCLike` spaces to real inner product spaces, but I did not find an arbitrary real Hilbert space complexification theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Antilinear map",
+      "anchor": {
+        "section": "Linear and antilinear maps",
+        "snippet": "By definition, an antilinear map"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap",
+        "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Antilinear maps are represented as semilinear `LinearMap`s using the star ring endomorphism and the `→ₗ⋆` notation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear map",
+      "anchor": {
+        "section": "Linear and antilinear maps",
+        "snippet": "a map"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap",
+        "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap` is Mathlib's bundled definition of an additive scalar-preserving map.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Constant maps are linear and antilinear",
+      "anchor": {
+        "section": "Linear and antilinear maps",
+        "snippet": "Every constant"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap",
+        "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has the zero linear and semilinear maps, but arbitrary nonzero constant maps are not linear between vector spaces in the usual bundled sense.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Real linear and antilinear maps coincide",
+      "anchor": {
+        "section": "Linear and antilinear maps",
+        "snippet": "the definitions of linear maps and antilinear maps are completely identical"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "starL'",
+        "module": "Mathlib.Topology.Algebra.Module.Star",
+        "match_kind": "special_case"
+      },
+      "note": "The star-linear infrastructure collapses to ordinary linear behavior for trivial star scalars, but I did not find a named dual-space equality theorem for the real case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Bounded iff continuous linear map",
+      "anchor": {
+        "section": "Linear and antilinear maps",
+        "snippet": "is continuous if and only if it is bounded"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsBoundedLinearMap.isLinearMap_and_continuous_iff_isBoundedLinearMap",
+        "module": "Mathlib.Analysis.Normed.Operator.BoundedLinearMaps",
+        "match_kind": "exact"
+      },
+      "note": "This theorem states the equivalence between a linear map being continuous and being a bounded linear map.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Bounded iff continuous antilinear map",
+      "anchor": {
+        "section": "Linear and antilinear maps",
+        "snippet": "the same is true of antilinear maps"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SemilinearMapClass.bound_of_continuous",
+        "module": "Mathlib.Analysis.Normed.Operator.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves the continuous-to-bounded direction for semilinear maps and has constructors from bounds, but I did not find a single antilinear iff declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inverse of antilinear or linear bijection",
+      "anchor": {
+        "section": "Linear and antilinear maps",
+        "snippet": "The inverse of any antilinear"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearEquiv.symm",
+        "module": "Mathlib.Topology.Algebra.Module.Equiv",
+        "match_kind": "generalization"
+      },
+      "note": "Bundled continuous linear and semilinear equivalences in Mathlib include inverse maps via `symm`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Composition of two antilinear maps",
+      "anchor": {
+        "section": "Linear and antilinear maps",
+        "snippet": "The composition of two anti linear maps is a linear map"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.comp",
+        "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Composition of semilinear maps is formalized generically, specializing to the composition of two conjugate-linear maps being linear.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Functional",
+      "anchor": {
+        "section": "Linear and antilinear maps",
+        "snippet": "A functional on"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.Dual",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib defines linear functionals as the algebraic dual `M →ₗ[R] R`, while the article's generic functional terminology is broader.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Continuous dual space",
+      "anchor": {
+        "section": "Linear and antilinear maps",
+        "snippet": "is called the (continuous) dual space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "StrongDual",
+        "module": "Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`StrongDual 𝕜 E` is the Mathlib abbreviation for the continuous dual `E →L[𝕜] 𝕜`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Continuous anti-dual space",
+      "anchor": {
+        "section": "Linear and antilinear maps",
+        "snippet": "the (continuous) anti-dual space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap",
+        "module": "Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Continuous antilinear functionals are represented by semilinear continuous maps using the `→L⋆` notation, though not by a separate anti-dual abbreviation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Real dual equals anti-dual",
+      "anchor": {
+        "section": "Linear and antilinear maps",
+        "snippet": "linear functionals on"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "starL'",
+        "module": "Mathlib.Topology.Algebra.Module.Star",
+        "match_kind": "special_case"
+      },
+      "note": "The trivial-star continuous star-linear equivalence gives related infrastructure, but I did not find a named theorem identifying real dual and anti-dual spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conjugate functional",
+      "anchor": {
+        "section": "Linear and antilinear maps",
+        "snippet": "the conjugate of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "starL",
+        "module": "Mathlib.Topology.Algebra.Module.Star",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has generic star-linear conjugation equivalences, but I did not find the article's conjugate-functional definition as a named construction on duals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conjugation assignment for real scalars",
+      "anchor": {
+        "section": "Linear and antilinear maps",
+        "snippet": "the assignment"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "starL'",
+        "module": "Mathlib.Topology.Algebra.Module.Star",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib's trivial-star equivalence captures the real-scalar degeneration of conjugation, but not this exact functional-assignment statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conjugation gives antilinear bijective correspondence",
+      "anchor": {
+        "section": "Linear and antilinear maps",
+        "snippet": "defines an antilinear bijective correspondence"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "starL",
+        "module": "Mathlib.Topology.Algebra.Module.Star",
+        "match_kind": "generalization"
+      },
+      "note": "The generic continuous star-linear equivalence supplies related conjugation machinery, but I found no verified dual-to-anti-dual bijection theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hilbert space inner product",
+      "anchor": {
+        "section": "Mathematics vs. physics notations and definitions of inner product",
+        "snippet": "has an associated inner product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`InnerProductSpace` bundles the inner product structure used for Hilbert spaces in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Real Hilbert inner product is symmetric bilinear",
+      "anchor": {
+        "section": "Mathematics vs. physics notations and definitions of inner product",
+        "snippet": "the inner product is a symmetric map"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "real_inner_comm",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "For real inner product spaces Mathlib proves symmetry with `real_inner_comm` and bilinearity through the linear inner-product maps.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Mathematics and physics inner product notation relation",
+      "anchor": {
+        "section": "Mathematics vs. physics notations and definitions of inner product",
+        "snippet": "these two notations will be related by the equality"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "inner_conj_symm",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves conjugate symmetry of the inner product, but it does not formalize the article's two notational conventions as separate notations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inner product linear coordinate",
+      "anchor": {
+        "section": "Mathematics vs. physics notations and definitions of inner product",
+        "snippet": "is linear in its first coordinate"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "inner_smul_right",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib uses the opposite convention, proving linearity in the second coordinate and conjugate-linearity in the first.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fixed second coordinate gives continuous linear functional",
+      "anchor": {
+        "section": "Mathematics vs. physics notations and definitions of inner product",
+        "snippet": "This linear functional is continuous"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "innerSL",
+        "module": "Mathlib.Analysis.InnerProductSpace.LinearMap",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib's `innerSL` gives a continuous linear functional after fixing the first coordinate under its convention, not the article's stated coordinate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inner product antilinear coordinate",
+      "anchor": {
+        "section": "Mathematics vs. physics notations and definitions of inner product",
+        "snippet": "is antilinear in its second coordinate"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "inner_smul_left",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves conjugate-linearity in the first coordinate, reflecting its convention opposite to the article's coordinate statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fixed first coordinate gives continuous antilinear functional",
+      "anchor": {
+        "section": "Mathematics vs. physics notations and definitions of inner product",
+        "snippet": "This antilinear functional is continuous"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "innerSLFlip",
+        "module": "Mathlib.Analysis.InnerProductSpace.LinearMap",
+        "match_kind": "special_case"
+      },
+      "note": "`innerSLFlip` gives a continuous conjugate-linear functional from the fixed-coordinate inner product, but with Mathlib's coordinate convention rather than the article's.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Canonical norm on Hilbert space",
+      "anchor": {
+        "section": "Canonical norm and inner product on the dual space and anti-dual space",
+        "snippet": "defines a canonical norm on"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The norm induced by the inner product is part of Mathlib's normed inner product space structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dual norm",
+      "anchor": {
+        "section": "Canonical norm and inner product on the dual space and anti-dual space",
+        "snippet": "called the dual norm"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.le_opNorm",
+        "module": "Mathlib.Analysis.Normed.Operator.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The dual norm is the operator norm on continuous linear maps, exposed through the continuous linear map norm API.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Anti-dual norm",
+      "anchor": {
+        "section": "Canonical norm and inner product on the dual space and anti-dual space",
+        "snippet": "is defined by using this same equation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.le_opNorm",
+        "module": "Mathlib.Analysis.Normed.Operator.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The same operator norm infrastructure applies to semilinear continuous maps, but I found no separate anti-dual norm definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dual norm satisfies parallelogram law",
+      "anchor": {
+        "section": "Canonical norm and inner product on the dual space and anti-dual space",
+        "snippet": "satisfies the parallelogram law"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "parallelogram_law_with_norm",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib proves the parallelogram law for inner product spaces and gives a Riesz isometry to the dual, but I did not find it stated directly for the dual norm.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Canonical inner product on dual",
+      "anchor": {
+        "section": "Canonical norm and inner product on the dual space and anti-dual space",
+        "snippet": "can be used to define a canonical inner product"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDual",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "invocation"
+      },
+      "note": "The Riesz equivalence can transport the inner product to the dual, but I did not find a separate canonical inner-product instance on `StrongDual`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dual inner product makes dual Hilbert",
+      "anchor": {
+        "section": "Canonical norm and inner product on the dual space and anti-dual space",
+        "snippet": "turns"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDual",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "invocation"
+      },
+      "note": "`InnerProductSpace.toDual` is an isometric equivalence from a Hilbert space to its dual, but I did not find a declared Hilbert-space structure theorem for the dual itself.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dual inner-product norm equals dual norm",
+      "anchor": {
+        "section": "Canonical norm and inner product on the dual space and anti-dual space",
+        "snippet": "These norms are the same"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDual",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "invocation"
+      },
+      "note": "The Riesz map is an isometry, but I found no direct theorem comparing a transported dual inner-product norm with the operator norm.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Anti-dual inner product",
+      "anchor": {
+        "section": "Canonical norm and inner product on the dual space and anti-dual space",
+        "snippet": "used to define a norm and inner product on"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "innerSLFlip",
+        "module": "Mathlib.Analysis.InnerProductSpace.LinearMap",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has continuous conjugate-linear functionals from inner products, but I found no separate anti-dual inner-product definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conjugation between dual and anti-dual is isometric",
+      "anchor": {
+        "section": "Canonical norm and inner product on the dual space and anti-dual space",
+        "snippet": "are antilinear isometries and consequently also homeomorphisms"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "starL",
+        "module": "Mathlib.Topology.Algebra.Module.Star",
+        "match_kind": "generalization"
+      },
+      "note": "Generic continuous star-linear equivalences are available, but I did not find a verified isometric dual/anti-dual conjugation theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dual and anti-dual inner product relation",
+      "anchor": {
+        "section": "Canonical norm and inner product on the dual space and anti-dual space",
+        "snippet": "are related by"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "inner_conj_symm",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has conjugate symmetry for the base inner product, but no direct dual/anti-dual inner-product relation was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Real conjugation map is identity",
+      "anchor": {
+        "section": "Canonical norm and inner product on the dual space and anti-dual space",
+        "snippet": "reduces down to the identity map"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "starL'",
+        "module": "Mathlib.Topology.Algebra.Module.Star",
+        "match_kind": "special_case"
+      },
+      "note": "The trivial-star equivalence captures that conjugation is identity-like over real scalars, but I found no exact dual conjugation identity theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Orthogonal vectors",
+      "anchor": {
+        "section": "Riesz representation theorem",
+        "snippet": "are orthogonal if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "inner_eq_zero_symm",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Orthogonality is represented by the inner product being zero, with symmetry lemmas such as `inner_eq_zero_symm`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Orthogonal complement",
+      "anchor": {
+        "section": "Riesz representation theorem",
+        "snippet": "The orthogonal complement of a subset"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.mem_orthogonal'",
+        "module": "Mathlib.Analysis.InnerProductSpace.Projection.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines orthogonal complements of submodules and characterizes membership by inner-product orthogonality.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Orthogonal complement is closed subspace",
+      "anchor": {
+        "section": "Riesz representation theorem",
+        "snippet": "is always a closed vector subspace of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.isClosed_orthogonal",
+        "module": "Mathlib.Analysis.InnerProductSpace.Projection.Submodule",
+        "match_kind": "exact"
+      },
+      "note": "The orthogonal complement of a submodule is formalized as a closed submodule via `isClosed_orthogonal`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hilbert projection theorem",
+      "anchor": {
+        "section": "Riesz representation theorem",
+        "snippet": "The Hilbert projection theorem guarantees"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.HasOrthogonalProjection.ofCompleteSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.Projection.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves existence of orthogonal projections onto complete subspaces, covering the Hilbert projection theorem formulation for closed subspaces of Hilbert spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Functional induced by fixed vector",
+      "anchor": {
+        "section": "Statement",
+        "snippet": "Define"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDualMap",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "exact"
+      },
+      "note": "`toDualMap` is the canonical map sending a vector to the continuous linear functional induced by the inner product.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Riesz norm formula",
+      "anchor": {
+        "section": "Statement",
+        "snippet": "Proof of norm formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "innerSL_apply_norm",
+        "module": "Mathlib.Analysis.InnerProductSpace.LinearMap",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib proves that the norm of the inner-product functional associated to a vector is the norm of that vector.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Norm formula for inner product spaces",
+      "anchor": {
+        "section": "Statement",
+        "snippet": "holds more generally for all inner product spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "innerSL_apply_norm",
+        "module": "Mathlib.Analysis.InnerProductSpace.LinearMap",
+        "match_kind": "generalization"
+      },
+      "note": "`innerSL_apply_norm` is stated for inner product spaces and does not require Hilbert-space completeness.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Uniqueness of Riesz representation",
+      "anchor": {
+        "section": "Statement",
+        "snippet": "Proof that a Riesz representation of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "innerSL_inj",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "exact"
+      },
+      "note": "`innerSL_inj` gives injectivity of the inner-product functional construction, yielding uniqueness of the representing vector.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Existence of Riesz representing vector",
+      "anchor": {
+        "section": "Statement",
+        "snippet": "Proof that a vector"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDual",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "exact"
+      },
+      "note": "Surjectivity of the Riesz equivalence `toDual` provides the existence of a representing vector for every continuous linear functional.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "One-dimensional orthogonal complement of kernel",
+      "anchor": {
+        "section": "Statement",
+        "snippet": "can now be deduced"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDual",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "invocation"
+      },
+      "note": "The proof of `toDual` uses kernel and orthogonal-complement ideas, but I did not find a named one-dimensional orthogonal-complement-of-kernel theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Riesz representation theorem",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Riesz representation theorem — Let [MATH"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDual",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "exact"
+      },
+      "note": "`InnerProductSpace.toDual` is the bundled antilinear isometric equivalence realizing the Riesz representation theorem for complete inner product spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Corollary: canonical map and bra-ket form",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Corollary"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDual_apply_apply",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib proves the canonical Riesz evaluation formula, but it does not formalize the article's bra-ket notation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inner product diagonal is real and nonnegative",
+      "anchor": {
+        "section": "Observations",
+        "snippet": "is always real"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "inner_self_nonneg",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib proves nonnegativity of `⟪x,x⟫` and also includes lemmas such as `inner_self_im` for its real-valuedness over complex scalars.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inner product diagonal zero iff vector zero",
+      "anchor": {
+        "section": "Observations",
+        "snippet": "if and only if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "inner_self_eq_zero",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`inner_self_eq_zero` states exactly that the self inner product is zero iff the vector is zero.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear functional as affine hyperplane",
+      "anchor": {
+        "section": "Observations",
+        "snippet": "is often interpreted geometrically"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib declaration formalizing this geometric interpretation of a linear functional as an affine hyperplane.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Affine hyperplane determines functional",
+      "anchor": {
+        "section": "Observations",
+        "snippet": "knowing"
+      },
+      "status": "not_formalized",
+      "note": "I found no verified Mathlib theorem saying the specified affine hyperplane data determines the functional in this Riesz-theorem discussion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Norm as distance to affine hyperplane",
+      "anchor": {
+        "section": "Observations",
+        "snippet": "provides such an interpretation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "starProjection_minimal",
+        "module": "Mathlib.Analysis.InnerProductSpace.Projection.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib formalizes nearest-point projection machinery, but I did not find this dual-norm-as-distance-to-hyperplane formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Projection minimum point of hyperplane",
+      "anchor": {
+        "section": "Observations",
+        "snippet": "global minimum point of the map"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "starProjection_minimal",
+        "module": "Mathlib.Analysis.InnerProductSpace.Projection.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`starProjection_minimal` proves the metric minimality of orthogonal projection, but not the exact affine-hyperplane statement from the article.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Infimum formula for zero functional",
+      "anchor": {
+        "section": "Observations",
+        "snippet": "will also hold when"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDual_apply_apply",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "invocation"
+      },
+      "note": "The zero-functional case follows from the Riesz evaluation formula and simplification, but I found no named infimum formula for it.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Supremum formula for zero functional",
+      "anchor": {
+        "section": "Observations",
+        "snippet": "will also hold when"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDual_apply_apply",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "invocation"
+      },
+      "note": "The zero-functional case is derivable from the Riesz evaluation formula, but I found no named supremum formula for it.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zero functional representing vector",
+      "anchor": {
+        "section": "Constructions of the representing vector",
+        "snippet": "in other words"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDual_apply_apply",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "special_case"
+      },
+      "note": "The zero representative is an immediate special case of the Riesz evaluation formula, but I did not find a named theorem for it.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Representing vector from orthogonal complement of kernel",
+      "anchor": {
+        "section": "Constructions of the representing vector",
+        "snippet": "then for any"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDual",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "invocation"
+      },
+      "note": "The construction appears in the proof architecture of Riesz representation, but I found no exported theorem with this exact kernel-complement formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unit vector construction of representing vector",
+      "anchor": {
+        "section": "Constructions of the representing vector",
+        "snippet": "is a unit vector"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "starProjection_unit_singleton",
+        "module": "Mathlib.Analysis.InnerProductSpace.Projection.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has unit-vector projection formulas, but I did not find this Riesz representing-vector construction as a named theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Phase ambiguity in unit vector construction",
+      "anchor": {
+        "section": "Constructions of the representing vector",
+        "snippet": "the same is true of"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib declaration formalizing the phase ambiguity in this unit-vector construction of the Riesz representative.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Projection construction of representing vector",
+      "anchor": {
+        "section": "Constructions of the representing vector",
+        "snippet": "is the orthogonal projection of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "orthogonalProjectionOnto",
+        "module": "Mathlib.Analysis.InnerProductSpace.Projection.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has orthogonal projections and the Riesz map, but I did not find the article's projection formula for the representing vector as a named theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Orthonormal basis construction of representing vector",
+      "anchor": {
+        "section": "Constructions of the representing vector",
+        "snippet": "can be constructed uniquely by"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HilbertBasis.hasSum_repr",
+        "module": "Mathlib.Analysis.InnerProductSpace.l2Space",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib proves Hilbert-basis expansion of vectors, but I did not find the specific basis-sum construction of a Riesz representative.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Countable support of basis coefficients",
+      "anchor": {
+        "section": "Constructions of the representing vector",
+        "snippet": "all but at most countably many"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Summable.countable_support_nnreal",
+        "module": "Mathlib.Topology.Algebra.InfiniteSum.ENNReal",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has countable-support results for summable families, but I found no theorem specialized to Riesz basis coefficients.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Basis-independent construction",
+      "anchor": {
+        "section": "Constructions of the representing vector",
+        "snippet": "does not actually depend on choice of orthonormal basis"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HilbertBasis.hasSum_repr",
+        "module": "Mathlib.Analysis.InnerProductSpace.l2Space",
+        "match_kind": "invocation"
+      },
+      "note": "Hilbert-basis expansions are formalized, but I found no explicit theorem that this Riesz construction is basis-independent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Coordinates of representing vector",
+      "anchor": {
+        "section": "Constructions of the representing vector",
+        "snippet": "is written as"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HilbertBasis.repr_apply_apply",
+        "module": "Mathlib.Analysis.InnerProductSpace.l2Space",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib formalizes Hilbert-basis coordinate formulas, but I found no formula specifically identifying coordinates of the Riesz representative from a functional.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sequence basis formula",
+      "anchor": {
+        "section": "Constructions of the representing vector",
+        "snippet": "If the orthonormal basis"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HilbertBasis.hasSum_repr",
+        "module": "Mathlib.Analysis.InnerProductSpace.l2Space",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has infinite Hilbert-basis expansion results, but I did not find the article's sequence-basis Riesz formula as a named theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Finite-dimensional matrix example",
+      "anchor": {
+        "section": "Example in finite dimensions using matrix transformations",
+        "snippet": "Consider the special case of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.toMatrix_innerₛₗ_apply",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has finite-dimensional matrix formulas for inner-product maps, but not this example as a standalone worked example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite-dimensional Riesz vector formula",
+      "anchor": {
+        "section": "Example in finite dimensions using matrix transformations",
+        "snippet": "Then the Riesz representation of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.toMatrix_innerₛₗ_apply",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "invocation"
+      },
+      "note": "The matrix formula for inner-product linear maps is present, but I found no theorem naming the finite-dimensional Riesz vector formula in this form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite-dimensional canonical anti-linear isometry",
+      "anchor": {
+        "section": "Example in finite dimensions using matrix transformations",
+        "snippet": "The bijective antilinear isometry"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDual",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "generalization"
+      },
+      "note": "The canonical antilinear isometric equivalence is formalized generally, so the finite-dimensional case is an instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite-dimensional inverse anti-linear isometry",
+      "anchor": {
+        "section": "Example in finite dimensions using matrix transformations",
+        "snippet": "inverse"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDual_symm_apply",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "generalization"
+      },
+      "note": "The inverse of the Riesz equivalence is exposed through `toDual_symm_apply`, which specializes to the finite-dimensional inverse map.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conjugate transpose description",
+      "anchor": {
+        "section": "Example in finite dimensions using matrix transformations",
+        "snippet": "is just the operation of conjugate transposition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.toEuclideanLin_conjTranspose_eq_adjoint",
+        "module": "Mathlib.Analysis.InnerProductSpace.Adjoint",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib proves that the Euclidean linear map of a conjugate transpose is the adjoint.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Different inner product changes matrices",
+      "anchor": {
+        "section": "Example in finite dimensions using matrix transformations",
+        "snippet": "if a different inner product is used"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.toMatrix_adjoint",
+        "module": "Mathlib.Analysis.InnerProductSpace.Adjoint",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib relates adjoints to matrices, but I found no standalone example theorem about changing the inner product changing the matrix formulas.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Associated real Hilbert space",
+      "anchor": {
+        "section": "Relationship with the associated real Hilbert space",
+        "snippet": "is reinterpreted as a real Hilbert space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.rclikeToReal",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`InnerProductSpace.rclikeToReal` constructs the associated real inner product space by taking real parts of the scalar inner product.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Associated real norm equality",
+      "anchor": {
+        "section": "Relationship with the associated real Hilbert space",
+        "snippet": "is equal to the original norm"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.rclikeToReal",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The associated real inner product structure is built on the same normed space, giving the same norm.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Continuous dual of associated real Hilbert space",
+      "anchor": {
+        "section": "Relationship with the associated real Hilbert space",
+        "snippet": "is the set of all real -valued bounded"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "StrongDual",
+        "module": "Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Basic",
+        "match_kind": "exact"
+      },
+      "note": "For the restricted real scalar structure, the continuous dual is represented by `StrongDual ℝ E`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Real and imaginary parts of a linear functional",
+      "anchor": {
+        "section": "Relationship with the associated real Hilbert space",
+        "snippet": "denote the real and imaginary parts of a linear functional"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.reCLM",
+        "module": "Mathlib.Analysis.Complex.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has continuous linear maps extracting real parts of complex values, but I did not find a bundled definition of real and imaginary parts of a functional.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linear functional determined by real part",
+      "anchor": {
+        "section": "Relationship with the associated real Hilbert space",
+        "snippet": "The formula expressing a linear functional in terms of its real part is"
+      },
+      "status": "not_formalized",
+      "note": "I found no verified Mathlib theorem stating the reconstruction formula for a complex linear functional from its real part.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Norm of real part",
+      "anchor": {
+        "section": "Relationship with the associated real Hilbert space",
+        "snippet": "It can also be shown that"
+      },
+      "status": "not_formalized",
+      "note": "I found no declaration giving the norm equality between a complex functional and its real part as a real functional.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bounded iff bounded real part",
+      "anchor": {
+        "section": "Relationship with the associated real Hilbert space",
+        "snippet": "a linear functional"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.reCLM",
+        "module": "Mathlib.Analysis.Complex.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The real-part continuous linear map exists, but I found no exact boundedness iff theorem for a functional and its real part.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Riesz representation equals representation of real part",
+      "anchor": {
+        "section": "Relationship with the associated real Hilbert space",
+        "snippet": "The Riesz representation of a continuous linear function"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib theorem identifying the complex Riesz representative with the real Riesz representative of the real part.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Explicit real-part representation equality",
+      "anchor": {
+        "section": "Relationship with the associated real Hilbert space",
+        "snippet": "The conclusion is"
+      },
+      "status": "not_formalized",
+      "note": "I found no verified Mathlib declaration for the article's explicit equality involving the real part of the Riesz representation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Orthogonality to real-part kernel",
+      "anchor": {
+        "section": "Relationship with the associated real Hilbert space",
+        "snippet": "is perpendicular to"
+      },
+      "status": "not_formalized",
+      "note": "I found no theorem formalizing orthogonality of the Riesz representative to the kernel of the real part of a functional.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Kernel of functional inside real-part kernel",
+      "anchor": {
+        "section": "Relationship with the associated real Hilbert space",
+        "snippet": "the kernel of"
+      },
+      "status": "not_formalized",
+      "note": "I found no named Mathlib statement about inclusion of a complex functional's kernel in the real-part kernel in this setting.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Codimensions of kernels",
+      "anchor": {
+        "section": "Relationship with the associated real Hilbert space",
+        "snippet": "has real codimension"
+      },
+      "status": "not_formalized",
+      "note": "I found no verified Mathlib theorem for the stated real codimensions of the complex and real-part kernels.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Induced antilinear functional into anti-dual",
+      "anchor": {
+        "section": "Canonical injections into the dual and anti-dual",
+        "snippet": "The map defined by placing"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "innerSLFlip",
+        "module": "Mathlib.Analysis.InnerProductSpace.LinearMap",
+        "match_kind": "generalization"
+      },
+      "note": "`innerSLFlip` constructs continuous conjugate-linear functionals from the inner product.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Canonical map into anti-dual",
+      "anchor": {
+        "section": "Canonical injections into the dual and anti-dual",
+        "snippet": "The canonical map from"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "innerSLFlip",
+        "module": "Mathlib.Analysis.InnerProductSpace.LinearMap",
+        "match_kind": "generalization"
+      },
+      "note": "The canonical map into conjugate-linear functionals is available through the flipped inner-product continuous semilinear map.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Canonical map into anti-dual is injective isometry",
+      "anchor": {
+        "section": "Canonical injections into the dual and anti-dual",
+        "snippet": "which is also an injective isometry"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDualMap",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves the canonical map into the continuous dual is an antilinear isometric embedding, but I found no separate anti-dual isometry theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fundamental theorem of Hilbert spaces",
+      "anchor": {
+        "section": "Canonical injections into the dual and anti-dual",
+        "snippet": "The Fundamental theorem of Hilbert spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDual",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "exact"
+      },
+      "note": "This named theorem corresponds to the Riesz equivalence `InnerProductSpace.toDual` in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every antilinear functional is represented by inner product",
+      "anchor": {
+        "section": "Canonical injections into the dual and anti-dual",
+        "snippet": "every antilinear functional on"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDual",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "invocation"
+      },
+      "note": "The Riesz equivalence represents continuous linear functionals and can be combined with conjugation infrastructure, but I found no direct anti-dual representation theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Relation between dual and anti-dual canonical maps",
+      "anchor": {
+        "section": "Canonical injections into the dual and anti-dual",
+        "snippet": "the following equality holds"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "inner_conj_symm",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Conjugate symmetry relates the two inner-product orientations, but I found no named equality between dual and anti-dual canonical maps.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bra of a vector",
+      "anchor": {
+        "section": "Extending the bra–ket notation to bras and kets",
+        "snippet": "Given a vector"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDualMap",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "invocation"
+      },
+      "note": "The vector-to-functional map is formalized, but Mathlib does not define bra notation for it.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Vector to bra is isometric antilinear isomorphism",
+      "anchor": {
+        "section": "Extending the bra–ket notation to bras and kets",
+        "snippet": "is just the isometric antilinear isomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDual",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "exact"
+      },
+      "note": "Ignoring notation, `InnerProductSpace.toDual` is exactly the antilinear isometric equivalence from vectors to continuous linear functionals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bra-ket evaluation",
+      "anchor": {
+        "section": "Extending the bra–ket notation to bras and kets",
+        "snippet": "may be denoted by"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDual_apply_apply",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib proves the evaluation formula for the Riesz functional, but does not introduce bra-ket notation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bra of a linear functional",
+      "anchor": {
+        "section": "Extending the bra–ket notation to bras and kets",
+        "snippet": "Given a continuous linear functional"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDual_symm_apply",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "invocation"
+      },
+      "note": "The inverse Riesz map recovers the vector associated to a functional, but Mathlib has no bra notation for functionals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Functional to ket assignment is isometric antilinear isomorphism",
+      "anchor": {
+        "section": "Extending the bra–ket notation to bras and kets",
+        "snippet": "is just the isometric antilinear isomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDual",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "exact"
+      },
+      "note": "The inverse of the Riesz antilinear isometric equivalence gives the functional-to-vector assignment up to the article's notation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ket of a vector",
+      "anchor": {
+        "section": "Extending the bra–ket notation to bras and kets",
+        "snippet": "is used to denote"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib definition introducing ket notation for vectors.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ket assignment is identity",
+      "anchor": {
+        "section": "Extending the bra–ket notation to bras and kets",
+        "snippet": "is just the identity map"
+      },
+      "status": "not_formalized",
+      "note": "The identity map is available generically, but I found no declaration for the ket assignment or its identity property.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Extended bra-ket notation",
+      "anchor": {
+        "section": "Extending the bra–ket notation to bras and kets",
+        "snippet": "is used in place of"
+      },
+      "status": "not_formalized",
+      "note": "I found no Mathlib formalization of the extended bra-ket notation described in the article.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Adjoint representing vector for scalar map",
+      "anchor": {
+        "section": "Definition of the adjoint",
+        "snippet": "there exists a unique vector"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.adjoint",
+        "module": "Mathlib.Analysis.InnerProductSpace.Adjoint",
+        "match_kind": "generalization"
+      },
+      "note": "The adjoint construction uses the Riesz representation machinery to supply the unique representing vector for scalar-valued maps.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Adjoint of a continuous linear operator",
+      "anchor": {
+        "section": "Definition of the adjoint",
+        "snippet": "called the adjoint of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.adjoint",
+        "module": "Mathlib.Analysis.InnerProductSpace.Adjoint",
+        "match_kind": "exact"
+      },
+      "note": "`ContinuousLinearMap.adjoint` is the bundled adjoint of a continuous linear operator between Hilbert spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Adjoint is continuous linear",
+      "anchor": {
+        "section": "Definition of the adjoint",
+        "snippet": "is necessarily a continuous"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.adjoint",
+        "module": "Mathlib.Analysis.InnerProductSpace.Adjoint",
+        "match_kind": "exact"
+      },
+      "note": "The adjoint is returned as a `ContinuousLinearMap`, so continuity and linearity are part of its type.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Adjoint matrix is conjugate transpose",
+      "anchor": {
+        "section": "Definition of the adjoint",
+        "snippet": "is the transformation matrix of the adjoint"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.toMatrix_adjoint",
+        "module": "Mathlib.Analysis.InnerProductSpace.Adjoint",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.toMatrix_adjoint` identifies the matrix of an adjoint with the conjugate-transpose matrix in orthonormal bases.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Transpose or algebraic adjoint",
+      "anchor": {
+        "section": "Adjoints are transposes",
+        "snippet": "define the transpose or algebraic adjoint"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Dual.transpose",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines the algebraic transpose on duals as `Module.Dual.transpose` and related `dualMap` constructions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Transpose maps continuous linear functionals continuously",
+      "anchor": {
+        "section": "Adjoints are transposes",
+        "snippet": "is always a continuous linear functional on"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.dualMap",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib formalizes the algebraic dual map, but I did not find a named continuous-dual transpose theorem for this statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Transpose applied to bra functional",
+      "anchor": {
+        "section": "Adjoints are transposes",
+        "snippet": "So for example"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.dualMap_apply",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "The dual-map evaluation formula is formalized, but the bra-functional example and notation are not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Adjoint is transpose under Riesz identification",
+      "anchor": {
+        "section": "Adjoints are transposes",
+        "snippet": "The adjoint"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "adjoint_inner_left",
+        "module": "Mathlib.Analysis.InnerProductSpace.Adjoint",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib proves the defining inner-product identity for adjoints, but I did not find a named theorem identifying adjoint with transpose under Riesz equivalence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Adjoint-transpose equality",
+      "anchor": {
+        "section": "Adjoints are transposes",
+        "snippet": "the relationship between the adjoint and transpose is"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "adjoint_inner_left",
+        "module": "Mathlib.Analysis.InnerProductSpace.Adjoint",
+        "match_kind": "invocation"
+      },
+      "note": "The adjoint's inner-product characterization is available, but the exact adjoint-transpose equality through Riesz maps was not found as a declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Self-adjoint operator",
+      "anchor": {
+        "section": "Descriptions of self-adjoint, normal, and unitary operators",
+        "snippet": "is called self-adjoint"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.isSelfAdjoint_iff'",
+        "module": "Mathlib.Analysis.InnerProductSpace.Adjoint",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib formalizes self-adjointness for continuous linear maps and characterizes it by equality with the adjoint.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Self-adjointness via transpose",
+      "anchor": {
+        "section": "Descriptions of self-adjoint, normal, and unitary operators",
+        "snippet": "this happens if and only if"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.isSelfAdjoint_iff'",
+        "module": "Mathlib.Analysis.InnerProductSpace.Adjoint",
+        "match_kind": "invocation"
+      },
+      "note": "Self-adjointness is characterized by the adjoint, but I did not find the article's transpose-under-Riesz characterization as a named theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Self-adjointness via linear functionals",
+      "anchor": {
+        "section": "Descriptions of self-adjoint, normal, and unitary operators",
+        "snippet": "is self-adjoint if and only if for all"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric",
+        "module": "Mathlib.Analysis.InnerProductSpace.Adjoint",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib proves self-adjointness iff the operator is symmetric in the inner-product sense.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Normal operator",
+      "anchor": {
+        "section": "Descriptions of self-adjoint, normal, and unitary operators",
+        "snippet": "is called normal if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.isStarNormal_iff_norm_eq_adjoint",
+        "module": "Mathlib.Analysis.InnerProductSpace.Adjoint",
+        "match_kind": "generalization"
+      },
+      "note": "Normality is represented through the `IsStarNormal` predicate, with continuous-linear-map characterizations involving the adjoint.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Normality via inner products of functionals",
+      "anchor": {
+        "section": "Descriptions of self-adjoint, normal, and unitary operators",
+        "snippet": "the following characterization of normal operators"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.isStarNormal_iff_norm_eq_adjoint",
+        "module": "Mathlib.Analysis.InnerProductSpace.Adjoint",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has normality criteria via adjoint norm equality, but I did not find this inner-products-of-functionals characterization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Normality as inner-product preservation",
+      "anchor": {
+        "section": "Descriptions of self-adjoint, normal, and unitary operators",
+        "snippet": "is a normal operator if and only if this assignment preserves the inner product"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.inner_map_map_iff_adjoint_comp_self",
+        "module": "Mathlib.Analysis.InnerProductSpace.Adjoint",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib relates inner-product preservation to adjoint-composition identities, but I found no normality-as-dual-inner-product-preservation theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Self-adjoint bounded operators are normal",
+      "anchor": {
+        "section": "Descriptions of self-adjoint, normal, and unitary operators",
+        "snippet": "every self-adjoint bounded linear operator is normal"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.isSelfAdjoint_iff'",
+        "module": "Mathlib.Analysis.InnerProductSpace.Adjoint",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has the self-adjoint and normal operator predicates, but I did not verify a named theorem that every self-adjoint continuous linear map is normal.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Normality by norm equality",
+      "anchor": {
+        "section": "Descriptions of self-adjoint, normal, and unitary operators",
+        "snippet": "is a normal operator if and only if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.isStarNormal_iff_norm_eq_adjoint",
+        "module": "Mathlib.Analysis.InnerProductSpace.Adjoint",
+        "match_kind": "exact"
+      },
+      "note": "This theorem characterizes star-normal continuous linear maps by equality of norms of `A x` and `A† x`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unitary operator",
+      "anchor": {
+        "section": "Descriptions of self-adjoint, normal, and unitary operators",
+        "snippet": "is said to be unitary if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Unitary.linearIsometryEquiv",
+        "module": "Mathlib.Analysis.InnerProductSpace.Adjoint",
+        "match_kind": "generalization"
+      },
+      "note": "Unitary elements of continuous linear operators are formalized and converted to linear isometry equivalences.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unitary operator via transpose",
+      "anchor": {
+        "section": "Descriptions of self-adjoint, normal, and unitary operators",
+        "snippet": "this is seen to be equivalent to"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.inner_map_map_iff_adjoint_comp_self",
+        "module": "Mathlib.Analysis.InnerProductSpace.Adjoint",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib gives adjoint-based characterizations related to isometry and unitarity, but I found no transpose-under-Riesz version of this statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unitary iff inner-product preserving",
+      "anchor": {
+        "section": "Descriptions of self-adjoint, normal, and unitary operators",
+        "snippet": "an invertible bounded linear map"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Unitary.inner_map_map",
+        "module": "Mathlib.Analysis.InnerProductSpace.Adjoint",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib proves that unitary continuous linear operators preserve the inner product, with the bundled unitary structure carrying invertibility.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Transpose of invertible map is invertible",
+      "anchor": {
+        "section": "Descriptions of self-adjoint, normal, and unitary operators",
+        "snippet": "this is also true of the transpose"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearEquiv.dualMap",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`LinearEquiv.dualMap` constructs the invertible dual map induced by a linear equivalence, giving invertibility of the transpose.",
+      "provenance": "ai"
+    }
+  ]
+}

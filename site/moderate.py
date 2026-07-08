@@ -46,6 +46,7 @@ Run with the venv that has claude-agent-sdk:
     catalog/.venv/bin/python site/moderate.py review --limit 3 --dry-run
     catalog/.venv/bin/python site/moderate.py review --limit 3
     catalog/.venv/bin/python site/moderate.py new --limit 5 --auth api-key
+    catalog/.venv/bin/python site/moderate.py review --limit 1 --agent2-provider codex
 """
 from __future__ import annotations
 
@@ -317,7 +318,7 @@ def build_meta(ctx, rec: dict, wire_stats: dict) -> dict:
     ladder = {"restored": 0, "reinserted": 0, "downgrades_blocked": 0,
               "moderation_flags": []}  # F14 dissent (+ step-2 proposals when present) ride meta
     ladder.update(rec.get("ladder") or {})
-    return {
+    meta = {
         "run_id": ctx.run_id,
         "mode": ctx.mode,
         "model": ctx.model,
@@ -330,6 +331,10 @@ def build_meta(ctx, rec: dict, wire_stats: dict) -> dict:
         "ladder": ladder,
         "ids": wire_stats,
     }
+    provider = rec.get("agent_provider") or getattr(ctx, "agent_provider", None)
+    if isinstance(provider, str) and provider:
+        meta["agent_provider"] = provider
+    return meta
 
 
 def parse_anchor_stats(matched, total=None) -> dict | None:
@@ -622,6 +627,18 @@ def _try_import_ba(auth: str):
         return None
 
 
+def refresh_brain_after_annotation_writes(auth: str, changed: int) -> int:
+    """Refresh Brain artifacts after successful annotation-layer writes."""
+    if changed <= 0:
+        return 0
+    ba_mod = ba if ba is not None else _try_import_ba(auth)
+    if ba_mod is None or not hasattr(ba_mod, "refresh_brain_from_annotations"):
+        print("ERROR: cannot refresh Brain; batch_annotate helper unavailable",
+              file=sys.stderr, flush=True)
+        return 2
+    return ba_mod.refresh_brain_from_annotations()
+
+
 def get_mathlib_sha() -> str | None:
     mlib = (str(ba.MATHLIB) if ba is not None
             else os.environ.get("WIKILEAN_MATHLIB", "/Users/jack/Desktop/LEAN/mathlib4"))
@@ -638,6 +655,8 @@ def get_prompt_sha(ba_mod, mode: str) -> str:
     mode-specific prompt + the shared Agent 2 prompt)."""
     if ba_mod is None:
         return "unavailable"
+    if hasattr(ba_mod, "prompt_fingerprint_text"):
+        return hashlib.sha256(ba_mod.prompt_fingerprint_text(mode).encode("utf-8")).hexdigest()[:12]
     a1 = ba_mod.MODERATE_AGENT1_SYSTEM if mode == "review" else ba_mod.AGENT1_SYSTEM
     parts = a1 + "\n" + ba_mod.AGENT2_SYSTEM
     # Step 2: the proposal guidance changes Agent 2's review-mode prompt, so it must
@@ -935,6 +954,7 @@ async def process_review(job: dict, ctx, sem: asyncio.Semaphore) -> dict:
         clear_checkpoint(slug)  # durable in D1 now
         rec["posted_version"] = resp.get("version")
         rec["server_matched"] = resp.get("matched")
+        rec["brain_changed"] = True
     elif code == 409:
         # Someone edited mid-run (twice — past the in-line rebase). Re-queues
         # next run; the agent work is re-done then. Drop the checkpoint: a stale
@@ -1015,6 +1035,7 @@ async def process_new(article: dict, ctx, sem: asyncio.Semaphore) -> dict:
         clear_checkpoint(slug)
         rec["created_version"] = resp.get("version")
         rec["server_matched"] = "created"
+        rec["brain_changed"] = True
     elif code == 409:
         # {error:'exists'} — created by another runner or an earlier (crashed)
         # pass. Not an error: log + skip; `review` owns it from here.
@@ -1124,15 +1145,15 @@ def run_wp_update(args, token: str | None) -> tuple[int, dict]:
 # ---------------------------------------------------------------------------
 
 async def run_jobs(jobs: list, ctx, process) -> tuple[int, dict]:
-    """Returns (exit_code, stats) — stats is the zero_stats() shape
-    {processed, errors, tokens, cost} that feeds the /api/runs registration.
+    """Returns (exit_code, stats) — stats is the zero_stats() shape plus
+    changed, which only controls the post-run Brain refresh.
     exit_code 3 = aborted (window/budget), matching batch_annotate.run's
     convention. Every processed job also appends one decisions-sidecar line
     (P2c) next to the run-log write, under the same lock."""
     sem = asyncio.Semaphore(ctx.concurrency)
     t0 = time.time()
     state = {"consec_err": 0, "abort": False, "n_done": 0, "n_err": 0,
-             "tokens": 0, "cost": 0.0}
+             "tokens": 0, "cost": 0.0, "changed": 0}
     lock = asyncio.Lock()
     MODERATE_LOG.parent.mkdir(parents=True, exist_ok=True)
 
@@ -1178,6 +1199,8 @@ async def run_jobs(jobs: list, ctx, process) -> tuple[int, dict]:
                               f"rerun resumes once the cause clears", flush=True)
                 else:
                     state["consec_err"] = 0
+                    if rec.get("brain_changed") and not rec.get("dry_run"):
+                        state["changed"] += 1
                 if (ctx.budget_tokens and state["tokens"] >= ctx.budget_tokens
                         and not state["abort"]):
                     state["abort"] = True
@@ -1198,7 +1221,8 @@ async def run_jobs(jobs: list, ctx, process) -> tuple[int, dict]:
           f"{state['tokens'] / 1e6:.2f}M tokens"
           + ("  [ABORTED — rerun to resume]" if state["abort"] else ""))
     stats = {"processed": state["n_done"], "errors": state["n_err"],
-             "tokens": state["tokens"], "cost": round(state["cost"], 4)}
+             "tokens": state["tokens"], "cost": round(state["cost"], 4),
+             "changed": state["changed"]}
     return (3 if state["abort"] else 0), stats
 
 
@@ -1215,6 +1239,7 @@ def make_ctx(args, mode: str, token: str | None, ba_mod) -> SimpleNamespace:
         ba=ba_mod,
         seed_decls=args.seed_decls,
         model=ba_mod.MODEL if ba_mod is not None else "unavailable",
+        agent_provider=getattr(ba_mod, "PROVIDER_LABEL", None) if ba_mod is not None else None,
         prompt_sha=get_prompt_sha(ba_mod, mode),
         mathlib_sha=get_mathlib_sha(),
     )
@@ -1277,8 +1302,24 @@ def main() -> int:
                     default="subscription",
                     help="subscription pops ANTHROPIC_API_KEY (Max-plan auth); "
                          "api-key leaves it so the SDK bills the API account")
+    ap.add_argument("--agent-provider", choices=["claude", "codex"], default=None,
+                    help="provider for both annotation agents (default: env or claude)")
+    ap.add_argument("--agent1-provider", choices=["claude", "codex"], default=None,
+                    help="provider for extraction/moderation Agent 1")
+    ap.add_argument("--agent2-provider", choices=["claude", "codex"], default=None,
+                    help="provider for Mathlib-matching Agent 2")
+    ap.add_argument("--codex-model", default=None,
+                    help="model passed to codex exec (default: Codex config default)")
+    ap.add_argument("--codex-bin", default=None,
+                    help="codex executable path/name (default: codex)")
+    ap.add_argument("--codex-sandbox", choices=["read-only", "workspace-write", "danger-full-access"],
+                    default=None, help="sandbox passed to codex exec (default: read-only)")
+    ap.add_argument("--codex-timeout-s", type=int, default=None,
+                    help="per-agent codex exec timeout in seconds (default: 1800)")
     ap.add_argument("--dry-run", action="store_true",
                     help="no agent calls, no writes — print what would be written")
+    ap.add_argument("--skip-brain-refresh", action="store_true",
+                    help="Do not rebuild Brain nodes/edges/shards after successful writes.")
     ap.add_argument("--from-file", default=None, metavar="JSONL",
                     help="new mode: candidate JSONL from discover_articles.py "
                          "({'title','slug','source'} per line; default is the "
@@ -1289,6 +1330,24 @@ def main() -> int:
                          "backlog at manage/data/formalize_slugs.txt")
     ap.add_argument("--api-base", default=DEFAULT_API_BASE)
     args = ap.parse_args()
+    # batch_annotate reads these at import time, so CLI overrides must be
+    # installed before _import_ba/_try_import_ba.
+    if args.agent_provider:
+        os.environ["WIKILEAN_AGENT_PROVIDER"] = args.agent_provider
+    if args.agent1_provider:
+        os.environ["WIKILEAN_AGENT1_PROVIDER"] = args.agent1_provider
+    if args.agent2_provider:
+        os.environ["WIKILEAN_AGENT2_PROVIDER"] = args.agent2_provider
+    if args.codex_model:
+        os.environ["WIKILEAN_CODEX_MODEL"] = args.codex_model
+    if args.codex_bin:
+        os.environ["WIKILEAN_CODEX_BIN"] = args.codex_bin
+    if args.codex_sandbox:
+        os.environ["WIKILEAN_CODEX_SANDBOX"] = args.codex_sandbox
+    if args.codex_timeout_s is not None:
+        os.environ["WIKILEAN_CODEX_TIMEOUT_S"] = str(args.codex_timeout_s)
+    if args.skip_brain_refresh:
+        os.environ["WIKILEAN_BRAIN_REFRESH"] = "0"
     args.run_id = secrets.token_hex(4)
     args.seed_decls = {}
     args.api_base = args.api_base.rstrip("/")
@@ -1308,26 +1367,34 @@ def main() -> int:
     # `flush`: recover prior runs' transiently-failed writes and stop.
     if args.command == "flush":
         st = asyncio.run(flush_pending(args))
-        return 0 if st["failed"] == 0 else 2
+        rc = 0 if st["failed"] == 0 else 2
+        return max(rc, refresh_brain_after_annotation_writes(
+            args.auth, st.get("flushed", 0)))
 
     # Before any real run, flush prior checkpoints first — recovered articles
     # update last_reviewed_version, so /api/work won't re-pick them and burn
     # agent tokens re-doing work that's already finalized on disk.
+    flushed_changed = 0
     if not args.dry_run:
-        asyncio.run(flush_pending(args))
+        flushed = asyncio.run(flush_pending(args))
+        flushed_changed = flushed.get("flushed", 0)
 
     # F3: wp-update FIRST (zero-token stage-0 re-pins clear wp_drifted), then
     # review (job list fetched fresh afterwards — see module docstring), then new.
     modes = (["wp-update", "review", "new"] if args.command == "all"
              else [args.command])
+    provider = os.environ.get("WIKILEAN_AGENT_PROVIDER", "claude")
+    a1_provider = os.environ.get("WIKILEAN_AGENT1_PROVIDER", provider)
+    a2_provider = os.environ.get("WIKILEAN_AGENT2_PROVIDER", provider)
     print(f"moderate run {args.run_id}: modes={modes} limit={args.limit} "
           f"auth={args.auth}{' DRY-RUN' if args.dry_run else ''} "
-          f"api={args.api_base}")
+          f"agents=agent1:{a1_provider}/agent2:{a2_provider} api={args.api_base}")
 
     rc = 0
     budget_left = args.budget_tokens
     started_at = int(time.time() * 1000)
     totals = zero_stats()
+    totals["changed"] = flushed_changed
     for mode in modes:
         if mode in ("review", "new") and not args.dry_run:
             # Mathlib seed-decl leads for Agent 2 (cheap disk read, load once).
@@ -1355,7 +1422,8 @@ def main() -> int:
         model=ba.MODEL if ba is not None else None,
         prompt_sha=get_prompt_sha(ba, agent_mode) if agent_mode else None,
         notes=("modes=" + "+".join(modes) + (" aborted" if rc == 3 else "")))
-    return rc
+    return max(rc, refresh_brain_after_annotation_writes(
+        args.auth, totals.get("changed", 0)))
 
 
 if __name__ == "__main__":

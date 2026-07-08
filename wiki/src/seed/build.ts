@@ -27,6 +27,8 @@ export function buildSeedRows(siteDir: string): SeedRow[] {
   // (mirrors build_index.py's dedup so draft/.agent1 variants don't win).
   const best = new Map<string, { count: number; model: Record<string, unknown> }>();
   for (const f of readdirSync(annotDir)) {
+    if (f.startsWith(".")) continue;
+    if (f.endsWith(".agent1.json")) continue;
     if (!f.endsWith(".json")) continue;
     let model: Record<string, unknown>;
     try {
