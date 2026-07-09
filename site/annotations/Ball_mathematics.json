@@ -19,7 +19,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib defines metric balls (Metric.ball / Metric.closedBall) rather than the geometric solid bounded by a sphere; the informal notion is captured up to generalization.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f4e3f622c441"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib has both Metric.ball (strict) and Metric.closedBall (≤) in the same file, distinguishing open and closed balls.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1acff07c1669"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "generalization"
       },
       "note": "There is no dedicated `n-ball` notion; one takes Metric.ball in EuclideanSpace ℝ (Fin n) so the dimensional terminology is implicit.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "aa2adb32f56d"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "Metric.ball x r := {y | dist y x < r} specializes to the Euclidean open n-ball when applied to EuclideanSpace ℝ (Fin n).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "32aa6d919efc"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "Metric.closedBall x r := {y | dist y x ≤ r}, which is the closed Euclidean n-ball when used in EuclideanSpace ℝ (Fin n).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b42b6f30b7cc"
     },
     {
       "kind": "proposition",
@@ -99,7 +104,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib defines Metric.sphere as the dist = r locus and has frontier/closure lemmas, but no single named result phrased as `the boundary of the ball is the sphere`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ee3095f4019f"
     },
     {
       "kind": "proposition",
@@ -115,7 +121,8 @@
         "match_kind": "exact"
       },
       "note": "EuclideanSpace.volume_ball gives the volume of Metric.ball x r in EuclideanSpace ℝ ι as rⁿ · π^(n/2)/Γ(n/2+1).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b8f49a53e7dd"
     },
     {
       "kind": "definition",
@@ -131,7 +138,8 @@
         "match_kind": "exact"
       },
       "note": "Nat.doubleFactorial defines n!! by the standard recursion, covering both parities of n.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dd74320f333c"
     },
     {
       "kind": "proposition",
@@ -147,7 +155,8 @@
         "match_kind": null
       },
       "note": "Loogle finds no `volume_sphere`/`areaOfSphere`/`sphere_surface` decl giving the (n-1)-dimensional Hausdorff measure of the Euclidean sphere.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a743b065879d"
     },
     {
       "kind": "definition",
@@ -163,7 +172,8 @@
         "match_kind": "exact"
       },
       "note": "Metric.ball is exactly the open ball in any (pseudo)metric space.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "540144490193"
     },
     {
       "kind": "definition",
@@ -179,7 +189,8 @@
         "match_kind": "exact"
       },
       "note": "Metric.closedBall is the closed ball in any (pseudo)metric space.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9e40d258ecb7"
     },
     {
       "kind": "definition",
@@ -195,7 +206,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib uses `Metric.ball 0 1` / `Metric.closedBall 0 1` for the unit ball (e.g. via Homeomorph.unitBall in Mathlib.Analysis.Normed.Module.Ball.Homeomorph).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5df4e7c42fce"
     },
     {
       "kind": "example",
@@ -211,7 +223,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib has PiLp / L^p norms (including L^1 and L^∞) so the balls exist, but the geometric identification with hypercubes/octahedra is not explicitly stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dd6e770a7279"
     },
     {
       "kind": "proposition",
@@ -227,7 +240,8 @@
         "match_kind": "exact"
       },
       "note": "FiniteDimensional.of_isCompact_closedBall is Riesz's theorem: compactness of a positive-radius closed ball forces finite-dimensionality, equivalent to the contrapositive.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b172b821428e"
     },
     {
       "kind": "proposition",
@@ -243,7 +257,8 @@
         "match_kind": "exact"
       },
       "note": "convex_ball states `Convex ℝ (Metric.ball a r)` in any real seminormed space.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "43f8dbb29a16"
     },
     {
       "kind": "definition",
@@ -259,7 +274,8 @@
         "match_kind": "exact"
       },
       "note": "Bornology.IsBounded is the bornology-bounded predicate, and Bornology.IsBounded.subset_ball confirms it is equivalent to containment in some metric ball.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "de43de5b1af4"
     },
     {
       "kind": "definition",
@@ -275,7 +291,8 @@
         "match_kind": "exact"
       },
       "note": "TotallyBounded is defined in uniform spaces and specializes to the standard finite-cover-by-balls notion in metric spaces.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "060e574b2e1c"
     },
     {
       "kind": "proposition",
@@ -291,7 +308,8 @@
         "match_kind": "exact"
       },
       "note": "Metric.isOpen_iff characterizes open sets via open balls, witnessing that the open balls form a base of the metric topology.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "38ae17694cec"
     },
     {
       "kind": "example",
@@ -307,7 +325,8 @@
         "match_kind": null
       },
       "note": "No specific lemma comparing closure(Metric.ball) with Metric.closedBall under the discrete metric was found via loogle.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a2af0485d73c"
     },
     {
       "kind": "definition",
@@ -323,7 +342,8 @@
         "match_kind": "exact"
       },
       "note": "In a normed space, Metric.ball/closedBall are exactly the norm balls since dist is induced by the norm.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5b8fb6dbbc5b"
     },
     {
       "kind": "definition",
@@ -339,7 +359,8 @@
         "match_kind": "exact"
       },
       "note": "PiLp p α equips ∏ α with the L^p norm; Metric.ball on PiLp is the p-norm open ball.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a834e70bfb2d"
     },
     {
       "kind": "example",
@@ -355,7 +376,8 @@
         "match_kind": null
       },
       "note": "No Mathlib decl identifies the L¹/L∞ unit balls in ℝ² with explicit squares.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "07800eb49cd8"
     },
     {
       "kind": "example",
@@ -371,7 +393,8 @@
         "match_kind": null
       },
       "note": "No Mathlib decl identifies the L¹/L∞ unit balls in ℝ³ with octahedra/cubes.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cb3ae3d3277e"
     },
     {
       "kind": "definition",
@@ -387,7 +410,8 @@
         "match_kind": "special_case"
       },
       "note": "PiLp ∞ gives the sup norm and its Metric.ball is the L^∞ ball.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3a04505031d5"
     },
     {
       "kind": "theorem",
@@ -403,7 +427,8 @@
         "match_kind": "exact"
       },
       "note": "gaugeSeminorm constructs a seminorm from a balanced convex absorbent set (the Minkowski functional), exactly the claim with `centrally symmetric, bounded, open, convex` hypotheses translated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2df369993d7d"
     },
     {
       "kind": "definition",
@@ -419,7 +444,8 @@
         "match_kind": null
       },
       "note": "No declaration of `topological n-ball` (a subset homeomorphic to a Euclidean ball) was found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "80ab27cc449a"
     },
     {
       "kind": "proposition",
@@ -435,7 +461,8 @@
         "match_kind": "special_case"
       },
       "note": "Homeomorph.unitBall gives E ≃ₜ Metric.ball (0:E) 1, providing the ℝⁿ ≃ open unit ball case but not the general statement about arbitrary topological n-balls.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ca85fda936ba"
     },
     {
       "kind": "proposition",
@@ -451,7 +478,8 @@
         "match_kind": null
       },
       "note": "No homeomorphism between Mathlib's closed Euclidean ball and a closed n-cube was located.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "37d01716909f"
     },
     {
       "kind": "theorem",
@@ -467,7 +495,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no invariance-of-dimension result distinguishing Euclidean balls of different dimensions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0660673b980e"
     },
     {
       "kind": "proposition",
@@ -483,7 +512,8 @@
         "match_kind": null
       },
       "note": "No Mathlib decl on exotic smooth structures on topological balls was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "55c29c1540bf"
     },
     {
       "kind": "definition",
@@ -499,7 +529,8 @@
         "match_kind": null
       },
       "note": "Spherical caps, segments, shells, and wedges are not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cfce77268e4d"
     }
   ]
 }

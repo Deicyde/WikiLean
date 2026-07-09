@@ -37,20 +37,6 @@
       },
       "note": "`Nat.fib_add_two : fib (n + 2) = fib n + fib (n + 1)` states the recurrence exactly.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definition",
-          "snippet": "The Fibonacci numbers may be defined by the recurrence relation"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle F_{0}=0,\\quad F_{1}=1,}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle F_{n}=F_{n-1}+F_{n-2}}"
-        }
-      ],
       "id": "cebad57fd60f"
     },
     {
@@ -66,18 +52,8 @@
         "module": "Mathlib.Data.Int.Fib.Basic",
         "match_kind": "exact"
       },
-      "note": "`Int.fib` extends `Nat.fib` to all integers and `Int.fib_add_two` verifies the recurrence continues to hold.",
+      "note": "`Int.fib` extends `Nat.fib` to all integers and `Int.fib_add_two` (same module) verifies the recurrence continues to hold.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definition",
-          "snippet": "The Fibonacci sequence can be extended to negative integer indices by following the same recurrence relation in the negative direction"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle F_{-n}=(-1)^{n+1}F_{n}.}"
-        }
-      ],
       "id": "26c221e1fdf5"
     },
     {
@@ -146,16 +122,6 @@
       },
       "note": "The Binet-rounding identity `fib n = round (φ^n / √5)` is not stated in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Computation by rounding",
-          "snippet": "the number F n is the closest integer to"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle F_{n}=\\left\\lfloor {\\frac {\\varphi ^{n}}{\\sqrt {5}}}\\right\\rceil ,\\ n\\geq 0.}"
-        }
-      ],
       "id": "7b06141bedbf"
     },
     {
@@ -173,17 +139,24 @@
       },
       "note": "`Nat.greatestFib` returns the greatest index of a Fibonacci number ≤ n, but the floor/log-φ closed form is not established.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Computation by rounding",
-          "snippet": "Instead using the floor function gives the largest index of a Fibonacci number that is not greater than F"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle n_{\\mathrm {largest} }(F)=\\left\\lfloor \\log _{\\varphi }{\\sqrt {5}}(F+1/2)\\right\\rfloor ,\\ F\\geq 0,}"
-        }
-      ],
       "id": "ee45c892fb84"
+    },
+    {
+      "kind": "proposition",
+      "label": "Asymptotic growth of F_n",
+      "anchor": {
+        "section": "Magnitude",
+        "snippet": "Since F n is asymptotic to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The asymptotic equivalence `fib n ~ φ^n / √5` is not stated as a named lemma in Mathlib (only the exact Binet formula is).",
+      "provenance": "ai",
+      "id": "3df78f8ae402"
     },
     {
       "kind": "proposition",
@@ -234,16 +207,6 @@
       },
       "note": "`tendsto_fib_succ_div_fib_atTop` shows `fib (n+1)/fib n → φ` as `n → ∞`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Limit of consecutive quotients",
-          "snippet": "the ratio of consecutive Fibonacci numbers converges"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\lim _{n\\to \\infty }{\\frac {F_{n+1}}{F_{n}}}=\\varphi .}"
-        }
-      ],
       "id": "db43f7d80292"
     },
     {
@@ -259,26 +222,8 @@
         "module": "Mathlib.NumberTheory.Real.GoldenRatio",
         "match_kind": "exact"
       },
-      "note": "`goldenRatio_mul_fib_succ_add_fib` proves `φ^(n+1) = φ · fib(n+1) + fib n`, expressing powers of φ as linear combinations with Fibonacci coefficients.",
+      "note": "`Real.goldenRatio_mul_fib_succ_add_fib` proves `φ^(n+1) = φ · fib(n+1) + fib n`, expressing powers of φ as linear combinations with Fibonacci coefficients.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Decomposition of powers",
-          "snippet": "The resulting recurrence relationships yield Fibonacci numbers as the linear coefficients"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\varphi ^{n}=F_{n}\\varphi +F_{n-1}.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}\\varphi ^{n+1}&amp;=(F_{n}\\varphi +F_{n-1})\\varphi =F_{n}\\varphi ^{2}+F_{n-1}\\varphi \\\\&amp;=F_{n}(\\varphi +1)+F_{n-1}\\varphi =(F_{n}+F_{n-1})\\varphi +F_{n}=F_{n+1}\\varphi +F_{n}.\\end{aligned}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\psi ^{n}=F_{n}\\psi +F_{n-1}.}"
-        }
-      ],
       "id": "e90302fc3db8"
     },
     {
@@ -330,16 +275,6 @@
       },
       "note": "Cassini's identity itself is formalized for `Int.fib`, but the proof via the matrix-power determinant is not given since no Fibonacci matrix form exists.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Matrix form",
-          "snippet": "Taking the determinant of both sides of this equation yields Cassini's identity"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle (-1)^{n}=F_{n+1}F_{n-1}-{F_{n}}^{2}.}"
-        }
-      ],
       "id": "08d19ee84aca"
     },
     {
@@ -374,16 +309,6 @@
       },
       "note": "`Nat.fib_succ_eq_succ_sum` proves `fib (n+1) = (∑ k ∈ range n, fib k) + 1`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Combinatorial proofs",
-          "snippet": "the sum of the first Fibonacci numbers up to the n -th is equal to the ( n + 2) -th Fibonacci number minus 1"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\sum _{i=1}^{n}F_{i}=F_{n+2}-1}"
-        }
-      ],
       "id": "b6b82f4b9a60"
     },
     {
@@ -401,20 +326,6 @@
       },
       "note": "Mathlib does not state the partial sums of Fibonacci numbers restricted to odd or even indices.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Combinatorial proofs",
-          "snippet": "the sum of the first Fibonacci numbers with odd index up to"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\sum _{i=0}^{n-1}F_{2i+1}=F_{2n}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\sum _{i=1}^{n}F_{2i}=F_{2n+1}-1.}"
-        }
-      ],
       "id": "bae34135b10c"
     },
     {
@@ -432,16 +343,6 @@
       },
       "note": "The identity `∑ k≤n, fib k ^ 2 = fib n · fib (n+1)` is not present in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Combinatorial proofs",
-          "snippet": "the sum of the squares of the first Fibonacci numbers up to"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\sum _{i=1}^{n}F_{i}^{2}=F_{n}F_{n+1}}"
-        }
-      ],
       "id": "724a14aacdff"
     },
     {
@@ -459,20 +360,6 @@
       },
       "note": "`Int.fib_succ_mul_fib_pred_sub_fib_sq` proves `fib (n+1) · fib (n-1) - fib n ^ 2 = (-1)^|n|`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Cassini's and Catalan's identities",
-          "snippet": "Cassini's identity states that"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle F_{n}^{2}-F_{n+1}F_{n-1}=(-1)^{n-1}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle F_{n}^{2}-F_{n+r}F_{n-r}=(-1)^{n-r}F_{r}^{2}}"
-        }
-      ],
       "id": "1014cfc12462"
     },
     {
@@ -490,20 +377,6 @@
       },
       "note": "`Int.fib_add_sq_sub_fib_mul_fib_add_two_mul` states Catalan's identity for integer indices.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Cassini's and Catalan's identities",
-          "snippet": "Catalan's identity is a generalization"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle F_{n}^{2}-F_{n+1}F_{n-1}=(-1)^{n-1}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle F_{n}^{2}-F_{n+r}F_{n-r}=(-1)^{n-r}F_{r}^{2}}"
-        }
-      ],
       "id": "1f2a061fd975"
     },
     {
@@ -521,24 +394,6 @@
       },
       "note": "Mathlib has no Lucas numbers and does not state d'Ocagne's identity.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "d'Ocagne's identity",
-          "snippet": "where L n is the n -th Lucas number"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle F_{m}F_{n+1}-F_{m+1}F_{n}=(-1)^{n}F_{m-n}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle F_{2n}=F_{n+1}^{2}-F_{n-1}^{2}=F_{n}\\left(F_{n+1}+F_{n-1}\\right)=F_{n}L_{n}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle F_{3n}=2F_{n}^{3}+3F_{n}F_{n+1}F_{n-1}=5F_{n}^{3}+3(-1)^{n}F_{n}}"
-        }
-      ],
       "id": "ff7056a7ad99"
     },
     {
@@ -573,24 +428,6 @@
       },
       "note": "Mathlib does not give the exponential generating function of the Fibonacci sequence.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Exponential",
-          "snippet": "The exponential generating function of the Fibonacci sequence may also be derived from the recurrence relation"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}\\sum _{k=0}^{\\infty }F_{k+2}{\\frac {x^{k}}{k!}}={}&amp;\\sum _{k=0}^{\\infty }F_{k+1}{\\frac {x^{k}}{k!}}+\\sum _{k=0}^{\\infty }F_{k}{\\frac {x^{k}}{k!}}\\\\F^{\\prime \\prime }(x)={}&amp;F^{\\prime }(x)+F(x)\\end{aligned}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle F(x)={\\frac {e^{\\varphi x}-e^{\\psi x}}{\\sqrt {5}}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle F^{(n)}(0)=F_{n}={\\frac {\\varphi ^{n}-\\psi ^{n}}{\\sqrt {5}}}}"
-        }
-      ],
       "id": "30b7f4cacaae"
     },
     {
@@ -608,16 +445,6 @@
       },
       "note": "No formalization of the closed form for the sum of odd-indexed reciprocal Fibonacci numbers is in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Reciprocal sums",
-          "snippet": "the sum of every odd-indexed reciprocal Fibonacci number can be written as"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\sum _{k=1}^{\\infty }{\\frac {1}{F_{2k-1}}}={\\frac {\\sqrt {5}}{4}}\\;\\vartheta _{2}\\!\\left(0,{\\frac {3-{\\sqrt {5}}}{2}}\\right)^{2},}"
-        }
-      ],
       "id": "4ac8dc420017"
     },
     {
@@ -635,16 +462,6 @@
       },
       "note": "The closed form for `∑ 1/fib n^2` is not present in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Reciprocal sums",
-          "snippet": "the sum of squared reciprocal Fibonacci numbers as"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\sum _{k=1}^{\\infty }{\\frac {1}{{F_{k}}^{2}}}={\\frac {5}{24}}\\!\\left(\\vartheta _{2}\\!\\left(0,{\\frac {3-{\\sqrt {5}}}{2}}\\right)^{4}-\\vartheta _{4}\\!\\left(0,{\\frac {3-{\\sqrt {5}}}{2}}\\right)^{4}+1\\right).}"
-        }
-      ],
       "id": "c8e5d9d28941"
     },
     {
@@ -662,16 +479,6 @@
       },
       "note": "No formula for `∑ 1/fib (2n)` is in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Reciprocal sums",
-          "snippet": "The sum of all even-indexed reciprocal Fibonacci numbers is"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\sum _{k=1}^{\\infty }{\\frac {1}{F_{2k}}}={\\sqrt {5}}\\left(L(\\psi ^{2})-L(\\psi ^{4})\\right)}"
-        }
-      ],
       "id": "30a4113f15f4"
     },
     {
@@ -706,20 +513,6 @@
       },
       "note": "Millin's series identity for `∑ 1/fib (2^n)` is not formalized in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Reciprocal sums",
-          "snippet": "Millin's series gives the identity"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\sum _{k=0}^{\\infty }{\\frac {1}{F_{2^{k}}}}={\\frac {7-{\\sqrt {5}}}{2}},}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\sum _{k=0}^{N}{\\frac {1}{F_{2^{k}}}}=3-{\\frac {F_{2^{N}-1}}{F_{2^{N}}}}.}"
-        }
-      ],
       "id": "31a4b29e2d1d"
     },
     {
@@ -737,16 +530,6 @@
       },
       "note": "`Nat.fib_gcd` proves `fib (gcd m n) = gcd (fib m) (fib n)`, the strong divisibility property.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Divisibility properties",
-          "snippet": "the Fibonacci sequence satisfies the stronger divisibility property"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\gcd(F_{a},F_{b},F_{c},\\ldots )=F_{\\gcd(a,b,c,\\ldots )}\\,}"
-        }
-      ],
       "id": "791ae0e75950"
     },
     {
@@ -764,16 +547,6 @@
       },
       "note": "`Nat.fib_coprime_fib_succ` establishes that two consecutive Fibonacci numbers are coprime; the explicit pairwise coprimality of any three consecutive is not stated.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Divisibility properties",
-          "snippet": "any three consecutive Fibonacci numbers are pairwise coprime"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\gcd(F_{n},F_{n+1})=\\gcd(F_{n},F_{n+2})=\\gcd(F_{n+1},F_{n+2})=1}"
-        }
-      ],
       "id": "9ad3c0a50f3f"
     },
     {
@@ -808,16 +581,6 @@
       },
       "note": "Mathlib has no definition of Fibonacci pseudoprime.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Primality testing",
-          "snippet": "If n is composite and satisfies the formula, then n is a Fibonacci pseudoprime"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle n\\mid F_{n\\,-~\\!\\left({\\frac {5}{n}}\\right)},}"
-        }
-      ],
       "id": "e2bdf3cb2738"
     },
     {
@@ -1025,6 +788,74 @@
       "id": "b695f2bed405"
     },
     {
+      "kind": "definition",
+      "label": "Lucas numbers",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "Lucas numbers have L 1 = 1 , L 2 = 3 , and L n = L n −1 + L n −2"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define the Lucas number sequence as a named decl.",
+      "provenance": "ai",
+      "id": "b3db1447c44e"
+    },
+    {
+      "kind": "definition",
+      "label": "Pell numbers",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "The Pell numbers have P n = 2 P n −1 + P n −2"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has Pell-equation machinery (`Pell.xn`/`Pell.yn` in `Mathlib.NumberTheory.PellMatiyasevic`) but no standalone Pell number sequence satisfying `P_n = 2 P_{n-1} + P_{n-2}`.",
+      "provenance": "ai",
+      "id": "971ed297673b"
+    },
+    {
+      "kind": "definition",
+      "label": "Fibonacci polynomials",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "the result is the sequence of Fibonacci polynomials"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fibonacci polynomials are not defined in Mathlib.",
+      "provenance": "ai",
+      "id": "383df1848633"
+    },
+    {
+      "kind": "definition",
+      "label": "k-bonacci numbers",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "The resulting sequences are known as k-Step Fibonacci numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Tribonacci/tetranacci/k-bonacci sequences have no Mathlib definition.",
+      "provenance": "ai",
+      "id": "f2988b891a71"
+    },
+    {
       "kind": "proposition",
       "label": "Fibonacci in Pascal's triangle",
       "anchor": {
@@ -1039,20 +870,6 @@
       },
       "note": "`Nat.fib_succ_eq_sum_choose` writes `fib (n+1)` as a sum of binomial coefficients along the antidiagonal — the shallow-diagonal Pascal identity.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Mathematics",
-          "snippet": "The Fibonacci numbers occur as the sums of binomial coefficients in the \"shallow\" diagonals of Pascal's triangle"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle F_{n}=\\sum _{k=0}^{\\left\\lfloor {\\frac {n-1}{2}}\\right\\rfloor }{\\binom {n-k-1}{k}}.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {x}{1-x-x^{2}}}=x+x^{2}(1+x)+x^{3}(1+x)^{2}+\\dots +x^{k+1}(1+x)^{k}+\\dots =\\sum \\limits _{n=0}^{\\infty }F_{n}x^{n}}"
-        }
-      ],
       "id": "5670c2018c5f"
     },
     {
@@ -1189,16 +1006,6 @@
       },
       "note": "No construction of Pythagorean triples from Fibonacci numbers is in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Mathematics",
-          "snippet": "every second Fibonacci number is the length of the hypotenuse of a right triangle with integer sides"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle (F_{n}F_{n+3})^{2}+(2F_{n+1}F_{n+2})^{2}={F_{2n+3}}^{2}.}"
-        }
-      ],
       "id": "0463b744dda9"
     },
     {
@@ -1227,11 +1034,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "GenContFract.fib_le_of_continuantsAux_b",
+        "decl": "GenContFract.fib_le_of_contsAux_b",
         "module": "Mathlib.Algebra.ContinuedFractions.Computation.Approximations",
         "match_kind": "invocation"
       },
-      "note": "Mathlib bounds continued-fraction denominators below by `Nat.fib`, which underlies the worst-case analysis, but does not explicitly state the Lamé worst-case theorem for the Euclidean algorithm.",
+      "note": "Mathlib bounds continued-fraction denominators below by `Nat.fib` (via `GenContFract.fib_le_of_contsAux_b`), which underlies the worst-case analysis, but does not explicitly state the Lamé worst-case theorem for the Euclidean algorithm.",
       "provenance": "ai",
       "id": "cb59bcc51567"
     },

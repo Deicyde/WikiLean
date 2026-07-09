@@ -11,6 +11,13 @@
         "section": "(Lead)",
         "snippet": "a quadratic form is a polynomial with terms all of degree two"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuadraticForm",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines `QuadraticForm R M := QuadraticMap R M R`, which generalizes the polynomial definition to any commutative semiring and module.",
       "provenance": "ai-agent1",
       "id": "4b80324cdb84"
     },
@@ -21,6 +28,13 @@
         "section": "(Lead)",
         "snippet": "a quadratic form is said to be definite if it takes the value zero only when all its variables are simultaneously zero"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuadraticMap.Anisotropic",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`QuadraticMap.Anisotropic Q := ∀ x, Q x = 0 → x = 0` is exactly the property described (an anisotropic / 'definite-in-this-sense' form).",
       "provenance": "ai-agent1",
       "id": "32f213363fc8"
     },
@@ -31,6 +45,13 @@
         "section": "Introduction",
         "snippet": "In the cases of one, two, and three variables they are called unary , binary , and ternary"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is purely terminological vocabulary about the number of variables and has no dedicated Mathlib declaration.",
       "provenance": "ai-agent1",
       "id": "38a8fe43fa74"
     },
@@ -41,6 +62,13 @@
         "section": "Introduction",
         "snippet": "a non-zero quadratic form in n variables defines an ( n − 2) -dimensional quadric"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Quadric` type or projective vanishing-locus construction tied to quadratic forms is present in Mathlib.",
       "provenance": "ai-agent1",
       "id": "e1a673f15ea3"
     },
@@ -51,6 +79,13 @@
         "section": "Introduction",
         "snippet": "the square of the Euclidean norm expressing the distance between a point with coordinates"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanSpace.norm_eq",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": null
+      },
+      "note": "The squared Euclidean norm is computable via `EuclideanSpace.norm_eq` (norm = sqrt of sum of squared coordinates), but it is not explicitly identified as a `QuadraticForm` instance.",
       "provenance": "ai-agent1",
       "id": "a5d3ea93aaa4"
     },
@@ -61,6 +96,13 @@
         "section": "Introduction",
         "snippet": "A closely related notion with geometric overtones is a quadratic space"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "QuadraticModuleCat",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.QuadraticModuleCat",
+        "match_kind": null
+      },
+      "note": "`QuadraticModuleCat` bundles a module with a `QuadraticForm`; Mathlib treats 'quadratic space' as the pair (M, Q : QuadraticForm R M) rather than a stand-alone abbrev.",
       "provenance": "ai-agent1",
       "id": "876650a46782"
     },
@@ -71,8 +113,32 @@
         "section": "History",
         "snippet": "Fermat's theorem on sums of two squares , which determines when an integer may be expressed in the form"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Prime.sq_add_sq",
+        "module": "Mathlib.NumberTheory.SumTwoSquares",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.Prime.sq_add_sq` gives the prime case (`p % 4 ≠ 3 ⇒ ∃ a b, p = a^2 + b^2`); `Nat.eq_sq_add_sq_iff` extends to all integers.",
       "provenance": "ai-agent1",
       "id": "465858f50db0"
+    },
+    {
+      "kind": "definition",
+      "label": "Pell's equation",
+      "anchor": {
+        "section": "History",
+        "snippet": "He considered what is now called Pell's equation , x 2 − ny 2 = 1"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Pell.IsPell",
+        "module": "Mathlib.NumberTheory.PellMatiyasevic",
+        "match_kind": null
+      },
+      "note": "`Pell.IsPell` characterizes elements b of `ℤ√d` with `b * star b = 1`, which encodes the Pell equation x² − dy² = 1 but is not stated as a direct equation predicate.",
+      "provenance": "ai",
+      "id": "3b446ef303fd"
     },
     {
       "kind": "definition",
@@ -81,6 +147,13 @@
         "section": "Associated symmetric matrix",
         "snippet": "Any n × n matrix A determines a quadratic form q A in n variables"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.toQuadraticForm'",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.toQuadraticForm' M : QuadraticForm R (n → R)` sends `x ↦ row x * M * col x`, exactly the matrix-defined quadratic form.",
       "provenance": "ai-agent1",
       "id": "13e9b3b28fd9"
     },
@@ -91,6 +164,13 @@
         "section": "Example",
         "snippet": "Consider the case of quadratic forms in three variables"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a worked example in three variables and is not formalized as a distinct theorem.",
       "provenance": "ai-agent1",
       "id": "d03751ea3a8b"
     },
@@ -101,6 +181,13 @@
         "section": "Example",
         "snippet": "two different matrices define the same quadratic form if and only if they have the same elements on the diagonal"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration explicitly characterizes equality of `Matrix.toQuadraticForm'` in terms of diagonal entries and symmetric off-diagonal sums.",
       "provenance": "ai-agent1",
       "id": "873d74e8531d"
     },
@@ -111,6 +198,13 @@
         "section": "General case",
         "snippet": "is the unique symmetric matrix that defines q A"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "QuadraticForm.toMatrix'",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Basic",
+        "match_kind": null
+      },
+      "note": "`QuadraticForm.toMatrix'` gives the symmetric matrix (with `isSymm_toMatrix'`) recovering Q via `associated`, but uniqueness as a stand-alone statement is not isolated.",
       "provenance": "ai-agent1",
       "id": "a2b95ea87237"
     },
@@ -121,6 +215,13 @@
         "section": "General case",
         "snippet": "there is a one-to-one correspondence between quadratic forms and symmetric matrices"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "QuadraticMap.associated_left_inverse",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Basic",
+        "match_kind": null
+      },
+      "note": "`associated_left_inverse` and `toQuadraticMap_associated` together establish the bijection between quadratic forms and symmetric bilinear forms (assuming `Invertible (2 : R)`), not stated as a single equiv with matrices.",
       "provenance": "ai-agent1",
       "id": "7312d0a1643f"
     },
@@ -131,6 +232,13 @@
         "section": "Real quadratic forms",
         "snippet": "Jacobi proved that, for every real quadratic form, there is an orthogonal diagonalization"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuadraticForm.equivalent_weightedSumSquares",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.IsometryEquiv",
+        "match_kind": "generalization"
+      },
+      "note": "`QuadraticForm.equivalent_weightedSumSquares` shows every quadratic form over a field with `Invertible (2:K)` is equivalent to a weighted sum of squares, which generalizes Jacobi's orthogonal diagonalization.",
       "provenance": "ai-agent1",
       "id": "047f307ffd85"
     },
@@ -141,6 +249,13 @@
         "section": "Real quadratic forms",
         "snippet": "Sylvester's law of inertia states that the numbers of each 0 , +1 , and −1 are invariants of the quadratic form"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuadraticForm.sigPos_of_equiv_weightedSumSquares",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Signature",
+        "match_kind": "exact"
+      },
+      "note": "`sigPos_of_equiv_weightedSumSquares` + `sigNeg_of_equiv_weightedSumSquares` (uniqueness) together with `equivalent_one_zero_neg_one_weighted_sum_squared` (existence) state Sylvester's law of inertia.",
       "provenance": "ai-agent1",
       "id": "d26712d7ef71"
     },
@@ -151,6 +266,13 @@
         "section": "Real quadratic forms",
         "snippet": "The signature of the quadratic form is the triple"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "QuadraticForm.sigPos",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Signature",
+        "match_kind": null
+      },
+      "note": "`sigPos` and `sigNeg` define the positive/negative parts of the signature; there is no bundled triple `(n₊, n₋, n₀)` invariant declaration.",
       "provenance": "ai-agent1",
       "id": "738105bd352b"
     },
@@ -161,6 +283,13 @@
         "section": "Real quadratic forms",
         "snippet": "in this case the quadratic form is called positive definite (all +1 ) or negative definite (all −1 )"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "QuadraticMap.PosDef",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Basic",
+        "match_kind": null
+      },
+      "note": "`QuadraticMap.PosDef`, `QuadraticMap.Anisotropic`, and `QuadraticMap.Nondegenerate` exist; negative-definite is expressed as `PosDef (-Q)` rather than as a distinct definition.",
       "provenance": "ai-agent1",
       "id": "3aea9a568981"
     },
@@ -171,6 +300,13 @@
         "section": "Real quadratic forms",
         "snippet": "The discriminant of a quadratic form , concretely the class of the determinant of a representing matrix"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuadraticForm.discr",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`QuadraticForm.discr b Q := (Q.toMatrix b).det` is the discriminant defined as the determinant of the matrix representation in a basis.",
       "provenance": "ai-agent1",
       "id": "3b6219e5d22b"
     },
@@ -181,6 +317,13 @@
         "section": "Real quadratic forms",
         "snippet": "the symmetric square matrix A is transformed into another symmetric square matrix B of the same size"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuadraticForm.toMatrix_comp",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`toMatrix_comp` (and `toMatrix'_comp`) shows the matrix of Q ∘ f equals fᵀ * (Q.toMatrix) * f, the standard change-of-basis transformation.",
       "provenance": "ai-agent1",
       "id": "cbe6f82ef8e0"
     },
@@ -191,6 +334,13 @@
         "section": "Real quadratic forms",
         "snippet": "Any symmetric matrix A can be transformed into a diagonal matrix"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.exists_orthogonal_basis",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`exists_orthogonal_basis` produces an orthogonal basis for any symmetric bilinear form over a field with `Invertible 2`, generalizing diagonalization of symmetric matrices.",
       "provenance": "ai-agent1",
       "id": "792de675dac8"
     },
@@ -201,6 +351,13 @@
         "section": "Real quadratic forms",
         "snippet": "the numbers n + and n − are called the positive and negative indices of inertia"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuadraticForm.sigPos",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Signature",
+        "match_kind": "exact"
+      },
+      "note": "`sigPos` and `sigNeg` are the positive and negative indices of inertia, defined as the maximal finrank of a positive- (resp. negative-)definite subspace.",
       "provenance": "ai-agent1",
       "id": "5937e44a7b8e"
     },
@@ -211,6 +368,13 @@
         "section": "Real quadratic forms",
         "snippet": "The quadratic form q is positive definite if"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuadraticMap.PosDef",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`QuadraticMap.PosDef Q := ∀ x, x ≠ 0 → 0 < Q x` exactly captures positive-definiteness via values; negative-definite is `PosDef (-Q)`.",
       "provenance": "ai-agent1",
       "id": "254cdc7cf9d9"
     },
@@ -221,6 +385,13 @@
         "section": "Real quadratic forms",
         "snippet": "any positive definite quadratic form in n variables can be brought to the sum of n squares"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "QuadraticForm.equivalent_one_neg_one_weighted_sum_squared",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Real",
+        "match_kind": null
+      },
+      "note": "`equivalent_one_neg_one_weighted_sum_squared` shows nondegenerate real forms are equivalent to a ±1-weighted sum of squares; the pure positive-definite-→-sum-of-squares specialization is not isolated.",
       "provenance": "ai-agent1",
       "id": "469954ada9cc"
     },
@@ -231,6 +402,13 @@
         "section": "Definitions",
         "snippet": "A quadratic form over a field K is a map q : V → K from a finite-dimensional"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuadraticForm",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`QuadraticForm R M` is the coordinate-free map `M → R` definition (over any commutative semiring), encompassing the field case.",
       "provenance": "ai-agent1",
       "id": "80e66a9f7652"
     },
@@ -241,6 +419,13 @@
         "section": "Definitions",
         "snippet": "an n -ary quadratic form over a field K is a homogeneous polynomial of degree 2"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `QuadraticForm`/`QuadraticMap` is map-based; it is not defined as `MvPolynomial.IsHomogeneous n=2`, and no equivalence between the polynomial and map definitions is registered.",
       "provenance": "ai-agent1",
       "id": "f6e046a8b9e3"
     },
@@ -251,6 +436,13 @@
         "section": "Definitions",
         "snippet": "is a null vector if"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "QuadraticMap.Anisotropic",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Basic",
+        "match_kind": null
+      },
+      "note": "The predicate `Q v = 0` appears via `Anisotropic` ('no nonzero null vector') but there is no standalone `IsNullVector`-style definition.",
       "provenance": "ai-agent1",
       "id": "2e709b164c65"
     },
@@ -261,6 +453,13 @@
         "section": "Definitions",
         "snippet": "Two n -ary quadratic forms φ and ψ over K are equivalent if there exists a nonsingular linear transformation"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuadraticMap.Equivalent",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.IsometryEquiv",
+        "match_kind": "exact"
+      },
+      "note": "`QuadraticMap.Equivalent Q₁ Q₂ := Nonempty (Q₁.IsometryEquiv Q₂)` is the existence of a linear equivalence intertwining the two forms.",
       "provenance": "ai-agent1",
       "id": "f1f8fa1c0e35"
     },
@@ -271,6 +470,13 @@
         "section": "Definitions",
         "snippet": "The coefficient matrix A of q may be replaced by the symmetric matrix"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "QuadraticForm.isSymm_toMatrix'",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Basic",
+        "match_kind": null
+      },
+      "note": "`Matrix.toQuadraticForm'` plus `isSymm_toMatrix'` express that one can pass to a symmetric representing matrix; the explicit `(A+Aᵀ)/2` formula is not packaged as a lemma.",
       "provenance": "ai-agent1",
       "id": "c7d38202df54"
     },
@@ -281,6 +487,13 @@
         "section": "Definitions",
         "snippet": "The associated bilinear form of a quadratic form q is defined by"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuadraticMap.associated",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`QuadraticMap.associated` (via `associatedHom`) sends Q to the symmetric bilinear form `B(x,y) = (1/2)(Q(x+y) − Q(x) − Q(y))` when 2 is invertible.",
       "provenance": "ai-agent1",
       "id": "fe6b031957d2"
     },
@@ -291,6 +504,13 @@
         "section": "Definitions",
         "snippet": "the theories of symmetric bilinear forms and of quadratic forms in n variables are essentially the same"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuadraticMap.associated_left_inverse",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`associated_left_inverse` and `toQuadraticMap_associated` give the two-sided inverse between symmetric bilinear maps and quadratic maps when 2 is invertible.",
       "provenance": "ai-agent1",
       "id": "826a6f719c0b"
     },
@@ -301,6 +521,13 @@
         "section": "Quadratic space",
         "snippet": "a quadratic form on V is a function Q : V → K that has the following property"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuadraticMap",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The `QuadraticMap` (and abbreviated `QuadraticForm`) structure axiomatizes precisely `Q(a • x) = a² • Q x` together with a companion bilinear map.",
       "provenance": "ai-agent1",
       "id": "601ac2923c93"
     },
@@ -311,6 +538,13 @@
         "section": "Quadratic space",
         "snippet": "A finite-dimensional vector space with a quadratic form is called a quadratic space"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "QuadraticModuleCat",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.QuadraticModuleCat",
+        "match_kind": null
+      },
+      "note": "`QuadraticModuleCat` bundles a module with a quadratic form, the closest thing to a 'quadratic space' object; no standalone abbreviation requiring finite-dimensionality exists.",
       "provenance": "ai-agent1",
       "id": "7a381caa7179"
     },
@@ -321,6 +555,13 @@
         "section": "Quadratic space",
         "snippet": "The map Q is a homogeneous function of degree 2"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuadraticMap.map_smul",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`QuadraticMap.map_smul : Q (a • x) = (a * a) • Q x` is the homogeneity-of-degree-2 axiom built into the structure.",
       "provenance": "ai-agent1",
       "id": "339b7bf6c6b2"
     },
@@ -331,6 +572,13 @@
         "section": "Quadratic space",
         "snippet": "When the characteristic of K is not 2, the bilinear map"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuadraticMap.associated",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`QuadraticMap.associated`, which requires `Invertible (2 : R)`, is exactly the polar bilinear form `B(x,y) = (1/2)(Q(x+y) − Q(x) − Q(y))`.",
       "provenance": "ai-agent1",
       "id": "4b970aee54bc"
     },
@@ -341,8 +589,32 @@
         "section": "Quadratic space",
         "snippet": "When the characteristic of K is 2, so that 2 is not a unit"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "QuadraticMap.polar_self",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Basic",
+        "match_kind": null
+      },
+      "note": "`polar_self : polar Q x x = 2 • Q x` becomes 0 in characteristic 2, implying the alternating property; the char-2 specialization itself is not stated as a separate lemma.",
       "provenance": "ai-agent1",
       "id": "86f07b79de97"
+    },
+    {
+      "kind": "proposition",
+      "label": "Existence of (non-symmetric) bilinear B″ with B″(x,x)=Q(x) in char 2",
+      "anchor": {
+        "section": "Quadratic space",
+        "snippet": "there always exists a bilinear form B ″ (not in general either unique or symmetric) such that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuadraticMap.exists_companion",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`exists_companion : ∃ B : BilinMap R M N, ∀ x y, Q (x + y) = Q x + Q y + B x y` is precisely the existence of a (not necessarily symmetric) companion bilinear map.",
+      "provenance": "ai",
+      "id": "8d46bb752b1b"
     },
     {
       "kind": "definition",
@@ -351,6 +623,13 @@
         "section": "Quadratic space",
         "snippet": "Two n -dimensional quadratic spaces ( V , Q ) and ( V ′, Q ′) are isometric if there exists an invertible linear transformation"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuadraticMap.IsometryEquiv",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.IsometryEquiv",
+        "match_kind": "exact"
+      },
+      "note": "`QuadraticMap.IsometryEquiv Q₁ Q₂` is a linear equivalence with `Q₂ (f m) = Q₁ m`, exactly the notion of isometric quadratic spaces.",
       "provenance": "ai-agent1",
       "id": "6033eb14760b"
     },
@@ -361,6 +640,13 @@
         "section": "Quadratic space",
         "snippet": "The isometry classes of n -dimensional quadratic spaces over K correspond to the equivalence classes"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuadraticMap.Equivalent",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.IsometryEquiv",
+        "match_kind": "exact"
+      },
+      "note": "`Equivalent` is defined as `Nonempty (Q₁.IsometryEquiv Q₂)`, so isometry classes and equivalence classes literally coincide by definition.",
       "provenance": "ai-agent1",
       "id": "b820ec721d9b"
     },
@@ -371,6 +657,13 @@
         "section": "Generalization",
         "snippet": "A mapping q : M → R : v ↦ b ( v , v ) is the associated quadratic form of b"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.BilinMap.toQuadraticMap",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`BilinMap.toQuadraticMap B := fun x ↦ B x x` is the associated quadratic map of a bilinear form, paired with `QuadraticMap.polarBilin` in the other direction.",
       "provenance": "ai-agent1",
       "id": "e123d4d72803"
     },
@@ -381,6 +674,13 @@
         "section": "Generalization",
         "snippet": "A quadratic form q : M → R may be characterized in the following equivalent ways"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "QuadraticMap",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib's `QuadraticMap` adopts the `map_smul + exists_companion` characterization; equivalences with other ring-level characterizations of quadratic forms are not all packaged into lemmas.",
       "provenance": "ai-agent1",
       "id": "4da6a581e9fc"
     },
@@ -391,6 +691,13 @@
         "section": "Related concepts",
         "snippet": "Two elements v and w of V are called orthogonal if"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuadraticMap.IsOrtho",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`QuadraticMap.IsOrtho Q x y := Q (x + y) = Q x + Q y` defines orthogonality with respect to Q; the radical/kernel notion is `QuadraticMap.radical`.",
       "provenance": "ai-agent1",
       "id": "d4b2a8ca35d4"
     },
@@ -401,6 +708,13 @@
         "section": "Related concepts",
         "snippet": "Q is non-singular if the kernel of its associated bilinear form is"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "QuadraticMap.Nondegenerate",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Radical",
+        "match_kind": null
+      },
+      "note": "`Nondegenerate`, `Anisotropic`, and `PosDef` cover non-singular/isotropic/definite, but 'totally singular' (Q vanishing on a subspace) is not given a dedicated definition.",
       "provenance": "ai-agent1",
       "id": "f2c06dd1aa59"
     },
@@ -411,6 +725,13 @@
         "section": "Related concepts",
         "snippet": "The orthogonal group of a non-singular quadratic form Q is the group of the linear automorphisms"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.orthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": null
+      },
+      "note": "Mathlib has `Matrix.orthogonalGroup` for the standard quadratic form on `n → R`, but no general group `O(Q)` of isometries `QuadraticMap.IsometryEquiv Q Q` is bundled.",
       "provenance": "ai-agent1",
       "id": "078d7b0fc38c"
     },
@@ -421,6 +742,13 @@
         "section": "Related concepts",
         "snippet": "If a quadratic space ( A , Q ) has a product so that A is an algebra over a field"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `CompositionAlgebra` definition (algebra with a multiplicative quadratic form) is present in Mathlib.",
       "provenance": "ai-agent1",
       "id": "461f8e6f4ef2"
     },
@@ -431,6 +759,13 @@
         "section": "Equivalence of forms",
         "snippet": "Every quadratic form q in n variables over a field of characteristic not equal to 2 is equivalent to a diagonal form"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuadraticForm.equivalent_weightedSumSquares",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.IsometryEquiv",
+        "match_kind": "exact"
+      },
+      "note": "`equivalent_weightedSumSquares` exhibits every QuadraticForm over a field with `Invertible 2` as equivalent to a weighted sum of squares (a diagonal form).",
       "provenance": "ai-agent1",
       "id": "a016868b9dc6"
     },
@@ -441,6 +776,13 @@
         "section": "Geometric meaning",
         "snippet": "If all eigenvalues of A are non-zero, then the solution set is an ellipsoid or a hyperboloid"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not classify level sets of quadratic forms as ellipsoids or hyperboloids based on eigenvalue signs.",
       "provenance": "ai-agent1",
       "id": "0724aebe0e78"
     },
@@ -451,6 +793,13 @@
         "section": "Geometric meaning",
         "snippet": "If there exist one or more eigenvalues"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no Mathlib classification of degenerate quadratic level sets as paraboloids or cylinders.",
       "provenance": "ai-agent1",
       "id": "bd4edeb4ca52"
     },
@@ -461,6 +810,13 @@
         "section": "Integral quadratic forms",
         "snippet": "Quadratic forms over the ring of integers are called integral quadratic forms"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "QuadraticForm",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Basic",
+        "match_kind": null
+      },
+      "note": "`QuadraticForm ℤ M` is well-typed (since `QuadraticMap` works over any `CommSemiring`), but no dedicated `IntegralQuadraticForm` abbrev or theory is registered.",
       "provenance": "ai-agent1",
       "id": "ae0154ba2baa"
     },
@@ -471,6 +827,13 @@
         "section": "Integral quadratic forms",
         "snippet": "a quadratic form Q is integral with respect to Λ if and only if it is integer-valued on Λ"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of a real quadratic form being integral with respect to a lattice (taking integer values on lattice points) is present in Mathlib.",
       "provenance": "ai-agent1",
       "id": "307a94f38fd8"
     },
@@ -481,6 +844,13 @@
         "section": "Universal quadratic forms",
         "snippet": "An integral quadratic form whose image consists of all the positive integers is sometimes called universal"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of 'universal' integral quadratic form (image = all positive integers) appears in Mathlib.",
       "provenance": "ai-agent1",
       "id": "470c2c6afa56"
     },
@@ -491,6 +861,13 @@
         "section": "Universal quadratic forms",
         "snippet": "Lagrange's four-square theorem shows that"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.sum_four_squares",
+        "module": "Mathlib.NumberTheory.SumFourSquares",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.sum_four_squares : ∀ n, ∃ a b c d, a^2 + b^2 + c^2 + d^2 = n` is Lagrange's four-square theorem.",
       "provenance": "ai-agent1",
       "id": "0f5aae04cd24"
     },
@@ -501,6 +878,13 @@
         "section": "Universal quadratic forms",
         "snippet": "Ramanujan generalized this"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ramanujan's classification of 54 universal diagonal quaternary forms is not present in Mathlib.",
       "provenance": "ai-agent1",
       "id": "c61ea2df4ce4"
     },
@@ -511,6 +895,13 @@
         "section": "Universal quadratic forms",
         "snippet": "For example, {1, 2, 5, 5} has 15 as the exception"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific counterexample about the form {1,2,5,5} not representing 15 is not formalized in Mathlib.",
       "provenance": "ai-agent1",
       "id": "bf9050cb4a00"
     },
@@ -521,6 +912,13 @@
         "section": "Universal quadratic forms",
         "snippet": "the 15 and 290 theorems have completely characterized universal integral quadratic forms"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Conway–Schneeberger 15 theorem and the Bhargava–Hanke 290 theorem are not present in Mathlib.",
       "provenance": "ai-agent1",
       "id": "6e72008737e2"
     }

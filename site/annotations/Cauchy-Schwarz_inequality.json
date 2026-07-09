@@ -65,11 +65,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "sq_sum_div_le_sum_sq_div",
+        "decl": "Finset.sq_sum_div_le_sum_sq_div",
         "module": "Mathlib.Algebra.Order.BigOperators.Ring.Finset",
         "match_kind": "exact"
       },
-      "note": "`sq_sum_div_le_sum_sq_div` is documented as Sedrakyan's/Titu's/Engel's lemma: (∑fᵢ)²/∑gᵢ ≤ ∑ fᵢ²/gᵢ.",
+      "note": "`Finset.sq_sum_div_le_sum_sq_div` is documented as Sedrakyan's/Titu's/Engel's lemma: (∑fᵢ)²/∑gᵢ ≤ ∑ fᵢ²/gᵢ.",
       "provenance": "ai",
       "id": "cc0b8e71d715"
     },
@@ -82,11 +82,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "sum_mul_sq_le_sq_mul_sq",
+        "decl": "Finset.sum_mul_sq_le_sq_mul_sq",
         "module": "Mathlib.Algebra.Order.BigOperators.Ring.Finset",
         "match_kind": "generalization"
       },
-      "note": "The R² dot-product case is the two-term instance of the general finite-sum Cauchy–Schwarz `sum_mul_sq_le_sq_mul_sq`.",
+      "note": "The R² dot-product case is the two-term instance of the general finite-sum Cauchy–Schwarz `Finset.sum_mul_sq_le_sq_mul_sq`.",
       "provenance": "ai",
       "id": "e68fe1091fed"
     },
@@ -99,11 +99,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "sum_mul_sq_le_sq_mul_sq",
+        "decl": "Finset.sum_mul_sq_le_sq_mul_sq",
         "module": "Mathlib.Algebra.Order.BigOperators.Ring.Finset",
         "match_kind": "exact"
       },
-      "note": "`sum_mul_sq_le_sq_mul_sq` is exactly (∑fᵢgᵢ)² ≤ (∑fᵢ²)(∑gᵢ²), the Cauchy–Schwarz inequality for the dot product on Rⁿ.",
+      "note": "`Finset.sum_mul_sq_le_sq_mul_sq` is exactly (∑fᵢgᵢ)² ≤ (∑fᵢ²)(∑gᵢ²), the Cauchy–Schwarz inequality for the dot product on Rⁿ.",
       "provenance": "ai",
       "id": "ae08abc6b425"
     },
@@ -201,7 +201,7 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "isPosSemidef_covarianceBilinDual",
+        "decl": "ProbabilityTheory.isPosSemidef_covarianceBilinDual",
         "module": "Mathlib.Probability.Moments.CovarianceBilinDual",
         "match_kind": null
       },
@@ -218,7 +218,7 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "isTuranMaximal_iff_nonempty_iso_turanGraph",
+        "decl": "SimpleGraph.isTuranMaximal_iff_nonempty_iso_turanGraph",
         "module": "Mathlib.Combinatorics.SimpleGraph.Extremal.Turan",
         "match_kind": "generalization"
       },
@@ -252,11 +252,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "inner_le_Lp_mul_Lq",
+        "decl": "Real.inner_le_Lp_mul_Lq",
         "module": "Mathlib.Analysis.MeanInequalities",
         "match_kind": "exact"
       },
-      "note": "`inner_le_Lp_mul_Lq` is Hölder's inequality ∑fᵢgᵢ ≤ (∑fᵢ^p)^(1/p)(∑gᵢ^q)^(1/q), generalizing Cauchy–Schwarz.",
+      "note": "`Real.inner_le_Lp_mul_Lq` is Hölder's inequality ∑fᵢgᵢ ≤ (∑|fᵢ|^p)^(1/p)(∑|gᵢ|^q)^(1/q), generalizing Cauchy–Schwarz.",
       "provenance": "ai",
       "id": "0c5dd1753149"
     },
@@ -361,6 +361,108 @@
       "note": "`SimpleGraph.sum_degrees_eq_twice_card_edges` is the handshaking lemma: ∑ deg(v) = 2·|E|.",
       "provenance": "ai",
       "id": "25c8e9fe6df8"
+    },
+    {
+      "kind": "definition",
+      "label": "Inner product space",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "two vectors in an inner product space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`InnerProductSpace 𝕜 E` is the typeclass for a vector space E over 𝕜 = ℝ or ℂ equipped with a (sesqui-)linear positive-definite inner product.",
+      "provenance": "ai",
+      "id": "1e4b6866acfa"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cauchy–Schwarz: ⟪x,y⟫·⟪y,x⟫ ≤ ⟪x,x⟫·⟪y,y⟫",
+      "anchor": {
+        "section": "Statement of the inequality",
+        "snippet": "where [MATH] is the inner product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "inner_mul_inner_self_le",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`inner_mul_inner_self_le` gives the unnormed form ‖⟪x,y⟫‖² ≤ re⟪x,x⟫·re⟪y,y⟫.",
+      "provenance": "ai",
+      "id": "d47d08b153ab"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear dependence",
+      "anchor": {
+        "section": "Statement of the inequality",
+        "snippet": "are linearly dependent"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearIndependent",
+        "module": "Mathlib.LinearAlgebra.LinearIndependent.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Linear (in)dependence of two vectors is captured by `LinearIndependent`; equality in Cauchy–Schwarz characterises its negation for a pair.",
+      "provenance": "ai",
+      "id": "3d68d859e865"
+    },
+    {
+      "kind": "definition",
+      "label": "Variance of a random variable",
+      "anchor": {
+        "section": "Probability theory",
+        "snippet": "denotes variance"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.variance",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "exact"
+      },
+      "note": "`ProbabilityTheory.variance X μ = ∫ (X - 𝔼X)² ∂μ` is the variance used in the covariance inequality.",
+      "provenance": "ai",
+      "id": "97deb2c929c6"
+    },
+    {
+      "kind": "definition",
+      "label": "Covariance of two random variables",
+      "anchor": {
+        "section": "Probability theory",
+        "snippet": "denotes covariance"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.covariance",
+        "module": "Mathlib.Probability.Moments.Covariance",
+        "match_kind": "exact"
+      },
+      "note": "`ProbabilityTheory.covariance X Y μ = 𝔼[(X-𝔼X)(Y-𝔼Y)]` is the covariance appearing on the LHS of the covariance inequality.",
+      "provenance": "ai",
+      "id": "6dc538b60f9c"
+    },
+    {
+      "kind": "proposition",
+      "label": "Norm of a bounded linear operator on a Banach space",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "the definition of the norm of a linear operator on a Banach space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.opNorm",
+        "module": "Mathlib.Analysis.Normed.Operator.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ContinuousLinearMap.opNorm` defines ‖T‖ = sup ‖T x‖/‖x‖, of which Cauchy–Schwarz is the Hilbert-space case applied to T = ⟪·, y⟫.",
+      "provenance": "ai",
+      "id": "909548dceca5"
     }
   ]
 }
