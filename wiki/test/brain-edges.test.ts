@@ -207,6 +207,146 @@ async function withWikidata(
   }
 }
 
+const QUICK_ITEM = {
+  lmfdb_id: "group.abelian",
+  qid: CONCEPT,
+  decl: "CommGroup",
+  file: "Mathlib/Algebra/Group/Defs.lean",
+  note: "tentative LMFDB tag",
+};
+
+function postQuick(h: Harness, body: Record<string, unknown>, opts = {}): Promise<Response> {
+  return post(h.env, "/api/brain/quickstatements", body, opts);
+}
+
+async function lmfdbQueue(h: Harness): Promise<{ items: Array<Record<string, unknown>>; updated: string }> {
+  const raw = await h.renderCache.get("crossref:lmfdb:queue");
+  return raw ? JSON.parse(raw) as { items: Array<Record<string, unknown>>; updated: string } : { items: [], updated: "" };
+}
+
+describe("POST /api/brain/quickstatements", () => {
+  it("accepts pasted LMFDB TSV, creates Brain edges, and upserts the review queue", async () => {
+    const h = harness();
+    const text = [
+      "lmfdb_id\tqid\tdecl\tfile\tnote",
+      "group.abelian\tQ181296\tCommGroup\tMathlib/Algebra/Group/Defs.lean\tTentative LMFDB tag",
+    ].join("\n");
+    const res = await postQuick(h, { db: "lmfdb", text }, { user: "u-human" });
+    expect(res.status).toBe(200);
+    const j = await res.json() as { accepted: number; failed: number; rows: Array<Record<string, unknown>> };
+    expect(j).toMatchObject({ accepted: 1, failed: 0 });
+    expect(j.rows[0]).toMatchObject({ ok: true, id: "group.abelian", qid: CONCEPT, decl: "CommGroup" });
+
+    const rows = edgeRows(h);
+    expect(rows).toHaveLength(2);
+    expect(rows.find((r) => r.kind === "xref")).toMatchObject({
+      src: CONCEPT,
+      dst: XREF_DST,
+      added_by: "u-human",
+      actor_type: "human",
+    });
+    expect(rows.find((r) => r.kind === "formalizes")).toMatchObject({
+      src: CONCEPT,
+      dst: DECL,
+      added_by: "u-human",
+      actor_type: "human",
+    });
+
+    const queue = await lmfdbQueue(h);
+    expect(queue.updated).toBeTruthy();
+    expect(queue.items).toHaveLength(1);
+    expect(queue.items[0]).toMatchObject({
+      db: "lmfdb",
+      id: "group.abelian",
+      concept_qid: CONCEPT,
+      decl: "CommGroup",
+      file: "Mathlib/Algebra/Group/Defs.lean",
+      status: "brain",
+      source: "quickstatements-lmfdb",
+      priority_source: "community-bulk",
+      provenance_tier: "community-human",
+      actor_type: "human",
+      added_by: "u-human",
+    });
+  });
+
+  it("is idempotent on duplicate submissions", async () => {
+    const h = harness();
+    expect((await postQuick(h, { db: "lmfdb", items: [QUICK_ITEM] }, { user: "u-human" })).status).toBe(200);
+    const second = await postQuick(h, { db: "lmfdb", items: [QUICK_ITEM] }, { user: "u-human" });
+    expect(second.status).toBe(200);
+    const j = await second.json() as { rows: Array<Record<string, unknown>> };
+    expect(j.rows[0]).toMatchObject({ xref_duplicate: true, formalizes_duplicate: true });
+    expect(edgeRows(h)).toHaveLength(2);
+    expect((await lmfdbQueue(h)).items).toHaveLength(1);
+  });
+
+  it("also accepts direct LMFDB-to-Mathlib rows without a Wikidata QID", async () => {
+    const h = harness();
+    const res = await postQuick(
+      h,
+      { db: "lmfdb", items: [{ lmfdb_id: "group.abelian", decl: "CommGroup", file: "Mathlib/Algebra/Group/Defs.lean" }] },
+      { user: "u-human" },
+    );
+    expect(res.status).toBe(200);
+    const rows = edgeRows(h);
+    expect(rows).toHaveLength(1);
+    expect(rows[0]).toMatchObject({
+      src: DECL,
+      dst: XREF_DST,
+      kind: "xref",
+      added_by: "u-human",
+      actor_type: "human",
+    });
+    const queue = await lmfdbQueue(h);
+    expect(queue.items).toHaveLength(1);
+    expect(queue.items[0]).toMatchObject({
+      id: "group.abelian",
+      decl: "CommGroup",
+      brain_node: DECL,
+      decl_node: DECL,
+      status: "brain",
+    });
+    expect(queue.items[0].concept_qid).toBeUndefined();
+  });
+
+  it("requires bearer callers to declare human vs AI provenance", async () => {
+    const h = harness();
+    const noType = await postQuick(h, { db: "lmfdb", items: [QUICK_ITEM] }, { bearer: PIPELINE_TOKEN, origin: null });
+    expect(noType.status).toBe(400);
+    expect(edgeRows(h)).toHaveLength(0);
+
+    const asAi = await postQuick(
+      h,
+      { db: "lmfdb", actor_type: "ai", items: [QUICK_ITEM] },
+      { bearer: PIPELINE_TOKEN, origin: null },
+    );
+    expect(asAi.status).toBe(200);
+    expect(edgeRows(h).every((r) => r.added_by === "pipeline" && r.actor_type === "ai")).toBe(true);
+    expect((await lmfdbQueue(h)).items[0]).toMatchObject({
+      actor_type: "ai",
+      added_by: "pipeline",
+      provenance_tier: "community-ai",
+    });
+  });
+
+  it("keeps good rows when another row is invalid", async () => {
+    const h = harness();
+    const res = await postQuick(
+      h,
+      { db: "lmfdb", items: [QUICK_ITEM, { ...QUICK_ITEM, lmfdb_id: "bad id with spaces" }] },
+      { user: "u-human" },
+    );
+    expect(res.status).toBe(200);
+    const j = await res.json() as { accepted: number; failed: number; rows: Array<Record<string, unknown>> };
+    expect(j.accepted).toBe(1);
+    expect(j.failed).toBe(1);
+    expect(j.rows.some((r) => r.ok === false && String(r.error).includes("LMFDB"))).toBe(true);
+    expect(edgeRows(h)).toHaveLength(2);
+    expect((await lmfdbQueue(h)).items).toHaveLength(1);
+  });
+});
+
 describe("POST /api/brain/edge — new Wikidata concept nodes", () => {
   const QID = "Q5530428";
   const WD = { [QID]: { labels: { en: { value: "Gelfand–Naimark–Segal construction" } }, descriptions: { en: { value: "a construction" } } } };

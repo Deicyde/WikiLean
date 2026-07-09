@@ -681,8 +681,10 @@ export function wrapAnnotations(bodyHtml: string, annotations: Annotation[]): Wr
     const [start, end] = groupRange.get(key)!;
     const indices = members.map((m) => m[0]);
     const wrapper: WrapperTag = members.some((m) => m[1] === "div") ? "div" : "span";
+    // Agent-1-era extracted annotations can lack status. Keep parity with
+    // render.py by treating them as the conservative lowest-priority bucket.
     const statuses = indices.map((i) => annotations[i].status);
-    const rep = [...statuses].sort((x, y) => (STATUS_PRIORITY[x] ?? 99) - (STATUS_PRIORITY[y] ?? 99))[0];
+    const rep = [...statuses].sort((x, y) => (STATUS_PRIORITY[x] ?? 99) - (STATUS_PRIORITY[y] ?? 99))[0] || "not_formalized";
     let decl: string | null = null;
     for (const i of indices) {
       const a = annotations[i];
