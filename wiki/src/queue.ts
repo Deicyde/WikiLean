@@ -163,6 +163,10 @@ function queuePageHtml(blob: QueueBlob, spec: CrossRefSpec): string {
         section("Brain-suggested formalizes edges", brain) +
         section("Unreviewed candidates", unreviewed);
   const when = blob.updated ? `updated ${htmlEscape(blob.updated)}` : "";
+  const tools =
+    spec.db === "lmfdb"
+      ? `<p class="qtools"><a href="/quickstatements">Bulk add LMFDB tags</a></p>`
+      : "";
   return `<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>WikiLean · ${htmlEscape(spec.label)} tag queue</title>
@@ -171,6 +175,7 @@ function queuePageHtml(blob: QueueBlob, spec: CrossRefSpec): string {
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);margin:0;padding:2rem 1rem;line-height:1.5}
 main{max-width:820px;margin:0 auto}
 h1{font-size:1.5rem;margin:0 0 .2rem}.sub{color:var(--muted);margin:0 0 1.5rem;font-size:.9rem}
+.qtools{margin:-.8rem 0 1.4rem}.qtools a{display:inline-flex;border:1px solid var(--rule2);border-radius:8px;padding:.35rem .6rem;background:rgba(124,179,255,.1);text-decoration:none;font-size:.88rem}.qtools a:hover{text-decoration:none;background:rgba(124,179,255,.18)}
 h2{font-size:1rem;margin:1.6rem 0 .6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
 .ct{background:rgba(124,179,255,.14);color:#c8ddff;border-radius:10px;padding:0 .5rem;font-size:.8rem}
 .qitem{background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:.7rem .9rem;margin:.5rem 0}
@@ -196,6 +201,7 @@ a:hover{color:var(--accent2)}
 </style></head><body><main>
 <h1>${htmlEscape(spec.label)} tag queue</h1>
 <p class="sub">Pending <code>@[${htmlEscape(spec.attr)}]</code> tags for the next Mathlib batch. ${when}</p>
+${tools}
 ${body}
 </main></body></html>`;
 }

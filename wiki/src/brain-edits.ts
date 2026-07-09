@@ -11,9 +11,12 @@ import type { Context, Hono } from "hono";
 import { drizzle } from "drizzle-orm/d1";
 import { and, eq, or, inArray } from "drizzle-orm";
 import type { Env } from "./env.js";
-import { getUser } from "./auth.js";
+import { getUser, type AuthUser } from "./auth.js";
 import { brainEdges, brainNodes } from "./db/schema.js";
 import { brainNodeExists, resolveBrainEntry, BRAIN_ID_RE } from "./brain.js";
+import { crossRefSpec } from "./crossref.js";
+import { htmlEscape } from "./engine/html.js";
+import type { QueueBlob, QueueItem } from "./queue.js";
 
 const QID_RE = /^Q[1-9][0-9]{0,11}$/;
 
@@ -30,11 +33,16 @@ const XREF_DBS = new Set([
 ]);
 
 const MAX_NOTE = 2000;
+const MAX_QUICK_ROWS = 100;
+const MAX_DECL = 240;
+const MAX_FILE = 300;
+const MAX_LABEL = 200;
 // dst upper bound: a real node id is already ≤400 (BRAIN_ID_RE), but the xref
 // branch's `xref:<db>:<value>` value is otherwise unbounded — cap the whole dst
 // so an xref value can't store an oversized row (external-DB keys are short).
 const MAX_DST = 512;
 const EDGE_ID_RE = /^[0-9a-f]{12}$/;
+type ActorType = "human" | "ai";
 
 function freshEdgeId(): string {
   const b = new Uint8Array(6);
@@ -140,7 +148,553 @@ async function resolveNodeEndpoint(c: Context<{ Bindings: Env }>, id: string): P
   return { error: "endpoint is not a known brain node" };
 }
 
+function actorTypeFor(bearer: boolean, body: Record<string, unknown>): ActorType | string {
+  if (!bearer) return "human";
+  const declared = str(body.actor_type);
+  if (declared !== "human" && declared !== "ai") return "API calls must set actor_type to 'human' or 'ai'";
+  return declared;
+}
+
+async function insertMintedNodes(
+  c: Context<{ Bindings: Env }>,
+  user: AuthUser,
+  actorType: ActorType,
+  mints: Array<{ id: string; label: string; description: string }>,
+): Promise<void> {
+  if (!mints.length) return;
+  const db = drizzle(c.env.DB);
+  const nowMs = Date.now();
+  const seen = new Set<string>();
+  for (const m of mints) {
+    if (seen.has(m.id)) continue;
+    seen.add(m.id);
+    await db
+      .insert(brainNodes)
+      .values({
+        id: m.id,
+        label: m.label,
+        description: m.description || null,
+        nodeType: "concept",
+        addedBy: user.id,
+        actorType,
+        status: "live",
+        createdAt: nowMs,
+        version: 1,
+      })
+      .onConflictDoNothing();
+  }
+}
+
+async function insertCommunityEdge(
+  c: Context<{ Bindings: Env }>,
+  user: AuthUser,
+  actorType: ActorType,
+  src: string,
+  dst: string,
+  kind: string,
+  evidence: Record<string, unknown>,
+): Promise<{ id: string; duplicate: boolean }> {
+  const db = drizzle(c.env.DB);
+  const dup = (
+    await db
+      .select({ id: brainEdges.id })
+      .from(brainEdges)
+      .where(
+        and(
+          eq(brainEdges.src, src),
+          eq(brainEdges.dst, dst),
+          eq(brainEdges.kind, kind),
+          eq(brainEdges.status, "live"),
+        ),
+      )
+      .limit(1)
+  )[0];
+  if (dup) return { id: dup.id, duplicate: true };
+
+  const id = freshEdgeId();
+  try {
+    await db.insert(brainEdges).values({
+      id,
+      src,
+      dst,
+      kind,
+      evidence: JSON.stringify(evidence),
+      addedBy: user.id,
+      actorType,
+      status: "live",
+      createdAt: Date.now(),
+      version: 1,
+    });
+    return { id, duplicate: false };
+  } catch {
+    const ex = (
+      await db
+        .select({ id: brainEdges.id })
+        .from(brainEdges)
+        .where(
+          and(
+            eq(brainEdges.src, src),
+            eq(brainEdges.dst, dst),
+            eq(brainEdges.kind, kind),
+            eq(brainEdges.status, "live"),
+          ),
+        )
+        .limit(1)
+    )[0];
+    if (ex) return { id: ex.id, duplicate: true };
+    throw new Error("could not save edge");
+  }
+}
+
+interface QuickInputRow {
+  lmfdb_id?: unknown;
+  lmfdb?: unknown;
+  lmfdb_knowl?: unknown;
+  knowl?: unknown;
+  id?: unknown;
+  qid?: unknown;
+  wikidata?: unknown;
+  wikidata_qid?: unknown;
+  concept_qid?: unknown;
+  decl?: unknown;
+  mathlib?: unknown;
+  mathlib_decl?: unknown;
+  file?: unknown;
+  mathlib_file?: unknown;
+  module?: unknown;
+  mathlib_module?: unknown;
+  label?: unknown;
+  note?: unknown;
+  notes?: unknown;
+  comment?: unknown;
+  description?: unknown;
+  confidence?: unknown;
+  [key: string]: unknown;
+}
+
+interface NormalizedQuickRow {
+  line: number;
+  lmfdbId: string;
+  qid?: string;
+  decl: string;
+  declNode: string;
+  file?: string;
+  label?: string;
+  note: string;
+  confidence?: string;
+}
+
+interface QuickRowResult {
+  ok: boolean;
+  line: number;
+  id?: string;
+  qid?: string;
+  decl?: string;
+  file?: string;
+  label?: string;
+  xref_edge_id?: string;
+  formalizes_edge_id?: string;
+  xref_duplicate?: boolean;
+  formalizes_duplicate?: boolean;
+  error?: string;
+}
+
+function bounded(v: unknown, max: number): string {
+  if (typeof v !== "string") return "";
+  return v.trim().slice(0, max);
+}
+
+function firstText(row: QuickInputRow, keys: string[], max: number): string {
+  for (const k of keys) {
+    const s = bounded(row[k], max);
+    if (s) return s;
+  }
+  return "";
+}
+
+function normalizeHeader(s: string): string {
+  return s.trim().toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
+}
+
+function splitDelimitedLine(line: string, delim: string): string[] {
+  const out: string[] = [];
+  let cur = "";
+  let quoted = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') {
+      if (quoted && line[i + 1] === '"') {
+        cur += '"';
+        i++;
+      } else {
+        quoted = !quoted;
+      }
+    } else if (ch === delim && !quoted) {
+      out.push(cur.trim());
+      cur = "";
+    } else {
+      cur += ch;
+    }
+  }
+  out.push(cur.trim());
+  return out;
+}
+
+function parseQuickText(text: string): QuickInputRow[] {
+  const lines = text
+    .replace(/\r/g, "")
+    .split("\n")
+    .map((l) => l.trimEnd())
+    .filter((l) => l.trim() && !l.trim().startsWith("#"));
+  if (!lines.length) return [];
+  const delim = lines[0].includes("\t") ? "\t" : ",";
+  const rawHead = splitDelimitedLine(lines[0], delim).map(normalizeHeader);
+  const known = new Set([
+    "lmfdb_id", "lmfdb", "lmfdb_knowl", "knowl", "id", "qid", "wikidata", "wikidata_qid",
+    "concept_qid", "decl", "mathlib", "mathlib_decl", "file", "mathlib_file", "module",
+    "mathlib_module", "label", "note", "notes", "comment", "description", "confidence",
+  ]);
+  const hasHeader = rawHead.some((h) => known.has(h));
+  const headers = hasHeader ? rawHead : ["lmfdb_id", "qid", "decl", "file", "note"];
+  const rows: QuickInputRow[] = [];
+  const dataLines = hasHeader ? lines.slice(1) : lines;
+  for (let i = 0; i < dataLines.length; i++) {
+    const cells = splitDelimitedLine(dataLines[i], delim);
+    const row: QuickInputRow = { line: i + (hasHeader ? 2 : 1) };
+    for (let j = 0; j < headers.length; j++) row[headers[j] || `col_${j}`] = cells[j] || "";
+    rows.push(row);
+  }
+  return rows;
+}
+
+function moduleToFile(module: string): string {
+  const m = module.trim();
+  if (m.startsWith("Mathlib.")) return m.replace(/\./g, "/") + ".lean";
+  if (m.startsWith("Mathlib/") && m.endsWith(".lean")) return m;
+  return "";
+}
+
+function normalizeFile(row: QuickInputRow): string {
+  const file = firstText(row, ["file", "mathlib_file"], MAX_FILE);
+  if (file) return moduleToFile(file) || (/^Mathlib\/[A-Za-z0-9_./-]+\.lean$/.test(file) ? file : "");
+  const mod = firstText(row, ["module", "mathlib_module"], MAX_FILE);
+  return mod ? moduleToFile(mod) : "";
+}
+
+function normalizeDecl(raw: string): string {
+  let decl = raw.trim().replace(/^`+|`+$/g, "");
+  if (decl.startsWith("decl:Mathlib:")) decl = decl.slice("decl:Mathlib:".length);
+  if (!decl || decl.length > MAX_DECL || /[\s\p{C}/:]/u.test(decl)) return "";
+  return decl;
+}
+
+function normalizeQid(raw: string): string {
+  const s = raw.trim();
+  return /^q[1-9][0-9]{0,11}$/i.test(s) ? "Q" + s.slice(1) : "";
+}
+
+function normalizeQuickRow(row: QuickInputRow, fallbackLine: number): NormalizedQuickRow | { error: string; line: number } {
+  const line = typeof row.line === "number" ? row.line : fallbackLine;
+  const spec = crossRefSpec("lmfdb")!;
+  const lmfdbId = firstText(row, ["lmfdb_id", "lmfdb", "lmfdb_knowl", "knowl", "id"], 180).toLowerCase();
+  if (!lmfdbId || !spec.idPattern.test(lmfdbId)) return { line, error: "bad LMFDB knowl id" };
+  const qidRaw = firstText(row, ["qid", "wikidata_qid", "wikidata", "concept_qid"], 40);
+  const qid = qidRaw ? normalizeQid(qidRaw) : "";
+  if (qidRaw && (!qid || !QID_RE.test(qid))) return { line, error: "bad Wikidata QID" };
+  const decl = normalizeDecl(firstText(row, ["decl", "mathlib_decl", "mathlib"], MAX_DECL));
+  if (!decl) return { line, error: "bad Mathlib declaration name" };
+  const declNode = `decl:Mathlib:${decl}`;
+  const file = normalizeFile(row) || undefined;
+  const label = firstText(row, ["label"], MAX_LABEL) || undefined;
+  const note = firstText(row, ["note", "notes", "comment", "description"], MAX_NOTE);
+  const confidence = firstText(row, ["confidence"], 40) || undefined;
+  if ((`xref:lmfdb_knowl:${lmfdbId}`).length > MAX_DST) return { line, error: "LMFDB knowl id is too long" };
+  if (!BRAIN_ID_RE.test(declNode)) return { line, error: "bad Mathlib declaration node" };
+  return { line, lmfdbId, qid: qid || undefined, decl, declNode, file, label, note, confidence };
+}
+
+function quickRowsFromBody(body: Record<string, unknown>): QuickInputRow[] {
+  if (Array.isArray(body.items)) return body.items.filter((x) => typeof x === "object" && x !== null) as QuickInputRow[];
+  const text = bounded(body.text ?? body.tsv ?? body.csv, 200000);
+  return text ? parseQuickText(text) : [];
+}
+
+function nodeLabelFromEntry(entry: object | undefined, fallback: string): string {
+  const n = (entry as { node?: { label?: unknown } } | undefined)?.node;
+  return typeof n?.label === "string" && n.label ? n.label : fallback;
+}
+
+async function fileForDecl(c: Context<{ Bindings: Env }>, declNode: string, supplied?: string): Promise<string> {
+  if (supplied) return supplied;
+  const resolved = await resolveBrainEntry(c, declNode);
+  const node = (resolved?.entry as { node?: { module?: unknown } } | undefined)?.node;
+  return typeof node?.module === "string" ? moduleToFile(node.module) : "";
+}
+
+async function processQuickLmfdbRow(
+  c: Context<{ Bindings: Env }>,
+  user: AuthUser,
+  actorType: ActorType,
+  row: QuickInputRow,
+  fallbackLine: number,
+): Promise<{ result: QuickRowResult; item?: QueueItem }> {
+  const normalized = normalizeQuickRow(row, fallbackLine);
+  if ("error" in normalized) return { result: { ok: false, line: normalized.line, error: normalized.error } };
+
+  let qidRes: EndpointResult | null = null;
+  if (normalized.qid) {
+    qidRes = await resolveNodeEndpoint(c, normalized.qid);
+    if ("error" in qidRes) {
+      return { result: { ok: false, line: normalized.line, id: normalized.lmfdbId, qid: normalized.qid, decl: normalized.decl, error: "qid: " + qidRes.error } };
+    }
+  }
+  const declResolved = await resolveBrainEntry(c, normalized.declNode);
+  if (!declResolved) {
+    return { result: { ok: false, line: normalized.line, id: normalized.lmfdbId, qid: normalized.qid, decl: normalized.decl, error: "Mathlib declaration is not in the Brain" } };
+  }
+  const file = await fileForDecl(c, normalized.declNode, normalized.file);
+  if (!file) {
+    return { result: { ok: false, line: normalized.line, id: normalized.lmfdbId, qid: normalized.qid, decl: normalized.decl, error: "Mathlib file is required when the Brain node has no module" } };
+  }
+
+  const label = normalized.label || (
+    normalized.qid && qidRes
+      ? (qidRes.node ? nodeLabelFromEntry((await resolveBrainEntry(c, normalized.qid))?.entry, normalized.qid) : qidRes.mint.label)
+      : normalized.lmfdbId
+  );
+  const mints = qidRes && !qidRes.node ? [qidRes.mint] : [];
+  await insertMintedNodes(c, user, actorType, mints);
+
+  const source = "quickstatements-lmfdb";
+  const submittedAt = new Date().toISOString();
+  const xrefDst = `xref:lmfdb_knowl:${normalized.lmfdbId}`;
+  const xrefSrc = normalized.qid || normalized.declNode;
+  const xref = await insertCommunityEdge(c, user, actorType, xrefSrc, xrefDst, "xref", {
+    note: normalized.note,
+    db: "lmfdb_knowl",
+    value: normalized.lmfdbId,
+    qid: normalized.qid,
+    mathlib_decl: normalized.decl,
+    source,
+    submitted_at: submittedAt,
+  });
+  const formalizes = normalized.qid
+    ? await insertCommunityEdge(c, user, actorType, normalized.qid, normalized.declNode, "formalizes", {
+        note: normalized.note,
+        source,
+        lmfdb_id: normalized.lmfdbId,
+        file,
+        submitted_at: submittedAt,
+      })
+    : null;
+
+  const item: QueueItem = {
+    db: "lmfdb",
+    id: normalized.lmfdbId,
+    concept_qid: normalized.qid,
+    label,
+    decl: normalized.decl,
+    file,
+    status: "brain",
+    source,
+    priority_source: "community-bulk",
+    provenance_tier: actorType === "human" ? "community-human" : "community-ai",
+    brain_node: normalized.qid || normalized.declNode,
+    decl_node: normalized.declNode,
+    actor_type: actorType,
+    added_by: user.id,
+    brain_edge_id: formalizes?.id || xref.id,
+    confidence: normalized.confidence || "medium",
+    review_reason: normalized.qid
+      ? "LMFDB bulk submission joined to a submitted Mathlib formalizes edge"
+      : "LMFDB bulk submission linked directly to a Mathlib declaration",
+    added: submittedAt,
+  };
+  return {
+    item,
+    result: {
+      ok: true,
+      line: normalized.line,
+      id: normalized.lmfdbId,
+      qid: normalized.qid,
+      decl: normalized.decl,
+      file,
+      label,
+      xref_edge_id: xref.id,
+      formalizes_edge_id: formalizes?.id,
+      xref_duplicate: xref.duplicate,
+      formalizes_duplicate: formalizes?.duplicate,
+    },
+  };
+}
+
+function queueItemKey(item: QueueItem): string {
+  return JSON.stringify([item.db || "lmfdb", item.id || item.qid || "", item.decl || ""]);
+}
+
+async function upsertQuickQueue(env: Env, items: QueueItem[]): Promise<number> {
+  const spec = crossRefSpec("lmfdb")!;
+  let existing: QueueBlob = { db: spec.db, updated: "", items: [] };
+  const raw = await env.RENDER_CACHE.get(spec.queueKey);
+  if (raw) {
+    try {
+      const parsed = JSON.parse(raw) as QueueBlob;
+      existing = { db: spec.db, updated: parsed.updated || "", items: Array.isArray(parsed.items) ? parsed.items : [] };
+    } catch {
+      existing = { db: spec.db, updated: "", items: [] };
+    }
+  }
+  const out = existing.items.slice();
+  const index = new Map<string, number>();
+  out.forEach((item, i) => index.set(queueItemKey(item), i));
+  for (const item of items) {
+    const key = queueItemKey(item);
+    const at = index.get(key);
+    if (at === undefined) {
+      index.set(key, out.length);
+      out.push(item);
+    } else {
+      const prev = out[at];
+      out[at] = {
+        ...prev,
+        ...item,
+        notes: prev.notes,
+        added: prev.added || item.added,
+      };
+    }
+  }
+  const blob: QueueBlob = { db: spec.db, updated: new Date().toISOString(), items: out };
+  await env.RENDER_CACHE.put(spec.queueKey, JSON.stringify(blob));
+  return out.length;
+}
+
+function quickStatementsPageHtml(): string {
+  const sample = "lmfdb_id\tqid\tdecl\tfile\tnote\n" +
+    "group.abelian\tQ181296\tCommGroup\tMathlib/Algebra/Group/Defs.lean\tTentative LMFDB match";
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WikiLean · LMFDB bulk tags</title>
+<style>
+:root{color-scheme:dark;--bg:#07111f;--panel:#0d1b2e;--panel2:#10233d;--line:#203653;--line2:#315174;--ink:#eaf2ff;--muted:#9bb1cc;--accent:#67b7ff;--good:#91d18b;--bad:#ff9b9b;--warn:#f2c86d}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;line-height:1.5}
+main{max-width:1040px;margin:0 auto;padding:28px 16px 40px}
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:18px}
+h1{margin:0;font-size:1.45rem;font-weight:680}.sub{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+.links{display:flex;gap:10px;flex-wrap:wrap;font-size:.9rem}.links a{border:1px solid var(--line);border-radius:8px;padding:6px 10px;background:rgba(255,255,255,.03)}
+.grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);gap:16px}@media(max-width:760px){.grid{grid-template-columns:1fr}header{align-items:flex-start;flex-direction:column}}
+section{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px}
+label{display:block;color:var(--muted);font-size:.8rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:7px}
+textarea{width:100%;min-height:360px;resize:vertical;border:1px solid var(--line2);border-radius:8px;background:#08172a;color:var(--ink);padding:12px;font:13px/1.45 "SF Mono",Menlo,Consolas,monospace}
+textarea:focus,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.controls{display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap}
+button{border:1px solid #4694d8;border-radius:8px;background:#1d6fb8;color:white;font:inherit;font-weight:650;padding:9px 13px;cursor:pointer}
+button:hover{background:#2380d2}button:disabled{opacity:.55;cursor:wait}
+.hint{color:var(--muted);font-size:.86rem}.hint code{color:#d7e8ff}
+.summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:12px}
+.metric{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px}.metric b{display:block;font-size:1.35rem}.metric span{color:var(--muted);font-size:.8rem}
+.results{display:flex;flex-direction:column;gap:8px}.row{border:1px solid var(--line);border-radius:8px;background:rgba(255,255,255,.025);padding:9px 10px;font-size:.9rem}
+.row.ok{border-left:3px solid var(--good)}.row.bad{border-left:3px solid var(--bad)}.row .meta{color:var(--muted);font-size:.8rem;margin-top:2px}
+.status{min-height:1.4em;color:var(--muted);font-size:.9rem}
+code{font-family:"SF Mono",Menlo,Consolas,monospace}
+</style></head><body><main>
+<header><div><h1>LMFDB bulk tags</h1><p class="sub">Paste LMFDB knowl, optional Wikidata QID, and Mathlib declaration rows.</p></div>
+<nav class="links"><a href="/queue/lmfdb">LMFDB queue</a><a href="/brain">Brain</a></nav></header>
+<div class="grid">
+<section><label for="qs-rows">Rows</label><textarea id="qs-rows" spellcheck="false">${htmlEscape(sample)}</textarea>
+<div class="controls"><button id="submit" type="button">Submit rows</button><span id="status" class="status"></span></div>
+<p class="hint">TSV columns: <code>lmfdb_id</code>, optional <code>qid</code>, <code>decl</code>, <code>file</code>, <code>note</code>. Up to ${MAX_QUICK_ROWS} rows per submit.</p></section>
+<section><div class="summary"><div class="metric"><b id="accepted">0</b><span>accepted</span></div><div class="metric"><b id="failed">0</b><span>failed</span></div><div class="metric"><b id="queued">0</b><span>queue size</span></div></div>
+<div id="results" class="results"></div></section>
+</div></main>
+<script>
+const rows = document.getElementById("qs-rows");
+const btn = document.getElementById("submit");
+const statusEl = document.getElementById("status");
+const results = document.getElementById("results");
+const setText = (id, value) => { document.getElementById(id).textContent = String(value); };
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, ch => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[ch]));
+btn.addEventListener("click", async () => {
+  btn.disabled = true; statusEl.textContent = "Submitting...";
+  try {
+    const res = await fetch("/api/brain/quickstatements", { method:"POST", headers:{ "Content-Type":"application/json" }, body:JSON.stringify({ db:"lmfdb", text: rows.value }) });
+    const json = await res.json().catch(() => ({}));
+    if (res.status === 401) { statusEl.innerHTML = '<a href="/login?returnTo=/quickstatements">Sign in to submit</a>'; return; }
+    setText("accepted", json.accepted || 0); setText("failed", json.failed || 0); setText("queued", json.queue_count || 0);
+    results.innerHTML = (json.rows || []).map((r) => '<div class="row '+(r.ok?'ok':'bad')+'"><div>'+(r.ok?'accepted':'failed')+' line '+esc(r.line)+': <code>'+esc(r.id || r.qid || '')+'</code> '+(r.decl ? '&rarr; <code>'+esc(r.decl)+'</code>' : '')+'</div><div class="meta">'+esc(r.error || [r.qid, r.file].filter(Boolean).join(" / "))+'</div></div>').join("");
+    statusEl.textContent = json.ok ? "Done" : (json.error || "No rows accepted");
+  } catch (e) {
+    statusEl.textContent = "Submit failed";
+  } finally {
+    btn.disabled = false;
+  }
+});
+</script></body></html>`;
+}
+
 export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
+  app.get("/quickstatements", (c) => c.html(quickStatementsPageHtml(), 200, { "Cache-Control": "no-store" }));
+  app.get("/brain/quickstatements", (c) => c.html(quickStatementsPageHtml(), 200, { "Cache-Control": "no-store" }));
+
+  // POST /api/brain/quickstatements — bulk-add LMFDB knowl <-> QID <-> Mathlib
+  // rows, then upsert the corresponding review queue items.
+  app.post("/api/brain/quickstatements", async (c) => {
+    const bad = checkOrigin(c);
+    if (bad) return bad;
+    const user = await getUser(c);
+    if (!user) return c.json({ ok: false, error: "login required" }, 401);
+    const bearer = isBearer(user.role);
+    const rl = bearer
+      ? await c.env.BRAIN_API_LIMITER.limit({ key: `brainapi:${user.id}` })
+      : await c.env.EDIT_LIMITER.limit({ key: `edit:${user.id}` });
+    if (!rl.success) return c.json({ ok: false, error: "rate limited" }, 429);
+
+    let body: Record<string, unknown>;
+    try {
+      body = (await c.req.json()) as Record<string, unknown>;
+    } catch {
+      return c.json({ ok: false, error: "bad JSON body" }, 400);
+    }
+    const actor = actorTypeFor(bearer, body);
+    if (actor !== "human" && actor !== "ai") return c.json({ ok: false, error: actor }, 400);
+    const dbName = str(body.db) || "lmfdb";
+    if (dbName !== "lmfdb") {
+      return c.json({ ok: false, error: "only db='lmfdb' bulk submissions are supported right now" }, 400);
+    }
+    const rows = quickRowsFromBody(body);
+    if (!rows.length) return c.json({ ok: false, error: "no rows supplied", accepted: 0, failed: 0, rows: [] }, 400);
+    if (rows.length > MAX_QUICK_ROWS) {
+      return c.json({ ok: false, error: `too many rows (max ${MAX_QUICK_ROWS})`, accepted: 0, failed: rows.length, rows: [] }, 400);
+    }
+
+    const results: QuickRowResult[] = [];
+    const items: QueueItem[] = [];
+    for (let i = 0; i < rows.length; i++) {
+      try {
+        const out = await processQuickLmfdbRow(c, user, actor, rows[i], i + 1);
+        results.push(out.result);
+        if (out.item) items.push(out.item);
+      } catch {
+        results.push({ ok: false, line: i + 1, error: "could not save row" });
+      }
+    }
+
+    let queueCount = 0;
+    if (items.length) {
+      try {
+        queueCount = await upsertQuickQueue(c.env, items);
+      } catch {
+        return c.json({ ok: false, error: "accepted rows but could not update the queue", accepted: items.length, failed: results.length - items.length, rows: results }, 500);
+      }
+    }
+    const accepted = items.length;
+    const failed = results.length - accepted;
+    return c.json(
+      { ok: accepted > 0, db: "lmfdb", accepted, failed, queue_count: queueCount, rows: results },
+      accepted > 0 ? 200 : 400,
+    );
+  });
+
   // POST /api/brain/edge — add a connection. Scriptable (bearer) or browser (OAuth).
   app.post("/api/brain/edge", async (c) => {
     const bad = checkOrigin(c);

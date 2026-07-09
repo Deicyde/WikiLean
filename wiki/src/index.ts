@@ -98,6 +98,8 @@ const RESERVED = new Set([
   "proposals",
   "atlas",
   "brain",
+  "brain/quickstatements",
+  "quickstatements",
   "articles",
 ]);
 
