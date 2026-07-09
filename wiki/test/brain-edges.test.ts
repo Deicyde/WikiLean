@@ -238,9 +238,15 @@ describe("POST /api/brain/quickstatements", () => {
     expect(j.rows[0]).toMatchObject({ ok: true, id: "group.abelian", qid: CONCEPT, decl: "CommGroup" });
 
     const rows = edgeRows(h);
-    expect(rows).toHaveLength(2);
-    expect(rows.find((r) => r.kind === "xref")).toMatchObject({
+    expect(rows).toHaveLength(3);
+    expect(rows.find((r) => r.kind === "xref" && r.src === CONCEPT)).toMatchObject({
       src: CONCEPT,
+      dst: XREF_DST,
+      added_by: "u-human",
+      actor_type: "human",
+    });
+    expect(rows.find((r) => r.kind === "xref" && r.src === DECL)).toMatchObject({
+      src: DECL,
       dst: XREF_DST,
       added_by: "u-human",
       actor_type: "human",
@@ -276,8 +282,8 @@ describe("POST /api/brain/quickstatements", () => {
     const second = await postQuick(h, { db: "lmfdb", items: [QUICK_ITEM] }, { user: "u-human" });
     expect(second.status).toBe(200);
     const j = await second.json() as { rows: Array<Record<string, unknown>> };
-    expect(j.rows[0]).toMatchObject({ xref_duplicate: true, formalizes_duplicate: true });
-    expect(edgeRows(h)).toHaveLength(2);
+    expect(j.rows[0]).toMatchObject({ xref_duplicate: true, direct_xref_duplicate: true, formalizes_duplicate: true });
+    expect(edgeRows(h)).toHaveLength(3);
     expect((await lmfdbQueue(h)).items).toHaveLength(1);
   });
 
@@ -330,6 +336,18 @@ describe("POST /api/brain/quickstatements", () => {
     });
   });
 
+  it("lets a logged-in browser user mark a bulk submission as AI-generated", async () => {
+    const h = harness();
+    const res = await postQuick(h, { db: "lmfdb", actor_type: "ai", items: [QUICK_ITEM] }, { user: "u-human" });
+    expect(res.status).toBe(200);
+    expect(edgeRows(h).every((r) => r.added_by === "u-human" && r.actor_type === "ai")).toBe(true);
+    expect((await lmfdbQueue(h)).items[0]).toMatchObject({
+      actor_type: "ai",
+      added_by: "u-human",
+      provenance_tier: "community-ai",
+    });
+  });
+
   it("keeps good rows when another row is invalid", async () => {
     const h = harness();
     const res = await postQuick(
@@ -342,7 +360,7 @@ describe("POST /api/brain/quickstatements", () => {
     expect(j.accepted).toBe(1);
     expect(j.failed).toBe(1);
     expect(j.rows.some((r) => r.ok === false && String(r.error).includes("LMFDB"))).toBe(true);
-    expect(edgeRows(h)).toHaveLength(2);
+    expect(edgeRows(h)).toHaveLength(3);
     expect((await lmfdbQueue(h)).items).toHaveLength(1);
   });
 });
