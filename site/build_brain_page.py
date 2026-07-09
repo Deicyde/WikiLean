@@ -221,6 +221,8 @@ body.embed .wl-header, body.embed #crumbbar { display:none; }   /* flex column f
       <input id="q" type="search" placeholder="Search concepts &amp; areas… (e.g. abelian group)" autocomplete="off">
       <div id="hits"></div>
     </div>
+    <a class="wl-navlink" href="/quickstatements"
+      title="paste TSV/CSV rows to add database connections to the Brain">Bulk add connections</a>
     <a class="wl-navlink" id="srcbtn" style="cursor:pointer" title="every external database the brain links to — layer, provenance, license">Sources</a>
     <a class="wl-navlink" href="/stats">Stats</a>
     <a class="wl-navlink" href="https://github.com/Deicyde/WikiLean" rel="noopener">GitHub</a>
