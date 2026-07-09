@@ -33,9 +33,9 @@
       "mathlib": {
         "decl": "Denumerable",
         "module": "Mathlib.Logic.Denumerable",
-        "match_kind": "generalization"
+        "match_kind": "exact"
       },
-      "note": "`Denumerable` is a type constructively in bijection with ℕ, i.e. countably infinite (and `nonempty_denumerable_iff` shows this equals Countable ∧ Infinite).",
+      "note": "`Denumerable` is a typeclass for types in constructive bijection with ℕ, i.e. countably infinite.",
       "provenance": "ai",
       "id": "1c8848293d6e"
     },
@@ -52,9 +52,43 @@
         "module": "Mathlib.Logic.Function.Basic",
         "match_kind": "invocation"
       },
-      "note": "Cantor's diagonal `Function.cantor_surjective` proves no surjection α → Set α exists, witnessing uncountable types (also `Uncountable ℝ`).",
+      "note": "`Function.cantor_surjective` proves no surjection α → Set α exists, witnessing uncountable types (and `Uncountable ℝ` is a concrete instance).",
       "provenance": "ai",
       "id": "87248903e05c"
+    },
+    {
+      "kind": "definition",
+      "label": "Axiom of countable choice",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "assuming the axiom of countable choice"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Classical.axiomOfChoice",
+        "module": "Init.Classical",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib uses Lean's full classical choice; countable choice is the restriction to countable index families and is a consequence of `Classical.axiomOfChoice`.",
+      "provenance": "ai",
+      "id": "4944cd5e5b8c"
+    },
+    {
+      "kind": "definition",
+      "label": "Cardinality",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a set is countable if its cardinality (the number of elements of the set) is not greater than that of the natural numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.mk",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.mk α` (notation `#α`) is the cardinality of a type; countability becomes `#α ≤ ℵ₀`.",
+      "provenance": "ai",
+      "id": "57390b5b22ea"
     },
     {
       "kind": "definition",
@@ -69,9 +103,26 @@
         "module": "Mathlib.Data.Countable.Defs",
         "match_kind": "exact"
       },
-      "note": "`countable_iff_exists_injective` characterizes countability by an injection into ℕ.",
+      "note": "`countable_iff_exists_injective` characterizes countability by the existence of an injection into ℕ.",
       "provenance": "ai",
       "id": "ba8a9679aaf0"
+    },
+    {
+      "kind": "definition",
+      "label": "Aleph-null",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "aleph-null"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.aleph0",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.aleph0` (notation `ℵ₀`) is the cardinality of ℕ.",
+      "provenance": "ai",
+      "id": "1a22f8275b27"
     },
     {
       "kind": "proposition",
@@ -101,7 +152,7 @@
       "mathlib": {
         "decl": "Denumerable",
         "module": "Mathlib.Logic.Denumerable",
-        "match_kind": "generalization"
+        "match_kind": "exact"
       },
       "note": "`Denumerable` captures countably infinite as a constructive bijection with ℕ.",
       "provenance": "ai",
@@ -120,7 +171,7 @@
         "module": "Mathlib.Data.Countable.Defs",
         "match_kind": "exact"
       },
-      "note": "`Uncountable` is defined as `¬Countable α` (`uncountable_iff_not_countable`).",
+      "note": "`Uncountable α` is defined as `¬Countable α` (`uncountable_iff_not_countable`).",
       "provenance": "ai",
       "id": "1ecb4bd6018d"
     },
@@ -198,7 +249,7 @@
         "module": "Mathlib.Logic.Equiv.Defs",
         "match_kind": "exact"
       },
-      "note": "`Equiv` (and `Function.Bijective`) formalizes a one-to-one correspondence between two types.",
+      "note": "`Equiv` (with `Function.Bijective` for the predicate form) formalizes a one-to-one correspondence between two types.",
       "provenance": "ai",
       "anchors": [
         {
@@ -250,7 +301,7 @@
       "mathlib": {
         "decl": "Denumerable",
         "module": "Mathlib.Logic.Denumerable",
-        "match_kind": "generalization"
+        "match_kind": "exact"
       },
       "note": "`Denumerable` is exactly the typeclass for types in bijection with ℕ.",
       "provenance": "ai",
@@ -279,7 +330,7 @@
         "module": "Mathlib.Analysis.Real.Cardinality",
         "match_kind": "special_case"
       },
-      "note": "ℝ is infinite yet `Cardinal.not_countable_real`/`Uncountable ℝ` shows it is not countable, witnessing the claim.",
+      "note": "ℝ is infinite yet `Cardinal.not_countable_real` (and `Uncountable ℝ`) shows it is not countable, witnessing the claim.",
       "provenance": "ai",
       "id": "b39f01169b52"
     },
@@ -296,9 +347,26 @@
         "module": "Mathlib.Analysis.Real.Cardinality",
         "match_kind": "exact"
       },
-      "note": "`Cardinal.mk_real` gives `#ℝ = 𝔠` and `Cardinal.not_countable_real` that ℝ exceeds ℵ₀.",
+      "note": "`Cardinal.mk_real` gives `#ℝ = 𝔠` and `Cardinal.not_countable_real` gives that ℝ exceeds ℵ₀.",
       "provenance": "ai",
       "id": "d613900404f9"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cantor's diagonal argument",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "Cantor's diagonal argument , provides the formal proof by using a ad absurdum strategy"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.cantor",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "generalization"
+      },
+      "note": "Cantor's diagonal argument is captured by `Cardinal.cantor` (`a < 2^a`) and `Function.cantor_surjective`; the specific real-number diagonal yields `Uncountable ℝ`.",
+      "provenance": "ai",
+      "id": "1233aacbbdac"
     },
     {
       "kind": "definition",
@@ -365,7 +433,7 @@
       "mathlib": {
         "decl": "Denumerable",
         "module": "Mathlib.Logic.Denumerable",
-        "match_kind": "generalization"
+        "match_kind": "exact"
       },
       "note": "`Denumerable` is the formal bijection-with-ℕ notion of countably infinite.",
       "provenance": "ai",
@@ -394,7 +462,7 @@
         "module": "Mathlib.Logic.Denumerable",
         "match_kind": "special_case"
       },
-      "note": "`Denumerable ℕ+` gives positive integers countably infinite, but the even-integers example set is not a separately named declaration.",
+      "note": "`Denumerable.pnat` makes ℕ+ denumerable, but the specific even-integers example is not a separately named declaration.",
       "provenance": "ai",
       "anchors": [
         {
@@ -421,7 +489,7 @@
         "module": "Mathlib.SetTheory.Cardinal.Basic",
         "match_kind": "exact"
       },
-      "note": "`Set.countable_infinite_iff_nonempty_denumerable` proves an infinite countable set is denumerable (countably infinite).",
+      "note": "`Set.countable_infinite_iff_nonempty_denumerable` proves that an infinite countable set is denumerable, equating countable-and-infinite with countably-infinite.",
       "provenance": "ai",
       "anchors": [
         {
@@ -448,9 +516,26 @@
         "module": "Mathlib.Logic.Denumerable",
         "match_kind": "special_case"
       },
-      "note": "`Denumerable.prod` (and `Nat.pairEquiv : ℕ × ℕ ≃ ℕ`) gives that ℕ × ℕ is countably infinite.",
+      "note": "`Denumerable.prod` gives that the product of two denumerable types is denumerable, instantiating to ℕ × ℕ countably infinite.",
       "provenance": "ai",
       "id": "8b16e3c85d2b"
+    },
+    {
+      "kind": "definition",
+      "label": "Cartesian product",
+      "anchor": {
+        "section": "Formal overview",
+        "snippet": "the Cartesian product of two sets of natural numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.prod",
+        "module": "Mathlib.Data.Set.Operations",
+        "match_kind": "exact"
+      },
+      "note": "`Set.prod` (and the type-level `Prod`) formalizes the Cartesian product of sets/types.",
+      "provenance": "ai",
+      "id": "49ac85affa0d"
     },
     {
       "kind": "proposition",
@@ -482,9 +567,26 @@
         "module": "Mathlib.Data.Countable.Defs",
         "match_kind": "special_case"
       },
-      "note": "ℚ is countable (`Rat.instDenumerable`), so the positive-rationals subtype is countable by `Subtype.countable`.",
+      "note": "ℚ is countable (`Rat.instDenumerable`), so by `Subtype.countable` any positive-rationals subtype is countable.",
       "provenance": "ai",
       "id": "b556b068e807"
+    },
+    {
+      "kind": "definition",
+      "label": "Power set",
+      "anchor": {
+        "section": "Formal overview",
+        "snippet": "is its power set , i.e. the set of all subsets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.powerset",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Set.powerset s = {t | t ⊆ s}` formalizes the power set; the type-level analogue is `Set α` itself.",
+      "provenance": "ai",
+      "id": "3b75b4d68d57"
     },
     {
       "kind": "theorem",
@@ -584,7 +686,7 @@
         "module": "Mathlib.Data.Set.Countable",
         "match_kind": "special_case"
       },
-      "note": "`Set.Countable.union` handles binary unions; `countable_iUnion` over a `Countable` (hence finite) index covers finite unions.",
+      "note": "`Set.Countable.union` handles binary unions; iterating gives any finite union of countable sets.",
       "provenance": "ai",
       "id": "76a479ea1237"
     },
@@ -601,7 +703,7 @@
         "module": "Mathlib.Data.Set.Countable",
         "match_kind": "exact"
       },
-      "note": "`Set.countable_iUnion` (with `Countable.biUnion`/`sUnion`) shows a countable union of countable sets is countable.",
+      "note": "`Set.countable_iUnion` (with `Set.Countable.biUnion`/`Set.Countable.sUnion`) shows a countable union of countable sets is countable.",
       "provenance": "ai",
       "id": "5448c5729c66"
     },
@@ -614,11 +716,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "denumerableList",
+        "decl": "Denumerable.denumerableList",
         "module": "Mathlib.Logic.Equiv.List",
         "match_kind": "special_case"
       },
-      "note": "`denumerableList` makes `List α` denumerable for denumerable α, so `List ℕ` (finite sequences of naturals) is countable.",
+      "note": "`Denumerable.denumerableList` makes `List α` denumerable for denumerable α, so `List ℕ` (finite sequences of naturals) is countable.",
       "provenance": "ai",
       "id": "81b69271ab9f"
     },
@@ -635,7 +737,7 @@
         "module": "Mathlib.Data.Set.Countable",
         "match_kind": "exact"
       },
-      "note": "`Set.countable_setOf_finite_subset` shows the finite subsets of a countable set form a countable set (also `Denumerable (Finset ℕ)`).",
+      "note": "`Set.countable_setOf_finite_subset` shows the finite subsets of a countable set form a countable set.",
       "provenance": "ai",
       "id": "c8239f792663"
     },
@@ -652,7 +754,7 @@
         "module": "Mathlib.Data.Countable.Defs",
         "match_kind": "exact"
       },
-      "note": "`Function.Injective.countable` and `Function.Surjective.countable` transfer countability along injections/surjections.",
+      "note": "`Function.Injective.countable` (and the surjective counterpart) transfers countability along injections/surjections.",
       "provenance": "ai",
       "id": "4c81ff3f1410"
     },
@@ -703,7 +805,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The structure/contents of the minimal standard model of set theory is not formalized in Mathlib.",
+      "note": "The contents of the minimal standard model of set theory are not formalized in Mathlib.",
       "provenance": "ai",
       "id": "735f94524539"
     },
@@ -717,10 +819,10 @@
       "status": "partial",
       "mathlib": {
         "decl": "LinearOrder",
-        "module": "Mathlib.Order.Defs",
+        "module": "Mathlib.Order.Defs.LinearOrder",
         "match_kind": "generalization"
       },
-      "note": "Total orders are formalized as `LinearOrder`, but the informal observation that countable sets admit various total orders is not a stated theorem.",
+      "note": "Total orders are formalized as `LinearOrder`, but the informal observation that countable sets admit various total orders is not stated as a theorem.",
       "provenance": "ai",
       "id": "ef1a79ee7e82"
     },
@@ -734,10 +836,10 @@
       "status": "partial",
       "mathlib": {
         "decl": "DenselyOrdered",
-        "module": "Mathlib.Order.Defs",
+        "module": "Mathlib.Order.Basic",
         "match_kind": "generalization"
       },
-      "note": "Density of an order is formalized as `DenselyOrdered` (ℚ is an instance), but the informal 'not a list / not a well-order' remark is not a named result.",
+      "note": "Density of an order is formalized as `DenselyOrdered` (with ℚ an instance), but the informal 'not a list / not a well-order' remark is not a named result.",
       "provenance": "ai",
       "id": "895f06210609"
     },
@@ -752,7 +854,7 @@
       "mathlib": {
         "decl": "IsWellOrder",
         "module": "Mathlib.Order.RelClasses",
-        "match_kind": "generalization"
+        "match_kind": "exact"
       },
       "note": "`IsWellOrder` (built on `IsWellFounded`) formalizes a well order, in which every nonempty subset has a least element.",
       "provenance": "ai",

@@ -84,7 +84,7 @@
       "mathlib": {
         "decl": "Nat.decidablePrime",
         "module": "Mathlib.Data.Nat.Prime.Defs",
-        "match_kind": null
+        "match_kind": "invocation"
       },
       "note": "Primality is formalized as a decidable predicate (`Nat.decidablePrime`), giving an algorithm to test instances, but not as a complexity-theory problem.",
       "provenance": "ai",
@@ -118,11 +118,28 @@
       "mathlib": {
         "decl": "Computability.Encoding",
         "module": "Mathlib.Computability.Encoding",
-        "match_kind": null
+        "match_kind": "generalization"
       },
       "note": "`Computability.Encoding` formalizes encoding a type as strings (`List Γ`) over an alphabet, which is the representation device, though not framed as 'problem instances'.",
       "provenance": "ai",
       "id": "77f65e368822"
+    },
+    {
+      "kind": "definition",
+      "label": "Graph encoding via adjacency matrix",
+      "anchor": {
+        "section": "Representing problem instances",
+        "snippet": "graphs can be encoded directly via their adjacency matrices"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SimpleGraph.adjMatrix",
+        "module": "Mathlib.Combinatorics.SimpleGraph.AdjMatrix",
+        "match_kind": "invocation"
+      },
+      "note": "`SimpleGraph.adjMatrix` formalizes the adjacency matrix of a simple graph, supplying the graph-as-bitstring encoding alluded to here, though not as an input-encoding scheme for complexity.",
+      "provenance": "ai",
+      "id": "b6eebb08b077"
     },
     {
       "kind": "definition",
@@ -135,7 +152,7 @@
       "mathlib": {
         "decl": "Language",
         "module": "Mathlib.Computability.Language",
-        "match_kind": null
+        "match_kind": "generalization"
       },
       "note": "Mathlib's `Language α := Set (List α)` is exactly the formal-language view of a decision problem, but there is no decl named/defined as 'decision problem'.",
       "provenance": "ai",
@@ -152,7 +169,7 @@
       "mathlib": {
         "decl": "SimpleGraph.Connected",
         "module": "Mathlib.Combinatorics.SimpleGraph.Connectivity.Connected",
-        "match_kind": null
+        "match_kind": "invocation"
       },
       "note": "Graph connectivity is formalized as the predicate `SimpleGraph.Connected`, but not cast as a decision problem/language.",
       "provenance": "ai",
@@ -203,7 +220,7 @@
       "mathlib": {
         "decl": "Turing.TM2ComputableInTime",
         "module": "Mathlib.Computability.TuringMachine.Computable",
-        "match_kind": null
+        "match_kind": "generalization"
       },
       "note": "`TM2ComputableInTime` bounds steps by `time(input.length)` over all inputs of that length (worst case), but worst-case time complexity is not defined as a stand-alone quantity.",
       "provenance": "ai",
@@ -339,7 +356,7 @@
       "mathlib": {
         "decl": "Turing.PartrecToTM2.tr_eval",
         "module": "Mathlib.Computability.TuringMachine.ToPartrec",
-        "match_kind": null
+        "match_kind": "special_case"
       },
       "note": "`PartrecToTM2.tr_eval` shows a TM2 machine evaluates partial-recursive programs, establishing one model equivalence, but no general 'all reasonable models are equivalent' theorem is stated.",
       "provenance": "ai",
@@ -356,7 +373,7 @@
       "mathlib": {
         "decl": "Turing.TM2OutputsInTime",
         "module": "Mathlib.Computability.TuringMachine.Computable",
-        "match_kind": null
+        "match_kind": "invocation"
       },
       "note": "`TM2OutputsInTime` counts the number of steps until halting, capturing running time, but as a step-count bound rather than a named time measure.",
       "provenance": "ai",
@@ -492,7 +509,7 @@
       "mathlib": {
         "decl": "Turing.TM2ComputableInPolyTime",
         "module": "Mathlib.Computability.TuringMachine.Computable",
-        "match_kind": null
+        "match_kind": "invocation"
       },
       "note": "Polynomial-time deterministic TM computation exists via `TM2ComputableInPolyTime`, but the class P (set of poly-time decision problems) is not defined.",
       "provenance": "ai",
@@ -577,7 +594,7 @@
       "mathlib": {
         "decl": "ManyOneReducible",
         "module": "Mathlib.Computability.Reduce",
-        "match_kind": null
+        "match_kind": "generalization"
       },
       "note": "`ManyOneReducible` formalizes computable many-one reduction between problems, but not the resource-bounded (e.g. polynomial-time) reductions used in complexity theory.",
       "provenance": "ai",
@@ -687,6 +704,23 @@
     },
     {
       "kind": "proposition",
+      "label": "P versus NP problem",
+      "anchor": {
+        "section": "P versus NP problem",
+        "snippet": "The question of whether P equals NP is one of the most important open questions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The P vs NP question (whether the classes P and NP coincide) is not formalized in Mathlib, as neither class is defined.",
+      "provenance": "ai",
+      "id": "b19590b66fe5"
+    },
+    {
+      "kind": "proposition",
       "label": "P is contained in NP",
       "anchor": {
         "section": "P versus NP problem",
@@ -720,6 +754,40 @@
       "id": "0e59fe66658f"
     },
     {
+      "kind": "example",
+      "label": "Hamiltonian path problem",
+      "anchor": {
+        "section": "P versus NP problem",
+        "snippet": "the Hamiltonian path problem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SimpleGraph.Walk.IsHamiltonian",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Hamiltonian",
+        "match_kind": "invocation"
+      },
+      "note": "Hamiltonian paths/cycles are formalized as `SimpleGraph.Walk.IsHamiltonian`/`IsHamiltonianCycle`, but not the decision problem itself.",
+      "provenance": "ai",
+      "id": "6a6ab9b9d132"
+    },
+    {
+      "kind": "example",
+      "label": "Vertex cover problem",
+      "anchor": {
+        "section": "P versus NP problem",
+        "snippet": "the vertex cover problem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The vertex cover decision problem (and the notion of a vertex cover in graphs) is not formalized in Mathlib.",
+      "provenance": "ai",
+      "id": "69e5e9886eed"
+    },
+    {
       "kind": "theorem",
       "label": "Ladner's theorem (NP-intermediate problems)",
       "anchor": {
@@ -747,11 +815,28 @@
       "mathlib": {
         "decl": "SimpleGraph.Iso",
         "module": "Mathlib.Combinatorics.SimpleGraph.Maps",
-        "match_kind": null
+        "match_kind": "invocation"
       },
       "note": "Graph isomorphism is formalized as `SimpleGraph.Iso` (`G ≃g H`), but not as the computational decision problem.",
       "provenance": "ai",
       "id": "03e8c9553a2c"
+    },
+    {
+      "kind": "definition",
+      "label": "Polynomial hierarchy",
+      "anchor": {
+        "section": "Problems in NP not known to be in P or NP-complete",
+        "snippet": "the polynomial time hierarchy collapses to its second level"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The polynomial(-time) hierarchy is not formalized in Mathlib.",
+      "provenance": "ai",
+      "id": "7ffafe45ba89"
     },
     {
       "kind": "definition",
@@ -764,7 +849,7 @@
       "mathlib": {
         "decl": "Nat.factorization",
         "module": "Mathlib.Data.Nat.Factorization.Defs",
-        "match_kind": null
+        "match_kind": "invocation"
       },
       "note": "Prime factorization is formalized (`Nat.factorization`, `Nat.primeFactorsList`), but not framed as the integer-factorization computational problem.",
       "provenance": "ai",
@@ -849,11 +934,28 @@
       "mathlib": {
         "decl": "FirstOrder.Language.presburger",
         "module": "Mathlib.ModelTheory.Arithmetic.Presburger.Basic",
-        "match_kind": null
+        "match_kind": "invocation"
       },
       "note": "Presburger arithmetic is formalized (`Language.presburger`), but its complexity lower bound (not in P) is not.",
       "provenance": "ai",
       "id": "e3557cb85f99"
+    },
+    {
+      "kind": "example",
+      "label": "Knapsack problem",
+      "anchor": {
+        "section": "Intractability",
+        "snippet": "algorithms can solve the NP-complete knapsack problem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The (0/1) knapsack decision problem is not formalized in Mathlib.",
+      "provenance": "ai",
+      "id": "af7057e68362"
     },
     {
       "kind": "example",
@@ -871,6 +973,23 @@
       "note": "This illustrative exponential-runtime example is not formalized in Mathlib.",
       "provenance": "ai",
       "id": "fc77b53297c5"
+    },
+    {
+      "kind": "example",
+      "label": "Euclidean algorithm runtime",
+      "anchor": {
+        "section": "History",
+        "snippet": "the running time analysis of the Euclidean algorithm done by Gabriel Lamé in 1844"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.gcd",
+        "module": "Init.Data.Nat.Gcd",
+        "match_kind": "invocation"
+      },
+      "note": "The Euclidean algorithm is formalized as `Nat.gcd` (defined in core Lean and used throughout Mathlib), but its running-time analysis (Lamé's bound) is not.",
+      "provenance": "ai",
+      "id": "2b3c800942ed"
     },
     {
       "kind": "theorem",

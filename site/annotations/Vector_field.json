@@ -11,8 +11,32 @@
         "section": "(Lead)",
         "snippet": "a vector field is an assignment of a vector to each point in a space"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TangentSpace",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Informal notion; Mathlib formalizes the manifold version via `TangentSpace I` with vector fields encoded as functions `(x : M) → TangentSpace I x`.",
       "provenance": "ai-agent1",
       "id": "1423e645a34f"
+    },
+    {
+      "kind": "definition",
+      "label": "Tensor field",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Vector fields are one kind of tensor field"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general tensor field on a manifold is defined in Mathlib (only sections of specific bundles via `ContMDiffSection`).",
+      "provenance": "ai",
+      "id": "dd47fe186fe4"
     },
     {
       "kind": "definition",
@@ -21,6 +45,13 @@
         "section": "Vector fields on subsets of Euclidean space",
         "snippet": "Given a subset S of R n , a vector field is represented by a vector-valued function"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "VectorField.lieBracket",
+        "module": "Mathlib.Analysis.Calculus.VectorField",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib uses `E → E` directly (no wrapping definition) — the convention is implicit in the `VectorField` namespace operations on functions `E → E`.",
       "provenance": "ai-agent1",
       "id": "35975c4f6440"
     },
@@ -31,6 +62,13 @@
         "section": "Vector fields on subsets of Euclidean space",
         "snippet": "If each component of V is continuous, then V is a continuous vector field."
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Continuous",
+        "module": "Mathlib.Topology.Defs.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Treated as `Continuous V` (or `ContinuousOn`) for the underlying function; no dedicated vector-field continuity class.",
       "provenance": "ai-agent1",
       "id": "0bd2395687fa"
     },
@@ -41,6 +79,13 @@
         "section": "Vector fields on subsets of Euclidean space",
         "snippet": "smooth vector fields, meaning that each component is a smooth function"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContDiff",
+        "module": "Mathlib.Analysis.Calculus.ContDiff.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "Encoded by applying `ContDiff 𝕜 n` to `V : E → E`; there is no dedicated `SmoothVectorField` predicate.",
       "provenance": "ai-agent1",
       "id": "afdb713e0f94"
     },
@@ -51,6 +96,13 @@
         "section": "Vector fields on subsets of Euclidean space",
         "snippet": "describes a counterclockwise rotation around the origin"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The specific rotation example `(-y, x)` is not formalized as a named declaration.",
       "provenance": "ai-agent1",
       "id": "b79e6501b80a"
     },
@@ -61,6 +113,13 @@
         "section": "Vector fields on subsets of Euclidean space",
         "snippet": "make the smooth vector fields into a module over the ring of smooth functions"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `C^∞(M)`-module structure on smooth vector fields is defined; pointwise `Pi.module` exists but not over the ring of smooth functions specifically.",
       "provenance": "ai-agent1",
       "id": "0b7418d95bf0"
     },
@@ -71,6 +130,13 @@
         "section": "Coordinate transformation law",
         "snippet": "Such a transformation law is called contravariant"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit coordinate-change contravariance law for vector fields formalized in Mathlib.",
       "provenance": "ai-agent1",
       "id": "ae9811e4c565"
     },
@@ -81,8 +147,32 @@
         "section": "Vector fields on manifolds",
         "snippet": "a vector field on"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TangentSpace",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Encoded throughout Mathlib as `(x : M) → TangentSpace I x` (used by `VectorField.mlieBracket`, `mpullback`, etc.) but with no top-level `VectorField` definition.",
       "provenance": "ai-agent1",
       "id": "0c1316db0490"
+    },
+    {
+      "kind": "proposition",
+      "label": "Vector field as section of the tangent bundle",
+      "anchor": {
+        "section": "Vector fields on manifolds",
+        "snippet": "a vector field is a section of the tangent bundle"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContMDiffSection",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.SmoothSection",
+        "match_kind": "generalization"
+      },
+      "note": "Smooth sections of any vector bundle (including `TangentSpace`) are defined as `ContMDiffSection`; the equivalence with the function-encoding is implicit, not a named lemma.",
+      "provenance": "ai",
+      "id": "79f55b14da8b"
     },
     {
       "kind": "definition",
@@ -91,6 +181,13 @@
         "section": "Vector fields on manifolds",
         "snippet": "An alternative definition"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Derivation",
+        "module": "Mathlib.RingTheory.Derivation.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`Derivation` is defined for algebras generally, but the identification with vector fields on a smooth manifold via `C^∞(M)` is not formalized.",
       "provenance": "ai-agent1",
       "id": "bcd9545f50fd"
     },
@@ -101,6 +198,13 @@
         "section": "Vector fields on manifolds",
         "snippet": "then one can make sense of the notion of smooth (analytic) vector fields"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContMDiffSection",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.SmoothSection",
+        "match_kind": "generalization"
+      },
+      "note": "Smooth sections of the tangent bundle are captured by `ContMDiffSection I E (TangentSpace I)`.",
       "provenance": "ai-agent1",
       "id": "1dcf8ca220c0"
     },
@@ -111,6 +215,13 @@
         "section": "Examples",
         "snippet": "A vector field for the movement of air on Earth"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Physical example not formalized in Mathlib.",
       "provenance": "ai-agent1",
       "id": "3a28f447d4a1"
     },
@@ -121,6 +232,13 @@
         "section": "Examples",
         "snippet": "Velocity field of a moving fluid"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Physical example not formalized in Mathlib.",
       "provenance": "ai-agent1",
       "id": "569c9c9abe4d"
     },
@@ -131,6 +249,13 @@
         "section": "Examples",
         "snippet": "Streamlines, streaklines and pathlines are 3 types of lines"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fluid-dynamic curve concepts not formalized in Mathlib.",
       "provenance": "ai-agent1",
       "id": "2462409471bd"
     },
@@ -141,6 +266,13 @@
         "section": "Examples",
         "snippet": "Magnetic fields . The fieldlines can be revealed using small iron filings."
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Physical example not formalized in Mathlib.",
       "provenance": "ai-agent1",
       "id": "375f671512bb"
     },
@@ -151,6 +283,13 @@
         "section": "Examples",
         "snippet": "the resulting vector field is the electric field"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Maxwell's equations and the electric field are not formalized in Mathlib.",
       "provenance": "ai-agent1",
       "id": "a910b631461d"
     },
@@ -161,6 +300,13 @@
         "section": "Examples",
         "snippet": "A gravitational field generated by any massive object is also a vector field."
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Physical example not formalized in Mathlib.",
       "provenance": "ai-agent1",
       "id": "63b4330b1932"
     },
@@ -171,6 +317,13 @@
         "section": "Gradient field in Euclidean spaces",
         "snippet": "is called a gradient field or a conservative field if there exists a real-valued function"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "gradient",
+        "module": "Mathlib.Analysis.Calculus.Gradient.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The `gradient` of a scalar function is defined, but no `IsConservativeField`/`IsGradientField` predicate on vector fields is given.",
       "provenance": "ai-agent1",
       "id": "da367dbe8bdd"
     },
@@ -181,6 +334,13 @@
         "section": "Gradient field in Euclidean spaces",
         "snippet": "The associated flow is called the gradient flow"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gradient flow as a named concept is not formalized in Mathlib.",
       "provenance": "ai-agent1",
       "id": "36a7ef123773"
     },
@@ -191,6 +351,13 @@
         "section": "Gradient field in Euclidean spaces",
         "snippet": "The path integral along any closed curve"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Line integrals of vector fields and the closed-loop vanishing for conservative fields are not formalized.",
       "provenance": "ai-agent1",
       "id": "1c24d4dae0f2"
     },
@@ -201,6 +368,13 @@
         "section": "Central field in euclidean spaces",
         "snippet": "is called a central field if"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Central (radial) vector fields are not defined in Mathlib.",
       "provenance": "ai-agent1",
       "id": "7cce63669cf1"
     },
@@ -211,6 +385,13 @@
         "section": "Central field in euclidean spaces",
         "snippet": "The point 0 is called the center of the field."
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of center of a central field in Mathlib.",
       "provenance": "ai-agent1",
       "id": "a85729f4a7ee"
     },
@@ -221,6 +402,13 @@
         "section": "Central field in euclidean spaces",
         "snippet": "A central field is always a gradient field"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized, since neither central nor gradient-field predicates exist in Mathlib.",
       "provenance": "ai-agent1",
       "id": "2b56c82c598c"
     },
@@ -231,6 +419,13 @@
         "section": "Line integral",
         "snippet": "the line integral is defined as"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated line integral of a vector field is defined in Mathlib (only complex/contour primitives in `Mathlib.Analysis.Complex.HasPrimitives`).",
       "provenance": "ai-agent1",
       "id": "f30c4b2a7cc5"
     },
@@ -241,6 +436,13 @@
         "section": "Divergence",
         "snippet": "The divergence of a vector field on Euclidean space is a function"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "BoxIntegral.hasIntegral_GP_divergence_of_forall_hasDerivWithinAt",
+        "module": "Mathlib.Analysis.BoxIntegral.DivergenceTheorem",
+        "match_kind": "invocation"
+      },
+      "note": "Divergence is only used inline as the sum `∑ i, f' x (Pi.single i 1) i` in divergence-theorem statements; no standalone `divergence` definition exists.",
       "provenance": "ai-agent1",
       "id": "ae4eb907673d"
     },
@@ -251,6 +453,13 @@
         "section": "Divergence",
         "snippet": "a result which is made precise by the divergence theorem"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_divergence_of_hasFDerivAt_off_countable",
+        "module": "Mathlib.MeasureTheory.Integral.DivergenceTheorem",
+        "match_kind": "exact"
+      },
+      "note": "The divergence theorem is formalized over rectangular boxes via `integral_divergence_of_hasFDerivAt_off_countable`.",
       "provenance": "ai-agent1",
       "id": "abbc867f7d02"
     },
@@ -261,6 +470,13 @@
         "section": "Curl in three dimensions",
         "snippet": "The curl is an operation which takes a vector field and produces another vector field."
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Curl in 3D is not defined in Mathlib.",
       "provenance": "ai-agent1",
       "id": "bd970c1e27ee"
     },
@@ -271,6 +487,13 @@
         "section": "Curl in three dimensions",
         "snippet": "This intuitive description is made precise by Stokes' theorem"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classical Stokes' theorem (curl form) is not formalized; only the divergence theorem version is available.",
       "provenance": "ai-agent1",
       "id": "68a64845b5b3"
     },
@@ -281,6 +504,13 @@
         "section": "Index of a vector field",
         "snippet": "The index of a vector field is an integer that helps describe its behaviour around an isolated zero"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Index of an isolated zero of a vector field is not formalized in Mathlib.",
       "provenance": "ai-agent1",
       "id": "875092ae03ff"
     },
@@ -291,6 +521,13 @@
         "section": "Index of a vector field",
         "snippet": "The index of the vector field at the point is the degree of this map."
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the degree of a map to a sphere nor the index definition is formalized in Mathlib.",
       "provenance": "ai-agent1",
       "id": "0950d49fbab0"
     },
@@ -301,6 +538,13 @@
         "section": "Index of a vector field",
         "snippet": "The index of the vector field as a whole is defined when it has just finitely many zeroes."
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Total index over finitely many zeros is not formalized.",
       "provenance": "ai-agent1",
       "id": "90d82803371e"
     },
@@ -311,6 +555,13 @@
         "section": "Index of a vector field",
         "snippet": "This implies the hairy ball theorem"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hairy ball theorem is not formalized in Mathlib.",
       "provenance": "ai-agent1",
       "id": "be4f0b1f06f1"
     },
@@ -321,6 +572,13 @@
         "section": "Index of a vector field",
         "snippet": "the Poincaré-Hopf theorem states that the vector field's index is the manifold's Euler characteristic"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Poincaré–Hopf is not formalized; Euler characteristic of a manifold is also not available.",
       "provenance": "ai-agent1",
       "id": "5451e9ff8733"
     },
@@ -331,6 +589,13 @@
         "section": "Flow curves",
         "snippet": "are called integral curves or trajectories"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsMIntegralCurve",
+        "module": "Mathlib.Geometry.Manifold.IntegralCurve.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Integral curves of vector fields on manifolds are defined as `IsMIntegralCurve` (and `IsIntegralCurve` in the Euclidean ODE setting).",
       "provenance": "ai-agent1",
       "id": "33a41395c566"
     },
@@ -341,6 +606,13 @@
         "section": "Flow curves",
         "snippet": "By the Picard–Lindelöf theorem"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsPicardLindelof.exists_eq_forall_mem_Icc_eq_picard",
+        "module": "Mathlib.Analysis.ODE.PicardLindelof",
+        "match_kind": "exact"
+      },
+      "note": "Picard–Lindelöf existence is formalized as `IsPicardLindelof.exists_eq_forall_mem_Icc_eq_picard`, with the manifold companion `exists_isMIntegralCurveAt_of_contMDiffAt`.",
       "provenance": "ai-agent1",
       "id": "1b32337067f9"
     },
@@ -349,9 +621,16 @@
       "label": "Complete vector field",
       "anchor": {
         "section": "Complete vector fields",
-        "snippet": "a vector field on"
+        "snippet": "is called complete if each of its flow curves exists for all time"
       },
-      "provenance": "ai-agent1",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `IsCompleteVectorField` predicate or equivalent is defined in Mathlib.",
+      "provenance": "ai-moderated",
       "id": "2a20c20ffad4"
     },
     {
@@ -361,6 +640,13 @@
         "section": "Complete vector fields",
         "snippet": "compactly supported vector fields on a manifold are complete"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized, since completeness of vector fields is not defined.",
       "provenance": "ai-agent1",
       "id": "c6c032260eb6"
     },
@@ -371,8 +657,32 @@
         "section": "Complete vector fields",
         "snippet": "On a compact manifold without boundary, every smooth vector field is complete."
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized in Mathlib.",
       "provenance": "ai-agent1",
       "id": "6d420adad1e8"
+    },
+    {
+      "kind": "definition",
+      "label": "One-parameter group of diffeomorphisms from a complete vector field",
+      "anchor": {
+        "section": "Complete vector fields",
+        "snippet": "the one-parameter group of diffeomorphisms generated by the flow"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No construction of the one-parameter group of diffeomorphisms generated by a complete vector field exists in Mathlib.",
+      "provenance": "ai",
+      "id": "d5ec445b8eb2"
     },
     {
       "kind": "example",
@@ -381,6 +691,13 @@
         "section": "Complete vector fields",
         "snippet": "An example of an incomplete vector field"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The standard `x^2` non-complete example is not formalized.",
       "provenance": "ai-agent1",
       "id": "3f8b655ef6d3"
     },
@@ -391,6 +708,13 @@
         "section": "The Lie bracket",
         "snippet": "Their failure to commute is described by the Lie bracket of two vector fields"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "VectorField.mlieBracket",
+        "module": "Mathlib.Geometry.Manifold.VectorField.LieBracket",
+        "match_kind": "exact"
+      },
+      "note": "The Lie bracket is `VectorField.mlieBracket` on manifolds (and `VectorField.lieBracket` on normed spaces).",
       "provenance": "ai-agent1",
       "id": "bd11c4deca1c"
     },
@@ -401,6 +725,13 @@
         "section": "f-relatedness",
         "snippet": "we say that"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "VectorField.mpullback",
+        "module": "Mathlib.Geometry.Manifold.VectorField.Pullback",
+        "match_kind": "generalization"
+      },
+      "note": "No predicate `IsFRelated` is defined; pullbacks (`VectorField.mpullback`) give the closest infrastructure, with f-relatedness expressible as `mpullback f W = V`.",
       "provenance": "ai-agent1",
       "id": "5b6afad45234"
     },
@@ -411,8 +742,49 @@
         "section": "f-relatedness",
         "snippet": "then the Lie bracket"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "VectorField.mpullback_mlieBracket",
+        "module": "Mathlib.Geometry.Manifold.VectorField.LieBracket",
+        "match_kind": "exact"
+      },
+      "note": "Naturality of the Lie bracket under pullback is `VectorField.mpullback_mlieBracket`, equivalent to preservation of f-relatedness.",
       "provenance": "ai-agent1",
       "id": "156f216c1cc6"
+    },
+    {
+      "kind": "definition",
+      "label": "p-vector field",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "yields p -vector fields"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Multivector fields (sections of `Λ^p TM`) are not defined as such in Mathlib.",
+      "provenance": "ai",
+      "id": "a82321988bd4"
+    },
+    {
+      "kind": "definition",
+      "label": "Differential k-form",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "yields differential k -forms"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContinuousAlternatingMap",
+        "module": "Mathlib.Topology.Algebra.Module.Alternating.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Pointwise alternating multilinear maps and exterior derivatives appear in `Mathlib.Analysis.Calculus.DifferentialForm.VectorField`, but global differential k-forms as bundle sections are not packaged as a single definition.",
+      "provenance": "ai",
+      "id": "f9063b512bcd"
     },
     {
       "kind": "definition",
@@ -421,6 +793,13 @@
         "section": "Generalizations",
         "snippet": "defining a vector field on a commutative algebra as a derivation on the algebra"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Derivation",
+        "module": "Mathlib.RingTheory.Derivation.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Algebraic vector fields as derivations on a commutative algebra are formalized as `Derivation R A M`.",
       "provenance": "ai-agent1",
       "id": "f7566e47c9ab"
     }

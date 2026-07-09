@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "The `Distrib` typeclass bundles the left- and right-distributive laws for a multiplication over an addition, matching the informal definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1fb02f56c2f6"
     },
     {
       "kind": "example",
@@ -35,7 +36,8 @@
         "match_kind": "generalization"
       },
       "note": "Concrete arithmetic identities like 2·(1+3)=2·1+2·3 are instances of `left_distrib` (a · (b + c) = a · b + a · c) applied on `ℕ`/`ℤ`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "69727a7ba6f5"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "exact"
       },
       "note": "`LeftDistribClass` axiomatizes `a * (b + c) = a * b + a * c`, exactly the left-distributivity condition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "327d05ab4fb4"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "`RightDistribClass` axiomatizes `(a + b) * c = a * c + b * c`, exactly the right-distributivity condition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9faf762021b0"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "`Distrib` bundles both `left_distrib` and `right_distrib`, matching the two-sided distributivity definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0a5afdf35872"
     },
     {
       "kind": "proposition",
@@ -99,7 +104,8 @@
         "match_kind": null
       },
       "note": "No named Mathlib lemma packages the three-way equivalence of left-/right-/two-sided distributivity assuming commutativity of the outer operation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "053cefdaa54e"
     },
     {
       "kind": "proposition",
@@ -115,7 +121,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no standalone lemma converting `LeftDistribClass` into `RightDistribClass` via commutativity of the outer operation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "80ecbd4e8014"
     },
     {
       "kind": "example",
@@ -131,7 +138,8 @@
         "match_kind": "special_case"
       },
       "note": "`add_div` states `(a + b) / c = a / c + b / c`, capturing the right-distributivity of division over addition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9529029d74be"
     },
     {
       "kind": "example",
@@ -147,7 +155,8 @@
         "match_kind": "exact"
       },
       "note": "`Ring` extends `Distrib` so the distributive axioms are built into the ring class.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7ad211e04f45"
     },
     {
       "kind": "proposition",
@@ -163,7 +172,8 @@
         "match_kind": "exact"
       },
       "note": "`Finset.sum_mul_sum` expresses a product of two finite sums as the double sum of pairwise products.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ffb56cec416b"
     },
     {
       "kind": "example",
@@ -179,7 +189,8 @@
         "match_kind": "invocation"
       },
       "note": "The mental-arithmetic trick is a routine use of `left_distrib`/`right_distrib` on concrete numbers.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "952c48dcfe9d"
     },
     {
       "kind": "example",
@@ -195,7 +206,8 @@
         "match_kind": "invocation"
       },
       "note": "Factoring is `mul_add`/`left_distrib` applied right-to-left.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "63e1505de45a"
     },
     {
       "kind": "proposition",
@@ -211,7 +223,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.mul_add` and `Matrix.add_mul` give the two-sided distributivity of matrix multiplication over matrix addition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fc57fbe033ad"
     },
     {
       "kind": "example",
@@ -227,7 +240,8 @@
         "match_kind": "exact"
       },
       "note": "`Ordinal.leftDistribClass` instances `LeftDistribClass Ordinal`; no `RightDistribClass` instance is provided, matching the asymmetric situation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5572152e7504"
     },
     {
       "kind": "example",
@@ -243,7 +257,8 @@
         "match_kind": "generalization"
       },
       "note": "`crossProduct` is defined as a bilinear `LinearMap`, so left/right additivity (and hence distributivity over vector addition) is built in via the `LinearMap` structure.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3cfc56cdcca2"
     },
     {
       "kind": "example",
@@ -259,7 +274,8 @@
         "match_kind": "exact"
       },
       "note": "`Set.inter_union_distrib_left` and `Set.union_inter_distrib_left` give the two mutual distributivity laws for set operations.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0f6bd8f6214b"
     },
     {
       "kind": "example",
@@ -275,7 +291,8 @@
         "match_kind": "exact"
       },
       "note": "`or_and_left` and `and_or_left` formalize the mutual distributivity of `∨` and `∧` on `Prop`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "28c8f3cd9319"
     },
     {
       "kind": "example",
@@ -291,7 +308,8 @@
         "match_kind": "exact"
       },
       "note": "`max_min_distrib_left` and `min_max_distrib_left` give the mutual distributivity of `max` and `min` on linear orders.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ff603bd0f8d8"
     },
     {
       "kind": "example",
@@ -307,7 +325,8 @@
         "match_kind": null
       },
       "note": "Searches in `Mathlib.Algebra.GCDMonoid` and `Nat`/`Int` gcd files turn up no `gcd_lcm`/`lcm_gcd` distributivity lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c69bf6a79d38"
     },
     {
       "kind": "example",
@@ -323,7 +342,8 @@
         "match_kind": "exact"
       },
       "note": "`max_add_add_left` (resp. `min_add_add_left`) states `a + max b c = max (a + b) (a + c)`, capturing the distributivity of `+` over `max`/`min`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b49673d8198c"
     },
     {
       "kind": "example",
@@ -339,7 +359,8 @@
         "match_kind": "invocation"
       },
       "note": "FOIL `(a+b)(c+d) = ac+ad+bc+bd` is an immediate consequence of `mul_add`/`add_mul`; not bundled as a separate named lemma but routinely closed by `ring`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a4d7b7b3f572"
     },
     {
       "kind": "example",
@@ -355,7 +376,8 @@
         "match_kind": "exact"
       },
       "note": "`Semiring` extends `Distrib`, so distributivity is part of the class definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0f9082a025ac"
     },
     {
       "kind": "example",
@@ -371,7 +393,8 @@
         "match_kind": "generalization"
       },
       "note": "`Algebra` builds on `Semiring`/`Ring`, so distributivity is inherited; non-associative variants such as `NonUnitalNonAssocSemiring` are also present.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9828f9b48be3"
     },
     {
       "kind": "definition",
@@ -387,7 +410,8 @@
         "match_kind": "exact"
       },
       "note": "The two `∨`/`∧` distribution equivalences used as rules of replacement are `or_and_left` and `and_or_left`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "877a8529168d"
     },
     {
       "kind": "proposition",
@@ -403,7 +427,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib/`Init` provide `and_or_left`, `or_and_left`, etc., capturing the standard distributivity equivalences for propositional connectives.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "997a0eadbbce"
     },
     {
       "kind": "example",
@@ -419,7 +444,8 @@
         "match_kind": null
       },
       "note": "No Mathlib lemma states or quantifies the failure of distributivity for IEEE `Float`/`FloatArray` arithmetic.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "de5d1f24beea"
     },
     {
       "kind": "definition",
@@ -435,7 +461,8 @@
         "match_kind": "exact"
       },
       "note": "`Semiring` is the standard Mathlib class for a semiring with the two distributivity axioms.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "19367e69ffb5"
     },
     {
       "kind": "definition",
@@ -451,7 +478,8 @@
         "match_kind": "exact"
       },
       "note": "`Ring` extends `Semiring` together with an `AddGroup` structure, exactly matching the informal definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "410bfb697b4e"
     },
     {
       "kind": "definition",
@@ -467,7 +495,8 @@
         "match_kind": "exact"
       },
       "note": "`DistribLattice` is the Mathlib class for lattices satisfying the distributivity of `⊔` over `⊓` (equivalently the dual).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f5f3947995a0"
     },
     {
       "kind": "definition",
@@ -483,7 +512,8 @@
         "match_kind": "exact"
       },
       "note": "`BooleanAlgebra` (in `Mathlib.Order.BooleanAlgebra.Defs`) and `BooleanRing` are both formalized, and `BooleanRing.toBooleanAlgebra` connects them.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "48ca0c32c0cb"
     },
     {
       "kind": "proposition",
@@ -499,7 +529,8 @@
         "match_kind": "exact"
       },
       "note": "`Finset.sum_mul_sum` rewrites a product of two `Finset` sums as the double sum of pairwise products.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5dcac1db19ec"
     },
     {
       "kind": "definition",
@@ -515,7 +546,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no `NearRing` or `NearField` typeclass; `decl_exists` for these names returns false and grep finds no near-ring structure.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "feecd6dcf48c"
     },
     {
       "kind": "definition",
@@ -531,7 +563,8 @@
         "match_kind": null
       },
       "note": "No `Subdistrib`/`Superdistrib` classes appear in Mathlib; only specific inequality lemmas (e.g. `Nat.mul_add_le`) exist sporadically.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e1eb4c173565"
     },
     {
       "kind": "definition",
@@ -547,7 +580,8 @@
         "match_kind": null
       },
       "note": "Loogle finds no `distrib`-named declaration mentioning `Monad` in the category-theoretic sense; the Beck distributive law between two monads is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fee62bb22667"
     },
     {
       "kind": "definition",
@@ -563,7 +597,8 @@
         "match_kind": "exact"
       },
       "note": "`mul_inv_rev` states `(a * b)⁻¹ = b⁻¹ * a⁻¹` in any `DivisionMonoid`, capturing the antidistributivity of inversion over the group operation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fa5cddca85be"
     },
     {
       "kind": "definition",
@@ -579,7 +614,8 @@
         "match_kind": null
       },
       "note": "Since near-rings themselves are absent from Mathlib, the notion of antidistributive elements in a near-ring is also not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f54d75203759"
     },
     {
       "kind": "proposition",
@@ -595,7 +631,8 @@
         "match_kind": "exact"
       },
       "note": "`imp_and` (`a → (b ∧ c) ↔ (a → b) ∧ (a → c)`) and `or_imp` (`(a ∨ b) → c ↔ (a → c) ∧ (b → c)`) formalize the antidistributive laws for `→` over `∧`/`∨`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "084f4bc94948"
     }
   ]
 }

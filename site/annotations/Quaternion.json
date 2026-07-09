@@ -11,6 +11,13 @@
         "section": "Definition",
         "snippet": "A quaternion is an expression of the form"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Quaternion",
+        "module": "Mathlib.Algebra.Quaternion",
+        "match_kind": "exact"
+      },
+      "note": "`Quaternion R := ℍ[R,-1,0,-1]` defines quaternions over a ring, instantiated as `ℍ[R]`.",
       "provenance": "ai-agent1",
       "id": "6fa58f62269e"
     },
@@ -21,6 +28,13 @@
         "section": "Definition",
         "snippet": "if a , b , c , d are all zero, the quaternion is the zero quaternion"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuaternionAlgebra.instZero",
+        "module": "Mathlib.Algebra.Quaternion",
+        "match_kind": "exact"
+      },
+      "note": "The `Zero ℍ[R,c₁,c₂,c₃]` instance defines `0 = ⟨0,0,0,0⟩`.",
       "provenance": "ai-agent1",
       "id": "a3b36d60a4e3"
     },
@@ -31,6 +45,13 @@
         "section": "Definition",
         "snippet": "can be decomposed into its scalar part"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuaternionAlgebra.im",
+        "module": "Mathlib.Algebra.Quaternion",
+        "match_kind": "exact"
+      },
+      "note": "`QuaternionAlgebra.re` (the structure projection) and `QuaternionAlgebra.im` give the scalar and vector parts, with `re_add_im : ↑a.re + a.im = a`.",
       "provenance": "ai-agent1",
       "id": "ea15fb979f6d"
     },
@@ -41,6 +62,13 @@
         "section": "Definition",
         "snippet": "A quaternion that equals its real part (that is, its vector part is zero) is called a scalar quaternion"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "QuaternionAlgebra.eq_re_iff_mem_range_coe",
+        "module": "Mathlib.Algebra.Quaternion",
+        "match_kind": "invocation"
+      },
+      "note": "There is no named `IsScalar`/`isReal` predicate, but `eq_re_iff_mem_range_coe` (and `star_eq_self`) characterize quaternions equal to their real part.",
       "provenance": "ai-agent1",
       "id": "ccaca97d2ed1"
     },
@@ -51,6 +79,13 @@
         "section": "Definition",
         "snippet": "A quaternion that equals its vector part is called a vector quaternion"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "QuaternionAlgebra.star_eq_neg",
+        "module": "Mathlib.Algebra.Quaternion",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib lacks a named `IsVector` predicate, but characterizes vector quaternions via `star_eq_neg ↔ a.re = 0`.",
       "provenance": "ai-agent1",
       "id": "83d841c7545b"
     },
@@ -61,6 +96,13 @@
         "section": "Definition",
         "snippet": "Quaternions form a 4-dimensional vector space over the real numbers"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Quaternion.finrank_eq_four",
+        "module": "Mathlib.Algebra.Quaternion",
+        "match_kind": "generalization"
+      },
+      "note": "`finrank_eq_four` and `rank_eq_four` show `Module.finrank R ℍ[R] = 4`, with explicit `basisOneIJK` basis.",
       "provenance": "ai-agent1",
       "id": "8875f39fbb62"
     },
@@ -71,6 +113,13 @@
         "section": "Definition",
         "snippet": "A multiplicative group structure, called the Hamilton product"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuaternionAlgebra.instMul",
+        "module": "Mathlib.Algebra.Quaternion",
+        "match_kind": "generalization"
+      },
+      "note": "The `Mul ℍ[R,c₁,c₂,c₃]` instance encodes the Hamilton product with explicit formula (`mk_mul_mk`).",
       "provenance": "ai-agent1",
       "id": "30cc010a21ba"
     },
@@ -81,6 +130,13 @@
         "section": "Definition",
         "snippet": "Thus the quaternions form a division algebra"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Quaternion.instDivisionRing",
+        "module": "Mathlib.Algebra.Quaternion",
+        "match_kind": "exact"
+      },
+      "note": "`instance instDivisionRing : DivisionRing ℍ[R]` (for linearly ordered field `R`) gives the division algebra structure; combined with `Algebra R ℍ[R]`.",
       "provenance": "ai-agent1",
       "id": "bf2efed52bdc"
     },
@@ -91,6 +147,13 @@
         "section": "Multiplication of basis elements",
         "snippet": "The multiplication with 1 of the basis elements"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuaternionAlgebra.mk_mul_mk",
+        "module": "Mathlib.Algebra.Quaternion",
+        "match_kind": "invocation"
+      },
+      "note": "Multiplication by `1` follows from the `One` and `Mul` instances and `mk_mul_mk` computes any product including those with `1`.",
       "provenance": "ai-agent1",
       "id": "c434105bb852"
     },
@@ -101,6 +164,13 @@
         "section": "Multiplication of basis elements",
         "snippet": "The products of other basis elements are"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuaternionAlgebra.Basis.i_mul_k",
+        "module": "Mathlib.Algebra.QuaternionBasis",
+        "match_kind": "generalization"
+      },
+      "note": "The `QuaternionAlgebra.Basis` API contains the products `i_mul_k`, `k_mul_i`, `k_mul_j`, `j_mul_k`, `k_mul_k` (for the standard quaternion algebra these recover ij=k etc.).",
       "provenance": "ai-agent1",
       "id": "726025d2056e"
     },
@@ -111,6 +181,13 @@
         "section": "Center",
         "snippet": "The center of a noncommutative ring is the subring of elements"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Subring.center",
+        "module": "Mathlib.Algebra.Ring.Subring.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Subring.center R` is the subring of elements commuting with every element of `R`.",
       "provenance": "ai-agent1",
       "id": "cdab202859cd"
     },
@@ -121,6 +198,13 @@
         "section": "Center",
         "snippet": "The center of the quaternion algebra is the subfield of scalar quaternions"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "I could not locate a Mathlib theorem identifying `Subring.center ℍ[ℝ]` with the scalar quaternions.",
       "provenance": "ai-agent1",
       "id": "18177bc35918"
     },
@@ -131,6 +215,13 @@
         "section": "Center",
         "snippet": "the equation z 2 + 1 = 0 , has infinitely many quaternion solutions"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem stating the equation `z^2+1=0` over `ℍ` has infinitely many solutions appears in Mathlib.",
       "provenance": "ai-agent1",
       "id": "98e379170f2a"
     },
@@ -141,28 +232,15 @@
         "section": "Hamilton product",
         "snippet": "their product, called the Hamilton product"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuaternionAlgebra.mk_mul_mk",
+        "module": "Mathlib.Algebra.Quaternion",
+        "match_kind": "generalization"
+      },
+      "note": "`mk_mul_mk` (and `re_mul`, `imI_mul`, `imJ_mul`, `imK_mul` for `Quaternion`) expands the Hamilton product componentwise.",
       "provenance": "ai-agent1",
       "id": "b5b124fa5a68"
-    },
-    {
-      "kind": "definition",
-      "label": "Scalar quaternion (restated)",
-      "anchor": {
-        "section": "Scalar and vector parts",
-        "snippet": "is called a scalar quaternion"
-      },
-      "provenance": "ai-agent1",
-      "id": "46669b4a114d"
-    },
-    {
-      "kind": "definition",
-      "label": "Vector quaternion (restated)",
-      "anchor": {
-        "section": "Scalar and vector parts",
-        "snippet": "is called a vector quaternion"
-      },
-      "provenance": "ai-agent1",
-      "id": "50b3667fab0b"
     },
     {
       "kind": "definition",
@@ -171,6 +249,13 @@
         "section": "Scalar and vector parts",
         "snippet": "is called its scalar part"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuaternionAlgebra.im",
+        "module": "Mathlib.Algebra.Quaternion",
+        "match_kind": "exact"
+      },
+      "note": "`re` (projection) and `im : ℍ[R,c₁,c₂,c₃] → ℍ[R,c₁,c₂,c₃]` define the scalar and vector parts.",
       "provenance": "ai-agent1",
       "id": "3f7caa821eff"
     },
@@ -181,6 +266,13 @@
         "section": "Conjugation, the norm, and reciprocal",
         "snippet": "The conjugate of q is the quaternion"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuaternionAlgebra.instStarQuaternionAlgebra",
+        "module": "Mathlib.Algebra.Quaternion",
+        "match_kind": "exact"
+      },
+      "note": "Quaternion conjugation is the `Star` instance on `ℍ[R,c₁,c₂,c₃]`, with `imI_star`, `imJ_star`, `imK_star` giving the negation formulas.",
       "provenance": "ai-agent1",
       "id": "9aae9fa2d4fe"
     },
@@ -191,6 +283,13 @@
         "section": "Conjugation, the norm, and reciprocal",
         "snippet": "Conjugation is an involution"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "star_star",
+        "module": "Mathlib.Algebra.Star.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib's `StarRing ℍ[R,c₁,c₂,c₃]` instance (`instStarRing`) makes conjugation an involution, so `star_star a = a`.",
       "provenance": "ai-agent1",
       "id": "bc85c8dfed21"
     },
@@ -201,8 +300,32 @@
         "section": "Conjugation, the norm, and reciprocal",
         "snippet": "The conjugate of a product of two quaternions is the product of the conjugates in the reverse order"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "star_mul",
+        "module": "Mathlib.Algebra.Star.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Inherited from `StarRing ℍ[R,c₁,c₂,c₃]`: `star (a * b) = star b * star a`.",
       "provenance": "ai-agent1",
       "id": "dec2db3840ad"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conjugation expressible via quaternion arithmetic",
+      "anchor": {
+        "section": "Conjugation, the norm, and reciprocal",
+        "snippet": "The conjugation of a quaternion, in contrast to the complex setting, can be expressed with multiplication and addition of quaternions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Quaternion.star_eq_two_re_sub",
+        "module": "Mathlib.Algebra.Quaternion",
+        "match_kind": "exact"
+      },
+      "note": "`star_eq_two_re_sub : star a = ↑(2 * a.re) - a` gives conjugation by addition/multiplication only.",
+      "provenance": "ai",
+      "id": "2c6669f3cd1f"
     },
     {
       "kind": "proposition",
@@ -211,6 +334,13 @@
         "section": "Conjugation, the norm, and reciprocal",
         "snippet": "Conjugation can be used to extract the scalar and vector parts"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Quaternion.self_add_star",
+        "module": "Mathlib.Algebra.Quaternion",
+        "match_kind": "exact"
+      },
+      "note": "`self_add_star : a + star a = 2 * a.re` (and `re_add_im`, `sub_re_self`) recover the scalar and vector parts via conjugation.",
       "provenance": "ai-agent1",
       "id": "06af08e97a5c"
     },
@@ -221,8 +351,32 @@
         "section": "Conjugation, the norm, and reciprocal",
         "snippet": "The square root of the product of a quaternion with its conjugate is called its norm"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Quaternion.normSq",
+        "module": "Mathlib.Algebra.Quaternion",
+        "match_kind": "exact"
+      },
+      "note": "`normSq a = (a * star a).re`, and the `NormedAddCommGroup ℍ` instance in `Mathlib.Analysis.Quaternion` provides the norm itself.",
       "provenance": "ai-agent1",
       "id": "42ef6682c446"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quaternion norm equals Euclidean norm on R^4",
+      "anchor": {
+        "section": "Conjugation, the norm, and reciprocal",
+        "snippet": "it is the same as the Euclidean norm"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Quaternion.linearIsometryEquivTuple",
+        "module": "Mathlib.Analysis.Quaternion",
+        "match_kind": "exact"
+      },
+      "note": "`linearIsometryEquivTuple : ℍ ≃ₗᵢ[ℝ] EuclideanSpace ℝ (Fin 4)` is precisely the isometry with the Euclidean norm on `ℝ⁴`.",
+      "provenance": "ai",
+      "id": "56ef0c7d3ba7"
     },
     {
       "kind": "proposition",
@@ -231,6 +385,13 @@
         "section": "Conjugation, the norm, and reciprocal",
         "snippet": "Multiplying a quaternion by a real number scales its norm by the absolute value of the number"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Quaternion.instNormedAlgebra",
+        "module": "Mathlib.Analysis.Quaternion",
+        "match_kind": "invocation"
+      },
+      "note": "The `NormedAlgebra ℝ ℍ` instance (and `Quaternion.norm_coe`) makes scalar multiplication norm-multiplicative: `‖r • q‖ = |r| * ‖q‖`.",
       "provenance": "ai-agent1",
       "id": "3252901f8f91"
     },
@@ -241,6 +402,13 @@
         "section": "Conjugation, the norm, and reciprocal",
         "snippet": "the norm is multiplicative"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Quaternion.instNormedDivisionRing",
+        "module": "Mathlib.Analysis.Quaternion",
+        "match_kind": "exact"
+      },
+      "note": "The `NormedDivisionRing ℍ` instance bundles `norm_mul a b = ‖a‖ * ‖b‖`; `normSq` is also a `MonoidWithZeroHom`.",
       "provenance": "ai-agent1",
       "id": "85d89787da50"
     },
@@ -251,6 +419,13 @@
         "section": "Conjugation, the norm, and reciprocal",
         "snippet": "to define the distance"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Quaternion.instNormedAddCommGroup",
+        "module": "Mathlib.Analysis.Quaternion",
+        "match_kind": "invocation"
+      },
+      "note": "Distance `dist a b = ‖a - b‖` follows from the `NormedAddCommGroup ℍ` instance.",
       "provenance": "ai-agent1",
       "id": "0d550a505d7e"
     },
@@ -261,6 +436,13 @@
         "section": "Conjugation, the norm, and reciprocal",
         "snippet": "a metric space"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Quaternion.instNormedAddCommGroup",
+        "module": "Mathlib.Analysis.Quaternion",
+        "match_kind": "exact"
+      },
+      "note": "`NormedAddCommGroup ℍ` (plus `CompleteSpace ℍ`) endows quaternions with a metric/complete metric space structure.",
       "provenance": "ai-agent1",
       "id": "b1c1ab86322d"
     },
@@ -271,6 +453,13 @@
         "section": "Unit quaternion",
         "snippet": "A unit quaternion is a quaternion of norm one"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Quaternion.instNormOneClass",
+        "module": "Mathlib.Analysis.Quaternion",
+        "match_kind": "invocation"
+      },
+      "note": "Unit quaternions are not a named subgroup, but can be expressed via `unitary ℍ` or `Metric.sphere (0:ℍ) 1`; no dedicated `UnitQuaternion`/`versor` declaration exists.",
       "provenance": "ai-agent1",
       "id": "fa791764d0f6"
     },
@@ -281,6 +470,13 @@
         "section": "Unit quaternion",
         "snippet": "Every nonzero quaternion has a unique polar decomposition"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no explicit theorem decomposing a nonzero quaternion uniquely as norm × unit quaternion.",
       "provenance": "ai-agent1",
       "id": "494035403c8b"
     },
@@ -291,6 +487,13 @@
         "section": "Unit quaternion",
         "snippet": "So the reciprocal of q is defined to be"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Quaternion.instInv",
+        "module": "Mathlib.Algebra.Quaternion",
+        "match_kind": "exact"
+      },
+      "note": "`instInv : Inv ℍ[R]` defines `a⁻¹ = (normSq a)⁻¹ • star a` (via `instGroupWithZero`/`instDivisionRing`).",
       "provenance": "ai-agent1",
       "id": "2bc9edb2127c"
     },
@@ -301,6 +504,13 @@
         "section": "Algebraic properties",
         "snippet": "are a non-commutative, associative algebra over the real numbers"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuaternionAlgebra.instAlgebra",
+        "module": "Mathlib.Algebra.Quaternion",
+        "match_kind": "exact"
+      },
+      "note": "`Algebra R ℍ[R]` plus `Ring ℍ[R]` give the associative algebra structure; non-commutativity is implicit in the multiplication formula.",
       "provenance": "ai-agent1",
       "id": "8dd2e844b22d"
     },
@@ -311,6 +521,13 @@
         "section": "Algebraic properties",
         "snippet": "The Frobenius theorem states that there are exactly three"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not contain Frobenius's classification of finite-dimensional associative real division algebras.",
       "provenance": "ai-agent1",
       "id": "1fd07009a68f"
     },
@@ -321,6 +538,13 @@
         "section": "Algebraic properties",
         "snippet": "Hurwitz's theorem says that there are only four"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hurwitz's classification of normed division algebras over ℝ (ℝ, ℂ, ℍ, 𝕆) is not in Mathlib.",
       "provenance": "ai-agent1",
       "id": "be02f9e32273"
     },
@@ -331,6 +555,13 @@
         "section": "Algebraic properties",
         "snippet": "This non-abelian group is called the quaternion group"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuaternionGroup",
+        "module": "Mathlib.GroupTheory.SpecificGroups.Quaternion",
+        "match_kind": "generalization"
+      },
+      "note": "`QuaternionGroup n` is the generalized quaternion group of order `4n`; `QuaternionGroup 2` is Q₈.",
       "provenance": "ai-agent1",
       "id": "9ab9a89cadb5"
     },
@@ -341,6 +572,13 @@
         "section": "Algebraic properties",
         "snippet": "The quaternions are isomorphic to the quotient ring"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No isomorphism `ℝ[Q₈]/⟨1+x⟩ ≃ ℍ` appears in Mathlib.",
       "provenance": "ai-agent1",
       "id": "7542229c2b31"
     },
@@ -351,6 +589,13 @@
         "section": "Quaternions and three-dimensional geometry",
         "snippet": "their dot product"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Quaternion.inner_def",
+        "module": "Mathlib.Analysis.Quaternion",
+        "match_kind": "generalization"
+      },
+      "note": "The inner product `⟪a,b⟫ = (a * star b).re` from the `InnerProductSpace ℝ ℍ` instance specializes to the 3D dot product on vector quaternions, but there is no dedicated `dot` for them.",
       "provenance": "ai-agent1",
       "id": "e68b1ea24d2b"
     },
@@ -361,6 +606,13 @@
         "section": "Quaternions and three-dimensional geometry",
         "snippet": "The cross product of p and q relative to the orientation"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`Matrix.crossProduct` exists on `Fin 3 → R` but there is no formal identification of it with the vector part of `p*q` on vector quaternions.",
       "provenance": "ai-agent1",
       "id": "a857ab3b6d9b"
     },
@@ -371,6 +623,13 @@
         "section": "Quaternions and three-dimensional geometry",
         "snippet": "For the commutator"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no Mathlib lemma identifying `p*q - q*p` of vector quaternions with twice the cross product.",
       "provenance": "ai-agent1",
       "id": "bcba7b735d98"
     },
@@ -381,6 +640,13 @@
         "section": "Quaternions and three-dimensional geometry",
         "snippet": "two quaternions commute if and only if their vector parts are collinear"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no theorem characterizing commuting quaternions by collinear vector parts.",
       "provenance": "ai-agent1",
       "id": "53409bc87e7d"
     },
@@ -391,6 +657,13 @@
         "section": "Quaternions and three-dimensional geometry",
         "snippet": "Unit quaternions can be identified with rotations"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib declaration realizes the map from unit quaternions to SO(3) rotations.",
       "provenance": "ai-agent1",
       "id": "2724c8948094"
     },
@@ -401,6 +674,13 @@
         "section": "Representation as complex 2 × 2 matrices",
         "snippet": "can be represented using a complex 2 × 2 matrix as"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No ring homomorphism `ℍ →* Matrix (Fin 2) (Fin 2) ℂ` realizing the standard 2×2 representation is in Mathlib.",
       "provenance": "ai-agent1",
       "id": "36ab1a9a5d00"
     },
@@ -411,6 +691,13 @@
         "section": "Representation as complex 2 × 2 matrices",
         "snippet": "This representation has the following properties"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No properties (determinant=normSq, trace=2re, etc.) of a quaternion-to-2×2-complex representation appear in Mathlib.",
       "provenance": "ai-agent1",
       "id": "fe158304d935"
     },
@@ -421,6 +708,13 @@
         "section": "Representation as real 4 × 4 matrices",
         "snippet": "Using 4 × 4 real matrices, that same quaternion can be written as"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No quaternion-to-4×4-real representation is defined in Mathlib.",
       "provenance": "ai-agent1",
       "id": "5903bcd28a64"
     },
@@ -431,6 +725,13 @@
         "section": "Representation as real 4 × 4 matrices",
         "snippet": "There are 48 distinct matrix representations of this form"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No combinatorial statement about 48 such representations is in Mathlib.",
       "provenance": "ai-agent1",
       "id": "a54a4cc595f2"
     },
@@ -441,6 +742,13 @@
         "section": "Lagrange's four-square theorem",
         "snippet": "every nonnegative integer is the sum of four integer squares"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.sum_four_squares",
+        "module": "Mathlib.NumberTheory.SumFourSquares",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.sum_four_squares n : ∃ a b c d, a^2 + b^2 + c^2 + d^2 = n` is Lagrange's four-square theorem.",
       "provenance": "ai-agent1",
       "id": "9f4406accf1b"
     },
@@ -451,6 +759,13 @@
         "section": "Quaternions as pairs of complex numbers",
         "snippet": "quaternions are the result of applying the Cayley–Dickson construction to the complex numbers"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Cayley–Dickson construction is not in Mathlib.",
       "provenance": "ai-agent1",
       "id": "f200a79b4469"
     },
@@ -461,6 +776,13 @@
         "section": "Square roots of −1",
         "snippet": "A quaternion squares to −1 if and only if it is a vector quaternion with norm 1"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "I could not find a Mathlib theorem characterizing `{q : ℍ | q^2 = -1}` as the unit 2-sphere in vector quaternions.",
       "provenance": "ai-agent1",
       "id": "1f46b4ca12af"
     },
@@ -471,6 +793,13 @@
         "section": "Square roots of −1",
         "snippet": "Only negative real quaternions have infinitely many square roots"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement counting square roots of quaternions appears in Mathlib.",
       "provenance": "ai-agent1",
       "id": "ce49bb86bf18"
     },
@@ -481,6 +810,13 @@
         "section": "As a union of complex planes",
         "snippet": "This is an injective ring homomorphism"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Quaternion.ofComplex",
+        "module": "Mathlib.Analysis.Quaternion",
+        "match_kind": "special_case"
+      },
+      "note": "`Quaternion.ofComplex : ℂ →ₐ[ℝ] ℍ` is the canonical embedding using `i`; a general statement that any square root of `-1` induces an embedding is not formalized.",
       "provenance": "ai-agent1",
       "id": "a0309d6741ac"
     },
@@ -491,6 +827,13 @@
         "section": "As a union of complex planes",
         "snippet": "Every non-real quaternion generates a subalgebra of the quaternions that is isomorphic to"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem identifying the subalgebra generated by a non-real quaternion with `ℂ` is in Mathlib.",
       "provenance": "ai-agent1",
       "id": "911d40ce1a1a"
     },
@@ -501,6 +844,13 @@
         "section": "Commutative subrings",
         "snippet": "two quaternions p and q commute"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No description of commutative subrings of ℍ in terms of collinear vector parts is in Mathlib.",
       "provenance": "ai-agent1",
       "id": "5694ec81139c"
     },
@@ -511,6 +861,13 @@
         "section": "Square roots of arbitrary quaternions",
         "snippet": "has at least one square root"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no `∃ r, r^2 = q` statement for arbitrary quaternions.",
       "provenance": "ai-agent1",
       "id": "46d5d4f46e33"
     },
@@ -521,6 +878,13 @@
         "section": "Square roots of arbitrary quaternions",
         "snippet": "nonzero, non-scalar quaternions, or positive scalar quaternions, have exactly two roots"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No case analysis of square-root multiplicity by quaternion type is in Mathlib.",
       "provenance": "ai-agent1",
       "id": "57df117e6fb5"
     },
@@ -531,6 +895,13 @@
         "section": "Exponential, logarithm, and power functions",
         "snippet": "the exponential is computed as"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Quaternion.exp_eq",
+        "module": "Mathlib.Analysis.Normed.Algebra.QuaternionExponential",
+        "match_kind": "exact"
+      },
+      "note": "`NormedSpace.exp ℝ : ℍ → ℍ` is available and `Quaternion.exp_eq` gives the closed-form `exp q = exp q.re • (cos‖q.im‖ + (sin‖q.im‖/‖q.im‖) • q.im)`.",
       "provenance": "ai-agent1",
       "id": "08de3d09cd08"
     },
@@ -541,6 +912,13 @@
         "section": "Exponential, logarithm, and power functions",
         "snippet": "and the logarithm is"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no `Quaternion.log` definition in Mathlib.",
       "provenance": "ai-agent1",
       "id": "43a15dd9591a"
     },
@@ -551,6 +929,13 @@
         "section": "Exponential, logarithm, and power functions",
         "snippet": "the polar decomposition of a quaternion may be written"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Quaternion.exp_eq",
+        "module": "Mathlib.Analysis.Normed.Algebra.QuaternionExponential",
+        "match_kind": "invocation"
+      },
+      "note": "The polar form `q = ‖q‖ exp(θ n̂)` is implicit via `exp_eq` plus norm/im decomposition but not stated as its own decomposition theorem.",
       "provenance": "ai-agent1",
       "id": "952e1e28bb3e"
     },
@@ -561,6 +946,13 @@
         "section": "Exponential, logarithm, and power functions",
         "snippet": "Any unit quaternion may be expressed in polar form as"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Quaternion.exp_of_re_eq_zero",
+        "module": "Mathlib.Analysis.Normed.Algebra.QuaternionExponential",
+        "match_kind": "invocation"
+      },
+      "note": "`exp_of_re_eq_zero` gives `exp(n̂ θ) = cos θ + sin θ · n̂` for imaginary `q`, the polar form of a unit quaternion, though no `polarForm` definition is named.",
       "provenance": "ai-agent1",
       "id": "31cc9b7a8762"
     },
@@ -571,6 +963,13 @@
         "section": "Exponential, logarithm, and power functions",
         "snippet": "The power of a quaternion raised to an arbitrary (real) exponent"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Real (non-integer) powers of quaternions are not defined in Mathlib (only `Monoid.npow`/`zpow`).",
       "provenance": "ai-agent1",
       "id": "1e93d3b1ab8e"
     },
@@ -581,6 +980,13 @@
         "section": "Geodesic norm",
         "snippet": "The geodesic distance"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No geodesic distance on the unit-quaternion 3-sphere is defined in the Mathlib quaternion files.",
       "provenance": "ai-agent1",
       "id": "3cc9ab869550"
     },
@@ -591,6 +997,13 @@
         "section": "Three-dimensional and four-dimensional rotation groups",
         "snippet": "Conjugation by a unit quaternion"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem that `v ↦ q * v * q⁻¹` is a rotation of ℝ³ is in Mathlib.",
       "provenance": "ai-agent1",
       "id": "529fe02b814e"
     },
@@ -601,6 +1014,13 @@
         "section": "Three-dimensional and four-dimensional rotation groups",
         "snippet": "The set of all unit quaternions ( versors ) forms a 3-sphere"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The double cover `Spin(3) → SO(3)` via unit quaternions is not formalized in Mathlib.",
       "provenance": "ai-agent1",
       "id": "36d8bac1f7b6"
     },
@@ -611,6 +1031,13 @@
         "section": "Three-dimensional and four-dimensional rotation groups",
         "snippet": "The versors' group is isomorphic to SU(2)"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No isomorphism between unit quaternions and SU(2) is formalized in Mathlib.",
       "provenance": "ai-agent1",
       "id": "350728ab4d4f"
     },
@@ -621,8 +1048,32 @@
         "section": "Three-dimensional and four-dimensional rotation groups",
         "snippet": "is called the ring of Hurwitz quaternions"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Hurwitz integer ring is absent from Mathlib (the only `Hurwitz` hits are zeta-function lemmas).",
       "provenance": "ai-agent1",
       "id": "f2449caf7ded"
+    },
+    {
+      "kind": "proposition",
+      "label": "24 unit Hurwitz quaternions form the 24-cell",
+      "anchor": {
+        "section": "Three-dimensional and four-dimensional rotation groups",
+        "snippet": "There are 24 unit quaternions in this ring, and they are the vertices of a regular 24 cell"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither Hurwitz quaternions nor the 24-cell polytope are in Mathlib.",
+      "provenance": "ai",
+      "id": "0cecf37c3635"
     },
     {
       "kind": "definition",
@@ -631,6 +1082,13 @@
         "section": "Quaternion algebras",
         "snippet": "a four-dimensional unitary associative algebra can be defined over F with basis"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuaternionAlgebra",
+        "module": "Mathlib.Algebra.Quaternion",
+        "match_kind": "exact"
+      },
+      "note": "`QuaternionAlgebra R a b c` defines the generalized quaternion algebra over any ring `R`, including any field.",
       "provenance": "ai-agent1",
       "id": "3c6052824d69"
     },
@@ -641,6 +1099,13 @@
         "section": "Quaternion algebras",
         "snippet": "Quaternion algebras are isomorphic to the algebra of 2×2 matrices"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Classification of quaternion algebras over a field as either a division algebra or `M₂(F)` is not in Mathlib.",
       "provenance": "ai-agent1",
       "id": "454796f70f6c"
     },
@@ -651,6 +1116,13 @@
         "section": "Quaternions as the even part of Cl 3,0 (ℝ)",
         "snippet": "the reflection of a vector r in a plane perpendicular to a unit vector w can be written"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Clifford-algebra reflection identity `r' = -w r w` for `Cl₃,₀(ℝ)` is not formalized.",
       "provenance": "ai-agent1",
       "id": "a7466dc1aa2c"
     },
@@ -661,6 +1133,13 @@
         "section": "Quaternions as the even part of Cl 3,0 (ℝ)",
         "snippet": "the two structures"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No isomorphism `ℍ ≃ₐ[ℝ] CliffordAlgebra⁺ (Q₃,₀)` appears in Mathlib.",
       "provenance": "ai-agent1",
       "id": "4e5ac43842ec"
     },
@@ -671,6 +1150,13 @@
         "section": "Brauer group",
         "snippet": "the Brauer group of the real numbers consists of two classes"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The `BrauerGroup` is defined in `Mathlib.Algebra.BrauerGroup.Defs`, but `Br(ℝ) ≃ ℤ/2` is not proved.",
       "provenance": "ai-agent1",
       "id": "0de941477218"
     },
@@ -681,6 +1167,13 @@
         "section": "Brauer group",
         "snippet": "By the Artin–Wedderburn theorem"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsSemisimpleRing.isSemisimpleRing_iff_pi_matrix_divisionRing",
+        "module": "Mathlib.RingTheory.SimpleModule.WedderburnArtin",
+        "match_kind": "exact"
+      },
+      "note": "`isSemisimpleRing_iff_pi_matrix_divisionRing` (and `exists_ringEquiv_matrix_divisionRing` for simple Artinian rings) is the Artin–Wedderburn structure theorem.",
       "provenance": "ai-agent1",
       "id": "acb30bff2240"
     }
