@@ -788,6 +788,7 @@ textarea:focus,button:focus-visible,summary:focus-visible{outline:2px solid var(
 button{border:1px solid #4694d8;border-radius:8px;background:#1d6fb8;color:white;font:inherit;font-weight:650;padding:9px 13px;cursor:pointer}
 button:hover{background:#2380d2}button:disabled{opacity:.55;cursor:wait}
 .hint{color:var(--muted);font-size:.86rem}.hint code{color:#d7e8ff}
+.format-guide{margin-top:12px;border-top:1px solid var(--line);padding-top:10px;color:var(--muted);font-size:.86rem}.format-guide summary{cursor:pointer;color:var(--ink);font-weight:650}.format-guide p{margin:8px 0}.format-guide ul{margin:7px 0 0 18px;padding:0}.format-guide li{margin:3px 0}.format-guide pre{margin:8px 0 0;overflow:auto;border-radius:8px;background:#08172a;border:1px solid var(--line);padding:9px;color:#d7e8ff;font:12px/1.5 "SF Mono",Menlo,Consolas,monospace}
 .summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:12px}
 .metric{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px}.metric b{display:block;font-size:1.35rem}.metric span{color:var(--muted);font-size:.8rem}
 .preview{margin-bottom:14px}.preview-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px}.preview-head h2{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin:0}.edge-count{font-size:.8rem;color:var(--muted)}
@@ -807,7 +808,13 @@ code{font-family:"SF Mono",Menlo,Consolas,monospace}
 </div>
 <label for="qs-rows">Rows</label><textarea id="qs-rows" spellcheck="false">${htmlEscape(sample)}</textarea>
 <div class="controls"><button id="submit" type="button">Submit rows</button><span id="status" class="status"></span></div>
-<p class="hint">Select at least two databases, including at least one Brain-node database. Up to ${MAX_QUICK_ROWS} rows per submit.</p></section>
+<p class="hint">Select at least two databases, including at least one Brain-node database. Up to ${MAX_QUICK_ROWS} rows per submit.</p>
+<details class="format-guide" open><summary>Input format</summary>
+<p>Use one row per connection. Tab-separated values are recommended; comma-separated CSV also works when the first line has no tabs. The example below uses <code>&lt;Tab&gt;</code> markers to show where real tab characters go.</p>
+<ul><li>The first line may be headers such as <code>mathlib</code>, <code>wikidata</code>, <code>lmfdb</code>, <code>nlab</code>, <code>file</code>, and <code>note</code>.</li><li>If there is no header row, columns follow the selected databases in order, then <code>file</code> when Mathlib is selected, then <code>note</code>.</li><li>Blank lines and lines starting with <code>#</code> are ignored.</li></ul>
+<pre>mathlib&lt;Tab&gt;wikidata&lt;Tab&gt;lmfdb&lt;Tab&gt;file&lt;Tab&gt;note
+CommGroup&lt;Tab&gt;Q181296&lt;Tab&gt;group.abelian&lt;Tab&gt;Mathlib/Algebra/Group/Defs.lean&lt;Tab&gt;Tentative match</pre>
+</details></section>
 <section><div class="summary"><div class="metric"><b id="accepted">0</b><span>accepted</span></div><div class="metric"><b id="failed">0</b><span>failed</span></div><div class="metric"><b id="queued">0</b><span>queue size</span></div></div>
 <div class="preview"><div class="preview-head"><h2>Generated Brain edges</h2><span id="edge-count" class="edge-count">0 edges</span></div><div id="edges" class="edges"></div></div>
 <div id="results" class="results"></div></section>
