@@ -235,7 +235,13 @@ describe("POST /api/brain/quickstatements", () => {
     expect(res.status).toBe(200);
     const j = await res.json() as { accepted: number; failed: number; rows: Array<Record<string, unknown>> };
     expect(j).toMatchObject({ accepted: 1, failed: 0 });
-    expect(j.rows[0]).toMatchObject({ ok: true, id: "group.abelian", qid: CONCEPT, decl: "CommGroup" });
+    expect(j.rows[0]).toMatchObject({
+      ok: true,
+      ids: { lmfdb: "group.abelian", wikidata: CONCEPT, mathlib: "CommGroup" },
+      queued: true,
+      queue_id: "group.abelian",
+      queue_decl: "CommGroup",
+    });
 
     const rows = edgeRows(h);
     expect(rows).toHaveLength(3);
@@ -268,7 +274,7 @@ describe("POST /api/brain/quickstatements", () => {
       decl: "CommGroup",
       file: "Mathlib/Algebra/Group/Defs.lean",
       status: "brain",
-      source: "quickstatements-lmfdb",
+      source: "quickstatements",
       priority_source: "community-bulk",
       provenance_tier: "community-human",
       actor_type: "human",
@@ -282,9 +288,48 @@ describe("POST /api/brain/quickstatements", () => {
     const second = await postQuick(h, { db: "lmfdb", items: [QUICK_ITEM] }, { user: "u-human" });
     expect(second.status).toBe(200);
     const j = await second.json() as { rows: Array<Record<string, unknown>> };
-    expect(j.rows[0]).toMatchObject({ xref_duplicate: true, direct_xref_duplicate: true, formalizes_duplicate: true });
+    const edges = j.rows[0].edges as Array<Record<string, unknown>>;
+    expect(edges).toHaveLength(3);
+    expect(edges.every((e) => e.duplicate === true)).toBe(true);
     expect(edgeRows(h)).toHaveLength(3);
     expect((await lmfdbQueue(h)).items).toHaveLength(1);
+  });
+
+  it("accepts a generic Mathlib-to-nLab connection without touching the LMFDB queue", async () => {
+    const h = harness();
+    const res = await postQuick(
+      h,
+      {
+        databases: ["mathlib", "nlab"],
+        items: [{ mathlib: "CommGroup", nlab: "abelian_group", file: "Mathlib/Algebra/Group/Defs.lean" }],
+      },
+      { user: "u-human" },
+    );
+    expect(res.status).toBe(200);
+    const j = await res.json() as { accepted: number; queue_count: number; rows: Array<Record<string, unknown>> };
+    expect(j.accepted).toBe(1);
+    expect(j.queue_count).toBe(0);
+    expect(j.rows[0]).toMatchObject({ ok: true, ids: { mathlib: "CommGroup", nlab: "abelian_group" }, queued: false });
+    expect(edgeRows(h)).toHaveLength(1);
+    expect(edgeRows(h)[0]).toMatchObject({
+      src: DECL,
+      dst: "xref:nlab:abelian_group",
+      kind: "xref",
+      actor_type: "human",
+    });
+    expect((await lmfdbQueue(h)).items).toHaveLength(0);
+  });
+
+  it("rejects selections with no Brain-node database", async () => {
+    const h = harness();
+    const res = await postQuick(
+      h,
+      { databases: ["lmfdb", "nlab"], items: [{ lmfdb: "group.abelian", nlab: "abelian_group" }] },
+      { user: "u-human" },
+    );
+    expect(res.status).toBe(400);
+    expect((await res.json() as Record<string, unknown>).error).toBe("select at least one database with Brain nodes");
+    expect(edgeRows(h)).toHaveLength(0);
   });
 
   it("also accepts direct LMFDB-to-Mathlib rows without a Wikidata QID", async () => {
