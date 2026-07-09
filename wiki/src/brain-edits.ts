@@ -149,8 +149,8 @@ async function resolveNodeEndpoint(c: Context<{ Bindings: Env }>, id: string): P
 }
 
 function actorTypeFor(bearer: boolean, body: Record<string, unknown>): ActorType | string {
-  if (!bearer) return "human";
   const declared = str(body.actor_type);
+  if (!bearer && !declared) return "human";
   if (declared !== "human" && declared !== "ai") return "API calls must set actor_type to 'human' or 'ai'";
   return declared;
 }
@@ -293,8 +293,10 @@ interface QuickRowResult {
   file?: string;
   label?: string;
   xref_edge_id?: string;
+  direct_xref_edge_id?: string;
   formalizes_edge_id?: string;
   xref_duplicate?: boolean;
+  direct_xref_duplicate?: boolean;
   formalizes_duplicate?: boolean;
   error?: string;
 }
@@ -468,16 +470,27 @@ async function processQuickLmfdbRow(
   const source = "quickstatements-lmfdb";
   const submittedAt = new Date().toISOString();
   const xrefDst = `xref:lmfdb_knowl:${normalized.lmfdbId}`;
-  const xrefSrc = normalized.qid || normalized.declNode;
-  const xref = await insertCommunityEdge(c, user, actorType, xrefSrc, xrefDst, "xref", {
+  const directXref = await insertCommunityEdge(c, user, actorType, normalized.declNode, xrefDst, "xref", {
     note: normalized.note,
     db: "lmfdb_knowl",
     value: normalized.lmfdbId,
     qid: normalized.qid,
     mathlib_decl: normalized.decl,
     source,
+    assertion: "mathlib-lmfdb-tag",
     submitted_at: submittedAt,
   });
+  const qidXref = normalized.qid
+    ? await insertCommunityEdge(c, user, actorType, normalized.qid, xrefDst, "xref", {
+        note: normalized.note,
+        db: "lmfdb_knowl",
+        value: normalized.lmfdbId,
+        mathlib_decl: normalized.decl,
+        source,
+        assertion: "concept-lmfdb-xref",
+        submitted_at: submittedAt,
+      })
+    : null;
   const formalizes = normalized.qid
     ? await insertCommunityEdge(c, user, actorType, normalized.qid, normalized.declNode, "formalizes", {
         note: normalized.note,
@@ -503,7 +516,7 @@ async function processQuickLmfdbRow(
     decl_node: normalized.declNode,
     actor_type: actorType,
     added_by: user.id,
-    brain_edge_id: formalizes?.id || xref.id,
+    brain_edge_id: directXref.id,
     confidence: normalized.confidence || "medium",
     review_reason: normalized.qid
       ? "LMFDB bulk submission joined to a submitted Mathlib formalizes edge"
@@ -520,9 +533,11 @@ async function processQuickLmfdbRow(
       decl: normalized.decl,
       file,
       label,
-      xref_edge_id: xref.id,
+      xref_edge_id: qidXref?.id,
+      direct_xref_edge_id: directXref.id,
       formalizes_edge_id: formalizes?.id,
-      xref_duplicate: xref.duplicate,
+      xref_duplicate: qidXref?.duplicate,
+      direct_xref_duplicate: directXref.duplicate,
       formalizes_duplicate: formalizes?.duplicate,
     },
   };
@@ -582,17 +597,27 @@ header{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;
 h1{margin:0;font-size:1.45rem;font-weight:680}.sub{margin:4px 0 0;color:var(--muted);font-size:.92rem}
 a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 .links{display:flex;gap:10px;flex-wrap:wrap;font-size:.9rem}.links a{border:1px solid var(--line);border-radius:8px;padding:6px 10px;background:rgba(255,255,255,.03)}
-.grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);gap:16px}@media(max-width:760px){.grid{grid-template-columns:1fr}header{align-items:flex-start;flex-direction:column}}
+.grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(300px,.95fr);gap:16px}@media(max-width:760px){.grid{grid-template-columns:1fr}header{align-items:flex-start;flex-direction:column}}
 section{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px}
-label{display:block;color:var(--muted);font-size:.8rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:7px}
-textarea{width:100%;min-height:360px;resize:vertical;border:1px solid var(--line2);border-radius:8px;background:#08172a;color:var(--ink);padding:12px;font:13px/1.45 "SF Mono",Menlo,Consolas,monospace}
-textarea:focus,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+label,.label{display:block;color:var(--muted);font-size:.8rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:7px}
+textarea{width:100%;min-height:332px;resize:vertical;border:1px solid var(--line2);border-radius:8px;background:#08172a;color:var(--ink);padding:12px;font:13px/1.45 "SF Mono",Menlo,Consolas,monospace}
+textarea:focus,button:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.topbar{display:grid;grid-template-columns:minmax(210px,.9fr) minmax(230px,1.1fr);gap:10px;margin-bottom:12px}@media(max-width:760px){.topbar{grid-template-columns:1fr}}
+.seg{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line2);border-radius:8px;overflow:hidden;background:#08172a}
+.seg input{position:absolute;opacity:0;pointer-events:none}.seg label{margin:0;padding:8px 10px;text-align:center;cursor:pointer;color:var(--muted);font-size:.9rem;text-transform:none;letter-spacing:0}
+.seg input:checked+label{background:#1d6fb8;color:white}.seg label+input+label{border-left:1px solid var(--line2)}
+.db-menu{position:relative}.db-menu summary{list-style:none;cursor:pointer;border:1px solid var(--line2);border-radius:8px;background:#08172a;color:var(--ink);padding:8px 10px;font-size:.92rem}.db-menu summary::-webkit-details-marker{display:none}
+.db-menu summary:after{content:"v";float:right;color:var(--muted)}.db-menu[open] summary{border-bottom-left-radius:0;border-bottom-right-radius:0}
+.db-panel{border:1px solid var(--line2);border-top:0;border-radius:0 0 8px 8px;background:#08172a;padding:8px 10px;display:grid;gap:7px}
+.check{display:flex;align-items:center;gap:8px;color:var(--ink);font-size:.92rem}.check input{accent-color:#1d6fb8}.check small{color:var(--muted)}
 .controls{display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap}
 button{border:1px solid #4694d8;border-radius:8px;background:#1d6fb8;color:white;font:inherit;font-weight:650;padding:9px 13px;cursor:pointer}
 button:hover{background:#2380d2}button:disabled{opacity:.55;cursor:wait}
 .hint{color:var(--muted);font-size:.86rem}.hint code{color:#d7e8ff}
 .summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:12px}
 .metric{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px}.metric b{display:block;font-size:1.35rem}.metric span{color:var(--muted);font-size:.8rem}
+.preview{margin-bottom:14px}.preview-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px}.preview-head h2{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin:0}.edge-count{font-size:.8rem;color:var(--muted)}
+.edges{display:flex;flex-direction:column;gap:7px;max-height:240px;overflow:auto}.edge{border:1px solid var(--line);border-radius:8px;background:rgba(255,255,255,.025);padding:8px;font-size:.85rem}.edge .rel{color:var(--warn);font-family:"SF Mono",Menlo,Consolas,monospace;margin:0 6px}.edge .src,.edge .dst{word-break:break-word}.empty-preview{color:var(--muted);font-size:.9rem;border:1px dashed var(--line);border-radius:8px;padding:12px}
 .results{display:flex;flex-direction:column;gap:8px}.row{border:1px solid var(--line);border-radius:8px;background:rgba(255,255,255,.025);padding:9px 10px;font-size:.9rem}
 .row.ok{border-left:3px solid var(--good)}.row.bad{border-left:3px solid var(--bad)}.row .meta{color:var(--muted);font-size:.8rem;margin-top:2px}
 .status{min-height:1.4em;color:var(--muted);font-size:.9rem}
@@ -601,10 +626,16 @@ code{font-family:"SF Mono",Menlo,Consolas,monospace}
 <header><div><h1>LMFDB bulk tags</h1><p class="sub">Paste LMFDB knowl, optional Wikidata QID, and Mathlib declaration rows.</p></div>
 <nav class="links"><a href="/queue/lmfdb">LMFDB queue</a><a href="/brain">Brain</a></nav></header>
 <div class="grid">
-<section><label for="qs-rows">Rows</label><textarea id="qs-rows" spellcheck="false">${htmlEscape(sample)}</textarea>
+<section>
+<div class="topbar">
+<div><div class="label">Provenance</div><div class="seg" role="radiogroup" aria-label="Tag provenance"><input id="actor-human" name="actor" type="radio" value="human" checked><label for="actor-human">Human-generated</label><input id="actor-ai" name="actor" type="radio" value="ai"><label for="actor-ai">AI-generated</label></div></div>
+<div><div class="label">Database columns</div><details class="db-menu"><summary id="db-summary">Mathlib, LMFDB, Wikidata</summary><div class="db-panel"><label class="check"><input type="checkbox" checked disabled>Mathlib <small>required</small></label><label class="check"><input id="db-lmfdb" type="checkbox" checked disabled>LMFDB <small>queue target</small></label><label class="check"><input id="db-wikidata" type="checkbox" checked>Wikidata <small>concept anchor</small></label></div></details></div>
+</div>
+<label for="qs-rows">Rows</label><textarea id="qs-rows" spellcheck="false">${htmlEscape(sample)}</textarea>
 <div class="controls"><button id="submit" type="button">Submit rows</button><span id="status" class="status"></span></div>
-<p class="hint">TSV columns: <code>lmfdb_id</code>, optional <code>qid</code>, <code>decl</code>, <code>file</code>, <code>note</code>. Up to ${MAX_QUICK_ROWS} rows per submit.</p></section>
+<p class="hint">Column names follow the selected databases. The generated Brain edges are previewed before submit. Up to ${MAX_QUICK_ROWS} rows per submit.</p></section>
 <section><div class="summary"><div class="metric"><b id="accepted">0</b><span>accepted</span></div><div class="metric"><b id="failed">0</b><span>failed</span></div><div class="metric"><b id="queued">0</b><span>queue size</span></div></div>
+<div class="preview"><div class="preview-head"><h2>Generated Brain edges</h2><span id="edge-count" class="edge-count">0 edges</span></div><div id="edges" class="edges"></div></div>
 <div id="results" class="results"></div></section>
 </div></main>
 <script>
@@ -612,16 +643,97 @@ const rows = document.getElementById("qs-rows");
 const btn = document.getElementById("submit");
 const statusEl = document.getElementById("status");
 const results = document.getElementById("results");
+const edgeList = document.getElementById("edges");
+const edgeCount = document.getElementById("edge-count");
+const dbSummary = document.getElementById("db-summary");
+const wikidataToggle = document.getElementById("db-wikidata");
+const initialSample = ${JSON.stringify(sample)};
+let dirty = false;
 const setText = (id, value) => { document.getElementById(id).textContent = String(value); };
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, ch => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[ch]));
+function splitLine(line, delim) {
+  const out = []; let cur = ""; let quoted = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') {
+      if (quoted && line[i + 1] === '"') { cur += '"'; i++; } else { quoted = !quoted; }
+    } else if (ch === delim && !quoted) { out.push(cur.trim()); cur = ""; }
+    else { cur += ch; }
+  }
+  out.push(cur.trim()); return out;
+}
+function normHead(s) { return String(s || "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, ""); }
+function parseRows() {
+  const lines = rows.value.replace(/\\r/g, "").split("\\n").map(l => l.trimEnd()).filter(l => l.trim() && !l.trim().startsWith("#"));
+  if (!lines.length) return [];
+  const delim = lines[0].includes("\\t") ? "\\t" : ",";
+  const first = splitLine(lines[0], delim).map(normHead);
+  const known = new Set(["lmfdb_id","lmfdb","lmfdb_knowl","knowl","id","qid","wikidata","wikidata_qid","concept_qid","decl","mathlib","mathlib_decl","file","mathlib_file","module","mathlib_module","label","note","notes","comment","description","confidence"]);
+  const hasHeader = first.some(h => known.has(h));
+  const headers = hasHeader ? first : (wikidataToggle.checked ? ["lmfdb_id","qid","decl","file","note"] : ["lmfdb_id","decl","file","note"]);
+  const data = hasHeader ? lines.slice(1) : lines;
+  return data.map((line, idx) => {
+    const cells = splitLine(line, delim);
+    const row = { line: idx + (hasHeader ? 2 : 1) };
+    headers.forEach((h, i) => row[h || ("col_" + i)] = cells[i] || "");
+    if (!wikidataToggle.checked) { delete row.qid; delete row.wikidata; delete row.wikidata_qid; delete row.concept_qid; }
+    return row;
+  });
+}
+function first(row, names) {
+  for (const n of names) if (row[n]) return String(row[n]).trim();
+  return "";
+}
+function declNode(decl) {
+  let d = String(decl || "").trim().replace(/^\\x60+|\\x60+$/g, "");
+  if (d.startsWith("decl:Mathlib:")) d = d.slice("decl:Mathlib:".length);
+  return d ? "decl:Mathlib:" + d : "";
+}
+function generatedEdges() {
+  const edges = [];
+  for (const row of parseRows()) {
+    const id = first(row, ["lmfdb_id","lmfdb","lmfdb_knowl","knowl","id"]).toLowerCase();
+    const decl = declNode(first(row, ["decl","mathlib_decl","mathlib"]));
+    const qid = wikidataToggle.checked ? first(row, ["qid","wikidata_qid","wikidata","concept_qid"]).toUpperCase() : "";
+    if (id && decl) edges.push({ src: decl, rel: "xref", dst: "xref:lmfdb_knowl:" + id });
+    if (id && decl && qid) {
+      edges.push({ src: qid, rel: "xref", dst: "xref:lmfdb_knowl:" + id });
+      edges.push({ src: qid, rel: "formalizes", dst: decl });
+    }
+  }
+  return edges;
+}
+function refreshPreview() {
+  dbSummary.textContent = wikidataToggle.checked ? "Mathlib, LMFDB, Wikidata" : "Mathlib, LMFDB";
+  const edges = generatedEdges();
+  edgeCount.textContent = edges.length + (edges.length === 1 ? " edge" : " edges");
+  edgeList.innerHTML = edges.length
+    ? edges.slice(0, 120).map(e => '<div class="edge"><span class="src"><code>'+esc(e.src)+'</code></span><span class="rel">'+esc(e.rel)+'</span><span class="dst"><code>'+esc(e.dst)+'</code></span></div>').join("")
+    : '<div class="empty-preview">No complete rows yet.</div>';
+}
+function refreshSample() {
+  if (dirty) return;
+  rows.value = wikidataToggle.checked
+    ? initialSample
+    : "lmfdb_id\\tdecl\\tfile\\tnote\\ngroup.abelian\\tCommGroup\\tMathlib/Algebra/Group/Defs.lean\\tTentative LMFDB match";
+  refreshPreview();
+}
+rows.addEventListener("input", () => { dirty = true; refreshPreview(); });
+wikidataToggle.addEventListener("change", refreshSample);
+document.querySelectorAll("input[name=actor]").forEach(el => el.addEventListener("change", refreshPreview));
+refreshPreview();
 btn.addEventListener("click", async () => {
   btn.disabled = true; statusEl.textContent = "Submitting...";
   try {
-    const res = await fetch("/api/brain/quickstatements", { method:"POST", headers:{ "Content-Type":"application/json" }, body:JSON.stringify({ db:"lmfdb", text: rows.value }) });
+    const actor = document.querySelector("input[name=actor]:checked").value;
+    const res = await fetch("/api/brain/quickstatements", { method:"POST", headers:{ "Content-Type":"application/json" }, body:JSON.stringify({ db:"lmfdb", actor_type: actor, items: parseRows() }) });
     const json = await res.json().catch(() => ({}));
     if (res.status === 401) { statusEl.innerHTML = '<a href="/login?returnTo=/quickstatements">Sign in to submit</a>'; return; }
     setText("accepted", json.accepted || 0); setText("failed", json.failed || 0); setText("queued", json.queue_count || 0);
-    results.innerHTML = (json.rows || []).map((r) => '<div class="row '+(r.ok?'ok':'bad')+'"><div>'+(r.ok?'accepted':'failed')+' line '+esc(r.line)+': <code>'+esc(r.id || r.qid || '')+'</code> '+(r.decl ? '&rarr; <code>'+esc(r.decl)+'</code>' : '')+'</div><div class="meta">'+esc(r.error || [r.qid, r.file].filter(Boolean).join(" / "))+'</div></div>').join("");
+    results.innerHTML = (json.rows || []).map((r) => {
+      const meta = r.error || [r.qid, r.file, r.direct_xref_duplicate ? "direct edge already existed" : ""].filter(Boolean).join(" / ");
+      return '<div class="row '+(r.ok?'ok':'bad')+'"><div>'+(r.ok?'accepted':'failed')+' line '+esc(r.line)+': <code>'+esc(r.id || r.qid || '')+'</code> '+(r.decl ? '&rarr; <code>'+esc(r.decl)+'</code>' : '')+'</div><div class="meta">'+esc(meta)+'</div></div>';
+    }).join("");
     statusEl.textContent = json.ok ? "Done" : (json.error || "No rows accepted");
   } catch (e) {
     statusEl.textContent = "Submit failed";
