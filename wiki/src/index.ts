@@ -40,7 +40,6 @@ import { wikifunctionsPage } from "./wikifunctions.js";
 import { wikifunctionsVerifyPage } from "./wikifunctions-verify.js";
 import { registerReviewRoutes } from "./review.js";
 import { registerDeclRoutes } from "./decl.js";
-import { registerAtlasRoutes } from "./atlas.js";
 import { registerBrainRoutes } from "./brain.js";
 import { registerBrainEditRoutes } from "./brain-edits.js";
 import { registerBrainApiRoutes } from "./brain-api.js";
@@ -108,7 +107,6 @@ const app = new Hono<{ Bindings: Env }>();
 registerAuthRoutes(app);
 registerReviewRoutes(app);
 registerDeclRoutes(app);
-registerAtlasRoutes(app);
 registerBrainRoutes(app);
 registerBrainEditRoutes(app);
 registerBrainApiRoutes(app);
@@ -417,7 +415,7 @@ async function homeRows(c: Context<{ Bindings: Env }>) {
 
 // the landing page IS the Brain (embedded); the article directory moved to /articles
 app.get("/", async (c) => {
-  const cacheKey = "page:home:v6";  // v6: Map tab dropped (superseded by the Brain)
+  const cacheKey = "page:home:v8";  // v8: article-graph dropped, MCP link in both navs
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const html = brainLanding(await homeRows(c));
@@ -435,7 +433,7 @@ app.get("/articles", async (c) => {
 });
 
 app.get("/sitemap.xml", async (c) => {
-  const cacheKey = "page:sitemap:v3";  // v3: + /brain flagship
+  const cacheKey = "page:sitemap:v4";  // v4: − article-graph, + /mcp docs
   const headers = { "Content-Type": "application/xml; charset=utf-8" };
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.body(cached, 200, headers);
@@ -449,31 +447,29 @@ app.get("/sitemap.xml", async (c) => {
   return c.body(xml, 200, headers);
 });
 
-// ---- /graph_data.json — concept-graph data, KV-first so the nightly can
-// refresh it (verified @[wikidata] tags + live Mathlib coverage) via
-// `wrangler kv key put`, with NO Worker deploy. run_worker_first (wrangler.jsonc)
-// routes this path to the Worker; ./public/graph_data.json is the fallback on a
-// KV miss (never-seeded or evicted). ------------------------------------------
-app.get("/graph_data.json", async (c) => {
-  const headers = {
-    "Content-Type": "application/json; charset=utf-8",
-    "Cache-Control": "public, max-age=600",
-  };
-  const kv = await c.env.RENDER_CACHE.get("graph:data:v1");
-  if (kv) return c.body(kv, 200, headers);
-  // ASSETS.fetch bypasses run_worker_first, so this serves the static file
-  // (no recursion) — the last-deployed graph_data.json as a safety net.
-  return c.env.ASSETS.fetch(new Request(new URL("/graph_data.json", c.req.url)));
-});
+// ---- retired graph/atlas data endpoints → 410 Gone (2026-07-10). The old
+// concept-graph + bubble-atlas stack is fully superseded by the Brain: pages
+// 301 below, and the data endpoints answer 410 with pointers so any remaining
+// agent integrations get an actionable error instead of stale data. ------------
+const GONE_HEADERS = { "Cache-Control": "public, max-age=86400" };
+const gone = (c: Context<{ Bindings: Env }>) =>
+  c.json({
+    ok: false, error: "gone",
+    note: "this endpoint is retired — the Brain supersedes the old concept graph/atlas",
+    see: { page: "/brain", api: "/api/brain/node?id=", reference: "/brain/api", mcp: "/mcp" },
+  }, 410, GONE_HEADERS);
+app.get("/graph_data.json", gone);
+app.get("/atlas_data.json", gone);
+app.get("/api/atlas", gone);
+app.get("/api/atlas/:key", gone);
 
-// ---- /map, /graph, /atlas → /brain (301). The /map page (bubbles/web/sources)
-// is retired — /brain supersedes it as the primary explorer. The DATA endpoints
-// /graph_data.json + /atlas_data.json (+ /api/atlas) stay live for agents and
-// deep links; only the map/graph/atlas *pages* are gone. -----------------------
+// ---- /map, /graph, /atlas, /article-graph → /brain (301): every retired
+// graph page. /brain supersedes them all. --------------------------------------
 app.get("/map", (c) => c.redirect("/brain", 301));
 app.get("/map-v2", (c) => c.redirect("/brain", 301));
 app.get("/graph", (c) => c.redirect("/brain", 301));
 app.get("/atlas", (c) => c.redirect("/brain", 301));
+app.get("/article-graph", (c) => c.redirect("/brain", 301));
 
 // ---- /favicon.ico — WikiLean's mark: the "W" drawn as a graph of connected
 // nodes (a constellation), which is what the site now IS — the Brain, a network

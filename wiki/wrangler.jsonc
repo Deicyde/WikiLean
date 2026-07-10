@@ -7,11 +7,10 @@
   "compatibility_flags": ["nodejs_compat"],
   "assets": {
     "directory": "./public",
-    "binding": "ASSETS",
-    // Let the Worker handle the *_data.json graph blobs so it can serve the KV
-    // copies the nightly refreshes (no Worker deploy needed to update the map).
-    // The static files in ./public stay as the fallback on a KV miss.
-    "run_worker_first": ["/graph_data.json", "/map_data.json"]
+    "binding": "ASSETS"
+    // (run_worker_first for the old graph/atlas data blobs removed 2026-07-10:
+    // those endpoints are retired — 410 in src/index.ts — and the assets no
+    // longer ship. The Brain shards serve asset-first as before.)
   },
   "observability": {
     "enabled": true
