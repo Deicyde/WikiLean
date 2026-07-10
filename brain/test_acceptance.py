@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
-"""BRAIN acceptance gate — the 5 datapoints of brain/SCHEMA.md §Acceptance + invariants.
+"""BRAIN acceptance gate — the datapoints of brain/SCHEMA.md §Acceptance + invariants.
 
-Runs against brain/data/{nodes,edges}.jsonl and exits 0 only if every check
-passes (plain python3, no pytest — usable as a CI gate). Beyond the 5
+Runs against brain/data/{nodes,edges,edges_links}.jsonl and exits 0 only if
+every check passes (plain python3, no pytest — usable as a CI gate). The edge
+set ships split across two files (GitHub 100 MB limit): edges.jsonl = every
+kind except `links`; edges_links.jsonl = only kind=='links' rows — gitignored
+and rebuilt by brain/build_edges.py, absent ⇒ treated as empty. Beyond the
 datapoints it enforces the schema laws: every edge carries
 kind/provenance/confidence; every provenance.source is a key in
 catalog/data/source_registry.json (the single source of truth for provenance);
@@ -16,14 +19,21 @@ P3 (insphere multi-QID) and P4 (Q217413 container link) depend on the agent
 discovery workflow's verified fold-in; until that lands they fail with a
 distinct PENDING DISCOVERY tag. Pending is still not passing — exit stays 1.
 
+v2 datapoints P6-P9 (ext nodes / projected links / snippet licensing / units +
+gold facet bits) auto-SKIP — with a printed note, never counted as passing —
+when catalog/data/external/ lacks the needed ingest file (P6-P8) or when
+nodes.jsonl predates the v2 unit build (P9). Skipped checks don't gate exit.
+
     python3 brain/test_acceptance.py
 """
 from __future__ import annotations
 
 import json
+import os
 import re
 import sys
 from collections import Counter
+from itertools import chain
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -31,7 +41,11 @@ ROOT = HERE.parent
 DATA = HERE / "data"
 NODES = DATA / "nodes.jsonl"
 EDGES = DATA / "edges.jsonl"
+EDGES_LINKS = DATA / "edges_links.jsonl"   # split-out links rows; absent ⇒ empty
 REGISTRY = ROOT / "catalog" / "data" / "source_registry.json"
+EXTERNAL = Path(os.environ.get("BRAIN_EXTERNAL_DIR",
+                               str(ROOT / "catalog" / "data" / "external")))
+TAGS = ROOT / "catalog" / "data" / "mathlib_tag_xrefs.jsonl"
 
 MAX_EXAMPLES = 5  # cap per-failure example spam
 
@@ -70,6 +84,11 @@ def registry_source_keys() -> set[str]:
     return keys
 
 
+def registry_crossrefs() -> dict[str, dict]:
+    """crossref_sources — valid ext `db` values + per-source snippet policy."""
+    return json.loads(REGISTRY.read_text()).get("crossref_sources", {})
+
+
 def iter_jsonl(path: Path, require_key: str):
     """Stream records, skipping blank lines and _meta/attribution rows
     (rows lacking the identity key)."""
@@ -96,12 +115,23 @@ def main() -> int:
         return 1
 
     valid_sources = registry_source_keys()
+    crossrefs = registry_crossrefs()
+    no_snippet_dbs = {k for k, v in crossrefs.items()
+                      if not (v.get("ingest") or {}).get("snippets")}
 
     # ---- nodes pass: id set, duplicates, targeted payloads -------------------
     node_ids: set[str] = set()
     dup_ids: Counter[str] = Counter()
     n_nodes = 0
     cat_node = None
+    n_ext = 0
+    ext_bad_db: Counter[str] = Counter()
+    ext_snippet_bad: list[str] = []
+    lmfdb_ext: dict | None = None
+    n_units = 0
+    unit_has_decls: set[str] = set()
+    gold_bit_decls: set[str] = set()   # bare decl labels with f bit0
+    decl_labels: set[str] = set()
     for rec in iter_jsonl(NODES, "id"):
         n_nodes += 1
         nid = rec["id"]
@@ -110,6 +140,26 @@ def main() -> int:
         node_ids.add(nid)
         if nid == CAT_THEORY:
             cat_node = rec
+        t = rec.get("type")
+        if t == "ext":
+            n_ext += 1
+            if rec.get("db") not in crossrefs:
+                ext_bad_db[str(rec.get("db"))] += 1
+            if rec.get("db") in no_snippet_dbs and "snippet" in rec \
+                    and len(ext_snippet_bad) < MAX_EXAMPLES:
+                ext_snippet_bad.append(nid)
+            if LMFDB_ABELIAN.match(nid):
+                lmfdb_ext = rec
+        elif t == "concept":
+            u = rec.get("unit")
+            if isinstance(u, dict):
+                n_units += 1
+                if u.get("decls"):
+                    unit_has_decls.add(nid)
+        elif t == "decl":
+            decl_labels.add(rec.get("label"))
+            if rec.get("f", 0) & 1:
+                gold_bit_decls.add(rec.get("label"))
 
     # ---- edges pass: invariants + targeted captures, one streaming pass ------
     n_edges = 0
@@ -126,8 +176,16 @@ def main() -> int:
     module_in: set[str] = set()        # formalizes srcs into Module
     insphere_in: set[str] = set()      # formalizes srcs into insphere
     cat_fz: set[str] = set()           # formalizes dsts of Q217413
+    fz_concepts: set[str] = set()      # concepts with >=1 formalizes->decl
+    n_projected = 0                    # concept->concept projected links edges
 
-    for rec in iter_jsonl(EDGES, "src"):
+    edge_streams = [iter_jsonl(EDGES, "src")]
+    if EDGES_LINKS.exists():
+        edge_streams.append(iter_jsonl(EDGES_LINKS, "src"))
+    else:
+        print(f"NOTE: {EDGES_LINKS.relative_to(ROOT)} missing — links edges "
+              f"treated as empty (rebuild with brain/build_edges.py)")
+    for rec in chain(*edge_streams):
         n_edges += 1
         src, dst, kind = rec["src"], rec.get("dst", ""), rec.get("kind")
         prov = rec.get("provenance")
@@ -145,6 +203,8 @@ def main() -> int:
                 n_fz_bad_dst += 1
                 if len(fz_bad_dst) < MAX_EXAMPLES:
                     fz_bad_dst.append(f"{src} -> {dst}")
+            if src.startswith("Q") and dst.startswith("decl:"):
+                fz_concepts.add(src)
             if src == ABELIAN:
                 abelian_fz.add(dst)
             elif src == CAT_THEORY:
@@ -160,6 +220,10 @@ def main() -> int:
                     contains_bad.append(f"{src} -> {dst}")
         elif kind == "xref" and src == ABELIAN:
             abelian_xref.add(dst)
+        elif kind == "links":
+            if (rec.get("evidence") or {}).get("projected") is True \
+                    and src.startswith("Q") and dst.startswith("Q"):
+                n_projected += 1
 
     # ---- checks ---------------------------------------------------------------
     # (id, description, ok, details)
@@ -242,12 +306,100 @@ def main() -> int:
         rollup_bad[:MAX_EXAMPLES],
     ))
 
+    # ---- v2 datapoints (SCHEMA.md 6-9) — auto-skip without their inputs -------
+    # ok == "skip": external ingest (P6-P8) or the v2 unit build (P9) hasn't run
+    # here yet; a skip prints its reason and never counts as passing.
+    lmfdb_pages = any((EXTERNAL / f"{k}_pages.jsonl").exists()
+                      for k in ("lmfdb_knowl", "lmfdb"))
+    if not lmfdb_pages:
+        checks.append(("P6", "ext lmfdb group.abelian node w/ CC-BY-SA snippet, "
+                       "reached from Q181296", "skip",
+                       [f"no lmfdb pages file under {EXTERNAL} — ingest not run"]))
+    else:
+        has_node = lmfdb_ext is not None
+        has_snip = bool(has_node and lmfdb_ext.get("snippet")
+                        and "CC-BY-SA" in (lmfdb_ext.get("snippet_license") or ""))
+        reached = any(LMFDB_ABELIAN.match(d) and d in node_ids
+                      for d in abelian_xref)
+        checks.append((
+            "P6", "ext lmfdb group.abelian node w/ CC-BY-SA snippet, reached from Q181296",
+            has_node and has_snip and reached,
+            ([] if has_node else ["no ext node matching lmfdb group.abelian"])
+            + ([] if has_snip else ["node lacks a CC-BY-SA snippet"
+                                    + (f" (license={lmfdb_ext.get('snippet_license')!r})"
+                                       if has_node else "")])
+            + ([] if reached else [f"{ABELIAN} has no xref edge landing on the node"]),
+        ))
+
+    if not any(EXTERNAL.glob("*_links.jsonl")):
+        checks.append(("P7", ">=1 projected links edge joins two concept QIDs",
+                       "skip",
+                       [f"no *_links.jsonl under {EXTERNAL} — ingest not run"]))
+    else:
+        checks.append((
+            "P7", ">=1 projected links edge joins two concept QIDs",
+            n_projected >= 1,
+            [] if n_projected else ["no links edge with evidence.projected==true "
+                                    "between two Q-ids"],
+        ))
+
+    if not any(EXTERNAL.glob("*_pages.jsonl")):
+        checks.append(("P8", "every ext db is a registry crossref key; "
+                       "no-content dbs carry no snippet", "skip",
+                       [f"no *_pages.jsonl under {EXTERNAL} — ingest not run"]))
+    else:
+        checks.append((
+            "P8", f"every ext db ({n_ext} ext nodes) is a registry crossref key; "
+                  f"no-content dbs carry no snippet",
+            not ext_bad_db and not ext_snippet_bad,
+            [f"unregistered db '{d}' on {c} ext nodes"
+             for d, c in ext_bad_db.most_common(MAX_EXAMPLES)]
+            + [f"snippet stored on no-content-source node {i}"
+               for i in ext_snippet_bad],
+        ))
+
+    if n_units == 0:
+        checks.append(("P9", "formalized concepts carry unit.decls; f bit0 == "
+                       "gold @[wikidata] tag rows", "skip",
+                       ["no concept carries `unit` — nodes.jsonl predates the "
+                        "v2 build (rerun brain/build_nodes.py)"]))
+    else:
+        unit_missing = sorted(fz_concepts - unit_has_decls)
+        details = ([f"{len(unit_missing)} formalized concepts lack unit.decls, "
+                    f"e.g. {unit_missing[:MAX_EXAMPLES]}"] if unit_missing else [])
+        gold_ok = True
+        if TAGS.exists():
+            expected = set()
+            with TAGS.open() as f:
+                for line in f:
+                    line = line.strip()
+                    if line:
+                        r = json.loads(line)
+                        if r.get("db") == "wikidata" and r.get("decl") in decl_labels:
+                            expected.add(r["decl"])
+            extra = sorted(gold_bit_decls - expected)
+            missing = sorted(expected - gold_bit_decls)
+            gold_ok = not extra and not missing
+            if extra:
+                details.append(f"f bit0 set on non-gold decls: {extra[:MAX_EXAMPLES]}")
+            if missing:
+                details.append(f"gold-tagged decls missing f bit0: {missing[:MAX_EXAMPLES]}")
+        else:
+            details.append(f"NOTE: {TAGS.name} missing — gold-bit equality half skipped")
+        checks.append((
+            "P9", "formalized concepts carry unit.decls; f bit0 == gold @[wikidata] tag rows",
+            not unit_missing and gold_ok,
+            details,
+        ))
+
     # ---- report ---------------------------------------------------------------
     print(f"BRAIN acceptance — {n_nodes:,} nodes, {n_edges:,} edges "
           f"({len(valid_sources)} registry source keys)\n")
-    n_pass = n_hard = n_pending = 0
+    n_pass = n_hard = n_pending = n_skip = 0
     for cid, desc, ok, details in checks:
-        if ok:
+        if ok == "skip":
+            tag, n_skip = "SKIP", n_skip + 1
+        elif ok:
             tag, n_pass = "PASS", n_pass + 1
         elif cid in PENDING_DISCOVERY:
             tag, n_pending = "FAIL PENDING DISCOVERY", n_pending + 1
@@ -257,12 +409,13 @@ def main() -> int:
         for d in details:
             print(f"        - {d}")
 
-    print(f"\n{n_pass}/{len(checks)} passed"
-          f" ({n_hard} hard failures, {n_pending} pending-discovery)")
+    print(f"\n{n_pass}/{len(checks) - n_skip} passed"
+          f" ({n_hard} hard failures, {n_pending} pending-discovery, "
+          f"{n_skip} skipped)")
     if n_hard == 0 and n_pending:
         print("pending-discovery checks land with the discovery fold-in; "
               "exit stays 1 until they pass.")
-    return 0 if n_pass == len(checks) else 1
+    return 0 if n_pass == len(checks) - n_skip else 1
 
 
 if __name__ == "__main__":

@@ -50,6 +50,14 @@
         "type": "ratelimit",
         "namespace_id": "1003",
         "simple": { "limit": 120, "period": 60 }
+      },
+      // Anonymous MCP endpoint limiter: 120 JSON-RPC calls per minute, keyed
+      // mcp:<CF-Connecting-IP> (read-only surface; agents burst tools/call).
+      {
+        "name": "MCP_LIMITER",
+        "type": "ratelimit",
+        "namespace_id": "1004",
+        "simple": { "limit": 120, "period": 60 }
       }
     ]
   },

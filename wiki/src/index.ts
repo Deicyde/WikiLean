@@ -43,6 +43,8 @@ import { registerDeclRoutes } from "./decl.js";
 import { registerAtlasRoutes } from "./atlas.js";
 import { registerBrainRoutes } from "./brain.js";
 import { registerBrainEditRoutes } from "./brain-edits.js";
+import { registerBrainApiRoutes } from "./brain-api.js";
+import { registerMcpRoutes } from "./mcp.js";
 import { registerQueueRoutes } from "./queue.js";
 import type { Annotation } from "./engine/types.js";
 import type { Env } from "./env.js";
@@ -99,6 +101,7 @@ const RESERVED = new Set([
   "atlas",
   "brain",
   "articles",
+  "mcp",
 ]);
 
 const app = new Hono<{ Bindings: Env }>();
@@ -108,6 +111,8 @@ registerDeclRoutes(app);
 registerAtlasRoutes(app);
 registerBrainRoutes(app);
 registerBrainEditRoutes(app);
+registerBrainApiRoutes(app);
+registerMcpRoutes(app);
 registerQueueRoutes(app);
 
 // Renders (and KV-caches) the anonymous base page for an article. Takes the

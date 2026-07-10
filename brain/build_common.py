@@ -18,6 +18,7 @@ import json
 import os
 import re
 import sys
+import urllib.parse
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
@@ -48,10 +49,38 @@ OPTIONAL_INPUTS = {
     "container_links.jsonl": BRAIN_DATA / "container_links.jsonl",
     "discovery_proposals.jsonl": BRAIN_DATA / "discovery_proposals.jsonl",
     "mathlib_tag_xrefs.jsonl": DATA / "mathlib_tag_xrefs.jsonl",
+    "wikidata_descriptions.json": DATA / "wikidata_descriptions.json",
 }
+REGISTRY = DATA / "source_registry.json"
 
+# The edge set ships as TWO artifacts (GitHub's 100 MB per-file hard limit):
+# EDGES_OUT = every kind EXCEPT `links`; EDGES_LINKS_OUT = only kind=='links'
+# rows (gitignored, deterministically rebuilt from catalog/data/external/).
+# Readers treat a missing EDGES_LINKS_OUT as empty.
+EDGES_OUT = BRAIN_DATA / "edges.jsonl"
+EDGES_LINKS_OUT = BRAIN_DATA / "edges_links.jsonl"
+
+# "links" sorts last: page-level hyperlinks are the lowest-priority edge kind,
+# and appending keeps pre-v2 edge ordering byte-identical.
 KIND_ORDER = ["contains", "formalizes", "mentions", "depends", "relates",
-              "xref", "cites", "matches"]
+              "xref", "cites", "matches", "links"]
+
+# ---- SCHEMA.md v2 facet bitmask `f` -----------------------------------------
+F_GOLD_WIKIDATA = 1 << 0    # decl carries a gold @[wikidata] source tag
+F_STACKS_ATTR = 1 << 1      # decl carries @[stacks]
+F_KERODON_ATTR = 1 << 2     # decl carries @[kerodon]
+F_ANY_XREF = 1 << 3         # node is src or dst of >=1 xref edge
+F_FORMALIZED = 1 << 4       # concept display.status == formalized
+F_PARTIAL = 1 << 5          # concept display.status == partial
+F_ARTICLE = 1 << 6          # concept has an annotated WikiLean article
+F_LITERATURE = 1 << 7       # node has >=1 cites/matches edge
+F_EXT = 1 << 8              # node is an ext page
+F_HAS_SNIPPET = 1 << 15     # ext node stores a licensed content snippet
+F_DB_BIT = {"lmfdb_knowl": 1 << 9, "nlab": 1 << 10, "mathworld": 1 << 11,
+            "proofwiki": 1 << 12, "stacks": 1 << 13, "oeis": 1 << 14}
+
+# links evidence.context, best-first (dedup keeps the strongest context)
+CONTEXT_RANK = {"statement": 0, "proof": 1, "body": 2, "related": 3}
 
 # The xref keys of SCHEMA's edge table (P14534/mathlib is `formalizes` territory,
 # kgmid is a KG hub id, not an external DB page — neither becomes an xref edge).
@@ -89,6 +118,316 @@ def _edge(src: str, dst: str, kind: str, source: str, method: str, pin: str,
 
 def _prune(d: dict) -> dict:
     return {k: v for k, v in d.items() if v is not None}
+
+
+# ---- SCHEMA.md v2: external DB pages → ext nodes / links edges --------------
+
+def external_dir() -> Path:
+    """catalog/data/external unless BRAIN_EXTERNAL_DIR overrides (tests)."""
+    return Path(os.environ.get("BRAIN_EXTERNAL_DIR", str(DATA / "external")))
+
+
+def ext_node_cap() -> int:
+    return int(os.environ.get("BRAIN_EXT_NODE_CAP", "8000"))
+
+
+def load_crossref_registry(path: Path | None = None) -> dict[str, dict]:
+    """source_registry.json crossref_sources — ext `db` values MUST be keys here."""
+    return json.loads((path or REGISTRY).read_text()).get("crossref_sources", {})
+
+
+def load_external(ext_dir: Path, registry: dict[str, dict]) -> dict[str, dict]:
+    """Read brain/ingest output: <db>_pages.jsonl (+ optional <db>_links.jsonl).
+
+    Returns {db: {"pages": [...], "links": [...], "pin": iso-date, "paths": [...]}}
+    for every db whose files exist AND whose key is in the crossref registry.
+    Missing dir / no files → {} — the whole v2 layer degrades to a no-op.
+    """
+    out: dict[str, dict] = {}
+    if not ext_dir.is_dir():
+        return out
+    for pp in sorted(ext_dir.glob("*_pages.jsonl")):
+        db = pp.name[: -len("_pages.jsonl")]
+        if db not in registry:
+            print(f"WARNING: {pp.name} has no source_registry crossref_sources "
+                  f"key '{db}' — file skipped", file=sys.stderr)
+            continue
+        pages: list[dict] = []
+        with pp.open() as fh:
+            for line in fh:
+                line = line.strip()
+                if not line:
+                    continue
+                r = json.loads(line)
+                if "_meta" in r:
+                    continue
+                # contract-violating rows are never minted (fail-soft per row)
+                if r.get("db") != db or not r.get("id") or not r.get("title") \
+                        or not r.get("url"):
+                    continue
+                pages.append(r)
+        links: list[dict] = []
+        lp = ext_dir / f"{db}_links.jsonl"
+        if lp.exists():
+            with lp.open() as fh:
+                for line in fh:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    r = json.loads(line)
+                    if "_meta" in r:
+                        continue
+                    if not r.get("src") or not r.get("dst") or r["src"] == r["dst"]:
+                        continue
+                    links.append(r)
+        pin = datetime.fromtimestamp(pp.stat().st_mtime,
+                                     tz=timezone.utc).date().isoformat()
+        out[db] = {"pages": pages, "links": links, "pin": pin,
+                   "paths": [pp] + ([lp] if lp.exists() else [])}
+    # Agent-verified anchors (fold_proposals action:"xref" output): stamp the
+    # proposed qid onto pages that have none of their own — the ingest's CC0
+    # Wikidata qid always wins over an agent-proposed anchor. Stamped pages
+    # feed the same minting/xref/projection logic; qid_source marks the edge
+    # provenance as propose-then-approve rather than CC0 fact.
+    anchor_path = BRAIN_DATA / "ext_anchor_links.jsonl"
+    if anchor_path.exists() and out:
+        by_db: dict[str, dict[str, dict]] = {
+            db: {str(p["id"]): p for p in rec["pages"]} for db, rec in out.items()}
+        n_stamped = 0
+        with anchor_path.open() as fh:
+            for line in fh:
+                r = json.loads(line)
+                if "_meta" in r:
+                    continue
+                page = by_db.get(r.get("db"), {}).get(str(r.get("id")))
+                if page is not None and not page.get("qid"):
+                    page["qid"] = r["qid"]
+                    page["qid_source"] = "ext_anchor"
+                    page["qid_confidence"] = r.get("confidence", "medium")
+                    n_stamped += 1
+        if n_stamped:
+            print(f"  ext anchors: {n_stamped} agent-verified page qids stamped "
+                  f"(brain/data/ext_anchor_links.jsonl)", file=sys.stderr)
+    return out
+
+
+def external_layer(ext_data: dict[str, dict], *, concept_qids: set[str],
+                   xref_dsts: set[str], concept_anchor: dict[str, set],
+                   xref_pairs: set[tuple[str, str]], registry: dict[str, dict],
+                   cap: int) -> tuple[list[dict], list[dict], dict]:
+    """Mint ext nodes + links edges + concept projections per SCHEMA v2.
+
+    Minting policy: anchored pages (the page's `xref:<db>:<id>` is an xref dst
+    of some graph node, or its CC0 qid is a graph concept) plus pages <=1
+    link-hop from an anchored page, capped per db (anchored first, then the
+    frontier by inbound-link count). Snippets are stored ONLY where the
+    registry's ingest.snippets says the license permits — enforced here again
+    regardless of what the ingest emitted. Returns (ext_nodes, new_edges,
+    stats); ext node ids reproduce the historical xref edge dst string
+    byte-for-byte so existing xref edges resolve to the new nodes.
+    """
+    ext_nodes: list[dict] = []
+    new_edges: list[dict] = []
+    stats = {"minted": {}, "capped": {}, "links_page": 0, "links_projected": 0,
+             "xref_from_page_qid": 0}
+    for db in sorted(ext_data):
+        rec = ext_data[db]
+        snippets_ok = bool((registry[db].get("ingest") or {}).get("snippets"))
+        pin = rec["pin"]
+        pages = {p["id"]: p for p in rec["pages"]}
+
+        def eid(pid: str) -> str:
+            return f"xref:{db}:{pid}"
+
+        anchored = {pid for pid, p in pages.items()
+                    if eid(pid) in xref_dsts or p.get("qid") in concept_qids}
+        inbound = Counter(l["dst"] for l in rec["links"])
+        frontier: set[str] = set()
+        for l in rec["links"]:
+            s, d = l["src"], l["dst"]
+            if s in anchored and d in pages and d not in anchored:
+                frontier.add(d)
+            if d in anchored and s in pages and s not in anchored:
+                frontier.add(s)
+        order = sorted(anchored) + sorted(frontier, key=lambda p: (-inbound[p], p))
+        minted_set = set(order[:cap])
+        stats["minted"][db] = len(minted_set)
+        if len(order) > cap:
+            stats["capped"][db] = len(order) - cap
+
+        for pid in sorted(minted_set):
+            p = pages[pid]
+            node = {"id": eid(pid), "type": "ext", "db": db,
+                    "label": p["title"], "url": p["url"]}
+            if snippets_ok and p.get("snippet"):
+                node["snippet"] = p["snippet"]
+                node["snippet_license"] = p.get("snippet_license")
+            node["kind_hint"] = p.get("kind_hint")
+            node["qid"] = p.get("qid")
+            ext_nodes.append(_prune(node))
+            # a page whose CC0 qid is a graph concept gets the concept→ext
+            # xref edge when no pipeline emitted one (join completeness)
+            q = p.get("qid")
+            if q in concept_qids and (q, eid(pid)) not in xref_pairs:
+                stats["xref_from_page_qid"] += 1
+                if p.get("qid_source") == "ext_anchor":
+                    method = "sync-agents ext-anchor (fold-verified)"
+                    conf = p.get("qid_confidence", "medium")
+                else:
+                    method, conf = "external-ingest page qid", "high"
+                new_edges.append(_edge(q, eid(pid), "xref", db, method, pin,
+                                       conf, {"value": pid}))
+
+        # page-level links between MINTED nodes, deduped to the best context
+        best: dict[tuple[str, str], str] = {}
+        for l in rec["links"]:
+            s, d = l["src"], l["dst"]
+            if s in minted_set and d in minted_set:
+                ctx = l.get("context") or "body"
+                cur = best.get((s, d))
+                if cur is None or CONTEXT_RANK.get(ctx, 9) < CONTEXT_RANK.get(cur, 9):
+                    best[(s, d)] = ctx
+        for (s, d), ctx in sorted(best.items()):
+            new_edges.append(_edge(eid(s), eid(d), "links", db, "internal_link",
+                                   pin, "high", {"context": ctx}))
+        stats["links_page"] += len(best)
+
+        # concept projection: page A → page B where both anchor to graph
+        # concepts becomes concept→concept, deduped on (src, dst, via=db)
+        def anchors(pid: str) -> list[str]:
+            qs = set(concept_anchor.get(eid(pid), ()))
+            p = pages.get(pid)
+            if p and p.get("qid") in concept_qids:
+                qs.add(p["qid"])
+            return sorted(qs)
+
+        seen_proj: set[tuple[str, str]] = set()
+        for l in sorted(rec["links"], key=lambda l: (l["src"], l["dst"])):
+            for qa in anchors(l["src"]):
+                for qb in anchors(l["dst"]):
+                    if qa == qb or (qa, qb) in seen_proj:
+                        continue
+                    seen_proj.add((qa, qb))
+                    new_edges.append(_edge(qa, qb, "links", db,
+                                           "internal_link (projected)", pin,
+                                           "medium",
+                                           {"projected": True, "via": db,
+                                            "src_page": l["src"],
+                                            "dst_page": l["dst"]}))
+        stats["links_projected"] += len(seen_proj)
+    return ext_nodes, new_edges, stats
+
+
+def assemble_units(nodes: list[dict], edges: list[dict],
+                   descriptions: dict[str, str],
+                   registry: dict[str, dict]) -> None:
+    """Attach the SCHEMA v2 atomic-unit card to every concept node (mutates).
+
+    decls/containers from formalizes edges; xrefs from xref edges (label from
+    the minted ext node when present, url from the registry url_template);
+    article from slug + article_annotations; description from
+    wikidata_descriptions.json (universe description as fallback).
+    """
+    decl_mod = {n["id"]: n.get("module") for n in nodes if n["type"] == "decl"}
+    ext_label = {n["id"]: n.get("label") for n in nodes if n["type"] == "ext"}
+    ext_url = {n["id"]: n.get("url") for n in nodes if n["type"] == "ext"}
+    fz_decls: dict[str, dict[str, dict]] = defaultdict(dict)
+    fz_conts: dict[str, list[str]] = defaultdict(list)
+    xrefs: dict[str, dict[str, dict[str, dict]]] = \
+        defaultdict(lambda: defaultdict(dict))
+    for e in edges:
+        src = e["src"]
+        if e["kind"] == "formalizes":
+            dst = e["dst"]
+            if dst.startswith("decl:"):
+                bare = dst.split(":", 2)[2]
+                entry = _prune({
+                    "name": bare,
+                    "module": e["evidence"].get("module") or decl_mod.get(dst),
+                    "match_kind": e["evidence"].get("match_kind"),
+                    "confidence": e["confidence"]})
+                cur = fz_decls[src].get(bare)
+                if cur is None or (not cur.get("match_kind")
+                                   and entry.get("match_kind")):
+                    fz_decls[src][bare] = entry
+            elif dst.startswith("path:") and dst not in fz_conts[src]:
+                fz_conts[src].append(dst)
+        elif e["kind"] == "xref" and src.startswith("Q"):
+            db = e["provenance"]["source"]
+            val = str(e["evidence"].get("value") or e["dst"].split(":", 2)[2])
+            tmpl = (registry.get(db) or {}).get("url_template") or ""
+            # ids can carry spaces (nlab) — the template join must stay a
+            # valid URL; prefer the minted ext node's adapter-encoded url
+            url = ext_url.get(e["dst"]) or (
+                tmpl.replace("{id}", urllib.parse.quote(val, safe="/:().,'-+~"))
+                if tmpl else None)
+            xrefs[src][db].setdefault(val, _prune({
+                "id": val, "label": ext_label.get(e["dst"]), "url": url}))
+    for n in nodes:
+        if n["type"] != "concept":
+            continue
+        qid = n["id"]
+        unit: dict = {"qid": qid, "label": n.get("label")}
+        desc = descriptions.get(qid) or n.get("description")
+        if desc:
+            unit["description"] = desc
+        if n.get("slug") and n.get("article_annotations"):
+            unit["article"] = {"slug": n["slug"],
+                               "annotations": n["article_annotations"]}
+        unit["decls"] = [fz_decls[qid][k] for k in sorted(fz_decls.get(qid, {}))]
+        unit["containers"] = sorted(fz_conts.get(qid, []))
+        unit["xrefs"] = {db: [xrefs[qid][db][v] for v in sorted(xrefs[qid][db])]
+                         for db in sorted(xrefs.get(qid, {}))}
+        n["unit"] = unit
+
+
+def apply_facets(nodes: list[dict], edges: list[dict],
+                 tag_rows: list[dict]) -> None:
+    """Set the SCHEMA v2 `f` facet bitmask on every node (mutates; omit at 0)."""
+    tag_decls: dict[str, set[str]] = defaultdict(set)
+    for r in tag_rows:
+        tag_decls[r["db"]].add(r["decl"])
+    xref_touch: set[str] = set()
+    db_bits: dict[str, int] = defaultdict(int)
+    lit: set[str] = set()
+    for e in edges:
+        k = e["kind"]
+        if k == "xref":
+            xref_touch.add(e["src"])
+            xref_touch.add(e["dst"])
+            db_bits[e["src"]] |= F_DB_BIT.get(e["provenance"]["source"], 0)
+        elif k in ("cites", "matches"):
+            lit.add(e["src"])
+    for n in nodes:
+        f = 0
+        t, nid = n["type"], n["id"]
+        if t == "decl":
+            bare = n["label"]
+            if bare in tag_decls["wikidata"]:
+                f |= F_GOLD_WIKIDATA
+            if bare in tag_decls["stacks"]:
+                f |= F_STACKS_ATTR
+            if bare in tag_decls["kerodon"]:
+                f |= F_KERODON_ATTR
+        elif t == "concept":
+            st = (n.get("display") or {}).get("status")
+            if st == "formalized":
+                f |= F_FORMALIZED
+            elif st == "partial":
+                f |= F_PARTIAL
+            if n.get("article_annotations"):
+                f |= F_ARTICLE
+        elif t == "ext":
+            f |= F_EXT | F_DB_BIT.get(n["db"], 0)
+            if n.get("snippet"):
+                f |= F_HAS_SNIPPET
+        if nid in xref_touch:
+            f |= F_ANY_XREF
+        f |= db_bits.get(nid, 0)
+        if nid in lit:
+            f |= F_LITERATURE
+        if f:
+            n["f"] = f
 
 
 def build() -> tuple[list[dict], list[dict], dict]:
@@ -210,8 +549,12 @@ def build() -> tuple[list[dict], list[dict], dict]:
               "provenance skipped", file=sys.stderr)
     source_tagged = {(r["tag"], r["decl"]) for r in tag_rows
                      if r["db"] == "wikidata"}
+    # @[stacks]/@[kerodon]-tagged decls join the universe too — without a node
+    # the tag-xref edge can't mint, which left the whole Kerodon corpus
+    # unanchored (its only join to the brain is these attributes).
+    attr_tagged = {r["decl"] for r in tag_rows if r["db"] in ("stacks", "kerodon")}
     decl_set = (set(roles) | fdecls | ldecls | {d for _, d in source_tagged}
-                | {d for _, d in mention_pairs})
+                | attr_tagged | {d for _, d in mention_pairs})
     # Annotation citations occasionally carry junk like
     # "MonoidAlgebra.instIsSemisimpleModule (Maschke)" — whitespace is never
     # legal in a Lean identifier, so such names can't resolve anywhere. Drop
@@ -723,6 +1066,36 @@ def build() -> tuple[list[dict], list[dict], dict]:
               f"{n_gold_minted} ({n_gold_unknown_qid} skipped — QID not in the "
               f"universe)", file=sys.stderr)
 
+    # ---- external DB pages → ext nodes + links edges (SCHEMA v2) ------------
+    # Runs after every xref-emitting layer so anchoring sees the full dst set.
+    # No catalog/data/external/ files → exact no-op (zero nodes, zero edges).
+    registry = load_crossref_registry()
+    ext_data = load_external(external_dir(), registry)
+    all_qids = qids | set(new_concepts)
+    xref_dsts: set[str] = set()
+    concept_anchor: dict[str, set] = defaultdict(set)
+    xref_pairs: set[tuple[str, str]] = set()
+    for e in edges:
+        if e["kind"] == "xref":
+            xref_dsts.add(e["dst"])
+            xref_pairs.add((e["src"], e["dst"]))
+            if e["src"].startswith("Q"):
+                concept_anchor[e["dst"]].add(e["src"])
+    ext_nodes, ext_edges, ext_stats = external_layer(
+        ext_data, concept_qids=all_qids, xref_dsts=xref_dsts,
+        concept_anchor=concept_anchor, xref_pairs=xref_pairs,
+        registry=registry, cap=ext_node_cap())
+    edges.extend(ext_edges)
+    if ext_data:
+        print(f"  external layer: {sum(ext_stats['minted'].values())} ext nodes "
+              f"({', '.join(f'{db}={n}' for db, n in sorted(ext_stats['minted'].items()))}); "
+              f"{ext_stats['links_page']} page links, "
+              f"{ext_stats['links_projected']} projected, "
+              f"{ext_stats['xref_from_page_qid']} page-qid xrefs", file=sys.stderr)
+    else:
+        print("NOTE: catalog/data/external/ empty — ext nodes / links edges "
+              "skipped (brain/ingest adapters not run)", file=sys.stderr)
+
     # ---- concept nodes -------------------------------------------------------
     p31: dict[str, list[str]] = {}
     for name in ("wikidata_universe.jsonl", "universe_extension.jsonl"):
@@ -770,7 +1143,26 @@ def build() -> tuple[list[dict], list[dict], dict]:
 
     nodes = (sorted(concept_nodes, key=lambda n: int(n["id"][1:]))
              + [containers[k] for k in sorted(containers)]
-             + decl_nodes + lit_nodes)
+             + decl_nodes + lit_nodes
+             + sorted(ext_nodes, key=lambda n: n["id"]))
+
+    # ---- v2 unit cards + facet bitmasks (need the complete node/edge sets) ---
+    descriptions: dict[str, str] = {}
+    p = OPTIONAL_INPUTS["wikidata_descriptions.json"]
+    if p.exists():
+        raw = json.loads(p.read_text())
+        # ingest writes {_meta, descriptions:{qid: text}}; tolerate the old
+        # flat {qid: text} shape too
+        raw = raw.get("descriptions", raw) if isinstance(raw, dict) else {}
+        descriptions = {k: v for k, v in raw.items()
+                        if k.startswith("Q") and isinstance(v, str)}
+    else:
+        print("NOTE: catalog/data/wikidata_descriptions.json missing — "
+              "unit.description falls back to universe descriptions",
+              file=sys.stderr)
+    assemble_units(nodes, edges, descriptions, registry)
+    apply_facets(nodes, edges, tag_rows)
+
     edges.sort(key=lambda e: (KIND_ORDER.index(e["kind"]), e["src"], e["dst"]))
 
     # every non-xref endpoint must be a real node (xref dst is the external DB)
@@ -782,6 +1174,9 @@ def build() -> tuple[list[dict], list[dict], dict]:
                          f"first: {dangling[0]}")
 
     present = {**INPUTS, **{k: v for k, v in OPTIONAL_INPUTS.items() if v.exists()}}
+    for rec in ext_data.values():
+        for ep in rec["paths"]:
+            present[f"external/{ep.name}"] = ep
     newest = max(v.stat().st_mtime for v in present.values())
     meta = {
         "schema": "brain/SCHEMA.md",
@@ -810,6 +1205,11 @@ def build() -> tuple[list[dict], list[dict], dict]:
             "mathlib_tags": "@[stacks]/@[kerodon]/@[wikidata] cross-reference tags "
                             "harvested from the mathlib4 source (Apache-2.0, mathlib4 "
                             "contributors) — human-reviewed gold links",
+            "external": "ext node ids/titles/urls/links are CC0 link facts; "
+                        "stored snippets carry a per-node snippet_license and "
+                        "exist ONLY for license-permitting sources "
+                        "(source_registry ingest.snippets) — no-content sources "
+                        "(mathworld/dlmf/eom/kerodon) ship ids+titles+links only",
         },
         "counts": {
             "nodes": dict(sorted(Counter(n["type"] for n in nodes).items())),
@@ -827,6 +1227,11 @@ def build() -> tuple[list[dict], list[dict], dict]:
             "mathlib_tag_xref_edges": n_tag_xref,
             "mathlib_tag_rows_skipped_no_decl_node": n_tag_skipped,
             "formalizes_source_tagged": n_source_tagged,
+            "ext_nodes_minted": dict(sorted(ext_stats["minted"].items())),
+            "ext_nodes_capped": dict(sorted(ext_stats["capped"].items())),
+            "links_page_edges": ext_stats["links_page"],
+            "links_projected_edges": ext_stats["links_projected"],
+            "xref_edges_from_page_qids": ext_stats["xref_from_page_qid"],
         },
     }
     return nodes, edges, meta
@@ -841,3 +1246,36 @@ def write_jsonl(out: Path, meta: dict, rows: list[dict]) -> None:
         for r in rows:
             fh.write(json.dumps(r, ensure_ascii=False, separators=(",", ":")) + "\n")
     tmp.replace(out)
+
+
+def write_edges(edges: list[dict], meta: dict,
+                out: Path = EDGES_OUT, out_links: Path = EDGES_LINKS_OUT) -> dict:
+    """Write the edge set split across two files.
+
+    `out` gets every kind EXCEPT `links`, with the FULL build meta unchanged —
+    byte-compatible with the historical single file minus its links rows
+    (links sort last in KIND_ORDER, so the non-links rows are its exact
+    prefix; _meta.counts still describes the whole edge set). `out_links`
+    gets only kind=='links' rows under a small _meta of its own. Both writes
+    are atomic; the links file is always (re)written — a zero-links build
+    leaves an empty-row file rather than a stale one.
+    """
+    main_rows = [e for e in edges if e["kind"] != "links"]
+    links_rows = [e for e in edges if e["kind"] == "links"]
+    write_jsonl(out, meta, main_rows)
+    notes = meta.get("notes") or {}
+    links_meta = {
+        "schema": meta.get("schema", "brain/SCHEMA.md"),
+        "generated_at": meta.get("generated_at"),
+        "split_from": out.name,
+        "note": "kind=='links' rows split out of edges.jsonl (GitHub 100 MB "
+                "per-file limit). Gitignored — rebuild deterministically with "
+                "`python3 brain/build_edges.py` from the committed "
+                "catalog/data/external/ inputs. Readers treat a missing file "
+                "as empty; row schema is identical to edges.jsonl.",
+        "counts": {"edges": {"links": len(links_rows)},
+                   "page_level": notes.get("links_page_edges"),
+                   "projected": notes.get("links_projected_edges")},
+    }
+    write_jsonl(out_links, links_meta, links_rows)
+    return {"main": len(main_rows), "links": len(links_rows)}

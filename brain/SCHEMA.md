@@ -212,7 +212,10 @@ catalog/.cache/{statement_formal,formal_dependency,theorem_matching}.csv
         │
         ▼
 brain/build_nodes.py      → brain/data/nodes.jsonl     (v2: + ext nodes, unit, f bits)
-brain/build_edges.py      → brain/data/edges.jsonl     (v2: + links kind, projections)
+brain/build_edges.py      → brain/data/edges.jsonl     (every kind EXCEPT links; committed)
+                          + brain/data/edges_links.jsonl (links only — ~390k rows keeps the
+                            joint file over GitHub's 100MB limit; gitignored, rebuilt from
+                            the committed external inputs; readers merge both files)
 brain/build_rollups.py    → brain/data/rollup_edges.*.jsonl
 brain/build_shards.py     → wiki/public/assets/brain/*.json (via wiki build-public)
                             (v2: + views/xref_explorer.json, f bits in labels/children)
