@@ -18,6 +18,13 @@ so the client never loads the whole graph — brain/SCHEMA.md's locality law as 
               every edge with its provenance one tap away (anti-slop drawer).
   · Layers  — per-source-kind toggles overlay or hide edge families.
   · Search  — label search over concepts + areas (labels.json, lazy).
+  · v2      — unit cards (concept ∘ article ∘ decls ∘ xrefs as one identity),
+              a Sources accordion (Wikidata / Wikipedia lead / external-DB
+              snippets), first-class ext nodes (xref:<db>:<id>, db-ringed
+              bubbles), the `links` edge kind, facet-chip node filters over
+              the f bitmask (state in the URL hash), and the cross-ref
+              Explorer view over views/xref_explorer.json. All of it
+              feature-detects: pre-v2 shard data still renders.
 
 Run: python3 site/build_brain_page.py   (writes site/out/brain.html; build-public
 copies it + site/assets/brain/ into the Worker's static assets)
@@ -202,6 +209,31 @@ section.kind.community h3 { border-bottom-color:#c9b98a; }
 .note { color:#5a544a; font-size:.82rem; }
 .more { font-size:.78rem; color:#5a544a; padding:4px 10px; }
 .extlink { font-size:.8rem; }
+/* facet-filter chips ("Show only") + the Explorer view toggle */
+.fchip { padding:2px 10px; border:1px solid #33405c; border-radius:12px; background:#0b0e14;
+  color:#9aa3b2; font-size:.78rem; cursor:pointer; font-family:inherit; }
+.fchip:hover { border-color:#38bdf8; color:#e6e4de; }
+.fchip.on { background:#173753; border-color:#38bdf8; color:#cdeafe; }
+#filterstat { color:#7f8a9c; font-size:.78rem; font-style:italic; }
+/* the atomic-unit card: one identity strip for a concept */
+.unitcard { border:1px solid #d8cfb8; border-radius:8px; background:#fdfbf4;
+  padding:12px 14px 8px; margin-bottom:12px; }
+.unitcard h2 { margin:0 0 4px; }
+.uc-desc { color:#3d382e; font-size:.9rem; margin:0 0 8px; }
+.uc-src { color:#8a8272; font-size:.7rem; margin-left:6px; font-style:italic; }
+.uc-primary { font-size:.66rem; color:#116329; border:1px solid #1a7f37; border-radius:8px;
+  padding:0 5px; font-family:-apple-system,sans-serif; }
+/* Sources accordion + snippet rows (TeX stays raw — no math renderer ships) */
+.srcacc summary { cursor:pointer; color:#1a4b8f; font-size:.85rem; user-select:none; }
+.srcrow { border:1px solid #ddd4bd; border-radius:6px; background:#fbf8ef; margin:8px 0;
+  padding:8px 10px; }
+.srchead { font-size:.84rem; margin-bottom:4px; }
+.snip { font-size:.86rem; line-height:1.5; color:#2b2822; }
+.srclic { margin-top:6px; border-top:1px solid #e3dac4; padding-top:4px; color:#8a8272;
+  font-size:.7rem; font-family:-apple-system,sans-serif; }
+.snipblock { margin:8px 0; border:1px solid #ddd4bd; border-radius:6px; background:#fbf8ef;
+  padding:8px 10px; }
+.snipblock .src { display:block; color:#8a8272; font-size:.7rem; margin-top:6px; }
 body.embed .wl-header, body.embed #crumbbar { display:none; }   /* flex column fills the rest */
 /* On a phone the stage + panel stack and the PAGE scrolls again (no fixed
    viewport to pan within), so restore normal document overflow there. */
@@ -228,10 +260,13 @@ body.embed .wl-header, body.embed #crumbbar { display:none; }   /* flex column f
   </nav>
 </header>
 <div class="toolbar">
+  <span class="grp"><b>View</b>
+    <button id="explorerbtn" class="fchip" title="the cross-ref explorer — every tagged &amp; cross-referenced node and the edges among them, one force-directed graph">Explorer</button>
+  </span>
   <span class="grp"><b>Layers</b>
     <label><input type="checkbox" data-k="depends" checked> formal deps</label>
     <label><input type="checkbox" data-k="formalizes" checked> formalizations</label>
-    <label><input type="checkbox" data-k="xref" checked> cross-refs</label>
+    <label><input type="checkbox" data-k="xref,links" checked> cross-refs</label>
     <label><input type="checkbox" data-k="cites,matches" checked> literature</label>
     <label><input type="checkbox" data-k="relates" checked> wikidata relations</label>
     <label><input type="checkbox" data-k="mentions" checked> article mentions</label>
@@ -252,6 +287,21 @@ body.embed .wl-header, body.embed #crumbbar { display:none; }   /* flex column f
     <label title="machine-verified: kernel-extracted dependencies and the file tree — checked by the Lean compiler, no judgment involved"><input type="checkbox" data-p="machine" checked> machine</label>
     <label title="AI-generated: agent-proposed concept matches (skeptic-reviewed), LLM-judged paper matches (TheoremGraph), pipeline annotations"><input type="checkbox" data-p="ai" checked> AI</label>
   </span>
+  <span class="grp"><b>Show only</b>
+    <button class="fchip" data-fbit="1" title="declarations carrying a gold @[wikidata] tag in the Mathlib source">@[wikidata]</button>
+    <button class="fchip" data-fbit="2" title="declarations carrying an @[stacks] tag">@[stacks]</button>
+    <button class="fchip" data-fbit="4" title="declarations carrying an @[kerodon] tag">@[kerodon]</button>
+    <button class="fchip" data-fbit="8" title="nodes with at least one cross-database reference">cross-refs</button>
+    <button class="fchip" data-fbit="16" title="formalized concepts">formalized</button>
+    <button class="fchip" data-fbit="64" title="concepts with a WikiLean article">article</button>
+    <button class="fchip" data-fbit="512" title="cross-referenced in LMFDB">LMFDB</button>
+    <button class="fchip" data-fbit="1024" title="cross-referenced in nLab">nLab</button>
+    <button class="fchip" data-fbit="2048" title="cross-referenced in MathWorld">MathWorld</button>
+    <button class="fchip" data-fbit="4096" title="cross-referenced in ProofWiki">ProofWiki</button>
+    <button class="fchip" data-fbit="8192" title="cross-referenced by a Stacks Project tag">Stacks</button>
+    <button class="fchip" data-fbit="16384" title="cross-referenced in the OEIS">OEIS</button>
+    <span class="note" id="filterstat"></span>
+  </span>
   <span class="grp"><a id="srcbtn2" style="cursor:pointer"
     title="every external database the brain links to — layer, provenance, license">Sources</a></span>
   <span class="note" id="status">loading manifest…</span>
@@ -265,6 +315,7 @@ body.embed .wl-header, body.embed #crumbbar { display:none; }   /* flex column f
       <span style="color:#38bdf8">formalizes</span> ·
       <span style="color:#fbbf24">wikidata relations</span> ·
       <span style="color:#f472b6">cross-database</span> ·
+      <span style="color:#84cc16">page links</span> ·
       <span style="color:#fb923c">literature</span> ·
       <span style="color:#2dd4bf">matches</span> ·
       dots = concepts (blue) / decls (green) · tinted regions = logical communities ·
@@ -369,7 +420,9 @@ function activeProv() {
 // attributes), did the Lean kernel certify it (dependencies, the file tree),
 // or did an AI propose it (agent grounding, LLM-judged paper matches)?
 function provClass(kind, prov, ev) {
-  if (kind === "depends" || kind === "contains") return "machine";
+  // `links` = a hyperlink mechanically extracted from the source database's
+  // own pages (and its CC0-anchored concept projection) — no judgment involved
+  if (kind === "depends" || kind === "contains" || kind === "links") return "machine";
   if (((prov && prov.method) || "").includes("@[")) return "human";
   if (ev && ev.source_tagged) return "human";   // gold pair reached via another path
   if (kind === "xref" || kind === "xref-shared" || kind === "relates") return "human";
@@ -377,7 +430,7 @@ function provClass(kind, prov, ev) {
 }
 const PROV_TITLE = {
   human: "human-curated (Wikidata property/claim or a source attribute in Mathlib)",
-  machine: "machine-verified (Lean kernel / file tree)",
+  machine: "machine-verified (Lean kernel / file tree / mechanically-extracted page links)",
   ai: "AI-generated (agent-proposed or LLM-judged), verified by oracle + skeptic",
 };
 
@@ -385,6 +438,8 @@ const PROV_TITLE = {
 let focusId = null;        // container id (or LIBS_ID) whose children fill the stage
 let selectedId = null;     // node the panel shows / ring highlights
 let layout = null;         // {items: Map(id -> {x,y,r,item}), root}
+let explorerOn = false;    // the cross-ref Explorer view (views/xref_explorer.json)
+let filterMask = 0;        // facet-filter bitmask over node `f` (0 = no filter)
 let currentUser = null;    // {id, name, role} once /api/auth/me resolves (community edits)
 const svg = d3.select("#svg");
 // One <g> holds the whole scene so free pan/zoom is a single transform on it,
@@ -398,7 +453,7 @@ const gLabels = gViewport.append("g");
 const defs = svg.append("defs");
 
 // directed edge kinds get an arrowhead pointing at the dependency/target end
-const DIRECTED = new Set(["depends", "contains", "cites", "mentions", "formalizes"]);
+const DIRECTED = new Set(["depends", "contains", "cites", "mentions", "formalizes", "links"]);
 function ensureMarker(color) {
   const id = "arw_" + color.replace(/[^a-z0-9]/gi, "");
   if (defs.select("#" + id).empty()) {
@@ -431,11 +486,22 @@ svg.call(zoomBehav).on("dblclick.zoom", null);
 function resetZoom() { svg.call(zoomBehav.transform, d3.zoomIdentity); }
 
 const CONCEPT_COLOR = {formalized: "#3b82f6", partial: "#eab308", not_formalized: "#ef4444"};
+// ext nodes (external-database pages) wear their db's ring color + short badge
+const DB_COLOR = {lmfdb_knowl: "#facc15", nlab: "#4ade80", mathworld: "#f87171",
+  proofwiki: "#60a5fa", stacks: "#f97316", kerodon: "#22d3ee", oeis: "#a3e635",
+  dlmf: "#c084fc", eom: "#fb7185", planetmath: "#34d399", metamath: "#94a3b8",
+  msc: "#eab308"};
+const DB_ABBR = {lmfdb_knowl: "LMF", nlab: "nLab", mathworld: "MW", proofwiki: "PW",
+  stacks: "St", kerodon: "Ker", oeis: "OEIS", dlmf: "DLMF", eom: "EoM",
+  planetmath: "PM", metamath: "MM", msc: "MSC"};
+const extDbOf = id => id.split(":")[1] || "";
+const extValueOf = id => id.split(":").slice(2).join(":");
 function fillFor(item, depthShade) {
   if (item.type === "concept") return CONCEPT_COLOR[item.status] || "#0969da";
   if (item.type === "decl") return "#22c55e";
   if (item.type === "strays") return "#8c959f";
   if (item.type === "external") return "#f472b6";
+  if (item.type === "ext") return "#1b2436";   // dark fill; the db ring carries color
   if (item.type === "literature") return "#d4a72c";
   return depthShade;   // container
 }
@@ -447,7 +513,8 @@ async function focusItems(id) {
     return manifest.roots
       .filter(r => kinds.has(r.library_kind || "math"))
       .map(r => ({id: r.id, label: r.label, type: "container",
-                  n_decls: r.n_decls || 1, n_concepts: 0}));
+                  n_decls: r.n_decls || 1, n_concepts: 0,
+                  ...(r.f !== undefined ? {f: r.f} : {})}));
   }
   const e = await getEntry(id);
   if (!e) return [];
@@ -510,10 +577,18 @@ function drawNodes() {
     .attr("cx", l => l.x).attr("cy", l => l.y)
     .attr("r", l => Math.max(l.r, 2.5))
     .attr("fill", l => fillFor(l.data, SHADE))
-    .attr("fill-opacity", l => l.data.type === "container" ? 0.55 : l.data.ghost ? 0.35 : 0.9)
+    .attr("fill-opacity", l => l.data.dim ? 0.15
+      : l.data.type === "container" ? 0.55 : l.data.ghost ? 0.35 : 0.9)
+    // ext bubbles wear their database's ring — inline style, because the
+    // .dot/.bubble CSS stroke would override a presentation attribute
+    .style("stroke", l => l.data.type === "ext"
+      ? (DB_COLOR[l.data.db || extDbOf(l.data.id)] || "#f472b6") : null)
+    .style("stroke-width", l => l.data.type === "ext" ? "2px" : null)
     .on("click", (ev, l) => { ev.stopPropagation(); nodeClick(l.data); })
-    .select("title").text(l => l.data.label + (l.data.n_decls
-      ? ` — ${l.data.n_decls.toLocaleString()} decls` : "")
+    .select("title").text(l => l.data.label
+      + (l.data.type === "ext"
+        ? ` — ${XREF_NAME[l.data.db || extDbOf(l.data.id)] || "external"} page` : "")
+      + (l.data.n_decls ? ` — ${l.data.n_decls.toLocaleString()} decls` : "")
       + (l.data.ghost ? " — in Mathlib, not yet linked in the brain" : ""));
 }
 
@@ -525,6 +600,13 @@ function drawLabels() {
   const ego = layout && layout.ego;
   for (const l of layout.leaves) {
     if (ego && l.data.type !== "container" && l.data.type !== "concept") {
+      if (l.data.type === "ext") {   // db badge inside the ringed bubble
+        const db = l.data.db || extDbOf(l.data.id);
+        gLabels.append("text").attr("class", "blabel")
+          .attr("x", l.x).attr("y", l.y + 2.5).attr("font-size", 6.5)
+          .style("fill", DB_COLOR[db] || "#f472b6")
+          .text(DB_ABBR[db] || db.slice(0, 3));
+      }
       const raw = l.data.label || l.data.id;
       const short = l.data.type === "decl" && raw.includes(":")
         ? raw.split(":").pop().split(".").slice(-2).join(".") : raw;
@@ -538,10 +620,12 @@ function drawLabels() {
       const fs = flat ? 10 : Math.max(10, Math.min(16, l.r / 4.5));
       gLabels.append("text").attr("class", "blabel")
         .attr("x", l.x).attr("y", flat ? l.y + l.r + 11 : l.y - (l.r > 40 ? 4 : -4))
-        .attr("font-size", fs).text(l.data.label);
+        .attr("font-size", fs).attr("opacity", l.data.dim ? 0.35 : null)
+        .text(l.data.label);
       if (!flat && l.r > 40) {
         gLabels.append("text").attr("class", "bcount")
           .attr("x", l.x).attr("y", l.y + fs - 2).attr("font-size", fs * 0.72)
+          .attr("opacity", l.data.dim ? 0.35 : null)
           .text(`${(l.data.n_decls || 0).toLocaleString()}${
             l.data.n_concepts ? " · " + l.data.n_concepts + "★" : ""}`);
       }
@@ -561,7 +645,7 @@ function drawLabels() {
 // the Wikidata relation graph and the formal graph in one continuous motion.
 // Same edgeStore pipeline as the level views: the Layers + Provenance toggles
 // and edge evidence cards all apply.
-const EGO_DIST = {formalizes: 95, relates: 135, xref: 160, depends: 175,
+const EGO_DIST = {formalizes: 95, relates: 135, links: 150, xref: 160, depends: 175,
                   matches: 195, cites: 205, mentions: 215};
 async function renderEgo(seq, entry, anim) {
   const id = entry.node.id;
@@ -572,20 +656,23 @@ async function renderEgo(seq, entry, anim) {
   for (const dir of ["out", "in"]) {
     for (const x of (entry.edges && entry.edges[dir]) || []) {
       const pc = provClass(x.kind, manifest.prov[x.prov], x.evidence);
-      const kindOk = x.kind === "xref" ? kinds.has("xref") : kinds.has(x.kind);
-      if (!kindOk || !provs.has(pc)) continue;
+      if (!kinds.has(x.kind) || !provs.has(pc)) continue;
       if (neigh.has(x.id)) continue;
-      if (x.kind === "xref") {
-        const key = x.id.split(":")[1];
-        const mkUrl = XREF_URL[key];
-        neigh.set(x.id, {id: x.id, type: "external", dir,
-          label: `${XREF_NAME[key] || key}: ${x.evidence ? x.evidence.value : ""}`,
-          url: (mkUrl && x.evidence && mkUrl(x.evidence.value)) || null,
-          edge: x, rank: SAT_RANK.relates + 0.5});
-      } else {
-        neigh.set(x.id, {id: x.id, type: idType(x.id), label: x.id, dir,
-          edge: x, rank: SAT_RANK[x.kind] ?? 9});
+      const t = idType(x.id);
+      const nd = {id: x.id, type: t, label: x.id, dir, edge: x,
+                  rank: SAT_RANK[x.kind] ?? 9};
+      if (t === "ext") {
+        // a REAL external-page node (shard-resolvable in v2 data) rendered as
+        // a db-ringed bubble; pre-v2 xref edges still resolve db/value/url
+        // from the id + evidence, so old data keeps working
+        const db = extDbOf(x.id);
+        nd.db = db;
+        nd.label = x.evidence && x.evidence.value !== undefined
+          ? `${XREF_NAME[db] || db}: ${x.evidence.value}` : extValueOf(x.id);
+        nd.url = nodeUrl(x.id);
+        if (x.kind === "xref") nd.rank = SAT_RANK.relates + 0.5;
       }
+      neigh.set(x.id, nd);
     }
   }
   if (entry.node.article_annotations && entry.node.slug) {
@@ -599,11 +686,26 @@ async function renderEgo(seq, entry, anim) {
                         note: "the concept's annotated Wikipedia mirror"}},
       rank: -1});
   }
-  let nodesArr = [...neigh.values()].sort((a, b) => a.rank - b.rank);
+  let nodesArr = [...neigh.values()];
+  let fstat = null;
+  if (filterMask) {   // facet filter — resolve f lazily, then OR-match
+    await Promise.all(nodesArr.map(async nd => {
+      if (nd.f !== undefined) return;
+      const ne2 = await getEntry(nd.id);
+      if (ne2 && ne2.node && ne2.node.f !== undefined) nd.f = ne2.node.f;
+    }));
+    if (seq !== renderSeq) return;
+    const total = nodesArr.length;
+    const hasF = nodesArr.some(nd => nd.f !== undefined);
+    if (hasF) nodesArr = nodesArr.filter(nd => ((nd.f || 0) & filterMask) !== 0);
+    fstat = {active: true, shown: nodesArr.length, total, noF: !hasF};
+  }
+  updateFilterStat(fstat);
+  nodesArr.sort((a, b) => a.rank - b.rank);
   if (nodesArr.length > 72) { skipped = nodesArr.length - 72; nodesArr = nodesArr.slice(0, 72); }
 
   const W = stageEl.clientWidth || 800, H = stageEl.clientHeight || 600;
-  const R_BY_TYPE = {concept: 11, decl: 8, container: 13, literature: 7, external: 7};
+  const R_BY_TYPE = {concept: 11, decl: 8, container: 13, literature: 7, external: 7, ext: 9};
   const center = {data: {id, label: entry.node.label || id, type: entry.node.type},
                   x: W / 2, y: H / 2, r: 24};
   const leaves = [center].concat(nodesArr.map(nd => ({
@@ -663,7 +765,46 @@ async function renderEgo(seq, entry, anim) {
 }
 
 let renderSeq = 0;   // guards against out-of-order async renders
+
+// ---- facet filter (the f bitmask; SCHEMA.md v2) -----------------------------
+// Chips OR together; a node shows iff (f & mask) != 0. Non-matching leaf nodes
+// (and every edge touching them) drop out of the level; containers stay as
+// dimmed context. Feature-detect: pre-v2 shard data carries no f — an active
+// filter must then leave the canvas alone rather than blank it.
+async function applyFacetFilter(items, seq) {
+  for (const it of items) delete it.dim;
+  if (!filterMask)
+    return {items, shown: items.length, total: items.length, active: false};
+  // children rows carry f when the data is v2-built; anchored concepts come
+  // from edges and resolve theirs from the node payload (cached shards)
+  await Promise.all(items.map(async it => {
+    if (it.f !== undefined || it.type !== "concept") return;
+    const ce = await getEntry(it.id);
+    if (ce && ce.node && ce.node.f !== undefined) it.f = ce.node.f;
+  }));
+  const total = items.length;
+  if (seq !== renderSeq) return {items, shown: total, total, active: true};
+  if (!items.some(it => it.f !== undefined))
+    return {items, shown: total, total, active: true, noF: true};
+  const match = it => ((it.f || 0) & filterMask) !== 0;
+  const kept = [];
+  let shown = 0;
+  for (const it of items) {
+    if (it.type === "container") { it.dim = !match(it); kept.push(it); if (!it.dim) shown++; }
+    else if (match(it)) { kept.push(it); shown++; }
+  }
+  return {items: kept, shown, total, active: true};
+}
+function updateFilterStat(fv) {
+  const el = $("#filterstat");
+  if (!el) return;
+  el.textContent = !fv || !fv.active ? ""
+    : fv.noF ? "facet data not in this build yet"
+    : `showing ${fv.shown} of ${fv.total} nodes`;
+}
+
 async function renderFocus(anim) {
+  if (explorerOn) return renderExplorer(anim);
   const seq = ++renderSeq;
   resetZoom();   // a fresh level is laid out to fit the stage — drop any pan/zoom
   if (focusId !== LIBS_ID) {
@@ -673,9 +814,13 @@ async function renderFocus(anim) {
   }
   const items = await focusItems(focusId);
   if (seq !== renderSeq) return;
+  const fv = await applyFacetFilter(items, seq);
+  if (seq !== renderSeq) return;
+  updateFilterStat(fv);
+  const shownItems = fv.items;
   const W = stageEl.clientWidth || 800, H = stageEl.clientHeight || 600;
-  const root = d3.hierarchy({children: items}).sum(d => d.children ? 0 : packValue(d));
-  d3.pack().size([W, H]).padding(items.length > 150 ? 1.5 : 4)(root);
+  const root = d3.hierarchy({children: shownItems}).sum(d => d.children ? 0 : packValue(d));
+  d3.pack().size([W, H]).padding(shownItems.length > 150 ? 1.5 : 4)(root);
   const leaves = root.leaves().filter(l => l.data.id);
 
   layout = {items: new Map(leaves.map(l => [l.data.id, l])), leaves: leaves};
@@ -724,6 +869,7 @@ const EDGE_STYLE = {
   xref:         {color: "#f472b6", dash: "3 3",  label: "cross-database identity"},
   cites:        {color: "#fb923c", dash: "2 4",  label: "stated in the literature (TheoremGraph)"},
   matches:      {color: "#2dd4bf", dash: null,   label: "formal ↔ literature match"},
+  links:        {color: "#84cc16", dash: "2 2",  label: "page link (external database)"},
 };
 let edgeStore = [];
 
@@ -858,6 +1004,9 @@ function renderEdges() {
       ? Math.min(0.9, Math.max(0.06, 0.06 + 0.17 * Math.log2(1 + lf)))
       : 0.16 + 0.3 * (e.w / maxSig);
   };
+  // the Explorer view can carry thousands of edges — skip the fat hit twins
+  // there so the DOM stays half the size (nodes remain clickable)
+  const noHit = !!(layout && layout.explorer) && show.length > 1200;
   for (const e of [...dep, ...rest]) {
     const directed = DIRECTED.has(e.kind);
     // undirected kinds use a/b; directed kinds draw from source → target so the
@@ -865,6 +1014,7 @@ function renderEdges() {
     const A = layout.items.get(directed ? (e.from || e.a) : e.a);
     const B = layout.items.get(directed ? (e.to || e.b) : e.b);
     if (!A || !B) continue;
+    if (A.data.dim || B.data.dim) continue;   // filtered-out context containers
     const mx = (A.x + B.x) / 2, my = (A.y + B.y) / 2;
     const dx = B.x - A.x, dy = B.y - A.y;
     // deterministic per-pair bend so parallel routes fan out instead of piling
@@ -895,7 +1045,7 @@ function renderEdges() {
     if (st.dash) p.attr("stroke-dasharray", st.dash);
     if (directed) p.attr("marker-end", ensureMarker(st.color));
     // invisible fat twin = the click/hover target
-    gEdges.append("path").attr("class", "hit")
+    if (!noHit) gEdges.append("path").attr("class", "hit")
       .attr("d", hitD).attr("fill", "none")
       .attr("stroke", "transparent").attr("stroke-width", 14)
       .style("cursor", "pointer")
@@ -997,6 +1147,7 @@ function paintCommunities() {
   const colorOf = new Map();
   let ci = 0;
   gBubbles.selectAll("circle.bubble").each(function(l) {
+    if (l.data.dim) return;   // filtered-out context stays dim, not tinted
     const c = comm.get(l.data.id);
     if (c === undefined || sizes.get(c) < 2) return;
     if (!colorOf.has(c)) colorOf.set(c, COMM_PALETTE[ci++ % COMM_PALETTE.length]);
@@ -1039,7 +1190,7 @@ function showEdgePanel(e) {
     </div>
     <section class="kind"><h3>Evidence</h3>
       <div class="edge open"><div class="drawer" style="display:block">${
-        evidenceProse(e.kind, ev, eprov, null)}</div></div>
+        evidenceProse(e.kind, ev, eprov, null, e.b)}</div></div>
     </section>
     <p class="note">Every line on the canvas is a stored brain edge${
       directed ? " — the arrowhead points from the source to what it depends on / joins to" : ""}.
@@ -1052,7 +1203,7 @@ function showEdgePanel(e) {
 // overlay: the selected node's ontology edges to visible endpoints
 const OV_COLOR = {formalizes: "#38bdf8", xref: "#f472b6", cites: "#fb923c",
                   matches: "#2dd4bf", relates: "#fbbf24", mentions: "#94a3b8",
-                  depends: "#a78bfa"};
+                  depends: "#a78bfa", links: "#84cc16"};
 async function drawOverlay() {
   gOverlay.selectAll("path.ov").remove();
   if (!selectedId || !layout) return;
@@ -1064,7 +1215,7 @@ async function drawOverlay() {
     for (const x of (e.edges && e.edges[dir]) || []) {
       if (!kinds.has(x.kind)) continue;
       const T = layout.items.get(x.id);
-      if (!T) continue;
+      if (!T || T.data.dim) continue;
       // point the arrow the true way: an incoming edge is neighbour → selection
       const directed = DIRECTED.has(x.kind);
       const F = dir === "in" && directed ? T : S;
@@ -1098,17 +1249,19 @@ function drawSelRing() {
 // lives elsewhere in the containment tree — orbiting the selection so the
 // Wikidata graph, the Mathlib graph and the literature overlay in one view.
 // Click a satellite to travel there. Filtered by the Layers + Provenance toggles.
-const SAT_RANK = {relates: 0, formalizes: 1, matches: 2, depends: 3, cites: 4, mentions: 5};
+const SAT_RANK = {relates: 0, formalizes: 1, matches: 2, xref: 2.5, depends: 3,
+                  cites: 4, mentions: 5, links: 6};
 function idType(id) {
   if (/^Q\d+$/.test(id)) return "concept";
   if (id.startsWith("decl:")) return "decl";
   if (id.startsWith("lit:")) return "literature";
   if (id.startsWith("path:")) return "container";
+  if (id.startsWith("xref:")) return "ext";   // external-DB page — a real node (v2)
   return "external";
 }
 async function drawSatellites() {
   gOverlay.selectAll("g.sat").remove();
-  if (!selectedId || !layout || layout.ego) return;
+  if (!selectedId || !layout || layout.ego || layout.explorer) return;
   const S = layout.items.get(selectedId);
   const e = await getEntry(selectedId);
   if (!S || !e) return;
@@ -1117,7 +1270,7 @@ async function drawSatellites() {
   const cand = [];
   for (const dir of ["out", "in"]) {
     for (const x of (e.edges && e.edges[dir]) || []) {
-      if (x.kind === "xref" || !kinds.has(x.kind)) continue;
+      if (!kinds.has(x.kind)) continue;   // xref satellites = ext nodes (v2)
       if (!provs.has(provClass(x.kind, manifest.prov[x.prov], x.evidence))) continue;
       if (layout.items.has(x.id) || seen.has(x.id)) continue;
       seen.add(x.id);
@@ -1141,16 +1294,23 @@ async function drawSatellites() {
       .attr("stroke", st.color || "#57606a")
       .attr("stroke-width", 1.4).attr("stroke-opacity", 0.75);
     if (st.dash) p.attr("stroke-dasharray", st.dash);
-    const t = /^Q\d+$/.test(s.x.id) ? "concept"
-      : s.x.id.startsWith("decl:") ? "decl"
-      : s.x.id.startsWith("lit:") ? "literature" : "container";
+    const t = idType(s.x.id);
+    const db = t === "ext" ? extDbOf(s.x.id) : null;
     g.append("circle").attr("cx", sx).attr("cy", sy).attr("r", 7)
       .attr("fill", t === "concept" ? "#0969da" : t === "decl" ? "#1a7f37"
-            : t === "literature" ? "#bf5af2" : "#8250df")
-      .attr("fill-opacity", 0.92).attr("stroke", "#fff").attr("stroke-width", 1.2);
+            : t === "literature" ? "#bf5af2" : t === "ext" ? "#151b28" : "#8250df")
+      .attr("fill-opacity", 0.92)
+      .attr("stroke", t === "ext" ? (DB_COLOR[db] || "#f472b6") : "#fff")
+      .attr("stroke-width", t === "ext" ? 2 : 1.2);
+    if (t === "ext") g.append("text").attr("class", "blabel")
+      .attr("x", sx).attr("y", sy + 2.5).attr("font-size", 6)
+      .style("fill", DB_COLOR[db] || "#f472b6")
+      .text(DB_ABBR[db] || db.slice(0, 3));
+    const rawLab = t === "ext"
+      ? `${XREF_NAME[db] || db}: ${extValueOf(s.x.id)}` : s.x.id;
     const label = g.append("text").attr("class", "blabel")
       .attr("x", sx).attr("y", sy + 17).attr("font-size", 9)
-      .text(s.x.id.length > 22 ? s.x.id.slice(0, 20) + "…" : s.x.id);
+      .text(rawLab.length > 22 ? rawLab.slice(0, 20) + "…" : rawLab);
     getEntry(s.x.id).then(se => {
       if (se && se.node.label && se.node.label !== s.x.id)
         label.text(se.node.label.length > 26 ? se.node.label.slice(0, 24) + "…" : se.node.label);
@@ -1160,6 +1320,35 @@ async function drawSatellites() {
 }
 
 // ============================ zoom navigation ================================
+// The URL hash carries the whole shareable view state:
+//   #<node-id>&f=<facet mask>&view=explorer
+// The id segment is fully URI-encoded (any raw "&" became %26), so splitting
+// on "&" is safe and pre-v2 "#<id>" hashes parse unchanged.
+function setHash(id) {
+  let h = "#" + (id && id !== LIBS_ID ? encodeURIComponent(id) : "");
+  if (filterMask) h += "&f=" + filterMask;
+  if (explorerOn) h += "&view=explorer";
+  history.replaceState(null, "", h);
+}
+function parseHash() {
+  const parts = location.hash.slice(1).split("&");
+  let id = parts[0] || "";
+  try { id = decodeURIComponent(id); } catch (e) { /* malformed — keep raw */ }
+  const out = {id, f: 0, view: ""};
+  for (const kv of parts.slice(1)) {
+    const i = kv.indexOf("=");
+    const k = i < 0 ? kv : kv.slice(0, i), v = i < 0 ? "" : kv.slice(i + 1);
+    if (k === "f") out.f = (parseInt(v, 10) || 0) & 0xffff;
+    else if (k === "view") out.view = v;
+  }
+  return out;
+}
+function setExplorer(on) {
+  explorerOn = on;
+  const b = $("#explorerbtn");
+  if (b) b.classList.toggle("on", on);
+}
+
 async function zoomInto(id) {
   // slick part: scale the clicked bubble up to fill the stage, then swap levels.
   // Drive it through the pan/zoom transform so it composes with (and replaces)
@@ -1187,7 +1376,7 @@ async function zoomInto(id) {
     groups.forEach(g => { g.interrupt(); g.attr("opacity", g === gBubbles ? 0.35 : 0); });
   }
   focusId = id;
-  history.replaceState(null, "", "#" + encodeURIComponent(id));
+  setHash(id);
   await renderFocus(true);
 }
 async function zoomOut() {
@@ -1198,7 +1387,7 @@ async function zoomOut() {
     const ego = focusId;
     focusId = home;
     selectedId = ego;                         // keep it ringed at its home level
-    history.replaceState(null, "", "#" + encodeURIComponent(home));
+    setHash(home);
     await renderFocus(true);
     return;
   }
@@ -1206,13 +1395,22 @@ async function zoomOut() {
   const parent = bc.length > 1 ? bc[bc.length - 2].id : LIBS_ID;
   focusId = parent;
   selectedId = null;
-  history.replaceState(null, "", "#" + encodeURIComponent(
-    parent === LIBS_ID ? "" : parent));
+  setHash(parent);
   await renderFocus(true);
 }
-svg.on("click", () => { if (panMoved) { panMoved = false; return; } zoomOut(); });
+svg.on("click", () => {
+  if (panMoved) { panMoved = false; return; }
+  if (layout && layout.explorer) return;   // explorer: background = nothing
+  zoomOut();
+});
 
 async function nodeClick(item) {
+  if (layout && layout.explorer) {   // explorer: select + panel, stay put
+    selectedId = item.id;
+    renderPanel(item.id);
+    drawSelRing();
+    return;
+  }
   if (item.type === "strays") {   // the collapsed loose-decl bubble: list them
     renderPanel(focusId);
     return;
@@ -1227,7 +1425,14 @@ async function nodeClick(item) {
     await zoomInto(item.id);
     return;
   }
-  if (item.type === "external") {          // ego xref pseudo-node → the DB page
+  if (item.type === "ext") {               // external-page node: travel there
+    const ee = await getEntry(item.id);
+    if (ee) { await zoomInto(item.id); return; }
+    selectedId = item.id;                  // pre-v2 shards: panel + deep link only
+    renderPanel(item.id);
+    return;
+  }
+  if (item.type === "external") {          // article pseudo-node → its page
     if (item.url) window.open(item.url, "_blank", "noopener");
     return;
   }
@@ -1238,11 +1443,12 @@ async function nodeClick(item) {
 // land the canvas on any node id: containers focus themselves; leaves focus
 // their parent container and select themselves
 async function navigate(id) {
+  if (explorerOn) setExplorer(false);   // navigation = travel to the node's home
   const e = await getEntry(id);
   if (!e) { renderPanel(id); return; }
   focusId = id;                    // containers → level view; others → ego view
   selectedId = e.node.type === "container" ? null : id;
-  history.replaceState(null, "", "#" + encodeURIComponent(id));
+  setHash(id);
   renderPanel(id);
   await renderFocus(true);
 }
@@ -1282,7 +1488,7 @@ async function renderCrumb() {
   crumbEl.querySelectorAll("[data-nav]").forEach(a =>
     a.addEventListener("click", () => {
       if (a.dataset.nav === LIBS_ID) { focusId = LIBS_ID; selectedId = null;
-        history.replaceState(null, "", "#"); renderFocus(true); }
+        setHash(""); renderFocus(true); }
       else navigate(a.dataset.nav);
     }));
 }
@@ -1292,7 +1498,7 @@ const KIND_LABEL = {
   formalizes: "Formalizations", mentions: "Article mentions", depends: "Formal dependencies",
   matches: "Formal ↔ literature matches", xref: "Cross-database identity",
   relates: "Wikidata relations", cites: "Stated in the literature (TheoremGraph)",
-  contains: "Contains",
+  contains: "Contains", links: "Links to",
 };
 const XREF_NAME = {mathworld: "MathWorld", nlab: "nLab", proofwiki: "ProofWiki",
   eom: "Encyclopedia of Math", planetmath: "PlanetMath", metamath: "Metamath",
@@ -1314,6 +1520,10 @@ const XREF_URL = {
 };
 function nodeUrl(id) {
   if (id.startsWith("decl:")) return "/decl/" + encodeURIComponent(id.slice(id.indexOf(":", 5) + 1));
+  if (id.startsWith("xref:")) {
+    const mkUrl = XREF_URL[extDbOf(id)];
+    return (mkUrl && mkUrl(extValueOf(id))) || null;
+  }
   if (/^Q\d+$/.test(id)) return `https://www.wikidata.org/wiki/${id}`;
   if (id.startsWith("lit:")) {
     const ax = id.slice(4).split("#")[0];
@@ -1371,14 +1581,18 @@ function provAttribHtml(kind, ev, prov) {
   const who = {human: "Human-curated", machine: "Machine-verified", ai: "AI-generated"}[pc];
   const gloss = {
     human: "written by a person",
-    machine: "certified by the Lean compiler, no human or AI judgment",
+    machine: kind === "links"
+      ? "mechanically extracted from the source's own pages, no judgment involved"
+      : "certified by the Lean compiler, no human or AI judgment",
     ai: "proposed by an AI agent, checked against the Mathlib oracle + a skeptic",
   }[pc];
   let src = "";
   if (pc === "machine") {
     // machine edges come from the kernel / file tree regardless of which rollup
     // file happened to carry them — never mislabel a formal dep as "TheoremGraph"
-    src = kind === "contains" ? "the library file tree" : "Mathlib's kernel dependency graph";
+    src = kind === "contains" ? "the library file tree"
+      : kind === "links" ? "the external database's own hyperlinks"
+      : "Mathlib's kernel dependency graph";
   } else if (prov) {
     src = SRC_NICE[prov.source] || String(prov.source || "").replace(/_/g, " ");
     if (prov.method === "wikidata-property" && XREF_NAME[prov.source])
@@ -1391,8 +1605,9 @@ function provAttribHtml(kind, ev, prov) {
   return `<div class="attrib"><span class="prov ${pc}">${who}</span> (${esc(gloss)})${
     src ? ` · from ${src}` : ""}${pin}</div>`;
 }
-// the sentence + structured detail for one edge
-function evidenceProse(kind, ev, prov, dir) {
+// the sentence + structured detail for one edge; otherId (when known) names
+// the far endpoint so ext-page edges can say WHICH database they live in
+function evidenceProse(kind, ev, prov, dir, otherId) {
   ev = ev || {};
   const inbound = dir === "in";
   let lead = "", detail = "";
@@ -1476,6 +1691,17 @@ function evidenceProse(kind, ev, prov, dir) {
       detail = `<div class="ev-sub">via ${ev.via_decls.slice(0, 3).map(d => `<code>${esc(shortDecl(d))}</code>`).join(", ")}</div>`;
   } else if (kind === "matches") {
     lead = `<b>Formal ↔ literature match.</b> A Lean declaration was matched to an informal statement in the literature; ${judgeVerdict(ev)}.`;
+  } else if (kind === "links") {
+    const db = ev.via || (otherId && otherId.startsWith && otherId.startsWith("xref:")
+      ? extDbOf(otherId) : null);
+    const dbName = db ? (XREF_NAME[db] || db) : "the external database";
+    if (ev.projected) {
+      lead = `<b>Projected link.</b> Two concepts joined through an internal link inside <b>${esc(dbName)}</b>'s own pages — the database's editors connected them.`;
+      detail = `<div class="ev-sub">projected from ${esc(dbName)}: <code>${esc(ev.src_page ?? "?")}</code> <span class="dirarrow">→</span> <code>${esc(ev.dst_page ?? "?")}</code></div>`;
+    } else {
+      lead = `<b>Page link.</b> An internal link on ${esc(dbName)} — one page links to the other inside the database.`;
+      if (ev.context) detail = `<div class="ev-sub">link context: <b>${esc(ev.context)}</b></div>`;
+    }
   } else if (kind === "contains") {
     lead = `<b>Containment.</b> One directly contains the other in the library's folder tree.`;
   } else {
@@ -1504,11 +1730,15 @@ function edgeHtml(x, provTable, dir) {
   // arrow reflects real direction for directed kinds; undirected kinds get ↔
   const arrow = DIRECTED.has(x.kind) ? (dir === "in" ? "←" : "→") : "↔";
   let target = esc(x.id);
-  if (x.kind === "xref" && ev.value !== undefined) {
-    const mkUrl = XREF_URL[x.id.split(":")[1]];
-    const url = mkUrl && mkUrl(ev.value);
-    const lbl = `${esc(XREF_NAME[x.id.split(":")[1]] || x.id.split(":")[1])}: ${esc(ev.value)}`;
-    target = url ? `<a href="${esc(url)}" rel="noopener" target="_blank">${lbl}</a>` : lbl;
+  if (x.id.startsWith("xref:")) {
+    // ext endpoints are real nodes now — navigable in-brain, deep link beside
+    const db = extDbOf(x.id);
+    const val = ev.value !== undefined ? String(ev.value) : extValueOf(x.id);
+    const url = nodeUrl(x.id)
+      || (ev.value !== undefined && XREF_URL[db] && XREF_URL[db](ev.value)) || null;
+    target = `<span class="nav" data-nav="${esc(x.id)}" style="color:#1a4b8f;cursor:pointer">${
+      esc(`${XREF_NAME[db] || db}: ${val}`)}</span>`
+           + (url ? ` <a class="extlink" href="${esc(url)}" rel="noopener" target="_blank">↗</a>` : "");
   } else {
     const u = nodeUrl(x.id);
     target = `<span class="nav" data-nav="${esc(x.id)}" style="color:#1a4b8f;cursor:pointer">${target}</span>`
@@ -1518,7 +1748,7 @@ function edgeHtml(x, provTable, dir) {
   const pc = provClass(x.kind, prov, ev);
   return `<div class="edge"><div class="row"><span class="dirarrow">${arrow}</span> ${target} ${mk}
     <span class="prov ${pc}" title="${esc(PROV_TITLE[pc])}">${pc}${ev.skeptic === "pending" ? " · unreviewed" : ""}${ev.source_tagged ? " · @[wikidata]" : ""}</span></div>
-    <div class="drawer">${evidenceProse(x.kind, ev, prov, dir)}</div></div>`;
+    <div class="drawer">${evidenceProse(x.kind, ev, prov, dir, x.id)}</div></div>`;
 }
 let lastPanelId = null;
 let lastLevelEdges = [];
@@ -1526,7 +1756,9 @@ async function renderPanel(id) {
   lastPanelId = id;
   const e = await getEntry(id);
   if (!e) {
-    // not in the static shards — maybe a community-added Wikidata concept node
+    // not in the static shards — an ext page from pre-v2 data / an unminted
+    // page, or a community-added Wikidata concept node
+    if (id.startsWith("xref:")) return extFallbackPanel(id);
     if (/^Q\d+$/.test(id)) return renderCommunityNodePanel(id);
     panelEl.innerHTML = `<p class="note">Unknown node: ${esc(id)}</p>`;
     return;
@@ -1538,7 +1770,10 @@ async function renderPanel(id) {
       i === e.breadcrumb.length - 1 ? esc(b.label)
         : `<a data-nav="${esc(b.id)}">${esc(b.label)}</a>`).join(" / ") + `</div>`;
   }
-  html += `<h2>${esc(n.label || n.id)}</h2>`;
+  // the atomic-unit card replaces the plain header when the build carries one
+  const unit = n.type === "concept" && n.unit ? n.unit : null;
+  if (unit) html += unitCardHtml(n, e);
+  else html += `<h2>${esc(n.label || n.id)}</h2>`;
   const sub = [];
   if (n.type) sub.push(n.type);
   if (n.library_kind) sub.push(n.library_kind + " library");
@@ -1547,11 +1782,19 @@ async function renderPanel(id) {
   if (n.type === "concept") sub.push(`<a href="https://www.wikidata.org/wiki/${esc(n.id)}" rel="noopener" target="_blank">${esc(n.id)}</a>`);
   if (n.type === "container" && n.qid) sub.push(`<a href="https://www.wikidata.org/wiki/${esc(n.qid)}" rel="noopener" target="_blank">Wikidata ${esc(n.qid)}</a>`);
   if (n.type === "decl") sub.push(`<a href="${esc(nodeUrl(n.id))}" rel="noopener" target="_blank">${esc(n.library || "Mathlib")} docs ↗</a>`);
-  html += `<div class="sub">${sub.join(" · ")}</div>`;
+  if (n.type === "ext") {
+    sub.push(`<span class="badge" style="border-color:${esc(DB_COLOR[n.db] || "#c8bfa8")}">${
+      esc(XREF_NAME[n.db] || n.db || "external database")}</span>`);
+    if (n.kind_hint) sub.push(esc(n.kind_hint));
+    const xu = n.url || nodeUrl(n.id);
+    if (xu) sub.push(`<a href="${esc(xu)}" rel="noopener" target="_blank">page ↗</a>`);
+  }
+  if (!unit) html += `<div class="sub">${sub.join(" · ")}</div>`;
   // "Also in" — every external identity of this concept as one chip strip
   // (the /map concept-panel affordance): article, Wikidata, Google KG, and
-  // each cross-referenced database, deep-linked
-  if (n.type === "concept") {
+  // each cross-referenced database, deep-linked. The unit card already covers
+  // all of this, so it renders only without one.
+  if (n.type === "concept" && !unit) {
     const chips = [];
     if (n.slug) chips.push(`<a href="/${esc(n.slug)}">WikiLean article</a>`);
     if (n.slug) chips.push(`<a href="https://en.wikipedia.org/wiki/${esc(n.slug)}" rel="noopener" target="_blank">Wikipedia</a>`);
@@ -1569,7 +1812,7 @@ async function renderPanel(id) {
       html += `<div class="chips"><span class="note">Also in:</span> ` +
               chips.map(c => `<span class="chip">${c}</span>`).join("") + `</div>`;
   }
-  if (n.article_annotations) {
+  if (n.article_annotations && !unit) {
     const aa = n.article_annotations;
     html += `<div class="chips"><span class="chip"><a href="/${esc(n.slug)}">WikiLean article</a>:
       <b>${aa.total}</b> Lean annotations</span>
@@ -1577,7 +1820,7 @@ async function renderPanel(id) {
       <span class="badge p">${aa.partial} partial</span>
       <span class="badge n">${aa.not_formalized} not</span></div>`;
   }
-  if (n.description) html += `<p style="font-size:.9rem">${esc(n.description)}</p>`;
+  if (n.description && !unit) html += `<p style="font-size:.9rem">${esc(n.description)}</p>`;
   const st = n.display && n.display.status;
   if (st) html += `<span class="badge ${st === "formalized" ? "f" : st === "partial" ? "p" : "n"}">${esc(st.replace("_", " "))}</span>`;
   const ae = n.altitude_evidence;
@@ -1598,6 +1841,29 @@ async function renderPanel(id) {
   if (n.arxiv_id) html += `<p class="note">appears as <b>${esc(n.ref || "?")}</b> of
     <a href="${esc(nodeUrl(n.id))}" rel="noopener" target="_blank">${esc(n.arxiv_id)}</a>
     ${n.license_open ? "" : " (text not redistributable — link only)"}</p>`;
+
+  // ext node: the stored snippet (license permitting) or an honest deep link
+  if (n.type === "ext") {
+    const xu = n.url || nodeUrl(n.id);
+    const dbName = XREF_NAME[n.db] || n.db || "the source";
+    if (n.snippet) {
+      html += `<div class="snipblock"><div class="snip">${esc(n.snippet)}</div>
+        <span class="src">${esc(n.snippet_license || "source license applies")}${
+        xu ? ` · <a href="${esc(xu)}" rel="noopener" target="_blank">read at ${esc(dbName)} ↗</a>` : ""}</span></div>`;
+    } else {
+      html += `<p class="note">No content stored for ${esc(dbName)} pages (its
+        license permits ids, titles and links only)${
+        xu ? ` — <a href="${esc(xu)}" rel="noopener" target="_blank">read it at the source ↗</a>` : ""}.</p>`;
+    }
+    if (n.qid) html += `<div class="chips"><span class="chip"><a data-nav="${esc(n.qid)}">anchored concept ${esc(n.qid)}</a></span></div>`;
+  }
+
+  // concept: the Sources accordion — every stored content snippet in one place
+  let srcAccIds = null;
+  if (n.type === "concept") {
+    srcAccIds = conceptSourceRefs(n, e);
+    html += sourcesAccordionHtml(n, srcAccIds);
+  }
 
   if (e.children && e.children.count) {
     html += `<section class="kind"><h3>Children <span class="cnt">(${e.children.count})</span></h3><div class="chips">`;
@@ -1620,7 +1886,8 @@ async function renderPanel(id) {
       groups.get(key).push([x, dir]);
     }
   }
-  const order = ["formalizes:out", "formalizes:in", "xref:out", "cites:out", "matches:out",
+  const order = ["formalizes:out", "formalizes:in", "xref:out", "xref:in",
+                 "links:out", "links:in", "cites:out", "matches:out",
                  "matches:in", "depends:out", "depends:in", "relates:out", "relates:in",
                  "mentions:out", "mentions:in", "cites:in"];
   for (const key of [...order, ...[...groups.keys()].filter(k => !order.includes(k))]) {
@@ -1658,6 +1925,7 @@ async function renderPanel(id) {
     };
     lastLevelEdges = edgeStore
       .filter(e2 => layout.items.has(e2.a) && layout.items.has(e2.b)
+        && !layout.items.get(e2.a).data.dim && !layout.items.get(e2.b).data.dim
         && (e2.kind === "xref-shared" ? kinds.has("xref") : kinds.has(e2.kind))
         && provs.has(provClass(e2.kind,
             e2.payload && e2.payload.prov !== undefined ? manifest.prov[e2.payload.prov] : null,
@@ -1684,6 +1952,12 @@ async function renderPanel(id) {
   panelEl.querySelectorAll("[data-nav]").forEach(a =>
     a.addEventListener("click", () => navigate(a.dataset.nav)));
   bindRawToggles();
+  // Sources accordion loads its content on first open (Wikipedia lead +
+  // ext-node snippets are on-demand fetches, never paid on panel render)
+  const acc = panelEl.querySelector("#srcacc");
+  if (acc) acc.addEventListener("toggle", () => {
+    if (acc.open) populateSources(id, n, srcAccIds || []);
+  });
   renderCommunity(id);   // async: overlay the live community edges + add-a-connection form
   panelEl.querySelectorAll(".edge .row").forEach(r =>
     r.addEventListener("click", ev => {
@@ -1731,6 +2005,163 @@ function ghostPanel(item) {
     article cites it, no judged paper match. It renders dimmed so the file's
     real contents stay visible. Links grow through the discovery pipeline
     (<code>brain/proposals/</code>) or a WikiLean annotation citing it.</p>`;
+}
+
+// ext id not in the shards (pre-v2 data, or an unminted frontier page):
+// a minimal deep-link panel instead of "Unknown node"
+function extFallbackPanel(id) {
+  lastPanelId = id;
+  const db = extDbOf(id), val = extValueOf(id);
+  const url = nodeUrl(id);
+  panelEl.innerHTML = `
+    <h2 style="font-size:1.1rem">${esc(val || id)}</h2>
+    <div class="sub">external page ·
+      <span class="badge" style="border-color:${esc(DB_COLOR[db] || "#c8bfa8")}">${
+      esc(XREF_NAME[db] || db || "external database")}</span></div>
+    <p class="note">This external page isn't in the current shard build — ${
+      url ? `<a href="${esc(url)}" rel="noopener" target="_blank">open it at the source ↗</a>` : "no deep link available"}.</p>`;
+}
+
+// ---- the atomic-unit card (SCHEMA.md v2 `unit`) -----------------------------
+// One identity strip: label ∘ Wikidata description ∘ article ∘ Wikipedia ∘
+// QID ∘ formalizing decls (primary first) ∘ containers ∘ external DB pages.
+function unitCardHtml(n) {
+  const u = n.unit;
+  let h = `<div class="unitcard"><h2>${esc(u.label || n.label || n.id)}</h2>`;
+  if (u.description)
+    h += `<div class="uc-desc">${esc(u.description)}<span class="uc-src">— Wikidata (CC0)</span></div>`;
+  const chips = [];
+  const slug = (u.article && u.article.slug) || n.slug;
+  const aa = (u.article && u.article.annotations) || n.article_annotations;
+  if (slug) {
+    let b = "";
+    if (aa && typeof aa === "object")
+      b = ` <span class="badge f">${aa.formalized ?? 0}</span><span class="badge p">${
+        aa.partial ?? 0}</span><span class="badge n">${aa.not_formalized ?? 0}</span>`;
+    else if (typeof aa === "number") b = ` <small>${aa} annotations</small>`;
+    chips.push(`<span class="chip"><a href="/${esc(slug)}">WikiLean article</a>${b}</span>`);
+  }
+  const wslug = u.wikipedia_slug || slug;
+  if (wslug) chips.push(`<span class="chip"><a href="https://en.wikipedia.org/wiki/${
+    esc(wslug)}" rel="noopener" target="_blank">Wikipedia</a></span>`);
+  chips.push(`<span class="chip"><a href="https://www.wikidata.org/wiki/${
+    esc(u.qid || n.id)}" rel="noopener" target="_blank">${esc(u.qid || n.id)}</a></span>`);
+  const primary = n.display && n.display.primary_decl;
+  const decls = (u.decls || []).slice()
+    .sort((a, b2) => (a.name === primary ? -1 : 0) - (b2.name === primary ? -1 : 0));
+  for (const d of decls.slice(0, 12)) {
+    const lib = (d.module || "Mathlib").split(".")[0] || "Mathlib";
+    chips.push(`<span class="chip"><a data-nav="decl:${esc(lib)}:${esc(d.name)}">${
+      esc(shortDecl(d.name))}</a>${
+      d.match_kind ? ` <span class="mk">${esc(MK_LABEL[d.match_kind] || d.match_kind)}</span>` : ""}${
+      d.name === primary ? ` <span class="uc-primary" title="display hint — never identity">primary</span>` : ""}</span>`);
+  }
+  if ((u.decls || []).length > 12)
+    chips.push(`<span class="chip">+${u.decls.length - 12} more decls</span>`);
+  for (const c of u.containers || [])
+    chips.push(`<span class="chip"><a data-nav="${esc(c)}">${
+      esc(c.startsWith("path:") ? c.slice(5) : c)}</a></span>`);
+  for (const [db, arr] of Object.entries(u.xrefs || {})) {
+    for (const x of (arr || []).slice(0, 4)) {
+      const xid = x.id && String(x.id).startsWith("xref:") ? x.id : `xref:${db}:${x.id}`;
+      const url = x.url || nodeUrl(xid);
+      chips.push(`<span class="chip" style="border-color:${esc(DB_COLOR[db] || "#c8bfa8")}"><a data-nav="${
+        esc(xid)}">${esc(XREF_NAME[db] || db)}: ${esc(x.label || extValueOf(xid))}</a>${
+        url ? ` <a class="extlink" href="${esc(url)}" rel="noopener" target="_blank">↗</a>` : ""}</span>`);
+    }
+  }
+  return h + `<div class="chips">${chips.join("")}</div></div>`;
+}
+
+// ---- Sources accordion: every content snippet attached to a concept ---------
+// (a) Wikidata description (build-time), (b) Wikipedia lead (on-demand REST
+// summary, CORS-safe, cached), (c) ext-node snippets from their shard entries
+// (license-permitting dbs), plus plain deep-link rows for no-content dbs.
+const wpLeadCache = new Map();   // slug -> Promise<extract|null>
+function wikipediaLead(slug) {
+  if (!wpLeadCache.has(slug)) {
+    wpLeadCache.set(slug,
+      fetch("https://en.wikipedia.org/api/rest_v1/page/summary/" + encodeURIComponent(slug))
+        .then(r => (r.ok ? r.json() : null))
+        .then(j => (j && j.extract) || null)
+        .catch(() => null));
+  }
+  return wpLeadCache.get(slug);
+}
+function conceptSourceRefs(n, e) {
+  const refs = [], seen = new Set();
+  const u = n.unit;
+  if (u && u.xrefs) {
+    for (const [db, arr] of Object.entries(u.xrefs)) {
+      for (const x of arr || []) {
+        const xid = x.id && String(x.id).startsWith("xref:") ? x.id : `xref:${db}:${x.id}`;
+        if (!seen.has(xid)) { seen.add(xid); refs.push(xid); }
+      }
+    }
+  }
+  for (const x of (e.edges && e.edges.out) || []) {
+    if (x.kind !== "xref" || !x.id.startsWith("xref:") || seen.has(x.id)) continue;
+    seen.add(x.id);
+    refs.push(x.id);
+  }
+  return refs;
+}
+function sourcesAccordionHtml(n, extIds) {
+  const slug = n.slug || (n.unit && n.unit.article && n.unit.article.slug);
+  const desc = (n.unit && n.unit.description) || n.description;
+  const count = (desc ? 1 : 0) + (slug ? 1 : 0) + extIds.length;
+  if (!count) return "";
+  return `<section class="kind"><h3>Sources <span class="cnt">(${count})</span></h3>
+    <details class="srcacc" id="srcacc"><summary>what each database says about this concept</summary>
+    <div id="srcacc-body"><p class="note">loading…</p></div></details></section>`;
+}
+// snippet text renders verbatim — inline $TeX$ stays raw (the page ships no
+// math renderer); the serif .snip block keeps it readable
+function srcRow(name, url, text, license, navId) {
+  return `<div class="srcrow"><div class="srchead"><b>${esc(name)}</b>${
+    navId ? ` <a data-nav="${esc(navId)}" style="cursor:pointer;font-size:.75rem">open node</a>` : ""}${
+    url ? ` <a class="extlink" href="${esc(url)}" rel="noopener" target="_blank">↗</a>` : ""}</div>
+    <div class="snip">${esc(text)}</div>${
+    license ? `<div class="srclic">${esc(license)}</div>` : ""}</div>`;
+}
+function srcLinkRow(name, url, navId) {
+  return `<div class="srcrow"><div class="srchead"><b>${esc(name)}</b>
+    <a data-nav="${esc(navId)}" style="cursor:pointer;font-size:.75rem">open node</a>${
+    url ? ` <a class="extlink" href="${esc(url)}" rel="noopener" target="_blank">↗</a>` : ""}</div>
+    <div class="srclic">no stored content (license) — read it at the source</div></div>`;
+}
+async function populateSources(id, n, extIds) {
+  const body = $("#srcacc-body");
+  if (!body || body.dataset.loaded) return;
+  body.dataset.loaded = "1";
+  const rows = [];
+  const desc = (n.unit && n.unit.description) || n.description;
+  const qid = (n.unit && n.unit.qid) || n.id;
+  if (desc) rows.push(srcRow("Wikidata", `https://www.wikidata.org/wiki/${qid}`, desc, "CC0"));
+  body.innerHTML = rows.join("") || `<p class="note">loading…</p>`;
+  const slug = n.slug || (n.unit && n.unit.article && n.unit.article.slug);
+  if (slug) {
+    const lead = await wikipediaLead(slug);
+    if (lastPanelId !== id) return;
+    if (lead) rows.push(srcRow("Wikipedia (lead)",
+      `https://en.wikipedia.org/wiki/${slug}`, lead, "CC-BY-SA-4.0"));
+  }
+  for (const xid of extIds.slice(0, 12)) {
+    const ee = await getEntry(xid);
+    if (lastPanelId !== id) return;
+    const db = extDbOf(xid);
+    const nm = XREF_NAME[db] || db;
+    const url = (ee && ee.node.url) || nodeUrl(xid);
+    if (ee && ee.node.snippet)
+      rows.push(srcRow(nm, url, ee.node.snippet, ee.node.snippet_license || "", xid));
+    else rows.push(srcLinkRow(nm, url, xid));   // no-content db → deep link out
+  }
+  if (extIds.length > 12)
+    rows.push(`<p class="note">… +${extIds.length - 12} more cross-references (see the chips above)</p>`);
+  if (lastPanelId !== id || !$("#srcacc-body")) return;
+  $("#srcacc-body").innerHTML = rows.join("") || `<p class="note">no stored source content.</p>`;
+  $("#srcacc-body").querySelectorAll("[data-nav]").forEach(a =>
+    a.addEventListener("click", () => navigate(a.dataset.nav)));
 }
 
 // ---- the transparency legend: /map's Sources view, rendered in the panel ----
@@ -1820,9 +2251,142 @@ document.addEventListener("click", ev => {
   if (!ev.target.closest("#search")) $("#hits").style.display = "none";
 });
 
+// ============================ xref explorer ==================================
+// The whole cross-referenced subgraph (views/xref_explorer.json — every
+// tagged / cross-linked node + the edges among them) as ONE static-tick force
+// layout: the cross-ref explorer for Mathlib. Facet chips, Layers and
+// Provenance toggles all apply; clicking a node opens its panel; labels are
+// capped by zoom so a few thousand nodes stay legible. Degrades to a status
+// message when the view file hasn't been built yet.
+let xdata = null;
+async function fetchExplorerData() {
+  if (xdata) return xdata;
+  const get = () => fetch(BASE + "views/xref_explorer.json" + vq())
+    .then(r => (r.ok ? r.json() : null)).catch(() => null);
+  let j = await get();
+  if (!j) {   // stale manifest → one re-sync + retry, same as getEntry
+    try { await fetchManifest(); } catch (e) { return null; }
+    j = await get();
+  }
+  xdata = j;
+  return j;
+}
+async function renderExplorer(anim) {
+  const seq = ++renderSeq;
+  const j = await fetchExplorerData();
+  if (seq !== renderSeq) return;
+  if (!j || !(j.nodes || []).length) {
+    setExplorer(false);
+    setHash(focusId || "");   // drop the stale &view=explorer
+    statusEl.textContent = "explorer data not built yet (views/xref_explorer.json)";
+    return renderFocus(false);
+  }
+  resetZoom();
+  selectedId = null;
+  // tolerate {nodes, edges} or {nodes, links}; infer type/db/label from ids
+  let nodesArr = (j.nodes || []).map(r => {
+    const t = r.type || idType(r.id);
+    return {id: r.id, type: t, f: r.f, status: r.status,
+            db: r.db || (t === "ext" ? extDbOf(r.id) : undefined),
+            label: r.label || (t === "ext" ? extValueOf(r.id) : r.id)};
+  });
+  const totalN = nodesArr.length;
+  let noF = false;
+  if (filterMask) {
+    if (nodesArr.some(nd => nd.f !== undefined))
+      nodesArr = nodesArr.filter(nd => ((nd.f || 0) & filterMask) !== 0);
+    else noF = true;
+  }
+  updateFilterStat(filterMask
+    ? {active: true, shown: nodesArr.length, total: totalN, noF} : null);
+  const keep = new Set(nodesArr.map(nd => nd.id));
+  const rawEdges = j.edges || j.links || [];
+  let edges = [];
+  for (const r of rawEdges) {
+    const src = r.src ?? r.source ?? r.a, dst = r.dst ?? r.target ?? r.b;
+    if (!keep.has(src) || !keep.has(dst)) continue;
+    edges.push({src, dst, kind: r.kind || "links", prov: r.prov,
+                evidence: r.evidence || {}, w: r.w || 1});
+  }
+  const totalE = edges.length;
+  if (edges.length > 6000) edges = edges.slice(0, 6000);   // keep the DOM sane
+  const deg = new Map();
+  for (const ed of edges) {
+    deg.set(ed.src, (deg.get(ed.src) || 0) + 1);
+    deg.set(ed.dst, (deg.get(ed.dst) || 0) + 1);
+  }
+  const W = stageEl.clientWidth || 800, H = stageEl.clientHeight || 600;
+  const R_T = {concept: 5, decl: 3.5, ext: 4, container: 6, literature: 4};
+  const sims = nodesArr.map(nd => ({id: nd.id, nd,
+    r: (R_T[nd.type] || 4) + Math.min(4, Math.sqrt(deg.get(nd.id) || 0) * 0.7)}));
+  const links = edges.map(ed => ({source: ed.src, target: ed.dst}));
+  const sim = d3.forceSimulation(sims)
+    .force("link", d3.forceLink(links).id(d => d.id).distance(46).strength(0.3))
+    .force("charge", d3.forceManyBody().strength(-26).distanceMax(260))
+    .force("collide", d3.forceCollide(d => d.r + 2).iterations(1))
+    .force("x", d3.forceX(W / 2).strength(0.05))
+    .force("y", d3.forceY(H / 2).strength(0.07))
+    .stop();
+  const ticks = sims.length > 1500 ? 90 : 180;   // static ticks, renderEgo-style
+  for (let i = 0; i < ticks; i++) sim.tick();
+  if (seq !== renderSeq) return;
+  const leaves = sims.map(sm => ({data: sm.nd, x: sm.x, y: sm.y, r: sm.r}));
+  layout = {items: new Map(leaves.map(l => [l.data.id, l])), leaves, explorer: true};
+  edgeStore = edges.map(ed => ({kind: ed.kind, a: ed.src, b: ed.dst, w: ed.w,
+    payload: {kind: ed.kind, prov: ed.prov, evidence: ed.evidence},
+    from: ed.src, to: ed.dst}));
+  gEdges.selectAll("*").remove();
+  gOverlay.selectAll("*").remove();
+  gBubbles.selectAll("circle.preview").remove();
+  drawNodes();
+  drawExplorerLabels();
+  renderEdges();
+  crumbEl.innerHTML = `<a data-nav="${LIBS_ID}">all libraries</a>
+    <span class="sep">/</span> <b>cross-ref explorer</b>`;
+  crumbEl.querySelectorAll("[data-nav]").forEach(a =>
+    a.addEventListener("click", () => {
+      setExplorer(false); focusId = LIBS_ID; selectedId = null;
+      setHash(""); renderFocus(true);
+    }));
+  statusEl.textContent = `explorer: ${nodesArr.length.toLocaleString()}${
+    filterMask && !noF ? ` of ${totalN.toLocaleString()}` : ""} nodes · ${
+    edges.length.toLocaleString()}${
+    totalE > edges.length ? ` of ${totalE.toLocaleString()}` : ""} edges`;
+  if (anim) {
+    const g = [gEdges, gBubbles, gOverlay, gLabels];
+    for (const gr of g) gr.attr("opacity", 0).transition().duration(260).attr("opacity", 1);
+    setTimeout(() => g.forEach(gr => { gr.interrupt(); gr.attr("opacity", 1); }), 600);
+  }
+}
+// labels capped by zoom: only the biggest nodes are labelled zoomed-out;
+// zooming in reveals more (up to 250 text elements at any graph size)
+function drawExplorerLabels() {
+  gLabels.selectAll("*").remove();
+  const ranked = layout.leaves.slice().sort((a, b) => b.r - a.r).slice(0, 250);
+  ranked.forEach((l, i) => {
+    const raw = l.data.label || l.data.id;
+    gLabels.append("text").attr("class", "blabel xlab")
+      .attr("x", l.x).attr("y", l.y + l.r + 8).attr("font-size", 8)
+      .attr("data-rank", i)
+      .text(raw.length > 24 ? raw.slice(0, 22) + "…" : raw);
+  });
+  updateExplorerLabels(d3.zoomTransform(svg.node()).k);
+}
+function updateExplorerLabels(k) {
+  if (!layout || !layout.explorer) return;
+  const lim = Math.min(250, Math.round(50 * k * k));
+  gLabels.selectAll("text.xlab").attr("display", function () {
+    return Number(this.dataset.rank) < lim ? null : "none";
+  });
+}
+zoomBehav.on("zoom.xplabels", ev => {
+  if (layout && layout.explorer) updateExplorerLabels(ev.transform.k);
+});
+
 // ============================ toolbar + boot =================================
 document.querySelectorAll(".toolbar input").forEach(el =>
   el.addEventListener("change", () => {
+    if (explorerOn) { renderExplorer(false); return; }
     if (el.dataset.lk && focusId === LIBS_ID) { renderFocus(false); return; }
     if (layout && layout.ego) { renderFocus(false); return; }
     renderEdges();
@@ -1831,9 +2395,40 @@ document.querySelectorAll(".toolbar input").forEach(el =>
     else if (focusId !== LIBS_ID) renderPanel(focusId);
   }));
 
+// facet chips: OR together into filterMask; the state rides the URL hash
+function syncChips() {
+  document.querySelectorAll(".fchip[data-fbit]").forEach(b =>
+    b.classList.toggle("on", (filterMask & Number(b.dataset.fbit)) !== 0));
+}
+document.querySelectorAll(".fchip[data-fbit]").forEach(b =>
+  b.addEventListener("click", () => {
+    filterMask ^= Number(b.dataset.fbit);
+    syncChips();
+    setHash(focusId || "");
+    if (explorerOn) renderExplorer(false);
+    else renderFocus(false);
+  }));
+$("#explorerbtn").addEventListener("click", () => {
+  setExplorer(!explorerOn);
+  setHash(focusId || "");
+  if (explorerOn) renderExplorer(true);
+  else renderFocus(true);
+});
+
 window.addEventListener("hashchange", () => {
-  const id = decodeURIComponent(location.hash.slice(1));
-  if (id) navigate(id);
+  const h = parseHash();
+  filterMask = h.f;
+  syncChips();
+  if (h.view === "explorer") {
+    setExplorer(true);
+    renderExplorer(true).then(() => {
+      if (h.id && explorerOn) { selectedId = h.id; renderPanel(h.id); drawSelRing(); }
+    });
+    return;
+  }
+  if (explorerOn) setExplorer(false);
+  if (h.id) navigate(h.id);
+  else renderFocus(false);
 });
 // Re-pack only on a real WIDTH change (the layout is width-driven), debounced.
 // This skips the height-only resize storm a mobile URL bar fires on every
@@ -2140,8 +2735,15 @@ function wireCommunity(id) {
   statusEl.textContent = `${manifest._meta.counts.entries.toLocaleString()} nodes · ` +
     `${manifest._meta.counts.ontology_edges.toLocaleString()} edges · ` +
     `data ${manifest._meta.generated_at.slice(0, 10)}`;
-  const target = decodeURIComponent(location.hash.slice(1));
-  if (target) { await navigate(target); }
+  const h = parseHash();
+  filterMask = h.f;
+  syncChips();
+  if (h.view === "explorer") {
+    setExplorer(true);
+    focusId = h.id || "path:Mathlib";
+    await renderExplorer(false);
+    if (h.id && explorerOn) { selectedId = h.id; renderPanel(h.id); drawSelRing(); }
+  } else if (h.id) { await navigate(h.id); }
   else { focusId = "path:Mathlib"; await renderFocus(false); renderPanel(focusId); }
   lastStageW = stageEl.clientWidth;   // baseline for the width-change resize guard
 })();

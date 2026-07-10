@@ -16,6 +16,11 @@ export interface Env {
   BRAIN_API_LIMITER: {
     limit: (opts: { key: string }) => Promise<{ success: boolean }>;
   };
+  // Anonymous /mcp JSON-RPC limiter, keyed mcp:<CF-Connecting-IP>. Optional so
+  // deploys predating the binding fall back to BRAIN_API_LIMITER (mcp.ts).
+  MCP_LIMITER?: {
+    limit: (opts: { key: string }) => Promise<{ success: boolean }>;
+  };
 
   AUTH_MODE: string; // "dev" (cookie stub) | "oauth" (better-auth)
 

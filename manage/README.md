@@ -94,6 +94,16 @@ is invisible to the runner. The fix, wired into the nightly job:
    still wins (`WIKILEAN_FORMALIZE_LIMIT=25 bash site/ops/run-now.sh`). Nightly
    agent spend ≈ FORMALIZE_BUDGET + BUDGET_TOKENS.
 
+## Brain nightly (axis 4 — separate job, shared conventions)
+
+The Brain has its own 02:20 launchd job, `site/ops/brain-nightly.sh`
+(org.wikilean.brain), upstream of the 03:00-cluster jobs this control plane
+feeds: external-DB ingest (per-source cadence) → propose-only agent team
+(`brain/sync_agents.py`, gated OFF by default) → `brain/fold_proposals.py` →
+node/edge rebuild → acceptance gate → shards → clean-tree-gated deploy. It
+never touches `manage/data/`; tune it in `site/ops/nightly.env`
+(`WIKILEAN_BRAIN_*`) and read `site/ops/README.md` for install/operate.
+
 ## Known limitations (documented, not hidden)
 
 1. **The concept graph is rebuilt from the catalog, not from D1.** `refresh.py`

@@ -12,6 +12,7 @@ Disable with WIKILEAN_SEARCH_TOOLS=0 (falls back to grep-only Agent 2).
 from __future__ import annotations
 
 import asyncio
+import json
 import os
 import subprocess
 import sys
@@ -24,19 +25,24 @@ except Exception:  # SDK missing / too old — caller falls back to grep-only.
     _SDK_OK = False
 
 SERVER_NAME = "wikilean"
-_SKILLS = Path(__file__).resolve().parent.parent / ".claude" / "skills"
+_REPO = Path(__file__).resolve().parent.parent
+_SKILLS = _REPO / ".claude" / "skills"
 MATHLIB_CLI = _SKILLS / "mathlib-search" / "mathlib_search.py"
 WIKIDATA_CLI = _SKILLS / "wikidata-search" / "wikidata.py"
+BRAIN_CLI = _REPO / "brain" / "query.py"
 
 _TIMEOUT = 45        # per search; the public APIs are usually < 2s
 _MAX_OUT = 6000      # cap tool output so one search can't flood the agent context
 
 
-def _run_cli(cli: Path, *argv: str) -> str:
-    """Run a skill CLI with fixed argv (no shell). Returns text for the agent."""
+def _run_cli(cli: Path, *argv: str, append_json: bool = True) -> str:
+    """Run a skill CLI with fixed argv (no shell). Returns text for the agent.
+
+    append_json=False for brain/query.py — JSON is its native output and it
+    has no --json flag."""
     try:
         p = subprocess.run(
-            [sys.executable, str(cli), *argv, "--json"],
+            [sys.executable, str(cli), *argv] + (["--json"] if append_json else []),
             capture_output=True, text=True, timeout=_TIMEOUT,
         )
     except subprocess.TimeoutExpired:
@@ -145,8 +151,72 @@ def build_search_server():
     async def wikidata_xrefs(args):
         return _text(await asyncio.to_thread(_run_cli, WIKIDATA_CLI, "xrefs", args["qid"]))
 
+    # --- BRAIN tools (read-only, shard-backed; wraps brain/query.py, whose
+    # native output is JSON — no --json flag). Degrade to the 7 search tools
+    # when the CLI or its shards are absent (fresh clone before a brain build).
+    def _brain_unit_text(key: str) -> str:
+        out = _run_cli(BRAIN_CLI, "node", key, append_json=False)
+        if '"ok": false' in out and ":" not in key and " " not in key \
+                and not key.startswith("Q"):
+            # bare decl name → the SCHEMA decl id form, then give up to search
+            retry = _run_cli(BRAIN_CLI, "node", f"decl:Mathlib:{key}",
+                             append_json=False)
+            if '"ok": false' not in retry:
+                out = retry
+        try:
+            entry = json.loads(out)
+        except ValueError:
+            return out
+        # `unit` ships on concept payloads once the v2 core lands; degrade to
+        # the full node entry (payload + edges) when absent.
+        unit = (entry.get("node") or {}).get("unit") if isinstance(entry, dict) else None
+        if unit:
+            return json.dumps({"ok": True, "id": (entry.get("node") or {}).get("id") or key,
+                               "unit": unit}, ensure_ascii=False)
+        return out
+
+    @tool(
+        "brain_node",
+        "Look up one WikiLean Brain node by EXACT id: a QID ('Q181296'), a "
+        "container ('path:Mathlib/CategoryTheory'), a decl "
+        "('decl:Mathlib:CommGroup'), or an external page "
+        "('xref:nlab:abelian+group'). Returns the node payload plus its typed "
+        "1-hop edges (formalizes/xref/depends/relates/…) with provenance, the "
+        "containment breadcrumb, and a children summary. Use brain_search "
+        "first when you only have a name.",
+        {"id": str},
+    )
+    async def brain_node(args):
+        return _text(await asyncio.to_thread(
+            _run_cli, BRAIN_CLI, "node", args["id"], append_json=False))
+
+    @tool(
+        "brain_search",
+        "Search Brain concepts/containers/decls by label substring; returns "
+        "node ids with type/label/status. The way to find a node id for "
+        "brain_node/brain_unit when you only have a concept name.",
+        {"q": str},
+    )
+    async def brain_search(args):
+        return _text(await asyncio.to_thread(
+            _run_cli, BRAIN_CLI, "search", args["q"], append_json=False))
+
+    @tool(
+        "brain_unit",
+        "Resolve a key — QID ('Q181296'), decl id ('decl:Mathlib:CommGroup'), "
+        "or bare decl name ('CommGroup') — to its atomic unit card: the "
+        "article ∘ QID ∘ Mathlib decls ∘ external cross-refs identity the "
+        "Brain has verified for that concept. Falls back to the full node "
+        "entry when no unit card is stored.",
+        {"key": str},
+    )
+    async def brain_unit(args):
+        return _text(await asyncio.to_thread(_brain_unit_text, args["key"]))
+
     tools = [decl_exists, loogle, mathlib_semantic,
              wikidata_search, wikidata_by_slug, wikidata_semantic, wikidata_xrefs]
+    if BRAIN_CLI.exists():
+        tools += [brain_node, brain_search, brain_unit]
     server = create_sdk_mcp_server(SERVER_NAME, "1.0.0", tools)
     names = [f"mcp__{SERVER_NAME}__{t.name}" for t in tools]
     return server, names
@@ -171,6 +241,12 @@ VERIFICATION TOOLS — use them, do not rely on grep alone:
   wikidata_xrefs(qid).
 - wikidata_search(label) / wikidata_xrefs(qid): optional — label-prefix search
   and a check of what formal references a concept already carries.
+- brain_search(q) / brain_node(id) / brain_unit(key): the BRAIN — WikiLean's
+  verified concept↔Mathlib graph. brain_search finds a node id by label;
+  brain_node returns its typed neighborhood (formalizes/xref/… edges with
+  provenance); brain_unit resolves a QID, decl:Mathlib:<name>, or bare decl
+  name to the atomic unit card (article ∘ QID ∘ decls ∘ cross-refs). Check
+  what the graph already believes formalizes a concept before classifying.
 These are cheap and prevent wrong citations; prefer them to settle any match
 you are not certain of.
 """
@@ -180,10 +256,12 @@ if __name__ == "__main__":
     # Zero-agent smoke: prove each wrapped CLI returns real data.
     server, names = build_search_server()
     print("server built:", server is not None, "| tools:", names)
-    for cli, argv in [
-        (MATHLIB_CLI, ("decl", "Nat.add_comm")),
-        (MATHLIB_CLI, ("loogle", "Real.sin, Continuous")),
-        (WIKIDATA_CLI, ("xrefs", "Q11518")),
+    for cli, argv, append_json in [
+        (MATHLIB_CLI, ("decl", "Nat.add_comm"), True),
+        (MATHLIB_CLI, ("loogle", "Real.sin, Continuous"), True),
+        (WIKIDATA_CLI, ("xrefs", "Q11518"), True),
+        (BRAIN_CLI, ("node", "Q181296"), False),
+        (BRAIN_CLI, ("search", "abelian"), False),
     ]:
-        print(f"\n$ {cli.name} {' '.join(argv)} --json")
-        print(_run_cli(cli, *argv)[:300])
+        print(f"\n$ {cli.name} {' '.join(argv)}" + (" --json" if append_json else ""))
+        print(_run_cli(cli, *argv, append_json=append_json)[:300])

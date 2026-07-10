@@ -30,10 +30,45 @@ interface BrainManifest {
   _meta: Record<string, unknown>;
 }
 
-async function assetJson<T>(c: Context<{ Bindings: Env }>, path: string): Promise<T | null> {
+// Shared by decl.ts-style asset lookups in brain-api.ts (the v2 agent API).
+export async function assetJson<T>(c: Context<{ Bindings: Env }>, path: string): Promise<T | null> {
   const res = await c.env.ASSETS.fetch(new Request(new URL(path, c.req.url)));
   if (!res.ok) return null;
   return (await res.json()) as T;
+}
+
+// One labels.json row (build_shards.py `labels`). v2 adds optional `f` (facet
+// bitmask, brain/SCHEMA.md) consumed by /api/brain/filter; rows built before
+// the v2 data rebuild simply lack it (treated as 0).
+export interface BrainLabelRow {
+  id: string;
+  type: string;
+  label: string;
+  slug?: string;
+  status?: string;
+  n_decls?: number;
+  f?: number;
+}
+
+// Pure label search shared by GET /api/brain/search and the MCP brain_search
+// tool (src/mcp.ts via brain-api.ts). `q` must already be trimmed+lowercased.
+// Prefix hits rank before substring hits; a bare QID query matches by id.
+export function searchLabels(
+  labels: BrainLabelRow[],
+  q: string,
+  type: string,
+  limit: number,
+): BrainLabelRow[] {
+  const isQid = /^q[1-9][0-9]{0,11}$/.test(q);
+  const starts: BrainLabelRow[] = [], contains: BrainLabelRow[] = [];
+  for (const r of labels) {
+    if (type && r.type !== type) continue;
+    const l = (r.label || "").toLowerCase();
+    if (l.startsWith(q) || (isQid && r.id.toLowerCase() === q)) starts.push(r);
+    else if (l.includes(q)) contains.push(r);
+    if (starts.length >= limit) break;
+  }
+  return [...starts, ...contains].slice(0, limit);
 }
 
 // Resolve a node id to its shard entry (+ the manifest prov table), or null.
@@ -83,22 +118,10 @@ export function registerBrainRoutes(app: Hono<{ Bindings: Env }>): void {
     if (q.length < 2) return c.json({ ok: false, error: "query too short (min 2 chars)" }, 400);
     const type = c.req.query("type") || "";
     const limit = Math.min(Number(c.req.query("limit")) || 25, 100);
-    const labels = await assetJson<Array<{ id: string; type: string; label: string }>>(
-      c, "/assets/brain/labels.json");
+    const labels = await assetJson<BrainLabelRow[]>(c, "/assets/brain/labels.json");
     if (!labels) return c.json({ ok: false, error: "brain data unavailable" }, 503);
-    // a bare QID query matches an existing node by id (so a concept is findable
-    // by "Q181296", not only its label)
-    const isQid = /^q[1-9][0-9]{0,11}$/.test(q);
-    const starts: object[] = [], contains: object[] = [];
-    for (const r of labels) {
-      if (type && r.type !== type) continue;
-      const l = r.label.toLowerCase();
-      if (l.startsWith(q) || (isQid && r.id.toLowerCase() === q)) starts.push(r);
-      else if (l.includes(q)) contains.push(r);
-      if (starts.length >= limit) break;
-    }
     return c.json(
-      { ok: true, q, hits: [...starts, ...contains].slice(0, limit) },
+      { ok: true, q, hits: searchLabels(labels, q, type, limit) },
       200,
       { "Cache-Control": "public, max-age=3600" },
     );

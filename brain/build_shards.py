@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Build per-node neighborhood shards — SCHEMA.md's locality law as static JSON.
 
-Reads brain/data/{nodes.jsonl, edges.jsonl, rollup_edges.{module,dir}.jsonl} and
-writes site/assets/brain/: prefix-named shard files, each a JSON object mapping
+Reads brain/data/{nodes.jsonl, edges.jsonl, edges_links.jsonl,
+rollup_edges.{module,dir}.jsonl} (edges_links.jsonl holds the split-out
+kind=='links' rows — gitignored, absent ⇒ treated as empty) and writes
+site/assets/brain/: prefix-named shard files, each a JSON object mapping
 node id → neighborhood entry, plus manifest.json. The scheme is
 wiki/scripts/build-decl-index.ts's longest-prefix sharding (normalize, start at
 2-char keys, recursively split oversize shards, prefix-free leaves): a client
@@ -26,9 +28,13 @@ manifest-level `prov` table (edges carry an index) and the heavy evidence
 lists (depends `witnesses`, rollup `top_witnesses`) are trimmed to their first
 pair. The full edges live in brain/data/*.jsonl, served by brain/query.py.
 
-NOTE: wiki/scripts/build-public.ts does not copy this directory yet — it copies
-an explicit file list. Shipping needs a wipe-then-recursive-copy of
-site/assets/brain/ → wiki/public/assets/brain/ there (the /brain UI task).
+v2 additions (SCHEMA.md): ext nodes shard like any node (ids keep the
+historical xref-dst string form); `f` facet bitmasks ride on labels.json rows
+and children entries; labels.json gains ext rows (searchable);
+views/xref_explorer.json is the global cross-ref view (facet bits 0-3 seeded,
+<4 MB); aliases.json maps FQ decl names → QIDs and slugs → QID for Worker-side
+unit resolution. wiki/scripts/build-public.ts wipe-then-recursive-copies the
+whole directory (subdirs included) to wiki/public/assets/brain/.
 
 Run: python3 brain/build_shards.py
 """
@@ -110,7 +116,10 @@ def main() -> int:
             prov_list.append(p)
         return i
 
-    # ---- edges.jsonl: contains → tree maps; ontology → per-node entries -----
+    # ---- edges.jsonl (+ edges_links.jsonl): contains → tree maps; ontology →
+    # per-node entries. The edge set ships split (build_common.write_edges):
+    # edges.jsonl = every kind except `links`; edges_links.jsonl = only links
+    # rows, gitignored, absent ⇒ empty. Both stream through the same consumer.
     parent: dict[str, str] = {}
     children: dict[str, list[str]] = defaultdict(list)
     edges_out: dict[str, list] = defaultdict(list)
@@ -119,8 +128,12 @@ def main() -> int:
     # Powers cross-pollination — GET /api/brain/edges infers xref-shared A↔B when
     # a community xref lands on a page some other node already points at.
     xref_index: dict[str, list[str]] = defaultdict(list)
+    # (src, dst, kind) for the x-ref explorer view + aliases.json (v2)
+    explorer_edges: list[tuple[str, str, str]] = []
     n_ontology = 0
-    with open_meta("edges.jsonl") as fh:
+
+    def consume_edges(fh) -> None:
+        nonlocal n_ontology
         for line in fh:
             e = json.loads(line)
             if e["kind"] == "contains":
@@ -129,6 +142,8 @@ def main() -> int:
                 continue
             n_ontology += 1
             kind = e["kind"]
+            if kind in ("formalizes", "xref", "links"):
+                explorer_edges.append((e["src"], e["dst"], kind))
             if kind == "xref":
                 xref_index[e["dst"]].append(e["src"])
             ev = e["evidence"]
@@ -142,6 +157,16 @@ def main() -> int:
             edges_out[e["src"]].append((rank, e["dst"], {"id": e["dst"], **base}))
             if e["dst"] in nodes:
                 edges_in[e["dst"]].append((rank, e["src"], {"id": e["src"], **base}))
+
+    with open_meta("edges.jsonl") as fh:
+        consume_edges(fh)
+    if (BRAIN_DATA / "edges_links.jsonl").exists():
+        with open_meta("edges_links.jsonl") as fh:
+            consume_edges(fh)
+    else:
+        print("NOTE: brain/data/edges_links.jsonl missing — links edges "
+              "treated as empty (rebuild with brain/build_edges.py)",
+              file=sys.stderr)
 
     # ---- graduated community edges (docs/BRAIN-EDITS-ROADMAP.md phase 4) ------
     # harvest_community_edges.py snapshots the live D1 tail here. Fold their xref
@@ -205,7 +230,9 @@ def main() -> int:
     for nid, rows in edges_out.items():
         if not nid.startswith("Q"):
             continue
-        for _, dst, item in sorted(rows):
+        # key: two projected links edges can share (rank, dst) — via two dbs —
+        # and bare tuple sort would fall through to comparing the item dicts
+        for _, dst, item in sorted(rows, key=lambda t: (t[0], t[1])):
             if item["kind"] != "formalizes":
                 continue
             home = dst if dst.startswith("path:") else parent.get(dst)
@@ -305,7 +332,8 @@ def main() -> int:
         first = [{"id": n["id"], "label": n.get("label"), "type": n["type"],
                   **({"n_decls": n["n_decls"]} if n["type"] == "container" else {}),
                   **({"n_concepts": n_concepts[n["id"]]}
-                     if n["type"] == "container" and n_concepts.get(n["id"]) else {})}
+                     if n["type"] == "container" and n_concepts.get(n["id"]) else {}),
+                  **({"f": n["f"]} if n.get("f") else {})}
                  for n in ordered[:CHILD_CAP]]
         return {"count": len(ordered), "first": first}
 
@@ -422,17 +450,90 @@ def main() -> int:
         "shards": {k: len(leaves[k]) for k in sorted(leaves)},
     }
 
-    # search index: concepts + containers (decls are covered by the existing
-    # decl-index shards / GET /decl); one client fetch, filtered locally
+    # search index: concepts + containers + ext pages (decls are covered by the
+    # existing decl-index shards / GET /decl); one client fetch, filtered locally
     labels = [_l for _l in (
         {"id": n["id"], "type": n["type"], "label": n.get("label"),
          **({"slug": n["slug"]} if n.get("slug") else {}),
+         **({"db": n["db"]} if n["type"] == "ext" else {}),
          **({"status": n["display"]["status"]}
             if n.get("display", {}).get("status") else {}),
-         **({"n_decls": n["n_decls"]} if n.get("n_decls") else {})}
-        for n in nodes.values() if n["type"] in ("concept", "container"))
+         **({"n_decls": n["n_decls"]} if n.get("n_decls") else {}),
+         **({"f": n["f"]} if n.get("f") else {})}
+        for n in nodes.values() if n["type"] in ("concept", "container", "ext"))
         if _l["label"]]
     labels.sort(key=lambda r: (r["type"], -(r.get("n_decls") or 0), r["label"]))
+
+    # ---- views/xref_explorer.json (v2): the global cross-ref explorer --------
+    # Seeds = every node with a bit-0..3 facet (gold @[wikidata] / @[stacks] /
+    # @[kerodon] / any xref) + the concepts/decls they connect to through
+    # formalizes/xref/links edges. Deterministically trimmed under the byte
+    # budget by dropping the lowest-priority edge tail (links sort last).
+    SEED_MASK = 0b1111
+    EXPLORER_BUDGET = 3_900_000
+    kind_pri = {"formalizes": 0, "xref": 1, "links": 2}
+    gen = max(m["generated_at"] for m in metas.values())
+    seeds = {nid for nid, n in nodes.items() if n.get("f", 0) & SEED_MASK}
+    xrows = sorted((e for e in explorer_edges if e[0] in seeds or e[1] in seeds),
+                   key=lambda e: (kind_pri[e[2]], e[0], e[1]))
+
+    def explorer_doc(rows: list, truncated: bool) -> dict:
+        node_set = set(seeds)
+        kept = []
+        for src, dst, kind in rows:
+            add, ok = [], True
+            for nid in (src, dst):
+                if nid in node_set:
+                    continue
+                n = nodes.get(nid)
+                if n and n["type"] in ("concept", "decl"):
+                    add.append(nid)
+                else:
+                    ok = False
+                    break
+            if not ok:
+                continue
+            node_set.update(add)
+            kept.append({"src": src, "dst": dst, "kind": kind})
+        out_nodes = []
+        for nid in sorted(node_set):
+            n = nodes[nid]
+            out_nodes.append({
+                "id": nid, "label": n.get("label"), "type": n["type"],
+                **({"f": n["f"]} if n.get("f") else {}),
+                **({"db": n["db"]} if n["type"] == "ext" else {}),
+                **({"status": n["display"]["status"]}
+                   if n.get("display", {}).get("status") else {})})
+        return {"_meta": {"schema": "brain/SCHEMA.md", "generated_at": gen,
+                          "seed_mask": SEED_MASK, "truncated": truncated,
+                          "counts": {"nodes": len(out_nodes),
+                                     "edges": len(kept)}},
+                "nodes": out_nodes, "edges": kept}
+
+    rows = xrows
+    while True:
+        explorer_blob = json.dumps(explorer_doc(rows, len(rows) < len(xrows)),
+                                   ensure_ascii=False, separators=(",", ":"))
+        if len(explorer_blob.encode()) <= EXPLORER_BUDGET or not rows:
+            break
+        rows = rows[: int(len(rows) * 0.8)]
+
+    # ---- aliases.json (v2): Worker-side unit-key resolution ------------------
+    decl_qids: dict[str, set] = defaultdict(set)
+    for src, dst, kind in explorer_edges:
+        if kind == "formalizes" and dst.startswith("decl:") and src.startswith("Q"):
+            decl_qids[dst.split(":", 2)[2]].add(src)
+    slug_map: dict[str, str] = {}
+    for nid in sorted((n["id"] for n in nodes.values()
+                       if n["type"] == "concept" and n.get("slug")),
+                      key=lambda q: (len(q), q)):
+        slug_map.setdefault(nodes[nid]["slug"], nid)
+    aliases = {"_meta": {"schema": "brain/SCHEMA.md", "generated_at": gen,
+                         "counts": {"decls": len(decl_qids),
+                                    "slugs": len(slug_map)}},
+               "decls": {d: sorted(qs, key=lambda q: (len(q), q))
+                         for d, qs in sorted(decl_qids.items())},
+               "slugs": {s: slug_map[s] for s in sorted(slug_map)}}
 
     # ---- atomic directory swap ----------------------------------------------
     tmp = OUT_DIR.parent / ".brain.tmp"
@@ -450,6 +551,10 @@ def main() -> int:
         json.dumps(manifest, ensure_ascii=False, separators=(",", ":")))
     (tmp / "labels.json").write_text(
         json.dumps(labels, ensure_ascii=False, separators=(",", ":")))
+    (tmp / "views").mkdir()
+    (tmp / "views" / "xref_explorer.json").write_text(explorer_blob)
+    (tmp / "aliases.json").write_text(
+        json.dumps(aliases, ensure_ascii=False, separators=(",", ":")))
     # external-page → nodes reverse index (cross-pollination oracle for the
     # community-edge overlay; ~150 KB, changes only on nightly rebuilds)
     (tmp / "xref_index.json").write_text(
@@ -485,6 +590,14 @@ def main() -> int:
           f"({total / 1e6:.1f} MB) in {OUT_DIR}")
     print(f"  attachments: {n_edges_attached} ontology + {n_rollup_attached} rollup "
           f"+ {n_informal_attached} informal-rollup")
+    print(f"  labels.json: {len(labels)} rows "
+          f"({sum(1 for r in labels if r['type'] == 'ext')} ext); "
+          f"aliases.json: {aliases['_meta']['counts']['decls']} decls, "
+          f"{aliases['_meta']['counts']['slugs']} slugs")
+    xm = json.loads(explorer_blob)["_meta"]
+    print(f"  views/xref_explorer.json: {xm['counts']['nodes']} nodes, "
+          f"{xm['counts']['edges']} edges, {len(explorer_blob.encode()) / 1e6:.1f} MB"
+          f"{' (TRUNCATED to budget)' if xm['truncated'] else ''}")
     print("  size histogram: " + ", ".join(
         f"{'>=150K' if b == 6 else f'{b * 25}-{b * 25 + 25}K'}: {hist[b]}"
         for b in sorted(hist)))

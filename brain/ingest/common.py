@@ -52,9 +52,14 @@ def clean_snippet(text: str, limit: int = SNIPPET_MAX) -> str:
     text = _WS.sub(" ", text or "").strip()
     if len(text) > limit:
         cut = text[:limit]
-        # cut at a sentence or word boundary when possible
+        # cut at a sentence or word boundary when possible; spaceless text
+        # (URLs, data: blobs) must still land under the cap
         dot = cut.rfind(". ")
-        text = (cut[: dot + 1] if dot > limit // 2 else cut.rsplit(" ", 1)[0] + "…")
+        if dot > limit // 2:
+            text = cut[: dot + 1]
+        else:
+            head = cut.rsplit(" ", 1)[0] if " " in cut else cut[: limit - 1]
+            text = head[: limit - 1] + "…"
     return text
 
 
