@@ -82,6 +82,10 @@ the overlay of law 5.
   keep a folder visible/navigable when its subtree matches an active facet filter.
   Omitted when 0. Bits 0–2 additionally propagate from a tagged decl to the
   concept(s) it formalizes (so `f=1`/`f=17` masks are satisfiable on concepts).
+- **`p`** (labels.json rows of facet-bearing decls) — the decl's containment
+  path (deepest container id) so clients can restrict facet queries to a
+  subtree ("all `@[wikidata]` decls under `path:Mathlib/Algebra`" — the /brain
+  flatten view and `/api/brain/filter` consumers).
 - **`f`** (every node payload, children entry, and labels.json row) — facet bitmask:
   bit0 gold `@[wikidata]` tag · bit1 `@[stacks]` · bit2 `@[kerodon]` · bit3 any xref ·
   bit4 formalized · bit5 partial · bit6 has WikiLean article · bit7 has literature ·

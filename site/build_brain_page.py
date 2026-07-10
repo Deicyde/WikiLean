@@ -262,6 +262,7 @@ body.embed .wl-header, body.embed #crumbbar { display:none; }   /* flex column f
 <div class="toolbar">
   <span class="grp"><b>View</b>
     <button id="explorerbtn" class="fchip" title="the cross-ref explorer — every tagged &amp; cross-referenced node and the edges among them, one force-directed graph">Explorer</button>
+    <button id="flattenbtn" class="fchip" title="flatten this folder: with a facet chip active, show EVERY matching declaration in the whole subtree as one flat layer; without one, show the next layer down">Flatten</button>
   </span>
   <span class="grp"><b>Layers</b>
     <label><input type="checkbox" data-k="depends" checked> formal deps</label>
@@ -439,6 +440,8 @@ let focusId = null;        // container id (or LIBS_ID) whose children fill the 
 let selectedId = null;     // node the panel shows / ring highlights
 let layout = null;         // {items: Map(id -> {x,y,r,item}), root}
 let explorerOn = false;    // the cross-ref Explorer view (views/xref_explorer.json)
+let flattenOn = false;     // flatten: one flat layer of the focus subtree
+let flatNote = "";         // status-line text for the flattened level
 let filterMask = 0;        // facet-filter bitmask over node `f` (0 = no filter)
 let currentUser = null;    // {id, name, role} once /api/auth/me resolves (community edits)
 const svg = d3.select("#svg");
@@ -506,8 +509,46 @@ function fillFor(item, depthShade) {
   return depthShade;   // container
 }
 
+// ---- flatten: one flat layer of the focus subtree ---------------------------
+// With a facet filter active: EVERY matching declaration in the subtree, from
+// labels.json rows (facet-bearing decls carry f + containment path p). Without
+// a filter: the next layer down (children of child containers), capped.
+// Returns null when flatten does not apply (falls through to the normal level).
+async function flattenItems(id) {
+  flatNote = "";
+  const isRoot = id === LIBS_ID;
+  const inSubtree = pp => isRoot || pp === id || (pp || "").startsWith(id + "/");
+  if (filterMask) {
+    const rows = (await ensureLabels()).filter(r =>
+      r.type === "decl" && ((r.f || 0) & filterMask) !== 0 && inSubtree(r.p));
+    flatNote = rows.length
+      ? "flattened: " + rows.length + " matching declaration" + (rows.length === 1 ? "" : "s") +
+        (isRoot ? " across all libraries" : " under " + id.slice(5))
+      : "flattened: no matching declarations here — the tag facets (@[wikidata]/@[stacks]/@[kerodon]) live on declarations";
+    return rows.slice(0, 800).map(r => ({id: r.id, label: r.label, type: "decl", f: r.f, n_decls: 1}));
+  }
+  if (isRoot) { flatNote = "flatten needs a library focus or an active facet chip"; return null; }
+  const e = await getEntry(id);
+  if (!e) return null;
+  const kids = (e.children && e.children.first || []);
+  const out = kids.filter(c => c.type !== "container").map(c => ({...c}));
+  const conts = kids.filter(c => c.type === "container").slice(0, 48);
+  await Promise.all(conts.map(async c => {
+    const ce = await getEntry(c.id);
+    for (const g of (ce && ce.children && ce.children.first) || []) out.push({...g});
+  }));
+  const cap = 500;
+  flatNote = "flattened one level: " + Math.min(out.length, cap) + " nodes" +
+    (out.length > cap ? " of " + out.length + " — add a facet chip to flatten all the way to declarations" : "");
+  return out.slice(0, cap);
+}
+
 // children of the current focus, as pack-able items
 async function focusItems(id) {
+  if (flattenOn) {
+    const flat = await flattenItems(id);
+    if (flat) return flat;
+  } else flatNote = "";
   if (id === LIBS_ID) {
     const kinds = activeLibKinds();
     return manifest.roots
@@ -618,6 +659,18 @@ function drawLabels() {
         ? raw.split(":").pop().split(".").slice(-2).join(".") : raw;
       gLabels.append("text").attr("class", "blabel")
         .attr("x", l.x).attr("y", l.y + l.r + 10).attr("font-size", 9)
+        .text(short.length > 28 ? short.slice(0, 26) + "…" : short);
+      continue;
+    }
+    if (!ego && flattenOn && l.data.type === "decl" && layout.leaves.length <= 220) {
+      // flattened declarations are the POINT of the view — label them like
+      // ego neighbors (below the dot); past ~220 the text would shingle,
+      // tooltips + the panel take over
+      const raw = l.data.label || l.data.id;
+      const short = raw.includes(":")
+        ? raw.split(":").pop().split(".").slice(-2).join(".") : raw;
+      gLabels.append("text").attr("class", "blabel")
+        .attr("x", l.x).attr("y", l.y + l.r + 9).attr("font-size", 8.5)
         .text(short.length > 28 ? short.slice(0, 26) + "…" : short);
       continue;
     }
@@ -813,6 +866,7 @@ async function applyFacetFilter(items, seq) {
 function updateFilterStat(fv) {
   const el = $("#filterstat");
   if (!el) return;
+  if (flattenOn && flatNote) { el.textContent = flatNote; return; }
   el.textContent = !fv || !fv.active ? ""
     : fv.noF ? "facet data not in this build yet"
     : `showing ${fv.shown} of ${fv.total} nodes`;
@@ -953,7 +1007,8 @@ async function enrich(seq, leaves) {
   // the ontology web: every visible concept's edges to other visible nodes,
   // plus same-external-page pairs (two concepts both xref-ing one nLab/
   // MathWorld/LMFDB/… page — the cross-database fabric made visible)
-  const concepts = leaves.filter(l => l.data.type === "concept");
+  const concepts = leaves.filter(l => l.data.type === "concept" ||
+    (flattenOn && l.data.type === "decl" && leaves.length <= 300));
   const xrefPages = new Map();   // external page id -> [concept ids]
   await Promise.all(concepts.map(async l => {
     const e = await getEntry(l.data.id);
@@ -1343,24 +1398,31 @@ function setHash(id) {
   let h = "#" + (id && id !== LIBS_ID ? encodeURIComponent(id) : "");
   if (filterMask) h += "&f=" + filterMask;
   if (explorerOn) h += "&view=explorer";
+  if (flattenOn) h += "&flat=1";
   history.replaceState(null, "", h);
 }
 function parseHash() {
   const parts = location.hash.slice(1).split("&");
   let id = parts[0] || "";
   try { id = decodeURIComponent(id); } catch (e) { /* malformed — keep raw */ }
-  const out = {id, f: 0, view: ""};
+  const out = {id, f: 0, view: "", flat: false};
   for (const kv of parts.slice(1)) {
     const i = kv.indexOf("=");
     const k = i < 0 ? kv : kv.slice(0, i), v = i < 0 ? "" : kv.slice(i + 1);
     if (k === "f") out.f = (parseInt(v, 10) || 0) & 0xffff;
     else if (k === "view") out.view = v;
+    else if (k === "flat") out.flat = v !== "0";
   }
   return out;
 }
 function setExplorer(on) {
   explorerOn = on;
   const b = $("#explorerbtn");
+  if (b) b.classList.toggle("on", on);
+}
+function setFlatten(on) {
+  flattenOn = on;
+  const b = $("#flattenbtn");
   if (b) b.classList.toggle("on", on);
 }
 
@@ -2433,11 +2495,17 @@ $("#explorerbtn").addEventListener("click", () => {
   if (explorerOn) renderExplorer(true);
   else renderFocus(true);
 });
+$("#flattenbtn").addEventListener("click", () => {
+  setFlatten(!flattenOn);
+  setHash(focusId || "");
+  if (!explorerOn) renderFocus(true);
+});
 
 window.addEventListener("hashchange", () => {
   const h = parseHash();
   filterMask = h.f;
   syncChips();
+  setFlatten(!!h.flat);
   if (h.view === "explorer") {
     setExplorer(true);
     renderExplorer(true).then(() => {
@@ -2757,6 +2825,7 @@ function wireCommunity(id) {
   const h = parseHash();
   filterMask = h.f;
   syncChips();
+  setFlatten(!!h.flat);
   if (h.view === "explorer") {
     setExplorer(true);
     focusId = h.id || "path:Mathlib";
