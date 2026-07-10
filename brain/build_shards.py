@@ -333,7 +333,8 @@ def main() -> int:
                   **({"n_decls": n["n_decls"]} if n["type"] == "container" else {}),
                   **({"n_concepts": n_concepts[n["id"]]}
                      if n["type"] == "container" and n_concepts.get(n["id"]) else {}),
-                  **({"f": n["f"]} if n.get("f") else {})}
+                  **({"f": n["f"]} if n.get("f") else {}),
+                  **({"fa": n["fa"]} if n.get("fa") else {})}
                  for n in ordered[:CHILD_CAP]]
         return {"count": len(ordered), "first": first}
 
@@ -442,7 +443,9 @@ def main() -> int:
         # per-library fetch needed until the user descends
         "roots": sorted(({"id": n["id"], "label": n.get("label"),
                           "library_kind": n.get("library_kind"),
-                          "n_decls": n.get("n_decls"), "n_files": n.get("n_files")}
+                          "n_decls": n.get("n_decls"), "n_files": n.get("n_files"),
+                          **({"f": n["f"]} if n.get("f") else {}),
+                          **({"fa": n["fa"]} if n.get("fa") else {})}
                          for n in nodes.values()
                          if n["type"] == "container" and "/" not in n["id"][5:]),
                         key=lambda r: -(r["n_decls"] or 0)),

@@ -514,7 +514,8 @@ async function focusItems(id) {
       .filter(r => kinds.has(r.library_kind || "math"))
       .map(r => ({id: r.id, label: r.label, type: "container",
                   n_decls: r.n_decls || 1, n_concepts: 0,
-                  ...(r.f !== undefined ? {f: r.f} : {})}));
+                  ...(r.f !== undefined ? {f: r.f} : {}),
+                  ...(r.fa !== undefined ? {fa: r.fa} : {})}));
   }
   const e = await getEntry(id);
   if (!e) return [];
@@ -525,8 +526,13 @@ async function focusItems(id) {
   // depth-capped tree has no deeper node) would flood the pack — collapse
   // them into one small bubble; the panel's children list still has them all.
   if (conts.length && decls.length > 12) {
-    decls = [{id: "__strays__", type: "strays",
-              label: decls.length + " loose decls", n: decls.length}];
+    // an active facet filter must still see matching loose decls — only the
+    // non-matching remainder collapses into the strays bubble
+    const keep = filterMask ? decls.filter(d => ((d.f || 0) & filterMask) !== 0) : [];
+    const rest = decls.length - keep.length;
+    decls = keep.concat(rest > 0
+      ? [{id: "__strays__", type: "strays",
+          label: rest + " loose decls", n: rest}] : []);
   }
   // concepts anchored to THIS container (field-of-study altitude links)
   const anchored = (e.edges && e.edges.in || [])
@@ -784,13 +790,22 @@ async function applyFacetFilter(items, seq) {
   }));
   const total = items.length;
   if (seq !== renderSeq) return {items, shown: total, total, active: true};
-  if (!items.some(it => it.f !== undefined))
+  if (!items.some(it => it.f !== undefined || it.fa !== undefined))
     return {items, shown: total, total, active: true, noF: true};
   const match = it => ((it.f || 0) & filterMask) !== 0;
+  // a container also matches when its SUBTREE does (fa = aggregate facet
+  // bits) — it stays bright and navigable so the user can descend to the
+  // matching decls/concepts instead of staring at a fully-dimmed level
+  const matchAgg = it => it.type === "container" &&
+    (((it.f || 0) | (it.fa || 0)) & filterMask) !== 0;
   const kept = [];
   let shown = 0;
   for (const it of items) {
-    if (it.type === "container") { it.dim = !match(it); kept.push(it); if (!it.dim) shown++; }
+    if (it.type === "container") {
+      it.dim = !(match(it) || matchAgg(it));
+      kept.push(it);
+      if (!it.dim) shown++;
+    }
     else if (match(it)) { kept.push(it); shown++; }
   }
   return {items: kept, shown, total, active: true};
