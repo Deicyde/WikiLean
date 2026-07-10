@@ -473,6 +473,45 @@ def apply_facets(nodes: list[dict], edges: list[dict],
             n["f"] = f
 
 
+def aggregate_facets(nodes: list[dict], edges: list[dict]) -> None:
+    """Set `fa` (subtree-aggregate facet bits) on container nodes (mutates).
+
+    A container "contains" a facet when any decl/sub-container in its contains
+    subtree carries it, or when a concept whose dot renders inside it does
+    (concepts attach via formalizes → decl-in-subtree or → the container
+    itself). Without this, level views can't filter: containers carry no tag
+    bits of their own, so a facet chip would dim every folder ("showing 0 of
+    N" + a grey canvas — the 2026-07-10 bug report).
+    """
+    parent = {e["dst"]: e["src"] for e in edges if e["kind"] == "contains"}
+    node_f = {n["id"]: n.get("f", 0) for n in nodes}
+    fa: dict[str, int] = defaultdict(int)
+
+    def up(start: str | None, bits: int) -> None:
+        cur = start
+        while cur is not None and bits:
+            if fa[cur] & bits == bits:
+                return  # ancestors already carry these bits
+            fa[cur] |= bits
+            cur = parent.get(cur)
+
+    for n in nodes:
+        f = n.get("f", 0)
+        if f and n["type"] in ("decl", "container"):
+            up(parent.get(n["id"]), f)
+    for e in edges:
+        if e["kind"] != "formalizes":
+            continue
+        f = node_f.get(e["src"], 0)
+        if not f:
+            continue
+        dst = e["dst"]
+        up(parent.get(dst) if dst.startswith("decl:") else dst, f)
+    for n in nodes:
+        if n["type"] == "container" and fa.get(n["id"]):
+            n["fa"] = fa[n["id"]]
+
+
 def build() -> tuple[list[dict], list[dict], dict]:
     """Returns (nodes, edges, meta) — both lists fully sorted, byte-deterministic."""
     graph = json.loads(INPUTS["concept_graph_v2.json"].read_text())
@@ -1224,6 +1263,7 @@ def build() -> tuple[list[dict], list[dict], dict]:
               file=sys.stderr)
     assemble_units(nodes, edges, descriptions, registry)
     apply_facets(nodes, edges, tag_rows)
+    aggregate_facets(nodes, edges)
 
     edges.sort(key=lambda e: (KIND_ORDER.index(e["kind"]), e["src"], e["dst"]))
 
