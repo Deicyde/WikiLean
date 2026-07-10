@@ -4,7 +4,8 @@
 // and the /brain/api reference page. All shard/label/alias assets come from
 // the shared fixture (helpers/brain-fixture.ts); no network.
 
-import { describe, it, expect } from "vitest";
+import { beforeEach, describe, it, expect } from "vitest";
+import { _resetBrainAssetMemo } from "../src/brain.js";
 import { setup, get, put, blockNetwork, PIPELINE_TOKEN, type Harness } from "./helpers/harness.js";
 import {
   installBrainFixture,
@@ -34,6 +35,9 @@ async function getJson(h: Harness, path: string): Promise<{ status: number; j: R
 }
 
 const unitOf = (j: Record<string, unknown>) => j.unit as Record<string, unknown>;
+
+// the isolate-lifetime asset memo must not leak fixtures across tests
+beforeEach(() => _resetBrainAssetMemo());
 
 describe("GET /api/brain/unit — key resolution", () => {
   it("resolves an exact QID and assembles the unit from edges (pre-v2 shard)", async () => {

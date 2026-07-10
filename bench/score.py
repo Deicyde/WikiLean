@@ -16,8 +16,13 @@ Existence oracle: .claude/skills/mathlib-search/mathlib_search.py decl <name>
 --json (shards -> declaration-data), cached in bench/data/.decl_cache.json.
 
 Lift = wikibrain - no_tools on the PRIMARY metric, computed on the
-intersection of task ids answered by both arms, with a 95% Wald CI on the
-difference of the two binomial proportions.
+intersection of task ids answered by both arms, with a 95% PAIRED-BOOTSTRAP CI
+(resample task ids present in both arms, 10,000 resamples, fixed seed, stdlib
+random — the two arms answer the SAME tasks, so an independent-samples CI
+would be wrong).
+
+Splits: only split=="eval" rows are scored by default (dev is for prompt
+iteration — never quote dev numbers); pass --include-dev to score everything.
 
 Output: a comparison table on stdout + bench/data/summary.json.
 
@@ -30,7 +35,7 @@ from __future__ import annotations
 
 import argparse
 import json
-import math
+import random
 import subprocess
 import sys
 from collections import defaultdict
@@ -171,12 +176,28 @@ def aggregate(scored: dict[str, dict]) -> dict:
     return out
 
 
-def wald_ci(k1: int, n1: int, k2: int, n2: int) -> tuple[float, float, float]:
-    """(diff, lo, hi): 95% Wald CI on p2 - p1 (wikibrain minus no_tools)."""
-    p1, p2 = k1 / n1, k2 / n2
-    se = math.sqrt(p1 * (1 - p1) / n1 + p2 * (1 - p2) / n2)
-    d = p2 - p1
-    return d, d - 1.96 * se, d + 1.96 * se
+BOOTSTRAP_RESAMPLES = 10_000
+BOOTSTRAP_SEED = 20260710
+
+
+def paired_bootstrap_ci(diffs: list[int],
+                        resamples: int = BOOTSTRAP_RESAMPLES,
+                        seed: int = BOOTSTRAP_SEED) -> tuple[float, float, float]:
+    """(diff, lo, hi): mean paired difference + 95% percentile-bootstrap CI.
+
+    diffs[i] = treat_success - base_success on the SAME task, one entry per
+    task id present in both arms; resampling task ids preserves the pairing
+    (an independent-samples Wald CI on paired data overstates the variance).
+    Deterministic: stdlib random with a fixed seed.
+    """
+    n = len(diffs)
+    point = sum(diffs) / n
+    rng = random.Random(seed)
+    means = sorted(sum(diffs[rng.randrange(n)] for _ in range(n)) / n
+                   for _ in range(resamples))
+    lo = means[int(resamples * 0.025)]
+    hi = means[min(resamples - 1, int(resamples * 0.975))]
+    return point, lo, hi
 
 
 # ---------------------------------------------------------------------------
@@ -191,6 +212,8 @@ def main() -> int:
     ap.add_argument("--out", type=Path, default=SUMMARY)
     ap.add_argument("--no-oracle", action="store_true",
                     help="skip decl-existence oracle calls (offline scoring)")
+    ap.add_argument("--include-dev", action="store_true",
+                    help="also score split=='dev' rows (default: eval only)")
     args = ap.parse_args()
 
     tasks = {t["id"]: t for t in load_tasks(args.tasks)}
@@ -198,6 +221,12 @@ def main() -> int:
     if not paths:
         print("no results files found (bench/data/results_*.jsonl)", file=sys.stderr)
         return 1
+
+    # Dev/eval split awareness: dev is for prompt iteration; score eval only
+    # unless --include-dev (splits read from tasks.jsonl, not the result rows).
+    allowed_splits = None if args.include_dev else {"eval"}
+    skipped_by_split: dict[str, int] = defaultdict(int)
+    scored_splits: set[str] = set()
 
     oracle = Oracle(enabled=not args.no_oracle)
     # arm_key -> task_id -> score; later rows for a task overwrite earlier
@@ -217,17 +246,27 @@ def main() -> int:
                 if task is None:
                     unknown_tasks += 1
                     continue
+                split = task.get("split", "?")
+                if allowed_splits is not None and split not in allowed_splits:
+                    skipped_by_split[split] += 1
+                    continue
+                scored_splits.add(split)
                 key = (row.get("arm", "?"), row.get("model", "?"))
                 per_arm[key][task["id"]] = score_row(task, row, oracle)
     oracle.save()
     if unknown_tasks:
         print(f"warning: {unknown_tasks} result rows reference unknown task ids "
               "(stale tasks.jsonl?)", file=sys.stderr)
+    print("splits scored: " + (", ".join(sorted(scored_splits)) or "none")
+          + ("".join(f"  [skipped {n} {s} rows — use --include-dev]"
+                     for s, n in sorted(skipped_by_split.items()))))
     if not per_arm:
         print("no scoreable result rows", file=sys.stderr)
         return 1
 
-    summary: dict = {"tasks_file": str(args.tasks), "arms": {}, "lift": {}}
+    summary: dict = {"tasks_file": str(args.tasks), "arms": {}, "lift": {},
+                     "splits_scored": sorted(scored_splits),
+                     "split_rows_skipped": dict(sorted(skipped_by_split.items()))}
     for (arm, model), scored in sorted(per_arm.items()):
         summary["arms"][f"{arm}/{model}"] = aggregate(scored)
 
@@ -264,19 +303,23 @@ def main() -> int:
             if not common:
                 continue
             metric = PRIMARY[typ]
-            k1 = sum(1 for t in common if base[t].get(metric) is True)
-            k2 = sum(1 for t in common if treat[t].get(metric) is True)
-            n = len(common)
-            d, lo, hi = wald_ci(k1, n, k2, n)
+            b = [1 if base[t].get(metric) is True else 0 for t in common]
+            w = [1 if treat[t].get(metric) is True else 0 for t in common]
+            k1, k2, n = sum(b), sum(w), len(common)
+            d, lo, hi = paired_bootstrap_ci([wi - bi for bi, wi in zip(b, w)])
             summary["lift"][f"{model}/{typ}"] = {
                 "metric": metric, "n": n,
                 "no_tools": {"k": k1, "rate": round(k1 / n, 4)},
                 "wikibrain": {"k": k2, "rate": round(k2 / n, 4)},
                 "lift": round(d, 4),
                 "ci95": [round(lo, 4), round(hi, 4)],
+                "ci95_method": f"paired bootstrap over both-arm task ids "
+                               f"({BOOTSTRAP_RESAMPLES} resamples, "
+                               f"seed {BOOTSTRAP_SEED})",
             }
             print(f"  {typ} {metric}: {k1}/{n} -> {k2}/{n}  "
-                  f"lift {d * 100:+.1f}pp  (95% CI {lo * 100:+.1f} .. {hi * 100:+.1f})")
+                  f"lift {d * 100:+.1f}pp  (95% paired-bootstrap CI "
+                  f"{lo * 100:+.1f} .. {hi * 100:+.1f})")
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     tmp = args.out.with_suffix(".json.tmp")

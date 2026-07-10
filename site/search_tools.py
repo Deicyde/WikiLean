@@ -14,6 +14,7 @@ from __future__ import annotations
 import asyncio
 import json
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -33,6 +34,11 @@ BRAIN_CLI = _REPO / "brain" / "query.py"
 
 _TIMEOUT = 45        # per search; the public APIs are usually < 2s
 _MAX_OUT = 6000      # cap tool output so one search can't flood the agent context
+
+# A key is a QID ONLY when it fully matches Q<digits> — a looser startswith("Q")
+# would misroute Q-named decls (Quaternion, QuotientGroup.mk) away from the
+# decl:Mathlib: fallback in _brain_unit_text.
+_QID_RE = re.compile(r"^Q[0-9]+$")
 
 
 def _run_cli(cli: Path, *argv: str, append_json: bool = True) -> str:
@@ -60,6 +66,30 @@ def _run_cli(cli: Path, *argv: str, append_json: bool = True) -> str:
 
 def _text(s: str) -> dict:
     return {"content": [{"type": "text", "text": s}]}
+
+
+def _brain_unit_text(key: str) -> str:
+    """brain_unit resolution: exact node lookup, then (for bare decl names —
+    NOT QIDs, which are exactly Q<digits>) the decl:Mathlib: id form."""
+    out = _run_cli(BRAIN_CLI, "node", key, append_json=False)
+    if '"ok": false' in out and ":" not in key and " " not in key \
+            and not _QID_RE.fullmatch(key):
+        # bare decl name → the SCHEMA decl id form, then give up to search
+        retry = _run_cli(BRAIN_CLI, "node", f"decl:Mathlib:{key}",
+                         append_json=False)
+        if '"ok": false' not in retry:
+            out = retry
+    try:
+        entry = json.loads(out)
+    except ValueError:
+        return out
+    # `unit` ships on concept payloads once the v2 core lands; degrade to
+    # the full node entry (payload + edges) when absent.
+    unit = (entry.get("node") or {}).get("unit") if isinstance(entry, dict) else None
+    if unit:
+        return json.dumps({"ok": True, "id": (entry.get("node") or {}).get("id") or key,
+                           "unit": unit}, ensure_ascii=False)
+    return out
 
 
 def build_search_server():
@@ -154,27 +184,7 @@ def build_search_server():
     # --- BRAIN tools (read-only, shard-backed; wraps brain/query.py, whose
     # native output is JSON — no --json flag). Degrade to the 7 search tools
     # when the CLI or its shards are absent (fresh clone before a brain build).
-    def _brain_unit_text(key: str) -> str:
-        out = _run_cli(BRAIN_CLI, "node", key, append_json=False)
-        if '"ok": false' in out and ":" not in key and " " not in key \
-                and not key.startswith("Q"):
-            # bare decl name → the SCHEMA decl id form, then give up to search
-            retry = _run_cli(BRAIN_CLI, "node", f"decl:Mathlib:{key}",
-                             append_json=False)
-            if '"ok": false' not in retry:
-                out = retry
-        try:
-            entry = json.loads(out)
-        except ValueError:
-            return out
-        # `unit` ships on concept payloads once the v2 core lands; degrade to
-        # the full node entry (payload + edges) when absent.
-        unit = (entry.get("node") or {}).get("unit") if isinstance(entry, dict) else None
-        if unit:
-            return json.dumps({"ok": True, "id": (entry.get("node") or {}).get("id") or key,
-                               "unit": unit}, ensure_ascii=False)
-        return out
-
+    # Key resolution lives in module-level _brain_unit_text (self-testable).
     @tool(
         "brain_node",
         "Look up one WikiLean Brain node by EXACT id: a QID ('Q181296'), a "
@@ -254,6 +264,12 @@ you are not certain of.
 
 if __name__ == "__main__":
     # Zero-agent smoke: prove each wrapped CLI returns real data.
+    # QID-routing invariant first (pure, no subprocess): only Q<digits> is a
+    # QID; Q-named decls must stay eligible for the decl:Mathlib: fallback.
+    assert _QID_RE.fullmatch("Q181296"), "Q181296 must parse as a QID"
+    for k in ("Quaternion", "QuotientGroup.mk", "Q", "Q12x"):
+        assert not _QID_RE.fullmatch(k), f"{k!r} must NOT parse as a QID"
+    print("QID-routing asserts OK (Q181296 is a QID; Quaternion/QuotientGroup.mk are not)")
     server, names = build_search_server()
     print("server built:", server is not None, "| tools:", names)
     for cli, argv, append_json in [
@@ -265,3 +281,8 @@ if __name__ == "__main__":
     ]:
         print(f"\n$ {cli.name} {' '.join(argv)}" + (" --json" if append_json else ""))
         print(_run_cli(cli, *argv, append_json=append_json)[:300])
+    if BRAIN_CLI.exists():
+        # Q-named bare decl: must take the decl:Mathlib: fallback (or miss
+        # cleanly), never be swallowed by a QID parse.
+        print("\n$ brain_unit('Quaternion')  (Q-named decl → decl fallback, not QID)")
+        print(_brain_unit_text("Quaternion")[:300])

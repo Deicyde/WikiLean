@@ -56,17 +56,48 @@ drop apostrophes/parens/en-dashes: `Group_(mathematics)` ≡ `Group_mathematics`
 
 Same model, same prompt — the ONLY difference is tool availability:
 
-- `no_tools` — built-in tools disallowed, `--strict-mcp-config` with no MCP
-  config, run from an empty working directory (file tools couldn't read repo
-  gold even if they slipped through).
-- `wikibrain` — identical, plus `--mcp-config bench/mcp-config.json` and
-  `--allowedTools` for the eight `mcp__wikibrain__*` tools
+- `no_tools` — `--tools ""` (the CLI's allowlist-only form: disables the
+  ENTIRE built-in tool set) **plus** the `--disallowedTools` deny-list, plus
+  `--strict-mcp-config` with no MCP config.
+- `wikibrain` — the deny-list + `--strict-mcp-config`, plus
+  `--mcp-config bench/mcp-config.json` and `--allowedTools` for the eight
+  `mcp__wikibrain__*` tools
   (`brain_search/node/unit/transfer/neighborhood/snippets/filter`, `decl_exists`).
+
+**Wikibrain preflight + degradation canary.** The claude CLI degrades
+*silently* to a no-tools run when the MCP server is unreachable — which would
+corrupt the wikibrain arm into a second baseline. So before any task runs, the
+wikibrain arm POSTs a JSON-RPC `initialize` to the resolved MCP URL (urllib,
+15s timeout) and **aborts the whole run (exit 2)** on non-200 / invalid
+JSON-RPC, naming the URL. `--dry-run` skips the preflight but prints what it
+would do. The preflight only checks the START of the run, so a post-run canary
+WARNs when every completed wikibrain task finished in ≤1 turn (= 0 tool calls
+— the mid-run-degradation signature).
+
+### Isolation (both arms)
+
+Every CLI child runs from a **freshly-created empty temp dir OUTSIDE the repo**
+(`tempfile.mkdtemp`, removed after the run). This matters because the claude
+CLI keys almost all ambient context by cwd: it discovers `CLAUDE.md` by walking
+up from cwd, loads `.claude/` settings/hooks/skills from the cwd project, and
+loads the user-level auto-memory from `~/.claude/projects/<mangled-cwd>/` —
+keyed by cwd, so moving cwd out of the repo also detaches the WikiLean project
+memory (a temp cwd gets a fresh, empty project key; there is no user-global
+`~/.claude/CLAUDE.md` on this machine). Running from inside the repo would
+contaminate BOTH arms with repo instructions, memory, and SessionStart hooks.
+
+`no_tools` isolation is therefore **cwd isolation + tool allowlist/deny-list
+together**: the deny-list alone can never be exhaustively closed (new built-in
+tools appear), `--tools ""` closes the built-in set allowlist-style, and even
+if a file tool slipped through it would see only an empty directory. (The CLI's
+`--bare` flag would be stronger still, but it disables OAuth/keychain auth and
+the runner depends on Max auth — don't use it here.)
 
 Results stream to `bench/data/results_<arm>_<model>.jsonl` (one row per task:
 `task_id, answer_raw, answer_parsed, latency_s, n_turns, cost_usd, error?`).
-`n_turns` is the tool-use proxy; per-tool-call logs would need
-`--output-format stream-json` (not wired up — keep the runner dumb).
+`n_turns` is the tool-use proxy (also feeds the degradation canary);
+per-tool-call logs would need `--output-format stream-json` (not wired up —
+keep the runner dumb).
 
 ## Scoring (`score.py`)
 
@@ -77,9 +108,18 @@ Results stream to `bench/data/results_<arm>_<model>.jsonl` (one row per task:
 - **T2**: `qid_exact`, `slug_exact`, `pair_exact` (primary).
 - **T3**: `accuracy` (primary) + `witness_gold` / `witness_valid` over YES answers.
 - **Lift** = wikibrain − no_tools on each primary metric, computed on the
-  intersection of task ids answered by both arms, with a 95% Wald CI on the
-  difference of proportions. `--no-oracle` scores offline (existence metrics
-  degrade gracefully).
+  intersection of task ids answered by both arms, with a **95% paired-bootstrap
+  CI** (resample task ids present in both arms, 10,000 resamples, fixed seed
+  20260710, stdlib `random` — the arms answer the *same* tasks, so an
+  independent-samples CI would overstate the variance). Per-arm k/n rates are
+  reported as before. `--no-oracle` scores offline (existence metrics degrade
+  gracefully).
+- **Splits**: `score.py` scores only `split=="eval"` rows by default (dev is
+  for prompt iteration — never quote dev numbers); `--include-dev` overrides.
+  It prints which split(s) were scored and how many rows it skipped.
+- Answer parsing (`tasklib.py`) normalizes curly quotes to ASCII and strips
+  surrounding backtick/bold wrappers (`` `x` ``, `**x**`) from the ANSWER
+  payload; `python3 bench/tasklib.py` runs the parser self-test.
 
 ## Contamination & caveats (read before quoting numbers)
 

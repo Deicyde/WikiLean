@@ -30,6 +30,9 @@ _QID_RE = re.compile(r"\bQ\d+\b")
 _T3_RE = re.compile(r"^(YES|NO)\b[\s:,.\-]*(.*)$", re.IGNORECASE | re.DOTALL)
 # T2 filler words models wrap around "<QID> <slug>" despite the strict format.
 _T2_NOISE = {"qid", "slug", "wikipedia", "article", "enwiki", "wikidata", "the", "-", "|", "/"}
+# Curly quotes -> ASCII, applied to the ANSWER payload before parsing.
+_QUOTE_TRANS = str.maketrans({"‘": "'", "’": "'",   # ‘ ’
+                              "“": '"', "”": '"'})  # “ ”
 
 
 def load_tasks(path: Path = TASKS_PATH) -> list[dict]:
@@ -139,12 +142,27 @@ def _clean_decl(tok: str) -> str | None:
     return tok or None
 
 
+def _strip_wrappers(s: str) -> str:
+    """Strip surrounding markdown/quote wrappers (**x**, `x`, *x*, "x", 'x')
+    from the whole ANSWER payload. Paired only, so a trailing Lean prime
+    (Foo') survives — it has no matching opener."""
+    s = s.strip()
+    while len(s) >= 2:
+        if s.startswith("**") and s.endswith("**") and len(s) >= 5:
+            s = s[2:-2].strip()
+        elif s[0] == s[-1] and s[0] in "`*'\"":
+            s = s[1:-1].strip()
+        else:
+            break
+    return s
+
+
 def parse_answer(task_type: str, raw: str | None) -> dict | None:
     """Extract the final ANSWER: line. Returns None when no ANSWER line exists."""
     hits = ANSWER_RE.findall(raw or "")
     if not hits:
         return None
-    ans = hits[-1].strip()
+    ans = _strip_wrappers(hits[-1].strip().translate(_QUOTE_TRANS))
     if task_type == "T1":
         toks = ans.split()
         return {"decl": _clean_decl(toks[0])} if toks else {"decl": None}
@@ -182,3 +200,42 @@ def sanitize_slug(s: str | None) -> str:
     s = re.sub(r"[\s/]+", "_", s)
     s = re.sub(r"_+", "_", s).strip("_")
     return s.casefold()
+
+
+# ---------------------------------------------------------------------------
+# Self-test: python3 bench/tasklib.py  (exits non-zero on failure)
+# ---------------------------------------------------------------------------
+
+def _selftest() -> None:
+    # markdown wrappers around the payload
+    assert parse_answer("T1", "ANSWER: **Nat.Prime**") == {"decl": "Nat.Prime"}
+    assert parse_answer("T1", "ANSWER: `Real.pi`") == {"decl": "Real.pi"}
+    assert parse_answer("T1", "ANSWER: *Nat.Prime*.") == {"decl": "Nat.Prime"}
+    # curly quotes normalized to ASCII, then stripped as paired wrappers
+    assert parse_answer("T1", "ANSWER: “Nat.Prime”") == {"decl": "Nat.Prime"}
+    assert parse_answer("T1", "ANSWER: ‘Nat.Prime’") == {"decl": "Nat.Prime"}
+    # trailing Lean primes survive (unpaired), including a curly one
+    assert parse_answer("T1", "ANSWER: Nat.exists_infinite_primes'") == \
+        {"decl": "Nat.exists_infinite_primes'"}
+    assert parse_answer("T1", "ANSWER: Nat.foo’") == {"decl": "Nat.foo'"}
+    # last ANSWER line wins; no ANSWER line -> None
+    assert parse_answer("T1", "ANSWER: Foo\nANSWER: **Bar**") == {"decl": "Bar"}
+    assert parse_answer("T1", "no final line here") is None
+    # T2: wrappers + curly quotes around the pair
+    assert parse_answer("T2", "ANSWER: **Q11518 Pythagorean_theorem**") == \
+        {"qid": "Q11518", "slug": "Pythagorean_theorem"}
+    assert parse_answer("T2", "ANSWER: `Q42` “Group_theory”") == \
+        {"qid": "Q42", "slug": "Group_theory"}
+    # T3: bold verdict + backticked witness
+    assert parse_answer("T3", "ANSWER: **YES `Nat.Prime`**") == \
+        {"verdict": "YES", "witness": "Nat.Prime"}
+    assert parse_answer("T3", "ANSWER: ‘NO’") == \
+        {"verdict": "NO", "witness": None}
+    # slug sanitization is unchanged
+    assert sanitize_slug("Group_(mathematics)") == sanitize_slug("Group_mathematics")
+    assert sanitize_slug("L’Hôpital's_rule") == sanitize_slug("LHôpitals_rule")
+    print("tasklib selftest OK")
+
+
+if __name__ == "__main__":
+    _selftest()

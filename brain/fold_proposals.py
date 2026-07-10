@@ -427,6 +427,14 @@ def main() -> int:
             # crossref_sources key, the page id exists in the ingested
             # <db>_pages.jsonl, and the QID exists upstream with an agreeing
             # label — same live-Wikidata machinery as discover rows.
+            # Like overrides (and unlike links), anchors NEVER fold on a
+            # pending verdict: the machine checks are near-tautological for
+            # dispatched candidates (page exists, QID exists), so the skeptic
+            # is the only real gate against a prompt-injected cartographer.
+            if skeptic == "pending":
+                reject(r, "fold-check: ext anchor requires a skeptic verdict — "
+                          "left in proposals for the next skeptic pass")
+                continue
             x = r.get("xref") or {}
             db = x.get("db")
             pid = str(x["id"]) if x.get("id") is not None else None
@@ -480,9 +488,17 @@ def main() -> int:
     dump(DATA / "grading_disputes.jsonl", disputes)
 
     # ext-anchor links: regenerated from ALL verified proposals each fold, then
-    # merge-deduped with rows already in the file (shards may be archived later;
-    # tombstone-free — rows are only ever added or refreshed, never removed).
-    # Fresh fold wins on dedupe so a skeptic:pending row upgrades once judged.
+    # merge-deduped with rows already in the file (shards may be archived
+    # later). RETRACTION: a key rejected THIS fold (skeptic refutation,
+    # conflicting verdicts, failed machine check) is dropped from the merged
+    # file too — otherwise a live anchor could never be withdrawn (the
+    # any-reject veto already keeps it out of xref_out).
+    retract: set[tuple[str, str, str]] = set()
+    for r in rejected:
+        if rtype(r) == "xref":
+            x = r.get("xref") or {}
+            if r.get("qid") and x.get("db") and x.get("id") is not None:
+                retract.add((r["qid"], x["db"], str(x["id"])))
     xa_path = DATA / "ext_anchor_links.jsonl"
     n_xref = 0
     if xref_out or xa_path.exists():
@@ -495,7 +511,9 @@ def main() -> int:
                 if "_meta" in row:
                     continue
                 if row.get("qid") and row.get("db") and row.get("id") is not None:
-                    merged[(row["qid"], row["db"], str(row["id"]))] = row
+                    key = (row["qid"], row["db"], str(row["id"]))
+                    if key not in retract:
+                        merged[key] = row
         merged.update(xref_out)
         n_xref = len(merged)
         meta = {"_meta": {"source": "brain/fold_proposals.py",

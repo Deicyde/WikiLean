@@ -13,9 +13,11 @@ proposals dir + isolated brain/data output dir:
   - registry-reject path: db not in source_registry crossref_sources
   - skeptic-reject path: verdict reject → discovery_rejected.jsonl, and the
     any-reject veto kills an accepted duplicate in another shard
-  - unechoed row: folds with skeptic:"pending", confidence capped to medium
-  - merge-dedupe: pre-existing ext_anchor_links.jsonl rows survive the fold
-    (tombstone-free), re-fold is byte-idempotent
+  - unechoed row: REJECTED (anchors never fold pending — the skeptic is the
+    only real gate against a prompt-injected cartographer), stays in
+    proposals for the next skeptic pass
+  - merge-dedupe: pre-existing ext_anchor_links.jsonl rows survive the fold,
+    EXCEPT keys rejected this fold (retraction); re-fold is byte-idempotent
 
 All test QIDs are already in catalog/data/wikidata_universe.jsonl so the fold
 never hits the network. Run:
@@ -124,28 +126,32 @@ def test_fold_xref_end_to_end():
         write_jsonl(shard2, [rows[3]])
         write_jsonl(Path(str(shard2) + ".verified.jsonl"),
                     [{**rows[3], "verdict": "accept", "verify_note": "dup ok"}])
-        # pre-seed the output file → merge-dedupe must preserve this row
+        # pre-seed the output file → merge-dedupe must preserve this row…
         seed = {"qid": "Q11518", "db": "nlab", "id": "Pythagorean theorem",
                 "confidence": "medium", "evidence": {"proposer": "seed"}}
+        # …but a pre-existing row whose key is REJECTED this fold must be
+        # retracted (F/rows[3] is skeptic-rejected below)
+        stale = {"qid": QID_AB, "db": "nlab", "id": "group",
+                 "confidence": "medium", "evidence": {"proposer": "seed-stale"}}
         write_jsonl(tmp / "data" / "ext_anchor_links.jsonl",
-                    [{"_meta": {"n_rows": 1}}, seed])
+                    [{"_meta": {"n_rows": 2}}, seed, stale])
 
         _, data = fold_in_tmp(tmp)
 
         out = read_jsonl(data / "ext_anchor_links.jsonl")
         assert "_meta" in out[0], "first line must be _meta"
         by_key = {(r["qid"], r["db"], r["id"]): r for r in out[1:]}
-        assert out[0]["_meta"]["n_rows"] == len(by_key) == 3
+        assert out[0]["_meta"]["n_rows"] == len(by_key) == 2, sorted(by_key)
 
         a = by_key[(QID_AB, "nlab", "abelian group")]          # accept path
         assert a["confidence"] == "medium"
         assert a["evidence"]["skeptic"] == "accept"
         assert a["evidence"]["proposer"] == "test-cartographer"
-        d = by_key[(QID_FERMAT, "nlab", "group")]              # pending path
-        assert d["evidence"]["skeptic"] == "pending"
-        assert d["confidence"] == "medium", "high must be capped while pending"
+        # D (unechoed) must NOT fold — anchors require an explicit skeptic accept
+        assert (QID_FERMAT, "nlab", "group") not in by_key
         assert (seed["qid"], seed["db"], seed["id"]) in by_key  # merge-dedupe
-        assert (QID_AB, "nlab", "group") not in by_key          # F + its dup
+        # F + its dup rejected AND the stale pre-seeded row retracted
+        assert (QID_AB, "nlab", "group") not in by_key
 
         why: list[tuple[tuple, str]] = []
         for r in read_jsonl(data / "discovery_rejected.jsonl"):
@@ -157,6 +163,9 @@ def test_fold_xref_end_to_end():
             reasons.setdefault(k, []).append(v)
         assert "page id not in" in reasons[(QID_PIGEON, "nlab", "zz-no-such-page")][0]
         assert "crossref_sources" in reasons[(QID_AB, "notadb", "whatever")][0]
+        pending_reasons = reasons[(QID_FERMAT, "nlab", "group")]
+        assert any("requires a skeptic verdict" in r for r in pending_reasons), \
+            f"unechoed anchor must be rejected-as-pending, got {pending_reasons}"
         group_reasons = sorted(reasons[(QID_AB, "nlab", "group")])
         assert len(group_reasons) == 2, \
             f"expected F + vetoed duplicate, got {group_reasons}"
