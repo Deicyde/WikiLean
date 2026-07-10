@@ -1,4 +1,4 @@
-# BRAIN schema — one graph, five node types, two edge families
+# BRAIN schema — one graph, six node types, two edge families
 
 > The canonical data contract for the WikiLean Math Brain. Everything in `brain/data/` is
 > built to this spec. It instantiates the granularity model + anti-slop doctrine of
@@ -41,6 +41,15 @@ the UI (`/brain#<id>`), the API (`/api/brain/node/<id>`), and by agents.
 | decl | `decl:<Library>:<FQ name>` | `decl:Mathlib:CommGroup` | doc-gen4 / TheoremGraph decl name; commit pin in payload |
 | literature | `lit:<arxiv_id>#<ref>` | `lit:1707.04448#thm1.2` | arXiv id + printed label; TheoremGraph UUID kept as session key in payload |
 | object | `obj:<db>:<label>` | `obj:lmfdb:11.a2`, `obj:oeis:A000045` | external DB's own never-reused label |
+| ext | `xref:<db>:<value>` | `xref:nlab:abelian+group`, `xref:stacks:0001` | external DB PAGE (v2) — id form is deliberately identical to the historical xref edge dst string, so pre-v2 `xref` edges became node-to-node with zero migration and `xref_index.json` keys are node ids |
+
+**`ext` node payload** (v2): `{"id","type":"ext","db","label","url","snippet"?,
+"snippet_license"?,"kind_hint"?,"qid"?,"f"}`. `db` MUST be a key of
+`source_registry.json` `crossref_sources`. `snippet` is stored ONLY where the source
+license permits (nlab/stacks/lmfdb/proofwiki/planetmath/oeis); MathWorld/DLMF/EoM/Kerodon
+ext nodes are ids+titles+links only — display deep-links out. Minting policy: anchored
+(xref target of a concept) + ≤1 link-hop frontier, capped per source (default 8,000/db);
+full corpora stay in `catalog/data/external/`.
 
 WikiLean articles/annotations are NOT brain nodes; an article is the `enwiki` sitelink
 of its concept QID and annotations attach through the existing D1 stack. The brain
@@ -59,6 +68,20 @@ Node payload (JSONL, one per line, `brain/data/nodes.jsonl`):
 `display.*` is derived, rebuilt nightly, never authoritative. `altitude_evidence` is
 the overlay of law 5.
 
+**v2 additions to node payloads:**
+
+- **`unit`** (concept nodes) — the atomic-unit card of one mathematical object:
+  `{"qid","label","description"?,"article":{"slug","annotations"}?,
+    "decls":[{"name","module","match_kind","confidence"}],"containers":["path:..."],
+    "xrefs":{"<db>":[{"id","label"?,"url"}]}}`. Assembled at build time from
+  formalizes/xref edges + grounding + `catalog/data/wikidata_descriptions.json`.
+  `display.primary_decl` stays a hint; `unit` is the render/query surface.
+- **`f`** (every node payload, children entry, and labels.json row) — facet bitmask:
+  bit0 gold `@[wikidata]` tag · bit1 `@[stacks]` · bit2 `@[kerodon]` · bit3 any xref ·
+  bit4 formalized · bit5 partial · bit6 has WikiLean article · bit7 has literature ·
+  bit8 is ext · bit9 lmfdb · bit10 nlab · bit11 mathworld · bit12 proofwiki ·
+  bit13 stacks(xref) · bit14 oeis · bit15 has stored snippet. Omitted when 0.
+
 ## Edge families
 
 **Taxonomy (`contains`)** — strict single-parent containment, mechanically derived,
@@ -76,6 +99,7 @@ ontology edges at whatever altitude their evidence supports).
 | `matches` | decl ↔ literature | judge + similarity + license flag | theorem_matching.csv (dual-judge) |
 | `xref` | concept → external DB page; decl → Stacks/Kerodon tag | Wikidata property id; `@[stacks]`/`@[kerodon]` attribute in the mathlib4 source | P12987 LMFDB, P4215 nLab, P2812 MathWorld, P6781 ProofWiki, P7554 EoM, P7726 PlanetMath, P829 OEIS, P12888 Metamath, P11497 DLMF, P3285 MSC; `mathlib_tag_xrefs.jsonl` (harvest_mathlib_tags.py) |
 | `relates` | concept ↔ concept | Wikidata P-property (P279, P361, P2579...) | wikidata_edges.jsonl |
+| `links` | ext → ext; concept → concept (projected) | `{"context": "statement"\|"proof"\|"body"\|"related"}`; projected form adds `{"projected": true, "via": "<db>", "src_page", "dst_page"}` | `catalog/data/external/<db>_links.jsonl` (v2 ingest adapters); projection joins page-level links through xref anchors |
 | `cites` | concept → literature | lifted via decl (transitive join) | theoremgraph_links.json |
 | `instance_of` | object → concept | invariant agreement | LMFDB/OEIS joins (future) |
 
@@ -115,6 +139,17 @@ concept layer floating alongside at every grain. Derived, server-side artifacts:
 5. No edge lacks `kind`/`provenance`/`confidence`. No `formalizes` dst fails the
    existence oracle at build time.
 
+v2 datapoints (active once `catalog/data/external/` is populated):
+
+6. `xref:lmfdb:group.abelian` is an `ext` node with a stored CC-BY-SA snippet, and
+   `Q181296` reaches it via an `xref` edge whose dst is now a real node.
+7. At least one `links` edge exists with `evidence.projected == true` joining two
+   concept QIDs through an external DB's internal link.
+8. Every `ext` node's `db` is a `source_registry.json` crossref_sources key, and ext
+   nodes for no-content sources (mathworld/dlmf/eom/kerodon) carry NO `snippet`.
+9. Concept nodes with ≥1 formalization carry a `unit` whose `decls` is non-empty; `f`
+   bit0 nodes (gold `@[wikidata]`) are exactly the tag-harvest rows present in the graph.
+
 ## Provenance & licensing
 
 `catalog/data/source_registry.json` remains the single source of truth; every
@@ -150,18 +185,38 @@ render text, per the existing ingest gate).
   (zero-download, covers 925/1,214 grounded decls) — CC-BY-SA-4.0, attribution in
   artifact `_meta`, rendered with a source credit.
 
+## External-source ingest contract (v2 — brain/ingest/, deterministic, no LLM)
+
+Each adapter `brain/ingest/<db>.py` fetches its source by the sanctioned bulk path
+(git mirror / dump / open API / Postgres mirror — see `docs/BRAIN-V2.md` matrix), caches
+raw material under `catalog/.cache/external/<db>/` (gitignored), and emits:
+
+```
+catalog/data/external/<db>_pages.jsonl  {"db","id","title","url","snippet"?,"aliases"?,"qid"?,"kind_hint"?}
+catalog/data/external/<db>_links.jsonl  {"db","src","dst","context"}     # native page ids
+```
+
+First line = `{"_meta":{"db","fetched_at","source_pin","n_pages","n_links",...}}`.
+Adapters are atomic-write and fail-soft (failed fetch leaves the previous file intact),
+and honor each source's rate limits / robots policy. `qid` is set ONLY from CC0 Wikidata
+property values (P4215/P2812/P6781/P7554/P7726/P829/P11497/P12987), never guessed —
+fuzzy anchoring is the agent team's job via `brain/proposals/` + `fold_proposals.py`.
+
 ## Build pipeline (brain/*.py, all deterministic, no LLM on the build path)
 
 ```
 catalog/data/{rebuild_grounding,wikidata_universe,wikidata_crossrefs,hierarchy,...}
+catalog/data/external/<db>_{pages,links}.jsonl        (v2: brain/ingest/*.py)
+catalog/data/wikidata_descriptions.json               (v2: brain/ingest/wikidata_descriptions.py)
 catalog/.cache/{statement_formal,formal_dependency,theorem_matching}.csv
         │
         ▼
-brain/build_nodes.py      → brain/data/nodes.jsonl
-brain/build_edges.py      → brain/data/edges.jsonl        (all ontology kinds)
+brain/build_nodes.py      → brain/data/nodes.jsonl     (v2: + ext nodes, unit, f bits)
+brain/build_edges.py      → brain/data/edges.jsonl     (v2: + links kind, projections)
 brain/build_rollups.py    → brain/data/rollup_edges.*.jsonl
 brain/build_shards.py     → wiki/public/assets/brain/*.json (via wiki build-public)
-brain/test_acceptance.py  → CI gate; the 5 datapoints + schema invariants
+                            (v2: + views/xref_explorer.json, f bits in labels/children)
+brain/test_acceptance.py  → CI gate; the datapoints + schema invariants
 ```
 
 Agent-generated links (Sonnet discovery passes) NEVER write these files directly —

@@ -81,7 +81,14 @@
    "layer": "informal",
    "url_template": "https://mathworld.wolfram.com/{id}.html",
    "our_provenance": "Wikidata P2812 (CC0)",
-   "target_license": "© Wolfram (proprietary; link only)"
+   "target_license": "© Wolfram (proprietary; link only)",
+   "ingest": {
+    "mode": "ids-only",
+    "bulk_path": "Wikidata P2812 values (CC0) + one-time sitemap.xml slug inventory; ToS forbids crawling/bulk copy - Wolfram IP-blocks",
+    "cadence": "monthly",
+    "snippets": false,
+    "verified": "2026-07-10"
+   }
   },
   "nlab": {
    "name": "nLab",
@@ -90,7 +97,14 @@
    "layer": "informal",
    "url_template": "https://ncatlab.org/nlab/show/{id}",
    "our_provenance": "Wikidata P4215 (CC0)",
-   "target_license": "No formal content license declared — nLab intends its content to be freely reusable but publishes no CC license (the prior \"CC BY-SA\" was wrong)"
+   "target_license": "No formal content license declared — nLab intends its content to be freely reusable but publishes no CC license (the prior \"CC BY-SA\" was wrong)",
+   "ingest": {
+    "mode": "full",
+    "bulk_path": "git github.com/ncatlab/nlab-content (daily push); alias map from [[!redirects]]",
+    "cadence": "daily",
+    "snippets": true,
+    "verified": "2026-07-10"
+   }
   },
   "proofwiki": {
    "name": "ProofWiki",
@@ -99,7 +113,14 @@
    "layer": "formal",
    "url_template": "https://proofwiki.org/wiki/{id}",
    "our_provenance": "Wikidata P6781 (CC0)",
-   "target_license": "CC BY-SA 3.0 (verified — not 4.0)"
+   "target_license": "CC BY-SA 3.0 (verified — not 4.0)",
+   "ingest": {
+    "mode": "full",
+    "bulk_path": "official nightly dump proofwiki.org/xmldump/latest.xml.gz (36MB; robots Content-Signal ai-train=no -> reference use only)",
+    "cadence": "daily",
+    "snippets": true,
+    "verified": "2026-07-10"
+   }
   },
   "metamath": {
    "name": "Metamath",
@@ -118,7 +139,14 @@
    "url_template": "https://www.lmfdb.org/knowledge/show/{id}",
    "our_provenance": "Wikidata P12987 (CC0)",
    "target_license": "CC BY-SA 4.0 — verify (LMFDB license page is bot-gated; unconfirmable via automated fetch)",
-   "note": "P12987 (verified 2026-07-02 as LMFDB's ONLY Wikidata property) identifies knowls — LMFDB's documentation entries — so it links at the CONCEPT level. There is still no Wikidata property for LMFDB object labels (e.g. an elliptic curve's `11.a1`), so concept→object joins to LMFDB aren't yet expressible on Wikidata (the LeanBridge cross-check gap)."
+   "note": "P12987 (verified 2026-07-02 as LMFDB's ONLY Wikidata property) identifies knowls — LMFDB's documentation entries — so it links at the CONCEPT level. There is still no Wikidata property for LMFDB object labels (e.g. an elliptic curve's `11.a1`), so concept→object joins to LMFDB aren't yet expressible on Wikidata (the LeanBridge cross-check gap).",
+   "ingest": {
+    "mode": "full",
+    "bulk_path": "public Postgres mirror devmirror.lmfdb.xyz:5432 lmfdb/lmfdb table kwl_knowls (links column precomputed)",
+    "cadence": "weekly",
+    "snippets": true,
+    "verified": "2026-07-10"
+   }
   },
   "oeis": {
    "name": "OEIS",
@@ -127,7 +155,14 @@
    "layer": "literature",
    "url_template": "https://oeis.org/{id}",
    "our_provenance": "Wikidata P829 (CC0)",
-   "target_license": "OEIS end-user license (attribution, non-commercial reuse) — verify"
+   "target_license": "OEIS end-user license (attribution, non-commercial reuse) — verify",
+   "ingest": {
+    "mode": "names+anchored",
+    "bulk_path": "names.gz daily dump (all ids); per-entry JSON (xref edges+snippet) only for Brain-anchored A-numbers, Crawl-Delay 10",
+    "cadence": "daily",
+    "snippets": true,
+    "verified": "2026-07-10"
+   }
   },
   "eom": {
    "name": "Encyclopedia of Mathematics",
@@ -136,7 +171,14 @@
    "layer": "informal",
    "url_template": "https://encyclopediaofmath.org/wiki/{id}",
    "our_provenance": "Wikidata P7554 (CC0)",
-   "target_license": "CC BY-SA 3.0 + GFDL (dual-licensed; EMS/Springer)"
+   "target_license": "MIXED (verified 2026-07-10): original Springer/EMS corpus copyrighted; only post-move additions/changes are CC-BY-SA 3.0 -> titles + link graph only, no stored bodies",
+   "ingest": {
+    "mode": "links+titles",
+    "bulk_path": "open MediaWiki API encyclopediaofmath.org/api.php generator=allpages&prop=links (~35 calls); body Springer-copyrighted -> NO stored content",
+    "cadence": "weekly",
+    "snippets": false,
+    "verified": "2026-07-10"
+   }
   },
   "planetmath": {
    "name": "PlanetMath",
@@ -145,7 +187,14 @@
    "layer": "informal",
    "url_template": "https://planetmath.org/{id}",
    "our_provenance": "Wikidata P7726 (CC0)",
-   "target_license": "CC BY-SA 2.5 (verified)"
+   "target_license": "CC BY-SA 2.5 (verified)",
+   "ingest": {
+    "mode": "full",
+    "bulk_path": "git clone github.com/planetmath/* MSC repos (frozen corpus); \\pmrelated + pmmeta",
+    "cadence": "weekly",
+    "snippets": true,
+    "verified": "2026-07-10"
+   }
   },
   "dlmf": {
    "name": "DLMF",
@@ -154,7 +203,14 @@
    "layer": "informal",
    "url_template": "https://dlmf.nist.gov/{id}",
    "our_provenance": "Wikidata P11497 (CC0)",
-   "target_license": "© NIST — free for personal/educational use with attribution; commercial use & bulk redistribution restricted (NOT public domain)"
+   "target_license": "© NIST — free for personal/educational use with attribution; commercial use & bulk redistribution restricted (NOT public domain)",
+   "ingest": {
+    "mode": "ids+titles+links",
+    "bulk_path": "polite crawl of ~600 section pages for relative hrefs (~1 req/s); NIST notice bars content redistribution -> NO stored content",
+    "cadence": "monthly",
+    "snippets": false,
+    "verified": "2026-07-10"
+   }
   },
   "msc": {
    "name": "MSC 2020",
@@ -181,7 +237,14 @@
    "layer": "informal",
    "url_template": "https://stacks.math.columbia.edu/tag/{id}",
    "our_provenance": "@[stacks TAG] attributes in the mathlib4 source (Apache-2.0), human-reviewed on merge; harvested by catalog/harvest_mathlib_tags.py — NOT a Wikidata property (none exists), so no wikidata_property key and fetch_crossrefs skips it. Edges run decl→tag, not concept→page.",
-   "target_license": "GNU Free Documentation License (verified 2026-07: tag-page footer 'All contributions are licensed under the GNU Free Documentation License' linking the project COPYING = GFDL 1.2)"
+   "target_license": "GNU Free Documentation License (verified 2026-07: tag-page footer 'All contributions are licensed under the GNU Free Documentation License' linking the project COPYING = GFDL 1.2)",
+   "ingest": {
+    "mode": "full",
+    "bulk_path": "git github.com/stacks/stacks-project tags/tags + chapter .tex \\label/\\ref",
+    "cadence": "daily",
+    "snippets": true,
+    "verified": "2026-07-10"
+   }
   },
   "kerodon": {
    "name": "Kerodon",
@@ -189,7 +252,14 @@
    "layer": "informal",
    "url_template": "https://kerodon.net/tag/{id}",
    "our_provenance": "@[kerodon TAG] attributes in the mathlib4 source (Apache-2.0), human-reviewed on merge; harvested by catalog/harvest_mathlib_tags.py — NOT a Wikidata property (none exists), so no wikidata_property key and fetch_crossrefs skips it. Edges run decl→tag, not concept→page.",
-   "target_license": "No content license stated anywhere on the site (verified 2026-07: home/about/tag pages carry no license or copyright notice) — © Jacob Lurie, link only"
+   "target_license": "NO license anywhere (checked /about, homepage, kerodon.pdf 2026-07-10) - all rights reserved Jacob Lurie; store ids/titles/types/edges (facts) only, deep-link out",
+   "ingest": {
+    "mode": "links+metadata",
+    "bulk_path": "Gerby JSON /data/tag/{0000,02GZ}/structure + content/full href regex (polite, cached); UNLICENSED -> ids/titles/edges only",
+    "cadence": "monthly",
+    "snippets": false,
+    "verified": "2026-07-10"
+   }
   },
   "kgmid": {
    "name": "Google Knowledge Graph",
