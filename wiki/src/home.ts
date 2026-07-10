@@ -164,6 +164,7 @@ iframe { flex:1; border:0; width:100%; min-height:420px; }
     <a href="/articles"><b>Browse ${fmtInt(rows.length)} articles</b></a>
     <a href="/recent-changes">Recent changes</a>
     <a href="/concepts">Concepts</a>
+    <a href="/mcp" title="Wikibrain MCP — connect an AI agent to the Brain">MCP</a>
     <a href="/about">About</a>
   </nav>
 </header>
@@ -392,8 +393,8 @@ footer a:hover { text-decoration:underline; }
   <nav class="wl-nav" aria-label="Site">
     <a href="/concepts">Concepts</a>
     <a href="/wikifunctions">Wikifunctions</a>
-    <a href="/article-graph">Article graph</a>
     <a href="/brain">Brain</a>
+    <a href="/mcp">MCP</a>
     <a href="/about">About &amp; method</a>
     <button id="wl-theme-toggle" class="wl-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">🌓</button>
   </nav>
@@ -435,8 +436,9 @@ footer a:hover { text-decoration:underline; }
       <li><a href="/concepts">Wikidata concept links</a> &mdash; every formalized concept keyed
         to its Wikidata item, as an open RDF dataset (the basis for a proposed
         <em>&ldquo;formalized as (Lean/Mathlib)&rdquo;</em> Wikidata property).</li>
-      <li><a href="/article-graph">Article graph</a> &mdash; articles clustered by shared Mathlib
-        formalizations, colored by their dominant Mathlib area.</li>
+      <li><a href="/mcp">Wikibrain MCP</a> &mdash; a remote MCP server any AI agent can
+        connect to mid-proof: jump between informal mathematics and formal
+        Mathlib declarations (full REST reference at <a href="/brain/api">/brain/api</a>).</li>
     </ul>
   </section>
   <section class="directory" id="directory" aria-labelledby="directory-h">
@@ -524,8 +526,8 @@ export function sitemapXml(rows: SitemapRow[]): string {
   const newest = rows.reduce((m, r) => (r.updatedAt > m ? r.updatedAt : m), 0);
   const rootMod = newest ? `<lastmod>${new Date(newest).toISOString().slice(0, 10)}</lastmod>` : "";
   const rootUrl = `  <url><loc>${SITE_ORIGIN}/</loc>${rootMod}<priority>1.0</priority></url>`;
-  // Flagship static pages (the retired /map 301s to /brain, so it is not listed).
-  const staticUrls = ["brain", "article-graph", "articles", "concepts", "about"].map(
+  // Flagship pages (retired /map + /article-graph 301 to /brain — not listed).
+  const staticUrls = ["brain", "mcp", "articles", "concepts", "about"].map(
     (p) => `  <url><loc>${SITE_ORIGIN}/${p}</loc><priority>0.8</priority></url>`,
   );
   const urls = [

@@ -769,6 +769,7 @@ th { color:#9aa3b2; font-weight:600; }
     <span class="tag">— Wikibrain API: the agent-facing query surface over the Brain.</span></span>
   <nav class="wl-nav" aria-label="Site">
     <a href="/brain">Brain</a>
+    <a href="/mcp">MCP docs</a>
     <a href="/articles">Articles</a>
     <a href="/">Home</a>
   </nav>

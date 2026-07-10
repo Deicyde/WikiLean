@@ -211,7 +211,6 @@ ABOUT_TEMPLATE = (
   <a class="wl-brand" href="/">WikiLean</a>
   <nav class="wl-nav">
     <a class="wl-navlink" href="/concepts">Concepts</a>
-    <a class="wl-navlink" href="/article-graph">Article graph</a>
     <a class="wl-navlink" href="/brain">Brain</a>
     <a class="wl-navlink active" href="/about">About &amp; method</a>
     %TOGGLE_BTN%
@@ -266,17 +265,12 @@ ABOUT_TEMPLATE = (
   via SPARQL.</p>
 
   <h2>Article graph</h2>
-  <p>The <a href="/article-graph">article graph</a> takes a different cut: nodes are
-  Wikipedia articles, and there are two independent edge layers you can toggle.
-  <b>Shared-decl edges</b> connect two articles that annotate the same Mathlib
-  declarations — the result is a topical clustering, since articles that draw on the
-  same parts of Mathlib pull together. A slider lets you raise the threshold for how
-  many declarations two articles must share to be connected.
-  <b>Wikipedia link edges</b> connect articles that link to each other through ordinary
-  prose blue-links inside the cached enwiki HTML — the encyclopedia's own notion of
-  related topics, independent of formalization. Nodes are colored by their dominant
-  Mathlib namespace; only the shared-decl edges drive the force layout, so the
-  Wikipedia-link layer is a true overlay.</p>
+  <p>For AI agents, the same graph is queryable as the
+  <a href="/mcp">Wikibrain MCP server</a> and the <a href="/brain/api">Wikibrain REST
+  API</a>: resolve any informal concept to its exact Mathlib declaration (with match
+  quality and docs link), or start from a Lean name and pull the surrounding informal
+  context — the article, the Wikidata identity, and every cross-referenced external
+  database. Each answer carries provenance and confidence.</p>
 
   <h2>The Brain</h2>
   <p>The <a href="/brain">Brain</a> is a zoomable map over one shared node set: a
@@ -333,7 +327,6 @@ NOT_FOUND_TEMPLATE = (
   <a class="wl-brand" href="/">WikiLean</a>
   <nav class="wl-nav">
     <a class="wl-navlink" href="/concepts">Concepts</a>
-    <a class="wl-navlink" href="/article-graph">Article graph</a>
     <a class="wl-navlink" href="/brain">Brain</a>
     <a class="wl-navlink" href="/about">About &amp; method</a>
     %TOGGLE_BTN%
@@ -343,7 +336,7 @@ NOT_FOUND_TEMPLATE = (
   <div class="nf">
     <p class="code">404</p>
     <p>That page isn't here. It may not be one of the annotated articles yet.</p>
-    <p><a href="/">Browse all articles</a> &middot; <a href="/concepts">Concepts</a> &middot; <a href="/article-graph">Article graph</a> &middot; <a href="/brain">Brain</a></p>
+    <p><a href="/">Browse all articles</a> &middot; <a href="/concepts">Concepts</a> &middot; <a href="/brain">Brain</a></p>
   </div>
 </div>
 %TOGGLE_SCRIPT%

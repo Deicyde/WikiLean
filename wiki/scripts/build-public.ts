@@ -34,10 +34,8 @@ const shellFiles = [
   // The brain explorer (reserved route /brain, site/build_brain_page.py); its
   // data ships as the prefix shards in assets/brain/ (copied below).
   "brain.html",
-  // Data blobs kept for the KV-fallback path + the /api/atlas agent surface (the
-  // /map, /graph and /atlas *pages* now 301 → /brain; see src/index.ts).
-  "graph_data.json", "atlas_data.json",
-  "article-graph.html", "article-graph-data.json",
+  // (graph_data.json / atlas_data.json / article-graph.* retired 2026-07-10 —
+  // the Brain supersedes the whole old graph stack; routes 301/410 in src/index.ts.)
 ];
 for (const f of shellFiles) {
   const src = resolve(site, "out", f);

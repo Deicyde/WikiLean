@@ -232,18 +232,26 @@ function rpcError(id: unknown, code: number, message: string): Record<string, un
 type Limiter = { limit: (opts: { key: string }) => Promise<{ success: boolean }> };
 
 export function registerMcpRoutes(app: Hono<{ Bindings: Env }>): void {
-  // Browsers / curl GETs get a pointer, not a 404 (streamable HTTP allows GET
-  // only for SSE streams, which this stateless server does not offer).
-  app.get("/mcp", (c) =>
-    c.json(
+  // Browsers get the human documentation page; MCP clients probing with GET
+  // (e.g. opening an SSE stream, which this stateless server does not offer)
+  // keep the machine-readable 405 hint.
+  app.get("/mcp", (c) => {
+    // Vary: Accept — the same URL answers HTML to browsers and a JSON 405 to
+    // MCP clients; without it a shared cache could poison one with the other
+    if ((c.req.header("Accept") || "").includes("text/html")) {
+      return c.html(MCP_DOCS_HTML, 200,
+        { "Cache-Control": "public, max-age=3600", "Vary": "Accept" });
+    }
+    return c.json(
       {
         ok: false,
         error: "method not allowed — this is a streamable-HTTP MCP endpoint; POST JSON-RPC 2.0 messages",
-        hint: "connect: claude mcp add --transport http wikibrain https://wikilean.jackmccarthy.org/mcp — human docs at /brain/api",
+        hint: "connect: claude mcp add --transport http wikibrain https://wikilean.jackmccarthy.org/mcp — human docs at /mcp (browser) or /brain/api",
       },
       405,
-    ),
-  );
+      { "Vary": "Accept" },
+    );
+  });
 
   app.post("/mcp", async (c) => {
     // Per-IP limiter (public unauthenticated endpoint). Uses the dedicated
@@ -333,3 +341,146 @@ export function registerMcpRoutes(app: Hono<{ Bindings: Env }>): void {
     }
   });
 }
+// ---- GET /mcp — the human documentation page ---------------------------------
+// Served to browsers (Accept: text/html); style matches /brain/api.
+
+const MCP_DOCS_HTML = `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wikibrain MCP — WikiLean</title>
+<meta name="description" content="Wikibrain MCP: a remote Model Context Protocol server over WikiLean's Brain. AI agents jump between informal mathematics (Wikipedia/Wikidata) and formal Mathlib declarations mid-proof.">
+<style>
+* { box-sizing:border-box; }
+body { margin:0; background:#0b0e14; color:#e6e4de; line-height:1.55;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+a { color:#7cb3ff; text-decoration:none; } a:hover { text-decoration:underline; }
+.wl-header { background:#10141d; border-bottom:1px solid #262c3a; padding:10px 20px;
+  display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+.wl-brand { font-weight:700; color:#7cb3ff; font-size:18px; }
+.tag { color:#9aa3b2; font-size:.85rem; }
+.wl-nav { display:flex; gap:14px; align-items:center; flex-wrap:wrap; font-size:.9rem; }
+main { max-width:880px; margin:0 auto; padding:24px 20px 80px; }
+h1 { font-size:1.5rem; margin:0 0 4px; } h2 { font-size:1.15rem; margin:2.2em 0 .5em;
+  border-bottom:1px solid #262c3a; padding-bottom:6px; }
+h3 { font-size:1rem; margin:1.6em 0 .4em; color:#c9d4e3; }
+p, li { color:#c4c2bb; font-size:.95rem; }
+code { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.85em;
+  background:#131826; border:1px solid #262c3a; border-radius:4px; padding:1px 5px; }
+pre { background:#131826; border:1px solid #262c3a; border-radius:8px; padding:12px 14px;
+  overflow-x:auto; font-size:.82rem; line-height:1.5; }
+pre code { background:none; border:0; padding:0; }
+table { border-collapse:collapse; width:100%; font-size:.88rem; margin:.6em 0; }
+th, td { text-align:left; border-bottom:1px solid #262c3a; padding:6px 10px 6px 0; vertical-align:top; }
+th { color:#9aa3b2; font-weight:600; }
+.muted { color:#9aa3b2; font-size:.85rem; }
+</style>
+</head>
+<body>
+<header class="wl-header">
+  <span><span class="wl-brand">WikiLean</span>
+    <span class="tag">— Wikibrain MCP: the Brain, as tools for AI agents.</span></span>
+  <nav class="wl-nav" aria-label="Site">
+    <a href="/">Home</a>
+    <a href="/brain">Brain</a>
+    <a href="/brain/api">Full API reference</a>
+    <a href="https://github.com/Deicyde/WikiLean">GitHub</a>
+  </nav>
+</header>
+<main>
+<h1>Wikibrain MCP</h1>
+<p class="muted">A remote <a href="https://modelcontextprotocol.io">Model Context Protocol</a>
+server over the <a href="/brain">Brain</a> — WikiLean's verified map of mathematics joining
+Wikipedia/Wikidata concepts, Mathlib4 Lean declarations, and ten external math databases
+(LMFDB, nLab, Stacks, ProofWiki, PlanetMath, MathWorld, OEIS, EoM, Kerodon, DLMF).</p>
+
+<p>The design premise: <b>reasoning about mathematics is faster informally, but only
+formalization checks correctness</b>. Wikibrain lets an agent jump between the two
+mid-proof — resolve an informal idea to the exact Mathlib declaration (with docs link
+and match quality), or start from a Lean name and pull the surrounding informal context:
+the Wikipedia article, the Wikidata identity, LMFDB knowl text, nLab and Stacks entries.
+Every edge carries provenance, confidence, and machine-checkable evidence.</p>
+
+<h2>Connect</h2>
+<h3>Claude Code</h3>
+<pre><code>claude mcp add --transport http wikibrain https://wikilean.jackmccarthy.org/mcp</code></pre>
+<h3>Claude Desktop / any MCP-JSON config</h3>
+<pre><code>{
+  "mcpServers": {
+    "wikibrain": { "type": "http", "url": "https://wikilean.jackmccarthy.org/mcp" }
+  }
+}</code></pre>
+<h3>Raw JSON-RPC (any language)</h3>
+<p>Stateless streamable HTTP: every message is one <code>POST /mcp</code> with a JSON-RPC 2.0
+body; responses are plain <code>application/json</code> (no SSE, no sessions, no auth).</p>
+<pre><code>curl -s https://wikilean.jackmccarthy.org/mcp \\
+  -H 'content-type: application/json' \\
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{
+        "name":"brain_transfer",
+        "arguments":{"q":"abelian group","direction":"informal_to_formal"}}}'</code></pre>
+<p class="muted">Protocol revisions 2025-06-18 and 2025-03-26; methods
+<code>initialize</code>, <code>tools/list</code>, <code>tools/call</code>, <code>ping</code>.
+Rate limit: 120 calls/min per IP. Read-only by construction.</p>
+
+<h2>The eight tools</h2>
+<table>
+<tr><th>tool</th><th>what it does</th></tr>
+<tr><td><code>brain_transfer</code></td><td><b>The informal&harr;formal jump.</b>
+  <code>informal_to_formal</code>: concept text/QID/slug &rarr; ranked Mathlib declarations
+  with module, mathlib4_docs URL, <code>match_kind</code> (<code>exact</code> = IS the
+  formalization) and confidence. <code>formal_to_informal</code>: a Lean decl name &rarr;
+  the concepts it formalizes, with article URLs and snippet sources. Empty results carry
+  near-miss suggestions.</td></tr>
+<tr><td><code>brain_unit</code></td><td>Resolve ANY handle on a mathematical object —
+  QID, decl name, article slug, <code>xref:&lt;db&gt;:&lt;id&gt;</code>, exact label — to its
+  atomic unit card: article &compfn; QID &compfn; formalizing decls &compfn; Mathlib folders
+  &compfn; cross-database identities. The best first call.</td></tr>
+<tr><td><code>decl_exists</code></td><td>Verify a Mathlib declaration name is real before
+  citing it (existence oracle over the decl index; returns module + docs URL).</td></tr>
+<tr><td><code>brain_search</code></td><td>Fuzzy label search &rarr; node ids, when all you
+  have is approximate text.</td></tr>
+<tr><td><code>brain_node</code></td><td>One node's full record: payload, typed 1-hop edges
+  with evidence + provenance, breadcrumb, children.</td></tr>
+<tr><td><code>brain_neighborhood</code></td><td>Typed edge walk: filter by kind CSV
+  (<code>formalizes,depends,xref,links,&hellip;</code>) and direction.</td></tr>
+<tr><td><code>brain_snippets</code></td><td>Every stored content snippet for a concept:
+  Wikidata description, article pointer, LMFDB/nLab/Stacks/ProofWiki/PlanetMath/OEIS text
+  (each with license); link-only rows for no-content sources.</td></tr>
+<tr><td><code>brain_filter</code></td><td>Enumerate nodes by facet bitmask — e.g.
+  <code>f=1</code> every gold <code>@[wikidata]</code>-tagged declaration (+ their concepts),
+  <code>f=17</code> formalized concepts with a gold-tagged formalization. Bit table on the
+  <a href="/brain/api">API reference</a>.</td></tr>
+</table>
+
+<h2>Node id grammar</h2>
+<table>
+<tr><th>form</th><th>meaning</th><th>example</th></tr>
+<tr><td><code>Q&lt;digits&gt;</code></td><td>concept (Wikidata identity)</td><td><code>Q181296</code></td></tr>
+<tr><td><code>decl:&lt;Lib&gt;:&lt;Name&gt;</code></td><td>Lean declaration</td><td><code>decl:Mathlib:CommGroup</code></td></tr>
+<tr><td><code>path:&lt;Lib&gt;/&lt;Dir&gt;</code></td><td>Mathlib folder</td><td><code>path:Mathlib/Algebra</code></td></tr>
+<tr><td><code>xref:&lt;db&gt;:&lt;id&gt;</code></td><td>external DB page</td><td><code>xref:lmfdb_knowl:group.abelian</code></td></tr>
+<tr><td><code>lit:&lt;arxiv&gt;#&lt;ref&gt;</code></td><td>literature statement</td><td><code>lit:1707.04448#thm1.2</code></td></tr>
+</table>
+
+<h2>A worked mid-proof exchange</h2>
+<pre><code>&rarr; brain_transfer {"q": "Euler's totient function", "direction": "informal_to_formal"}
+&larr; {"qid": "Q190026", "hits": [{"decl": "Nat.totient",
+      "module": "Mathlib.Data.Nat.Totient", "match_kind": "exact",
+      "docs_url": "https://leanprover-community.github.io/mathlib4_docs/..."}]}
+
+&rarr; decl_exists {"name": "Nat.ModEq.pow_totient"}
+&larr; {"exists": true, "module": "Mathlib.Data.Nat.Totient", "docs_url": "..."}
+
+&rarr; brain_snippets {"id": "Q190026"}
+&larr; rows from Wikidata, WikiLean, EoM, MathWorld, OEIS, PlanetMath, ProofWiki &hellip;</code></pre>
+
+<p class="muted">Identical REST twins of every tool live under <code>/api/brain/*</code> —
+full parameter-level documentation on the <a href="/brain/api">Wikibrain API reference</a>.
+Source &amp; benchmark harness: <a href="https://github.com/Deicyde/WikiLean">Deicyde/WikiLean</a>
+(<code>wiki/src/mcp.ts</code>, <code>bench/</code>). Data licensing: per-source attribution
+on every snippet; the Brain's own node/edge data is CC0.</p>
+</main>
+</body>
+</html>
+`;

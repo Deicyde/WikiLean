@@ -142,40 +142,20 @@ cd "$REPO/site" || exit 1
         --budget-tokens "$BUDGET_TOKENS" || echo "(review returned $?)"
   echo
   if [ "${WIKILEAN_GRAPH_REFRESH:-1}" = "1" ]; then
-    echo "--- refresh concept-graph data -> KV (verified @[wikidata] tags + live coverage; no deploy) ---"
-    # Coverage now reflects tonight's formalization (moderate.py rewrites the disk
-    # artifacts it posts). Rebuild the data, then push ONLY the JSON to KV — the
-    # Worker serves /graph_data.json from KV (run_worker_first in wrangler.jsonc),
-    # so NO Worker deploy happens here and nothing can ship uncommitted wiki/src.
-    # && so a failed build keeps the last good KV copy (production is unaffected).
-    # Crossref backfill first (fail-soft: atomic write keeps the last good file,
-    # and the graph builds fine without it) — then coverage + the page build.
+    echo "--- refresh crossrefs + frontier + coverage (no deploy) ---"
+    # Coverage reflects tonight's formalization (moderate.py rewrites the disk
+    # artifacts it posts). Crossref backfill first (fail-soft: atomic write
+    # keeps the last good file) — the brain nightly consumes it at 02:20
+    # tomorrow. The old graph/atlas KV refresh lived here until 2026-07-10.
     python3 "$REPO/catalog/mathlib_deps/fetch_crossrefs.py" || echo "(crossrefs fetch returned $? — using last good file)"
     # FormalConjectures frontier ingest — same fail-soft contract; the DRIFT
     # lines in its output are the frontier moving (open→solved flips).
     python3 "$REPO/catalog/ingest_formal_conjectures.py" || echo "(fc ingest returned $? — using last good file)"
-    if python3 "$REPO/manage/coverage.py" && python3 "$REPO/site/build_graph_page.py"; then
-      # Bubble-atlas hierarchy rides the graph build (consumes graph_data.json);
-      # same success-gate + KV pattern (atlas:data:v1).
-      if python3 "$REPO/site/build_atlas.py"; then
-        if [ "${WIKILEAN_GRAPH_DEPLOY:-1}" = "1" ]; then
-          ( cd "$REPO/wiki" && npx wrangler kv key put --binding=RENDER_CACHE --remote \
-              atlas:data:v1 --path="$REPO/site/out/atlas_data.json" ) \
-            || echo "(atlas kv put returned $?)"
-        fi
-        # /map is retired (→ /brain); only the graph_data.json + atlas_data.json
-        # agent endpoints are refreshed here now.
-      else
-        echo "(atlas build failed — keeping the last KV copy)"
-      fi
-      if [ "${WIKILEAN_GRAPH_DEPLOY:-1}" = "1" ]; then
-        ( cd "$REPO/wiki" && npx wrangler kv key put --binding=RENDER_CACHE --remote \
-            graph:data:v1 --path="$REPO/site/out/graph_data.json" ) \
-          || echo "(graph kv put returned $?)"
-      fi
-    else
-      echo "(graph build failed — keeping the last KV copy)"
-    fi
+    # The old concept-graph/atlas page + endpoint stack is RETIRED (2026-07-10):
+    # /graph_data.json, /atlas_data.json and /api/atlas answer 410, their
+    # builders are deleted, and the brain nightly (brain-nightly.sh) owns the
+    # graph now. Coverage still refreshes here — manage/ worklists consume it.
+    python3 "$REPO/manage/coverage.py" || echo "(coverage returned $?)"
     echo
   fi
   # Community brain edges (docs/BRAIN-EDITS-ROADMAP.md phase 4): snapshot the live
