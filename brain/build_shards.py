@@ -464,7 +464,11 @@ def main() -> int:
          **({"status": n["display"]["status"]}
             if n.get("display", {}).get("status") else {}),
          **({"n_decls": n["n_decls"]} if n.get("n_decls") else {}),
-         **({"f": n["f"]} if n.get("f") else {})}
+         **({"f": n["f"]} if n.get("f") else {}),
+         # containment path on facet-bearing decls — the flatten view and
+         # /api/brain/filter restrict "all tagged decls" to a subtree by it
+         **({"p": parent[n["id"]]}
+            if n["type"] == "decl" and n.get("f") and n["id"] in parent else {})}
         for n in nodes.values()
         if n["type"] in ("concept", "container", "ext")
         or (n["type"] == "decl" and n.get("f")))
