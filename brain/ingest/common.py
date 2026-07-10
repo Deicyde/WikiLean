@@ -17,6 +17,7 @@ import re
 import subprocess
 import sys
 import time
+import unicodedata
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
@@ -105,9 +106,55 @@ def qid_map(db_key: str) -> dict[str, str]:
     return out
 
 
-def write_jsonl(path: Path, meta: dict, rows: list[dict]) -> None:
-    """Atomic jsonl write, first line _meta. Refuses to clobber with an empty set."""
-    if not rows:
+def strip_controls(s: str) -> str:
+    """Drop every Unicode category-C codepoint (Cc/Cf/Cs/Co/Cn — control chars,
+    zero-widths like U+200B/U+200E/U+200F, BOM). The Worker's BRAIN_ID_RE
+    (wiki/src/brain.ts) rejects any \\p{C} character, so an id carrying one
+    would be unreachable as a node."""
+    return "".join(c for c in s if not unicodedata.category(c).startswith("C"))
+
+
+def _prev_rows(path: Path) -> int | None:
+    """Data-row count (first-line _meta excluded) of a previous output file,
+    or None when the file does not exist (volume guard skipped)."""
+    if not path.exists():
+        return None
+    n = 0
+    first = True
+    with path.open() as f:
+        for line in f:
+            if not line.strip():
+                continue
+            if first:
+                first = False
+                if '"_meta"' in line[:12]:
+                    continue
+            n += 1
+    return n
+
+
+def _volume_guard(path: Path, kind: str, new_n: int) -> None:
+    """Volume sanity floor: refuse to clobber a known-good dataset with a
+    suspiciously small one (the signature of a partial-success ingest that
+    would otherwise pass the 0-row refusal). Floor = max(50, prev//2), capped
+    at prev so a small-but-legitimate dataset (e.g. oeis' ~38 anchored pages)
+    can still re-emit at the same size. Override with BRAIN_INGEST_FORCE=1."""
+    prev = _prev_rows(path)
+    if prev is None:
+        return
+    floor = min(max(50, prev // 2), prev)
+    if new_n < floor and os.environ.get("BRAIN_INGEST_FORCE") != "1":
+        raise RuntimeError(
+            f"refusing to overwrite {path.name}: new {kind} count {new_n} is below "
+            f"the sanity floor {floor} (previous file has {prev} rows) — looks like "
+            f"a partial-success ingest; set BRAIN_INGEST_FORCE=1 to override")
+
+
+def write_jsonl(path: Path, meta: dict, rows: list[dict], *,
+                allow_empty: bool = False) -> None:
+    """Atomic jsonl write, first line _meta. Refuses to clobber with an empty
+    set unless allow_empty (deliberate meta-only links files)."""
+    if not rows and not allow_empty:
         raise RuntimeError(f"refusing to write 0 rows to {path} (fail-soft)")
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(path.suffix + ".tmp")
@@ -119,26 +166,65 @@ def write_jsonl(path: Path, meta: dict, rows: list[dict]) -> None:
 
 
 def emit(db: str, pages: list[dict], links: list[dict], extra_meta: dict | None = None) -> None:
-    """Validate rows against the contract and write both files atomically."""
+    """Validate rows against the contract and write both files atomically.
+
+    Normalizes page/link ids and alias keys (all Unicode category-C codepoints
+    stripped — the Worker rejects them, see strip_controls), drops pages whose
+    id becomes empty (counted in _meta), and enforces a volume sanity floor
+    against the previous files (_volume_guard) before any write.
+    """
     seen: set[str] = set()
+    norm_changed: set[str] = set()  # ids altered by normalization
+    kept_pages: list[dict] = []
+    n_pages_dropped_bad_id = 0
     for p in pages:
         if p.get("db") != db or not p.get("id") or not p.get("title") or not p.get("url"):
             raise ValueError(f"bad page row: {json.dumps(p)[:200]}")
-        if p["id"] in seen:
-            raise ValueError(f"duplicate page id {p['id']!r}")
-        seen.add(p["id"])
+        raw_id = str(p["id"])
+        pid = strip_controls(raw_id)
+        if not pid.strip():
+            n_pages_dropped_bad_id += 1
+            continue
+        if pid in seen:
+            if pid != raw_id or pid in norm_changed:
+                # collision minted by normalization — the zero-width twin is junk
+                n_pages_dropped_bad_id += 1
+                continue
+            raise ValueError(f"duplicate page id {pid!r}")
+        if pid != raw_id:
+            norm_changed.add(pid)
+        p["id"] = pid
+        seen.add(pid)
+        if p.get("aliases"):
+            aliases: list[str] = []
+            for a in p["aliases"]:
+                a = strip_controls(str(a))
+                if a.strip() and a not in aliases:
+                    aliases.append(a)
+            if aliases:
+                p["aliases"] = aliases
+            else:
+                del p["aliases"]
         if "snippet" in p:
             if db not in SNIPPET_OK:
                 raise ValueError(f"{db} may not store snippets (license)")
             p["snippet"] = clean_snippet(p["snippet"])
             p["snippet_license"] = SNIPPET_LICENSE[db]
+        kept_pages.append(p)
     page_ids = seen
     kept_links = []
+    n_links_dropped_bad_id = 0
     for e in links:
         if e.get("db") != db or not e.get("src") or not e.get("dst"):
             raise ValueError(f"bad link row: {json.dumps(e)[:200]}")
-        if e["src"] == e["dst"]:
+        src = strip_controls(str(e["src"]))
+        dst = strip_controls(str(e["dst"]))
+        if not src.strip() or not dst.strip():
+            n_links_dropped_bad_id += 1
             continue
+        if src == dst:
+            continue
+        e["src"], e["dst"] = src, dst
         e.setdefault("context", "body")
         kept_links.append(e)
     # links may reference pages we did not keep as rows (e.g. anchored-subset OEIS);
@@ -148,15 +234,28 @@ def emit(db: str, pages: list[dict], links: list[dict], extra_meta: dict | None 
     meta = {
         "db": db,
         "fetched_at": now_iso(),
-        "n_pages": len(pages),
+        "n_pages": len(kept_pages),
         "n_links": len(kept_links),
         "n_links_resolved": resolved,
+        "n_pages_dropped_bad_id": n_pages_dropped_bad_id,
+        "n_links_dropped_bad_id": n_links_dropped_bad_id,
         **(extra_meta or {}),
     }
-    write_jsonl(EXTERNAL_DIR / f"{db}_pages.jsonl", meta, pages)
+    pages_path = EXTERNAL_DIR / f"{db}_pages.jsonl"
+    links_path = EXTERNAL_DIR / f"{db}_links.jsonl"
+    _volume_guard(pages_path, "page", len(kept_pages))
+    _volume_guard(links_path, "link", len(kept_links))
+    write_jsonl(pages_path, meta, kept_pages)
     if kept_links:
-        write_jsonl(EXTERNAL_DIR / f"{db}_links.jsonl", meta, kept_links)
-    print(f"[{db}] wrote {len(pages)} pages, {len(kept_links)} links "
+        write_jsonl(links_path, meta, kept_links)
+    elif links_path.exists():
+        # Zero links this run but a previous links file exists: rewrite it
+        # meta-only so the pages/links pair stays consistent (mirrors
+        # build_common.write_edges, which always rewrites the split links file
+        # rather than leaving a stale one). Only reachable under
+        # BRAIN_INGEST_FORCE=1 — the volume guard aborts the un-forced case.
+        write_jsonl(links_path, meta, [], allow_empty=True)
+    print(f"[{db}] wrote {len(kept_pages)} pages, {len(kept_links)} links "
           f"({resolved} resolved) -> {EXTERNAL_DIR}", file=sys.stderr)
 
 
@@ -170,6 +269,16 @@ def read_pages(db: str) -> list[dict]:
             if "_meta" not in r:
                 rows.append(r)
     return rows
+
+
+def atomic_write_bytes(path: Path, data: bytes) -> None:
+    """tmp+rename byte write for per-page cache files: cached files are trusted
+    unconditionally on later runs, so a killed run must never be able to leave
+    a truncated file behind."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.write_bytes(data)
+    tmp.rename(path)
 
 
 def cache_path(db: str, *parts: str) -> Path:

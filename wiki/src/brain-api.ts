@@ -23,6 +23,7 @@ import type { Context, Hono } from "hono";
 import type { Env } from "./env.js";
 import {
   assetJson,
+  memoAssetJson,
   resolveBrainEntry,
   searchLabels,
   BRAIN_ID_RE,
@@ -122,7 +123,7 @@ async function entryFor(c: Ctx, id: string): Promise<ShardEntry | null> {
 }
 
 function getLabels(c: Ctx): Promise<BrainLabelRow[] | null> {
-  return assetJson<BrainLabelRow[]>(c, "/assets/brain/labels.json");
+  return memoAssetJson<BrainLabelRow[]>(c, "/assets/brain/labels.json");
 }
 
 // own-property read — a JSON.parse'd map must never serve inherited names
@@ -258,7 +259,7 @@ export async function resolveUnitKey(c: Ctx, key: string): Promise<ResolvedKey |
     return anchors.length ? { qid: anchors[0], resolved_from: "xref" } : null;
   }
 
-  const aliases = await assetJson<BrainAliases>(c, "/assets/brain/aliases.json");
+  const aliases = await memoAssetJson<BrainAliases>(c, "/assets/brain/aliases.json");
 
   // decl: explicit 'decl:<Lib>:<Name>' or a bare fully-qualified decl name
   const isDeclId = key.startsWith("decl:");
@@ -532,9 +533,9 @@ export async function snippetsFor(c: Ctx, id: string): Promise<ApiResult> {
       url: `${SITE_ORIGIN}/${encodeURIComponent(node.slug)}`,
     });
   }
-  const xrefTargets = (entry.edges?.out ?? [])
-    .filter((e) => e.kind === "xref" && e.id.startsWith("xref:"))
-    .slice(0, MAX_SNIPPET_FETCHES);
+  const allXrefs = (entry.edges?.out ?? [])
+    .filter((e) => e.kind === "xref" && e.id.startsWith("xref:"));
+  const xrefTargets = allXrefs.slice(0, MAX_SNIPPET_FETCHES);
   for (const e of xrefTargets) {
     const xe = await entryFor(c, e.id);
     if (xe && xe.node.type === "ext") {
@@ -546,7 +547,15 @@ export async function snippetsFor(c: Ctx, id: string): Promise<ApiResult> {
       rows.push({ source_db: m ? m[1].toLowerCase() : "", id: e.id, label: m ? m[2] : e.id });
     }
   }
-  return { status: 200, body: { ok: true, id, rows } };
+  // beyond-cap xrefs surface as pointer-only rows (no shard fetch) so the
+  // response is still complete — `truncated` says snippet fetches were capped
+  for (const e of allXrefs.slice(MAX_SNIPPET_FETCHES)) {
+    const m = XREF_ID_RE.exec(e.id);
+    rows.push({ source_db: m ? m[1].toLowerCase() : "", id: e.id, label: m ? m[2] : e.id });
+  }
+  const body: Record<string, unknown> = { ok: true, id, rows };
+  if (allXrefs.length > MAX_SNIPPET_FETCHES) body.truncated = true;
+  return { status: 200, body };
 }
 
 // ---- filter: facet-bitmask enumeration over labels.json -----------------------
@@ -629,7 +638,7 @@ export async function declExistsFor(c: Ctx, nameRaw: string): Promise<ApiResult>
   if (!name || name.length > 300 || /[\s\p{C}/\\]/u.test(name)) {
     return { status: 400, body: { ok: false, error: "bad declaration name" } };
   }
-  const manifest = await assetJson<DeclManifest>(c, "/assets/decl-index/manifest.json");
+  const manifest = await memoAssetJson<DeclManifest>(c, "/assets/decl-index/manifest.json");
   if (!manifest?.shards) return { status: 503, body: { ok: false, error: "decl index unavailable" } };
   const key = declShardFor(manifest, name);
   const pairs = key ? await assetJson<Array<[string, string]>>(c, `/assets/decl-index/${key}.json`) : null;
@@ -659,7 +668,28 @@ function send(c: Ctx, r: ApiResult): Response {
   return c.json(r.body, r.status, r.status === 200 ? CACHE_HEADERS : undefined);
 }
 
+// Same anonymous budget as /mcp (review finding: the REST twins of the MCP
+// tools must not be a rate-limit bypass). Keyed by IP; MCP_LIMITER when bound,
+// else BRAIN_API_LIMITER — distinct "brainapi-ip:" prefix avoids colliding
+// with the write path's "brainapi:<user.id>" keys.
+async function rateLimitGate(
+  c: Ctx,
+  next: () => Promise<void>,
+): Promise<Response | void> {
+  const limiter = c.env.MCP_LIMITER ?? c.env.BRAIN_API_LIMITER;
+  const ip = c.req.header("CF-Connecting-IP") || "unknown";
+  const { success } = await limiter.limit({ key: `brainapi-ip:${ip}` });
+  if (!success) return c.json({ ok: false, error: "rate limited (120/min)" }, 429);
+  await next();
+}
+
 export function registerBrainApiRoutes(app: Hono<{ Bindings: Env }>): void {
+  app.use("/api/brain/unit", rateLimitGate);
+  app.use("/api/brain/transfer", rateLimitGate);
+  app.use("/api/brain/neighborhood", rateLimitGate);
+  app.use("/api/brain/snippets", rateLimitGate);
+  app.use("/api/brain/filter", rateLimitGate);
+
   app.get("/api/brain/unit", async (c) => send(c, await unitFor(c, c.req.query("key") ?? "")));
 
   app.get("/api/brain/transfer", async (c) =>
@@ -800,7 +830,8 @@ license. No-content sources (MathWorld, DLMF, EoM, Kerodon) return deep links on
 Bits (brain/SCHEMA.md): 0 gold <code>@[wikidata]</code> · 1 <code>@[stacks]</code> ·
 2 <code>@[kerodon]</code> · 3 any xref · 4 formalized · 5 partial · 6 has article ·
 7 has literature · 8 is ext · 9 lmfdb · 10 nlab · 11 mathworld · 12 proofwiki ·
-13 stacks-tag · 14 oeis · 15 has snippet. Paginate with the returned
+13 stacks-tag · 14 oeis · 15 has snippet. Bits 0&ndash;2 sit on the tagged decl AND
+propagate to the concept(s) it formalizes. Paginate with the returned
 <code>next_cursor</code>.</p>
 <pre><code>curl 'https://wikilean.jackmccarthy.org/api/brain/filter?f=1&amp;limit=50'</code></pre>
 

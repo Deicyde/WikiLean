@@ -14,6 +14,7 @@ the concrete input artifact is named in provenance.method.
 from __future__ import annotations
 
 import csv
+import html
 import json
 import os
 import re
@@ -114,6 +115,16 @@ def _edge(src: str, dst: str, kind: str, source: str, method: str, pin: str,
     return {"src": src, "dst": dst, "kind": kind,
             "provenance": {"source": source, "method": method, "pin": pin},
             "confidence": confidence, "evidence": evidence}
+
+
+_MARKUP = re.compile(r"<[^>]+>")
+
+
+def _strip_markup(text: str) -> str:
+    """Plain-text a title/snippet from an external wiki: drop HTML tags,
+    unescape entities, collapse whitespace. Inline $TeX$ passes through."""
+    out = html.unescape(_MARKUP.sub(" ", text or ""))
+    return re.sub(r"\s+", " ", out).strip()
 
 
 def _prune(d: dict) -> dict:
@@ -229,7 +240,7 @@ def external_layer(ext_data: dict[str, dict], *, concept_qids: set[str],
     ext_nodes: list[dict] = []
     new_edges: list[dict] = []
     stats = {"minted": {}, "capped": {}, "links_page": 0, "links_projected": 0,
-             "xref_from_page_qid": 0}
+             "xref_from_page_qid": 0, "anchors_outside_graph": 0}
     for db in sorted(ext_data):
         rec = ext_data[db]
         snippets_ok = bool((registry[db].get("ingest") or {}).get("snippets"))
@@ -241,6 +252,13 @@ def external_layer(ext_data: dict[str, dict], *, concept_qids: set[str],
 
         anchored = {pid for pid, p in pages.items()
                     if eid(pid) in xref_dsts or p.get("qid") in concept_qids}
+        # fold-verified agent anchors pointing at QIDs the graph doesn't have
+        # are legal (they extend the universe) but do nothing here — count
+        # them so the drop is visible instead of silent
+        stats["anchors_outside_graph"] += sum(
+            1 for p in pages.values()
+            if p.get("qid_source") == "ext_anchor"
+            and p.get("qid") not in concept_qids)
         inbound = Counter(l["dst"] for l in rec["links"])
         frontier: set[str] = set()
         for l in rec["links"]:
@@ -257,13 +275,21 @@ def external_layer(ext_data: dict[str, dict], *, concept_qids: set[str],
 
         for pid in sorted(minted_set):
             p = pages[pid]
+            # titles/snippets from external wikis can carry raw HTML (Kerodon
+            # cite spans, nLab TOC chrome) — strip to plain text here so no
+            # markup reaches labels.json or the panel (rendered escaped there:
+            # not XSS, but garbled visible tags)
             node = {"id": eid(pid), "type": "ext", "db": db,
-                    "label": p["title"], "url": p["url"]}
+                    "label": _strip_markup(p["title"]), "url": p["url"]}
             if snippets_ok and p.get("snippet"):
-                node["snippet"] = p["snippet"]
+                node["snippet"] = _strip_markup(p["snippet"])
                 node["snippet_license"] = p.get("snippet_license")
             node["kind_hint"] = p.get("kind_hint")
             node["qid"] = p.get("qid")
+            if p.get("qid_source"):
+                # agent-proposed anchor (fold-verified) — must stay
+                # distinguishable from a CC0 ingest qid on the node itself
+                node["qid_source"] = p["qid_source"]
             ext_nodes.append(_prune(node))
             # a page whose CC0 qid is a graph concept gets the concept→ext
             # xref edge when no pipeline emitted one (join completeness)
@@ -390,6 +416,11 @@ def apply_facets(nodes: list[dict], edges: list[dict],
     xref_touch: set[str] = set()
     db_bits: dict[str, int] = defaultdict(int)
     lit: set[str] = set()
+    # bits 0-2 PROPAGATE from a tagged decl to the concepts it formalizes —
+    # otherwise the bits are decl-only while labels.json/filter enumerate
+    # concepts, making the documented masks (f=1, f=17) unsatisfiable
+    concept_tag_bits: dict[str, int] = defaultdict(int)
+    tagged_all = tag_decls["wikidata"] | tag_decls["stacks"] | tag_decls["kerodon"]
     for e in edges:
         k = e["kind"]
         if k == "xref":
@@ -398,6 +429,17 @@ def apply_facets(nodes: list[dict], edges: list[dict],
             db_bits[e["src"]] |= F_DB_BIT.get(e["provenance"]["source"], 0)
         elif k in ("cites", "matches"):
             lit.add(e["src"])
+        elif k == "formalizes" and e["dst"].startswith("decl:"):
+            bare = e["dst"].split(":", 2)[2]
+            if bare in tagged_all:
+                bits = 0
+                if bare in tag_decls["wikidata"]:
+                    bits |= F_GOLD_WIKIDATA
+                if bare in tag_decls["stacks"]:
+                    bits |= F_STACKS_ATTR
+                if bare in tag_decls["kerodon"]:
+                    bits |= F_KERODON_ATTR
+                concept_tag_bits[e["src"]] |= bits
     for n in nodes:
         f = 0
         t, nid = n["type"], n["id"]
@@ -417,6 +459,7 @@ def apply_facets(nodes: list[dict], edges: list[dict],
                 f |= F_PARTIAL
             if n.get("article_annotations"):
                 f |= F_ARTICLE
+            f |= concept_tag_bits.get(nid, 0)
         elif t == "ext":
             f |= F_EXT | F_DB_BIT.get(n["db"], 0)
             if n.get("snippet"):
@@ -818,13 +861,28 @@ def build() -> tuple[list[dict], list[dict], dict]:
     # (the dst is an external identifier, not a node — see the P5d check below).
     pin_x = _pin("wikidata_crossrefs.json")
     n_xref_skipped_keys = 0
+    seen_xref_dst: set[tuple[str, str]] = set()
     for n in graph["nodes"]:
         for key, values in sorted((n.get("xrefs") or {}).items()):
             if key not in XREF_KEYS:
                 n_xref_skipped_keys += 1
                 continue
             for v in sorted(values):
-                edges.append(_edge(n["qid"], f"xref:{key}:{v}", "xref", key,
+                # DLMF P11497 values are often equation-granular ('1.2.E34',
+                # '25.12#ii') but the ingest mints SECTION pages ('1.2') — key
+                # the dst at section level so the edge lands on a real node;
+                # the raw value stays in evidence. Dedup: several equation
+                # values can normalize onto one section.
+                dst_id = v
+                if key == "dlmf":
+                    m = re.match(r"^(\d+\.\d+)(?:[.#]|$)", v)
+                    if m:
+                        dst_id = m.group(1)
+                dst = f"xref:{key}:{dst_id}"
+                if (n["qid"], dst) in seen_xref_dst:
+                    continue
+                seen_xref_dst.add((n["qid"], dst))
+                edges.append(_edge(n["qid"], dst, "xref", key,
                                    "wikidata-property", pin_x, "high",
                                    {"property": XREF_KEYS[key], "value": v}))
 
@@ -1091,7 +1149,11 @@ def build() -> tuple[list[dict], list[dict], dict]:
               f"({', '.join(f'{db}={n}' for db, n in sorted(ext_stats['minted'].items()))}); "
               f"{ext_stats['links_page']} page links, "
               f"{ext_stats['links_projected']} projected, "
-              f"{ext_stats['xref_from_page_qid']} page-qid xrefs", file=sys.stderr)
+              f"{ext_stats['xref_from_page_qid']} page-qid xrefs"
+              + (f"; {ext_stats['anchors_outside_graph']} agent anchors point "
+                 f"at QIDs outside the concept graph (inert until the concept "
+                 f"is minted)" if ext_stats.get('anchors_outside_graph') else ""),
+              file=sys.stderr)
     else:
         print("NOTE: catalog/data/external/ empty — ext nodes / links edges "
               "skipped (brain/ingest adapters not run)", file=sys.stderr)

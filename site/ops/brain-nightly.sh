@@ -15,10 +15,11 @@
 #   3. FOLD + BUILD: fold_proposals -> build_nodes -> build_edges ->
 #      test_acceptance (RED = abort publish, keep old shards) -> build_shards.
 #      Rollups are pinned — not rebuilt nightly.
-#   4. PUBLISH (WIKILEAN_BRAIN_DEPLOY=1): build-public, then the CLEAN-TREE-
-#      GATED deploy — `npm run deploy` ONLY if `git status --porcelain --
-#      wiki/src wiki/package.json wiki/wrangler.jsonc` is empty AND
-#      `npx tsc --noEmit` passes. Never ships uncommitted Worker WIP.
+#   4. PUBLISH (WIKILEAN_BRAIN_DEPLOY=1): build-public, then the GATED deploy —
+#      `npm run deploy` ONLY if the checked-out branch is `main` (no detached
+#      HEAD, no rebase/merge in progress), `git status --porcelain -- wiki/
+#      site/assets site/build_brain_page.py` is empty, AND `npx tsc --noEmit`
+#      passes. Never ships uncommitted Worker WIP or asset-source WIP.
 #
 # Runs as the logged-in user so the Claude Max-plan login is available to the
 # agent step. launchd hands a bare environment: absolute paths, explicit PATH.
@@ -197,9 +198,19 @@ cd "$REPO" || exit 1
     if ! (cd "$REPO/wiki" && node --experimental-strip-types scripts/build-public.ts); then
       echo "!!! SKIPPED-DEPLOY: build-public failed — shards rebuilt on disk but NOT shipped"
     else
-      DIRTY="$(git -C "$REPO" status --porcelain -- wiki/src wiki/package.json wiki/wrangler.jsonc)"
-      if [ -n "$DIRTY" ]; then
-        echo "!!! SKIPPED-DEPLOY: uncommitted wiki/ changes would ship — commit or stash first:"
+      # Deploy gate: main-branch only, no rebase/merge in flight, and a clean
+      # tree across everything the deploy bakes in — wiki/ (npm run deploy
+      # bundles ALL of wiki/src) plus the build-public asset sources.
+      BRANCH="$(git -C "$REPO" rev-parse --abbrev-ref HEAD 2>/dev/null)"
+      GITDIR="$(git -C "$REPO" rev-parse --git-dir 2>/dev/null)"
+      case "$GITDIR" in /*) ;; *) GITDIR="$REPO/$GITDIR" ;; esac
+      DIRTY="$(git -C "$REPO" status --porcelain -- wiki/ site/assets site/build_brain_page.py)"
+      if [ "$BRANCH" != "main" ]; then
+        echo "!!! SKIPPED-DEPLOY: checked-out branch is '${BRANCH:-unknown}', not 'main' (detached HEAD reports 'HEAD') — not deploying"
+      elif [ -d "$GITDIR/rebase-merge" ] || [ -d "$GITDIR/rebase-apply" ] || [ -f "$GITDIR/MERGE_HEAD" ]; then
+        echo "!!! SKIPPED-DEPLOY: rebase/merge in progress ($GITDIR) — not deploying"
+      elif [ -n "$DIRTY" ]; then
+        echo "!!! SKIPPED-DEPLOY: uncommitted wiki//site-asset changes would ship — commit or stash first:"
         echo "$DIRTY"
       elif ! (cd "$REPO/wiki" && npx tsc --noEmit); then
         echo "!!! SKIPPED-DEPLOY: npx tsc --noEmit failed — fix wiki/src before the nightly can deploy"

@@ -31,18 +31,25 @@ DELAY = 1.2
 
 
 def load_structure(root: str) -> dict:
-    """Fetch a structure tree, falling back to the cached copy on failure."""
+    """Fetch a structure tree, falling back to the cached copy on failure.
+    Cache write is atomic (tmp+rename, after a successful parse); a zero-byte
+    or unparseable cached copy is treated as absent."""
     cache = common.cache_path("kerodon", f"structure_{root}.json")
     try:
         raw = common.curl_fetch(STRUCTURE_URL.format(root))
         data = json.loads(raw)
-        cache.write_bytes(raw)
+        common.atomic_write_bytes(cache, raw)
         return data
     except Exception as e:  # noqa: BLE001 — fail-soft to cache
-        if cache.exists():
-            print(f"[kerodon] structure {root} fetch failed ({e}); using cache",
-                  file=sys.stderr)
-            return json.loads(cache.read_text())
+        if cache.exists() and cache.stat().st_size > 0:
+            try:
+                data = json.loads(cache.read_text())
+            except ValueError:
+                pass  # poisoned cache — surface the fetch error instead
+            else:
+                print(f"[kerodon] structure {root} fetch failed ({e}); using cache",
+                      file=sys.stderr)
+                return data
         raise
 
 
@@ -70,12 +77,18 @@ def main() -> int:
     fetched = errors = 0
     for tag in sorted(pages):
         path = common.cache_path("kerodon", "content", f"{tag}.html")
+        # a zero-byte cached file (killed run / empty response) is absent
+        if path.exists() and path.stat().st_size == 0:
+            path.unlink()
         if path.exists() or fetched >= max_fetch:
             continue
         fetched += 1
         time.sleep(DELAY)
         try:
-            path.write_bytes(common.curl_fetch(CONTENT_URL.format(tag)))
+            data = common.curl_fetch(CONTENT_URL.format(tag))
+            if not data:
+                raise RuntimeError("empty response body")
+            common.atomic_write_bytes(path, data)  # never a truncated cache file
         except Exception as e:  # noqa: BLE001 — retry on a later run
             errors += 1
             print(f"[kerodon] content {tag} failed: {e}", file=sys.stderr)
@@ -85,8 +98,8 @@ def main() -> int:
     content_dir = common.CACHE_DIR / "kerodon" / "content"
     for path in sorted(content_dir.glob("*.html")) if content_dir.exists() else []:
         src = path.stem
-        if src not in pages:
-            continue
+        if src not in pages or path.stat().st_size == 0:
+            continue  # zero-byte cache = absent (poisoned by a killed run)
         cached += 1
         for dst in HREF.findall(path.read_text(errors="replace")):
             if dst != src:

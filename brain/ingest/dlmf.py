@@ -33,15 +33,24 @@ SECTION_OF = re.compile(r"^(\d+)\.\d+")
 
 
 def cached_fetch(name: str, url: str, budget: list[int]) -> str | None:
-    """Cache-first page fetch; uncached fetches spend budget[0] and sleep 1s."""
+    """Cache-first page fetch; uncached fetches spend budget[0] and sleep 1s.
+
+    Cache writes are atomic (tmp+rename) and a zero-byte cached file is
+    treated as absent — cached files are trusted unconditionally, so a killed
+    or empty-response run must never poison the cache."""
     cache = common.cache_path("dlmf", f"{name}.html")
+    if cache.exists() and cache.stat().st_size == 0:
+        cache.unlink()
     if not cache.exists():
         if budget[0] <= 0:
             return None
         budget[0] -= 1
         time.sleep(DELAY)
         try:
-            cache.write_bytes(common.curl_fetch(url))
+            data = common.curl_fetch(url)
+            if not data:
+                raise RuntimeError("empty response body")
+            common.atomic_write_bytes(cache, data)
         except Exception as e:  # noqa: BLE001 — retry on a later run
             print(f"[dlmf] fetch {url} failed: {e}", file=sys.stderr)
             return None

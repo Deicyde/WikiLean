@@ -44,6 +44,15 @@ def main() -> int:
         url = API + "?" + urllib.parse.urlencode({**params, **cont})
         data = json.loads(common.curl_fetch(url))
         n_calls += 1
+        # A MediaWiki error or malformed body must NOT read as end-of-pagination
+        # (missing 'continue' would silently truncate the walk). Raise instead —
+        # fail-soft upstream: emit() never runs, the previous files survive.
+        if not isinstance(data, dict) or "error" in data or "query" not in data:
+            head = (json.dumps(data, ensure_ascii=False)[:300]
+                    if isinstance(data, (dict, list)) else repr(data)[:300])
+            raise RuntimeError(
+                f"eom API call {n_calls} returned an error/malformed response "
+                f"(aborting before emit; previous files intact): {head}")
         cache = common.cache_path("eom", f"allpages_{n_calls:04d}.json")
         cache.write_text(json.dumps(data, ensure_ascii=False))
         for page in data.get("query", {}).get("pages", {}).values():
@@ -55,6 +64,8 @@ def main() -> int:
             for link in page.get("links", []):
                 if link.get("ns") == 0:
                     dsts.add(page_id(link["title"]))
+        # Reaching here implies a well-formed 'query' response (validated
+        # above), so a missing 'continue' key is a genuine end of pagination.
         cont = data.get("continue") or {}
         if not cont:
             break

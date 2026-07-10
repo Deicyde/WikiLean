@@ -37,6 +37,27 @@ export async function assetJson<T>(c: Context<{ Bindings: Env }>, path: string):
   return (await res.json()) as T;
 }
 
+// Isolate-lifetime memo for large parsed assets (labels.json is ~4MB and was
+// re-fetched+parsed up to 3x per request; the manifest ~50x across one
+// transfer call). Static assets change only on deploy, and deploys recycle
+// isolates, so isolate-scoped caching is exactly as fresh as the assets
+// themselves. Failed (null) loads are NOT cached — they stay retryable.
+const _assetMemo = new Map<string, Promise<unknown>>();
+export function memoAssetJson<T>(
+  c: Context<{ Bindings: Env }>, path: string,
+): Promise<T | null> {
+  const hit = _assetMemo.get(path);
+  if (hit) return hit as Promise<T | null>;
+  const p = assetJson<T>(c, path).then((v) => {
+    if (v === null) _assetMemo.delete(path);
+    return v;
+  }, (e) => { _assetMemo.delete(path); throw e; });
+  _assetMemo.set(path, p);
+  return p;
+}
+// test-only (mirrors brain-edits' _resetBrainEditCaches)
+export function _resetBrainAssetMemo(): void { _assetMemo.clear(); }
+
 // One labels.json row (build_shards.py `labels`). v2 adds optional `f` (facet
 // bitmask, brain/SCHEMA.md) consumed by /api/brain/filter; rows built before
 // the v2 data rebuild simply lack it (treated as 0).
@@ -78,7 +99,7 @@ export async function resolveBrainEntry(
   c: Context<{ Bindings: Env }>,
   id: string,
 ): Promise<{ entry: object; prov: Array<Record<string, string>> } | null> {
-  const manifest = await assetJson<BrainManifest>(c, "/assets/brain/manifest.json");
+  const manifest = await memoAssetJson<BrainManifest>(c, "/assets/brain/manifest.json");
   if (!manifest?.shards) return null;
   const key = declShardFor(
     { scheme: { min_len: manifest.scheme.min_len, max_len: manifest.scheme.max_len, pad: manifest.scheme.pad },
@@ -88,7 +109,11 @@ export async function resolveBrainEntry(
   const shard = key
     ? await assetJson<Record<string, unknown>>(c, `/assets/brain/${key}.json`)
     : null;
-  const entry = shard?.[id];
+  // hasOwnProperty guard: JSON.parse yields a plain object, so id="__proto__"
+  // would otherwise resolve Object.prototype as a truthy "entry" (the same
+  // gotcha atlas.ts documents)
+  const entry = shard && Object.prototype.hasOwnProperty.call(shard, id)
+    ? shard[id] : undefined;
   if (!entry) return null;
   return { entry: entry as object, prov: manifest.prov };
 }

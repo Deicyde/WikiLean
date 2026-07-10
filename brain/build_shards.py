@@ -451,7 +451,9 @@ def main() -> int:
     }
 
     # search index: concepts + containers + ext pages (decls are covered by the
-    # existing decl-index shards / GET /decl); one client fetch, filtered locally
+    # existing decl-index shards / GET /decl) — PLUS the few hundred decls that
+    # carry facet bits (@[wikidata]/@[stacks]/@[kerodon] tags): /api/brain/filter
+    # enumerates THIS file, so tag-bit masks (f=1 etc.) must be satisfiable here
     labels = [_l for _l in (
         {"id": n["id"], "type": n["type"], "label": n.get("label"),
          **({"slug": n["slug"]} if n.get("slug") else {}),
@@ -460,7 +462,9 @@ def main() -> int:
             if n.get("display", {}).get("status") else {}),
          **({"n_decls": n["n_decls"]} if n.get("n_decls") else {}),
          **({"f": n["f"]} if n.get("f") else {})}
-        for n in nodes.values() if n["type"] in ("concept", "container", "ext"))
+        for n in nodes.values()
+        if n["type"] in ("concept", "container", "ext")
+        or (n["type"] == "decl" and n.get("f")))
         if _l["label"]]
     labels.sort(key=lambda r: (r["type"], -(r.get("n_decls") or 0), r["label"]))
 

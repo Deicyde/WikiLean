@@ -157,7 +157,9 @@ export const TOOLS: ToolDef[] = [
       "Bits: 0 gold @[wikidata] tag · 1 @[stacks] · 2 @[kerodon] · 3 any xref · " +
       "4 formalized · 5 partial · 6 has WikiLean article · 7 has literature · " +
       "8 is ext · 9 lmfdb · 10 nlab · 11 mathworld · 12 proofwiki · 13 stacks-tag · " +
-      "14 oeis · 15 has snippet. E.g. f=17 (bits 0+4) = gold-tagged AND formalized. " +
+      "14 oeis · 15 has snippet. Bits 0-2 sit on the tagged decl AND propagate to the " +
+      "concept(s) it formalizes — f=1 returns tagged decls + their concepts; f=17 " +
+      "(bits 0+4) = formalized concept with a gold-tagged formalization. " +
       "Paginate with next_cursor.",
     inputSchema: obj(
       {
@@ -312,9 +314,12 @@ export function registerMcpRoutes(app: Hono<{ Bindings: Env }>): void {
           : {}) as Record<string, unknown>;
         try {
           return c.json(rpcResult(id, toolResult(await impl(c, args))));
-        } catch {
+        } catch (err) {
           // an unexpected throw must not become a protocol error — the tool
-          // "executed and failed", which the spec wants surfaced via isError
+          // "executed and failed", which the spec wants surfaced via isError.
+          // Log it (Workers tail/observability) or internal failures are
+          // undiagnosable; the client still gets only a generic message.
+          console.error(`mcp tools/call ${name} failed:`, err);
           return c.json(
             rpcResult(id, {
               content: [{ type: "text", text: JSON.stringify({ ok: false, error: "internal error executing tool" }) }],

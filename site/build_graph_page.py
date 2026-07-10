@@ -626,8 +626,13 @@ def main() -> None:
             "frontier": True, "conjectures": e["statements"],
         })
         n_frontier += 1
-    (OUT_DIR / "graph_data.json").write_text(json.dumps(data, ensure_ascii=False))
-    size = (OUT_DIR / "graph_data.json").stat().st_size
+    # Atomic tmp+rename (repo convention): other nightly jobs read/copy this
+    # file, so it must never be observable half-written.
+    out_path = OUT_DIR / "graph_data.json"
+    tmp_path = out_path.with_suffix(out_path.suffix + ".tmp")
+    tmp_path.write_text(json.dumps(data, ensure_ascii=False))
+    tmp_path.rename(out_path)
+    size = out_path.stat().st_size
     print(f"Wrote out/graph.html and out/graph_data.json ({size / 1024 / 1024:.1f} MB); "
           f"{nv} human-reviewed nodes, {ncov} with live coverage, {nx} with crossrefs, "
           f"{n_fc_nodes}+{n_frontier} conjecture-bearing (existing+new frontier)")

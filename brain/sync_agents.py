@@ -20,9 +20,11 @@ verifier) is the only gate; its action:"xref" handler folds verified rows
 into brain/data/ext_anchor_links.jsonl for build_common to consume.
 
 Idempotent: (db, page-id, qid) pairs already present in ANY ext_anchor shard
-are never re-proposed; skeptic rows already echoed in a .verified.jsonl are
-never re-judged. Runs to completion with 0 candidates. --dry-run prints the
-work plan without writing anything and without importing the SDK.
+are never re-proposed; pairs the cartographer judged NOT-same-concept persist
+in brain/proposals/.ext_anchor_rejected_cache.jsonl and are never re-judged;
+skeptic rows already echoed in a .verified.jsonl are never re-judged. Runs to
+completion with 0 candidates. --dry-run prints the work plan without writing
+anything and without importing the SDK.
 
 Run with the venv that has claude-agent-sdk:
     catalog/.venv/bin/python3 brain/sync_agents.py --dry-run --limit 5
@@ -58,6 +60,9 @@ DESCRIPTIONS = REPO / "catalog" / "data" / "wikidata_descriptions.json"
 MODEL = os.environ.get("WIKILEAN_BRAIN_AGENT_MODEL", "claude-sonnet-5")
 DATE = datetime.now(timezone.utc).strftime("%Y%m%d")
 SHARD = PROPOSALS / f"ext_anchor_{DATE}.jsonl"
+# Judged-NOT-same-concept pairs (cartographer rejections). Dotfile so neither
+# fold_proposals' *.jsonl glob nor the ext_anchor_* shard globs pick it up.
+REJECTED_CACHE = PROPOSALS / ".ext_anchor_rejected_cache.jsonl"
 CHUNK = 12          # candidate pairs per agent call
 MAX_CONCURRENCY = 4
 ABORT_AFTER = 5     # consecutive window-exhaustion errors → exit 3 (retryable)
@@ -146,12 +151,57 @@ def already_proposed() -> set[tuple[str, str, str]]:
     return seen
 
 
+def rejected_pairs() -> set[tuple[str, str, str]]:
+    """(db, page-id, qid) pairs the cartographer already judged NOT the same
+    concept (REJECTED_CACHE rows {db,id,qid,judged_at,run}). Excluded from
+    candidate generation so the same false candidates are not re-judged every
+    night and the frontier cannot stall on them."""
+    seen: set[tuple[str, str, str]] = set()
+    if REJECTED_CACHE.exists():
+        for r in iter_jsonl(REJECTED_CACHE):
+            if r.get("db") and r.get("id") and r.get("qid"):
+                seen.add((r["db"], str(r["id"]), r["qid"]))
+    return seen
+
+
+def record_rejections(pairs: list[tuple[str, str, str]]) -> int:
+    """Merge judged-negative (db,id,qid) pairs into REJECTED_CACHE — read,
+    dedupe (first write wins), rewrite sorted by key, atomic tmp+rename.
+    Returns pairs newly added."""
+    if not pairs:
+        return 0
+    merged: dict[tuple[str, str, str], dict] = {}
+    if REJECTED_CACHE.exists():
+        for r in iter_jsonl(REJECTED_CACHE):
+            k = (r.get("db") or "", str(r.get("id") or ""), r.get("qid") or "")
+            merged.setdefault(k, r)
+    judged_at = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    added = 0
+    for db, pid, qid in pairs:
+        k = (db, pid, qid)
+        if k not in merged:
+            merged[k] = {"db": db, "id": pid, "qid": qid,
+                         "judged_at": judged_at, "run": f"cartographer-{DATE}"}
+            added += 1
+    if not added:
+        return 0
+    REJECTED_CACHE.parent.mkdir(parents=True, exist_ok=True)
+    tmp = REJECTED_CACHE.with_suffix(REJECTED_CACHE.suffix + ".tmp")
+    with tmp.open("w") as fh:
+        for k in sorted(merged):
+            fh.write(json.dumps(merged[k], ensure_ascii=False) + "\n")
+    tmp.rename(REJECTED_CACHE)
+    return added
+
+
 def gen_candidates(limit: int) -> list[dict]:
     if not NODES.exists():
         print(f"NOTE: {NODES} missing — no concept index, 0 candidates", file=sys.stderr)
         return []
     concepts, index = load_concepts()
-    skip = already_proposed()
+    # same (db, page-id, qid) dedup key as the accept path: skip pairs already
+    # proposed in any shard AND pairs the cartographer already judged negative
+    skip = already_proposed() | rejected_pairs()
     cands: list[dict] = []
     if not EXTERNAL.exists():
         print(f"NOTE: {EXTERNAL} missing — no external pages yet, 0 candidates",
@@ -411,8 +461,12 @@ async def run(args) -> int:
             _chunks(cands, CHUNK), budget, concurrency, state)
         by_key = {(c["db"], c["id"], c["qid"]): c for c in cands}
         rows = []
+        rejected: list[tuple[str, str, str]] = []
         for r in sorted(judged, key=lambda r: (r["db"], str(r["id"]), r["qid"])):
             if r.get("same_concept") is not True:
+                # judged and NOT accepted — cache the pair so it is never
+                # re-generated as a candidate (frontier stall otherwise)
+                rejected.append((r["db"], str(r["id"]), r["qid"]))
                 continue
             c = by_key[(r["db"], str(r["id"]), r["qid"])]
             rows.append({
@@ -424,8 +478,11 @@ async def run(args) -> int:
                 "proposer": f"{proposer_tag}-cartographer-{DATE}",
             })
         n_anchored = write_shard(SHARD, rows)
+        n_rejected = record_rejections(rejected)
         print(f"cartographer: {len(cands)} candidates → {len(rows)} same-concept "
-              f"→ {n_anchored} new rows in {SHARD.name}")
+              f"→ {n_anchored} new rows in {SHARD.name}; "
+              f"{len(rejected)} judged-negative → {n_rejected} new rows in "
+              f"{REJECTED_CACHE.name}")
     else:
         print(f"cartographer: {len(cands)} candidates — "
               + ("role disabled" if cands else "nothing to do"))
@@ -490,6 +547,7 @@ def main() -> int:
             "budget_tokens": args.budget_tokens,
             "cartographer_candidates": len(cands),
             "candidate_sample": cands[:5],
+            "rejected_cached": len(rejected_pairs()),
             "skeptic_pending": {f.name: len(v) for f, v in backlog.items()},
             "shard": str(SHARD.relative_to(REPO)),
         }, ensure_ascii=False, indent=2))

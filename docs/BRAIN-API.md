@@ -199,6 +199,11 @@ Facet bits (`brain/SCHEMA.md`): 0 gold `@[wikidata]` tag · 1 `@[stacks]` ·
 article · 7 has literature · 8 is ext · 9 lmfdb · 10 nlab · 11 mathworld ·
 12 proofwiki · 13 stacks-tag · 14 oeis · 15 has snippet.
 
+Bits 0–2 are set on the tagged declaration itself AND propagate to the
+concept(s) it formalizes, so `f=1` returns both the gold-tagged decls and
+their concepts, and `f=17` (bits 0+4) means "formalized concept whose
+formalization carries a gold `@[wikidata]` tag".
+
 Pagination is by stable row-index cursor: pass the previous response's
 `next_cursor` back as `cursor`; `next_cursor: null` means done. (Cursors are
 positions in the nightly-built label index — treat a nightly rebuild as

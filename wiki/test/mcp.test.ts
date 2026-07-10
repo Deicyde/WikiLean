@@ -3,7 +3,8 @@
 // answer exactly like the REST helpers they share), input-validation-as-
 // isError, JSON-RPC protocol errors, the per-IP rate limit, and GET → 405.
 
-import { describe, it, expect } from "vitest";
+import { beforeEach, describe, it, expect } from "vitest";
+import { _resetBrainAssetMemo } from "../src/brain.js";
 import { setup, post, get, blockNetwork, type Harness } from "./helpers/harness.js";
 import { app } from "../src/index.js";
 import {
@@ -51,6 +52,9 @@ async function callTool(
   expect(j.result.content[0].type).toBe("text");
   return { isError: j.result.isError, data: JSON.parse(j.result.content[0].text) as Record<string, unknown> };
 }
+
+// the isolate-lifetime asset memo must not leak fixtures across tests
+beforeEach(() => _resetBrainAssetMemo());
 
 describe("POST /mcp — lifecycle", () => {
   it("initialize echoes a supported protocolVersion and advertises tools", async () => {

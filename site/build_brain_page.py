@@ -1433,7 +1433,7 @@ async function nodeClick(item) {
     return;
   }
   if (item.type === "external") {          // article pseudo-node → its page
-    if (item.url) window.open(item.url, "_blank", "noopener");
+    if (safeUrl(item.url)) window.open(safeUrl(item.url), "_blank", "noopener");
     return;
   }
   // concept/decl/paper: zoom in and expand its whole neighborhood (ego view)
@@ -1518,6 +1518,10 @@ const XREF_URL = {
   kerodon: v => `https://kerodon.net/tag/${encodeURIComponent(v)}`,
   msc: () => null,
 };
+// external-data urls are template-built by the ingest adapters, but never
+// trust a stored url into an href without a scheme check (javascript:/data:
+// would ride through esc() untouched)
+function safeUrl(u) { return u && /^https?:\/\//i.test(u) ? u : null; }
 function nodeUrl(id) {
   if (id.startsWith("decl:")) return "/decl/" + encodeURIComponent(id.slice(id.indexOf(":", 5) + 1));
   if (id.startsWith("xref:")) {
@@ -1786,7 +1790,7 @@ async function renderPanel(id) {
     sub.push(`<span class="badge" style="border-color:${esc(DB_COLOR[n.db] || "#c8bfa8")}">${
       esc(XREF_NAME[n.db] || n.db || "external database")}</span>`);
     if (n.kind_hint) sub.push(esc(n.kind_hint));
-    const xu = n.url || nodeUrl(n.id);
+    const xu = safeUrl(n.url) || nodeUrl(n.id);
     if (xu) sub.push(`<a href="${esc(xu)}" rel="noopener" target="_blank">page ↗</a>`);
   }
   if (!unit) html += `<div class="sub">${sub.join(" · ")}</div>`;
@@ -1844,7 +1848,7 @@ async function renderPanel(id) {
 
   // ext node: the stored snippet (license permitting) or an honest deep link
   if (n.type === "ext") {
-    const xu = n.url || nodeUrl(n.id);
+    const xu = safeUrl(n.url) || nodeUrl(n.id);
     const dbName = XREF_NAME[n.db] || n.db || "the source";
     if (n.snippet) {
       html += `<div class="snipblock"><div class="snip">${esc(n.snippet)}</div>
@@ -2151,7 +2155,7 @@ async function populateSources(id, n, extIds) {
     if (lastPanelId !== id) return;
     const db = extDbOf(xid);
     const nm = XREF_NAME[db] || db;
-    const url = (ee && ee.node.url) || nodeUrl(xid);
+    const url = (ee && safeUrl(ee.node.url)) || nodeUrl(xid);
     if (ee && ee.node.snippet)
       rows.push(srcRow(nm, url, ee.node.snippet, ee.node.snippet_license || "", xid));
     else rows.push(srcLinkRow(nm, url, xid));   // no-content db → deep link out

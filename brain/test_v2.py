@@ -245,9 +245,13 @@ def test_facets() -> None:
     bc.apply_facets(nodes, edges, tag_rows)
     f = {n["id"]: n.get("f", 0) for n in nodes}
     B = bc
-    check("f: concept bits (xref+formalized+article+lit+nlab)",
+    # bits 0-2 PROPAGATE from tagged decls to the concepts they formalize
+    # (Foo carries @[wikidata]+@[stacks]) — otherwise the documented filter
+    # masks (f=1, f=17) are unsatisfiable on the concept-bearing label index
+    check("f: concept bits (xref+formalized+article+lit+nlab+propagated tags)",
           f["Q1"] == B.F_ANY_XREF | B.F_FORMALIZED | B.F_ARTICLE
-          | B.F_LITERATURE | B.F_DB_BIT["nlab"], f"got {f['Q1']}")
+          | B.F_LITERATURE | B.F_DB_BIT["nlab"]
+          | B.F_GOLD_WIKIDATA | B.F_STACKS_ATTR, f"got {f['Q1']}")
     check("f: partial concept", f["Q2"] == B.F_PARTIAL)
     check("f: gold+stacks decl",
           f["decl:Mathlib:Foo"] == B.F_GOLD_WIKIDATA | B.F_STACKS_ATTR
