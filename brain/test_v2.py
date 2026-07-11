@@ -5,7 +5,9 @@ Exercises, against a tiny synthetic catalog/data/external/ in a tempdir:
 minting policy (anchored + 1-hop frontier, per-db cap, frontier ordered by
 inbound links), the snippet license guard, links-edge context dedup, concept
 projection dedup, page-qid xref minting, the `f` facet bit table, unit
-assembly, and the two-file edge writer (write_edges: non-links rows +
+assembly, the literature paper layer (paper minting + paper→statement
+contains + OpenAlex bibliography links + absence degrade), and the two-file
+edge writer (write_edges: non-links rows +
 full meta → edges.jsonl, links rows + own meta → edges_links.jsonl). No
 network, no real catalog inputs — build() itself is covered by the ordinary
 rebuild + test_acceptance.py.
@@ -221,6 +223,10 @@ def facet_fixture():
          "url": "u", "snippet": "s", "snippet_license": "nLab"},
         {"id": "xref:mathworld:M1", "type": "ext", "db": "mathworld",
          "label": "M1", "url": "u"},
+        {"id": "lit:1234.5678", "type": "literature", "label": "Paper",
+         "arxiv_id": "1234.5678"},
+        {"id": "lit:1234.5678#thm1", "type": "literature", "label": "Paper",
+         "arxiv_id": "1234.5678", "ref": "thm1"},
         {"id": "path:Mathlib", "type": "container", "label": "Mathlib"},
     ]
     edges = [
@@ -263,6 +269,9 @@ def test_facets() -> None:
           | B.F_HAS_SNIPPET | B.F_ANY_XREF, f"got {f['xref:nlab:a']}")
     check("f: ext no snippet, no xref touch",
           f["xref:mathworld:M1"] == B.F_EXT | B.F_DB_BIT["mathworld"])
+    check("f: lit paper carries the literature bit natively",
+          f["lit:1234.5678"] == B.F_LITERATURE)
+    check("f: lit statement stays bare", f["lit:1234.5678#thm1"] == 0)
     check("f: zero omitted", "f" not in nodes[-1])
 
 
@@ -293,6 +302,73 @@ def test_units() -> None:
                  "containers": [], "xrefs": {}})
     check("unit: non-concepts untouched",
           all("unit" not in n for n in nodes if n["type"] != "concept"))
+
+
+def test_literature_layer() -> None:
+    lit_title = {
+        "lit:1234.5678#thm1": "Paper A", "lit:1234.5678#thm2": "Paper A",
+        "lit:2001.00001": "Paper B",              # empty-ref statement = paper
+        "lit:math/0211261#5.2": "Paper C",
+    }
+    lic = {"1234.5678": True, "math/0211261": False}
+    with tempfile.TemporaryDirectory() as td:
+        cit = Path(td) / "arxiv_citations.jsonl"
+        with cit.open("w") as f:
+            for r in [{"_meta": {"db": "openalex"}},
+                      {"src": "1234.5678", "dst": "2001.00001"},
+                      {"src": "1234.5678", "dst": "2001.00001"},   # dup
+                      {"src": "2001.00001", "dst": "math/0211261"},
+                      {"src": "1234.5678", "dst": "9999.99999"},   # not ours
+                      {"src": "1234.5678", "dst": "1234.5678"}]:   # self
+                f.write(json.dumps(r) + "\n")
+        nodes, edges, stats = bc.literature_layer(lit_title, lic, cit,
+                                                  "2026-01-01")
+    ids = {n["id"] for n in nodes}
+    check("lit: papers minted per arXiv id (empty-ref id NOT re-minted)",
+          ids == {"lit:1234.5678", "lit:math/0211261"}, f"got {sorted(ids)}")
+    p = next(n for n in nodes if n["id"] == "lit:1234.5678")
+    check("lit: paper payload shape",
+          p == {"id": "lit:1234.5678", "type": "literature",
+                "label": "Paper A", "arxiv_id": "1234.5678",
+                "license_open": True}, f"got {p}")
+    cont = [(e["src"], e["dst"]) for e in edges if e["kind"] == "contains"]
+    check("lit: contains paper→statement (no empty-ref self-containment)",
+          set(cont) == {("lit:1234.5678", "lit:1234.5678#thm1"),
+                        ("lit:1234.5678", "lit:1234.5678#thm2"),
+                        ("lit:math/0211261", "lit:math/0211261#5.2")}
+          and len(cont) == 3, f"got {sorted(cont)}")
+    c = next(e for e in edges if e["kind"] == "contains")
+    check("lit: contains provenance (id-prefix derivation, statement pin)",
+          c["provenance"] == {"source": "theoremgraph",
+                              "method": "arxiv-id prefix (paper→statement)",
+                              "pin": "2026-01-01"})
+    links = [e for e in edges if e["kind"] == "links"]
+    got = {(e["src"], e["dst"]) for e in links}
+    check("lit: bibliography links deduped, both-endpoints-ours, no self",
+          got == {("lit:1234.5678", "lit:2001.00001"),
+                  ("lit:2001.00001", "lit:math/0211261")}
+          and len(links) == 2, f"got {sorted(got)}")
+    e = next(e for e in links if e["src"] == "lit:1234.5678")
+    check("lit: links edge shape",
+          e["provenance"]["source"] == "openalex"
+          and e["provenance"]["method"] == "referenced_works"
+          and e["confidence"] == "high"
+          and e["evidence"] == {"context": "bibliography"})
+    check("lit: stats",
+          stats == {"papers": 3, "papers_new": 2, "contains": 3,
+                    "citations": 2, "citation_rows_dropped": 3},
+          f"got {stats}")
+    # absence degrade: missing citations file ⇒ ZERO links edges; papers +
+    # contains still mint (they derive from the statement layer alone)
+    nodes2, edges2, stats2 = bc.literature_layer(
+        lit_title, lic, Path("/nonexistent/arxiv_citations.jsonl"),
+        "2026-01-01")
+    check("lit: absent citations file degrades to zero links",
+          {n["id"] for n in nodes2} == ids
+          and not [e for e in edges2 if e["kind"] == "links"]
+          and len([e for e in edges2 if e["kind"] == "contains"]) == 3
+          and stats2["citations"] == 0
+          and stats2["citation_rows_dropped"] == 0, f"got {stats2}")
 
 
 def test_split_writer() -> None:
@@ -353,6 +429,7 @@ def main() -> int:
         test_qid_xref(d)
     test_facets()
     test_units()
+    test_literature_layer()
     test_split_writer()
     print(f"\n{'FAIL: ' + ', '.join(FAILURES) if FAILURES else 'all green'}")
     return 1 if FAILURES else 0

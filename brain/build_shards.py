@@ -381,6 +381,10 @@ def main() -> int:
             if ghost_count.get(nid):
                 entry["ghosts"] = {"count": ghost_count[nid],
                                    "first": sorted(ghost_names[nid])}
+        elif node["type"] == "literature" and children.get(nid):
+            # paper → statement containment (SCHEMA literature forest): the
+            # panel lists a paper's extracted statements like folder children
+            entry["children"] = child_summary(nid)
         block = {}
         for direction, per in (("out", edges_out), ("in", edges_in)):
             rows = sorted(per.get(nid, []), key=lambda t: (t[0], t[1]))
@@ -471,7 +475,8 @@ def main() -> int:
             if n["type"] == "decl" and n.get("f") and n["id"] in parent else {})}
         for n in nodes.values()
         if n["type"] in ("concept", "container", "ext")
-        or (n["type"] == "decl" and n.get("f")))
+        or (n["type"] == "decl" and n.get("f"))
+        or (n["type"] == "literature" and "#" not in n["id"]))
         if _l["label"]]
     labels.sort(key=lambda r: (r["type"], -(r.get("n_decls") or 0), r["label"]))
 
@@ -485,13 +490,27 @@ def main() -> int:
     kind_pri = {"formalizes": 0, "xref": 1, "links": 2}
     gen = max(m["generated_at"] for m in metas.values())
     seeds = {nid for nid, n in nodes.items() if n.get("f", 0) & SEED_MASK}
-    xrows = sorted((e for e in explorer_edges if e[0] in seeds or e[1] in seeds),
+    # Dedupe on (kind, unordered pair) BEFORE the budget loop: concept-level
+    # projections repeat per via-db (Q102761↔Q131752 rode nlab+proofwiki+
+    # planetmath = 3 parallel curves in the UI, unclickable past the hit-twin
+    # cap). Merged multiplicity ships as w so the renderer can thicken instead.
+    merged: dict[tuple, list] = {}
+    for src, dst, kind in explorer_edges:
+        if src not in seeds and dst not in seeds:
+            continue
+        key = (kind,) + tuple(sorted((src, dst)))
+        row = merged.get(key)
+        if row is None:
+            merged[key] = [src, dst, kind, 1]
+        else:
+            row[3] += 1
+    xrows = sorted(merged.values(),
                    key=lambda e: (kind_pri[e[2]], e[0], e[1]))
 
     def explorer_doc(rows: list, truncated: bool) -> dict:
         node_set = set(seeds)
         kept = []
-        for src, dst, kind in rows:
+        for src, dst, kind, w in rows:
             add, ok = [], True
             for nid in (src, dst):
                 if nid in node_set:
@@ -505,7 +524,8 @@ def main() -> int:
             if not ok:
                 continue
             node_set.update(add)
-            kept.append({"src": src, "dst": dst, "kind": kind})
+            kept.append({"src": src, "dst": dst, "kind": kind,
+                         **({"w": w} if w > 1 else {})})
         out_nodes = []
         for nid in sorted(node_set):
             n = nodes[nid]
@@ -513,6 +533,9 @@ def main() -> int:
                 "id": nid, "label": n.get("label"), "type": n["type"],
                 **({"f": n["f"]} if n.get("f") else {}),
                 **({"db": n["db"]} if n["type"] == "ext" else {}),
+                # containment path on decls/containers — the client scopes the
+                # explorer to the current focus subtree by prefix match
+                **({"p": parent[nid]} if n["type"] == "decl" and nid in parent else {}),
                 **({"status": n["display"]["status"]}
                    if n.get("display", {}).get("status") else {})})
         return {"_meta": {"schema": "brain/SCHEMA.md", "generated_at": gen,

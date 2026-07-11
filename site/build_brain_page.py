@@ -261,8 +261,7 @@ body.embed .wl-header, body.embed #crumbbar { display:none; }   /* flex column f
 </header>
 <div class="toolbar">
   <span class="grp"><b>View</b>
-    <button id="explorerbtn" class="fchip" title="the cross-ref explorer — every tagged &amp; cross-referenced node and the edges among them, one force-directed graph">Explorer</button>
-    <button id="flattenbtn" class="fchip" title="flatten this folder: with a facet chip active, show EVERY matching declaration in the whole subtree as one flat layer; without one, show the next layer down">Flatten</button>
+    <button id="explorerbtn" class="fchip" title="flatten the current folder's subtree into one force-directed graph of its tagged &amp; cross-referenced nodes and the edges among them — facet chips narrow it further; at the top level it covers everything">Explorer</button>
   </span>
   <span class="grp"><b>Layers</b>
     <label><input type="checkbox" data-k="depends" checked> formal deps</label>
@@ -439,9 +438,8 @@ const PROV_TITLE = {
 let focusId = null;        // container id (or LIBS_ID) whose children fill the stage
 let selectedId = null;     // node the panel shows / ring highlights
 let layout = null;         // {items: Map(id -> {x,y,r,item}), root}
-let explorerOn = false;    // the cross-ref Explorer view (views/xref_explorer.json)
-let flattenOn = false;     // flatten: one flat layer of the focus subtree
-let flatNote = "";         // status-line text for the flattened level
+let explorerOn = false;    // the Explorer: the focus subtree flattened into one
+                           // force-directed cross-ref graph (views/xref_explorer.json)
 let filterMask = 0;        // facet-filter bitmask over node `f` (0 = no filter)
 let currentUser = null;    // {id, name, role} once /api/auth/me resolves (community edits)
 const svg = d3.select("#svg");
@@ -509,46 +507,8 @@ function fillFor(item, depthShade) {
   return depthShade;   // container
 }
 
-// ---- flatten: one flat layer of the focus subtree ---------------------------
-// With a facet filter active: EVERY matching declaration in the subtree, from
-// labels.json rows (facet-bearing decls carry f + containment path p). Without
-// a filter: the next layer down (children of child containers), capped.
-// Returns null when flatten does not apply (falls through to the normal level).
-async function flattenItems(id) {
-  flatNote = "";
-  const isRoot = id === LIBS_ID;
-  const inSubtree = pp => isRoot || pp === id || (pp || "").startsWith(id + "/");
-  if (filterMask) {
-    const rows = (await ensureLabels()).filter(r =>
-      r.type === "decl" && ((r.f || 0) & filterMask) !== 0 && inSubtree(r.p));
-    flatNote = rows.length
-      ? "flattened: " + rows.length + " matching declaration" + (rows.length === 1 ? "" : "s") +
-        (isRoot ? " across all libraries" : " under " + id.slice(5))
-      : "flattened: no matching declarations here — the tag facets (@[wikidata]/@[stacks]/@[kerodon]) live on declarations";
-    return rows.slice(0, 800).map(r => ({id: r.id, label: r.label, type: "decl", f: r.f, n_decls: 1}));
-  }
-  if (isRoot) { flatNote = "flatten needs a library focus or an active facet chip"; return null; }
-  const e = await getEntry(id);
-  if (!e) return null;
-  const kids = (e.children && e.children.first || []);
-  const out = kids.filter(c => c.type !== "container").map(c => ({...c}));
-  const conts = kids.filter(c => c.type === "container").slice(0, 48);
-  await Promise.all(conts.map(async c => {
-    const ce = await getEntry(c.id);
-    for (const g of (ce && ce.children && ce.children.first) || []) out.push({...g});
-  }));
-  const cap = 500;
-  flatNote = "flattened one level: " + Math.min(out.length, cap) + " nodes" +
-    (out.length > cap ? " of " + out.length + " — add a facet chip to flatten all the way to declarations" : "");
-  return out.slice(0, cap);
-}
-
 // children of the current focus, as pack-able items
 async function focusItems(id) {
-  if (flattenOn) {
-    const flat = await flattenItems(id);
-    if (flat) return flat;
-  } else flatNote = "";
   if (id === LIBS_ID) {
     const kinds = activeLibKinds();
     return manifest.roots
@@ -659,18 +619,6 @@ function drawLabels() {
         ? raw.split(":").pop().split(".").slice(-2).join(".") : raw;
       gLabels.append("text").attr("class", "blabel")
         .attr("x", l.x).attr("y", l.y + l.r + 10).attr("font-size", 9)
-        .text(short.length > 28 ? short.slice(0, 26) + "…" : short);
-      continue;
-    }
-    if (!ego && flattenOn && l.data.type === "decl" && layout.leaves.length <= 220) {
-      // flattened declarations are the POINT of the view — label them like
-      // ego neighbors (below the dot); past ~220 the text would shingle,
-      // tooltips + the panel take over
-      const raw = l.data.label || l.data.id;
-      const short = raw.includes(":")
-        ? raw.split(":").pop().split(".").slice(-2).join(".") : raw;
-      gLabels.append("text").attr("class", "blabel")
-        .attr("x", l.x).attr("y", l.y + l.r + 9).attr("font-size", 8.5)
         .text(short.length > 28 ? short.slice(0, 26) + "…" : short);
       continue;
     }
@@ -866,9 +814,9 @@ async function applyFacetFilter(items, seq) {
 function updateFilterStat(fv) {
   const el = $("#filterstat");
   if (!el) return;
-  if (flattenOn && flatNote) { el.textContent = flatNote; return; }
   el.textContent = !fv || !fv.active ? ""
     : fv.noF ? "facet data not in this build yet"
+    : fv.text ? fv.text
     : `showing ${fv.shown} of ${fv.total} nodes`;
 }
 
@@ -1007,8 +955,7 @@ async function enrich(seq, leaves) {
   // the ontology web: every visible concept's edges to other visible nodes,
   // plus same-external-page pairs (two concepts both xref-ing one nLab/
   // MathWorld/LMFDB/… page — the cross-database fabric made visible)
-  const concepts = leaves.filter(l => l.data.type === "concept" ||
-    (flattenOn && l.data.type === "decl" && leaves.length <= 300));
+  const concepts = leaves.filter(l => l.data.type === "concept");
   const xrefPages = new Map();   // external page id -> [concept ids]
   await Promise.all(concepts.map(async l => {
     const e = await getEntry(l.data.id);
@@ -1074,9 +1021,8 @@ function renderEdges() {
       ? Math.min(0.9, Math.max(0.06, 0.06 + 0.17 * Math.log2(1 + lf)))
       : 0.16 + 0.3 * (e.w / maxSig);
   };
-  // the Explorer view can carry thousands of edges — skip the fat hit twins
-  // there so the DOM stays half the size (nodes remain clickable)
-  const noHit = !!(layout && layout.explorer) && show.length > 1200;
+  // every drawn edge keeps its fat hit twin — an uninspectable edge reads as
+  // a bug (the explorer caps TOTAL edges instead of shedding twins)
   for (const e of [...dep, ...rest]) {
     const directed = DIRECTED.has(e.kind);
     // undirected kinds use a/b; directed kinds draw from source → target so the
@@ -1115,7 +1061,7 @@ function renderEdges() {
     if (st.dash) p.attr("stroke-dasharray", st.dash);
     if (directed) p.attr("marker-end", ensureMarker(st.color));
     // invisible fat twin = the click/hover target
-    if (!noHit) gEdges.append("path").attr("class", "hit")
+    gEdges.append("path").attr("class", "hit")
       .attr("d", hitD).attr("fill", "none")
       .attr("stroke", "transparent").attr("stroke-width", 14)
       .style("cursor", "pointer")
@@ -1398,7 +1344,6 @@ function setHash(id) {
   let h = "#" + (id && id !== LIBS_ID ? encodeURIComponent(id) : "");
   if (filterMask) h += "&f=" + filterMask;
   if (explorerOn) h += "&view=explorer";
-  if (flattenOn) h += "&flat=1";
   history.replaceState(null, "", h);
 }
 function parseHash() {
@@ -1411,18 +1356,14 @@ function parseHash() {
     const k = i < 0 ? kv : kv.slice(0, i), v = i < 0 ? "" : kv.slice(i + 1);
     if (k === "f") out.f = (parseInt(v, 10) || 0) & 0xffff;
     else if (k === "view") out.view = v;
-    else if (k === "flat") out.flat = v !== "0";
+    else if (k === "flat" && v !== "0") out.flat = true;
   }
+  if (out.flat && !out.view) out.view = "explorer";   // pre-merge flatten links
   return out;
 }
 function setExplorer(on) {
   explorerOn = on;
   const b = $("#explorerbtn");
-  if (b) b.classList.toggle("on", on);
-}
-function setFlatten(on) {
-  flattenOn = on;
-  const b = $("#flattenbtn");
   if (b) b.classList.toggle("on", on);
 }
 
@@ -2367,48 +2308,102 @@ async function renderExplorer(anim) {
   // tolerate {nodes, edges} or {nodes, links}; infer type/db/label from ids
   let nodesArr = (j.nodes || []).map(r => {
     const t = r.type || idType(r.id);
-    return {id: r.id, type: t, f: r.f, status: r.status,
+    return {id: r.id, type: t, f: r.f, status: r.status, p: r.p,
             db: r.db || (t === "ext" ? extDbOf(r.id) : undefined),
             label: r.label || (t === "ext" ? extValueOf(r.id) : r.id)};
   });
   const totalN = nodesArr.length;
+  const rawEdges = (j.edges || j.links || []).map(r => ({
+    src: r.src ?? r.source ?? r.a, dst: r.dst ?? r.target ?? r.b,
+    kind: r.kind || "links", prov: r.prov, evidence: r.evidence || {},
+    w: r.w || 1}));
+  // ---- scope: the explorer flattens the CURRENT focus subtree (the old
+  // separate Flatten view is merged into this). Decls carry p (containment
+  // path); concepts/ext have no tree home, so they join by induction — kept
+  // iff they touch an in-scope node. At the top level everything is in scope.
+  const scope = focusId && focusId !== LIBS_ID && focusId.startsWith("path:")
+    ? focusId : null;
+  const inSub = pp => !scope || pp === scope || (pp || "").startsWith(scope + "/");
   let noF = false;
-  if (filterMask) {
-    if (nodesArr.some(nd => nd.f !== undefined))
-      nodesArr = nodesArr.filter(nd => ((nd.f || 0) & filterMask) !== 0);
-    else noF = true;
+  const maskOk = nd => ((nd.f || 0) & filterMask) !== 0;
+  if (filterMask && !nodesArr.some(nd => nd.f !== undefined)) noF = true;
+  const treeOk = nd => (nd.type === "decl" || nd.type === "container")
+    ? inSub(nd.type === "container" ? nd.id : nd.p) : true;
+  let kept = nodesArr.filter(nd => treeOk(nd) && (!filterMask || noF || maskOk(nd)));
+  if (scope) {
+    // induction pass: floating types stay only if they touch the subtree core
+    const core = new Set(kept.filter(nd => nd.type === "decl" || nd.type === "container")
+      .map(nd => nd.id));
+    const touch = new Set(core);
+    for (const ed of rawEdges) {
+      if (core.has(ed.src)) touch.add(ed.dst);
+      if (core.has(ed.dst)) touch.add(ed.src);
+    }
+    // second ripple so ext pages hanging off an induced concept stay too
+    for (const ed of rawEdges) {
+      if (touch.has(ed.src)) touch.add(ed.dst);
+      if (touch.has(ed.dst)) touch.add(ed.src);
+    }
+    kept = kept.filter(nd => core.has(nd.id) || touch.has(nd.id));
   }
-  updateFilterStat(filterMask
-    ? {active: true, shown: nodesArr.length, total: totalN, noF} : null);
-  const keep = new Set(nodesArr.map(nd => nd.id));
-  const rawEdges = j.edges || j.links || [];
+  const nodesKept = kept;
+  const keep = new Set(nodesKept.map(nd => nd.id));
+  // client-side unordered dedupe as a safety net for pre-dedupe cached data
+  const seen = new Map();
   let edges = [];
-  for (const r of rawEdges) {
-    const src = r.src ?? r.source ?? r.a, dst = r.dst ?? r.target ?? r.b;
-    if (!keep.has(src) || !keep.has(dst)) continue;
-    edges.push({src, dst, kind: r.kind || "links", prov: r.prov,
-                evidence: r.evidence || {}, w: r.w || 1});
+  for (const ed of rawEdges) {
+    if (!keep.has(ed.src) || !keep.has(ed.dst)) continue;
+    const k = ed.kind + "|" + (ed.src < ed.dst ? ed.src + "|" + ed.dst
+                                               : ed.dst + "|" + ed.src);
+    const prev = seen.get(k);
+    if (prev) { prev.w = Math.max(prev.w, ed.w) + 1; continue; }
+    seen.set(k, ed);
+    edges.push(ed);
   }
   const totalE = edges.length;
-  if (edges.length > 6000) edges = edges.slice(0, 6000);   // keep the DOM sane
+  if (edges.length > 4000) edges = edges.slice(0, 4000);  // hit twins for ALL
   const deg = new Map();
   for (const ed of edges) {
     deg.set(ed.src, (deg.get(ed.src) || 0) + 1);
     deg.set(ed.dst, (deg.get(ed.dst) || 0) + 1);
   }
+  const scopeLabel = scope ? scope.slice(5) : "all libraries";
+  updateFilterStat({active: true, noF: filterMask ? noF : false,
+    shown: nodesKept.length, total: totalN,
+    text: `${nodesKept.length.toLocaleString()} of ${totalN.toLocaleString()} nodes · ${scopeLabel}`});
   const W = stageEl.clientWidth || 800, H = stageEl.clientHeight || 600;
   const R_T = {concept: 5, decl: 3.5, ext: 4, container: 6, literature: 4};
-  const sims = nodesArr.map(nd => ({id: nd.id, nd,
-    r: (R_T[nd.type] || 4) + Math.min(4, Math.sqrt(deg.get(nd.id) || 0) * 0.7)}));
-  const links = edges.map(ed => ({source: ed.src, target: ed.dst}));
+  // isolates (no kept edge) ring the periphery FIXED, so the connected core
+  // gets the middle of the canvas instead of a clump of strangers
+  const connected = nodesKept.filter(nd => deg.has(nd.id));
+  const isolates = nodesKept.filter(nd => !deg.has(nd.id));
+  const sims = [];
+  connected.forEach((nd, i) => {
+    // phyllotaxis seed centered on the stage — d3's default seeds around the
+    // ORIGIN, which is what dragged every node through the center clump
+    const a = i * 2.39996, rr = 14 * Math.sqrt(i + 1);
+    sims.push({id: nd.id, nd, x: W / 2 + rr * Math.cos(a), y: H / 2 + rr * Math.sin(a),
+      r: (R_T[nd.type] || 4) + Math.min(4, Math.sqrt(deg.get(nd.id) || 0) * 0.7)});
+  });
+  const ringR = Math.min(W, H) * 0.46 + 8 * Math.ceil(isolates.length / 220);
+  isolates.forEach((nd, i) => {
+    const a = (i / Math.max(isolates.length, 1)) * 2 * Math.PI;
+    const rr = ringR + 10 * Math.floor(i / 220);
+    sims.push({id: nd.id, nd, fx: W / 2 + rr * Math.cos(a), fy: H / 2 + rr * Math.sin(a),
+      x: W / 2 + rr * Math.cos(a), y: H / 2 + rr * Math.sin(a),
+      r: R_T[nd.type] || 4});
+  });
+  const EXP_DIST = {formalizes: 42, xref: 58, links: 70};
+  const links = edges.map(ed => ({source: ed.src, target: ed.dst, kind: ed.kind}));
   const sim = d3.forceSimulation(sims)
-    .force("link", d3.forceLink(links).id(d => d.id).distance(46).strength(0.3))
-    .force("charge", d3.forceManyBody().strength(-26).distanceMax(260))
-    .force("collide", d3.forceCollide(d => d.r + 2).iterations(1))
-    .force("x", d3.forceX(W / 2).strength(0.05))
-    .force("y", d3.forceY(H / 2).strength(0.07))
+    .force("link", d3.forceLink(links).id(d => d.id)
+      .distance(l => EXP_DIST[l.kind] || 55).strength(0.28))
+    .force("charge", d3.forceManyBody().strength(-48).distanceMax(420).theta(0.95))
+    .force("collide", d3.forceCollide(d => d.r + 3.5).iterations(2))
+    .force("x", d3.forceX(W / 2).strength(0.045))
+    .force("y", d3.forceY(H / 2).strength(0.055))
     .stop();
-  const ticks = sims.length > 1500 ? 90 : 180;   // static ticks, renderEgo-style
+  const ticks = sims.length > 1500 ? 140 : 260;   // static ticks, renderEgo-style
   for (let i = 0; i < ticks; i++) sim.tick();
   if (seq !== renderSeq) return;
   const leaves = sims.map(sm => ({data: sm.nd, x: sm.x, y: sm.y, r: sm.r}));
@@ -2422,17 +2417,20 @@ async function renderExplorer(anim) {
   drawNodes();
   drawExplorerLabels();
   renderEdges();
+  const scopeCrumb = focusId && focusId !== LIBS_ID && focusId.startsWith("path:")
+    ? esc(focusId.slice(5)) : "all libraries";
   crumbEl.innerHTML = `<a data-nav="${LIBS_ID}">all libraries</a>
-    <span class="sep">/</span> <b>cross-ref explorer</b>`;
+    <span class="sep">/</span> <b>${scopeCrumb} · explorer</b>`;
   crumbEl.querySelectorAll("[data-nav]").forEach(a =>
     a.addEventListener("click", () => {
       setExplorer(false); focusId = LIBS_ID; selectedId = null;
       setHash(""); renderFocus(true);
     }));
-  statusEl.textContent = `explorer: ${nodesArr.length.toLocaleString()}${
-    filterMask && !noF ? ` of ${totalN.toLocaleString()}` : ""} nodes · ${
+  statusEl.textContent = `explorer: ${nodesKept.length.toLocaleString()}${
+    nodesKept.length < totalN ? ` of ${totalN.toLocaleString()}` : ""} nodes · ${
     edges.length.toLocaleString()}${
-    totalE > edges.length ? ` of ${totalE.toLocaleString()}` : ""} edges`;
+    totalE > edges.length ? ` of ${totalE.toLocaleString()}` : ""} edges${
+    isolates.length ? ` · ${isolates.length} unlinked ringed` : ""}`;
   if (anim) {
     const g = [gEdges, gBubbles, gOverlay, gLabels];
     for (const gr of g) gr.attr("opacity", 0).transition().duration(260).attr("opacity", 1);
@@ -2495,17 +2493,11 @@ $("#explorerbtn").addEventListener("click", () => {
   if (explorerOn) renderExplorer(true);
   else renderFocus(true);
 });
-$("#flattenbtn").addEventListener("click", () => {
-  setFlatten(!flattenOn);
-  setHash(focusId || "");
-  if (!explorerOn) renderFocus(true);
-});
 
 window.addEventListener("hashchange", () => {
   const h = parseHash();
   filterMask = h.f;
   syncChips();
-  setFlatten(!!h.flat);
   if (h.view === "explorer") {
     setExplorer(true);
     renderExplorer(true).then(() => {
@@ -2825,7 +2817,6 @@ function wireCommunity(id) {
   const h = parseHash();
   filterMask = h.f;
   syncChips();
-  setFlatten(!!h.flat);
   if (h.view === "explorer") {
     setExplorer(true);
     focusId = h.id || "path:Mathlib";

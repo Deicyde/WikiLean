@@ -39,7 +39,7 @@ the UI (`/brain#<id>`), the API (`/api/brain/node/<id>`), and by agents.
 | concept | `Q<digits>` | `Q181296` | Wikidata QID (the ONLY dedup layer) |
 | container | `path:<Library>[/<Dir>...]` | `path:Mathlib/CategoryTheory` | file-tree path @ snapshot pin |
 | decl | `decl:<Library>:<FQ name>` | `decl:Mathlib:CommGroup` | doc-gen4 / TheoremGraph decl name; commit pin in payload |
-| literature | `lit:<arxiv_id>#<ref>` | `lit:1707.04448#thm1.2` | arXiv id + printed label; TheoremGraph UUID kept as session key in payload |
+| literature | `lit:<arxiv_id>#<ref>` (statement) · `lit:<arxiv_id>` (paper) | `lit:1707.04448#thm1.2`, `lit:1707.04448` | arXiv id + printed label; TheoremGraph UUID kept as session key in payload. The paper node `contains` its statement nodes (derived from the id prefix); an empty-ref statement id IS the paper id and doubles as it. Papers carry `f` bit 7 natively |
 | object | `obj:<db>:<label>` | `obj:lmfdb:11.a2`, `obj:oeis:A000045` | external DB's own never-reused label |
 | ext | `xref:<db>:<value>` | `xref:nlab:abelian+group`, `xref:stacks:0001` | external DB PAGE (v2) — id form is deliberately identical to the historical xref edge dst string, so pre-v2 `xref` edges became node-to-node with zero migration and `xref_index.json` keys are node ids |
 
@@ -95,7 +95,8 @@ the overlay of law 5.
 ## Edge families
 
 **Taxonomy (`contains`)** — strict single-parent containment, mechanically derived,
-one tree: `path:Mathlib` → `path:Mathlib/Algebra` → … → `decl:Mathlib:CommGroup`.
+one tree: `path:Mathlib` → `path:Mathlib/Algebra` → … → `decl:Mathlib:CommGroup`,
+plus the literature forest `lit:<arxiv_id>` → `lit:<arxiv_id>#<ref>` (id-prefix derived).
 Never inferred, never LLM-written. Concepts are NOT in the tree (they attach via
 ontology edges at whatever altitude their evidence supports).
 
@@ -109,7 +110,7 @@ ontology edges at whatever altitude their evidence supports).
 | `matches` | decl ↔ literature | judge + similarity + license flag | theorem_matching.csv (dual-judge) |
 | `xref` | concept → external DB page; decl → Stacks/Kerodon tag | Wikidata property id; `@[stacks]`/`@[kerodon]` attribute in the mathlib4 source | P12987 LMFDB, P4215 nLab, P2812 MathWorld, P6781 ProofWiki, P7554 EoM, P7726 PlanetMath, P829 OEIS, P12888 Metamath, P11497 DLMF, P3285 MSC; `mathlib_tag_xrefs.jsonl` (harvest_mathlib_tags.py) |
 | `relates` | concept ↔ concept | Wikidata P-property (P279, P361, P2579...) | wikidata_edges.jsonl |
-| `links` | ext → ext; concept → concept (projected) | `{"context": "statement"\|"proof"\|"body"\|"related"}`; projected form adds `{"projected": true, "via": "<db>", "src_page", "dst_page"}` | `catalog/data/external/<db>_links.jsonl` (v2 ingest adapters); projection joins page-level links through xref anchors |
+| `links` | ext → ext; concept → concept (projected); literature paper → paper | `{"context": "statement"\|"proof"\|"body"\|"related"\|"bibliography"}`; projected form adds `{"projected": true, "via": "<db>", "src_page", "dst_page"}`; `bibliography` = src paper's bibliography cites dst paper (OpenAlex `referenced_works`, CC0, both endpoints ours) | `catalog/data/external/<db>_links.jsonl` (v2 ingest adapters); projection joins page-level links through xref anchors; `catalog/data/external/arxiv_citations.jsonl` (brain/ingest/openalex_citations.py, provenance `openalex`) |
 | `cites` | concept → literature | lifted via decl (transitive join) | theoremgraph_links.json |
 | `instance_of` | object → concept | invariant agreement | LMFDB/OEIS joins (future) |
 
@@ -159,6 +160,9 @@ v2 datapoints (active once `catalog/data/external/` is populated):
    nodes for no-content sources (mathworld/dlmf/eom/kerodon) carry NO `snippet`.
 9. Concept nodes with ≥1 formalization carry a `unit` whose `decls` is non-empty; `f`
    bit0 nodes (gold `@[wikidata]`) are exactly the tag-harvest rows present in the graph.
+10. At least one `links` edge with `evidence.context == "bibliography"` joins two
+    literature PAPER nodes (`lit:<arxiv_id>`) — OpenAlex `referenced_works`
+    (auto-skips when `catalog/data/external/arxiv_citations.jsonl` is absent).
 
 ## Provenance & licensing
 
