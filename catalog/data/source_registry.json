@@ -273,6 +273,20 @@
   }
  },
  "literature_sources": {
+  "openalex": {
+   "name": "OpenAlex (arXiv citations)",
+   "homepage": "https://openalex.org",
+   "layer": "literature",
+   "kind": "paper -> paper `links` edges (evidence.context='bibliography'): arXiv paper A's bibliography cites arXiv paper B, both already in the Brain's literature layer.",
+   "url_template": "https://openalex.org/{id}",
+   "our_provenance": "OpenAlex referenced_works (CC0), resolved via the arXiv DOI (10.48550/arXiv.<id>) batch filter + arXiv-metadata journal-DOI twins; brain/ingest/openalex_citations.py -> catalog/data/external/arxiv_citations.jsonl; both-endpoints-ours filter applied at ingest AND at build.",
+   "target_license": "CC0",
+   "ingest": {
+    "mode": "citations",
+    "cadence": "monthly",
+    "verified": "2026-07-11"
+   }
+  },
   "theoremgraph": {
    "name": "TheoremGraph (arXiv links)",
    "homepage": "https://theoremsearch.com",

@@ -74,7 +74,8 @@ F_ANY_XREF = 1 << 3         # node is src or dst of >=1 xref edge
 F_FORMALIZED = 1 << 4       # concept display.status == formalized
 F_PARTIAL = 1 << 5          # concept display.status == partial
 F_ARTICLE = 1 << 6          # concept has an annotated WikiLean article
-F_LITERATURE = 1 << 7       # node has >=1 cites/matches edge
+F_LITERATURE = 1 << 7       # node has >=1 cites/matches edge; lit PAPER nodes
+                            # (lit:<arxiv_id>, no #ref) carry it natively
 F_EXT = 1 << 8              # node is an ext page
 F_HAS_SNIPPET = 1 << 15     # ext node stores a licensed content snippet
 F_DB_BIT = {"lmfdb_knowl": 1 << 9, "nlab": 1 << 10, "mathworld": 1 << 11,
@@ -344,6 +345,77 @@ def external_layer(ext_data: dict[str, dict], *, concept_qids: set[str],
     return ext_nodes, new_edges, stats
 
 
+def literature_layer(lit_title: dict[str, str], lic_open: dict[str, bool],
+                     cit_path: Path, pin_stmt: str
+                     ) -> tuple[list[dict], list[dict], dict]:
+    """Mint paper-level literature nodes + containment + bibliography links
+    (SCHEMA: `lit:<arxiv_id>` = paper, `lit:<arxiv_id>#<ref>` = statement).
+
+    Papers: one node per distinct arXiv id over the statement ids in
+    lit_title. An empty-ref TheoremGraph row already owns the paper id — that
+    node IS the paper (same durable key), so nothing new is minted for it.
+    `contains`: paper → each ref-bearing statement, mechanically derived from
+    the id prefix (statements previously had no parent, so SCHEMA's strict
+    single-parent containment holds).
+    `links`: paper → paper rows from cit_path (arxiv_citations.jsonl —
+    OpenAlex referenced_works, CC0; brain/ingest/openalex_citations.py),
+    evidence.context="bibliography", re-filtered to endpoints whose paper
+    exists here (defense in depth over the adapter's both-endpoints-ours
+    guarantee — a bad row must not dangle). Missing file ⇒ ZERO links edges
+    (the citation layer degrades to an exact no-op); papers + contains still
+    mint — they derive from the statement layer alone.
+
+    Returns (paper_nodes, edges, stats); deterministic, byte-stable.
+    """
+    paper_title: dict[str, str] = {}            # paper id -> label
+    by_paper: dict[str, list[str]] = defaultdict(list)
+    for lid in sorted(lit_title):
+        pid = f"lit:{lid[4:].split('#', 1)[0]}"
+        paper_title.setdefault(pid, lit_title[lid])
+        if lid != pid:
+            by_paper[pid].append(lid)
+    paper_nodes = [_prune({
+        "id": pid, "type": "literature",
+        "label": paper_title[pid] or pid,
+        "arxiv_id": pid[4:],
+        "license_open": lic_open.get(pid[4:]),
+    }) for pid in sorted(paper_title) if pid not in lit_title]
+    edges: list[dict] = []
+    for pid in sorted(by_paper):
+        for lid in by_paper[pid]:
+            edges.append(_edge(pid, lid, "contains", "theoremgraph",
+                               "arxiv-id prefix (paper→statement)", pin_stmt,
+                               "high", {"arxiv_id": pid[4:]}))
+    n_contains = len(edges)
+    n_links = n_dropped = 0
+    if cit_path.exists():
+        pin_c = datetime.fromtimestamp(cit_path.stat().st_mtime,
+                                       tz=timezone.utc).date().isoformat()
+        seen: set[tuple[str, str]] = set()
+        with cit_path.open() as fh:
+            for line in fh:
+                line = line.strip()
+                if not line:
+                    continue
+                r = json.loads(line)
+                if "_meta" in r:
+                    continue
+                s, d = f"lit:{r.get('src')}", f"lit:{r.get('dst')}"
+                if (s not in paper_title or d not in paper_title or s == d
+                        or (s, d) in seen):
+                    n_dropped += 1
+                    continue
+                seen.add((s, d))
+                edges.append(_edge(s, d, "links", "openalex",
+                                   "referenced_works", pin_c, "high",
+                                   {"context": "bibliography"}))
+        n_links = len(seen)
+    stats = {"papers": len(paper_title), "papers_new": len(paper_nodes),
+             "contains": n_contains, "citations": n_links,
+             "citation_rows_dropped": n_dropped}
+    return paper_nodes, edges, stats
+
+
 def assemble_units(nodes: list[dict], edges: list[dict],
                    descriptions: dict[str, str],
                    registry: dict[str, dict]) -> None:
@@ -464,6 +536,10 @@ def apply_facets(nodes: list[dict], edges: list[dict],
             f |= F_EXT | F_DB_BIT.get(n["db"], 0)
             if n.get("snippet"):
                 f |= F_HAS_SNIPPET
+        elif t == "literature" and "#" not in nid:
+            # paper-level lit nodes (lit:<arxiv_id>) anchor the literature
+            # facet natively; statement nodes stay bare
+            f |= F_LITERATURE
         if nid in xref_touch:
             f |= F_ANY_XREF
         f |= db_bits.get(nid, 0)
@@ -1197,6 +1273,21 @@ def build() -> tuple[list[dict], list[dict], dict]:
         print("NOTE: catalog/data/external/ empty — ext nodes / links edges "
               "skipped (brain/ingest adapters not run)", file=sys.stderr)
 
+    # ---- literature papers: lit:<arxiv_id> + containment + bibliography -----
+    cit_path = external_dir() / "arxiv_citations.jsonl"
+    paper_nodes, lit_edges, lit_stats = literature_layer(
+        lit_title, lic_open, cit_path, pin_l)
+    edges.extend(lit_edges)
+    print(f"  literature papers: {lit_stats['papers']} "
+          f"({lit_stats['papers_new']} minted — the rest double as empty-ref "
+          f"statements), {lit_stats['contains']} contains, "
+          f"{lit_stats['citations']} bibliography links "
+          f"({lit_stats['citation_rows_dropped']} rows dropped)", file=sys.stderr)
+    if not cit_path.exists():
+        print("NOTE: catalog/data/external/arxiv_citations.jsonl missing — "
+              "paper→paper bibliography links skipped "
+              "(brain/ingest/openalex_citations.py)", file=sys.stderr)
+
     # ---- concept nodes -------------------------------------------------------
     p31: dict[str, list[str]] = {}
     for name in ("wikidata_universe.jsonl", "universe_extension.jsonl"):
@@ -1241,6 +1332,10 @@ def build() -> tuple[list[dict], list[dict], dict]:
         "license_open": lic_open.get(lid[4:].split("#", 1)[0]),
         "session_keys": lit_sids.get(lid),
     }) for lid in sorted(lit_title)]
+    # paper-level nodes interleave in id order (ids are disjoint from the
+    # statement set by construction — literature_layer never re-mints an
+    # empty-ref statement's id)
+    lit_nodes = sorted(lit_nodes + paper_nodes, key=lambda n: n["id"])
 
     nodes = (sorted(concept_nodes, key=lambda n: int(n["id"][1:]))
              + [containers[k] for k in sorted(containers)]
@@ -1279,6 +1374,8 @@ def build() -> tuple[list[dict], list[dict], dict]:
     for rec in ext_data.values():
         for ep in rec["paths"]:
             present[f"external/{ep.name}"] = ep
+    if cit_path.exists():
+        present[f"external/{cit_path.name}"] = cit_path
     newest = max(v.stat().st_mtime for v in present.values())
     meta = {
         "schema": "brain/SCHEMA.md",
@@ -1334,6 +1431,11 @@ def build() -> tuple[list[dict], list[dict], dict]:
             "links_page_edges": ext_stats["links_page"],
             "links_projected_edges": ext_stats["links_projected"],
             "xref_edges_from_page_qids": ext_stats["xref_from_page_qid"],
+            "lit_papers": lit_stats["papers"],
+            "lit_paper_nodes_minted": lit_stats["papers_new"],
+            "lit_contains_edges": lit_stats["contains"],
+            "links_bibliography_edges": lit_stats["citations"],
+            "lit_citation_rows_dropped": lit_stats["citation_rows_dropped"],
         },
     }
     return nodes, edges, meta
@@ -1377,7 +1479,11 @@ def write_edges(edges: list[dict], meta: dict,
                 "as empty; row schema is identical to edges.jsonl.",
         "counts": {"edges": {"links": len(links_rows)},
                    "page_level": notes.get("links_page_edges"),
-                   "projected": notes.get("links_projected_edges")},
+                   "projected": notes.get("links_projected_edges"),
+                   # paper→paper bibliography links (openalex); key absent
+                   # on pre-literature-layer metas
+                   **({"bibliography": notes["links_bibliography_edges"]}
+                      if "links_bibliography_edges" in notes else {})},
     }
     write_jsonl(out_links, links_meta, links_rows)
     return {"main": len(main_rows), "links": len(links_rows)}

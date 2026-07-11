@@ -146,6 +146,7 @@ cd "$REPO" || exit 1
     py_soft "kerodon ingest"   "$REPO/brain/ingest/kerodon.py"
     py_soft "dlmf ingest"      "$REPO/brain/ingest/dlmf.py"
     py_soft "mathworld ingest" "$REPO/brain/ingest/mathworld.py"
+    py_soft "openalex citations" "$REPO/brain/ingest/openalex_citations.py"
     touch "$LOGDIR/.stamp.brain-monthly"
   else
     echo "(monthly sources not due — skipping kerodon/dlmf/mathworld)"

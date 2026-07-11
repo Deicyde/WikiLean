@@ -19,10 +19,11 @@ P3 (insphere multi-QID) and P4 (Q217413 container link) depend on the agent
 discovery workflow's verified fold-in; until that lands they fail with a
 distinct PENDING DISCOVERY tag. Pending is still not passing — exit stays 1.
 
-v2 datapoints P6-P9 (ext nodes / projected links / snippet licensing / units +
-gold facet bits) auto-SKIP — with a printed note, never counted as passing —
-when catalog/data/external/ lacks the needed ingest file (P6-P8) or when
-nodes.jsonl predates the v2 unit build (P9). Skipped checks don't gate exit.
+v2 datapoints P6-P10 (ext nodes / projected links / snippet licensing / units +
+gold facet bits / literature bibliography links) auto-SKIP — with a printed
+note, never counted as passing — when catalog/data/external/ lacks the needed
+ingest file (P6-P8, P10) or when nodes.jsonl predates the v2 unit build (P9).
+Skipped checks don't gate exit.
 
     python3 brain/test_acceptance.py
 """
@@ -132,6 +133,7 @@ def main() -> int:
     unit_has_decls: set[str] = set()
     gold_bit_decls: set[str] = set()   # bare decl labels with f bit0
     decl_labels: set[str] = set()
+    lit_paper_ids: set[str] = set()    # lit:<arxiv_id> paper-level nodes
     for rec in iter_jsonl(NODES, "id"):
         n_nodes += 1
         nid = rec["id"]
@@ -160,6 +162,8 @@ def main() -> int:
             decl_labels.add(rec.get("label"))
             if rec.get("f", 0) & 1:
                 gold_bit_decls.add(rec.get("label"))
+        elif t == "literature" and "#" not in nid:
+            lit_paper_ids.add(nid)
 
     # ---- edges pass: invariants + targeted captures, one streaming pass ------
     n_edges = 0
@@ -178,6 +182,7 @@ def main() -> int:
     cat_fz: set[str] = set()           # formalizes dsts of Q217413
     fz_concepts: set[str] = set()      # concepts with >=1 formalizes->decl
     n_projected = 0                    # concept->concept projected links edges
+    n_biblio = 0                       # paper->paper bibliography links edges
 
     edge_streams = [iter_jsonl(EDGES, "src")]
     if EDGES_LINKS.exists():
@@ -221,9 +226,13 @@ def main() -> int:
         elif kind == "xref" and src == ABELIAN:
             abelian_xref.add(dst)
         elif kind == "links":
-            if (rec.get("evidence") or {}).get("projected") is True \
+            ev = rec.get("evidence") or {}
+            if ev.get("projected") is True \
                     and src.startswith("Q") and dst.startswith("Q"):
                 n_projected += 1
+            elif ev.get("context") == "bibliography" \
+                    and src in lit_paper_ids and dst in lit_paper_ids:
+                n_biblio += 1
 
     # ---- checks ---------------------------------------------------------------
     # (id, description, ok, details)
@@ -390,6 +399,21 @@ def main() -> int:
             "P9", "formalized concepts carry unit.decls; f bit0 == gold @[wikidata] tag rows",
             not unit_missing and gold_ok,
             details,
+        ))
+
+    if not (EXTERNAL / "arxiv_citations.jsonl").exists():
+        checks.append(("P10", ">=1 bibliography links edge joins two lit "
+                       "paper nodes", "skip",
+                       [f"no arxiv_citations.jsonl under {EXTERNAL} — "
+                        f"openalex ingest not run"]))
+    else:
+        checks.append((
+            "P10", ">=1 bibliography links edge joins two lit paper nodes",
+            n_biblio >= 1,
+            [] if n_biblio else
+            ["no links edge with evidence.context=='bibliography' between two "
+             "lit:<arxiv_id> paper nodes (rebuild edges_links.jsonl with "
+             "brain/build_edges.py)"],
         ))
 
     # ---- report ---------------------------------------------------------------
