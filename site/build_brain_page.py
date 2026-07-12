@@ -471,7 +471,7 @@ function ensureMarker(color) {
 // we swallow the click that follows a real drag.
 let panMoved = false;
 const isPhone = () => window.matchMedia && window.matchMedia("(max-width: 900px)").matches;
-const zoomBehav = d3.zoom().scaleExtent([0.35, 16])
+const zoomBehav = d3.zoom().scaleExtent([0.1, 16])
   // On a phone the page scrolls (the stack layout); d3-zoom's touch handlers
   // call preventDefault, which would trap a vertical swipe started over the
   // >50vh stage. Reject every gesture below 900px so native scroll wins there.
@@ -2373,39 +2373,66 @@ async function renderExplorer(anim) {
     text: `${nodesKept.length.toLocaleString()} of ${totalN.toLocaleString()} nodes · ${scopeLabel}`});
   const W = stageEl.clientWidth || 800, H = stageEl.clientHeight || 600;
   const R_T = {concept: 5, decl: 3.5, ext: 4, container: 6, literature: 4};
-  // isolates (no kept edge) ring the periphery FIXED, so the connected core
-  // gets the middle of the canvas instead of a clump of strangers
   const connected = nodesKept.filter(nd => deg.has(nd.id));
   const isolates = nodesKept.filter(nd => !deg.has(nd.id));
+  const N = connected.length;
+  // THE de-clump principle: thousands of nodes geometrically cannot fit in
+  // one viewport, so the layout takes whatever area it needs and the CAMERA
+  // fits to the content afterwards (fit-transform below). Any real centering
+  // pull at this scale re-creates the blob — it ~vanishes as N grows.
   const sims = [];
   connected.forEach((nd, i) => {
-    // phyllotaxis seed centered on the stage — d3's default seeds around the
-    // ORIGIN, which is what dragged every node through the center clump
-    const a = i * 2.39996, rr = 14 * Math.sqrt(i + 1);
+    // phyllotaxis seed centered on the stage (d3's default seeds around the
+    // ORIGIN); ~13px spacing gives the spiral roughly area-proportional room
+    const a = i * 2.39996, rr = 13 * Math.sqrt(i + 1);
     sims.push({id: nd.id, nd, x: W / 2 + rr * Math.cos(a), y: H / 2 + rr * Math.sin(a),
       r: (R_T[nd.type] || 4) + Math.min(4, Math.sqrt(deg.get(nd.id) || 0) * 0.7)});
   });
-  const ringR = Math.min(W, H) * 0.46 + 8 * Math.ceil(isolates.length / 220);
-  isolates.forEach((nd, i) => {
-    const a = (i / Math.max(isolates.length, 1)) * 2 * Math.PI;
-    const rr = ringR + 10 * Math.floor(i / 220);
-    sims.push({id: nd.id, nd, fx: W / 2 + rr * Math.cos(a), fy: H / 2 + rr * Math.sin(a),
-      x: W / 2 + rr * Math.cos(a), y: H / 2 + rr * Math.sin(a),
-      r: R_T[nd.type] || 4});
-  });
   const EXP_DIST = {formalizes: 42, xref: 58, links: 70};
+  // Forces ADAPT to N because the camera fits to the content afterward:
+  // few nodes → strong long-range repulsion + long links spread the core so
+  // labels are readable (fit zooms IN); many nodes → gentle short-range
+  // repulsion keeps a compact disc that stays above the zoom floor (fit
+  // zooms OUT). A single fixed tuning can only serve one end of that range.
+  const distMul = Math.max(1, Math.min(2.6, Math.sqrt(1600 / Math.max(N, 1))));
+  const chargeStr = -Math.max(9, Math.min(140, 9 + 7000 / Math.max(N, 1)));
+  const chargeMax = Math.max(180, Math.min(650, 150 + 45000 / Math.max(N, 1)));
   const links = edges.map(ed => ({source: ed.src, target: ed.dst, kind: ed.kind}));
   const sim = d3.forceSimulation(sims)
+    // d3's DEFAULT link strength (1/min endpoint degree) — a flat strength
+    // collapses hub stars (CommGroup and friends) into knots
     .force("link", d3.forceLink(links).id(d => d.id)
-      .distance(l => EXP_DIST[l.kind] || 55).strength(0.28))
-    .force("charge", d3.forceManyBody().strength(-48).distanceMax(420).theta(0.95))
-    .force("collide", d3.forceCollide(d => d.r + 3.5).iterations(2))
-    .force("x", d3.forceX(W / 2).strength(0.045))
-    .force("y", d3.forceY(H / 2).strength(0.055))
+      .distance(l => (EXP_DIST[l.kind] || 55) * distMul))
+    .force("charge", d3.forceManyBody().strength(chargeStr).distanceMax(chargeMax).theta(0.95))
+    .force("collide", d3.forceCollide(d => d.r + 3).iterations(3))
+    .force("x", d3.forceX(W / 2).strength(0.03))
+    .force("y", d3.forceY(H / 2).strength(0.035))
     .stop();
-  const ticks = sims.length > 1500 ? 140 : 260;   // static ticks, renderEgo-style
+  const ticks = N > 3000 ? 220 : N > 1500 ? 250 : 300;
   for (let i = 0; i < ticks; i++) sim.tick();
   if (seq !== renderSeq) return;
+  // isolates ring OUTSIDE the connected cloud's bounding box, ring by ring
+  // (capacity grows with circumference), so strangers never share the core
+  let bx0 = W / 2 - 80, bx1 = W / 2 + 80, by0 = H / 2 - 80, by1 = H / 2 + 80;
+  for (const sm of sims) {
+    bx0 = Math.min(bx0, sm.x); bx1 = Math.max(bx1, sm.x);
+    by0 = Math.min(by0, sm.y); by1 = Math.max(by1, sm.y);
+  }
+  const icx = (bx0 + bx1) / 2, icy = (by0 + by1) / 2;
+  const coreR = Math.hypot(bx1 - bx0, by1 - by0) / 2;
+  let ii = 0, ring = 0;
+  while (ii < isolates.length) {
+    const ringR = coreR + 70 + 16 * ring;
+    const cap = Math.max(24, Math.floor((2 * Math.PI * ringR) / 15));
+    const count = Math.min(cap, isolates.length - ii);
+    for (let j = 0; j < count; j++, ii++) {
+      const a = (j / count) * 2 * Math.PI + ring * 0.13;
+      const nd = isolates[ii];
+      sims.push({id: nd.id, nd, x: icx + ringR * Math.cos(a),
+        y: icy + ringR * Math.sin(a), r: R_T[nd.type] || 4});
+    }
+    ring++;
+  }
   const leaves = sims.map(sm => ({data: sm.nd, x: sm.x, y: sm.y, r: sm.r}));
   layout = {items: new Map(leaves.map(l => [l.data.id, l])), leaves, explorer: true};
   edgeStore = edges.map(ed => ({kind: ed.kind, a: ed.src, b: ed.dst, w: ed.w,
@@ -2417,6 +2444,22 @@ async function renderExplorer(anim) {
   drawNodes();
   drawExplorerLabels();
   renderEdges();
+  // fit the camera to the content (this is what makes big graphs legible —
+  // the layout above never compressed itself into the viewport)
+  {
+    let fx0 = Infinity, fx1 = -Infinity, fy0 = Infinity, fy1 = -Infinity;
+    for (const l of leaves) {
+      fx0 = Math.min(fx0, l.x - l.r); fx1 = Math.max(fx1, l.x + l.r);
+      fy0 = Math.min(fy0, l.y - l.r); fy1 = Math.max(fy1, l.y + l.r);
+    }
+    const bw = Math.max(fx1 - fx0, 1), bh = Math.max(fy1 - fy0, 1);
+    const k = Math.max(0.1, Math.min(1.5, Math.min((W - 70) / bw, (H - 70) / bh)));
+    const t = d3.zoomIdentity
+      .translate(W / 2 - k * (fx0 + fx1) / 2, H / 2 - k * (fy0 + fy1) / 2)
+      .scale(k);
+    svg.call(zoomBehav.transform, t);
+    updateExplorerLabels(k);
+  }
   const scopeCrumb = focusId && focusId !== LIBS_ID && focusId.startsWith("path:")
     ? esc(focusId.slice(5)) : "all libraries";
   crumbEl.innerHTML = `<a data-nav="${LIBS_ID}">all libraries</a>
@@ -2453,7 +2496,7 @@ function drawExplorerLabels() {
 }
 function updateExplorerLabels(k) {
   if (!layout || !layout.explorer) return;
-  const lim = Math.min(250, Math.round(50 * k * k));
+  const lim = Math.max(30, Math.min(250, Math.round(50 * k * k)));
   gLabels.selectAll("text.xlab").attr("display", function () {
     return Number(this.dataset.rank) < lim ? null : "none";
   });
