@@ -707,6 +707,16 @@ def build() -> tuple[list[dict], list[dict], dict]:
               "provenance skipped", file=sys.stderr)
     source_tagged = {(r["tag"], r["decl"]) for r in tag_rows
                      if r["db"] == "wikidata"}
+    # module from the tag row's source file (Mathlib/…/Foo.lean → Mathlib.….Foo)
+    # — the ONLY module signal for tagged decls absent from the TheoremGraph
+    # corpus; without it they resolve to no module and land at the library
+    # ROOT (36 @[stacks]/@[kerodon] decls surfaced as loose children of
+    # path:Mathlib, Jack's bug report 2026-07-12).
+    tag_mod: dict[str, str] = {}
+    for r in tag_rows:
+        f, d = r.get("file"), r.get("decl")
+        if f and d and f.endswith(".lean") and d not in tag_mod:
+            tag_mod[d] = f[:-5].replace("/", ".")
     # @[stacks]/@[kerodon]-tagged decls join the universe too — without a node
     # the tag-xref edge can't mint, which left the whole Kerodon corpus
     # unanchored (its only join to the brain is these attributes).
@@ -836,7 +846,8 @@ def build() -> tuple[list[dict], list[dict], dict]:
 
     # ---- decl nodes + their containment placement --------------------------
     def resolve(d: str) -> tuple[str, str | None]:
-        module = _majority(mod_votes[d]) or csv_mod.get(d) or sf_mod.get(d)
+        module = (_majority(mod_votes[d]) or csv_mod.get(d) or sf_mod.get(d)
+                  or tag_mod.get(d))
         lib = _majority(lib_votes[d])
         if not lib:
             root = module.split(".", 1)[0] if module else None
