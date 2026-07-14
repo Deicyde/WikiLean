@@ -160,6 +160,28 @@ section.kind h3 .cnt { color:#8a8272; font-weight:400; font-size:.8rem; }
   font-family:-apple-system,sans-serif; user-select:none; }
 .rawtoggle:hover { color:#5a544a; }
 .rawjson { margin:4px 0 0 !important; }
+/* edge-evidence trace: the step-by-step chain that connects two nodes */
+.ev-trace { margin:6px 0 2px; border-left:2px solid #d8cfb6; padding-left:9px; }
+.ev-step { display:flex; align-items:baseline; gap:6px; padding:1px 0; }
+.ev-step .role { color:#8a8272; font-size:.72rem; min-width:14px; }
+.ev-step .who { color:#2b2822; }
+.ev-step .who a, .ev-step .who .nav { color:#1a4b8c; cursor:pointer; }
+.ev-step .who .nav:hover { text-decoration:underline; }
+.ev-step .tag { color:#8a8272; font-size:.72rem; }
+.ev-step .extlink { color:#1a4b8c; text-decoration:none; margin-left:2px; }
+.ev-conn { color:#8a8272; font-size:.72rem; margin:1px 0 1px 2px; font-style:italic; }
+.ev-snip { margin:6px 0 2px; background:#efe8d6; border-radius:5px;
+  padding:6px 9px; color:#3a362e; font-size:.79rem; line-height:1.45; }
+.ev-snip .cite { display:block; margin-top:4px; color:#8a8272; font-size:.71rem; }
+.ev-snip .cite a { color:#1a4b8c; text-decoration:none; }
+.ev-snip.loading { color:#8a8272; font-style:italic; background:none; padding:2px 0; }
+[data-theme="dark"] .ev-trace { border-left-color:#4d4742; }
+[data-theme="dark"] .ev-step .who { color:#ebe5d8; }
+[data-theme="dark"] .ev-step .who a, [data-theme="dark"] .ev-step .who .nav,
+[data-theme="dark"] .ev-snip .cite a { color:#6e9adf; }
+[data-theme="dark"] .ev-snip { background:#2c2926; color:#d8d2c4; }
+[data-theme="dark"] .ev-step .role, [data-theme="dark"] .ev-step .tag,
+[data-theme="dark"] .ev-conn, [data-theme="dark"] .ev-snip .cite { color:#9a9081; }
 .dirarrow { color:#8a8272; font-weight:600; }
 /* community connections — user/API-submitted edges (Project 2) */
 section.kind.community h3 { border-bottom-color:#c9b98a; }
@@ -1206,7 +1228,8 @@ function showEdgePanel(e) {
     </div>
     <section class="kind"><h3>Evidence</h3>
       <div class="edge open"><div class="drawer" style="display:block">${
-        evidenceProse(e.kind, ev, eprov, null, e.b)}</div></div>
+        evidenceProse(e.kind, ev, eprov, null, toId,
+          {fromId, fromLabel: name(fromId), toId, toLabel: name(toId)})}</div></div>
     </section>
     <p class="note">Every line on the canvas is a stored brain edge${
       directed ? " — the arrowhead points from the source to what it depends on / joins to" : ""}.
@@ -1214,6 +1237,7 @@ function showEdgePanel(e) {
   panelEl.querySelectorAll("[data-nav]").forEach(a =>
     a.addEventListener("click", () => navigate(a.dataset.nav)));
   bindRawToggles();
+  enrichEvidence(panelEl);
 }
 
 // overlay: the selected node's ontology edges to visible endpoints
@@ -1629,7 +1653,60 @@ function provAttribHtml(kind, ev, prov) {
 }
 // the sentence + structured detail for one edge; otherId (when known) names
 // the far endpoint so ext-page edges can say WHICH database they live in
-function evidenceProse(kind, ev, prov, dir, otherId) {
+// One node's row in an evidence trace. `who` is clickable-navigable; ext
+// pages also get a ↗ deep link. Labels resolve lazily (data-lbl) via
+// enrichEvidence when only an id is known at render time.
+function traceStep(role, id, label, tag) {
+  const isExt = id && id.startsWith("xref:");
+  const isQid = id && /^Q\d+$/.test(id);
+  const shown = label || (isExt ? extValueOf(id) : id);
+  const needsLbl = !label && isQid;   // QID with no label yet → resolve async
+  const url = isExt ? nodeUrl(id) : null;
+  const who = `<span class="nav" data-nav="${esc(id)}"${
+    needsLbl ? ` data-lbl="${esc(id)}"` : ""}>${esc(shown)}</span>${
+    url ? ` <a class="extlink" href="${esc(url)}" rel="noopener" target="_blank" title="view on the source site">↗</a>` : ""}`;
+  return `<div class="ev-step"><span class="role">${role}</span>` +
+    `<span class="who">${who}</span>${tag ? ` <span class="tag">${esc(tag)}</span>` : ""}</div>`;
+}
+function connector(text) { return `<div class="ev-conn">↓ ${esc(text)}</div>`; }
+
+// The step-by-step chain behind a `links` edge + a lazily-loaded snippet of
+// the page whose text actually contains the link (data-snip-page). `ctx`
+// carries the two endpoint {id,label} in from→to order when the caller knows
+// them (showEdgePanel always does; the node drawer passes what it has).
+function linkTraceHtml(ev, ctx) {
+  ctx = ctx || {};
+  const via = ev.via || (ctx.fromId && ctx.fromId.startsWith("xref:") ? extDbOf(ctx.fromId)
+            : ctx.toId && ctx.toId.startsWith("xref:") ? extDbOf(ctx.toId) : null);
+  const dbName = via ? (XREF_NAME[via] || via) : "the external database";
+  let steps = "", snipPage = null;
+  if (ev.projected) {
+    // concept → its page → (link) → other page → other concept
+    const srcPage = `xref:${via}:${ev.src_page}`, dstPage = `xref:${via}:${ev.dst_page}`;
+    snipPage = srcPage;
+    steps =
+      traceStep("A", ctx.fromId, ctx.fromLabel, "concept") +
+      connector(`cross-referenced in ${dbName}`) +
+      traceStep("", srcPage, ev.src_page, `${dbName} page`) +
+      connector(`internal link on ${dbName}`) +
+      traceStep("", dstPage, ev.dst_page, `${dbName} page`) +
+      connector(`cross-referenced in ${dbName}`) +
+      traceStep("B", ctx.toId, ctx.toLabel, "concept");
+  } else {
+    // page → (link) → page (the endpoints ARE the pages)
+    snipPage = ctx.fromId && ctx.fromId.startsWith("xref:") ? ctx.fromId : null;
+    steps =
+      traceStep("", ctx.fromId, ctx.fromLabel, `${dbName} page`) +
+      connector(`links to it${ev.context ? ` (in the ${ev.context})` : ""}`) +
+      traceStep("", ctx.toId, ctx.toLabel, `${dbName} page`);
+  }
+  const snip = snipPage
+    ? `<div class="ev-snip loading" data-snip-page="${esc(snipPage)}">loading the linking page…</div>`
+    : "";
+  return `<div class="ev-trace">${steps}</div>${snip}`;
+}
+
+function evidenceProse(kind, ev, prov, dir, otherId, ctx) {
   ev = ev || {};
   const inbound = dir === "in";
   let lead = "", detail = "";
@@ -1714,16 +1791,14 @@ function evidenceProse(kind, ev, prov, dir, otherId) {
   } else if (kind === "matches") {
     lead = `<b>Formal ↔ literature match.</b> A Lean declaration was matched to an informal statement in the literature; ${judgeVerdict(ev)}.`;
   } else if (kind === "links") {
-    const db = ev.via || (otherId && otherId.startsWith && otherId.startsWith("xref:")
-      ? extDbOf(otherId) : null);
+    const db = ev.via || (ctx && ctx.fromId && ctx.fromId.startsWith("xref:") ? extDbOf(ctx.fromId)
+      : otherId && otherId.startsWith && otherId.startsWith("xref:") ? extDbOf(otherId) : null);
     const dbName = db ? (XREF_NAME[db] || db) : "the external database";
-    if (ev.projected) {
-      lead = `<b>Projected link.</b> Two concepts joined through an internal link inside <b>${esc(dbName)}</b>'s own pages — the database's editors connected them.`;
-      detail = `<div class="ev-sub">projected from ${esc(dbName)}: <code>${esc(ev.src_page ?? "?")}</code> <span class="dirarrow">→</span> <code>${esc(ev.dst_page ?? "?")}</code></div>`;
-    } else {
-      lead = `<b>Page link.</b> An internal link on ${esc(dbName)} — one page links to the other inside the database.`;
-      if (ev.context) detail = `<div class="ev-sub">link context: <b>${esc(ev.context)}</b></div>`;
-    }
+    lead = ev.projected
+      ? `<b>Projected link.</b> These two concepts are joined because <b>${esc(dbName)}</b>'s own pages link to each other — the trace below shows exactly how:`
+      : `<b>Page link.</b> One page hyperlinks the other inside <b>${esc(dbName)}</b>${
+          ev.context ? `, in the ${esc(ev.context)}` : ""} — the trace below shows which and quotes the linking page:`;
+    detail = linkTraceHtml(ev, ctx);
   } else if (kind === "contains") {
     lead = `<b>Containment.</b> One directly contains the other in the library's folder tree.`;
   } else {
@@ -1744,7 +1819,49 @@ function bindRawToggles() {
   }));
 }
 
-function edgeHtml(x, provTable, dir) {
+// Post-render enrichment of edge-evidence traces: resolve QID labels the
+// synchronous render couldn't know, and fetch + quote the actual page whose
+// text contains a `links` edge (its stored snippet, licensed). Best-effort:
+// any fetch miss just leaves the placeholder text. Scoped to `root` so a
+// newer panel render can't be clobbered by an older in-flight fetch.
+async function enrichEvidence(root) {
+  // skip work inside a collapsed drawer (display:none → no offsetParent); the
+  // drawer-open handler re-runs enrichEvidence on expand
+  const vis = el => el.offsetParent !== null;
+  root.querySelectorAll("[data-lbl]").forEach(async el => {
+    if (!vis(el)) return;
+    const id = el.dataset.lbl;
+    try {
+      const ce = await getEntry(id);
+      if (ce && ce.node && ce.node.label && root.contains(el)) {
+        el.textContent = ce.node.label;
+        el.removeAttribute("data-lbl");
+      }
+    } catch (e) { /* leave the id showing */ }
+  });
+  root.querySelectorAll(".ev-snip[data-snip-page]").forEach(async box => {
+    if (!vis(box)) return;
+    const pid = box.dataset.snipPage;
+    const db = extDbOf(pid), dbName = XREF_NAME[db] || db;
+    let ce = null;
+    try { ce = await getEntry(pid); } catch (e) { /* fall through to link-out */ }
+    if (!root.contains(box)) return;
+    box.removeAttribute("data-snip-page");   // one-shot: re-opens don't refetch
+    const url = (ce && ce.node && ce.node.url) || nodeUrl(pid);
+    const title = (ce && ce.node && ce.node.label) || extValueOf(pid);
+    const link = url ? ` <a href="${esc(url)}" rel="noopener" target="_blank">read on ${esc(dbName)} ↗</a>` : "";
+    box.classList.remove("loading");
+    if (ce && ce.node && ce.node.snippet) {
+      const lic = ce.node.snippet_license ? ` · ${esc(ce.node.snippet_license)}` : "";
+      box.innerHTML = `“${esc(ce.node.snippet)}”<span class="cite">— from “${esc(title)}” on ${esc(dbName)}${lic}${link}</span>`;
+    } else {
+      // no-content source (MathWorld/DLMF/EoM/Kerodon) — link out, no quote
+      box.innerHTML = `<span class="cite">“${esc(title)}” on ${esc(dbName)} stores no reusable text here.${link}</span>`;
+    }
+  });
+}
+
+function edgeHtml(x, provTable, dir, focus) {
   const ev = x.evidence || {};
   const mkv = ev.match_kind && (MK_LABEL[ev.match_kind] || ev.match_kind);
   let mk = mkv ? `<span class="mk">${esc(mkv)}</span>` : "";
@@ -1768,9 +1885,13 @@ function edgeHtml(x, provTable, dir) {
   }
   const prov = provTable[x.prov] || {};
   const pc = provClass(x.kind, prov, ev);
+  // orient the trace from→to: an "out" edge is focus→x.id, an "in" edge is x.id→focus
+  const ctx = focus ? (dir === "in"
+    ? {fromId: x.id, fromLabel: null, toId: focus.id, toLabel: focus.label}
+    : {fromId: focus.id, fromLabel: focus.label, toId: x.id, toLabel: null}) : null;
   return `<div class="edge"><div class="row"><span class="dirarrow">${arrow}</span> ${target} ${mk}
     <span class="prov ${pc}" title="${esc(PROV_TITLE[pc])}">${pc}${ev.skeptic === "pending" ? " · unreviewed" : ""}${ev.source_tagged ? " · @[wikidata]" : ""}</span></div>
-    <div class="drawer">${evidenceProse(x.kind, ev, prov, dir, x.id)}</div></div>`;
+    <div class="drawer">${evidenceProse(x.kind, ev, prov, dir, x.id, ctx)}</div></div>`;
 }
 let lastPanelId = null;
 let lastLevelEdges = [];
@@ -1920,7 +2041,7 @@ async function renderPanel(id) {
       (kind === "formalizes" ? " (concepts this formalizes)" : " (incoming)") : "");
     html += `<section class="kind"><h3>${esc(label)} <span class="cnt">(${rows.length}${
       e.edges.truncated && e.edges.truncated[dir] ? "+, truncated" : ""})</span></h3>`;
-    for (const [x, d] of rows.slice(0, 40)) html += edgeHtml(x, prov, d);
+    for (const [x, d] of rows.slice(0, 40)) html += edgeHtml(x, prov, d, {id: n.id, label: n.label || n.id});
     if (rows.length > 40) html += `<div class="more">… ${rows.length - 40} more (use brain/query.py or the API)</div>`;
     html += `</section>`;
   }
@@ -1931,7 +2052,7 @@ async function renderPanel(id) {
       if (!b || !kinds.has("depends")) continue;
       html += `<section class="kind"><h3>Strongest ${esc(grain === 'tree' ? 'sibling' : grain)}-level dependencies
         <span class="cnt">(${b.counts.out} out / ${b.counts.in} in)</span></h3>`;
-      for (const x of b.out.slice(0, 12)) html += edgeHtml(x, prov, "out");
+      for (const x of b.out.slice(0, 12)) html += edgeHtml(x, prov, "out", {id: n.id, label: n.label || n.id});
       html += `</section>`;
       break;
     }
@@ -1974,6 +2095,7 @@ async function renderPanel(id) {
   panelEl.querySelectorAll("[data-nav]").forEach(a =>
     a.addEventListener("click", () => navigate(a.dataset.nav)));
   bindRawToggles();
+  enrichEvidence(panelEl);
   // Sources accordion loads its content on first open (Wikipedia lead +
   // ext-node snippets are on-demand fetches, never paid on panel render)
   const acc = panelEl.querySelector("#srcacc");
@@ -1988,7 +2110,9 @@ async function renderPanel(id) {
         showEdgePanel(lastLevelEdges[Number(r.dataset.lvledge)]);
         return;
       }
-      r.parentElement.classList.toggle("open");
+      const edge = r.parentElement;
+      edge.classList.toggle("open");
+      if (edge.classList.contains("open")) enrichEvidence(edge);   // lazy snippet/label load
     }));
   // literature rows boot as raw lit: ids — resolve paper titles lazily (their
   // entries share arXiv-prefix shards, so this is a handful of fetches)
