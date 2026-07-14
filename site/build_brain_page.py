@@ -1782,8 +1782,19 @@ function evidenceProse(kind, ev, prov, dir, otherId, ctx) {
     const key = ev.shared_page ? ev.shared_page.split(":")[1] : null;
     lead = `<b>Same object, two entries.</b> Both concepts point at the same page${key ? ` in <b>${esc(XREF_NAME[key] || key)}</b>` : ""}, so Wikidata treats them as the same object across databases.`;
   } else if (kind === "xref") {
-    lead = `<b>Cross-database identity.</b> Wikidata records this concept in an external database${ev.value !== undefined ? ` as <code>${esc(ev.value)}</code>` : ""} — the same object, catalogued elsewhere.`;
-    if (ev.property) detail = `<div class="ev-sub">via Wikidata property <span class="pin">${esc(ev.property)}</span></div>`;
+    // name the actual database + page: the ext endpoint is xref:<db>:<value>
+    const xid = (ctx && ctx.toId && ctx.toId.startsWith("xref:")) ? ctx.toId
+      : (ctx && ctx.fromId && ctx.fromId.startsWith("xref:")) ? ctx.fromId
+      : (otherId && otherId.startsWith && otherId.startsWith("xref:")) ? otherId : null;
+    const db = xid ? extDbOf(xid) : null;
+    const dbName = db ? (XREF_NAME[db] || db) : null;
+    const val = ev.value !== undefined ? String(ev.value) : (xid ? extValueOf(xid) : null);
+    lead = `<b>Cross-database identity.</b> Catalogued in <b>${
+      esc(dbName || "another database")}</b>${val ? ` as <code>${esc(val)}</code>` : ""} — the same object, entered there too.`;
+    const d = [];
+    if (ev.property) d.push(`via Wikidata property <span class="pin">${esc(ev.property)}</span>`);
+    else if (prov && String(prov.method || "").startsWith("@[")) d.push(`from an <code>${esc(prov.method.split(" ")[0])}</code> attribute in the Mathlib source`);
+    if (d.length) detail = evList(d);
   } else if (kind === "cites") {
     lead = `<b>Stated in the literature.</b> This result appears in the mathematical literature; ${judgeVerdict(ev)}.`;
     if (ev.via_decls && ev.via_decls.length)
