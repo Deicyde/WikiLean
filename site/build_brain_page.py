@@ -236,6 +236,9 @@ section.kind.community h3 { border-bottom-color:#c9b98a; }
   color:#9aa3b2; font-size:.78rem; cursor:pointer; font-family:inherit; }
 .fchip:hover { border-color:#38bdf8; color:#e6e4de; }
 .fchip.on { background:#173753; border-color:#38bdf8; color:#cdeafe; }
+.fgrouplabel { color:#6b7488; font-size:.7rem; margin:0 2px 0 8px; white-space:nowrap;
+  border-left:1px solid #2a3244; padding-left:9px; cursor:help; }
+.fgrouplabel:first-of-type { border-left:none; padding-left:0; }
 #filterstat { color:#7f8a9c; font-size:.78rem; font-style:italic; }
 /* the atomic-unit card: one identity strip for a concept */
 .unitcard { border:1px solid #d8cfb8; border-radius:8px; background:#fdfbf4;
@@ -284,6 +287,8 @@ body.embed .wl-header, body.embed #crumbbar { display:none; }   /* flex column f
 <div class="toolbar">
   <span class="grp"><b>View</b>
     <button id="explorerbtn" class="fchip" title="flatten the current folder's subtree into one force-directed graph of its tagged &amp; cross-referenced nodes and the edges among them — facet chips narrow it further; at the top level it covers everything">Explorer</button>
+    <button id="explorer-ext" class="fchip xctl" style="display:none" title="show the external-database PAGE nodes (nLab / MathWorld / LMFDB / … entries) and their internal page-to-page links. Off at the top level so the concept/declaration backbone stays legible — the projected concept-to-concept cross-database links still show. On automatically in small scoped or filtered views.">database pages</button>
+    <button id="explorer-iso" class="fchip xctl" style="display:none" title="show nodes with no connection in the current view, parked in an outer ring. Off by default — usually just noise.">unlinked</button>
   </span>
   <span class="grp"><b>Layers</b>
     <label><input type="checkbox" data-k="depends" checked> formal deps</label>
@@ -310,18 +315,20 @@ body.embed .wl-header, body.embed #crumbbar { display:none; }   /* flex column f
     <label title="AI-generated: agent-proposed concept matches (skeptic-reviewed), LLM-judged paper matches (TheoremGraph), pipeline annotations"><input type="checkbox" data-p="ai" checked> AI</label>
   </span>
   <span class="grp"><b>Show only</b>
-    <button class="fchip" data-fbit="1" title="declarations carrying a gold @[wikidata] tag in the Mathlib source">@[wikidata]</button>
-    <button class="fchip" data-fbit="2" title="declarations carrying an @[stacks] tag">@[stacks]</button>
-    <button class="fchip" data-fbit="4" title="declarations carrying an @[kerodon] tag">@[kerodon]</button>
-    <button class="fchip" data-fbit="8" title="nodes with at least one cross-database reference">cross-refs</button>
-    <button class="fchip" data-fbit="16" title="formalized concepts">formalized</button>
-    <button class="fchip" data-fbit="64" title="concepts with a WikiLean article">article</button>
-    <button class="fchip" data-fbit="512" title="cross-referenced in LMFDB">LMFDB</button>
-    <button class="fchip" data-fbit="1024" title="cross-referenced in nLab">nLab</button>
-    <button class="fchip" data-fbit="2048" title="cross-referenced in MathWorld">MathWorld</button>
-    <button class="fchip" data-fbit="4096" title="cross-referenced in ProofWiki">ProofWiki</button>
-    <button class="fchip" data-fbit="8192" title="cross-referenced by a Stacks Project tag">Stacks</button>
-    <button class="fchip" data-fbit="16384" title="cross-referenced in the OEIS">OEIS</button>
+    <span class="fgrouplabel" title="Cross-reference ATTRIBUTES hand-written into the mathlib4 source. Each links a Lean declaration to an external catalog (and rides up to the concept it formalizes). These three are literally the @[…] attributes in Mathlib.">Mathlib tags:</span>
+    <button class="fchip" data-fbit="1" title="declarations carrying an @[wikidata] attribute in mathlib4 — the gold, human-written link from a Lean declaration to its Wikidata concept (a formalization claim)">@[wikidata]</button>
+    <button class="fchip" data-fbit="2" title="declarations carrying an @[stacks] attribute in mathlib4 — a human-written link from a Lean declaration to a Stacks Project tag">@[stacks]</button>
+    <button class="fchip" data-fbit="4" title="declarations carrying an @[kerodon] attribute in mathlib4 — a human-written link from a Lean declaration to a Kerodon tag">@[kerodon]</button>
+    <span class="fgrouplabel" title="External-database identities that WIKIDATA records for a math concept, independent of Mathlib. Each links a concept to its page in that database via a Wikidata external-ID property.">Wikidata cross-refs:</span>
+    <button class="fchip" data-fbit="1024" title="concepts Wikidata cross-references to an nLab page (property P4215)">nLab</button>
+    <button class="fchip" data-fbit="2048" title="concepts Wikidata cross-references to a MathWorld page (property P2812)">MathWorld</button>
+    <button class="fchip" data-fbit="512" title="concepts Wikidata cross-references to an LMFDB knowl (property P12987)">LMFDB</button>
+    <button class="fchip" data-fbit="4096" title="concepts Wikidata cross-references to a ProofWiki page (property P6781)">ProofWiki</button>
+    <button class="fchip" data-fbit="16384" title="concepts Wikidata cross-references to an OEIS sequence (property P829)">OEIS</button>
+    <button class="fchip" data-fbit="8" title="nodes with ANY external-database cross-reference — the union of every database above PLUS the @[stacks]/@[kerodon] Mathlib tags (all the xref edges in one filter)">any</button>
+    <span class="fgrouplabel">Status:</span>
+    <button class="fchip" data-fbit="16" title="formalized concepts — a Mathlib declaration formalizes them">formalized</button>
+    <button class="fchip" data-fbit="64" title="concepts with an annotated WikiLean article">article</button>
     <span class="note" id="filterstat"></span>
   </span>
   <span class="grp"><a id="srcbtn2" style="cursor:pointer"
@@ -462,6 +469,9 @@ let selectedId = null;     // node the panel shows / ring highlights
 let layout = null;         // {items: Map(id -> {x,y,r,item}), root}
 let explorerOn = false;    // the Explorer: the focus subtree flattened into one
                            // force-directed cross-ref graph (views/xref_explorer.json)
+let showExtPages = false;  // explorer: show external-DB PAGE nodes (else backbone)
+let showIsolates = false;  // explorer: show the outer ring of unlinked nodes
+let explorerTogglesUser = false;  // did the user pin the two toggles this session
 let filterMask = 0;        // facet-filter bitmask over node `f` (0 = no filter)
 let currentUser = null;    // {id, name, role} once /api/auth/me resolves (community edits)
 const svg = d3.select("#svg");
@@ -1389,6 +1399,16 @@ function setExplorer(on) {
   explorerOn = on;
   const b = $("#explorerbtn");
   if (b) b.classList.toggle("on", on);
+  // the two explorer-only toggles appear with the view; entering fresh clears
+  // any pinned choice so the auto defaults (backbone / no ring) apply again
+  if (on) explorerTogglesUser = false;
+  document.querySelectorAll(".xctl").forEach(el => el.style.display = on ? "" : "none");
+  syncExplorerToggles();
+}
+function syncExplorerToggles() {
+  const ex = $("#explorer-ext"), is = $("#explorer-iso");
+  if (ex) ex.classList.toggle("on", showExtPages);
+  if (is) is.classList.toggle("on", showIsolates);
 }
 
 async function zoomInto(id) {
@@ -2481,11 +2501,21 @@ async function renderExplorer(anim) {
     }
     kept = kept.filter(nd => core.has(nd.id) || touch.has(nd.id));
   }
-  const nodesKept = kept;
-  const keep = new Set(nodesKept.map(nd => nd.id));
+  // ---- (change 3) database-pages visibility: at the unscoped top level the
+  // 3.6k external-DB PAGES + their internal links are what clump the middle,
+  // so hide them by default and keep the concept/declaration backbone (the
+  // projected concept↔concept cross-database links still show). Small
+  // scoped/filtered views (< EXT_AUTO) show pages automatically. A user click
+  // pins the choice for the session (explorerTogglesUser).
+  const EXT_AUTO = 700;
+  const backboneN = kept.filter(nd => nd.type !== "ext").length;
+  if (!explorerTogglesUser) showExtPages = backboneN <= EXT_AUTO;
+  const nExtHidden = showExtPages ? 0 : kept.filter(nd => nd.type === "ext").length;
+  let nodesKept = showExtPages ? kept : kept.filter(nd => nd.type !== "ext");
+  let keep = new Set(nodesKept.map(nd => nd.id));
   // client-side unordered dedupe as a safety net for pre-dedupe cached data
   const seen = new Map();
-  let edges = [];
+  let allEdges = [];   // every kept, deduped edge (drives CONNECTIVITY)
   for (const ed of rawEdges) {
     if (!keep.has(ed.src) || !keep.has(ed.dst)) continue;
     const k = ed.kind + "|" + (ed.src < ed.dst ? ed.src + "|" + ed.dst
@@ -2493,23 +2523,53 @@ async function renderExplorer(anim) {
     const prev = seen.get(k);
     if (prev) { prev.w = Math.max(prev.w, ed.w) + 1; continue; }
     seen.set(k, ed);
-    edges.push(ed);
+    allEdges.push(ed);
   }
-  const totalE = edges.length;
-  if (edges.length > 4000) edges = edges.slice(0, 4000);  // hit twins for ALL
-  const deg = new Map();
-  for (const ed of edges) {
-    deg.set(ed.src, (deg.get(ed.src) || 0) + 1);
-    deg.set(ed.dst, (deg.get(ed.dst) || 0) + 1);
+  // (change 1) connected-vs-isolate is decided from the FULL edge set, BEFORE
+  // the draw budget — a node connected in the data must never be ringed just
+  // because its edges lost the 4,000-edge cut. deg here only weights sizes.
+  const fullDeg = new Map();
+  for (const ed of allEdges) {
+    fullDeg.set(ed.src, (fullDeg.get(ed.src) || 0) + 1);
+    fullDeg.set(ed.dst, (fullDeg.get(ed.dst) || 0) + 1);
   }
-  const scopeLabel = scope ? scope.slice(5) : "all libraries";
-  updateFilterStat({active: true, noF: filterMask ? noF : false,
-    shown: nodesKept.length, total: totalN,
-    text: `${nodesKept.length.toLocaleString()} of ${totalN.toLocaleString()} nodes · ${scopeLabel}`});
+  const totalE = allEdges.length;
+  // draw budget: coverage-first (one edge per node) then fill by weight, so
+  // capping never strands a node the full graph connects
+  let edges = allEdges;
+  if (allEdges.length > 4000) {
+    const byW = allEdges.slice().sort((a, b) => (b.w || 1) - (a.w || 1));
+    const covered = new Set(), pick = [];
+    for (const ed of byW) {
+      if (!covered.has(ed.src) || !covered.has(ed.dst)) {
+        pick.push(ed); covered.add(ed.src); covered.add(ed.dst);
+        if (pick.length >= 4000) break;
+      }
+    }
+    for (const ed of byW) {
+      if (pick.length >= 4000) break;
+      if (!pick.includes(ed)) pick.push(ed);   // pick is small-ish; fill the rest
+    }
+    edges = pick.slice(0, 4000);
+  }
+  const deg = fullDeg;
   const W = stageEl.clientWidth || 800, H = stageEl.clientHeight || 600;
   const R_T = {concept: 5, decl: 3.5, ext: 4, container: 6, literature: 4};
-  const connected = nodesKept.filter(nd => deg.has(nd.id));
-  const isolates = nodesKept.filter(nd => !deg.has(nd.id));
+  let connected = nodesKept.filter(nd => fullDeg.has(nd.id));
+  let isolates = nodesKept.filter(nd => !fullDeg.has(nd.id));
+  // (change 2) unlinked nodes are hidden by default — with the budget fix
+  // above there are only a handful, and they read as noise. The toggle brings
+  // back the outer ring.
+  const nIsoHidden = showIsolates ? 0 : isolates.length;
+  if (!showIsolates) { nodesKept = connected; isolates = []; keep = new Set(connected.map(nd => nd.id)); }
+  const scopeLabel = scope ? scope.slice(5) : "all libraries";
+  const extras = [];
+  if (nExtHidden) extras.push(`${nExtHidden.toLocaleString()} DB pages hidden`);
+  if (nIsoHidden) extras.push(`${nIsoHidden.toLocaleString()} unlinked hidden`);
+  updateFilterStat({active: true, noF: filterMask ? noF : false,
+    shown: nodesKept.length, total: totalN,
+    text: `${nodesKept.length.toLocaleString()} nodes · ${scopeLabel}${
+      extras.length ? " · " + extras.join(" · ") : ""}`});
   const N = connected.length;
   // THE de-clump principle: thousands of nodes geometrically cannot fit in
   // one viewport, so the layout takes whatever area it needs and the CAMERA
@@ -2604,11 +2664,12 @@ async function renderExplorer(anim) {
       setExplorer(false); focusId = LIBS_ID; selectedId = null;
       setHash(""); renderFocus(true);
     }));
-  statusEl.textContent = `explorer: ${nodesKept.length.toLocaleString()}${
-    nodesKept.length < totalN ? ` of ${totalN.toLocaleString()}` : ""} nodes · ${
+  statusEl.textContent = `explorer: ${nodesKept.length.toLocaleString()} nodes · ${
     edges.length.toLocaleString()}${
     totalE > edges.length ? ` of ${totalE.toLocaleString()}` : ""} edges${
-    isolates.length ? ` · ${isolates.length} unlinked ringed` : ""}`;
+    nExtHidden ? ` · ${nExtHidden.toLocaleString()} DB pages hidden` : ""}${
+    nIsoHidden ? ` · ${nIsoHidden.toLocaleString()} unlinked hidden` : ""}`;
+  syncExplorerToggles();   // reflect the auto ext/isolate decision on the chips
   if (anim) {
     const g = [gEdges, gBubbles, gOverlay, gLabels];
     for (const gr of g) gr.attr("opacity", 0).transition().duration(260).attr("opacity", 1);
@@ -2670,6 +2731,17 @@ $("#explorerbtn").addEventListener("click", () => {
   setHash(focusId || "");
   if (explorerOn) renderExplorer(true);
   else renderFocus(true);
+});
+// explorer-only toggles: pin the choice for the session, then re-lay-out. The
+// updateExplorerLabels after render keeps the toggle chips in sync via the
+// re-render (syncExplorerToggles is called from setExplorer + here).
+$("#explorer-ext").addEventListener("click", () => {
+  showExtPages = !showExtPages; explorerTogglesUser = true;
+  syncExplorerToggles(); if (explorerOn) renderExplorer(false);
+});
+$("#explorer-iso").addEventListener("click", () => {
+  showIsolates = !showIsolates; explorerTogglesUser = true;
+  syncExplorerToggles(); if (explorerOn) renderExplorer(false);
 });
 
 window.addEventListener("hashchange", () => {
