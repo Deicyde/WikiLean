@@ -13,7 +13,9 @@
 #   2. AGENTS (WIKILEAN_BRAIN_AGENTS=1, off by default): brain/sync_agents.py
 #      writes brain/proposals/*.jsonl ONLY — never brain/data.
 #   3. FOLD + BUILD: fold_proposals -> build_nodes -> build_edges ->
-#      test_acceptance (RED = abort publish, keep old shards) -> build_shards.
+#      test_acceptance (RED = abort publish, keep old shards) -> build_shards ->
+#      build_cells -> test_cells -> build_cell_shards -> test_cell_shards
+#      (the v3 atom layer; any RED aborts the publish the same way).
 #      Rollups are pinned — not rebuilt nightly.
 #   4. PUBLISH (WIKILEAN_BRAIN_DEPLOY=1): build-public, then the GATED deploy —
 #      `npm run deploy` ONLY if the checked-out branch is `main` (no detached
@@ -190,6 +192,42 @@ cd "$REPO" || exit 1
   if [ "$PUBLISH_OK" = "1" ] && ! python3 "$REPO/brain/build_shards.py"; then
     echo "!!! build_shards FAILED — publish aborted, old shards stay live"
     PUBLISH_OK=0
+  fi
+
+  # ---- the v3 ATOM layer (brain/SCHEMA.md#v3) --------------------------------
+  # Organs -> cells -> supercells -> synapses, then the cell shards the client
+  # reads. Same discipline as above: acceptance RED aborts the publish and the old
+  # shards stay live. build_cells runs the force layout (~3min), which is why the
+  # client no longer simulates anything.
+  if [ "$PUBLISH_OK" = "1" ] && ! python3 "$REPO/brain/build_cells.py"; then
+    echo "!!! build_cells FAILED — publish aborted (old cells.jsonl intact)"
+    PUBLISH_OK=0
+  fi
+  if [ "$PUBLISH_OK" = "1" ]; then
+    if python3 "$REPO/brain/test_cells.py"; then
+      echo "(cell acceptance GREEN)"
+    else
+      echo "!!! test_cells RED — publish aborted, old cell shards stay live"
+      PUBLISH_OK=0
+    fi
+  fi
+  if [ "$PUBLISH_OK" = "1" ] && ! python3 "$REPO/brain/build_cell_shards.py"; then
+    echo "!!! build_cell_shards FAILED — publish aborted, old cell shards stay live"
+    PUBLISH_OK=0
+  fi
+  if [ "$PUBLISH_OK" = "1" ]; then
+    if python3 "$REPO/brain/test_cell_shards.py"; then
+      echo "(cell shard acceptance GREEN)"
+    else
+      echo "!!! test_cell_shards RED — publish aborted, old cell shards stay live"
+      PUBLISH_OK=0
+    fi
+  fi
+  # The tagger-quality worklist: cells that ballooned via a bad AI grade. Not a
+  # gate — a signal (SCHEMA "A ballooning cell is a TAGGER signal").
+  if [ "$PUBLISH_OK" = "1" ] && [ -f "$REPO/brain/data/cell_review.jsonl" ]; then
+    n_flagged=$(( $(wc -l < "$REPO/brain/data/cell_review.jsonl") - 1 ))
+    echo "(cell_review: $n_flagged cells flagged for tagger re-grading)"
   fi
   echo
 
