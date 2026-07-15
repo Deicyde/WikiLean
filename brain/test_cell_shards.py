@@ -83,8 +83,15 @@ def main() -> int:
     # ---- S2: aliases is the compat layer. It MUST be a function (C4) and must
     # resolve the entry points v2 exposed, or /brain#Q..., the API and MCP 404.
     organs = aliases["organs"]
-    check("S2 aliases.json maps every organ id to exactly one owner",
-          all(isinstance(v, str) for v in organs.values()))
+    # "Exactly one owner" is free — a JSON object cannot map a key to two values — so
+    # asserting it proves nothing. The property with teeth is that the owner is a
+    # STRING NAMING SOMETHING THAT EXISTS, checked against both owner kinds below.
+    check("S2 aliases.json maps every organ id to a single named owner",
+          all(isinstance(v, str) and v for v in organs.values()),
+          f"{sum(1 for v in organs.values() if not isinstance(v, str) or not v)} bad values")
+    check("S2 the alias count in _meta matches the rows shipped",
+          aliases["_meta"]["counts"]["organs"] == len(organs),
+          f"_meta says {aliases['_meta']['counts']['organs']}, shipped {len(organs)}")
     for organ, want in [("Q125977", "cell:Q18848"),        # Vector space -> Module atom
                         ("decl:Mathlib:Module", "cell:Q18848"),
                         ("Vector_space", "cell:Q18848"),   # the article slug
@@ -94,7 +101,21 @@ def main() -> int:
     dangling = [o for o, owner in organs.items()
                 if owner.startswith("cell:") and resolve(owner) is None]
     check("S2 every organ's owning cell exists as a shard entry", not dangling,
-          f"{len(dangling)} organs point at a missing cell, e.g. {dangling[:3]}")
+          f"{len(organs)} organs checked; {len(dangling)} point at a missing cell, "
+          f"e.g. {dangling[:3]}")
+    # The other half of the alias space: a rule-5 organ ("Linear algebra") resolves to
+    # a SUPERCELL, not a cell. Only `cell:` owners were validated, so a path: owner
+    # naming a supercell that does not exist resolved to nothing and nobody noticed —
+    # the same 404 the cell check exists to prevent, on the minority branch.
+    sup_tree = supercells["supercells"]
+    bad_sup = sorted({owner for owner in organs.values()
+                      if owner.startswith("path:") and owner not in sup_tree})
+    check("S2 every organ's owning SUPERCELL exists in supercells.json", not bad_sup,
+          f"{len(bad_sup)} rule-5 organs point at a missing supercell, e.g. {bad_sup[:3]}")
+    stray = sorted({owner for owner in organs.values()
+                    if not owner.startswith(("cell:", "path:"))})
+    check("S2 every owner is a cell or a supercell", not stray,
+          f"unknown owner kinds: {stray[:3]}")
 
     # ---- S3: one fetch renders the card. If an organ's payload is missing the card
     # has to fan out per organ, which is the locality law this whole scheme exists
@@ -134,15 +155,68 @@ def main() -> int:
     bad = [e for e in explorer["edges"] if not (0 <= e[0] < n and 0 <= e[1] < n)]
     check("S4 every explorer edge indexes a shipped node", not bad,
           f"{len(bad)} out-of-range")
-    check("S4 the explorer is not truncated", explorer["_meta"]["truncated"] is False)
     check("S4 every explorer node carries a build-time xy",
           all(len(x.get("xy") or []) == 2 for x in explorer["nodes"]))
+
+    # "Nothing is truncated" must be MEASURED against the shipped arrays, never read
+    # back from the flag. The builder writes `"truncated": False` unconditionally and
+    # its byte-budget guard only prints a warning, so no code path can set it True:
+    # the old check asserted a literal and could not fail — if a future change ever
+    # did truncate the explorer, it would have stayed green and the phantom-ring bug
+    # would return under a green suite. So count the actual rows instead, and only
+    # then require the flag to agree with the measurement.
     counts = explorer["_meta"]["counts"]
-    total = counts["edges"] + counts["supercell_edges_on_supercells_json"]
-    check("S4 omitted supercell edges are accounted for, not dropped",
-          total == manifest["_meta"]["counts"]["synapses"],
-          f"{counts['edges']} + {counts['supercell_edges_on_supercells_json']} "
-          f"!= {manifest['_meta']['counts']['synapses']}")
+    n_edges, n_nodes = len(explorer["edges"]), len(explorer["nodes"])
+    check("S4 the explorer's arrays match the counts it advertises",
+          n_edges == counts["edges"] and n_nodes == counts["nodes"],
+          f"shipped {n_nodes} nodes/{n_edges} edges, _meta claims "
+          f"{counts['nodes']}/{counts['edges']}")
+    check("S4 every cell is a shipped explorer node",
+          n_nodes == manifest["_meta"]["counts"]["cells"],
+          f"{n_nodes} nodes != {manifest['_meta']['counts']['cells']} cells")
+    # The real property the `truncated` flag claims: every synapse in the graph is
+    # either an explorer edge or one of the declared supercell edges — none silently
+    # dropped to fit a budget.
+    total = n_edges + counts["supercell_edges_on_supercells_json"]
+    complete = total == manifest["_meta"]["counts"]["synapses"]
+    check("S4 the shipped edges + the declared supercell split == every synapse "
+          "(nothing truncated)", complete,
+          f"{n_edges} shipped + {counts['supercell_edges_on_supercells_json']} supercell "
+          f"= {total} != {manifest['_meta']['counts']['synapses']} synapses — "
+          f"{manifest['_meta']['counts']['synapses'] - total} went missing")
+    check("S4 the truncated flag agrees with the measured edge count",
+          explorer["_meta"]["truncated"] is (not complete),
+          f"_meta.truncated={explorer['_meta']['truncated']!r} but the arrays "
+          f"{'reconcile' if complete else 'do NOT reconcile'}")
+    # Independent of the counts entirely: a cell's shard says how many synapses it
+    # has; the explorer must actually carry that many (minus its supercell bonds). A
+    # builder that shipped a truncated edge array while writing honest counts would
+    # pass every check above and fail this one.
+    idx = {node["id"]: i for i, node in enumerate(explorer["nodes"])}
+    degree: dict[int, int] = {}
+    for e in explorer["edges"]:
+        degree[e[0]] = degree.get(e[0], 0) + 1
+        degree[e[1]] = degree.get(e[1], 0) + 1
+    short, sampled = [], 0
+    for cid in ["cell:Q18848", "cell:Q17295"] + all_ids[::97]:
+        cell_entry = resolve(cid)
+        # Only cells whose syn list is COMPLETE: on a capped cell the shipped rows
+        # undercount the supercell bonds among the ones the cap dropped, so the
+        # arithmetic below would not be exact.
+        if not cell_entry or cell_entry.get("truncated"):
+            continue
+        sampled += 1
+        to_super = sum(1 for s in cell_entry["syn"] if s["id"].startswith("path:"))
+        # counts.syn is the cell's true synapse total; the explorer is uncapped, so
+        # its degree must be exactly that total minus the cell's supercell bonds
+        want = cell_entry["counts"]["syn"] - to_super
+        got = degree.get(idx.get(cid, -1), 0)
+        if got != want:
+            short.append((cid, got, want))
+    check(f"S4 each cell's explorer degree matches the synapse total its shard claims "
+          f"({sampled} sampled)", not short,
+          f"{len(short)} cells disagree (id, explorer_degree, shard_says), "
+          f"e.g. {short[:3]}")
 
     # ---- S5: the containment tree the bubble view walks
     tree = supercells["supercells"]

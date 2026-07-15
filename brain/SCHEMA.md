@@ -46,14 +46,24 @@ concepts (Q82571 "Linear algebra" → `path:Mathlib/LinearAlgebra`) and area pag
  "traces": [{"kind": "depends", "src": "decl:Mathlib:Module", "dst": "decl:Mathlib:Ring",
              "evidence": {...}, "prov": 0}]}
 ```
-Every constituent bond is retained in `traces`, capped at `TRACE_CAP` (64) per
-synapse at build time and again by the shard byte budget — never silently: whatever
-a cap drops is counted in `truncated` (a COUNT, not a flag), and a shard row carries
-`tt` (the true total) only when its traces were actually trimmed. Weight drives
-prominence and counts every bond, capped or not. **`brain/query.py --full` is the
-only surface serving the untruncated set.** Supercell synapses ship traceless in
-`supercells.json` (it is fetched eagerly; carrying them would treble it) — declared
-in that file's `_meta.traces`, fetch via `/api/brain/neighborhood`.
+Every constituent bond is retained in `brain/data/synapses.jsonl` (`TRACE_CAP` = 64
+is a safety valve that has never fired — the largest synapse carries fewer). The
+SHARD then applies two FIXED caps, both declared in `manifest._meta.caps`:
+`traces_per_synapse` = 6 and `synapses_per_cell` = 200. Neither is a byte budget.
+
+Nothing is capped by magnitude alone. Both are selected **round-robin by kind, rarest
+first**, so every bond kind a synapse (or a cell) actually has is represented before
+the cap is spent on more of the commonest — sorting by weight and cutting at N buries
+exactly the rare cross-database bond the evidence UI exists to show, because rare
+kinds are weight-1 *by nature*. Whatever a cap drops is COUNTED, never silent:
+`truncated` (a count), and `tt` (the true trace total) when traces were trimmed.
+**`brain/query.py --full` is the only surface serving the untruncated set.**
+
+Supercell synapses ship traceless in `supercells.json` (it is fetched eagerly;
+carrying them would treble it) — declared in that file's `_meta.traces`.
+`/api/brain/neighborhood` hydrates ~67% of them from the partner cell's mirror row (a
+synapse ships on BOTH endpoints); the rest return `traces_unavailable` with a reason.
+It does NOT serve them unconditionally.
 
 `src`/`dst` are ordered lexicographically, not directionally: a synapse is an
 UNDIRECTED aggregate of bonds that may run either way (A depends on B while B links
@@ -96,7 +106,7 @@ through rules 2–5, which is what produced the measured 28-organ Module↔Eucli
 
 A transitive closure over rules 2–5 is FORBIDDEN: measured, it fuses
 Module↔EuclideanSpace↔plane (28 organs) and, via coarse DLMF pages, produces a
-212-organ blob. The function above yields **8,982 cells, largest 17** — no blob.
+212-organ blob. The function above yields **8,914 cells, largest 17** — no blob.
 
 ### A ballooning cell is a TAGGER signal, not a merge-rule failure
 
@@ -108,7 +118,7 @@ bad data; instead cell size is EMITTED as a diagnostic. `brain/data/cell_review.
 ranks cells by how many home-less concepts they absorbed and names the exact claim
 to re-grade, shaped to drop into `catalog/data/grounding_overrides.jsonl`.
 
-It works: of 8,982 cells only **23** flag, and they are exactly the mis-grades —
+It works: of 8,914 cells only **23** flag, and they are exactly the mis-grades —
 `Real.binEntropy` (the binary entropy *function*) absorbing "Information",
 "Information theory" AND "Entropy"; `Module.Dual` absorbing "Duality (mathematics)".
 Fix the grade, not the rule.
@@ -152,8 +162,8 @@ renders and never simulates. Two properties are load-bearing:
 
   With the cutoff (and g raised to 0.02, so the formula no longer describes the
   shipped build — there is no halo equilibrium left to predict): max/median radius
-  **42× → 3.40×**, p99/median **3.14×**, isolated-cell median radius 84,200 → ~2,400,
-  and no two cells share a point (0 exact collisions over 8,982). Regression-tested
+  **42× → 3.70×**, p99/median **3.47×**, isolated-cell median radius 84,200 → ~2,400,
+  and no two cells share a point (0 exact collisions over 8,914). Regression-tested
   (L1/L2/L3).
 
 Synapse-less cells never enter the sim (they would either halo or pile on the
@@ -173,24 +183,31 @@ C6. Every synapse carries ≥1 trace, and no synapse duplicates a cell pair.
 C7. Tag-queue organs with status `rejected` are absent; queued (AI) organs are
     provenance-distinguishable from merged `@[wikidata]` ones.
 L1. Every cell gets an `xy`.
-L2. No halo: max radius stays within 8× the median, and synapse-less cells sit near
-    the core rather than in orbit (the regression above).
+L2. No halo — guarded at MECHANISM and symptom, because the symptom alone could not
+    catch it: L2a probes the force law directly (long-range repulsion AND deleted
+    repulsion both fail), L2b settles a DETACHED component and asserts it lands
+    nowhere near the predicted halo radius √(n·k²/g). A max/median ratio is NOT a
+    sufficient guard — long-range repulsion inflates the core too, so the ratio only
+    reaches ~3.1× and slips under any stable threshold. Mutation-proven: restoring
+    the bug turns the suite RED while the old ratio checks stay green.
 L3. The layout is deterministic across rebuilds.
 
-Status: **32/32 green** (`python3 brain/test_cells.py`; the nightly aborts on red).
+Status: **36/36 green** (`python3 brain/test_cells.py`; the nightly aborts on red).
 
 ### v3 shard acceptance (brain/test_cell_shards.py) — the artifact the client reads
 
 `site/assets/brain/cells/` is built by `brain/build_cell_shards.py` and can drift from
 the atom layer independently (it trims, embeds and re-indexes), so S1–S6 check the
-shipped bytes: S1 the manifest's own documented lookup rule resolves every cell and
+shipped bytes. S1 and S6 SAMPLE (a stratified sample of cells / the first shards),
+not the full set — they are a smoke gate, not a proof: S1 the manifest's own
+documented lookup rule resolves every sampled cell and
 keys are prefix-free · S2 `aliases.json` is a function and resolves the v2 entry
 points (`Q125977`→the Module atom, `Q82571`→its folder) · S3 a cell entry is
 SELF-CONTAINED (one fetch = the whole card: Lean code, Wikidata description, DB
 snippets, breadcrumb, synapse traces) · S4 every explorer edge indexes a shipped node,
 nothing is truncated, and omitted supercell edges reconcile · S5 `supercells.json` is
 a consistent tree whose leaves are cells · S6 no licensed snippet ships without its
-licence. Status: **23/23 green**.
+licence. Status: **33/33 green**.
 
 ---
 

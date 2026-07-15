@@ -18,7 +18,7 @@ v2 rendered 73,318 nodes of five heterogeneous types. That is (a) unstructured �
 a pile of particles with no atomic unit, and (b) unrenderable — the browser
 freezes on a ~5.7k-node force sim over ~18k edges, which forced a 4,000-edge
 draw cap, which itself caused the phantom-ring bug. v3 collapses the particles
-into **8,982 cells** (3,900 multi-organ; 5,082 lone particles; largest 17 organs
+into **8,914 cells** (3,861 multi-organ; 5,053 lone particles; largest 17 organs
 — measured, `brain/data/cells.jsonl`). External pages stop being nodes and become
 organs *inside* cells, so the entire ~49k ext-node population leaves the render
 budget. Layout is precomputed at build time, so the client runs **no physics at all**.
@@ -106,7 +106,7 @@ rather than fixed by weakening the rule.
    (the common module ancestor), and the claimant cells get a weak synapse.
 5. **`field` match_kind / concept→container ⇒ supercell organ**, never a cell.
 
-Measured on live data: **8,982 cells, largest 17 organs, no blob.** (The 8,960/16
+Measured on live data: **8,914 cells, largest 17 organs, no blob.** (The 8,960/16
 figures were the pre-build validation experiment; the shipped builder adds tag-queue
 bonds, statement organs and lone particles.)
 
@@ -170,8 +170,8 @@ later phase. Validated against live data (numbers above are measured, not
 estimated).
 
 ### Phase 1 — builder ☑  `brain/build_cells.py` + `brain/layout.py` + `brain/test_cells.py`
-Measured on live data: **8,982 cells / 86,884 synapses / largest cell 17 organs**,
-built in ~5s (+3min layout). Acceptance **29/29 green** (`python3 brain/test_cells.py`).
+Measured on live data: **8,914 cells / 85,612 synapses / largest cell 17 organs**,
+built in ~5s (+3min layout). Acceptance **36/36 green** (`python3 brain/test_cells.py`).
 Hardened by an adversarial review (61 agents, 28 findings, 20 confirmed) — below.
 
 All seven planned items landed (merge function; organ attach incl. the tag queue;
@@ -202,7 +202,7 @@ still merge, given it absorbs 100 concepts (e.g. "Information" swallowing
 causes a cell to balloon to a massive size, that probably means that the AI taggers
 are doing a bad job (e.g. tagging something as special_case when it is actually a
 related / invocation)."* So the merge set is unchanged and size became a **signal**:
-only 18 of 8,982 cells flag, and they are exactly the mis-grades. The rule stays
+only 23 of 8,914 cells flag, and they are exactly the mis-grades. The rule stays
 wide; the DATA gets fixed via `grounding_overrides.jsonl`.
 
 **What the adversarial review then caught** (61 agents, 28 findings, 20 confirmed
@@ -247,12 +247,12 @@ described (C7).
 ### Phase 2 — shards ☑  `brain/build_cell_shards.py` + `brain/test_cell_shards.py`
 A NEW `cells/` namespace rather than a rewrite of `build_shards.py`: v2 keeps
 serving `/brain` while v3 lands, and phase 5 deletes the old path. It reuses
-build_shards' prefix scheme verbatim. Acceptance **23/23** (S1–S6).
+build_shards' prefix scheme verbatim. Acceptance **33/33** (S1–S6).
 
 ```
 site/assets/brain/cells/
   manifest.json    scheme + supercell roots + prov table + shard directory
-  <key>.json       1,458 prefix shards, 50.1 MB   (v2: 73,318 nodes -> 333 MB)
+  <key>.json       1,451 prefix shards, 50.3 MB   (v2: 73,318 nodes -> 333 MB)
   aliases.json     16,816 organ ids -> owning atom  (the v2->v3 compat layer)
   labels.json      8,914 atoms, `aka` = every organ label (search)
   supercells.json  the containment tree; leaves are CELLS; + rule-5 organs/synapses
@@ -260,8 +260,10 @@ site/assets/brain/cells/
 ```
 
 - **One fetch renders the whole card.** Organ payloads are embedded, not referenced:
-  Lean docstring + code, the Wikidata description, licensed DB snippets (40,641 have
-  one), article annotation counts. That is axis 3's "clicking a concept shows the Lean
+  Lean docstring + code, the Wikidata description, licensed DB snippets (**1,496**
+  embedded — 40,641 ext NODES carry one in the organ layer, but v3 keeps only the
+  pages that became organs of an atom; the rest are the deliberate frontier drop),
+  article annotation counts. That is axis 3's "clicking a concept shows the Lean
   code, the article, the LMFDB knowl, the Stacks description" — in a single request.
 - **The explorer ships COMPLETE.** Edges are index triples `[i, j, w]` into `nodes`,
   not `{src,dst}` id objects — ids average ~11 chars and repeat twice per edge, so

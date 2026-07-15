@@ -708,11 +708,21 @@ function drawNodes() {
       : ((l.data.f || 0) & 1 ? " — carries a hand-written @[wikidata] tag" : "")));
 }
 
+// Cell labels in the level views get the SAME treatment the explorer's do:
+// ranked once, then budgeted by zoom (updateLevelLabels). Without it a level that
+// has no sub-folders draws every label at once — the `__unplaced__` bucket packs
+// 1,516 equal-value cells into the stage, so every one clears the r>=5 gate and
+// ~94% of the labels overlap another (measured: 1,516 shown, 100% overlapping at
+// a 794x676 stage). The STRAYS collapse that protects every other level needs
+// `folders.length`, and that bucket has none, so it never fires there — and it is
+// the only tree-browsable surface for the 17% of atoms with no formal home, the
+// one rootsPanel advertises as "Browse them".
 function drawLabels() {
   gLabels.selectAll("*").remove();
   // ego lays labels flat under the node (edge-first); level views set them
   // inside/over the bubble (containment-first)
   const flat = layout && layout.ego;
+  const cells = [];
   for (const l of layout.leaves) {
     if (l.data.type === "folder") {
       if (!flat && l.r < 24) continue;
@@ -729,12 +739,74 @@ function drawLabels() {
       continue;
     }
     if (!flat && l.r < 5) continue;
-    const raw = l.data.label || l.data.id;
-    gLabels.append("text").attr("class", "blabel")
-      .attr("x", l.x).attr("y", l.y + Math.max(l.r, 3) + 10).attr("font-size", 9)
-      .text(raw.length > 26 ? raw.slice(0, 24) + "…" : raw);
+    cells.push(l);
   }
+  // Rank: biggest first, then gold @[wikidata] atoms, then label. The size tiebreak
+  // matters — the unplaced pack gives every cell an identical radius, so radius
+  // alone would rank arbitrarily; this puts the hand-tagged atoms in the budget
+  // first and is deterministic (the map can be learned), like the rest of v3.
+  cells.sort((a, b) => (b.r - a.r) ||
+    (((b.data.f || 0) & 1) - ((a.data.f || 0) & 1)) ||
+    String(a.data.label || a.data.id).localeCompare(String(b.data.label || b.data.id)));
+  cells.forEach((l, i) => {
+    const raw = l.data.label || l.data.id;
+    gLabels.append("text").attr("class", "blabel clab")
+      .attr("x", l.x).attr("y", l.y + Math.max(l.r, 3) + 10)
+      .attr("data-rank", i)
+      .text(raw.length > 26 ? raw.slice(0, 24) + "…" : raw);
+  });
+  // the pack's median cell radius, cached HERE and not recomputed per zoom tick:
+  // updateLevelLabels runs on every frame of a zoom gesture, and re-sorting 1,516
+  // leaves at 60fps to learn a number that only changes when the pack does is
+  // exactly the kind of per-frame work this view has no reason to pay for
+  layout.cellR = cells.length ? cells.map(l => l.r).sort((a, b) => a - b)[cells.length >> 1] : 0;
+  updateLevelLabels(d3.zoomTransform(svg.node()).k);
 }
+// The level views' twin of updateExplorerLabels — same budget shape, same
+// screen-space font size, for the same reason.
+//
+// FOLDER labels stay in layout units: a folder's radius IS its cell count and its
+// label is sized to fit inside it, so that text is geometry and must keep scaling
+// with the zoom. A CELL label is annotation, not geometry. Pinning it to the screen
+// is what makes zooming DE-CLUTTER: a level view is otherwise scale-invariant (dots,
+// gaps and labels all multiply by k together), so magnifying it never separates two
+// overlapping labels — you just get bigger overlapping labels. Pin the text and the
+// gaps grow while it doesn't, which is exactly the room the budget then spends.
+const CELL_LABEL_PX = 9;      // == the previous literal, so k=1 renders unchanged
+// Budget at k=1, tuned by MEASUREMENT on the pathological level (`__unplaced__`,
+// 1,516 cells packed to r=7.5 in a 794x676 stage), counting pairwise
+// getBoundingClientRect intersections of the RENDERED labels:
+//   all 1,516 (before) 100% overlap · 250 -> 73% · 90 -> 53% · 40 -> 28% · 24 -> 8%
+// so 24 is the knee. It scales with k^2 exactly as the explorer's 600 does.
+const LEVEL_LABEL_BUDGET = 24;
+// ...but ONLY where the pack is too dense to label honestly, which is why this is
+// gated rather than global. A pack that fills the stage with n cells is a regular
+// lattice: its labels are evenly spaced and mostly clear each other. Subsampling a
+// DENSE pack instead picks spatially random points, so the survivors clump. Measured
+// (labels shown / % overlapping / legible = shown-overlapping):
+//   Group/Defs (49 cells, spacing 73px)  all 49 -> 18% -> 40 legible
+//                                        budget 24 -> 17% ->  20 legible   <- a REGRESSION
+//   __unplaced__ (1,516, spacing 15px)   all 1,516 -> 100% -> ~95 buried in a text wall
+//                                        budget 24 ->  8% ->  22 legible   <- the fix
+// So an ungated budget would hide 25 perfectly readable labels on Group/Defs to fix a
+// level it doesn't share a problem with. Gate on the pack's own on-screen spacing:
+// above the threshold the lattice carries its labels, so show them all and change
+// nothing; below it, subsampling is the only way to be legible at all.
+const SPACING_OK_PX = 55;     // 2*r*k at which a lattice's labels stop colliding
+function updateLevelLabels(k) {
+  if (!layout || layout.explorer) return;
+  const sel = gLabels.selectAll("text.clab");
+  const n = sel.size();
+  if (!n) return;
+  const spacing = 2 * (layout.cellR || 0) * (k || 1);
+  const lim = spacing >= SPACING_OK_PX ? n
+    : Math.max(12, Math.min(n, Math.round(LEVEL_LABEL_BUDGET * k * k)));
+  sel.attr("display", function () { return Number(this.dataset.rank) < lim ? null : "none"; })
+     .attr("font-size", CELL_LABEL_PX / (k || 1));
+}
+zoomBehav.on("zoom.lvlabels", ev => {
+  if (layout && !layout.explorer) updateLevelLabels(ev.transform.k);
+});
 
 // ---- facet filter (the f bitmask; SCHEMA v2 `f` / v3 `fa`) ------------------
 // Chips OR together; a CELL shows iff (f & mask) != 0. A FOLDER survives on its
@@ -1265,6 +1337,42 @@ const XREF_NAME = {mathworld: "MathWorld", nlab: "nLab", proofwiki: "ProofWiki",
   eom: "Encyclopedia of Math", planetmath: "PlanetMath", metamath: "Metamath",
   lmfdb_knowl: "LMFDB", oeis: "OEIS", dlmf: "DLMF", msc: "MSC",
   stacks: "Stacks Project", kerodon: "Kerodon"};
+// Whether a source's LICENCE permits storing its text — mirrors
+// catalog/data/source_registry.json `crossref_sources.<db>.ingest.snippets`, the
+// single source of truth (and nodes.jsonl `_meta.licenses.external`, which names
+// mathworld/dlmf/eom/kerodon as the no-content sources).
+//
+// This is a PER-SOURCE POLICY and it is NOT the same question as "did this organ
+// ship with text". Conflating the two is a licensing LIE, and it fires constantly:
+// all 296 supercell area-page organs are snippet-stripped for supercells.json's
+// eager-fetch byte budget, and 160 of them come from sources that expressly permit
+// their text (stacks 106, proofwiki 27, nlab 22, planetmath 5). Stacks is GFDL and
+// the text is sitting in catalog/data/external/stacks_pages.jsonl — telling a
+// reader Stacks' licence forbids quoting it defames the source, and licensing
+// honesty is this project's whole point. Distinguish the two cases; never guess.
+const DB_SNIPPETS = {
+  nlab: true, proofwiki: true, lmfdb_knowl: true, oeis: true, planetmath: true,
+  stacks: true,                                    // ingest.snippets: true
+  mathworld: false, eom: false, dlmf: false, kerodon: false,   // ingest.snippets: false
+};
+// Why is there no text here? Two different facts, and they must never read alike.
+// Returns null when we genuinely do not know the source's policy — in which case we
+// say only what we can see (it isn't in this shard), never what the licence allows.
+function snippetAbsence(db) {
+  const name = XREF_NAME[db] || db || "this source";
+  if (DB_SNIPPETS[db] === false)
+    return {licensed: false, short: `no stored content — ${name}'s licence permits ids, titles and links only`,
+            prose: `stores ids, titles and links only — ${name}'s licence permits no more`};
+  if (DB_SNIPPETS[db] === true)
+    return {licensed: true, short: `${name}'s licence permits its text, but this snippet wasn't carried into this shard`,
+            prose: `permits its text under its own licence, but this snippet wasn't carried into this shard`};
+  return {licensed: null, short: `no text in this shard`,
+          prose: `has no text stored in this shard`};
+}
+// The pointer to the surface that DOES serve the text — only ever shown when the
+// licence actually permits it (or when we don't know), never as a promise the
+// source's terms forbid us to keep.
+const SNIP_API = `fetch it from <code>/api/brain/snippets</code>`;
 const XREF_URL = {
   mathworld: v => `https://mathworld.wolfram.com/${v}.html`,
   nlab: v => `https://ncatlab.org/nlab/show/${encodeURIComponent(v)}`,
@@ -1418,15 +1526,22 @@ function linkTraceHtml(ev, ctx) {
   return `<div class="ev-trace">${steps}</div>${snip}`;
 }
 
-function evidenceProse(kind, ev, prov, dir, otherId, ctx) {
+// The prose behind ONE trace. `kind` is always a TRACE kind (the single call site
+// is the synapse drawer), and in v3 that set is closed and measured: over all
+// 115,174 traces in brain/data/synapses.jsonl the kinds are depends, links,
+// mentions, cites, relates, co-page, co-statement, invocation, related,
+// special_case, generalization — and nothing else. The v2 organ-level bonds
+// (`formalizes`, `matches`, `xref`) moved INSIDE the cell and are rendered by
+// organHtml/bondChip, so their branches here were ~90 lines of stale carry-over
+// that read as live contract: a future edit to how a cross-database identity is
+// worded would plausibly have been made in the dead `xref` branch and silently had
+// no effect. Deleted. Anything unforeseen falls through to the generic tail below.
+function evidenceProse(kind, ev, prov, otherId, ctx) {
   ev = ev || {};
-  const inbound = dir === "in";
   let lead = "", detail = "";
 
   if (kind === "depends") {
-    lead = inbound
-      ? `<b>Formal dependency.</b> Declarations on the other side use this one in their proofs.`
-      : `<b>Formal dependency.</b> The proofs on the left use the declaration on the right.`;
+    lead = `<b>Formal dependency.</b> The proofs on the left use the declaration on the right.`;
     const wt = ev.w_types || {}, bits = [];
     if (wt.sig) bits.push(`${wt.sig.toLocaleString()} statement-level references`);
     if (wt.proof) bits.push(`${wt.proof.toLocaleString()} uses inside proofs`);
@@ -1453,30 +1568,6 @@ function evidenceProse(kind, ev, prov, dir, otherId, ctx) {
     if (ev.verified_by) d.push(`existence oracle: <b>${esc(ev.verified_by)}</b>`);
     detail += evList(d);
     if (ev.grounding_note) detail += `<div class="ev-sub">“${esc(ev.grounding_note)}”</div>`;
-  } else if (kind === "formalizes") {
-    if (ev.role) {                                   // annotation-sourced
-      const n = ev.n_annotations || (ev.sample ? ev.sample.length : 1);
-      lead = `<b>Formal ↔ informal join.</b> ${n} WikiLean article annotation${n > 1 ? "s" : ""} name this Lean declaration as the formalization of the concept.`;
-      if (ev.sample && ev.sample.length)
-        detail = evList(ev.sample.filter(s => s.label).map(s => `“${esc(s.label)}” — ${statusChip(s.status)}`));
-    } else if ((prov && String(prov.method || "").includes("@[")) || ev.source_tagged) {
-      lead = `<b>Formal ↔ informal join.</b> A person wrote this match into the Mathlib source as an <code>@[wikidata]</code> attribute — the declaration is asserted to formalize the concept.`;
-      if (ev.match_kind) detail = `<div class="ev-sub">match type: <b>${esc(MK_LABEL[ev.match_kind] || ev.match_kind)}</b></div>`;
-    } else if ((prov && prov.method === "container_links") || ev.match_kind === "field") {
-      lead = `<b>Formal ↔ informal join.</b> This concept is a field of study, linked to the Mathlib area that formalizes it — a deterministic altitude link from Wikidata, not an AI guess.`;
-    } else {
-      // agent-grounded match: verified against the oracle; only claim skeptic
-      // review when the provenance/evidence actually records it (never fabricate)
-      const reviewed = (prov && String(prov.method || "").includes("verified")) ||
-        (ev.skeptic && ev.skeptic !== "pending");
-      lead = `<b>Formal ↔ informal join.</b> An AI agent proposed that this Lean declaration formalizes the concept, and the declaration was verified to exist in Mathlib${
-        reviewed ? "; the match also passed skeptic review" : ""}.`;
-      const d = [];
-      if (ev.match_kind) d.push(`match type: <b>${esc(MK_LABEL[ev.match_kind] || ev.match_kind)}</b>`);
-      if (ev.skeptic === "pending") d.push(`skeptic review: <b>pending</b>`);
-      detail += evList(d);
-      if (ev.grounding_note) detail += `<div class="ev-sub">“${esc(ev.grounding_note)}”</div>`;
-    }
   } else if (kind === "relates") {
     lead = `<b>Wikidata relation.</b> Wikidata records a direct relationship between these two concepts.`;
     const props = ev.properties || [];
@@ -1521,8 +1612,6 @@ function evidenceProse(kind, ev, prov, dir, otherId, ctx) {
     lead = `<b>Stated in the literature.</b> This result appears in the mathematical literature; ${judgeVerdict(ev)}.`;
     if (ev.via_decls && ev.via_decls.length)
       detail = `<div class="ev-sub">via ${ev.via_decls.slice(0, 3).map(d => `<code>${esc(shortDecl(d))}</code>`).join(", ")}</div>`;
-  } else if (kind === "matches") {
-    lead = `<b>Formal ↔ literature match.</b> A Lean declaration was matched to an informal statement in the literature; ${judgeVerdict(ev)}.`;
   } else if (kind === "links") {
     const db = ev.via || (ctx && ctx.fromId && ctx.fromId.startsWith("xref:") ? extDbOf(ctx.fromId)
       : otherId && otherId.startsWith && otherId.startsWith("xref:") ? extDbOf(otherId) : null);
@@ -1532,20 +1621,6 @@ function evidenceProse(kind, ev, prov, dir, otherId, ctx) {
       : `<b>Page link.</b> One page hyperlinks the other inside <b>${esc(dbName)}</b>${
           ev.context ? `, in the ${esc(ev.context)}` : ""} — the trace below shows which and quotes the linking page:`;
     detail = linkTraceHtml(ev, ctx);
-  } else if (kind === "xref") {
-    // name the actual database + page: the ext endpoint is xref:<db>:<value>
-    const xid = (ctx && ctx.toId && ctx.toId.startsWith("xref:")) ? ctx.toId
-      : (ctx && ctx.fromId && ctx.fromId.startsWith("xref:")) ? ctx.fromId
-      : (otherId && otherId.startsWith && otherId.startsWith("xref:")) ? otherId : null;
-    const db = xid ? extDbOf(xid) : null;
-    const dbName = db ? (XREF_NAME[db] || db) : null;
-    const val = ev.value !== undefined ? String(ev.value) : (xid ? extValueOf(xid) : null);
-    lead = `<b>Cross-database identity.</b> Catalogued in <b>${
-      esc(dbName || "another database")}</b>${val ? ` as <code>${esc(val)}</code>` : ""} — the same object, entered there too.`;
-    const d = [];
-    if (ev.property) d.push(`via Wikidata property <span class="pin">${esc(ev.property)}</span>`);
-    else if (prov && String(prov.method || "").startsWith("@[")) d.push(`from an <code>${esc(prov.method.split(" ")[0])}</code> attribute in the Mathlib source`);
-    if (d.length) detail = evList(d);
   } else {
     lead = esc((EDGE_STYLE[kind] && EDGE_STYLE[kind].label) || kind);
   }
@@ -1621,8 +1696,13 @@ async function enrichEvidence(root) {
       box.innerHTML = `“${esc(o.snippet)}”<span class="cite">— from “${esc(title)}” on ${
         esc(dbName)} · ${esc(o.snippet_license)}${link}</span>`;
     } else {
-      // no-content source (MathWorld/DLMF/EoM/Kerodon) — link out, no quote
-      box.innerHTML = `<span class="cite">“${esc(title)}” on ${esc(dbName)} stores no reusable text here.${link}</span>`;
+      // No text. Which reason? EVERY co-page trace lands here (rule 4 routes a
+      // multi-claimant page to a SUPERCELL, whose organs ship snippet-stripped),
+      // so "the licence forbids it" would be a lie on most of them — see
+      // DB_SNIPPETS. Say the true thing and point at the surface that has it.
+      const a = snippetAbsence(db);
+      box.innerHTML = `<span class="cite">“${esc(title)}” on ${esc(dbName)} ${
+        esc(a.prose)}${a.licensed === false ? "." : ` — ${SNIP_API}.`}${link}</span>`;
     }
   });
 }
@@ -1734,20 +1814,32 @@ function organHtml(o, anchor) {
             <span class="badge n">${aa.not_formalized} not</span>` : ""}
       <span class="chip"><a href="https://en.wikipedia.org/wiki/${esc(o.id)}" rel="noopener" target="_blank">Wikipedia</a></span></div>`;
   } else if (o.kind === "page") {
-    // A snippet NEVER renders without its licence. No-content sources
-    // (MathWorld/DLMF/EoM/Kerodon) ship ids + titles + links only, by their
-    // license — say that instead of quoting.
+    // A snippet NEVER renders without its licence. When there is no text, say
+    // WHICH of the two reasons applies — see DB_SNIPPETS: a licence that permits
+    // ids/titles/links only is a fact about the SOURCE; a missing snippet on an
+    // area-page organ is a fact about THIS SHARD, and the text is a call away.
+    const readLink = url
+      ? ` · <a href="${esc(url)}" rel="noopener" target="_blank">read at ${
+        esc(XREF_NAME[o.db] || o.db)} ↗</a>` : "";
     if (o.snippet && o.snippet_license)
       body += `<div class="snip">${esc(o.snippet)}</div>
-        <div class="srclic">${esc(o.snippet_license)}${
-        url ? ` · <a href="${esc(url)}" rel="noopener" target="_blank">read at ${
-        esc(XREF_NAME[o.db] || o.db)} ↗</a>` : ""}</div>`;
-    else
-      body += `<div class="srclic">no stored content — ${esc(XREF_NAME[o.db] || o.db)}'s
-        license permits ids, titles and links only${
-        url ? ` · <a href="${esc(url)}" rel="noopener" target="_blank">read it at the source ↗</a>` : ""}</div>`;
+        <div class="srclic">${esc(o.snippet_license)}${readLink}</div>`;
+    else {
+      const a = snippetAbsence(o.db);
+      body += `<div class="srclic">${esc(a.short)}${
+        a.licensed === false ? "" : ` — ${SNIP_API}`}${readLink}</div>`;
+    }
     if (o.kind_hint) body += `<p class="osub">${esc(o.kind_hint)}</p>`;
-    if (o.claimants) body += `<p class="osub">claimed by ${o.claimants} atoms — an area page (SCHEMA rule 4)</p>`;
+    // `claimants` ships as an ARRAY of the claiming cell ids (SCHEMA rule 4 — 121
+    // of the 296 supercell organs carry one), so interpolating it where a COUNT
+    // belongs splices the raw comma-joined ids into the sentence. Count them, and
+    // escape the ids into the tooltip — this was the one interpolation in organHtml
+    // that bypassed esc().
+    const cl = Array.isArray(o.claimants) ? o.claimants
+      : (o.claimants ? [o.claimants] : []);
+    if (cl.length)
+      body += `<p class="osub" title="${esc(cl.join(", "))}">claimed by ${cl.length} atom${
+        cl.length === 1 ? "" : "s"} — an area page (SCHEMA rule 4)</p>`;
   } else if (o.kind === "statement") {
     body += `<p class="osub">appears as <b>${esc(o.ref || "?")}</b> of
       <a href="${esc(organUrl(o.id))}" rel="noopener" target="_blank">${esc(o.arxiv_id || o.id)}</a>${
@@ -1825,10 +1917,9 @@ async function renderCellPanel(id, e) {
       trunc ? ` shown of ${nSyn.toLocaleString()}` : ""})</span></h3>`;
     syn.slice(0, 40).forEach((s, i) => {
       const st = EDGE_STYLE[dominantKind(s.kinds)] || {color: SYN_COLOR};
-      const other = (labelById && labelById.get(s.id)) || null;
       html += `<div class="edge"><div class="row" data-syn="${i}">
         <span style="color:${st.color}">●</span>
-        <span>${esc((other && other.label) || s.id)}</span>
+        <span>${esc(synLabel(s.id))}</span>
         <span class="mk">${esc(Object.keys(s.kinds || {}).join(", "))}</span>
         <span class="prov" title="the number of constituent bonds">weight ${s.w}</span></div></div>`;
     });
@@ -1867,6 +1958,19 @@ async function synBetween(a, b) {
     if (s) return {a, b, w: s.w, kinds: s.kinds || {}, traces: s.traces || [], tt: s.tt};
   }
   return null;
+}
+// The label for a synapse's FAR ENDPOINT, which may legitimately be a supercell:
+// a field concept's bonds hang off the module that holds it (SCHEMA rule 5), so
+// 7,173 syn rows across 1,731 cells (19.4%) carry a `path:` id. labels.json holds
+// cells only (all 8,914 ids are `cell:`-prefixed), so labelById can NEVER resolve
+// one — the raw id would leak into a reading surface whose whole premise is prose,
+// and the drawer one click away would then name the same endpoint differently.
+// The synchronous twin of labelOf(); cellItem() and renderSupercellPanel() branch
+// the same way.
+function synLabel(id) {
+  if (isPathId(id)) return ((tree.sc || {})[id] || {}).label || id.slice(5);
+  const r = labelById && labelById.get(id);
+  return (r && r.label) || id;
 }
 async function labelOf(id) {
   if (isPathId(id)) return ((tree.sc || {})[id] || {}).label || id;
@@ -1922,7 +2026,7 @@ async function showSynapsePanel(a, b, syn) {
         <span class="mk">${esc(st.label)}</span>
         <span class="prov ${pc}" title="${esc(PROV_TITLE[pc])}">${pc}</span></div>
         <div class="drawer" style="display:block">${
-          evidenceProse(t.kind, t.evidence, prov, "out", t.dst, ctx)}</div></div>`;
+          evidenceProse(t.kind, t.evidence, prov, t.dst, ctx)}</div></div>`;
     }
     if (syn.tt && syn.tt > traces.length)
       html += `<div class="more">${syn.tt - traces.length} further trace${
@@ -2092,10 +2196,8 @@ async function renderSupercellPanel(p) {
       (sc.counts && sc.counts.syn && sc.counts.syn > syn.length) ? ` of ${sc.counts.syn.toLocaleString()}` : ""})</span></h3>`;
     syn.slice(0, 30).forEach((s, i) => {
       const st = EDGE_STYLE[dominantKind(s.kinds)] || {color: SYN_COLOR};
-      const other = isPathId(s.id) ? ((tree.sc[s.id] || {}).label || s.id)
-        : (((labelById && labelById.get(s.id)) || {}).label || s.id);
       html += `<div class="edge"><div class="row" data-scsyn="${i}">
-        <span style="color:${st.color}">●</span><span>${esc(other)}</span>
+        <span style="color:${st.color}">●</span><span>${esc(synLabel(s.id))}</span>
         <span class="mk">${esc(Object.keys(s.kinds || {}).join(", "))}</span>
         <span class="prov">weight ${s.w}</span></div></div>`;
     });
@@ -2315,6 +2417,43 @@ async function explorerFocusFor(rawId) {
   }
   return ROOTS_ID;
 }
+// The camera's extent: where does the MASS of the graph end? Takes the sorted
+// radii about the median centre and returns the radius at which the cell density
+// collapses — the edge of the core, not the edge of the data.
+//
+// Bins by a scale-free width (p50/4, so it works at any scope's size), finds the
+// densest annulus, then walks outward and cuts at the first bin holding less than
+// FIT_DROP of the peak. Guard rails on both sides: never frame less than FIT_FLOOR
+// of the cells (a scope with no gap must not get clipped to its mode), and never
+// chase a lone outlier past p99.
+//
+// Measured on the shipped explorer.json against the old FIT_PCTL=0.97, as
+// (p90 / rFit) — "how much of the frame radius the readable 90% fills", where 1.0
+// is a full stage:
+//   all libraries   0.56 -> 1.01   (rFit 2,731 -> 1,514; 89.9% framed; 1.80x zoom)
+//   NumberTheory    0.41 -> 0.98   (2,915 -> 1,209; 91.2%)      Combinatorics 0.50 -> 1.16
+//   SetTheory       0.51 -> 1.23   (2,005 ->   833; 85.2%)      Topology      0.63 -> 0.92
+//   LinearAlgebra   0.82 -> 0.92   (1,410 -> 1,262; 94.1%)      Data          0.88 -> 0.86
+// Every scope frames >=85% of its cells, and the scopes that had no band (Data,
+// Analysis) are left essentially where they were — which is the point: the rule
+// reacts to the data instead of to a constant.
+const FIT_DROP = 0.20;    // a bin below this share of the peak = the core has ended
+const FIT_FLOOR = 0.85;   // always frame at least this fraction of the cells
+const FIT_CAP = 0.99;     // never let a single outlier set the extent
+function fitRadius(rad) {
+  const n = rad.length;
+  const at = q => rad[Math.min(n - 1, Math.floor(n * q))];
+  const w = at(0.5) / 4;
+  if (!(w > 0) || n < 8) return at(FIT_CAP);          // degenerate/tiny scope
+  const nb = Math.floor(rad[n - 1] / w) + 1;
+  const cnt = new Array(nb).fill(0);
+  for (const r of rad) cnt[Math.min(nb - 1, Math.floor(r / w))]++;
+  let peak = 0, pi = 0;
+  for (let i = 0; i < nb; i++) if (cnt[i] > peak) { peak = cnt[i]; pi = i; }
+  let cut = nb;
+  for (let i = pi + 1; i < nb; i++) if (cnt[i] < FIT_DROP * peak) { cut = i; break; }
+  return Math.min(Math.max(cut * w, at(FIT_FLOOR)), at(FIT_CAP));
+}
 async function renderExplorer(anim) {
   const seq = ++renderSeq;
   await ensureTree();
@@ -2386,17 +2525,26 @@ async function renderExplorer(anim) {
   // failure as the layout halo (an extreme minority dictating the view), just moved
   // into the camera.
   //
-  // So fit to a robust extent (FIT_PCTL of cells by distance from the median centre)
-  // and let the stragglers fall outside — panning still reaches them, and they are
-  // never hidden, only off-frame at rest.
+  // A FIXED percentile does not fix that — it only moves the threshold, and it is
+  // still a minority-sensitive statistic whenever the minority is BIGGER than
+  // 1-FIT_PCTL. FIT_PCTL=0.97 was tuned on Mathlib/LinearAlgebra, where the
+  // stragglers are 5% — but at "all libraries" 7.7% of cells sit in the layout's
+  // tidy outer band (SCHEMA: synapse-less cells with no supercell are parked
+  // there), which is more than the 3% the constant discards. Measured on the
+  // shipped explorer.json: p90=1,524 but p97=2,731 — rFit lands INSIDE the band and
+  // the band sets the zoom anyway, so the 90% worth reading filled 1,524/2,731 =
+  // 56% of the frame radius and drew 1.8x smaller than it needed to.
+  //
+  // So detect the band instead of assuming its size. The radius histogram has a
+  // real gap — 89.8% of cells at r<=1,500, then a near-empty shell, then the band —
+  // so walk outward from the densest annulus and cut where the density COLLAPSES.
+  // That adapts to each scope rather than hard-coding one scope's minority.
   const W = stageEl.clientWidth || 800, H = stageEl.clientHeight || 600;
   if (leaves.length) {
-    const FIT_PCTL = 0.97;
     const mid = a => a.length ? a.slice().sort((p, q) => p - q)[a.length >> 1] : 0;
     const cx = mid(leaves.map(l => l.x)), cy = mid(leaves.map(l => l.y));
     const rad = leaves.map(l => Math.hypot(l.x - cx, l.y - cy)).sort((a, b) => a - b);
-    const rFit = Math.max(rad[Math.min(rad.length - 1,
-      Math.floor(rad.length * FIT_PCTL))], 1);
+    const rFit = Math.max(fitRadius(rad), 1);
     const pad = leaves[0] ? leaves[0].r * 2 : 0;
     const bw = (rFit + pad) * 2, bh = bw;
     const k = Math.max(0.02, Math.min(2, Math.min((W - 70) / bw, (H - 70) / bh)));
