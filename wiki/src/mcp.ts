@@ -22,6 +22,8 @@ import {
   searchFor,
   snippetsFor,
   transferFor,
+  SYNAPSE_KINDS,
+  SYNAPSE_KINDS_CSV,
   type ApiResult,
 } from "./brain-api.js";
 
@@ -48,9 +50,13 @@ const INSTRUCTIONS =
   "not a cell). All weak bonds between two atoms aggregate into ONE SYNAPSE carrying " +
   "weight, a kinds histogram and every trace (each trace keeps its own direction, " +
   "provenance and evidence) — so synapses are undirected and there is no dir argument. " +
-  "IDS: pass ANY organ id (Q<digits>, decl:<Lib>:<Name>, xref:<db>:<id>, an article " +
-  "slug, lit:<arxiv>#<ref>) or an atom id (cell:…, path:…) to any tool — they all " +
-  "resolve to the owning atom. " +
+  "IDS: pass an organ id (Q<digits>, decl:<Lib>:<Name>, xref:<db>:<id>, an article " +
+  "slug, lit:<arxiv>#<ref>) or an atom id (cell:…, path:…) to any tool and it resolves " +
+  "to the owning atom. Every concept, declaration, folder and article slug resolves. Two " +
+  "v2 populations deliberately have NO atom and 404 with a `reason`: external pages no " +
+  "cell claims (v3 dropped ~46k unanchored frontier pages; an anchored xref: page does " +
+  "resolve) and arXiv PAPER ids (lit:<arxiv> without #ref) — only statements a cell claims " +
+  "are organs. A 404 there means 'no atom owns this', not 'unknown to the Brain'. " +
   "Mid-proof workflow: brain_transfer jumps informal↔formal (concept text → ranked " +
   "Mathlib decls with docs URLs, or decl name → concepts/articles); decl_exists " +
   "verifies a decl name is real before citing it; brain_cell shows everything known " +
@@ -142,9 +148,17 @@ export const TOOLS: ToolDef[] = [
       "`traces_total`, and the `traces` themselves: {kind, src, dst, prov, evidence}, " +
       "where src/dst are the ORGAN ids that witnessed the bond and each trace keeps " +
       "its own direction. A synapse is UNDIRECTED (A may depend on B while B links A), " +
-      "so there is no dir argument — read the traces for direction. kinds is a CSV " +
-      "subset of depends, links, relates, cites, mentions, invocation, formalizes, " +
-      "matches; traces=false gives a compact partner list. Accepts any organ id.",
+      "so there is no dir argument — read the traces for direction. kinds is a CSV subset " +
+      `of exactly these ${SYNAPSE_KINDS.length}: ${SYNAPSE_KINDS_CSV}. ` +
+      "'formalizes'/'matches' are NOT synapse kinds — the merge function consumes them as " +
+      "organ attachments (an exact formalizes fuses a concept and a decl into ONE cell), so " +
+      "read them off an organ's `bond` via brain_cell; asking for them here matches nothing. " +
+      "'co-page'/'co-statement' are the rule-4 shared-page / shared-arXiv-statement relations. " +
+      "traces=false gives a compact partner list. A supercell's traces are hydrated from the " +
+      "partner cells' shards; a row that names `traces_unavailable` has evidence this endpoint " +
+      "cannot reach (brain/query.py --full serves it) — it is NOT an unwitnessed bond. " +
+      "`withheld_by_shard` counts synapses the shard cap withheld, and `truncated` is true " +
+      "whenever any synapse is missing. Accepts any organ id.",
     inputSchema: obj(
       {
         id: { type: "string", description: "atom id (cell:… / path:…) or any organ id" },

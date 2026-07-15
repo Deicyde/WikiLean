@@ -21,11 +21,22 @@
 // MCP endpoint (src/mcp.ts) calls the SAME code paths — the two surfaces cannot
 // drift.
 //
-// **aliases.json is the compat layer**: every v2 entry point (a QID, a decl id
-// or bare name, an article slug, an `xref:` page id, a `lit:` statement) maps to
-// the atom that owns it, so nothing that resolved before the cell cut 404s now.
-// A rule-5 field concept resolves to a SUPERCELL (Q82571 → path:Mathlib/
-// LinearAlgebra), which is why every route speaks `Atom = cell | supercell`.
+// **aliases.json is the compat layer**: a v2 entry point (a QID, a decl id or
+// bare name, an article slug, an `xref:` page id, a `lit:` statement) maps to
+// the atom that owns it. A rule-5 field concept resolves to a SUPERCELL (Q82571
+// → path:Mathlib/LinearAlgebra), which is why every route speaks
+// `Atom = cell | supercell`.
+//
+// It is NOT total, and the older claim here — "nothing that resolved before the
+// cell cut 404s now" — was false by 47,990 of the v2 index's 66,746 ids. What
+// holds, measured against site/assets/brain/labels.json: every v2 concept
+// (2,674 QIDs), decl (3,303) and container (9,052 paths) resolves, and so does
+// every article slug. What does not is exactly what v3 DROPPED on purpose
+// (docs/BRAIN-V3.md "Dropped in v3"): 45,996 unanchored frontier ext pages
+// (anchored ones — 3,610 — still resolve) and 1,994 arXiv paper nodes. Those
+// 404 with a `reason` naming the drop (see droppedInV3); they never pretend the
+// id is unknown. `/api/brain/node` still serves them from the v2 shards, which
+// is why the two route families answer differently for the same id.
 //
 // Everything here is shard/asset-backed and safe to cache for the nightly
 // rebuild cadence (Cache-Control public, max-age=3600).
@@ -244,6 +255,34 @@ async function cellEntry(c: Ctx, id: string): Promise<CellEntry | null> {
   return entry ? (entry as CellEntry) : null;
 }
 
+// Many cell entries at once, grouped by shard so N partners living in ONE shard
+// cost ONE fetch (the supercell-trace hydration below is the only caller, and
+// its fan-out is what has to stay bounded).
+async function cellEntries(c: Ctx, ids: string[]): Promise<Map<string, CellEntry>> {
+  const out = new Map<string, CellEntry>();
+  const manifest = await cellsManifest(c);
+  if (!manifest?.shards) return out;
+  const byShard = new Map<string, string[]>();
+  for (const id of ids) {
+    const key = declShardFor({ scheme: manifest.scheme, shards: manifest.shards }, id);
+    if (!key) continue;
+    const want = byShard.get(key);
+    if (want) want.push(id);
+    else byShard.set(key, [id]);
+  }
+  await Promise.all(
+    [...byShard].map(async ([key, want]) => {
+      const shard = await assetJson<Record<string, unknown>>(c, `${CELLS}/${key}.json`);
+      if (!shard) return;
+      for (const id of want) {
+        const e = own(shard, id);
+        if (e) out.set(id, e as CellEntry);
+      }
+    }),
+  );
+  return out;
+}
+
 // A licensed snippet must NEVER ship without its licence (SCHEMA S6). The
 // builder guarantees the pair, but the API enforces it too — a data regression
 // upstream must degrade to "no snippet", never to unlicensed text.
@@ -253,6 +292,25 @@ function safeOrgan(o: Organ): Organ {
     return rest as Organ;
   }
   return o;
+}
+
+// The shard caps every atom's synapse LIST (`caps.synapses_per_cell` = 200) but
+// `counts.syn` keeps the TRUE total, so the withheld count is ARITHMETIC — never
+// a field we hope the builder wrote. It must be, because supercells.json ships
+// no `truncated` on any of its 9,052 entries: reading one there yields
+// undefined, and a supercell withholding 728 of 928 synapses then reports
+// "nothing withheld". SCHEMA v3 is explicit that a cap applies "never silently:
+// whatever a cap drops is counted in `truncated` (a COUNT, not a flag)".
+//
+// `declared` (a cell's builder-written count) is folded in with max(), so the
+// API tells the truth whichever side drifts.
+function synTruncation(
+  total: number,
+  shipped: number,
+  declared?: { syn?: number },
+): { syn: number } | undefined {
+  const withheld = Math.max(total - shipped, declared?.syn ?? 0, 0);
+  return withheld > 0 ? { syn: withheld } : undefined;
 }
 
 // Walk `parent` to the root — supercells.json is a tree, so the breadcrumb is
@@ -284,6 +342,8 @@ export async function atomFor(c: Ctx, id: string): Promise<Atom | null> {
     if (!e || !map) return null;
     const organs = (e.organs ?? []).map(safeOrgan);
     const syn = e.syn ?? [];
+    const counts = { syn: e.counts?.syn ?? syn.length, organs: organs.length };
+    const truncated = synTruncation(counts.syn, syn.length);
     return {
       id,
       kind: "supercell",
@@ -293,7 +353,9 @@ export async function atomFor(c: Ctx, id: string): Promise<Atom | null> {
       // a cell's own facets. It ships as `supercell.fa` so the two never blur.
       organs,
       syn,
-      counts: { syn: e.counts?.syn ?? syn.length, organs: organs.length },
+      counts,
+      // supercells.json carries no `truncated` — derive it (see synTruncation)
+      ...(truncated ? { truncated } : {}),
       breadcrumb: supercellBreadcrumb(map, id),
       supercell: {
         path: id,
@@ -308,6 +370,11 @@ export async function atomFor(c: Ctx, id: string): Promise<Atom | null> {
   if (!e?.cell) return null;
   const organs = (e.organs ?? []).map(safeOrgan);
   const syn = e.syn ?? [];
+  const counts = {
+    syn: e.counts?.syn ?? syn.length,
+    organs: e.counts?.organs ?? organs.length,
+  };
+  const truncated = synTruncation(counts.syn, syn.length, e.truncated);
   return {
     id: e.cell.id ?? id,
     kind: "cell",
@@ -315,8 +382,8 @@ export async function atomFor(c: Ctx, id: string): Promise<Atom | null> {
     ...(e.cell.f !== undefined ? { f: e.cell.f } : {}),
     organs,
     syn,
-    counts: { syn: e.counts?.syn ?? syn.length, organs: e.counts?.organs ?? organs.length },
-    ...(e.truncated ? { truncated: e.truncated } : {}),
+    counts,
+    ...(truncated ? { truncated } : {}),
     ...(e.breadcrumb ? { breadcrumb: e.breadcrumb } : {}),
     cell: e.cell,
   };
@@ -378,12 +445,52 @@ export async function resolveAtomKey(c: Ctx, keyRaw: string): Promise<ResolvedKe
   if (byLabel) return { id: byLabel.id, resolved_from: "label" };
 
   // supercell labels are not in labels.json (it indexes cells) — match a
-  // field concept's own label through the supercell's organs
+  // field concept's own label through the supercell's organs.
+  //
+  // `aliases.json.slugs` indexes CELL slugs only and supercell organs ship no
+  // `slug` at all, so a rule-5 field concept's own article slug missed every
+  // index above and 404'd — 61 of them, including `Linear_algebra`, the very
+  // example the docs give for a slug resolving. An enwiki slug IS the title with
+  // spaces underscored (SCHEMA: "an article is the `enwiki` sitelink of its
+  // concept QID"), so undo that and the organ label matches. Cells are matched
+  // first, above, and so still win any collision.
+  const kSlug = kl.replace(/_/g, " ");
   const file = await supercellsFile(c);
   for (const [path, e] of Object.entries(file?.supercells ?? {})) {
-    if ((e.organs ?? []).some((o) => (o.label || "").toLowerCase() === kl)) {
+    if (
+      (e.organs ?? []).some((o) => {
+        const ol = (o.label || "").toLowerCase();
+        return ol === kl || ol === kSlug;
+      })
+    ) {
       return { id: path, resolved_from: "label" };
     }
+  }
+  return null;
+}
+
+// v3 drops two whole v2 populations (docs/BRAIN-V3.md "Dropped in v3"), so their
+// ids have no atom and MUST 404 — but a bare "unresolvable key" reads as "the
+// Brain has never heard of this", which is false and contradicted the (now
+// corrected) promise that every v2 entry point resolves. Name the reason.
+// Measured against site/assets/brain/labels.json: 45,996 ext pages + 1,994 paper
+// nodes = the 47,990 v2 ids with no v3 atom.
+function droppedInV3(key: string): string | null {
+  if (XREF_ID_RE.test(key)) {
+    return (
+      "this external page is an ORGAN, and no cell claims it — v3 drops the ~46k unanchored " +
+      "frontier ext pages that carried no concept-level connectivity (docs/BRAIN-V3.md " +
+      '"Dropped in v3"), so it has no atom to return. Anchored pages (a cell\'s xref target) ' +
+      "do resolve. The full corpus stays in catalog/data/external/; the page's second-order " +
+      "signal survives as a cell↔cell `co-page` synapse."
+    );
+  }
+  if (/^lit:[^#]+$/.test(key)) {
+    return (
+      "this is an arXiv PAPER node; v3 has no paper atom — only STATEMENTS a cell claims " +
+      "(lit:<arxiv>#<ref>) are organs. A shared statement between two cells is a " +
+      "`co-statement` synapse (SCHEMA rule 4), so read the paper's role off /api/brain/neighborhood."
+    );
   }
   return null;
 }
@@ -452,7 +559,17 @@ export async function cellFor(c: Ctx, keyRaw: string): Promise<ApiResult> {
   }
   const resolved = await resolveAtomKey(c, key);
   if (!resolved) {
-    return { status: 404, body: { ok: false, error: "unresolvable key", key, hint: KEY_HINT } };
+    const dropped = droppedInV3(key);
+    return {
+      status: 404,
+      body: {
+        ok: false,
+        error: dropped ? "no atom owns this organ id" : "unresolvable key",
+        key,
+        ...(dropped ? { reason: dropped } : {}),
+        hint: KEY_HINT,
+      },
+    };
   }
   const atom = resolved.atom ?? (await atomFor(c, resolved.id));
   if (!atom) {
@@ -623,10 +740,79 @@ async function formalToInformal(c: Ctx, q: string, limit: number): Promise<ApiRe
 
 // ---- neighborhood: an atom's synapses ----------------------------------------
 
+// THE synapse-kind set, derived from every `kinds` key in brain/data/synapses.jsonl
+// and re-verified against the shipped shards (both yield exactly these 11, ordered
+// by bond count). Agent-facing surfaces MUST render this list rather than restate
+// one, which is how the previous enum came to be wrong in both directions at once.
+//
+// `formalizes` and `matches` are deliberately ABSENT: the merge function CONSUMES
+// them as organ attachments (an `exact` formalizes fuses a concept and a decl into
+// one cell — SCHEMA rule 1), so they are never a bond BETWEEN atoms. They are read
+// off an organ's `bond` on the cell card. Asking for them here matched 0 rows on
+// every atom, while the five rule-3/4/2 kinds they crowded out — `co-page`,
+// `co-statement`, `related`, `special_case`, `generalization` — carry 2,326 real
+// bonds that a caller trusting the old enum silently dropped.
+export const SYNAPSE_KINDS = [
+  "depends",
+  "links",
+  "mentions",
+  "cites",
+  "relates",
+  "co-page",
+  "co-statement",
+  "invocation",
+  "related",
+  "special_case",
+  "generalization",
+] as const;
+
+export const SYNAPSE_KINDS_CSV = SYNAPSE_KINDS.join(",");
+
 // v2 returned raw per-particle edges; v3 returns SYNAPSES — one aggregated edge
 // per atom pair, carrying `w` (every constituent bond), a `kinds` histogram and
 // the individual `traces`. There is no `dir`: a synapse is an UNDIRECTED
 // aggregate of bonds that may run either way, and direction lives on each trace.
+
+// Rows hydrated from partner shards per request (below). Each row costs at most
+// one shard fetch, so this bounds the fan-out; it equals the default `limit`, so
+// an unmodified call is fully hydrated. Whatever it drops is DECLARED per row
+// (`traces_unavailable`) and counted in `traces_hydrated` — never silent.
+const TRACE_HYDRATION_MAX = 50;
+
+const TRACES_ELSEWHERE = "brain/query.py --full serves the untruncated set";
+
+// Supercell `syn` rows ship traceless: supercells.json is fetched eagerly and
+// carrying them would treble it. That file's own `_meta.traces` names THIS
+// endpoint as the remedy — and it was a dead pointer, because the Worker reads
+// only static shards and no shard carries supercell traces.
+//
+// It does not need one. A synapse is SYMMETRIC and ships on BOTH endpoints, so
+// the partner CELL's shard already holds the mirror row WITH its traces. We read
+// them from there, which is what makes the shipped artifact's promise true.
+//
+// Reach is partial and the caller is told exactly where it ends: of 5,215
+// supercell rows, 3,510 (67.3%) mirror a cell row that carries traces; 1,413
+// have a cell partner whose OWN syn list was shard-capped past this supercell,
+// and 292 join two supercells, traceless on both ends. Those get NO `traces`
+// key plus a reason — never `traces: []`, which reads as "no evidence exists".
+async function hydrateSupercellTraces(
+  c: Ctx,
+  atomId: string,
+  rows: Synapse[],
+): Promise<Map<string, Synapse>> {
+  const want = rows
+    .filter((s) => !s.id.startsWith("path:") && !s.traces?.length)
+    .slice(0, TRACE_HYDRATION_MAX)
+    .map((s) => s.id);
+  const entries = await cellEntries(c, want);
+  const out = new Map<string, Synapse>();
+  for (const id of want) {
+    const mirror = entries.get(id)?.syn?.find((s) => s.id === atomId);
+    if (mirror?.traces?.length) out.set(id, mirror);
+  }
+  return out;
+}
+
 export async function neighborhoodFor(
   c: Ctx,
   id: string,
@@ -640,25 +826,71 @@ export async function neighborhoodFor(
   const kinds = kindsCsv
     ? new Set(kindsCsv.split(",").map((s) => s.trim()).filter(Boolean))
     : null;
+  // A kind that is not a synapse kind matches nothing, and "0 rows" reads as
+  // "no such bond exists" — the exact failure the old enum caused. Name it.
+  const unknownKinds = kinds
+    ? [...kinds].filter((k) => !(SYNAPSE_KINDS as readonly string[]).includes(k))
+    : [];
   const resolved = await resolveAtomKey(c, id);
   const atom = resolved ? resolved.atom ?? (await atomFor(c, resolved.id)) : null;
-  if (!atom) return { status: 404, body: { ok: false, error: "unknown atom id", id, hint: KEY_HINT } };
-  const rows: Record<string, unknown>[] = [];
+  if (!atom) {
+    const dropped = droppedInV3(id);
+    return {
+      status: 404,
+      body: {
+        ok: false,
+        error: dropped ? "no atom owns this organ id" : "unknown atom id",
+        id,
+        ...(dropped ? { reason: dropped } : {}),
+        hint: KEY_HINT,
+      },
+    };
+  }
+  const picked: Synapse[] = [];
   let matched = 0;
   for (const s of atom.syn) {
     const synKinds = Object.keys(s.kinds ?? {});
     if (kinds && !synKinds.some((k) => kinds.has(k))) continue;
     matched += 1;
-    if (rows.length >= limit) continue;
-    const traces = kinds ? (s.traces ?? []).filter((t) => kinds.has(t.kind)) : s.traces ?? [];
-    rows.push({
+    if (picked.length < limit) picked.push(s);
+  }
+
+  // A supercell's rows arrive traceless; fetch them from the partner cells.
+  const hydrated =
+    wantTraces && atom.kind === "supercell"
+      ? await hydrateSupercellTraces(c, atom.id, picked)
+      : null;
+
+  const rows = picked.map((s) => {
+    const mirror = hydrated?.get(s.id);
+    const src = mirror ?? s;
+    const row: Record<string, unknown> = {
       id: s.id,
       w: s.w,
       kinds: s.kinds,
-      ...(s.tt !== undefined ? { traces_total: s.tt } : {}),
-      ...(wantTraces ? { traces } : {}),
-    });
-  }
+      ...(src.tt !== undefined ? { traces_total: src.tt } : {}),
+    };
+    if (!wantTraces) return row;
+    if (src.traces?.length) {
+      row.traces = kinds ? src.traces.filter((t) => kinds.has(t.kind)) : src.traces;
+    } else if (atom.kind === "supercell") {
+      // NEVER `traces: []` here — the bond IS witnessed, we just cannot reach
+      // the witness from a Worker. Say which, and where it does live.
+      row.traces_unavailable = s.id.startsWith("path:")
+        ? `supercell↔supercell synapses ship traceless on both endpoints — ${TRACES_ELSEWHERE}`
+        : `partner cell's own synapse list is shard-capped past this supercell — ${TRACES_ELSEWHERE}`;
+    } else {
+      row.traces = [];
+    }
+    return row;
+  });
+
+  // The shard caps the synapse LIST at `caps.synapses_per_cell`; `counts.syn` is
+  // the true total, so this is what the list is NOT telling you. Kind-agnostic:
+  // with ?kinds= we cannot know how many withheld rows would have matched, which
+  // is exactly why it is reported as a count beside `matched` rather than folded
+  // into it.
+  const withheldByShard = atom.truncated?.syn ?? 0;
   return {
     status: 200,
     body: {
@@ -667,13 +899,26 @@ export async function neighborhoodFor(
       ...(atom.id !== id ? { resolved_from: resolved?.resolved_from, key: id } : {}),
       kind: atom.kind,
       ...(kinds ? { kinds: [...kinds] } : {}),
+      ...(unknownKinds.length
+        ? {
+            unknown_kinds: unknownKinds,
+            hint:
+              `not synapse kinds (they match nothing, they are not absent bonds): ${unknownKinds.join(", ")}. ` +
+              `Valid: ${SYNAPSE_KINDS_CSV}. ` +
+              `formalizes/matches are organ attachments, not synapses — read an organ's \`bond\` on /api/brain/cell.`,
+          }
+        : {}),
       synapses: rows,
       returned: rows.length,
-      matched, // matches within the (capped) shard list
+      matched, // matches within the (capped) shard list — see withheld_by_shard
       counts: atom.counts, // the atom's TOTAL synapse count
-      // traces are trimmed per synapse (`traces_total` vs the returned list) and
-      // the shard caps the synapse LIST itself — brain/query.py serves the full set
-      truncated: rows.length < matched || (atom.truncated?.syn ?? 0) > 0,
+      withheld_by_shard: withheldByShard,
+      ...(hydrated ? { traces_hydrated: hydrated.size } : {}),
+      // TRUE whenever any synapse is missing from `synapses`, by the shard cap
+      // (counts.syn vs the shipped list — NOT `matched`, which only ever counts
+      // rows already in that list) or by ?limit=. brain/query.py serves the full
+      // set; traces are additionally trimmed per synapse (`traces_total`).
+      truncated: rows.length < matched || withheldByShard > 0,
     },
   };
 }
@@ -687,7 +932,19 @@ export async function snippetsFor(c: Ctx, id: string): Promise<ApiResult> {
   if (!BRAIN_ID_RE.test(id || "")) return { status: 400, body: { ok: false, error: "bad atom id" } };
   const resolved = await resolveAtomKey(c, id);
   const atom = resolved ? resolved.atom ?? (await atomFor(c, resolved.id)) : null;
-  if (!atom) return { status: 404, body: { ok: false, error: "unknown atom id", id, hint: KEY_HINT } };
+  if (!atom) {
+    const dropped = droppedInV3(id);
+    return {
+      status: 404,
+      body: {
+        ok: false,
+        error: dropped ? "no atom owns this organ id" : "unknown atom id",
+        id,
+        ...(dropped ? { reason: dropped } : {}),
+        hint: KEY_HINT,
+      },
+    };
+  }
   const rows: Record<string, unknown>[] = [];
   for (const o of atom.organs) {
     if (o.kind === "concept") {
@@ -794,13 +1051,40 @@ export async function filterFor(
     if (!labels) return { status: 503, body: { ok: false, error: "brain data unavailable" } };
     pool = labels.map((r) => ({ id: r.id, f: r.f, row: r as unknown as Record<string, unknown> }));
   }
-  // `under` restricts to a containment subtree: cells carry `p` (their deepest
-  // supercell); supercells match on their own path prefix.
+  // `under` restricts to a containment subtree. A supercell matches on its own
+  // path prefix.
+  //
+  // A CELL cannot: labels.json's `p` is its DEEPEST supercell only, but SCHEMA
+  // v3 says `supercells` may hold >1 entry and such a cell "renders inside each"
+  // — so testing `p` alone drops every cell that spans two folders from the
+  // subtree of all but one of them (31 cells; e.g. Cauchy-Schwarz is under
+  // Analysis/InnerProductSpace AND LinearAlgebra/SesquilinearForm, but `p` names
+  // only the first, so under=path:Mathlib/LinearAlgebra never returned it while
+  // that folder's own card listed it and its `fa` mask advertised the match).
+  // So take the UNION of both containment signals: `p`, and membership of the
+  // `cells` list of any supercell in the subtree — the same field
+  // /api/brain/cell serves, so the two surfaces now agree. Either signal alone
+  // is sufficient evidence of containment, so a union cannot over-match, and it
+  // keeps the enumeration whole if either index drifts (today they agree
+  // exactly: 7,398 cells carry `p`, the same 7,398 are listed).
   const prefix = (under || "").trim();
+  const inPrefix = (p: string) => p === prefix || p.startsWith(prefix + "/");
+  const underSet =
+    prefix && kind === "cell"
+      ? await (async () => {
+          const file = await supercellsFile(c);
+          const ids = new Set<string>();
+          for (const [path, e] of Object.entries(file?.supercells ?? {})) {
+            if (!inPrefix(path)) continue;
+            for (const cid of e.cells ?? []) ids.add(cid);
+          }
+          return ids;
+        })()
+      : null;
   const inSubtree = (e: { id: string; row: Record<string, unknown> }): boolean => {
     if (!prefix) return true;
-    const p = kind === "supercell" ? e.id : (e.row.p as string | undefined) ?? "";
-    return p === prefix || p.startsWith(prefix + "/");
+    if (kind === "supercell") return inPrefix(e.id);
+    return inPrefix((e.row.p as string | undefined) ?? "") || (underSet?.has(e.id) ?? false);
   };
 
   const hits: unknown[] = [];
@@ -1110,10 +1394,19 @@ page, a WikiLean article and an arXiv statement that all denote <em>one object</
   <code>traces</code>, each with its own direction, provenance and evidence. Undirected by
   construction, so there is no <code>dir</code> parameter.</td></tr>
 </table>
-<p><b>Every v2 entry point still resolves.</b> <code>aliases.json</code> maps every organ id to
-its owning atom, and every route below accepts <em>any</em> organ id or an atom id:
-<code>Q125977</code>, <code>decl:Mathlib:Module</code> and <code>Vector_space</code> all answer as
-<code>cell:Q18848</code>; <code>Q82571</code> answers as <code>path:Mathlib/LinearAlgebra</code>.</p>
+<p><b>Every v2 concept, declaration, container and article slug still resolves.</b>
+<code>aliases.json</code> maps an organ id to its owning atom, and every route below accepts
+<em>any</em> such organ id or an atom id: <code>Q125977</code>, <code>decl:Mathlib:Module</code> and
+<code>Vector_space</code> all answer as <code>cell:Q18848</code>; <code>Q82571</code> answers as
+<code>path:Mathlib/LinearAlgebra</code>.</p>
+<p><b>Two v2 populations were dropped on purpose and 404 here</b> (docs/BRAIN-V3.md
+"Dropped in v3") — the response names the reason rather than claiming the id is unknown:
+<b>unanchored frontier ext pages</b> (45,996 of 49,606 <code>xref:</code> ids — a page is an
+organ, and one no cell claims has no atom; the 3,610 anchored ones do resolve, the corpus stays
+in <code>catalog/data/external/</code>, and the page's signal survives as a
+<code>co-page</code> synapse) and <b>arXiv paper nodes</b> (1,994 <code>lit:&lt;arxiv&gt;</code> ids —
+only STATEMENTS a cell claims are organs). The v2 route <code>/api/brain/node</code> still serves
+both from the v2 shards, so the two route families deliberately answer differently for those ids.</p>
 
 <h2>Connect over MCP (recommended for agents)</h2>
 <pre><code>claude mcp add --transport http wikibrain https://wikilean.jackmccarthy.org/mcp</code></pre>
@@ -1160,10 +1453,14 @@ curl 'https://wikilean.jackmccarthy.org/api/brain/transfer?q=Module&amp;directio
 <p>An atom's <b>synapses</b>: one row per partner atom with <code>w</code>, the <code>kinds</code>
 histogram, <code>traces_total</code>, and the <code>traces</code> themselves (each
 <code>{kind, src, dst, prov, evidence}</code> — <code>src</code>/<code>dst</code> are the ORGAN ids that
-witnessed the bond). <code>kinds</code> is a CSV of <code>depends,links,relates,cites,mentions,
-invocation,formalizes,matches</code>; <code>limit</code> ≤ 200; <code>traces=0</code> omits traces for a
+witnessed the bond). <code>kinds</code> is a CSV subset of the ${SYNAPSE_KINDS.length} synapse kinds
+— <code>${SYNAPSE_KINDS_CSV}</code>; <code>limit</code> ≤ 200; <code>traces=0</code> omits traces for a
 compact partner list. No <code>dir</code>: a synapse is an undirected aggregate — direction lives
-on each trace.</p>
+on each trace. <code>formalizes</code>/<code>matches</code> are <em>not</em> synapse kinds: the merge
+function consumes them as organ attachments, so read them off an organ's <code>bond</code> on
+<code>/api/brain/cell</code>. A supercell's rows are hydrated from the partner cells' shards
+(<code>traces_hydrated</code>); where a trace is unreachable the row says so in
+<code>traces_unavailable</code> instead of shipping an empty list.</p>
 <pre><code>curl 'https://wikilean.jackmccarthy.org/api/brain/neighborhood?id=Q18848&amp;kinds=depends'</code></pre>
 
 <h3>GET /api/brain/snippets?id=</h3>

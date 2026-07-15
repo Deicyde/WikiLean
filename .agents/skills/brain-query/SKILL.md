@@ -1,6 +1,6 @@
 ---
 name: brain-query
-description: Use when an agent needs the BRAIN — WikiLean's unified concept/dependency graph of mathematics — to look up a mathematical object from any handle on it (a Wikidata QID, a Mathlib/Lean decl, an external DB page, an article slug, an arXiv statement, or a Mathlib folder path), fetch its typed neighborhood (depends / links / relates / cites / mentions bonds with provenance and evidence), see everything known about it in one call (Lean code ∘ Wikipedia article ∘ QID ∘ LMFDB/nLab/Stacks entries), get a containment breadcrumb, or search by label. Reach for it to transfer between informal concepts and formal Lean declarations in either direction, to find which QIDs a decl formalizes (multi-to-multi), which external DBs (LMFDB, nLab, Stacks, MathWorld, ProofWiki, …) a concept cross-references, or which folder of Mathlib is a field's formal home.
+description: Use when an agent needs the BRAIN — WikiLean's unified concept/dependency graph of mathematics — to look up a mathematical object from any handle on it (a Wikidata QID, a Mathlib/Lean decl, an external DB page, an article slug, an arXiv statement, or a Mathlib folder path), fetch its typed neighborhood (depends / links / mentions / cites / relates / co-page / co-statement / invocation / related / special_case / generalization bonds with provenance and evidence), see everything known about it in one call (Lean code ∘ Wikipedia article ∘ QID ∘ LMFDB/nLab/Stacks entries), get a containment breadcrumb, or search by label. Reach for it to transfer between informal concepts and formal Lean declarations in either direction, to find which QIDs a decl formalizes (multi-to-multi), which external DBs (LMFDB, nLab, Stacks, MathWorld, ProofWiki, …) a concept cross-references, or which folder of Mathlib is a field's formal home.
 ---
 
 # brain-query
@@ -79,12 +79,20 @@ card; v3 has no particle nodes).
 
 ## Synapse kinds
 
+Exactly eleven — anything else returns `unknown_kinds`:
+
 `depends` (formal dependency; `evidence.w_types.{sig,def,proof}` — `sig` is the
-statement-level signal) · `links` (nLab/Stacks/Wikidata internal hyperlinks) ·
-`relates` (Wikidata P279/P361/…) · `cites`/`matches` (arXiv, dual-judge
-TheoremGraph) · `mentions` (a decl cited on another atom's article — NOT a
-formalization claim) · `invocation` · `formalizes` (the ones the merge function
-did NOT fuse — a real relationship between two distinct atoms).
+statement-level signal) · `links` (an internal page-to-page hyperlink inside one
+external DB) · `mentions` (a decl cited on another atom's article — NOT a
+formalization claim) · `cites` (literature) · `relates` (Wikidata P279/P361/…) ·
+`co-page` and `co-statement` (both atoms cross-reference the same external page /
+arXiv statement) · `invocation` and `related` (a formalizes grade that never merges)
+· `special_case` and `generalization` (an attach grade that did NOT merge).
+
+**`formalizes` and `matches` are NOT synapse kinds.** They are strong bonds that fuse
+organs INTO one cell, so they never join two atoms — read them off an organ's `bond`
+on the cell card. The old enum listed them (0 rows, always) and omitted five kinds
+that carry real bonds, so a caller trusting it silently dropped them.
 
 Rows whose `evidence.skeptic == "pending"` are agent-proposed and not yet
 adversarially reviewed — treat as candidate-quality.

@@ -96,7 +96,11 @@ const DECL_SHARDS: Record<string, Array<[string, string]>> = {
 
 // supercells.json. Note LINALG_SUPER carries the field concept Q82571 as an
 // ORGAN and has synapses of its own — and, exactly like the shipped builder,
-// those synapses ship WITHOUT traces.
+// those synapses ship WITHOUT traces, and the entry carries NO `truncated` key
+// (0 of the 9,052 shipped entries do) even when `counts.syn` exceeds the list.
+// LINALG_SUPER reproduces all three shipped shapes at once: a cell partner whose
+// shard holds the mirror row WITH traces (hydratable), a supercell partner
+// (traceless on both ends), and a cell partner whose own list is capped past it.
 export const SUPERCELLS = {
   roots: ["path:Mathlib"],
   supercells: {
@@ -123,8 +127,18 @@ export const SUPERCELLS = {
           db: "nlab", bond: "xref", prov: 0, url: "https://ncatlab.org/nlab/show/linear+algebra",
         },
       ],
-      syn: [{ id: MODULE_CELL, w: 9, kinds: { depends: 4, links: 3, invocation: 1, cites: 1 }, tt: 9 }],
-      counts: { syn: 1 },
+      syn: [
+        // hydratable: MODULE_CELL's shard carries the mirror row with traces
+        { id: MODULE_CELL, w: 9, kinds: { depends: 4, links: 3, invocation: 1, cites: 1 }, tt: 9 },
+        // supercell↔supercell: traceless on BOTH endpoints, unreachable here
+        { id: ALGEBRA_SUPER, w: 2, kinds: { relates: 2 } },
+        // cell partner whose own syn list was shard-capped past this supercell,
+        // so no mirror exists to hydrate from
+        { id: DECL_CELL, w: 1, kinds: { links: 1 } },
+      ],
+      // 2 more synapses exist than the list carries — and, like the real file,
+      // NOTHING here says so except this total.
+      counts: { syn: 5 },
     },
   },
 };
@@ -200,7 +214,12 @@ function fixtureCells(): Record<string, CellSpec> {
     [MODULE_CELL]: {
       cell: {
         id: MODULE_CELL, anchor: MODULE_Q, label: "Module (mathematics)",
-        supercells: ["path:Mathlib/Algebra/Module/Defs"], f: 7, xy: [40.2, 45.4],
+        // SCHEMA v3: `supercells` may hold >1 entry — a cell spanning modules
+        // "renders inside each". LINALG_SUPER.cells lists this cell, so the two
+        // sides agree; labels.json `p` names only the DEEPEST of them, which is
+        // why `p` alone cannot answer `under=`.
+        supercells: ["path:Mathlib/Algebra/Module/Defs", LINALG_SUPER],
+        f: 7, xy: [40.2, 45.4],
       },
       organs: [
         {
@@ -250,8 +269,18 @@ function fixtureCells(): Record<string, CellSpec> {
           ],
           tt: 15,
         },
-        // a synapse whose partner is a SUPERCELL (rule 5: field concepts are hubs)
-        { id: LINALG_SUPER, w: 9, kinds: { depends: 4, links: 3, invocation: 1, cites: 1 }, tt: 9 },
+        // A synapse whose partner is a SUPERCELL (rule 5: field concepts are
+        // hubs). A synapse is symmetric and ships on BOTH endpoints, so this row
+        // is the MIRROR of LINALG_SUPER's — and, exactly like every shipped cell
+        // shard, this side carries the traces the supercell side lacks. That is
+        // what /neighborhood hydrates a supercell's traces from.
+        {
+          id: LINALG_SUPER, w: 9, kinds: { depends: 4, links: 3, invocation: 1, cites: 1 }, tt: 9,
+          traces: [
+            { kind: "depends", src: MODULE_DECL, dst: FIELD_Q, prov: 2, evidence: { weight: 4 } },
+            { kind: "invocation", src: MODULE_Q, dst: FIELD_Q, prov: 0, evidence: { property: "P361" } },
+          ],
+        },
         { id: EMPTY_CELL, w: 2, kinds: { links: 2 }, traces: [{ kind: "links", src: MODULE_Q, dst: EMPTY_Q, prov: 0 }] },
       ],
       truncated: { syn: 3 }, // 3 more synapses exist than the shard carries

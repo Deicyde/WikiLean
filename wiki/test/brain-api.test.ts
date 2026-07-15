@@ -8,6 +8,7 @@
 
 import { beforeEach, describe, it, expect } from "vitest";
 import { _resetBrainAssetMemo } from "../src/brain.js";
+import { SYNAPSE_KINDS, SYNAPSE_KINDS_CSV } from "../src/brain-api.js";
 import { setup, get, put, blockNetwork, PIPELINE_TOKEN, type Harness } from "./helpers/harness.js";
 import {
   installBrainFixture,
@@ -321,19 +322,130 @@ describe("GET /api/brain/neighborhood — synapses, not edges", () => {
     expect(capped.j.matched).toBe(1);
   });
 
-  it("a supercell's synapses resolve too (they ship without traces)", async () => {
+  // supercells.json ships its syn rows traceless and names THIS endpoint as
+  // where to get them. It used to answer `traces: []` — a confident "the Brain
+  // holds no evidence for this bond" for 5,160 rows that all have one.
+  it("a supercell's traces are HYDRATED from the partner cell's mirror row", async () => {
     const h = harness();
     const { j } = await getJson(h, `/api/brain/neighborhood?id=${q(LINALG_SUPER)}`);
-    expect(j).toMatchObject({ id: LINALG_SUPER, kind: "supercell" });
+    expect(j).toMatchObject({ id: LINALG_SUPER, kind: "supercell", traces_hydrated: 1 });
     const syn = j.synapses as Array<Record<string, unknown>>;
-    expect(syn[0]).toMatchObject({ id: MODULE_CELL, w: 9 });
-    expect(syn[0].traces).toEqual([]); // build_cell_shards strips them from supercell rows
+    expect(syn[0]).toMatchObject({ id: MODULE_CELL, w: 9, traces_total: 9 });
+    // the real evidence, read off MODULE_CELL's shard — not an empty list
+    expect(syn[0].traces).toMatchObject([
+      { kind: "depends", src: MODULE_DECL, dst: FIELD_Q },
+      { kind: "invocation", src: MODULE_Q, dst: FIELD_Q },
+    ]);
+  });
+
+  // Where hydration genuinely cannot reach, the row must say so — never `[]`.
+  it("an unreachable trace is DECLARED, never reported as an empty trace list", async () => {
+    const h = harness();
+    const { j } = await getJson(h, `/api/brain/neighborhood?id=${q(LINALG_SUPER)}`);
+    const syn = j.synapses as Array<Record<string, unknown>>;
+    const superSuper = syn.find((s) => s.id === ALGEBRA_SUPER)!;
+    expect(superSuper.traces).toBeUndefined();
+    expect(String(superSuper.traces_unavailable)).toContain("traceless on both endpoints");
+    const noMirror = syn.find((s) => s.id === DECL_CELL)!;
+    expect(noMirror.traces).toBeUndefined();
+    expect(String(noMirror.traces_unavailable)).toContain("shard-capped");
+    // every unreachable row points at the surface that DOES serve it
+    for (const s of [superSuper, noMirror]) expect(String(s.traces_unavailable)).toContain("brain/query.py --full");
+  });
+
+  // THE regression: supercells.json carries no `truncated` field on any of its
+  // 9,052 entries, so reading one yielded undefined and a supercell withholding
+  // 728 of 928 synapses reported `truncated: false`. It must derive from the
+  // TRUE total (counts.syn), not from the capped list's length.
+  it("a supercell declares synapses the shard withheld (counts.syn > the list)", async () => {
+    const h = harness();
+    const { j } = await getJson(h, `/api/brain/neighborhood?id=${q(LINALG_SUPER)}&traces=0`);
+    expect(j.counts).toMatchObject({ syn: 5 }); // the true total
+    expect((j.synapses as unknown[]).length).toBe(3); // what the shard carries
+    expect(j.withheld_by_shard).toBe(2); // a COUNT, per SCHEMA — not just a flag
+    expect(j.truncated).toBe(true);
+    // `matched` only ever counts rows already in the capped list, which is
+    // exactly why it must not be the source of the flag
+    expect(j.matched).toBe(3);
+    // and the atom card declares the same count
+    const card = await getJson(h, `/api/brain/cell?key=${q(LINALG_SUPER)}`);
+    expect(card.j.truncated).toEqual({ syn: 2 });
+  });
+
+  it("does not cry truncation when the whole list ships", async () => {
+    const h = harness();
+    const { j } = await getJson(h, `/api/brain/neighborhood?id=${ABELIAN}&traces=0`);
+    expect(j.truncated).toBe(false);
+    expect(j.withheld_by_shard).toBe(0);
   });
 
   it("400s a bad id; 404s an unknown one", async () => {
     const h = harness();
     expect((await get(h.env, "/api/brain/neighborhood?id=")).status).toBe(400);
     expect((await get(h.env, "/api/brain/neighborhood?id=Q999999999")).status).toBe(404);
+  });
+
+  // The documented enum used to be wrong in BOTH directions: it advertised
+  // formalizes/matches (which are organ attachments the merge function consumes,
+  // never synapses — 0 rows on every atom) and omitted the five rule-2/3/4 kinds
+  // that carry 2,326 real bonds. A caller sending the old "complete" list got a
+  // silent partial answer, so an unknown kind must now name itself.
+  it("names a kind that is not a synapse kind instead of answering 0 rows", async () => {
+    const h = harness();
+    const { j } = await getJson(h, `/api/brain/neighborhood?id=${MODULE_CELL}&traces=0&kinds=depends,formalizes,matches`);
+    expect(j.unknown_kinds).toEqual(["formalizes", "matches"]);
+    expect(String(j.hint)).toContain("organ attachments");
+    expect((j.synapses as unknown[]).length).toBeGreaterThan(0); // the known kind still answers
+  });
+
+  it("the documented kind set is exactly the set the data emits", async () => {
+    // both directions — a kind here that the shards never emit is as much a
+    // defect as one they emit that is missing
+    expect(SYNAPSE_KINDS).toContain("co-page");
+    expect(SYNAPSE_KINDS).toContain("co-statement");
+    expect(SYNAPSE_KINDS).not.toContain("formalizes");
+    expect(SYNAPSE_KINDS).not.toContain("matches");
+    const h = harness();
+    const { j } = await getJson(h, `/api/brain/neighborhood?id=${MODULE_CELL}&traces=0&kinds=${SYNAPSE_KINDS_CSV}`);
+    expect(j.unknown_kinds).toBeUndefined();
+  });
+});
+
+// v3 drops two v2 populations on purpose; they must fail HONESTLY rather than
+// contradict a documentation promise or read as "unknown to the Brain".
+describe("dropped-in-v3 ids 404 with a reason", () => {
+  it("an unanchored ext page names the drop", async () => {
+    const h = harness();
+    const { status, j } = await getJson(h, `/api/brain/cell?key=${q(UNKNOWN_XREF)}`);
+    expect(status).toBe(404);
+    expect(j.error).toBe("no atom owns this organ id");
+    expect(String(j.reason)).toContain("no cell claims it");
+    expect(String(j.reason)).toContain("Dropped in v3");
+  });
+
+  it("an arXiv PAPER id explains it has no atom (only statements are organs)", async () => {
+    const h = harness();
+    const { status, j } = await getJson(h, "/api/brain/cell?key=lit:1612.08419");
+    expect(status).toBe(404);
+    expect(String(j.reason)).toContain("PAPER");
+    expect(String(j.reason)).toContain("co-statement");
+  });
+
+  it("a genuinely unknown id keeps the plain error (no false reason)", async () => {
+    const h = harness();
+    const { status, j } = await getJson(h, "/api/brain/cell?key=Q999999999");
+    expect(status).toBe(404);
+    expect(j.error).toBe("unresolvable key");
+    expect(j.reason).toBeUndefined();
+  });
+
+  it("the same reason reaches /neighborhood and /snippets", async () => {
+    const h = harness();
+    for (const route of ["neighborhood", "snippets"]) {
+      const { status, j } = await getJson(h, `/api/brain/${route}?id=${q(UNKNOWN_XREF)}`);
+      expect(status).toBe(404);
+      expect(String(j.reason)).toContain("no cell claims it");
+    }
   });
 });
 
@@ -426,6 +538,23 @@ describe("GET /api/brain/filter — facet mask math + paging", () => {
     expect(ids(algebra.j)).toEqual([ABELIAN_CELL, MODULE_CELL, DECL_CELL]);
     const defs = await getJson(h, `/api/brain/filter?f=0&under=${q("path:Mathlib/Algebra/Module/Defs")}`);
     expect(ids(defs.j)).toEqual([MODULE_CELL]);
+  });
+
+  // A cell may legitimately have >1 supercell and "renders inside each", but
+  // labels.json `p` names only the deepest — so `p` alone hid every such cell
+  // from the subtree of its OTHER supercell, while that folder's own card listed
+  // it and its `fa` mask advertised the match. MODULE_CELL's `p` is under
+  // Algebra; LINALG_SUPER.cells lists it.
+  it("under= finds a cell that spans two supercells, from EITHER of them", async () => {
+    const h = harness();
+    const linalg = await getJson(h, `/api/brain/filter?f=0&under=${q(LINALG_SUPER)}`);
+    expect(ids(linalg.j)).toContain(MODULE_CELL);
+    // and it stays reachable from the supercell its `p` does name
+    const algebra = await getJson(h, `/api/brain/filter?f=0&under=${q(ALGEBRA_SUPER)}`);
+    expect(ids(algebra.j)).toContain(MODULE_CELL);
+    // the filter and the supercell card must agree on membership
+    const card = await getJson(h, `/api/brain/cell?key=${q(LINALG_SUPER)}`);
+    expect((card.j.supercell as { cells: string[] }).cells).toContain(MODULE_CELL);
   });
 
   it("type=supercell enumerates the containment tree by its AGGREGATE mask `fa`", async () => {
