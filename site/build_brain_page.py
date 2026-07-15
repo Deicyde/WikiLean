@@ -573,6 +573,7 @@ const zoomBehav = d3.zoom().scaleExtent([0.02, 16])
   .on("start", ev => { panMoved = false;
     if (ev.sourceEvent && ev.sourceEvent.type === "mousedown") stageEl.classList.add("grabbing"); })
   .on("zoom", ev => { if (ev.sourceEvent && ev.sourceEvent.type === "mousemove") panMoved = true;
+    lastK = ev.transform.k;
     gViewport.attr("transform", ev.transform); })
   .on("end", () => stageEl.classList.remove("grabbing"));
 svg.call(zoomBehav).on("dblclick.zoom", null);
@@ -649,6 +650,34 @@ async function focusItems(id) {
 function packValue(item) {
   if (item.type === "folder") return Math.pow(Math.max(item.n || 1, 1), 0.6);
   return item.type === "strays" ? 30 : 6;
+}
+
+// ---- screen-space sizing for the flat map -----------------------------------
+// Everything inside gViewport is multiplied by the zoom k, so ANY size given in
+// layout units renders at size*k. The build-time layout spans ±3,000 units, so the
+// explorer fits at k≈0.13 — and at that zoom its r=2.2 dots drew at 0.29px, its
+// 1.6 gold rings at 0.21px and its labels at 1.1px. The map was sub-pixel dust at
+// its own resting zoom, which is a large part of why it read as unreadable however
+// the layout was tuned. Dividing by k pins a size to the SCREEN instead.
+//
+// Applies to the explorer only: the bubble view's radii are meaningful geometry
+// (a folder's area is its cell count) and must keep scaling with the zoom.
+const LABEL_PX = 11;    // rendered label height at any zoom
+const DOT_PX = 3.0;     // rendered dot radius floor at any zoom
+const RING_PX = 1.6;    // rendered @[wikidata] gold ring width at any zoom
+let lastK = 1;          // live zoom, tracked by the zoom handler
+
+function applyExplorerScale(k) {
+  if (!layout || !layout.explorer) return;
+  lastK = k || 1;
+  const s = 1 / lastK;
+  gBubbles.selectAll("circle.node")
+    .attr("r", l => Math.max(l.r, DOT_PX * s))
+    .style("stroke-width", l => ((l.data.f || 0) & 1) ? (RING_PX * s) + "px" : null);
+  gEdges.selectAll("path.synbatch").attr("stroke-width", function () {
+    return Number(this.dataset.w) * s;
+  });
+  updateExplorerLabels(lastK);
 }
 
 function drawNodes() {
@@ -2248,7 +2277,9 @@ function drawExplorerEdges() {
     }
     if (!d) continue;
     gEdges.append("path").attr("class", "synbatch").attr("d", d)
-      .attr("stroke", SYN_COLOR).attr("stroke-width", t.w).attr("stroke-opacity", t.op);
+      .attr("stroke", SYN_COLOR).attr("stroke-opacity", t.op)
+      // base width in PIXELS; applyExplorerScale divides by k so it renders at t.w
+      .attr("data-w", t.w).attr("stroke-width", t.w);
   }
 }
 // distance from p to segment ab, squared
@@ -2371,7 +2402,7 @@ async function renderExplorer(anim) {
     const k = Math.max(0.02, Math.min(2, Math.min((W - 70) / bw, (H - 70) / bh)));
     const t = d3.zoomIdentity.translate(W / 2 - k * cx, H / 2 - k * cy).scale(k);
     svg.call(zoomBehav.transform, t);
-    updateExplorerLabels(k);
+    applyExplorerScale(k);
   }
   const scopeLabel = scope ? scope.slice(5) : "all libraries";
   updateFilterStat({active: !!filterMask, shown: leaves.length, total: totalN,
@@ -2405,16 +2436,27 @@ function drawExplorerLabels() {
 }
 function updateExplorerLabels(k) {
   if (!layout || !layout.explorer) return;
-  const lim = Math.max(30, Math.min(250, Math.round(50 * k * k * 100)));
+  // Label budget scales with zoom^2 (i.e. with visible AREA per cell), because the
+  // labels now render at a constant 11px: once they were legible, showing 250 of
+  // them at the resting zoom piled them into an unreadable white mass in the dense
+  // core. Fewer at rest, more as you zoom in — the map stays readable at every k.
+  const lim = Math.max(12, Math.min(250, Math.round(600 * k * k)));
   gLabels.selectAll("text.xlab").attr("display", function () {
     return Number(this.dataset.rank) < lim ? null : "none";
   });
-  // the build-time layout spans ±3,000 units, so a fitted view sits near k≈0.1 —
-  // scale the glyphs back up or nothing is readable until you zoom
-  gLabels.selectAll("text.xlab").attr("font-size", Math.max(2, Math.min(14, 1.1 / k)));
+  // The labels live inside gViewport, so `font-size` is in USER units and renders
+  // at font-size*k. To hold a constant on-screen size the divisor must therefore be
+  // the size you want IN PIXELS: 11/k renders at 11px, at any k.
+  //
+  // This read `1.1 / k`, which renders at 1.1 PIXELS — identically, at every k below
+  // the clamp. The whole flat map drew as sub-pixel dust at its own fitted zoom
+  // (k≈0.13), which is a large part of why the explorer read as unreadable no matter
+  // how the layout was tuned. Same trap as the dots below: never size in layout units.
+  gLabels.selectAll("text.xlab").attr("font-size", LABEL_PX / (k || 1));
 }
 zoomBehav.on("zoom.xplabels", ev => {
-  if (layout && layout.explorer) updateExplorerLabels(ev.transform.k);
+  // labels AND dots AND strokes: every one of them is sized in screen space
+  if (layout && layout.explorer) applyExplorerScale(ev.transform.k);
 });
 // ============================ toolbar + boot =================================
 document.querySelectorAll(".toolbar input").forEach(el =>

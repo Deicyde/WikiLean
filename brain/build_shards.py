@@ -611,8 +611,27 @@ def main() -> int:
     (tmp / "sources.json").write_text(json.dumps(
         {"layers": reg["layers"], "our_data_license": reg["our_data_license"],
          "sources": src_out}, ensure_ascii=False, separators=(",", ":")))
+    # The v3 atom layer lives in a SUBDIRECTORY of this one (site/assets/brain/cells,
+    # brain/build_cell_shards.py). This swap renames OUT_DIR aside and rmtree()s it,
+    # so a plain swap DELETES the entire v3 tree — and since this builder only writes
+    # its own files, nothing recreates it. Running the documented v2 refresh
+    # (build_shards -> build-public -> deploy) would then wipe cells/ out of
+    # wiki/public too and leave /brain dead site-wide on "brain data unavailable
+    # (HTTP 404)". The nightly survives today only by running build_cell_shards
+    # afterwards — an ordering accident, not a guarantee.
+    #
+    # So carry any nested v3 tree across the swap. (v2 cannot simply be retired:
+    # brainNodeExists in wiki/src/brain-edits.ts still validates community-edge
+    # endpoints against these assets.)
+    NESTED = ("cells",)
     if OUT_DIR.exists():
         OUT_DIR.rename(old)
+        for name in NESTED:
+            keep = old / name
+            if keep.exists():
+                keep.rename(tmp / name)
+                print(f"  carried {name}/ across the swap (v3 atom layer)",
+                      file=sys.stderr)
     tmp.rename(OUT_DIR)
     if old.exists():
         shutil.rmtree(old)
