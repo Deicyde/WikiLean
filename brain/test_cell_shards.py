@@ -116,6 +116,17 @@ def main() -> int:
               bool(entry.get("breadcrumb")) and bool(entry.get("syn")))
         check("S3 synapses carry evidence traces",
               any(s.get("traces") for s in entry["syn"]))
+        # The trace cap must sample DIVERSELY. `depends` outnumbers everything ~10:1,
+        # so taking the first N buries the rare cross-database `links` trace — the one
+        # that names both pages — behind bulk formal-dependency traces.
+        mixed = [s for s in entry["syn"] if len(s.get("kinds") or {}) > 1
+                 and (s.get("tt") or 0) > len(s.get("traces") or [])]
+        bad = [s for s in mixed
+               if {t["kind"] for t in s["traces"]} < set(s["kinds"])
+               and len(s["traces"]) >= len(s["kinds"])]
+        check("S3 a capped synapse shows every bond KIND it claims", not bad,
+              f"{len(bad)}/{len(mixed)} capped synapses hide a whole kind, "
+              f"e.g. {[(s['id'], list(s['kinds']), sorted({t['kind'] for t in s['traces']})) for s in bad[:2]]}")
 
     # ---- S4: the explorer. v2's 4,000-edge draw cap pointed edges at nodes that
     # were never shipped — the phantom-ring bug. Indices make that a hard error.

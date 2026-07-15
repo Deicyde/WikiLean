@@ -120,6 +120,35 @@ def trim_trace(trace: dict) -> dict:
     return trace
 
 
+def pick_traces(traces: list[dict], cap: int) -> list[dict]:
+    """Choose a DIVERSE sample of traces — one per kind, round-robin — not the first N.
+
+    A synapse's traces are grouped by kind, and `depends` outnumbers everything else
+    by ~10:1. Taking the first `cap` therefore buries exactly the evidence that is
+    worth reading: measured on the Algebra-over-a-field <-> Ring synapse, all 6 shown
+    traces were `depends` while its one `links` trace — the cross-database page link,
+    naming both pages — never rendered. Round-robin guarantees every KIND present in
+    the synapse appears in the drawer before any kind repeats.
+    """
+    by_kind: dict[str, list[dict]] = defaultdict(list)
+    for t in traces:
+        by_kind[t.get("kind") or "?"].append(t)
+    out: list[dict] = []
+    # rarest kind first: a lone `links` among 12 `depends` is the informative one
+    order = sorted(by_kind, key=lambda k: (len(by_kind[k]), k))
+    i = 0
+    while len(out) < cap and any(by_kind.values()):
+        progressed = False
+        for kind in order:
+            if by_kind[kind] and len(out) < cap:
+                out.append(by_kind[kind].pop(0))
+                progressed = True
+        if not progressed:
+            break
+        i += 1
+    return out
+
+
 def main() -> int:
     t0 = time.monotonic()
     cell_meta, cell_rows = load_jsonl(BRAIN_DATA / "cells.jsonl")
@@ -143,7 +172,7 @@ def main() -> int:
     for syn in synapses:
         entry_a = {"id": syn["dst"], "w": syn["weight"], "kinds": syn["kinds"]}
         entry_b = {"id": syn["src"], "w": syn["weight"], "kinds": syn["kinds"]}
-        traces = [trim_trace(t) for t in syn["traces"][:SHARD_TRACE_CAP]]
+        traces = [trim_trace(t) for t in pick_traces(syn["traces"], SHARD_TRACE_CAP)]
         dropped = len(syn["traces"]) - len(traces) + syn.get("truncated", 0)
         for entry in (entry_a, entry_b):
             entry["traces"] = traces
