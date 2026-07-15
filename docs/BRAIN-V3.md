@@ -80,11 +80,15 @@ cell's article) · `relates` (Wikidata P279/P361/…) · `cites` · a page claim
 
 ## The merge function (the load-bearing rule)
 
-Cells are **not** a transitive closure — that chains (measured: a naive closure
-fused Module↔EuclideanSpace↔plane↔3D-space into one 28-organ cell, because
-Module *generalizes* Vector space and EuclideanSpace is a *special case* of it;
-an earlier variant produced a 212-organ blob via coarse DLMF pages). Merging is
-a **function**, which makes chaining structurally impossible:
+Cells are **not** a transitive closure over the hierarchy relations — that chains
+(measured: a naive closure fused Module↔EuclideanSpace↔plane↔3D-space into one
+28-organ cell, because Module *generalizes* Vector space and EuclideanSpace is a
+*special case* of it; an earlier variant produced a 212-organ blob via coarse DLMF
+pages). Rules 2–5 below are a **function**, which makes that chaining structurally
+impossible. Rule 1 is the deliberate exception: `exact` asserts *identity*, which
+must be transitive (it is what puts both zeta decls in one atom), so one over-broad
+`exact` grade welds everything it names — a bad grade, routed to `cell_review.jsonl`
+rather than fixed by weakening the rule.
 
 1. **`exact` fuses both directions.** A concept fuses all of its `exact` decls
    (⇒ the zeta cell holds every exact zeta decl). A decl fuses every concept
