@@ -107,6 +107,192 @@ def _majority(counter: Counter) -> str | None:
     return sorted(counter.items(), key=lambda kv: (-kv[1], kv[0]))[0][0]
 
 
+def _mathlib_checkout() -> Path:
+    """Root of the live mathlib4 checkout (read-only; the tagging bot's)."""
+    return Path(os.environ.get(
+        "BRAIN_MATHLIB_CHECKOUT", "/Users/jack/Desktop/LEAN/mathlib4/Mathlib")).parent
+
+
+def _decl_module_oracle(names: set[str]) -> dict[str, tuple[str, str | None]]:
+    """Reverse index `decl name -> (defining module, kind)` for `names`.
+
+    The module-driven sources (TheoremGraph votes/CSVs, @[wikidata] tag rows)
+    only ever cover decls the corpus saw. Decls cited *solely* by a WikiLean
+    annotation resolve nowhere, so they used to land at the library ROOT — the
+    grey "filed here" ball (567 of them, Jack's report 2026-07-17). This is the
+    last-resort fallback for exactly those.
+
+    Two independent, genuine oracles — both keyed on the FULLY-QUALIFIED name,
+    which is the whole point. A bare-suffix guess is what produced misfiles like
+    `zero_mul -> Mathlib.Data.Holor`: a wrong module silently files a cell into
+    the wrong area of mathematics, which is strictly worse than leaving it at
+    the root. So: exact hits only, never a suffix/heuristic match.
+
+      1. doc-gen4 `declaration-data.json` (the mathlib4_docs index the
+         mathlib-search skill caches). 416k decls incl. structure fields and
+         `to_additive`-generated names — the ones NO source-text scan can see,
+         because they are elaborator output, not syntax. Also carries `kind`.
+      2. the checkout's own `.ilean` files (Lean's language-server index,
+         emitted next to the oleans). Syntactic, so it MISSES generated names,
+         but it needs nothing beyond the checkout we already read for snippets
+         — the floor when (1) is absent (its cache is gitignored).
+
+    Measured 2026-07-17: (1) and (2) agree on all 124 names both know, 0
+    conflicts; (1) alone reaches 208/567, (2) alone 124/567. Fail-soft
+    throughout: a missing/renamed oracle degrades to the old behaviour.
+    """
+    found: dict[str, tuple[str, str | None]] = {}
+    if not names:
+        return found
+
+    dg = Path(os.environ.get("BRAIN_DECL_ORACLE", "")) if os.environ.get(
+        "BRAIN_DECL_ORACLE") else (
+        ROOT / ".claude/skills/mathlib-search/.cache/declaration-data.json")
+    if dg.exists():
+        try:
+            decls = json.loads(dg.read_text()).get("declarations") or {}
+            for name in names:
+                e = decls.get(name)
+                if not e:
+                    continue
+                # docLink: "./Mathlib/Algebra/Group/Defs.html#AddMonoid.nsmul_succ"
+                m = re.match(r"^\./(.+)\.html#", e.get("docLink") or "")
+                if m:
+                    found[name] = (m.group(1).replace("/", "."), e.get("kind"))
+            print(f"  decl module oracle (doc-gen4 {dg.name}): "
+                  f"{len(found)}/{len(names)} unresolved decls", file=sys.stderr)
+        except (OSError, ValueError) as exc:
+            print(f"NOTE: doc-gen4 oracle unreadable at {dg} ({exc}) — "
+                  f"falling back to .ilean", file=sys.stderr)
+    else:
+        print(f"NOTE: doc-gen4 oracle absent at {dg} — module fallback is "
+              f".ilean only (refresh: python3 .claude/skills/mathlib-search/"
+              f"mathlib_search.py decl Nat.succ --live)", file=sys.stderr)
+
+    missing = names - set(found)
+    ilean_root = _mathlib_checkout() / ".lake/build/lib/lean"
+    if missing and ilean_root.is_dir():
+        n_il = 0
+        # sorted(): a name can appear in >1 module's .ilean (192 measured across
+        # Mathlib — re-exports, `export`, stale build products), and first-wins
+        # below. rglob order is filesystem-dependent, so without this the same
+        # inputs could pick a different module on another machine — this build
+        # is contractually deterministic.
+        for p in sorted(ilean_root.rglob("*.ilean")):
+            if not missing:
+                break
+            try:
+                d = json.loads(p.read_text())
+            except (OSError, ValueError):
+                continue
+            module, decls = d.get("module"), d.get("decls")
+            if not module or not isinstance(decls, dict):
+                continue
+            for name in missing & set(decls):
+                found[name] = (module, None)
+                n_il += 1
+            missing -= set(decls)
+        if n_il:
+            print(f"  decl module oracle (.ilean, checkout): +{n_il}",
+                  file=sys.stderr)
+    return found
+
+
+# ---- Lean source scanning (decl `code` snippets) ----------------------------
+# Lean identifier: unicode word chars (covers Greek `α` and subscripts — `E₂` is
+# ONE name, and truncating it to `E` invents a name that collides with a real decl)
+# plus ' ! ? and «guillemet» names.
+_LEAN_IDENT = r"[\w'!?«»]+(?:\.[\w'!?«»]+)*"
+_LEAN_KW = (r"(?:theorem|lemma|def|abbrev|structure|class|instance|inductive"
+            r"|opaque|axiom)")
+_LEAN_MOD = (r"(?:private|protected|public|noncomputable|nonrec|scoped|partial"
+             r"|unsafe|local)")
+_LEAN_NS = re.compile(rf"^\s*(namespace|section|end)(?:\s+({_LEAN_IDENT}))?\s*$")
+_LEAN_DECL = re.compile(rf"^\s*(?:@\[[^\]]*\]\s*)*(?:{_LEAN_MOD}\s+)*{_LEAN_KW}\s+"
+                        rf"(_root_\.)?({_LEAN_IDENT})")
+
+
+def _strip_lean_comments(lines: list[str]):
+    """Yield (index, line-with-comments-blanked). Lean's `/- -/` nests."""
+    depth = 0
+    for i, line in enumerate(lines):
+        out: list[str] = []
+        j = 0
+        while j < len(line):
+            two = line[j:j + 2]
+            if depth == 0 and two == "--":
+                break
+            if two == "/-":
+                depth += 1
+                j += 2
+                continue
+            if two == "-/" and depth:
+                depth -= 1
+                j += 2
+                continue
+            if depth == 0:
+                out.append(line[j])
+            j += 1
+        yield i, "".join(out)
+
+
+def _lean_decl_lines(lines: list[str]) -> dict[str, int]:
+    """`fully-qualified decl name -> line index that declares it`, for one file.
+
+    The decl panel's `code` used to be found by matching the decl's BARE last
+    segment (`d.split(".")[-1]`) with an unconstrained namespace prefix, taking
+    the first hit. That silently attaches a DIFFERENT declaration's statement:
+    measured, 199 decls carried the wrong code — `SimpleGraph.Adj` (a structure
+    FIELD) showed `theorem Adj.symm`, `GCDMonoid.gcd` showed
+    `protected theorem Associated.gcd`. It ships to readers and agents stamped
+    with the mathlib license, asserted as that decl's source, so it is the same
+    class of error as a wrong `module`: a wrong fact is worse than no fact.
+
+    So resolve the enclosing `namespace` stack and require the declared name to
+    equal the decl EXACTLY (honouring `_root_.`). Fail closed: no exact match ⇒
+    no snippet. Elaborator output (structure/class fields, `to_additive` twins)
+    is never textually declared, so it correctly yields nothing rather than the
+    nearest textual lookalike.
+
+    Validated against Lean's own `.ilean` index over 600 modules: 97% of the
+    names this returns are confirmed verbatim by the compiler's index (the
+    remainder are `private` decls, whose real names are mangled, and modules whose
+    .ilean predates the source). Coverage went UP (6,409 regex hits -> 6,417 exact),
+    because the old pattern also missed `public` decls.
+    """
+    out: dict[str, int] = {}
+    stack: list[tuple[str, str | None]] = []
+    for i, code in _strip_lean_comments(lines):
+        if not code.strip():
+            continue
+        m = _LEAN_NS.match(code)
+        if m:
+            kind, name = m.group(1), m.group(2)
+            if kind == "namespace" and name:
+                stack.append(("ns", name))
+            elif kind == "section":
+                stack.append(("sec", name))          # sections don't name decls
+            elif kind == "end":
+                if name:
+                    for j in range(len(stack) - 1, -1, -1):
+                        if stack[j][1] == name:
+                            del stack[j:]
+                            break
+                elif stack:
+                    stack.pop()
+            continue
+        d = _LEAN_DECL.match(code)
+        if not d:
+            continue
+        root, name = d.group(1), d.group(2).rstrip(".")
+        if not name:
+            continue
+        prefix = ".".join(n for k, n in stack if k == "ns" and n)
+        fq = name if root else (f"{prefix}.{name}" if prefix else name)
+        out.setdefault(fq, i)
+    return out
+
+
 def _lit_id(arxiv_id: str, ref: str) -> str:
     return f"lit:{arxiv_id}#{ref}" if ref else f"lit:{arxiv_id}"
 
@@ -845,22 +1031,39 @@ def build() -> tuple[list[dict], list[dict], dict]:
             walk(lib, L["kind"], name, node, root, False)
 
     # ---- decl nodes + their containment placement --------------------------
+    def _voted(d: str) -> str | None:
+        return (_majority(mod_votes[d]) or csv_mod.get(d) or sf_mod.get(d)
+                or tag_mod.get(d))
+
+    # Last-resort module for decls no corpus source covers (annotation-only
+    # citations). Built once, over just the names that still need it.
+    _need_mod = {d for d in decl_set if not _voted(d)}
+    oracle_mod = _decl_module_oracle(_need_mod)
+
     def resolve(d: str) -> tuple[str, str | None]:
-        module = (_majority(mod_votes[d]) or csv_mod.get(d) or sf_mod.get(d)
-                  or tag_mod.get(d))
+        module = _voted(d)
         lib = _majority(lib_votes[d])
         if not lib:
             root = module.split(".", 1)[0] if module else None
             lib = root if root in lib_meta else "Mathlib"
+        if not module:
+            cand = (oracle_mod.get(d) or (None, None))[0]
+            # Accept the oracle ONLY inside the decl's own library. A
+            # cross-library hit is real but useless here (`And.left` really does
+            # live in `Init.Prelude`, `Counterexample.*` in `Counterexamples.*`):
+            # this hierarchy has no container tree for those libraries, so
+            # placement would fail at `path:Init` and drop the decl out of the
+            # graph entirely — an orphan is worse than a cell at the root.
+            # Keeping lib untouched also keeps `decl:<lib>:<name>` ids stable.
+            if cand and cand.split(".", 1)[0] == lib:
+                module = cand
         return lib, module
 
     # ---- Lean source snippets from the live checkout ------------------------
     # The snapshot CSV ships no statement bodies, so the decl panel's code
     # comes from the live mathlib4 checkout (Apache-2.0, attribution in _meta;
     # read-only; fail-soft on drift — a renamed file just means no snippet).
-    mathlib_src = Path(os.environ.get(
-        "BRAIN_MATHLIB_CHECKOUT", "/Users/jack/Desktop/LEAN/mathlib4/Mathlib")).parent
-    kw = r"(?:theorem|lemma|def|abbrev|structure|class|instance|inductive|opaque|axiom)"
+    mathlib_src = _mathlib_checkout()
     by_file: dict[str, list[str]] = defaultdict(list)
     for d in decl_set:
         lib, module = resolve(d)
@@ -874,27 +1077,22 @@ def build() -> tuple[list[dict], list[dict], dict]:
                 lines = fp.read_text().splitlines()
             except OSError:
                 continue
+            declared = _lean_decl_lines(lines)   # FQ name -> line, exact
             for d in decls:
-                seg = re.escape(d.split(".")[-1])
-                pat = re.compile(rf"^\s*(?:@\[[^\]]*\]\s*)?(?:private\s+|protected\s+"
-                                 rf"|noncomputable\s+|nonrec\s+|scoped\s+)*{kw}\s+"
-                                 rf"(?:[A-Za-z0-9_'.«»]+\.)?{seg}($|[^A-Za-z0-9_'])")
-                for i, line in enumerate(lines):
-                    if not pat.match(line):
-                        continue
-                    snip: list[str] = []
-                    for l in lines[i:i + 12]:
-                        s = l.rstrip()
-                        if snip and not s:
-                            break            # blank line = statement header over
-                        snip.append(l)
-                        if (s.endswith(":=") or s.endswith(":= by") or s.endswith(" by")
-                                or s.endswith("where") or s.endswith(":= fun")):
-                            break
-                    code = "\n".join(snip)[:700]
-                    decl_code.setdefault(d, {})["code"] = code
-                    n_snippets += 1
-                    break
+                i = declared.get(d)
+                if i is None:
+                    continue                     # fail closed — see _lean_decl_lines
+                snip: list[str] = []
+                for l in lines[i:i + 12]:
+                    s = l.rstrip()
+                    if snip and not s:
+                        break                # blank line = statement header over
+                    snip.append(l)
+                    if (s.endswith(":=") or s.endswith(":= by") or s.endswith(" by")
+                            or s.endswith("where") or s.endswith(":= fun")):
+                        break
+                decl_code.setdefault(d, {})["code"] = "\n".join(snip)[:700]
+                n_snippets += 1
     else:
         print(f"WARNING: mathlib checkout missing at {mathlib_src} — decl code "
               f"snippets skipped (BRAIN_MATHLIB_CHECKOUT to override)", file=sys.stderr)
@@ -904,14 +1102,33 @@ def build() -> tuple[list[dict], list[dict], dict]:
     decl_id: dict[str, str] = {}
     decl_nodes: list[dict] = []
     n_unplaced = 0
+    # oracle outcome, counted the same way resolve() decides it
+    n_oracle_module = len([d for d in _need_mod if resolve(d)[1]])
+    n_oracle_cross_lib = len([d for d in _need_mod
+                              if d in oracle_mod and not resolve(d)[1]])
+    print(f"  decl module oracle accepted (same-library): {n_oracle_module}"
+          f" | cross-library, declined: {n_oracle_cross_lib}"
+          f" | still unresolved: {len(_need_mod) - n_oracle_module}",
+          file=sys.stderr)
+
+    n_oracle_kind = 0
     for d in sorted(decl_set):
         lib, module = resolve(d)
         did = f"decl:{lib}:{d}"
         decl_id[d] = did
+        gloss = dict(decl_code.get(d, {}))
+        # statement_formal.csv only carries kind for corpus decls; doc-gen4 knows
+        # it for annotation-only ones too (it is a true fact about the decl even
+        # where we declined its cross-library module above).
+        if not gloss.get("decl_kind"):
+            kind = (oracle_mod.get(d) or (None, None))[1]
+            if kind:
+                gloss["decl_kind"] = kind
+                n_oracle_kind += 1
         decl_nodes.append(_prune({
             "id": did, "type": "decl", "label": d, "library": lib,
             "module": module, "slogan": slogans.get(d), "pin": snapshot_pin,
-            **decl_code.get(d, {}),
+            **gloss,
         }))
         # placement: deepest hierarchy container prefixing the decl's module
         # (the tree is depth-capped, so this is the file container when the
@@ -1409,7 +1626,11 @@ def build() -> tuple[list[dict], list[dict], dict]:
             "code": "decl `code` snippets are statement headers read from the live "
                     "mathlib4 checkout — Apache-2.0 (mathlib4 contributors), render "
                     "with source credit; `docstring`/`decl_kind` from TheoremGraph "
-                    "statement_formal.csv (CC-BY-4.0)",
+                    "statement_formal.csv (CC-BY-4.0); for decls the corpus never "
+                    "saw, `decl_kind` + the last-resort `module` come from the "
+                    "doc-gen4 declaration index / the checkout's .ilean files "
+                    "(Apache-2.0, mathlib4 contributors — where a declaration "
+                    "lives, not its text)",
             "arxiv": "arXiv statement text is never redistributed — ids/titles/labels only",
             "wikidata": "CC0-1.0",
             "mathlib_tags": "@[stacks]/@[kerodon]/@[wikidata] cross-reference tags "
@@ -1430,6 +1651,15 @@ def build() -> tuple[list[dict], list[dict], dict]:
         "notes": {
             "decls_without_module": len([d for d in decl_set
                                          if not resolve(d)[1]]),
+            # of decls no corpus source covered, how many the decl-module oracle
+            # rescued into their real folder (see _decl_module_oracle). The
+            # remainder are names that do NOT exist in current mathlib — stale
+            # renames + hallucinated citations, an annotation-quality problem
+            # (manage/decl_existence_sweep.py), not a placement one. They stay
+            # at the library root on purpose: no module is better than a wrong one.
+            "decls_module_from_oracle": n_oracle_module,
+            "decls_module_oracle_cross_library": n_oracle_cross_lib,
+            "decl_kind_from_oracle": n_oracle_kind,
             "decls_unplaced": n_unplaced,
             "cites_from_links": n_cites_links,
             "cites_from_transitive_join": len(cites) - n_cites_links,
