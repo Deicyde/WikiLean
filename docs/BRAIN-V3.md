@@ -121,8 +121,11 @@ early-phase. `aliases.json` maps **every organ id → its cell id**, so `/brain#
 ## Artifacts
 
 ```
-brain/build_cells.py  → brain/data/cells.jsonl      {id, anchor, label, organs[], supercells[], f, xy}
-                        brain/data/synapses.jsonl   {src, dst, weight, kinds[], traces[]}
+brain/build_cells.py  → brain/data/cells.jsonl       {id, anchor, label, organs[], supercells[], f, xy}
+                        brain/data/synapses.jsonl    {src, dst, weight, kinds{}, traces[]}
+                        brain/data/cell_review.jsonl  tagger-quality worklist (ballooned cells)
+brain/layout.py       → the build-time force sim (imported by build_cells)
+brain/test_cells.py   → acceptance C1-C7 + L1-L3
 brain/build_shards.py → assets/brain/ cell shards + aliases.json + views/
 ```
 
@@ -152,22 +155,48 @@ session-crossing source of truth for the refactor.
 later phase. Validated against live data (numbers above are measured, not
 estimated).
 
-### Phase 1 — builder ☐  `brain/build_cells.py`
-Inputs: `brain/data/{nodes,edges}.jsonl` (the organ layer, unchanged) + the tag
-queue + `catalog/data/external/`. Outputs `brain/data/cells.jsonl` +
-`brain/data/synapses.jsonl` per the SCHEMA shapes.
-1. Merge function (SCHEMA rules 1–5) — union-find, deterministic, sorted output.
-2. Organ attach: pages (single-claimant), articles, `matches` statements,
-   `@[…]` attributes, **tag-queue entries** (skip `rejected`; mark AI-queued vs
-   merged-to-Mathlib in `bond`/`prov`).
-3. Supercell organs: `field` concepts + multi-claimant (area) pages → the common
-   module ancestor; multi-claimant pages ALSO emit a weak synapse between claimants.
-4. Synapse aggregation: group every weak bond by (cell pair) → one row, `weight`,
-   `kinds` histogram, **all traces**.
-5. Precomputed layout: run the force sim HERE (not the client); write `xy` per
-   cell. Seeded/deterministic so the map is stable across rebuilds.
-6. `f` facet bits carry up from organs to the cell (union of organ bits).
-7. `brain/test_cells.py` — acceptance C1–C7.
+### Phase 1 — builder ☑  `brain/build_cells.py` + `brain/layout.py` + `brain/test_cells.py`
+Measured on live data: **8,982 cells / 86,884 synapses / largest cell 17 organs**,
+built in ~5s (+3min layout). Acceptance **25/25 green**.
+
+All seven planned items landed (merge function; organ attach incl. the tag queue;
+supercell organs; synapse aggregation with full traces; build-time layout; facet
+bits; C1–C7). What the build **changed vs. the plan** — each one measured, not
+speculative:
+
+- **Anchor rule rewritten.** "Lowest QID" named 27 cells after the wrong concept —
+  the Euclidean-space atom came out labelled *"plane"*. The anchor is now the
+  `exact` concept. (SCHEMA updated.)
+- **Rule 4 generalised from pages to ALL organs.** TheoremGraph matches 219 arXiv
+  statements to decls in different cells; attaching them put one organ in two cells
+  and broke C4 (`aliases.json` must be a function — every API/MCP route depends on
+  it). Shared statements are now synapses. *C4 caught this, not review.*
+- **Unmerged `formalizes` edges are now synapses.** 74 attach edges were being
+  skipped (the concept already had an exact home) and silently dropped; the
+  relationship is real and is kept.
+- **`cell_review.jsonl` added** — the tagger-quality worklist that Jack's answer
+  implies (below).
+- **Layout repulsion made short-range** — this is what actually fixes the reported
+  explorer artefact; see SCHEMA "Layout is BUILD-TIME".
+- **Tag queue reads `bot/state/*.json` locally** (mirroring `bot/publish_queue.py`),
+  so the carried "needs a local read path" debt is closed with no network call.
+
+**Jack's ruling on merge width (2026-07-17)** — asked whether `special_case` should
+still merge, given it absorbs 100 concepts (e.g. "Information" swallowing
+*Information theory* and *Entropy*): *"I think special_case should be kept. If it
+causes a cell to balloon to a massive size, that probably means that the AI taggers
+are doing a bad job (e.g. tagging something as special_case when it is actually a
+related / invocation)."* So the merge set is unchanged and size became a **signal**:
+only 18 of 8,982 cells flag, and they are exactly the mis-grades. The rule stays
+wide; the DATA gets fixed via `grounding_overrides.jsonl`.
+
+**Carried debt closed:** the `Q13471665` "Vector" fix shipped as an override —
+and note it needed BOTH attach options re-graded, because `generalization` outranks
+`special_case`, so fixing only `Module` would have silently re-homed Vector into the
+*EuclideanSpace* atom (worse). Correction to the record: `completedRiemannZeta`'s
+tag was **not** rejected — it is `revise`, with Jack's own note asking to also tag
+the completion — so the zeta atom legitimately holds both zeta decls, exactly as he
+described (C7).
 
 ### Phase 2 — shards ☐  `brain/build_shards.py`
 Cell shards (one fetch per cell), `aliases.json` = **every organ id → cell id**
@@ -199,12 +228,21 @@ branch only after Jack reviews · then merge to `main`.
 
 ## Open items / carried debt
 
-- **Grounding fix:** `Q13471665` "Vector" → `Module` is `generalization`, should
-  be `related` (Jack). Route via `catalog/data/grounding_overrides.jsonl`. Same
-  class: scalar / scalar multiplication → `Module`.
-- The tag queue lives behind `/api/queue` (KV blob, bot/admin). The builder needs
-  a local read path — mirror it into `catalog/data/` on the nightly, or fetch at
-  build time (fail-soft: no queue ⇒ no queue organs, never a hard error).
+- ☑ **Grounding fix:** `Q13471665` "Vector" shipped in `grounding_overrides.jsonl`
+  (both attach options re-graded — see Phase 1). Still open, same class: **scalar /
+  scalar multiplication → `Module`** — not yet audited.
+- ☑ **Tag queue local read path:** `load_tag_queue()` reads `bot/state/*.json`
+  directly (mirroring `bot/publish_queue.py`), fail-soft, no network.
+- **The 18 flagged cells in `cell_review.jsonl` need re-grading** — this is the
+  first real worklist for the tag-quality loop under Jack's "ballooning = bad
+  tagger" rule. Worst offenders: `Real.binEntropy` absorbing Information /
+  Information theory / Entropy; `Module.Dual` absorbing Duality (mathematics);
+  `Configuration.ProjectivePlane` absorbing finite geometry / synthetic geometry.
+  Several look like `field` concepts that should be supercell organs (rule 5).
+- The upstream `catalog/build_graph_v2.py` also applies `grounding_overrides.jsonl`;
+  `build_cells.py` applies it again late (idempotent) so a curated fix lands without
+  a heavy upstream rebuild. If the two ever disagree, upstream wins on the next
+  full rebuild.
 - v2 artifacts that become dead once v3 lands: ext nodes in `nodes.jsonl` are
   still the organ layer (KEEP — cells derive from them), but the ext *rendering*
   path, `xref_explorer.json` seeding, and the ext-node shards go away.

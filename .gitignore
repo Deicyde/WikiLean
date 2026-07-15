@@ -71,6 +71,13 @@ brain/data/rollup_edges.module.jsonl
 # joint file); rebuilt deterministically by brain/build_edges.py from the
 # committed catalog/data/external/ inputs. Non-links edges.jsonl stays tracked.
 brain/data/edges_links.jsonl
+# v3 synapses (~34MB, 87k rows carrying every trace) — same call as edges_links
+# above: it is the big derived artifact and it churns on every nightly rebuild.
+# Rebuilt deterministically by brain/build_cells.py from the committed nodes.jsonl
+# + edges.jsonl (+ edges_links, itself rebuilt from catalog/data/external/).
+# cells.jsonl (the atom layer) and cell_review.jsonl (the tagger worklist) stay
+# tracked — small, and they are what humans and agents actually read.
+brain/data/synapses.jsonl
 # brain-nightly cadence stamps + lock dir (its *.log files are covered above)
 site/ops/logs/
 
