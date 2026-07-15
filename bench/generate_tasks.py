@@ -8,6 +8,21 @@ Gold sources (docs/BRAIN-V2.md "Benchmark (axis 5's referee)"):
       and confidence=="high" (agent+oracle grounding, verified pass).
   (c) site/annotations/*.json statements with status=="formalized" and a cited
       decl (statement-level tasks; canonical files only, .agent1.json excluded).
+  (d) brain/data/cells.jsonl — the ATOM layer (BRAIN v3, brain/SCHEMA.md#v3).
+
+(d) is what makes the accept sets right rather than merely defensible. A cell is
+one mathematical OBJECT, so every decl organ of an atom is a valid answer for
+every concept organ of that same atom, and vice versa. "Vector space" (Q125977)
+has no `VectorSpace` to find — Mathlib fully generalizes it — and grades as
+`generalization`, so sources (a)/(b) accept NOTHING for it and a model answering
+`Module` would score wrong. Its atom holds `Module`, so keying on cells accepts
+it. Same for T2: `Module` legitimately answers with Q18848 OR Q125977.
+Cells only ADD to the accept sets — the sampled gold decl/pair still comes from
+(a)/(b)/(c), so the tag harvest stays the primary signal.
+
+Cells give structure; brain/data/nodes.jsonl stays the ORGAN layer that carries
+each organ's label/slug payload (SCHEMA: cells are DERIVED from it) — the two are
+layers of one graph, not alternatives.
 
 Task types (bench/tasklib.py documents the row shapes):
   T1 informal->formal: concept (+statement) -> fully-qualified Mathlib decl.
@@ -35,7 +50,9 @@ from tasklib import DATA_DIR, REPO, TASKS_PATH, write_jsonl  # noqa: E402
 TAG_XREFS = REPO / "catalog" / "data" / "mathlib_tag_xrefs.jsonl"
 GROUNDING = REPO / "catalog" / "data" / "rebuild_grounding.json"
 UNIVERSE = REPO / "catalog" / "data" / "wikidata_universe.jsonl"
-BRAIN_NODES = REPO / "brain" / "data" / "nodes.jsonl"
+BRAIN_NODES = REPO / "brain" / "data" / "nodes.jsonl"   # organ layer: labels/slugs
+BRAIN_CELLS = REPO / "brain" / "data" / "cells.jsonl"   # atom layer: accept sets
+BRAIN_REVIEW = REPO / "brain" / "data" / "cell_review.jsonl"  # known-bad grades
 ANNOT_DIR = REPO / "site" / "annotations"
 CACHE_ORACLE = REPO / ".claude" / "skills" / "mathlib-search" / ".cache" / "declaration-data.json"
 
@@ -127,6 +144,82 @@ def load_labels() -> tuple[dict[str, str], dict[str, list[str]], dict[str, str]]
     return label, dict(slugs), slug_to_qid
 
 
+class Cells:
+    """The atom layer: organ id -> its cell, and each cell's decl/concept organs.
+
+    An organ resolves to exactly ONE atom (SCHEMA C4), so `of` never has to
+    disambiguate. Absent cells.jsonl ⇒ every lookup is empty and the generator
+    degrades to the pre-v3 accept sets rather than failing (it is a build
+    artifact, and the benchmark must not depend on a fresh brain build).
+
+    **Suspect claims are excluded from gold.** The builder emits
+    cell_review.jsonl naming the exact organ claims it distrusts — a cell that
+    ballooned means "the AI taggers are doing a bad job", per SCHEMA's
+    "A ballooning cell is a TAGGER signal". Each suspect claim asserts *this
+    concept has no formal home of its own and belongs in this atom*, which is
+    precisely the assertion the widening below would build gold on. Importing
+    them would make the benchmark LENIENT in the worst way — measured, they let
+    `MonoidHom` accept the generic concept "Homomorphism" (cell:Q215111) and
+    `Polygon` accept "Hexagon". Gold must be at least as strict as the truth, so
+    the flagged claims are dropped until the grade is fixed via
+    grounding_overrides.jsonl. The rest of a flagged cell is still trusted — the
+    review names claims, not whole atoms.
+    """
+
+    def __init__(self, path: Path, review: Path) -> None:
+        self.of: dict[str, str] = {}
+        self.decls: dict[str, list[str]] = defaultdict(list)
+        self.qids: dict[str, list[str]] = defaultdict(list)
+        # cell id -> the QIDs whose atom membership is a suspect grade
+        self.suspect: dict[str, set[str]] = defaultdict(set)
+        self.n_cells = 0
+        self.n_suspect = 0
+        if review.exists():
+            with open(review) as f:
+                for line in f:
+                    if not line.strip():
+                        continue
+                    r = json.loads(line)
+                    if "_meta" in r:
+                        continue
+                    for claim in r.get("suspect_claims") or []:
+                        self.suspect[r["cell"]].add(claim["qid"])
+                        self.n_suspect += 1
+        if not path.exists():
+            return
+        with open(path) as f:
+            for line in f:
+                if not line.strip():
+                    continue
+                c = json.loads(line)
+                if "_meta" in c:
+                    continue
+                self.n_cells += 1
+                cid = c["id"]
+                for o in c.get("organs") or []:
+                    self.of[o["id"]] = cid
+                    if o["kind"] == "decl":
+                        self.decls[cid].append(o["id"].split(":", 2)[2])
+                    elif o["kind"] == "concept":
+                        self.qids[cid].append(o["id"])
+
+    def decls_for_qid(self, qid: str) -> list[str]:
+        """Every decl organ sharing an atom with this concept — unless it is
+        this very concept's membership that the review distrusts, in which case
+        the atom says nothing trustworthy about it."""
+        cid = self.of.get(qid, "")
+        if qid in self.suspect.get(cid, ()):
+            return []
+        return self.decls.get(cid, [])
+
+    def qids_for_decl(self, decl: str) -> list[str]:
+        """Every concept organ sharing an atom with this decl, minus the
+        suspect ones (they are why the cell ballooned)."""
+        cid = self.of.get(f"decl:Mathlib:{decl}", "")
+        bad = self.suspect.get(cid, set())
+        return [q for q in self.qids.get(cid, []) if q not in bad]
+
+
 def load_annotation_statements(oracle: set[str], slug_to_qid: dict[str, str]) -> list[dict]:
     """Formalized statements with a cited, oracle-verified decl and real anchor
     text, from canonical annotation files joinable to a QID."""
@@ -188,6 +281,7 @@ def main() -> int:
     grounding = json.load(open(GROUNDING))
     label, slugs, slug_to_qid = load_labels()
     annots = load_annotation_statements(oracle, slug_to_qid)
+    cells = Cells(BRAIN_CELLS, BRAIN_REVIEW)
 
     # Index the gold structure.
     tag_qid_decls: dict[str, set[str]] = defaultdict(set)   # qid -> tagged decls
@@ -214,12 +308,19 @@ def main() -> int:
                 exact_high_by_qid[row["qid"]].append(f)
 
     def accept_decls(qid: str) -> list[str]:
-        """Every decl any gold source calls an exact formalization of qid."""
+        """Every decl any gold source calls an exact formalization of qid, PLUS
+        every decl sharing its atom — one cell is one object, so its decls are
+        interchangeable answers. Oracle-filtered: the cell layer is built from
+        a different pin than the oracle cache, so it can name a decl the oracle
+        does not have, and an accept set must never carry a stale name."""
         s = set(tag_qid_decls.get(qid, ())) | {f["decl"] for f in exact_by_qid.get(qid, ())}
+        s |= {d for d in cells.decls_for_qid(qid) if d in oracle}
         return sorted(s)
 
     def gold_pairs(decl: str) -> list[dict]:
-        qids = {r["tag"] for r in tag_decl_rows.get(decl, ())} | decl_to_qids.get(decl, set())
+        qids = ({r["tag"] for r in tag_decl_rows.get(decl, ())}
+                | decl_to_qids.get(decl, set())
+                | set(cells.qids_for_decl(decl)))
         pairs = []
         for q in sorted(qids):
             if q in label and slugs.get(q):
@@ -254,7 +355,10 @@ def main() -> int:
                 "slug": slug_override or slugs[qid][0],
                 "statement": statement,
             },
-            "gold": {"decl": gold_decl, "decls": decls, "qid": qid},
+            # `cell` records which atom the accept set came from, so a scoring
+            # dispute traces back to one line of brain/data/cells.jsonl
+            "gold": {"decl": gold_decl, "decls": decls, "qid": qid,
+                     **({"cell": cells.of[qid]} if qid in cells.of else {})},
             "provenance": provenance,
         })
 
@@ -294,10 +398,11 @@ def main() -> int:
             skipped["no_identity"] += 1
             return
         t2_decls.add(decl)
+        cell = cells.of.get(f"decl:Mathlib:{decl}")
         tasks.append({
             "id": f"T2-{decl}", "type": "T2", "split": None,
             "prompt_context": {"decl": decl, "module": module},
-            "gold": {"pairs": pairs},
+            "gold": {"pairs": pairs, **({"cell": cell} if cell else {})},
             "provenance": provenance,
         })
 
@@ -389,7 +494,8 @@ def main() -> int:
         for typ in sorted(by_type)
     }
     meta = {
-        "spec": "docs/BRAIN-V2.md 'Benchmark (axis 5's referee)'",
+        "spec": "docs/BRAIN-V2.md 'Benchmark (axis 5's referee)'; accept sets keyed "
+                "on the v3 atom layer (brain/SCHEMA.md#v3)",
         "generator": "bench/generate_tasks.py",
         "seed": SEED,
         "quotas": QUOTAS,
@@ -398,6 +504,8 @@ def main() -> int:
             "mathlib_tag_xrefs": len(tag_rows),
             "rebuild_grounding": len(grounding),
             "annotation_statements": len(annots),
+            "cells": cells.n_cells,
+            "suspect_claims_excluded": cells.n_suspect,
         },
         "counts": counts,
         "n_tasks": len(tasks),

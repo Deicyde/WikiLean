@@ -48,8 +48,12 @@ concepts (Q82571 "Linear algebra" → `path:Mathlib/LinearAlgebra`) and area pag
 ```
 Every constituent bond is retained in `traces`, capped at `TRACE_CAP` (64) per
 synapse at build time and again by the shard byte budget — never silently: whatever
-a cap drops is counted in `truncated`. Weight drives prominence and counts every
-bond, capped or not.
+a cap drops is counted in `truncated` (a COUNT, not a flag), and a shard row carries
+`tt` (the true total) only when its traces were actually trimmed. Weight drives
+prominence and counts every bond, capped or not. **`brain/query.py --full` is the
+only surface serving the untruncated set.** Supercell synapses ship traceless in
+`supercells.json` (it is fetched eagerly; carrying them would treble it) — declared
+in that file's `_meta.traces`, fetch via `/api/brain/neighborhood`.
 
 `src`/`dst` are ordered lexicographically, not directionally: a synapse is an
 UNDIRECTED aggregate of bonds that may run either way (A depends on B while B links

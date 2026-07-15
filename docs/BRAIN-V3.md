@@ -291,12 +291,76 @@ site/assets/brain/cells/
 - Retire the v2 explorer toggles that exist only to dodge the node count
   (`database pages` / `unlinked`) once cells make them moot.
 
-### Phase 4 — API/MCP/bench/docs ☐
-Breaking changes AUTHORIZED. `brain_cell` replaces `brain_unit`; `transfer`
-resolves through cells; every route resolves any organ id via `aliases.json`.
-Update `docs/BRAIN-API.md`, `/brain/api`, the `/mcp` docs page, the
-`brain-query` skill (+ `.agents/` copy), `brain/query.py`, and `bench/`
-(task generator keys on cells). `cd wiki && npx tsc --noEmit && npm test` green.
+### Phase 4 — API/MCP/bench/docs ☑
+`wiki/src/brain-api.ts` reads `/assets/brain/cells/`; every route resolves any
+organ id (or an atom id) through `aliases.json` before touching a shard, and
+returns a **cell or a supercell** — `Q82571` resolving to
+`path:Mathlib/LinearAlgebra` is not an edge case, it is rule 5, so `Atom = cell
+| supercell` is threaded through every helper. `tsc --noEmit` clean;
+`npm test` 619/620 (the one failure, `engine.golden.test.ts`, is the known
+stale-`site/out`-fixture issue and fails identically at HEAD).
+
+**MCP: seven tools, down from eight.** `brain_cell` replaces BOTH `brain_node`
+and `brain_unit` — v3 has no particle nodes, and the unit card *became* the cell
+card (a unit was QID ∘ article ∘ decls ∘ xrefs = exactly a cell's organs), so
+keeping them separate would have been ceremony. Both survive as dispatch-only
+aliases (not in `tools/list`, accepting either `key` or `id`) so a pre-cut agent
+session does not hard-fail. serverInfo → 3.0.0; the instructions block and every
+tool description now teach cells/organs/synapses.
+
+What the work **changed vs. the plan** — each one forced by the shipped data:
+
+- **`/api/brain/search` moved from `brain.ts` to `brain-api.ts`.** It has to read
+  the CELL label index (an `aka` hit is how "Vector space" finds the Module
+  atom), and `brain.ts` registers first — a route left there would have silently
+  shadowed the v3 one. `searchLabels` gained `aka` matching at label rank and is
+  still shared; the rest of `brain.ts` stays v2 for `brainNodeExists` (the
+  community-edit node-existence oracle) until phase 5.
+- **`neighborhood` lost `dir`.** A synapse is an undirected aggregate; direction
+  lives on each trace. It gained `traces=0` for a compact partner list, and its
+  `kinds` filter now filters the traces too (asking for `depends` must not dump
+  `links`).
+- **`filter` 400s the v2 `type=concept|container|ext`** rather than ignoring
+  them — silently unfiltered results are worse than a loud failure. It gained
+  `type=cell|supercell` (supercells enumerate by `fa`, the subtree aggregate —
+  a different question, hence a separate type) and `under=path:…` via `p`.
+- **The licence floor is enforced in the API, not just trusted.** `safeOrgan`
+  drops a `snippet` that arrives without `snippet_license`, degrading to a deep
+  link. Regression-tested.
+- **`snippets` stopped fanning out** — it reads the embedded organ payloads, so
+  one shard fetch answers the whole call (v2 fetched one shard per xref). Decl
+  organs became a source row of their own (docstring + code), licensed
+  Apache-2.0 from `source_registry.json` rather than an invented string.
+- **Organs carry `bond`, not `confidence`** (confidence lived on the grounding
+  edge the builder consumed), so decl ranking is exact → graded → ungraded →
+  name. The API says `bond` everywhere v2 said `match_kind`.
+
+**Bench: the accept sets are keyed on the atom layer, and this fixed real gold.**
+A cell is one object, so its decl organs are interchangeable answers for its
+concept organs. "Vector space" grades `generalization`, so the tag/grounding
+sources accepted *nothing* for it and a model answering `Module` scored **wrong**;
+its atom holds `Module`. Measured: task ids and splits unchanged (180), the
+sampled gold never moves, 6 accept sets widened. **But 3 more widened from cells
+`cell_review.jsonl` flags as mis-grades** — `MonoidHom` started accepting the
+generic concept "Homomorphism", `Polygon` accepting "Hexagon" — so the generator
+now excludes the 53 flagged suspect claims by qid (the review names claims, not
+whole atoms). Gold must be at least as strict as the truth, or the benchmark
+becomes an echo of the tagger it grades. `run_benchmark.py`'s allowlist named
+`brain_node`/`brain_unit`, which no longer exist in `tools/list` (the
+server-level catch-all was masking it) — now names the v3 seven plus the aliases.
+
+`brain/query.py` is cell/synapse-native and is the ONLY surface serving
+untruncated traces (`--full`: 682 synapses / 12 traces on Q18848 vs the shard's
+199 / 6). Docs updated: `docs/BRAIN-API.md`, `/brain/api`, the `/mcp` page, the
+`brain-query` skill + its `.agents/` copy.
+
+**Data disagreements found vs. the contract** (the shipped bytes win; noted for
+phase 5): a **supercell's synapses ship with no traces at all** —
+`build_cell_shards.py:306` strips them for byte budget — so a supercell
+neighborhood returns `w`/`kinds` with `traces: []`, and `query.py --full` is the
+only way to get them. Also `truncated.syn` is a **count**, not a flag, and `tt`
+appears only when traces were actually trimmed. All three are now documented
+rather than papered over.
 
 ### Phase 5 — verify + land ☐
 Acceptance green · browser-verify the bubble view + explorer + a synapse trace ·

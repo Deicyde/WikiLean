@@ -10,8 +10,13 @@ import { app } from "../src/index.js";
 import {
   installBrainFixture,
   ABELIAN,
+  ABELIAN_CELL,
+  MODULE_CELL,
   MODULE_Q,
   VSPACE_Q,
+  FIELD_Q,
+  LINALG_SUPER,
+  DECL_CELL,
   type BrainFixtureOpts,
 } from "./helpers/brain-fixture.js";
 
@@ -68,8 +73,10 @@ describe("POST /mcp — lifecycle", () => {
     const j = (await res.json()) as { id: unknown; result: Record<string, unknown> };
     expect(j.result.protocolVersion).toBe("2025-03-26");
     expect(j.result.capabilities).toEqual({ tools: {} });
-    expect(j.result.serverInfo).toEqual({ name: "wikibrain", version: "2.0.0" });
-    expect(typeof j.result.instructions).toBe("string");
+    expect(j.result.serverInfo).toEqual({ name: "wikibrain", version: "3.0.0" });
+    // the instructions ARE the model contract — they must teach cells, not nodes
+    expect(j.result.instructions).toContain("CELL");
+    expect(j.result.instructions).toContain("SYNAPSE");
   });
 
   it("offers 2025-06-18 when the client asks for an unknown version", async () => {
@@ -102,15 +109,16 @@ describe("POST /mcp — lifecycle", () => {
 });
 
 describe("POST /mcp — tools/list", () => {
-  it("lists all eight tools with schemas", async () => {
+  it("lists all seven tools with schemas", async () => {
     const h = harness();
     const j = (await (await rpc(h, "tools/list")).json()) as {
       result: { tools: Array<{ name: string; description: string; inputSchema: { type: string } }> };
     };
+    // brain_node + brain_unit collapsed into brain_cell: v3 has no particle
+    // nodes, and the unit card IS the cell card
     expect(j.result.tools.map((t) => t.name)).toEqual([
       "brain_search",
-      "brain_node",
-      "brain_unit",
+      "brain_cell",
       "brain_transfer",
       "brain_neighborhood",
       "brain_snippets",
@@ -125,21 +133,24 @@ describe("POST /mcp — tools/list", () => {
 });
 
 describe("POST /mcp — tools/call", () => {
-  it("brain_search finds concepts by text", async () => {
+  it("brain_search finds atoms by text, including through an organ's label", async () => {
     const h = harness();
     const { isError, data } = await callTool(h, "brain_search", { q: "abelian" });
     expect(isError).toBeUndefined();
-    expect((data.hits as Array<{ id: string }>).some((r) => r.id === ABELIAN)).toBe(true);
+    expect((data.hits as Array<{ id: string }>).some((r) => r.id === ABELIAN_CELL)).toBe(true);
+    // "Vector space" is an organ label of the Module atom
+    const aka = await callTool(h, "brain_search", { q: "vector space" });
+    expect((aka.data.hits as Array<{ id: string }>)[0].id).toBe(MODULE_CELL);
   });
 
-  it("brain_unit resolves a bare decl name to the owning concept's unit", async () => {
+  it("brain_cell resolves a bare decl name to the owning atom's card", async () => {
     const h = harness();
-    const { data } = await callTool(h, "brain_unit", { key: "CommGroup" });
-    expect(data).toMatchObject({ ok: true, qid: ABELIAN, resolved_from: "decl" });
-    expect((data.unit as { decls: unknown[] }).decls).toHaveLength(1);
+    const { data } = await callTool(h, "brain_cell", { key: "CommGroup" });
+    expect(data).toMatchObject({ ok: true, id: ABELIAN_CELL, kind: "cell", resolved_from: "decl" });
+    expect(data.organs_by_kind).toMatchObject({ concept: 1, decl: 1 });
   });
 
-  it("brain_transfer answers both directions", async () => {
+  it("brain_transfer answers both directions off one atom", async () => {
     const h = harness();
     const fwd = await callTool(h, "brain_transfer", {
       q: "abelian group",
@@ -151,19 +162,39 @@ describe("POST /mcp — tools/call", () => {
       direction: "formal_to_informal",
     });
     expect((back.data.hits as Array<{ qid: string }>).map((x) => x.qid)).toEqual([MODULE_Q, VSPACE_Q]);
+    // a field-of-study concept's formal home is a folder, and it says so
+    const field = await callTool(h, "brain_transfer", { q: FIELD_Q, direction: "informal_to_formal" });
+    expect(field.data).toMatchObject({ kind: "supercell", container: LINALG_SUPER });
   });
 
-  it("brain_node / brain_neighborhood / brain_snippets / brain_filter round-trip", async () => {
+  it("brain_neighborhood / brain_snippets / brain_filter round-trip", async () => {
     const h = harness();
-    const node = await callTool(h, "brain_node", { id: ABELIAN });
-    expect(node.data).toMatchObject({ ok: true, id: ABELIAN });
-    expect(node.data.prov_table).toBeDefined();
-    const nb = await callTool(h, "brain_neighborhood", { id: ABELIAN, kinds: "xref", dir: "out" });
-    expect((nb.data.edges as unknown[]).length).toBe(3);
+    const nb = await callTool(h, "brain_neighborhood", { id: ABELIAN, kinds: "depends" });
+    const syn = nb.data.synapses as Array<Record<string, unknown>>;
+    expect(syn).toHaveLength(1);
+    expect(syn[0]).toMatchObject({ id: MODULE_CELL, w: 15 });
+    expect((syn[0].traces as Array<{ kind: string }>).every((t) => t.kind === "depends")).toBe(true);
     const sn = await callTool(h, "brain_snippets", { id: ABELIAN });
     expect((sn.data.rows as unknown[]).length).toBeGreaterThan(2);
     const fl = await callTool(h, "brain_filter", { f: 5, limit: 10 });
-    expect((fl.data.hits as Array<{ id: string }>).map((r) => r.id)).toEqual([ABELIAN, MODULE_Q]);
+    expect((fl.data.hits as Array<{ id: string }>).map((r) => r.id)).toEqual([ABELIAN_CELL, MODULE_CELL]);
+    const sup = await callTool(h, "brain_filter", { f: 0, type: "supercell", under: LINALG_SUPER });
+    expect((sup.data.hits as Array<{ id: string }>).map((r) => r.id)).toEqual([LINALG_SUPER]);
+  });
+
+  // An agent session that connected before the cell cut holds the old catalog.
+  // It must keep working, not hard-fail on the first call.
+  it("the v2 brain_unit / brain_node aliases still answer, with the atom", async () => {
+    const h = harness();
+    const unit = await callTool(h, "brain_unit", { key: "CommGroup" });
+    expect(unit.isError).toBeUndefined();
+    expect(unit.data).toMatchObject({ ok: true, id: ABELIAN_CELL, kind: "cell" });
+    // brain_node took `id`, brain_unit took `key` — both names are accepted
+    const node = await callTool(h, "brain_node", { id: VSPACE_Q });
+    expect(node.isError).toBeUndefined();
+    expect(node.data).toMatchObject({ ok: true, id: MODULE_CELL });
+    const byKey = await callTool(h, "brain_node", { key: DECL_CELL });
+    expect(byKey.data).toMatchObject({ ok: true, id: DECL_CELL });
   });
 
   it("decl_exists verifies real decls and rejects fabrications", async () => {
@@ -185,12 +216,12 @@ describe("POST /mcp — tools/call", () => {
     const shortQ = await callTool(h, "brain_search", { q: "a" });
     expect(shortQ.isError).toBe(true);
     expect(shortQ.data.ok).toBe(false);
-    const noKey = await callTool(h, "brain_unit", {});
+    const noKey = await callTool(h, "brain_cell", {});
     expect(noKey.isError).toBe(true);
     const badMask = await callTool(h, "brain_filter", { f: -3 });
     expect(badMask.isError).toBe(true);
-    const unknownNode = await callTool(h, "brain_node", { id: "Q999999999" });
-    expect(unknownNode.isError).toBe(true);
+    const unknownCell = await callTool(h, "brain_cell", { key: "Q999999999" });
+    expect(unknownCell.isError).toBe(true);
   });
 
   it("an unknown tool is a -32602 protocol error", async () => {
