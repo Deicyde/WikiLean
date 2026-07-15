@@ -56,14 +56,21 @@ MERGE_KINDS = frozenset((FUSE,) + ATTACH)
 CELL_MAX_ORGANS = 48  # C3 guard: exceeding this means the merge rule broke
 
 # Rule 2 ranking: confidence, then generalization before special_case, then id.
+# ATTACH_RANK must cover every kind `--attach` accepts, or the ranking KeyErrors.
 CONF_RANK = {"high": 0, "medium": 1, "low": 2}
-ATTACH_RANK = {"generalization": 0, "special_case": 1}
+ATTACH_RANK = {"generalization": 0, "special_case": 1, "invocation": 2, "related": 3}
+ATTACHABLE = tuple(ATTACH_RANK)  # what --attach may name (default stays ATTACH)
 
 # Weak bonds -> synapses. `formalizes` with match_kind invocation/related joins
 # them (rule 3); `contains` is containment (supercells), never a synapse.
 WEAK_EDGE_KINDS = frozenset(("depends", "mentions", "relates", "cites", "links"))
 
 TRACE_CAP = 64  # safety valve; `truncated` records what a cap dropped (never silent)
+
+# SCHEMA v2 facet bit 8 = "this node IS an external page". A cell is never an ext
+# node, so the bit is masked off when a page organ's facets fold into its cell (the
+# DB bits 9+ ARE kept: "this atom has an nLab page" is a useful node-level filter).
+F_EXT = 1 << 8
 
 
 # ---- small helpers ----------------------------------------------------------
@@ -381,11 +388,37 @@ def build_cells(nodes: dict[str, dict], edges_by_kind: dict[str, list],
     # Bond + provenance for every merged organ, so the cell card can say WHY the
     # organ is here (and C7 can separate queued from merged tags).
     organ_meta: dict[tuple[str, str], tuple[str, int]] = {}  # (root, organ) -> (bond, prov)
+
+    def prov_rank(edge: dict) -> tuple:
+        """Strongest evidence first; ties broken on ids so the pick is deterministic.
+
+        An organ fused by BOTH a merged `@[wikidata]` attribute and an AI queue
+        candidate must show the MERGED provenance. Last-write-wins let the synthetic
+        queue bond (appended after the real edges) overwrite it, inverting C7 on 12
+        shipped organs — the queue's entire contract is that it stays distinguishable
+        from, and weaker than, a tag that actually landed in Mathlib.
+        """
+        p = edge.get("provenance") or {}
+        method = p.get("method") or ""
+        if p.get("source") == "tag-queue":
+            tier = 2
+        else:
+            tier = 0 if "@[wikidata] attribute" in method else 1
+        return (tier, edge["src"], edge["dst"])
+
+    best: dict[tuple[str, str], dict] = {}
+
+    def offer(key: tuple[str, str], edge: dict) -> None:
+        cur = best.get(key)
+        if cur is None or prov_rank(edge) < prov_rank(cur):
+            best[key] = edge
+
     for qid, edge_list in exact_by_qid.items():
         for edge in edge_list:
-            organ_meta[(dsu.find(qid), qid)] = (FUSE, prov.intern(edge.get("provenance")))
-            organ_meta[(dsu.find(edge["dst"]), edge["dst"])] = (
-                FUSE, prov.intern(edge.get("provenance")))
+            offer((dsu.find(qid), qid), edge)
+            offer((dsu.find(edge["dst"]), edge["dst"]), edge)
+    for key, edge in best.items():
+        organ_meta[key] = (FUSE, prov.intern(edge.get("provenance")))
     for qid, edge_list in attach_by_qid.items():
         if qid in exact_by_qid:
             continue
@@ -493,7 +526,11 @@ def attach_pages(cells: dict[str, dict], owner: dict[str, str], nodes: dict[str,
                 "db": node.get("db"), "bond": "xref",
                 "prov": prov.intern(rows[0]["edge"].get("provenance")),
             })
-            cells[cid]["f"] = cells[cid].get("f", 0) | node.get("f", 0)
+            # Take the page's DB bits (bit9+: "this atom has an nLab/Stacks/... page"
+            # — a useful node-level filter) but MASK OFF bit8 F_EXT. Bit 8 is the
+            # node-type predicate "this node IS an external page"; a cell never is,
+            # and OR-ing it set the bit on 1,868 non-ext cells.
+            cells[cid]["f"] = cells[cid].get("f", 0) | (node.get("f", 0) & ~F_EXT)
             owner[page] = cid
             stats["page_organ"] += 1
             continue
@@ -501,6 +538,17 @@ def attach_pages(cells: dict[str, dict], owner: dict[str, str], nodes: dict[str,
         # multi-claimant -> supercell organ + weak synapses between the claimants
         stats["page_area"] += 1
         home = common_supercell(cells, claimants)
+        if home:
+            stats["page_area_homed"] += 1
+        else:
+            # No common ancestor (claimants span libraries, or none has a decl at
+            # all). Without a fallback the page attaches NOWHERE — not a cell, not a
+            # supercell — and vanishes from the graph. That silently swallowed 15 of
+            # 123 area pages, DLMF 1.9 among them, which is the SCHEMA's own worked
+            # example of rule 4. Fall back to the shallowest supercell any claimant
+            # has (the library root), and only give up if no claimant has one.
+            home = fallback_supercell(cells, claimants)
+            stats["page_area_fallback" if home else "page_area_homeless"] += 1
         if home:
             supercell_organs[home].append({
                 "kind": "page", "id": page, "label": node.get("label"),
@@ -536,6 +584,17 @@ def common_supercell(cells: dict[str, dict], claimants: list[str]) -> str | None
             break
         shared.append(parts[0])
     return "/".join(shared) if len(shared) > 1 else None
+
+
+def fallback_supercell(cells: dict[str, dict], claimants: list[str]) -> str | None:
+    """Shallowest supercell any claimant has — the last stop before a page is lost.
+
+    Reached when the claimants share no common ancestor (or a claimant is a
+    concept-only cell with no decl and therefore no supercell at all). A library
+    root is a coarse home, but a coarse home beats vanishing.
+    """
+    sups = sorted({s for cid in claimants for s in (cells[cid].get("supercells") or [])})
+    return min(sups, key=lambda s: (s.count("/"), s)) if sups else None
 
 
 def attach_articles(cells: dict[str, dict], owner: dict[str, str],
@@ -622,8 +681,16 @@ def build_synapses(cells: dict[str, dict], owner: dict[str, str],
     agg: dict[tuple[str, str], dict] = {}
 
     def add(a: str, b: str, kind: str, trace: dict) -> None:
-        if a == b or a not in cells or b not in cells:
+        # Counted HERE, not at the call sites: an edge whose endpoints land in the
+        # same cell is an INTRA-cell bond and is dropped, so counting before this
+        # guard over-reports every weak kind.
+        if a == b:
+            stats[f"intracell_{kind}"] += 1
             return
+        if a not in cells or b not in cells:
+            stats[f"unowned_{kind}"] += 1
+            return
+        stats[f"synapse_{kind}"] += 1
         key = (a, b) if a < b else (b, a)
         row = agg.get(key)
         if row is None:
@@ -649,7 +716,6 @@ def build_synapses(cells: dict[str, dict], owner: dict[str, str],
             a, b = owner.get(edge["src"]), owner.get(edge["dst"])
             if a and b:
                 add(a, b, kind, trace_of(edge, kind))
-                stats[f"synapse_{kind}"] += 1
 
     # Rule 3 — invocation/related are synapses, never merges. This also catches any
     # gen/special_case edge that did NOT produce a merge (the concept already had an
@@ -662,21 +728,57 @@ def build_synapses(cells: dict[str, dict], owner: dict[str, str],
         a, b = owner.get(edge["src"]), owner.get(edge["dst"])
         if a and b:
             add(a, b, mk or "formalizes", trace_of(edge, mk or "formalizes"))
-            stats["synapse_formalizes"] += 1
 
     # rule 4 — co-claimed area pages
     for row in co_claims:
         add(row["src"], row["dst"], row["kind"], row["trace"])
-        stats["synapse_co_page"] += 1
 
-    # `links` streams: 630k rows / 146MB, and only the anchored projection survives.
-    # This is the payoff of ingesting each database's INTERNAL links — a page-to-page
-    # link becomes a cell-to-cell synapse whose trace names both pages.
+    # `links` streams: 630k rows / 146MB. This is the payoff of ingesting each
+    # database's INTERNAL links — a page-to-page link becomes a cell-to-cell synapse
+    # whose trace names both pages.
+    #
+    # edges_links.jsonl carries the same fact in TWO forms: 618k raw ext->ext page
+    # links, and 11,540 concept->concept rows that build_edges already projected from
+    # those same links (evidence.projected, naming src_page/dst_page). Consuming both
+    # blindly double-counts every pre-projected link — two traces and weight 2 for one
+    # nLab hyperlink. But dropping the projected rows loses MORE than it saves: a page
+    # claimed by several cells is an area page and owns no cell (rule 4), so its links
+    # cannot project through ownership — and area pages are precisely the hubs that
+    # carry the most links. Raw-only measured 6,415 bonds vs 11,540 pre-projected.
+    #
+    # So: keep both, deduplicated at the FACT level. Raw links go first (their trace
+    # names both pages, which is what the evidence drawer shows); a projected row is
+    # then used only if its underlying page pair was not already consumed.
+    if not links_path.exists():
+        # LOUD: this file is gitignored (146MB), so a fresh clone silently loses every
+        # external-DB link synapse — the whole point of ingesting internal links.
+        print(f"  ! {links_path.name} absent — NO link synapses will be built "
+              f"(rebuild: python3 brain/build_edges.py)", file=sys.stderr)
+        stats["links_file_missing"] = 1
+
+    consumed: set[tuple[str, str]] = set()
+    projected: list[dict] = []
     for edge in _iter_jsonl(links_path):
+        ev = edge.get("evidence") or {}
+        if ev.get("projected"):
+            projected.append(edge)       # 11,540 rows — buffered, resolved below
+            continue
         a, b = owner.get(edge["src"]), owner.get(edge["dst"])
         if a and b:
             add(a, b, "links", trace_of(edge, "links"))
-            stats["synapse_links"] += 1
+            consumed.add((edge["src"], edge["dst"]))
+
+    for edge in projected:
+        ev = edge["evidence"]
+        via = ev.get("via")
+        pair = (f"xref:{via}:{ev.get('src_page')}", f"xref:{via}:{ev.get('dst_page')}")
+        if pair in consumed:
+            stats["links_preprojected_deduped"] += 1
+            continue
+        a, b = owner.get(edge["src"]), owner.get(edge["dst"])
+        if a and b:
+            add(a, b, "links", trace_of(edge, "links"))
+            stats["links_preprojected_kept"] += 1
 
     out = []
     for (a, b), row in sorted(agg.items()):
@@ -705,27 +807,52 @@ def cell_review(cells: dict[str, dict], nodes: dict[str, dict],
     """
     review: list[dict] = []
     for cid, cell in cells.items():
-        absorbed = [o for o in cell["organs"]
-                    if o["kind"] == "concept" and o.get("bond") in ATTACH]
-        if len(absorbed) < min_absorbed:
-            continue
+        concepts = [o for o in cell["organs"] if o["kind"] == "concept"]
         decls = [o["id"] for o in cell["organs"] if o["kind"] == "decl"]
+        absorbed = [o for o in concepts if o.get("bond") in ATTACH]
+
+        # Rule-2 balloon: one decl absorbing several home-less concepts.
+        rule = "rule2-absorption" if len(absorbed) >= min_absorbed else None
+
+        # Rule-1 weld: `exact` fuses BOTH ways, so it is transitive by design (that
+        # is what puts riemannZeta AND completedRiemannZeta in one atom). The cost is
+        # that ONE over-broad exact grade welds every decl it names, plus every
+        # concept naming those, into a single atom — e.g. the survey concept
+        # "Bijection, injection and surjection" exact-claiming Function.{Bijective,
+        # Injective,Surjective} drags Bijection and Surjective function into one cell,
+        # though no edge joins them. Scoping this worklist to rule 2 left exactly that
+        # case invisible — the only chaining that actually occurs. Same doctrine, same
+        # channel: surface the grade, do not bend the rule.
+        exact_concepts = [o for o in concepts if o.get("bond") == FUSE]
+        if len(exact_concepts) >= 2 and len(decls) >= 2:
+            rule = "rule1-exact-weld"
+
+        if rule is None:
+            continue
+        suspects = absorbed if rule == "rule2-absorption" else exact_concepts
+        note = ("each suspect claim asserts this concept has no formal home of its own "
+                "and belongs in this atom; if that is wrong the grade should be "
+                "`related` or `invocation`"
+                if rule == "rule2-absorption" else
+                "several concepts `exact`-claim several decls here, welding them into "
+                "one atom; `exact` means IDENTITY, so an over-broad survey concept "
+                "claiming many decls is the likely mis-grade")
         review.append({
             "cell": cid,
             "label": cell["label"],
+            "rule": rule,
             "n_organs": len(cell["organs"]),
-            "n_absorbed": len(absorbed),
+            "n_absorbed": len(suspects),
             "decls": decls,
             "suspect_claims": [
                 {"qid": o["id"], "label": o.get("label"), "match_kind": o.get("bond"),
                  "absorbed_into": decls[0] if decls else None}
-                for o in absorbed
+                for o in suspects
             ],
-            "note": ("each suspect claim asserts this concept has no formal home of its "
-                     "own and belongs in this atom; if that is wrong the grade should be "
-                     "`related` or `invocation` — fix via grounding_overrides.jsonl"),
+            "note": note + " — fix via catalog/data/grounding_overrides.jsonl",
         })
     review.sort(key=lambda r: (-r["n_absorbed"], -r["n_organs"], r["cell"]))
+    stats["cells_flagged_rule1"] = sum(1 for r in review if r["rule"] == "rule1-exact-weld")
     stats["cells_flagged_for_review"] = len(review)
     return review
 
@@ -808,10 +935,18 @@ def main() -> None:
     ap.add_argument("--stats", action="store_true", help="print the stats table and exit")
     ap.add_argument("--attach", default=",".join(ATTACH),
                     help="match_kinds that may attach a home-less concept (SCHEMA rule 2); "
-                         "the excluded ones become synapses instead")
+                         "the excluded ones become synapses instead. "
+                         f"choose from: {', '.join(ATTACHABLE)}")
     args = ap.parse_args()
 
+    # Validate: an unknown kind used to be accepted silently (and quietly build a
+    # DIFFERENT graph), while a real-but-unranked kind raised a bare KeyError deep
+    # in merge(). Widening the merge set is a contract change — fail loudly here.
     attach_kinds = tuple(k for k in args.attach.split(",") if k)
+    unknown = [k for k in attach_kinds if k not in ATTACH_RANK]
+    if unknown:
+        ap.error(f"--attach: unknown match_kind(s) {unknown}; "
+                 f"choose from {list(ATTACHABLE)}")
     cells, synapses, meta, review = build(do_layout=not args.no_layout,
                                           attach_kinds=attach_kinds)
     if args.stats:

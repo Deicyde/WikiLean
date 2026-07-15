@@ -46,10 +46,32 @@ concepts (Q82571 "Linear algebra" → `path:Mathlib/LinearAlgebra`) and area pag
  "traces": [{"kind": "depends", "src": "decl:Mathlib:Module", "dst": "decl:Mathlib:Ring",
              "evidence": {...}, "prov": 0}]}
 ```
-Every constituent bond is retained in `traces` (capped only by shard byte budget,
-never silently — `truncated` flags it). Weight drives prominence.
+Every constituent bond is retained in `traces`, capped at `TRACE_CAP` (64) per
+synapse at build time and again by the shard byte budget — never silently: whatever
+a cap drops is counted in `truncated`. Weight drives prominence and counts every
+bond, capped or not.
+
+`src`/`dst` are ordered lexicographically, not directionally: a synapse is an
+UNDIRECTED aggregate of bonds that may run either way (A depends on B while B links
+A). Direction lives on each trace, which keeps its own `src`/`dst`.
+
+Supercells and their organs ship in `cells.jsonl`'s `_meta.supercell_organs`
+(`{path: [organ, ...]}`) — the cell rows carry only the `supercells` back-reference.
 
 ### The merge function — a FUNCTION, never a transitive closure
+
+Precisely: **rule 1 is an equivalence relation and is transitive ON PURPOSE**;
+**rules 2–5 cannot chain, and that is where the blob came from.** `exact` asserts
+*identity*, and identity must be transitive — it is exactly what puts `riemannZeta`
+AND `completedRiemannZeta` in one atom (C7), and Q18848+Q125977 on one decl (C1).
+The cost is that a single over-broad `exact` grade welds everything it names: the
+survey concept "Bijection, injection and surjection" `exact`-claims
+`Function.{Bijective,Injective,Surjective}`, so Bijection and Surjective function
+share an atom though no edge joins them. That is a **bad grade, not a bad rule**
+(see the tagger-signal section below) — `cell_review.jsonl` flags it as
+`rule1-exact-weld` (5 cells today). What is structurally forbidden is chaining
+through rules 2–5, which is what produced the measured 28-organ Module↔EuclideanSpace
+↔plane cell and the 212-organ DLMF blob.
 
 1. `formalizes` `match_kind == exact` **fuses both ways** (concept↔decl).
 2. `generalization`/`special_case` attach a concept that has **no `exact` decl of
@@ -64,9 +86,9 @@ never silently — `truncated` flags it). Weight drives prominence.
    cells, and attaching those would put one organ in two cells, breaking C4.
 5. `field` match_kind / concept→container ⇒ supercell organ, never a cell.
 
-A transitive closure is FORBIDDEN: measured, it fuses Module↔EuclideanSpace↔plane
-(28 organs) and, via coarse DLMF pages, produces a 212-organ blob. The function
-above yields **8,982 cells, largest 17** — no blob.
+A transitive closure over rules 2–5 is FORBIDDEN: measured, it fuses
+Module↔EuclideanSpace↔plane (28 organs) and, via coarse DLMF pages, produces a
+212-organ blob. The function above yields **8,982 cells, largest 17** — no blob.
 
 ### A ballooning cell is a TAGGER signal, not a merge-rule failure
 
@@ -78,10 +100,16 @@ bad data; instead cell size is EMITTED as a diagnostic. `brain/data/cell_review.
 ranks cells by how many home-less concepts they absorbed and names the exact claim
 to re-grade, shaped to drop into `catalog/data/grounding_overrides.jsonl`.
 
-It works: of 8,982 cells only **18** flag, and they are exactly the mis-grades —
+It works: of 8,982 cells only **23** flag, and they are exactly the mis-grades —
 `Real.binEntropy` (the binary entropy *function*) absorbing "Information",
 "Information theory" AND "Entropy"; `Module.Dual` absorbing "Duality (mathematics)".
 Fix the grade, not the rule.
+
+Two flavours, because there are two ways a grade goes wrong:
+- `rule2-absorption` (18) — one decl absorbs ≥2 home-less concepts.
+- `rule1-exact-weld` (5) — ≥2 concepts `exact`-claim ≥2 decls, welding them into one
+  atom (rule 1 is transitive by design, above). Scoping the worklist to rule 2 left
+  this — the only chaining that actually occurs — invisible.
 
 ### Strong-bond sources (organ attach)
 
@@ -105,14 +133,20 @@ renders and never simulates. Two properties are load-bearing:
   reproduce the same map, so the picture can be *learned*. A map that reshuffles
   every visit cannot be.
 - **Short-range repulsion** (`REPULSION_RANGE = 4k`). Textbook Fruchterman-Reingold
-  repels every pair at k²/d, which is long-range: a weakly-attached node is pushed
-  out until `n·k²/r` balances gravity `g·r`, i.e. `r = √(n·k²/g)`. Measured here that
-  predicts **86,516** and the layout put its 488 isolated cells at r≈**84,200** while
-  the 8,494 real cells sat at r≈**1,985** — fit-to-content then zooms out 42× and the
-  graph renders as a dot inside a ring. **That is the reported v2 explorer artefact**
-  ("a ring of nodes that circle around the outside, and then a ton of nodes that clump
-  in the middle"); d3-force's charge is long-range by default too. With the cutoff:
-  spread 42× → **3.1×**, no overlaps. Regression-tested (L2).
+  repels every pair at k²/d, which is long-range: a weakly-attached node is pushed out
+  until `n·k²/r` balances gravity `g·r`, i.e. `r = √(n·k²/g)`. Under the constants the
+  first cut shipped (k=100, g=0.012, n=8,982) that predicts **86,516** — and the run
+  put its 488 isolated cells at r≈**84,200** while the 8,494 real cells sat at
+  r≈**1,985**. Fit-to-content then zooms out ~42× and the graph renders as a dot inside
+  a ring. **That is the reported v2 explorer artefact** ("a ring of nodes that circle
+  around the outside, and then a ton of nodes that clump in the middle"); d3-force's
+  charge is long-range by default too.
+
+  With the cutoff (and g raised to 0.02, so the formula no longer describes the
+  shipped build — there is no halo equilibrium left to predict): max/median radius
+  **42× → 3.40×**, p99/median **3.14×**, isolated-cell median radius 84,200 → ~2,400,
+  and no two cells share a point (0 exact collisions over 8,982). Regression-tested
+  (L1/L2/L3).
 
 Synapse-less cells never enter the sim (they would either halo or pile on the
 origin — both read as the clump bug). They are parked deterministically around their

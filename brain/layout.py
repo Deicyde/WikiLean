@@ -40,12 +40,42 @@ REPULSION_RANGE = 4.0     # in units of k; the fix above. Long-range => halo.
 GRAVITY = 0.02            # only has to beat short-range repulsion now
 
 
-def _phyllotaxis(n: int, radius: float, *, offset: int = 0) -> np.ndarray:
-    """Sunflower seeding: uniform density, no clumps, no RNG."""
-    i = np.arange(offset, offset + n, dtype=np.float64)
+def _phyllotaxis(n: int, radius: float, *, skip_centre: bool = False) -> np.ndarray:
+    """Sunflower seeding: uniform density, no clumps, no RNG.
+
+    skip_centre starts the spiral at index 1, so no point lands on the anchor itself
+    — needed when the anchor is an occupied position (a supercell centroid).
+    """
+    if n <= 0:
+        return np.zeros((0, 2), dtype=np.float64)
+    base = 1 if skip_centre else 0
+    i = np.arange(base, base + n, dtype=np.float64)
     theta = i * GOLDEN_ANGLE
-    r = radius * np.sqrt((i - offset + 0.5) / max(n, 1))
+    r = radius * np.sqrt((i + 0.5) / (n + base))
     return np.stack([r * np.cos(theta), r * np.sin(theta)], axis=1)
+
+
+def _resolve_collisions(pos_by_id: dict[str, tuple[float, float]]) -> int:
+    """Nudge cells that share a position onto a tiny golden-angle spiral.
+
+    Two cells at identical coordinates render as one — the second is unclickable and
+    simply invisible. The placement rules make this rare but not impossible: a
+    supercell with exactly ONE connected cell has a centroid equal to that cell's
+    position, so its lone isolated member lands exactly on top of it (20 cells on the
+    live graph). Deterministic: groups and offsets are ordered by id.
+    """
+    seen: dict[tuple[float, float], list[str]] = defaultdict(list)
+    for cid, p in pos_by_id.items():
+        seen[(round(p[0], 3), round(p[1], 3))].append(cid)
+    nudged = 0
+    for point, ids in sorted(seen.items()):
+        if len(ids) < 2:
+            continue
+        ring = _phyllotaxis(len(ids) - 1, SPAN * 0.35, skip_centre=True)
+        for cid, off in zip(sorted(ids)[1:], ring):  # first keeps the spot
+            pos_by_id[cid] = (point[0] + float(off[0]), point[1] + float(off[1]))
+            nudged += 1
+    return nudged
 
 
 def _simulate(pos: np.ndarray, src: np.ndarray, dst: np.ndarray, weight: np.ndarray,
@@ -119,18 +149,20 @@ def place_isolated(cells: dict[str, dict], isolated: list[str],
 
     for sup, group in sorted(by_super.items()):
         home = centroid.get(sup)
-        ring = _phyllotaxis(len(group), SPAN * 1.5)
         if home is None:  # supercell has no connected cell to anchor to
             homeless.extend(group)
             continue
+        # skip_centre: the centroid may BE an occupied position (a supercell with one
+        # connected cell), so no isolated member may sit exactly on it
+        ring = _phyllotaxis(len(group), SPAN * 1.5, skip_centre=True)
         for cid, offset in zip(sorted(group), ring):
-            pos_by_id[cid] = tuple(home + offset)
+            pos_by_id[cid] = (float(home[0] + offset[0]), float(home[1] + offset[1]))
 
     if homeless:
         band = _phyllotaxis(len(homeless), core_radius * 0.18)
         band = band + np.array([core_radius * 1.15, 0.0])
         for cid, p in zip(sorted(homeless), band):
-            pos_by_id[cid] = tuple(p)
+            pos_by_id[cid] = (float(p[0]), float(p[1]))
 
 
 def layout_cells(cells: dict[str, dict], synapses: list[dict], *,
@@ -180,6 +212,11 @@ def layout_cells(cells: dict[str, dict], synapses: list[dict], *,
     core_radius = float(np.percentile(np.hypot(pos[:, 0], pos[:, 1]), 98)) or SPAN
     place_isolated(cells, isolated, pos_by_id, core_radius)
 
+    # Resolve on the ROUNDED coordinates that actually ship — rounding to 1dp can
+    # itself collide two cells that were 0.05 apart, so resolving before rounding
+    # would not guarantee the property.
+    rounded = {cid: (round(pos_by_id[cid][0], 1), round(pos_by_id[cid][1], 1))
+               for cid in ids}
+    _resolve_collisions(rounded)
     for cid in ids:
-        x, y = pos_by_id[cid]
-        cells[cid]["xy"] = [round(x, 1), round(y, 1)]
+        cells[cid]["xy"] = [round(rounded[cid][0], 1), round(rounded[cid][1], 1)]

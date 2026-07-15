@@ -53,18 +53,46 @@ def check_layout() -> None:
 
     from layout import layout_cells
 
-    # a connected core + deliberately isolated cells (the halo bait)
-    cells = {f"cell:c{i}": {"id": f"cell:c{i}", "organs": [],
-                            "supercells": ["path:X"]} for i in range(120)}
-    cells.update({f"cell:iso{i}": {"id": f"cell:iso{i}", "organs": []}
-                  for i in range(30)})
+    def fixture() -> dict:
+        # a connected core + isolated cells (the halo bait). The isolated set covers
+        # BOTH place_isolated branches: cells with a supercell (parked at its centroid)
+        # and cells with none (the outer band). An all-homeless fixture left the
+        # centroid branch — the one that actually runs on live data — untested.
+        cells = {f"cell:c{i}": {"id": f"cell:c{i}", "organs": [],
+                                "supercells": ["path:X" if i % 2 else "path:Y"]}
+                 for i in range(120)}
+        cells.update({f"cell:iso{i}": {"id": f"cell:iso{i}", "organs": [],
+                                       "supercells": ["path:X"]} for i in range(20)})
+        cells.update({f"cell:lone{i}": {"id": f"cell:lone{i}", "organs": []}
+                      for i in range(10)})   # no supercell -> homeless band
+        cells["cell:orphan"] = {"id": "cell:orphan", "organs": [],
+                                "supercells": ["path:Z"]}  # supercell has no connected cell
+        # The exact shape that collided on live data (20 cells): a supercell with
+        # exactly ONE connected member, so its centroid IS that member's position,
+        # plus a single isolated member that would land right on top of it.
+        cells["cell:solo"] = {"id": "cell:solo", "organs": [], "supercells": ["path:S"]}
+        cells["cell:solo_iso"] = {"id": "cell:solo_iso", "organs": [],
+                                  "supercells": ["path:S"]}
+        return cells
+
     synapses = [{"src": f"cell:c{i}", "dst": f"cell:c{(i + 1) % 120}", "weight": 3}
                 for i in range(120)]
     synapses += [{"src": "cell:c0", "dst": f"cell:c{i}", "weight": 1}
                  for i in range(2, 40)]  # a hub
 
+    cells = fixture()
     layout_cells(cells, synapses, iterations=60)
     first = {k: tuple(v["xy"]) for k, v in cells.items()}
+
+    check("L1 supercell-anchored isolated cells are placed",
+          all(f"cell:iso{i}" in first for i in range(20)))
+    check("L1 a cell whose supercell has no connected member still gets an xy",
+          "cell:orphan" in first and all(isinstance(v, float)
+                                         for v in first["cell:orphan"]))
+    coords = list(first.values())
+    check("L1 no two cells land on the exact same point",
+          len(set(coords)) == len(coords),
+          f"{len(coords) - len(set(coords))} exact collisions")
 
     check("L1 every cell gets an xy", all("xy" in c for c in cells.values()))
 
@@ -78,16 +106,13 @@ def check_layout() -> None:
     check("L2 no halo: max radius stays within 8x the median", spread < 8.0,
           f"spread={spread:.1f}x — long-range repulsion is back")
 
-    iso_r = [math.hypot(*cells[f"cell:iso{i}"]["xy"]) for i in range(30)]
+    iso_r = [math.hypot(*cells[k]["xy"]) for k in cells if ":iso" in k or ":lone" in k]
     check("L2 isolated cells sit near the core, not in orbit",
           max(iso_r) < median * 8.0, f"isolated max radius={max(iso_r):.0f}")
 
     # L3 — determinism. The map must be the same every rebuild, or it cannot be
     # learned (the whole reason layout moved to build time).
-    cells2 = {f"cell:c{i}": {"id": f"cell:c{i}", "organs": [],
-                             "supercells": ["path:X"]} for i in range(120)}
-    cells2.update({f"cell:iso{i}": {"id": f"cell:iso{i}", "organs": []}
-                   for i in range(30)})
+    cells2 = fixture()
     layout_cells(cells2, synapses, iterations=60)
     second = {k: tuple(v["xy"]) for k, v in cells2.items()}
     check("L3 layout is deterministic across rebuilds", first == second,
@@ -196,6 +221,14 @@ def main() -> int:
         check("C7 zeta atom holds riemannZeta AND completedRiemannZeta",
               {"decl:Mathlib:riemannZeta", "decl:Mathlib:completedRiemannZeta"} <= ids,
               f"decls={sorted(ids)}")
+        # Q187235 is fused by BOTH a merged @[wikidata] attribute (-> riemannZeta) and
+        # an AI queue candidate (-> completedRiemannZeta). The organ must report the
+        # MERGED provenance: last-write-wins let the queue bond overwrite it, which
+        # inverts the very distinction C7 exists to guarantee.
+        organ = next((o for o in zeta["organs"] if o["id"] == "Q187235"), None)
+        src = prov[organ["prov"]].get("source") if organ and "prov" in organ else None
+        check("C7 a merged @[wikidata] tag outranks an AI queue bond on the same organ",
+              src != "tag-queue", f"Q187235 organ reports provenance source={src!r}")
 
     # ---- carried grounding fix (Jack: Module is not a generalization of *vector*)
     vector = cells.get("cell:Q13471665")

@@ -18,10 +18,10 @@ v2 rendered 73,318 nodes of five heterogeneous types. That is (a) unstructured �
 a pile of particles with no atomic unit, and (b) unrenderable — the browser
 freezes on a ~5.7k-node force sim over ~18k edges, which forced a 4,000-edge
 draw cap, which itself caused the phantom-ring bug. v3 collapses the particles
-into **~8,960 cells** (of which ~1,878 are multi-organ; the rest are lone
-particles). External pages stop being nodes and become organs *inside* cells, so
-the entire ~49k ext-node population leaves the render budget. Layout is
-precomputed at build time, so the client runs **no physics at all**.
+into **8,982 cells** (3,900 multi-organ; 5,082 lone particles; largest 17 organs
+— measured, `brain/data/cells.jsonl`). External pages stop being nodes and become
+organs *inside* cells, so the entire ~49k ext-node population leaves the render
+budget. Layout is precomputed at build time, so the client runs **no physics at all**.
 
 ## The model
 
@@ -102,7 +102,14 @@ a **function**, which makes chaining structurally impossible:
    (the common module ancestor), and the claimant cells get a weak synapse.
 5. **`field` match_kind / concept→container ⇒ supercell organ**, never a cell.
 
-Measured on live data: **8,960 cells, largest 16 organs, no blob.**
+Measured on live data: **8,982 cells, largest 17 organs, no blob.** (The 8,960/16
+figures were the pre-build validation experiment; the shipped builder adds tag-queue
+bonds, statement organs and lone particles.)
+
+Rule 1 is the one exception to "cannot chain", and deliberately: `exact` asserts
+identity, which must be transitive — it is what puts both zeta decls in one atom.
+An over-broad `exact` grade therefore welds everything it names, so
+`cell_review.jsonl` flags that shape as `rule1-exact-weld`. See `brain/SCHEMA.md`.
 
 ### Known data errors this surfaces (fix via `grounding_overrides.jsonl`, not by bending the rule)
 
@@ -112,8 +119,11 @@ Measured on live data: **8,960 cells, largest 16 organs, no blob.**
 
 ## Identity
 
-Cell id = `cell:<anchor>` where the anchor is the cell's canonical organ, chosen
-deterministically: lowest QID if the cell has any concept, else its primary decl.
+Cell id = `cell:<anchor>`. The anchor NAMES the atom, so it is the cell's **`exact`
+concept** (lowest QID among them), falling back to lowest QID, then the primary decl
+— see `brain/SCHEMA.md`, which is normative. (A plain lowest-QID rule was the first
+cut and it was measured wrong: it named 27 cells after an absorbed organ, e.g. the
+Euclidean-space atom came out labelled *"plane"*.)
 **Breaking v2 ids/API/MCP is explicitly authorized (Jack, 2026-07-17)** — this is
 early-phase. `aliases.json` maps **every organ id → its cell id**, so `/brain#Q181296`,
 `/api/brain/*`, the MCP tools, and the benchmark all keep resolving after the cut.
@@ -171,9 +181,9 @@ speculative:
   statements to decls in different cells; attaching them put one organ in two cells
   and broke C4 (`aliases.json` must be a function — every API/MCP route depends on
   it). Shared statements are now synapses. *C4 caught this, not review.*
-- **Unmerged `formalizes` edges are now synapses.** 74 attach edges were being
-  skipped (the concept already had an exact home) and silently dropped; the
-  relationship is real and is kept.
+- **Unmerged `formalizes` edges are now synapses.** 74 *concepts* (89 edges) were
+  having their attach edges skipped — the concept already had an exact home — and
+  silently dropped; the relationship is real and is kept.
 - **`cell_review.jsonl` added** — the tagger-quality worklist that Jack's answer
   implies (below).
 - **Layout repulsion made short-range** — this is what actually fixes the reported
@@ -189,6 +199,37 @@ are doing a bad job (e.g. tagging something as special_case when it is actually 
 related / invocation)."* So the merge set is unchanged and size became a **signal**:
 only 18 of 8,982 cells flag, and they are exactly the mis-grades. The rule stays
 wide; the DATA gets fixed via `grounding_overrides.jsonl`.
+
+**What the adversarial review then caught** (61 agents, 28 findings, 20 confirmed
+after 2-lens refutation; every fix below is regression-tested):
+
+- **`links` were double-counted.** `edges_links.jsonl` ships the same fact twice —
+  618k raw `ext→ext` page links AND 11,540 `concept→concept` rows build_edges already
+  projected from them. Consuming both gave one nLab hyperlink weight 2 and two traces.
+  Blanket-skipping the projected rows was WORSE (6,415 vs 11,540 bonds): an area page
+  owns no cell by rule 4, so its links cannot project through ownership — and area
+  pages are exactly the hubs. Now deduplicated at the fact level: 11,600 bonds =
+  6,415 raw + 5,241 projections the raw join misses, 6,299 duplicates dropped.
+- **15 area pages attached to nothing** — not a cell, not a supercell — including
+  DLMF §1.9, the docs' own worked example of rule 4. Now falls back to the shallowest
+  supercell a claimant has: 108 homed, 13 fallback, 2 genuinely homeless (counted).
+- **C7 was inverted on 12 organs**: the synthetic queue bond is appended after the
+  real edges, so last-write-wins let AI-queued provenance overwrite a merged
+  `@[wikidata]` one — destroying the exact distinction C7 exists to make. Provenance
+  is now picked by rank, not by write order.
+- **`cell_review.jsonl` was blind to rule-1 welds** — the only chaining that actually
+  occurs. Now flags both shapes.
+- `--attach` silently accepted unknown kinds (building a different graph) and
+  KeyError'd on real-but-unranked ones; the facet mask leaked bit 8 ("is an ext page")
+  onto 1,868 cells; the stats table over-counted every weak kind by counting bonds
+  that `add()` then drops as intra-cell; `place_isolated` could stack cells on one
+  point; a missing `edges_links.jsonl` dropped every link synapse silently.
+- Doc drift the review caught in my own contract: the headline "chaining is
+  structurally impossible" was false for rule 1 (see above), the anchor rule in this
+  file still described the pre-fix version SCHEMA calls wrong, the layout numbers
+  overstated (3.54× by L2's own metric, not 3.1×), the halo formula no longer
+  reproduces from the shipped constants, and SCHEMA promised traces "capped only by
+  shard byte budget" while the builder caps at 64.
 
 **Carried debt closed:** the `Q13471665` "Vector" fix shipped as an override —
 and note it needed BOTH attach options re-graded, because `generalization` outranks
@@ -233,7 +274,8 @@ branch only after Jack reviews · then merge to `main`.
   scalar multiplication → `Module`** — not yet audited.
 - ☑ **Tag queue local read path:** `load_tag_queue()` reads `bot/state/*.json`
   directly (mirroring `bot/publish_queue.py`), fail-soft, no network.
-- **The 18 flagged cells in `cell_review.jsonl` need re-grading** — this is the
+- **The 23 flagged cells in `cell_review.jsonl` need re-grading** (18
+  `rule2-absorption` + 5 `rule1-exact-weld`) — this is the
   first real worklist for the tag-quality loop under Jack's "ballooning = bad
   tagger" rule. Worst offenders: `Real.binEntropy` absorbing Information /
   Information theory / Entropy; `Module.Dual` absorbing Duality (mathematics);
