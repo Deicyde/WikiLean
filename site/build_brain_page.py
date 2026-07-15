@@ -378,7 +378,9 @@ const SOURCES_URL = "/assets/brain/sources.json";   // the legend is v-agnostic
 const ROOTS_ID = "__libs__";          // pseudo-focus: the library roots
 const UNPLACED_ID = "__unplaced__";   // pseudo-focus: cells with no decl organ,
                                       // so no supercell to nest in (1.5k of 8.9k)
-const STRAYS_ID = "__strays__";       // the collapsed "cells filed at this level"
+const STRAYS_PREFIX = "__strays__:";  // pseudo-focus: "__strays__:<path>" — the
+                                      // cells filed at that level, collapsed into
+                                      // one bubble but dive-able like a folder
                                       // bubble (see focusItems)
 let manifest = null, labels = null, labelById = null, tree = null, aliases = null;
 const shardCache = new Map(), entryCache = new Map();
@@ -502,6 +504,8 @@ async function resolveId(id) {
   if (!id) return null;
   if (id === ROOTS_ID || id === UNPLACED_ID || isCellId(id)) return id;
   await ensureTree();
+  if (id.startsWith(STRAYS_PREFIX))
+    return tree.sc[id.slice(STRAYS_PREFIX.length)] ? id : null;
   if (isPathId(id)) return tree.sc[id] ? id : null;
   const a = await ensureAliases();
   return a.organs[id] || a.decls[id] || a.slugs[id] || null;
@@ -627,6 +631,10 @@ async function focusItems(id) {
     return items;
   }
   if (id === UNPLACED_ID) return tree.unplaced.map(cellItem);
+  // diving into a strays bubble shows EVERY cell filed at its level as dots —
+  // including any a facet filter kept out of the collapse (the filter still dims)
+  if (id.startsWith(STRAYS_PREFIX))
+    return ((tree.sc[id.slice(STRAYS_PREFIX.length)] || {}).cells || []).map(cellItem);
   const sc = tree.sc[id];
   if (!sc) return [];
   const folders = (sc.children || []).map(folderItem);
@@ -634,14 +642,20 @@ async function focusItems(id) {
   // inside each — exactly what SCHEMA's `supercells` array asks for
   let cells = (sc.cells || []).map(cellItem);
   // At a level that HAS sub-areas, the cells filed directly here (Mathlib holds
-  // 567 of them) would flood the pack and shrink Algebra to a dot — collapse
-  // them into one bubble; the card still lists every one. An active facet filter
-  // must still see its matches, so only the remainder collapses.
+  // 373 of them) would flood the pack and shrink Algebra to a dot — collapse
+  // them into one DIVE-ABLE bubble. An active facet filter must still see its
+  // matches, so only the remainder collapses. At a library ROOT the honest label
+  // is different: nothing is legitimately "filed" at path:Mathlib — a decl lands
+  // there only because it has NO recorded module (mostly stale renames and
+  // hallucinated citations in annotations; see straysPanel).
   if (folders.length && cells.length > 12) {
     const keep = filterMask ? cells.filter(c => ((c.f || 0) & filterMask) !== 0) : [];
     const rest = cells.length - keep.length;
+    const atRoot = !id.slice(5).includes("/");
     cells = keep.concat(rest > 0
-      ? [{id: STRAYS_ID, type: "strays", label: rest + " cells filed here", n: rest}] : []);
+      ? [{id: STRAYS_PREFIX + id, type: "strays", n: rest,
+          label: rest + (atRoot ? " cells · no module recorded" : " cells filed here")}]
+      : []);
   }
   return folders.concat(cells);
 }
@@ -704,7 +718,7 @@ function drawNodes() {
     .on("click", (ev, l) => { ev.stopPropagation(); nodeClick(l.data); });
   if (withTitles) all.select("title").text(l => l.data.label
     + (l.data.type === "folder" ? ` — ${(l.data.n || 0).toLocaleString()} cells`
-      : l.data.type === "strays" ? " — filed at this level; the card lists them all"
+      : l.data.type === "strays" ? " — click to open them as dots, with the story of why they sit here"
       : ((l.data.f || 0) & 1 ? " — carries a hand-written @[wikidata] tag" : "")));
 }
 
@@ -1006,7 +1020,12 @@ async function renderFocus(anim) {
   const folders = fv.items.filter(i => i.type === "folder").length;
   statusEl.textContent = `${(fv.items.length - folders).toLocaleString()} cells · ` +
     `${folders} areas · ${focusId === ROOTS_ID ? "all libraries"
-      : focusId === UNPLACED_ID ? "no formal home" : focusId.slice(5)}`;
+      : focusId === UNPLACED_ID ? "no formal home"
+      : focusId.startsWith(STRAYS_PREFIX)
+        ? focusId.slice(STRAYS_PREFIX.length + 5)
+          + (focusId.slice(STRAYS_PREFIX.length + 5).includes("/")
+             ? " · filed here" : " · no module recorded")
+      : focusId.slice(5)}`;
   if (anim) fadeIn();
   enrich(seq, leaves);   // background: previews + the synapse web
 }
@@ -1257,6 +1276,7 @@ async function zoomOut() {
     return;
   }
   const parent = focusId === UNPLACED_ID ? ROOTS_ID
+    : focusId.startsWith(STRAYS_PREFIX) ? focusId.slice(STRAYS_PREFIX.length)
     : ((tree.sc[focusId] || {}).parent || ROOTS_ID);
   focusId = parent;
   selectedId = null;
@@ -1276,8 +1296,7 @@ async function nodeClick(item) {
     drawSelRing();
     return;
   }
-  if (item.type === "strays") { renderPanel(focusId); return; }   // the card lists them
-  if (item.type === "folder") {
+  if (item.type === "strays" || item.type === "folder") {
     selectedId = null;
     renderPanel(item.id);
     await zoomInto(item.id);
@@ -1312,6 +1331,12 @@ async function renderCrumb() {
   let html = `<a data-nav="${ROOTS_ID}">all libraries</a>`;
   if (focusId === UNPLACED_ID) {
     html += ` <span class="sep">/</span> <b>no formal home</b>`;
+  } else if (focusId.startsWith(STRAYS_PREFIX)) {
+    const parent = focusId.slice(STRAYS_PREFIX.length);
+    for (const b of pathChain(parent))
+      html += ` <span class="sep">/</span> <a data-nav="${esc(b.id)}">${esc(b.label)}</a>`;
+    html += ` <span class="sep">/</span> <b>${parent.slice(5).includes("/")
+      ? "filed here" : "no module recorded"}</b>`;
   } else if (isCellId(focusId)) {
     const e = await getEntry(focusId);
     for (const b of (e && e.breadcrumb) || [])
@@ -2096,6 +2121,7 @@ async function renderPanel(id) {
   lastPanelId = id;
   if (id === ROOTS_ID) return rootsPanel();
   if (id === UNPLACED_ID) return unplacedPanel();
+  if (id.startsWith(STRAYS_PREFIX)) return straysPanel(id.slice(STRAYS_PREFIX.length));
   if (isPathId(id)) return renderSupercellPanel(id);
   const resolved = isCellId(id) ? id : await resolveId(id);
   if (lastPanelId !== id) return;
@@ -2141,6 +2167,47 @@ function rootsPanel() {
       <p class="note">Atoms with no Lean declaration have no module to nest in — nothing
       formalizes them yet. <a data-nav="${UNPLACED_ID}">Browse them</a>, or find them in the
       Explorer, which places every atom.</p></section>`;
+  panelEl.innerHTML = html;
+  wirePanel();
+}
+async function straysPanel(parent) {
+  await ensureTree();
+  const sc = tree.sc[parent] || {};
+  const cells = sc.cells || [];
+  const atRoot = !parent.slice(5).includes("/");
+  const chain = pathChain(parent);
+  let html = `<div class="crumb">` + chain.map(b =>
+    `<a data-nav="${esc(b.id)}">${esc(b.label)}</a>`).join(" / ") + `</div>`;
+  html += `<h2>${atRoot ? "No module recorded" : "Filed at this level"}</h2>
+    <div class="sub">${cells.length.toLocaleString()} cells · directly under
+      <code>${esc(parent)}</code></div>`;
+  // The honest story differs by altitude. Deeper down, a cell filed at the level
+  // itself is ordinary (its decl lives in <path>.lean rather than a sub-folder).
+  // At a library ROOT nothing legitimately files — a decl lands here only because
+  // it has NO recorded module, and after the doc-gen4/.ilean oracle pass the ones
+  // that remain are names that do not exist in current Mathlib at all.
+  html += atRoot
+    ? `<p class="note">A declaration files at the library root only when <b>no module is
+        recorded for it anywhere</b> — and every placement oracle (TheoremGraph, the
+        snapshot CSVs, the tag rows, doc-gen4, the checkout's own indexes) has been
+        asked. What remains are declaration names that <b>do not exist in current
+        Mathlib</b>: stale renames (<code>Basis</code> is now <code>Module.Basis</code>),
+        citations of names that never existed, and namespaces mistaken for
+        declarations. They come from WikiLean's own annotations, so this bubble is an
+        honest inventory of annotation debt — kept here deliberately, because filing
+        them into a guessed folder would be worse than leaving them unfiled. The
+        cleanup lives in the decl-existence sweep, not the map.</p>`
+    : `<p class="note">These cells' declarations live in <code>${esc(parent.slice(5))}.lean</code>
+        itself (or files at this level) rather than in a sub-folder — ordinary filing,
+        collapsed into one bubble so the sub-areas stay readable.</p>`;
+  if (cells.length) {
+    html += `<section class="kind"><h3>Cells <span class="cnt">(${cells.length})</span></h3><div class="chips">`;
+    for (const cid of cells.slice(0, 120))
+      html += `<span class="chip"><a data-nav="${esc(cid)}">${
+        esc(((labelById && labelById.get(cid)) || {}).label || cid)}</a></span>`;
+    if (cells.length > 120) html += `<span class="chip">… +${cells.length - 120} more</span>`;
+    html += `</div></section>`;
+  }
   panelEl.innerHTML = html;
   wirePanel();
 }
