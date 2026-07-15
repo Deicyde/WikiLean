@@ -186,6 +186,17 @@ def main() -> int:
     if module:
         check("C5 'Linear algebra' is NOT in the Module atom",
               "Q82571" not in organ_ids(module))
+    # Rule 5 says "never a cell", not merely "not in that cell": a field concept whose
+    # only home is a supercell must not also become a lone-particle atom, or searching
+    # "linear algebra" lands on a stray cell instead of the LinearAlgebra folder.
+    check("C5 'Linear algebra' is not a cell of its own",
+          "cell:Q82571" not in cells,
+          "field concept became a lone-particle cell — rule 5 says never a cell")
+    field_cells = [p for p, organs in supercell_organs.items() for o in organs
+                   if o["kind"] == "concept" and f"cell:{o['id']}" in cells
+                   and len(cells[f"cell:{o['id']}"]["organs"]) == 1]
+    check("C5 no field concept is a lone-particle cell", not field_cells,
+          f"{len(field_cells)} field concepts also became cells, e.g. {field_cells[:3]}")
 
     # ---- C6: synapse hygiene
     pairs = Counter((s["src"], s["dst"]) for s in synapses)
@@ -197,9 +208,16 @@ def main() -> int:
           f"{len(traceless)} traceless, e.g. {[s['src'] for s in traceless[:3]]}")
     self_loops = [s for s in synapses if s["src"] == s["dst"]]
     check("C6 no self-loop synapses", not self_loops, f"{len(self_loops)} self-loops")
-    unresolved = [s for s in synapses if s["src"] not in cells or s["dst"] not in cells]
-    check("C6 every synapse endpoint is a real cell", not unresolved,
-          f"{len(unresolved)} dangling")
+    valid = set(cells) | set(supercell_organs)
+    unresolved = [s for s in synapses if s["src"] not in valid or s["dst"] not in valid]
+    check("C6 every synapse endpoint is a real cell or supercell", not unresolved,
+          f"{len(unresolved)} dangling, e.g. {[s['src'] for s in unresolved[:3]]}")
+    # A rule-5 field concept owns no cell, but it is a HUB — dropping its bonds
+    # instead of routing them to its supercell cost 10,801 synapses (12% of the graph).
+    sup_syn = [s for s in synapses
+               if s["src"].startswith("path:") or s["dst"].startswith("path:")]
+    check("C6 rule-5 field concepts keep their bonds (routed to the supercell)",
+          len(sup_syn) > 1000, f"only {len(sup_syn)} supercell synapses — hubs dropped?")
 
     # ---- C7: tag queue. A rejected claim must never bond, and a queued (AI) tag
     # must stay distinguishable from a merged @[wikidata] attribute.

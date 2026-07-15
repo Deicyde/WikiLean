@@ -84,7 +84,11 @@ through rules 2–5, which is what produced the measured 28-organ Module↔Eucli
    between claimants; a shared arXiv statement becomes a synapse alone. Applies to
    pages AND statements — TheoremGraph matches 219 statements to decls in different
    cells, and attaching those would put one organ in two cells, breaking C4.
-5. `field` match_kind / concept→container ⇒ supercell organ, never a cell.
+5. `field` match_kind / concept→container ⇒ supercell organ, **never a cell** — not
+   even a lone-particle one, so "Linear algebra" resolves to
+   `path:Mathlib/LinearAlgebra` and not to a stray atom. It still keeps its bonds:
+   they hang off that supercell, so **a synapse endpoint may be a cell OR a
+   supercell** (field concepts are hubs — dropping their bonds cost 10,801 synapses).
 
 A transitive closure over rules 2–5 is FORBIDDEN: measured, it fuses
 Module↔EuclideanSpace↔plane (28 organs) and, via coarse DLMF pages, produces a
@@ -169,7 +173,20 @@ L2. No halo: max radius stays within 8× the median, and synapse-less cells sit 
     the core rather than in orbit (the regression above).
 L3. The layout is deterministic across rebuilds.
 
-Status: **25/25 green** (`python3 brain/test_cells.py`; the nightly aborts on red).
+Status: **32/32 green** (`python3 brain/test_cells.py`; the nightly aborts on red).
+
+### v3 shard acceptance (brain/test_cell_shards.py) — the artifact the client reads
+
+`site/assets/brain/cells/` is built by `brain/build_cell_shards.py` and can drift from
+the atom layer independently (it trims, embeds and re-indexes), so S1–S6 check the
+shipped bytes: S1 the manifest's own documented lookup rule resolves every cell and
+keys are prefix-free · S2 `aliases.json` is a function and resolves the v2 entry
+points (`Q125977`→the Module atom, `Q82571`→its folder) · S3 a cell entry is
+SELF-CONTAINED (one fetch = the whole card: Lean code, Wikidata description, DB
+snippets, breadcrumb, synapse traces) · S4 every explorer edge indexes a shipped node,
+nothing is truncated, and omitted supercell edges reconcile · S5 `supercells.json` is
+a consistent tree whose leaves are cells · S6 no licensed snippet ships without its
+licence. Status: **23/23 green**.
 
 ---
 

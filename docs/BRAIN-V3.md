@@ -244,10 +244,41 @@ tag was **not** rejected — it is `revise`, with Jack's own note asking to also
 the completion — so the zeta atom legitimately holds both zeta decls, exactly as he
 described (C7).
 
-### Phase 2 — shards ☐  `brain/build_shards.py`
-Cell shards (one fetch per cell), `aliases.json` = **every organ id → cell id**
-(the compat layer that keeps `/brain#Q181296`, the API, MCP and bench resolving),
-supercell children = cells, `views/` rebuilt from cells.
+### Phase 2 — shards ☑  `brain/build_cell_shards.py` + `brain/test_cell_shards.py`
+A NEW `cells/` namespace rather than a rewrite of `build_shards.py`: v2 keeps
+serving `/brain` while v3 lands, and phase 5 deletes the old path. It reuses
+build_shards' prefix scheme verbatim. Acceptance **23/23** (S1–S6).
+
+```
+site/assets/brain/cells/
+  manifest.json    scheme + supercell roots + prov table + shard directory
+  <key>.json       1,458 prefix shards, 50.1 MB   (v2: 73,318 nodes -> 333 MB)
+  aliases.json     16,816 organ ids -> owning atom  (the v2->v3 compat layer)
+  labels.json      8,914 atoms, `aka` = every organ label (search)
+  supercells.json  the containment tree; leaves are CELLS; + rule-5 organs/synapses
+  explorer.json    the COMPLETE flat graph: 8,914 cells with xy + 76,083 synapses, 2.3 MB
+```
+
+- **One fetch renders the whole card.** Organ payloads are embedded, not referenced:
+  Lean docstring + code, the Wikidata description, licensed DB snippets (40,641 have
+  one), article annotation counts. That is axis 3's "clicking a concept shows the Lean
+  code, the article, the LMFDB knowl, the Stacks description" — in a single request.
+- **The explorer ships COMPLETE.** Edges are index triples `[i, j, w]` into `nodes`,
+  not `{src,dst}` id objects — ids average ~11 chars and repeat twice per edge, so
+  objects cost ~4x. That is the difference between shipping all 76,083 synapses (2.3 MB)
+  and silently dropping 39% to fit a byte budget. **No draw cap ⇒ the phantom-ring bug
+  is structurally impossible**, since an edge can only index a node that shipped.
+- **Rule 5 is now enforced, not just intended.** A `field` concept was becoming a
+  supercell organ AND a lone-particle cell, so `Q82571` resolved to `cell:Q82571`
+  instead of the folder. SCHEMA says "never a cell". Now `Q82571` →
+  `path:Mathlib/LinearAlgebra` and `Q10380344` "manifold" → `path:Mathlib/Geometry/Manifold`
+  (68 concepts).
+- **…which forced supercells to become synapse endpoints.** Field concepts are hubs;
+  dropping their cells first dropped 10,801 synapses (12% of the graph). Their bonds
+  now hang off the module that holds them, so a synapse may legitimately land on a
+  supercell — the shape v2 already drew as container rollups. Recovered 9,529.
+  Supercell-level edges ship on `supercells.json`, not in the flat cell explorer, and
+  the counts reconcile (S4).
 
 ### Phase 3 — renderer ☐  `site/build_brain_page.py`
 - Cells as nodes, **precomputed `xy`, no client sim** (delete the force block).
