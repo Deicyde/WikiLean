@@ -315,6 +315,18 @@ def main() -> int:
                 fa[cur] |= bits
                 cur = parent.get(cur)
 
+    # subtree cell counts, so a root/folder can say how much it actually holds
+    subtree_cells: dict[str, int] = defaultdict(int)
+    for cid, cell in cells.items():
+        seen_paths: set[str] = set()
+        for sup in cell.get("supercells") or []:
+            cur = sup
+            while cur is not None and cur not in seen_paths:
+                seen_paths.add(cur)
+                cur = parent.get(cur)
+        for p in seen_paths:  # a multi-module cell counts ONCE per ancestor
+            subtree_cells[p] += 1
+
     supercells = {}
     for path in sorted(set(sup_cells) | set(sup_children) | set(parent)):
         node = nodes.get(path) or {}
@@ -416,7 +428,19 @@ def main() -> int:
         "scheme": {"kind": "prefix", "min_len": MIN_KEY_LEN,
                    "max_len": max(len(k) for k in leaves),
                    "max_bytes": MAX_SHARD_BYTES, "pad": PAD},
-        "roots": sup_doc["roots"],
+        # Roots carry the library metadata the v2 manifest had (library_kind,
+        # n_decls, n_files) plus the cell count: without them the renderer's
+        # math/CS/physics/tooling Libraries filter has nothing to filter ON, and it
+        # was dropped as dead UI. `cells` is the subtree count — 6 of 39 roots hold
+        # any cell at all, so the top level can lead with those.
+        "roots": [{"id": p,
+                   "label": (nodes.get(p) or {}).get("label") or p[5:],
+                   **{k: (nodes.get(p) or {})[k]
+                      for k in ("library_kind", "n_decls", "n_files")
+                      if (nodes.get(p) or {}).get(k) is not None},
+                   **({"cells": subtree_cells[p]} if subtree_cells.get(p) else {}),
+                   **({"fa": fa[p]} if fa.get(p) else {})}
+                  for p in sup_doc["roots"]],
         "prov": cell_meta.get("prov", []),
         "shards": {k: len(leaves[k]) for k in sorted(leaves)},
     }
