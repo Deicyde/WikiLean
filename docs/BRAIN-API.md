@@ -78,9 +78,30 @@ curl -s https://wikilean.jackmccarthy.org/mcp \
 | `lit:<arxiv>#<ref>` | statement organ | `lit:1707.04448#thm1.2` |
 | *(an article slug)* | article organ | `Abelian_group` |
 
-Synapse kinds: `depends`, `links`, `relates`, `cites`, `mentions`,
-`invocation`, `formalizes` (the unmerged ones — a real relationship the merge
-function did not fuse), `matches`. Every synapse carries `w` + `kinds`, and
+Synapse kinds — **exactly these eleven**, derived from every `kinds` key in
+`brain/data/synapses.jsonl` and exported once as `SYNAPSE_KINDS` in
+`wiki/src/brain-api.ts` so the code and this table cannot drift:
+
+| kind | what it is | bonds |
+|---|---|---|
+| `depends` | formal dependency (`evidence.w_types.{sig,def,proof}`) | 85,673 |
+| `links` | an internal page-to-page hyperlink inside one external DB | 11,596 |
+| `mentions` | a decl cited on another atom's article — NOT a formalization claim | 10,461 |
+| `cites` | literature citation | 3,535 |
+| `relates` | Wikidata claim (P279/P361/…) | 2,512 |
+| `co-page` | both atoms cross-reference one external page (rule 4) | 677 |
+| `co-statement` | both atoms are matched to one arXiv statement (rule 4) | 290 |
+| `invocation` | a `formalizes` grade that never merges (rule 3) | 205 |
+| `related` | a `formalizes` grade that never merges (rule 3) | 123 |
+| `special_case` | an attach grade that did NOT produce a merge (rule 2) | 60 |
+| `generalization` | an attach grade that did NOT produce a merge (rule 2) | 42 |
+
+**`formalizes` and `matches` are NOT synapse kinds** — they are strong bonds that
+fuse organs INTO a cell (SCHEMA rules 1/4), so they are never a bond *between* atoms;
+read them off an organ's `bond` on the cell card. Asking for them matched 0 rows on
+every atom while crowding out the five rule-2/3/4 kinds above, so a caller trusting
+the old enum silently dropped real bonds. An unknown kind now returns `unknown_kinds`
+rather than an empty result. Every synapse carries `w` + `kinds`, and
 every trace carries `{kind, src, dst, prov, evidence}` — the Brain can always
 answer "why do you believe this?". A trace's `src`/`dst` are the **organ** ids
 that witnessed the bond, not the atom ids.
