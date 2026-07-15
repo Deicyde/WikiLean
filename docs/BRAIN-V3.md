@@ -324,5 +324,7 @@ branch only after Jack reviews · then merge to `main`.
 - v2 artifacts that become dead once v3 lands: ext nodes in `nodes.jsonl` are
   still the organ layer (KEEP — cells derive from them), but the ext *rendering*
   path, `xref_explorer.json` seeding, and the ext-node shards go away.
-- Nightly (`site/ops/brain-nightly.sh`) must gain `build_cells.py` between
-  `build_edges.py` and `build_shards.py`.
+- ☑ Nightly (`site/ops/brain-nightly.sh`) gained the atom layer: `build_cells` →
+  `test_cells` → `build_cell_shards` → `test_cell_shards`, each RED aborting the
+  publish exactly as the organ layer's acceptance does; it also logs the
+  `cell_review` count as a signal.
