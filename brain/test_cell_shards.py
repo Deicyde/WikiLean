@@ -146,6 +146,12 @@ def main() -> int:
           all(not tree[r].get("parent") for r in supercells["roots"]))
     check("S5 supercells carry rule-5 organs",
           any(r.get("organs") for r in tree.values()))
+    # Supercell synapses ship traceless on purpose (byte budget — this file is
+    # fetched eagerly). That is only acceptable if the artifact SAYS so and names
+    # where to get them, or a reader silently renders an empty evidence drawer.
+    check("S5 the traceless-supercell-synapse omission is declared in _meta",
+          "neighborhood" in (supercells["_meta"].get("traces") or ""),
+          "supercell syn rows have no traces and _meta does not say where to fetch them")
     # A supercell has no tag bits of its own, so a facet chip would dim every folder
     # — "showing 0 of N" over a grey canvas (the v2 bug report). `fa` aggregates the
     # subtree's bits so folders survive the filter.

@@ -1,30 +1,39 @@
-// Wikibrain agent API (BRAIN v2 axis 5 — docs/BRAIN-API.md, docs/BRAIN-V2.md).
+// Wikibrain agent API (BRAIN v3 — docs/BRAIN-API.md, docs/BRAIN-V3.md).
 //
-// Read-only query routes over the brain shards, one altitude above
-// GET /api/brain/node: unit resolution, informal↔formal transfer, filtered
-// neighborhoods, content snippets, facet-bitmask enumeration. All logic lives
-// in exported `*For()` helpers returning {status, body} so the MCP endpoint
-// (src/mcp.ts) calls the SAME code paths — the two surfaces cannot drift.
+// Read-only query routes over the CELL shards (/assets/brain/cells/). The
+// addressable thing is the **cell** — an atom of organs — not the v2 particle:
+// a Mathlib decl, a Wikidata concept, an external DB page, a WikiLean article
+// and an arXiv statement that all denote ONE object are organs of one cell.
+// Modules are **supercells** (`path:…`) which own organs of their own (rule 5's
+// field concepts) and carry synapses. Weak bonds between two atoms aggregate
+// into ONE **synapse** carrying every trace.
 //
-//   GET /api/brain/unit?key=                       any member key → unit card
+//   GET /api/brain/cell?key=                       any organ id → the atom card
+//   GET /api/brain/unit?key=                       alias of /cell (v2 entry point)
 //   GET /api/brain/transfer?q=&direction=&limit=   informal ↔ formal jump
-//   GET /api/brain/neighborhood?id=&kinds=&dir=&limit=   edge projection
+//   GET /api/brain/neighborhood?id=&kinds=&limit=  synapses (weight, kinds, traces)
 //   GET /api/brain/snippets?id=                    stored source snippets
-//   GET /api/brain/filter?f=&type=&limit=&cursor=  facet enumeration
+//   GET /api/brain/filter?f=&type=&under=&limit=&cursor=   facet enumeration
+//   GET /api/brain/search?q=&type=&limit=          label + `aka` search
 //   GET /brain/api                                 human-readable reference
 //
+// All logic lives in exported `*For()` helpers returning {status, body} so the
+// MCP endpoint (src/mcp.ts) calls the SAME code paths — the two surfaces cannot
+// drift.
+//
+// **aliases.json is the compat layer**: every v2 entry point (a QID, a decl id
+// or bare name, an article slug, an `xref:` page id, a `lit:` statement) maps to
+// the atom that owns it, so nothing that resolved before the cell cut 404s now.
+// A rule-5 field concept resolves to a SUPERCELL (Q82571 → path:Mathlib/
+// LinearAlgebra), which is why every route speaks `Atom = cell | supercell`.
+//
 // Everything here is shard/asset-backed and safe to cache for the nightly
-// rebuild cadence (Cache-Control public, max-age=3600 — same as /api/brain/node).
-// The v2 data artifacts (node.unit, labels `f`, ext nodes, aliases.json) ship
-// from separate builders; every consumer below FEATURE-DETECTS and degrades:
-// a missing unit is assembled from edges, a missing aliases.json falls back to
-// shard in-edge resolution, a missing `f` reads as 0.
+// rebuild cadence (Cache-Control public, max-age=3600).
 import type { Context, Hono } from "hono";
 import type { Env } from "./env.js";
 import {
   assetJson,
   memoAssetJson,
-  resolveBrainEntry,
   searchLabels,
   BRAIN_ID_RE,
   type BrainLabelRow,
@@ -42,99 +51,152 @@ export interface ApiResult {
 }
 
 const SITE_ORIGIN = "https://wikilean.jackmccarthy.org";
+const CELLS = "/assets/brain/cells"; // the v3 asset namespace
 const QID_RE = /^Q[1-9][0-9]{0,11}$/;
 const XREF_ID_RE = /^xref:([a-z0-9_]+):(.+)$/i;
-const CONF_RANK: Record<string, number> = { high: 0, medium: 1, low: 2 };
 const KEY_HINT =
-  "accepted key forms: QID | decl:<Lib>:<Name> | bare FQ decl name | article slug | " +
-  "xref:<db>:<id> | exact concept label — for fuzzy text use /api/brain/search?q=";
+  "accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | " +
+  "decl:<Lib>:<Name> | bare FQ decl name | article slug | xref:<db>:<id> | " +
+  "lit:<arxiv>#<ref> | exact label — for fuzzy text use /api/brain/search?q=";
 
-// ---- shard-entry shapes (brain/build_shards.py output, brain/SCHEMA.md) -----
+// Mathlib's own license, per catalog/data/source_registry.json node_sources.mathlib
+// (`target_license`) — the provenance single-source-of-truth. Carried on the decl
+// rows /api/brain/snippets emits so no source text ever ships unattributed.
+const MATHLIB_LICENSE = "Apache-2.0 (Mathlib)";
 
-export interface ShardEdge {
+// ---- shipped shapes (brain/build_cell_shards.py output, brain/SCHEMA.md#v3) ----
+
+// An organ is a PARTICLE, never a node: it exists only inside a cell (or, for
+// rule-5 field concepts and area pages, inside a supercell). Payloads are
+// EMBEDDED by the builder — one shard fetch renders the whole card, so no route
+// below fans out to fetch an organ's content.
+export interface Organ {
+  kind: string; // concept | decl | page | article | statement
   id: string;
-  kind: string;
-  confidence?: string;
-  evidence?: Record<string, unknown>;
-  prov?: number;
-}
-
-export interface UnitDecl {
-  name: string;
-  module: string | null;
-  match_kind: string | null;
-  confidence: string | null;
-}
-
-export interface Unit {
-  qid: string;
-  label: string | null;
-  description?: string;
-  article?: { slug: string; annotations?: unknown };
-  decls: UnitDecl[];
-  containers: string[];
-  xrefs: Record<string, Array<{ id: string; label?: string; url?: string }>>;
-}
-
-export interface BrainNodePayload {
-  id: string;
-  type: string;
   label?: string;
+  bond?: string; // exact | generalization | special_case | xref | field | … (absent on an anchor organ)
+  prov?: number; // index into the manifest `prov` table
+  // decl
+  module?: string;
+  decl_kind?: string;
+  docstring?: string;
+  code?: string;
+  library?: string;
+  // concept
+  description?: string;
   slug?: string;
-  // ext-node fields (v2)
+  article_annotations?: unknown;
+  status?: string;
+  // page
   db?: string;
   url?: string;
+  kind_hint?: string;
+  qid?: string;
   snippet?: string;
   snippet_license?: string;
-  qid?: string;
-  // v2 concept fields
-  unit?: Unit;
+  // article
+  annotations?: unknown;
+  // statement
+  arxiv_id?: string;
+  ref?: string;
+  license_open?: boolean;
+  [k: string]: unknown;
+}
+
+// One constituent bond of a synapse; keeps its OWN direction (a synapse is an
+// undirected aggregate — SCHEMA v3 "src/dst are ordered lexicographically").
+// `src`/`dst` are ORGAN ids, not cell ids: the trace names the actual particles.
+export interface Trace {
+  kind: string;
+  src: string;
+  dst: string;
+  prov?: number;
+  evidence?: Record<string, unknown>;
+}
+
+export interface Synapse {
+  id: string; // the OTHER atom (cell:… or path:…)
+  w: number; // weight = every constituent bond, capped or not
+  kinds: Record<string, number>;
+  traces?: Trace[]; // trimmed to `caps.traces_per_synapse`; `tt` = the true total
+  tt?: number;
+}
+
+export interface CellHead {
+  id: string;
+  anchor: string;
+  label?: string;
+  supercells?: string[];
   f?: number;
-  display?: Record<string, unknown>;
-  article_annotations?: unknown;
-  [k: string]: unknown;
+  xy?: [number, number];
 }
 
-export interface ShardEntry {
-  node: BrainNodePayload;
-  breadcrumb?: Array<{ id: string; label?: string | null; type: string }>;
-  edges?: {
-    out?: ShardEdge[];
-    in?: ShardEdge[];
-    counts?: { out: number; in: number };
-    truncated?: { out: boolean; in: boolean };
-  };
-  [k: string]: unknown;
+export interface CellEntry {
+  cell: CellHead;
+  organs?: Organ[];
+  syn?: Synapse[];
+  counts?: { syn?: number; organs?: number };
+  truncated?: { syn?: number };
+  breadcrumb?: Array<{ id: string; label?: string | null }>;
 }
 
-// aliases.json (v2 builder): decl name / article slug → owning QID(s). May not
-// be deployed yet — every caller treats null as "fall back to shard edges".
-interface BrainAliases {
-  decls?: Record<string, string | string[]>;
-  slugs?: Record<string, string | string[]>;
+// supercells.json rows. Only 156 of ~9k carry organs and 37 carry synapses —
+// most are pure containment. `fa` is the subtree-AGGREGATE facet mask.
+export interface SupercellEntry {
+  label?: string;
+  fa?: number;
+  parent?: string;
+  children?: string[];
+  cells?: string[];
+  organs?: Organ[];
+  syn?: Synapse[];
+  counts?: { syn?: number };
+}
+
+interface SupercellsFile {
+  roots?: string[];
+  supercells?: Record<string, SupercellEntry>;
+}
+
+interface CellsManifest {
+  scheme: { min_len: number; max_len: number; pad: string };
+  shards: Record<string, number>;
+  prov: Array<Record<string, string>>;
+  roots?: string[];
+  _meta?: Record<string, unknown>;
+}
+
+// aliases.json — THE compat layer. `organs` maps every organ id (QID, decl id,
+// xref page id, article slug, lit statement) to the atom that owns it, which is
+// a cell id or — for rule-5 field concepts — a supercell path. `decls`/`slugs`
+// are convenience indexes (bare FQ decl name / slug → atom).
+interface CellAliases {
+  organs?: Record<string, string>;
+  decls?: Record<string, string>;
+  slugs?: Record<string, string>;
+}
+
+// The normalized atom every route works with: a cell or a supercell.
+export interface Atom {
+  id: string;
+  kind: "cell" | "supercell";
+  label: string | null;
+  f?: number;
+  organs: Organ[];
+  syn: Synapse[];
+  counts: { syn: number; organs: number };
+  truncated?: { syn?: number };
+  breadcrumb?: Array<{ id: string; label?: string | null }>;
+  cell?: CellHead; // kind==="cell"
+  supercell?: { path: string; parent?: string; children?: string[]; cells?: string[]; fa?: number }; // kind==="supercell"
 }
 
 // ---- small utilities ---------------------------------------------------------
-
-async function entryFor(c: Ctx, id: string): Promise<ShardEntry | null> {
-  if (!BRAIN_ID_RE.test(id)) return null;
-  const r = await resolveBrainEntry(c, id);
-  return r ? (r.entry as ShardEntry) : null;
-}
-
-function getLabels(c: Ctx): Promise<BrainLabelRow[] | null> {
-  return memoAssetJson<BrainLabelRow[]>(c, "/assets/brain/labels.json");
-}
 
 // own-property read — a JSON.parse'd map must never serve inherited names
 // (__proto__/constructor/toString), same gotcha as /api/atlas/:key.
 function own<T>(map: Record<string, T> | undefined, key: string): T | undefined {
   return map && Object.prototype.hasOwnProperty.call(map, key) ? map[key] : undefined;
-}
-
-function aliasQids(v: string | string[] | undefined): string[] {
-  if (!v) return [];
-  return (Array.isArray(v) ? v : [v]).filter((q) => typeof q === "string" && QID_RE.test(q));
 }
 
 function intOr(v: unknown, dflt: number): number {
@@ -146,182 +208,282 @@ function clampLimit(v: unknown, dflt: number, max: number): number {
   return Math.min(Math.max(intOr(v, dflt), 1), max);
 }
 
-// Confidence, then exact-match preference, then name — the ranking used for
-// unit.decls, transfer hits, and "owning concept" selection.
-function rankDecl(a: UnitDecl, b: UnitDecl): number {
-  const ca = CONF_RANK[a.confidence ?? ""] ?? 3;
-  const cb = CONF_RANK[b.confidence ?? ""] ?? 3;
-  if (ca !== cb) return ca - cb;
-  const ea = a.match_kind === "exact" ? 0 : 1;
-  const eb = b.match_kind === "exact" ? 0 : 1;
-  if (ea !== eb) return ea - eb;
-  return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+function isAtomId(id: string): boolean {
+  return id.startsWith("cell:") || id.startsWith("path:");
 }
 
-// QIDs formalizing a decl entry, best first (a decl's inbound formalizes edges
-// are many-to-many by design — SCHEMA law 4 — so order matters for "owning").
-function formalizingQids(entry: ShardEntry): string[] {
-  const rows = (entry.edges?.in ?? []).filter((e) => e.kind === "formalizes" && QID_RE.test(e.id));
-  rows.sort((a, b) => {
-    const ca = CONF_RANK[a.confidence ?? ""] ?? 3;
-    const cb = CONF_RANK[b.confidence ?? ""] ?? 3;
-    if (ca !== cb) return ca - cb;
-    const ea = a.evidence?.match_kind === "exact" ? 0 : 1;
-    const eb = b.evidence?.match_kind === "exact" ? 0 : 1;
-    if (ea !== eb) return ea - eb;
-    return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
-  });
-  return [...new Set(rows.map((e) => e.id))];
+// ---- asset loaders (all memoized — see brain.ts memoAssetJson) ----------------
+
+function cellsManifest(c: Ctx): Promise<CellsManifest | null> {
+  return memoAssetJson<CellsManifest>(c, `${CELLS}/manifest.json`);
 }
 
-function pickSuggestion(r: BrainLabelRow): Record<string, unknown> {
-  return { id: r.id, type: r.type, label: r.label, ...(r.slug ? { slug: r.slug } : {}) };
+function cellAliases(c: Ctx): Promise<CellAliases | null> {
+  return memoAssetJson<CellAliases>(c, `${CELLS}/aliases.json`);
 }
 
-async function suggestionsFor(c: Ctx, text: string, type: string): Promise<Record<string, unknown>[]> {
-  const q = text.trim().toLowerCase();
-  if (q.length < 2) return [];
-  const labels = await getLabels(c);
-  return labels ? searchLabels(labels, q, type, 5).map(pickSuggestion) : [];
+function cellLabels(c: Ctx): Promise<BrainLabelRow[] | null> {
+  return memoAssetJson<BrainLabelRow[]>(c, `${CELLS}/labels.json`);
 }
 
-// ---- the unit card (axis 2's atomic unit, served) ----------------------------
+function supercellsFile(c: Ctx): Promise<SupercellsFile | null> {
+  return memoAssetJson<SupercellsFile>(c, `${CELLS}/supercells.json`);
+}
 
-// v2 shards carry node.unit prebuilt; older shards get an on-the-fly assembly
-// from the same evidence (formalizes/xref edges) so the API works either way.
-export function unitFromEntry(entry: ShardEntry): Unit {
-  const node = entry.node;
-  if (node.unit) return node.unit;
-  const decls: UnitDecl[] = [];
-  const containers: string[] = [];
-  const xrefs: Record<string, Array<{ id: string; label?: string; url?: string }>> = {};
-  for (const e of entry.edges?.out ?? []) {
-    const ev = e.evidence ?? {};
-    if (e.kind === "formalizes" && e.id.startsWith("decl:")) {
-      decls.push({
-        name: e.id.split(":").slice(2).join(":"),
-        module: typeof ev.module === "string" ? ev.module : null,
-        match_kind: typeof ev.match_kind === "string" ? ev.match_kind : null,
-        confidence: e.confidence ?? null,
-      });
-    } else if (e.kind === "formalizes" && e.id.startsWith("path:")) {
-      containers.push(e.id);
-    } else if (e.kind === "xref") {
-      const m = XREF_ID_RE.exec(e.id);
-      if (m) (xrefs[m[1].toLowerCase()] ??= []).push({ id: m[2] });
-    }
+// One cell shard entry, via the manifest's documented prefix scheme (identical
+// to the decl-index scheme, so declShardFor resolves it verbatim).
+async function cellEntry(c: Ctx, id: string): Promise<CellEntry | null> {
+  const manifest = await cellsManifest(c);
+  if (!manifest?.shards) return null;
+  const key = declShardFor(
+    { scheme: manifest.scheme, shards: manifest.shards },
+    id,
+  );
+  const shard = key ? await assetJson<Record<string, unknown>>(c, `${CELLS}/${key}.json`) : null;
+  const entry = shard ? own(shard, id) : undefined;
+  return entry ? (entry as CellEntry) : null;
+}
+
+// A licensed snippet must NEVER ship without its licence (SCHEMA S6). The
+// builder guarantees the pair, but the API enforces it too — a data regression
+// upstream must degrade to "no snippet", never to unlicensed text.
+function safeOrgan(o: Organ): Organ {
+  if (o.snippet !== undefined && !o.snippet_license) {
+    const { snippet: _drop, ...rest } = o;
+    return rest as Organ;
   }
-  decls.sort(rankDecl);
-  containers.sort();
+  return o;
+}
+
+// Walk `parent` to the root — supercells.json is a tree, so the breadcrumb is
+// derived rather than stored (cells ship theirs prebuilt).
+function supercellBreadcrumb(
+  map: Record<string, SupercellEntry>,
+  path: string,
+): Array<{ id: string; label?: string | null }> {
+  const crumbs: Array<{ id: string; label?: string | null }> = [];
+  const seen = new Set<string>();
+  let cur: string | undefined = own(map, path)?.parent;
+  while (cur && !seen.has(cur)) {
+    seen.add(cur);
+    const e: SupercellEntry | undefined = own(map, cur);
+    crumbs.push({ id: cur, label: e?.label ?? null });
+    cur = e?.parent;
+  }
+  return crumbs.reverse();
+}
+
+// Fetch an atom by its OWN id (cell:… | path:…). Callers that hold an organ id
+// must go through resolveAtomKey first.
+export async function atomFor(c: Ctx, id: string): Promise<Atom | null> {
+  if (!BRAIN_ID_RE.test(id)) return null;
+  if (id.startsWith("path:")) {
+    const file = await supercellsFile(c);
+    const map = file?.supercells;
+    const e = map ? own(map, id) : undefined;
+    if (!e || !map) return null;
+    const organs = (e.organs ?? []).map(safeOrgan);
+    const syn = e.syn ?? [];
+    return {
+      id,
+      kind: "supercell",
+      label: e.label ?? null,
+      // deliberately NO `f`: a supercell carries `fa`, the subtree-AGGREGATE
+      // mask ("something under here matches"), which is a different claim from
+      // a cell's own facets. It ships as `supercell.fa` so the two never blur.
+      organs,
+      syn,
+      counts: { syn: e.counts?.syn ?? syn.length, organs: organs.length },
+      breadcrumb: supercellBreadcrumb(map, id),
+      supercell: {
+        path: id,
+        ...(e.parent ? { parent: e.parent } : {}),
+        ...(e.children?.length ? { children: e.children } : {}),
+        ...(e.cells?.length ? { cells: e.cells } : {}),
+        ...(e.fa !== undefined ? { fa: e.fa } : {}),
+      },
+    };
+  }
+  const e = await cellEntry(c, id);
+  if (!e?.cell) return null;
+  const organs = (e.organs ?? []).map(safeOrgan);
+  const syn = e.syn ?? [];
   return {
-    qid: node.id,
-    label: node.label ?? null,
-    ...(node.slug
-      ? {
-          article: {
-            slug: node.slug,
-            ...(node.article_annotations !== undefined ? { annotations: node.article_annotations } : {}),
-          },
-        }
-      : {}),
-    decls,
-    containers,
-    xrefs,
+    id: e.cell.id ?? id,
+    kind: "cell",
+    label: e.cell.label ?? null,
+    ...(e.cell.f !== undefined ? { f: e.cell.f } : {}),
+    organs,
+    syn,
+    counts: { syn: e.counts?.syn ?? syn.length, organs: e.counts?.organs ?? organs.length },
+    ...(e.truncated ? { truncated: e.truncated } : {}),
+    ...(e.breadcrumb ? { breadcrumb: e.breadcrumb } : {}),
+    cell: e.cell,
   };
 }
 
-interface ResolvedKey {
-  qid: string;
-  resolved_from: "qid" | "decl" | "slug" | "xref" | "label";
-  entry?: ShardEntry; // set when resolution already fetched the concept entry
+export type ResolvedFrom = "cell" | "supercell" | "organ" | "decl" | "slug" | "label";
+
+export interface ResolvedKey {
+  id: string;
+  resolved_from: ResolvedFrom;
+  atom?: Atom; // set when resolution already fetched it
 }
 
-// Resolve ANY member key of an atomic unit to its owning concept QID.
-// Order (docs/BRAIN-V2.md): exact QID → decl (aliases.json, then the decl
-// entry's inbound formalizes edges) → slug (aliases.json, then labels.json) →
-// xref (its shard entry's own qid, then inbound xref edges) → exact label.
-export async function resolveUnitKey(c: Ctx, key: string): Promise<ResolvedKey | null> {
-  if (QID_RE.test(key)) {
-    const entry = await entryFor(c, key);
-    if (entry) return { qid: key, resolved_from: "qid", entry };
-    // fall through: a QID-shaped string can legitimately be a slug/label
+// Resolve ANY key to the atom that owns it.
+//
+// Order: an atom id resolves directly; otherwise aliases.json — `organs` first
+// (it holds every organ id: QIDs, decl ids, xref pages, slugs, lit statements),
+// then the bare-decl-name and slug convenience indexes; finally an exact label
+// or `aka` (an organ's label — searching "Vector space" must land on the Module
+// atom). aliases.json IS the compat layer, so a miss there is a real miss: the
+// v2 fallbacks (shard in-edges, ext-node `qid`) have no v3 analogue — organs
+// carry no inbound edges, they ARE the atom's content.
+export async function resolveAtomKey(c: Ctx, keyRaw: string): Promise<ResolvedKey | null> {
+  const key = keyRaw.trim();
+  if (!key || !BRAIN_ID_RE.test(key)) return null;
+
+  if (isAtomId(key)) {
+    const atom = await atomFor(c, key);
+    if (atom) return { id: atom.id, resolved_from: atom.kind, atom };
+    return null; // an explicit atom id must not fall through to label search
   }
 
-  if (key.startsWith("xref:")) {
-    const entry = await entryFor(c, key);
-    if (!entry) return null;
-    const ownQid = entry.node.qid;
-    if (ownQid && QID_RE.test(ownQid)) return { qid: ownQid, resolved_from: "xref" };
-    const anchors = (entry.edges?.in ?? [])
-      .filter((e) => e.kind === "xref" && QID_RE.test(e.id))
-      .map((e) => e.id)
-      .sort();
-    return anchors.length ? { qid: anchors[0], resolved_from: "xref" } : null;
-  }
+  const aliases = await cellAliases(c);
 
-  const aliases = await memoAssetJson<BrainAliases>(c, "/assets/brain/aliases.json");
+  // Every organ id — QID, decl:<Lib>:<Name>, xref:<db>:<id>, slug, lit:… —
+  // lands here. The value may be a supercell path (rule-5 field concepts).
+  const viaOrgan = own(aliases?.organs, key);
+  if (viaOrgan) return { id: viaOrgan, resolved_from: "organ" };
 
-  // decl: explicit 'decl:<Lib>:<Name>' or a bare fully-qualified decl name
+  // bare fully-qualified decl name ("CommGroup"), and decl:<Lib>:<Name> whose
+  // library differs from the alias table's
   const isDeclId = key.startsWith("decl:");
   const bareName = isDeclId ? key.split(":").slice(2).join(":") : key;
-  const declId = isDeclId ? key : `decl:Mathlib:${key}`;
-  const viaAlias = aliasQids(own(aliases?.decls, key) ?? own(aliases?.decls, bareName) ?? own(aliases?.decls, declId));
-  if (viaAlias.length) return { qid: viaAlias[0], resolved_from: "decl" };
-  const declEntry = await entryFor(c, declId);
-  if (declEntry?.node.type === "decl") {
-    const qids = formalizingQids(declEntry);
-    if (qids.length) return { qid: qids[0], resolved_from: "decl" };
-  }
+  const viaDecl = own(aliases?.decls, bareName);
+  if (viaDecl) return { id: viaDecl, resolved_from: "decl" };
   if (isDeclId) return null; // an explicit decl id must not fall through to labels
 
-  // slug
-  const viaSlug = aliasQids(own(aliases?.slugs, key));
-  if (viaSlug.length) return { qid: viaSlug[0], resolved_from: "slug" };
-  const labels = await getLabels(c);
-  if (labels) {
-    const bySlug = labels.find((r) => r.slug === key && QID_RE.test(r.id));
-    if (bySlug) return { qid: bySlug.id, resolved_from: "slug" };
-    // exact label, case-insensitive, concepts only
-    const kl = key.toLowerCase();
-    const byLabel = labels.find(
-      (r) => QID_RE.test(r.id) && (r.label || "").toLowerCase() === kl,
-    );
-    if (byLabel) return { qid: byLabel.id, resolved_from: "label" };
+  const viaSlug = own(aliases?.slugs, key);
+  if (viaSlug) return { id: viaSlug, resolved_from: "slug" };
+
+  // exact label / aka, case-insensitive, over the atom label index
+  const labels = await cellLabels(c);
+  const kl = key.toLowerCase();
+  const byLabel = labels?.find(
+    (r) =>
+      (r.label || "").toLowerCase() === kl ||
+      (r.aka || []).some((a) => a.toLowerCase() === kl),
+  );
+  if (byLabel) return { id: byLabel.id, resolved_from: "label" };
+
+  // supercell labels are not in labels.json (it indexes cells) — match a
+  // field concept's own label through the supercell's organs
+  const file = await supercellsFile(c);
+  for (const [path, e] of Object.entries(file?.supercells ?? {})) {
+    if ((e.organs ?? []).some((o) => (o.label || "").toLowerCase() === kl)) {
+      return { id: path, resolved_from: "label" };
+    }
   }
   return null;
 }
 
-export async function unitFor(c: Ctx, keyRaw: string): Promise<ApiResult> {
+function pickSuggestion(r: BrainLabelRow): Record<string, unknown> {
+  return {
+    id: r.id,
+    label: r.label,
+    ...(r.aka?.length ? { aka: r.aka } : {}),
+    ...(r.p ? { supercell: r.p } : {}),
+  };
+}
+
+async function suggestionsFor(c: Ctx, text: string): Promise<Record<string, unknown>[]> {
+  const q = text.trim().toLowerCase();
+  if (q.length < 2) return [];
+  const labels = await cellLabels(c);
+  return labels ? searchLabels(labels, q, "", 5).map(pickSuggestion) : [];
+}
+
+// ---- the atom card (v3's addressable unit, served) ----------------------------
+
+const SYN_PREVIEW = 10; // strongest partners inlined on the card; full list via /neighborhood
+
+// Decl organs rank `exact` bonds first, then any other graded bond, then an
+// ungraded one (the anchor decl of a lone-particle cell carries no bond at all),
+// then name. v3 organs carry `bond` + `prov`, NOT the v2 `confidence` —
+// confidence lives on the grounding edge the builder consumed.
+function rankDecl(a: Organ, b: Organ): number {
+  const rank = (o: Organ) => (o.bond === "exact" ? 0 : o.bond ? 1 : 2);
+  const ra = rank(a), rb = rank(b);
+  if (ra !== rb) return ra - rb;
+  const la = a.label ?? a.id, lb = b.label ?? b.id;
+  return la < lb ? -1 : la > lb ? 1 : 0;
+}
+
+function organsOf(atom: Atom, kind: string): Organ[] {
+  return atom.organs.filter((o) => o.kind === kind);
+}
+
+function organsByKind(atom: Atom): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const o of atom.organs) out[o.kind] = (out[o.kind] ?? 0) + 1;
+  return out;
+}
+
+// kind:count across every synapse on the atom (the shard caps the LIST at
+// `caps.synapses_per_cell`; `counts.syn` is the true total).
+function synapsesSummary(atom: Atom): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const s of atom.syn) {
+    for (const [k, n] of Object.entries(s.kinds ?? {})) out[k] = (out[k] ?? 0) + n;
+  }
+  return out;
+}
+
+// The atom card: the cell/supercell head, every organ WITH its embedded payload
+// (Lean code, Wikidata description, licensed DB snippets, article annotation
+// counts), the containment breadcrumb, and a synapse summary + strongest
+// partners. Traces are deliberately NOT here — /api/brain/neighborhood serves
+// them, so the card stays an identity answer rather than a graph dump.
+export async function cellFor(c: Ctx, keyRaw: string): Promise<ApiResult> {
   const key = (keyRaw || "").trim();
   if (!key || !BRAIN_ID_RE.test(key)) {
     return { status: 400, body: { ok: false, error: "missing or malformed ?key=", hint: KEY_HINT } };
   }
-  const resolved = await resolveUnitKey(c, key);
+  const resolved = await resolveAtomKey(c, key);
   if (!resolved) {
     return { status: 404, body: { ok: false, error: "unresolvable key", key, hint: KEY_HINT } };
   }
-  const entry = resolved.entry ?? (await entryFor(c, resolved.qid));
-  if (!entry) {
+  const atom = resolved.atom ?? (await atomFor(c, resolved.id));
+  if (!atom) {
     return {
       status: 404,
-      body: { ok: false, error: "resolved concept is not in the brain shards", key, qid: resolved.qid },
+      body: { ok: false, error: "resolved atom is not in the brain shards", key, id: resolved.id },
     };
   }
-  const edgesSummary: Record<string, number> = {};
-  for (const dir of ["out", "in"] as const) {
-    for (const e of entry.edges?.[dir] ?? []) edgesSummary[e.kind] = (edgesSummary[e.kind] ?? 0) + 1;
-  }
+  const preview = [...atom.syn]
+    .sort((a, b) => b.w - a.w)
+    .slice(0, SYN_PREVIEW)
+    .map((s) => ({ id: s.id, w: s.w, kinds: s.kinds }));
   return {
     status: 200,
     body: {
       ok: true,
       resolved_from: resolved.resolved_from,
       key,
-      qid: resolved.qid,
-      unit: unitFromEntry(entry),
-      display: entry.node.display ?? null,
-      ...(entry.breadcrumb ? { breadcrumb: entry.breadcrumb } : {}),
-      edges_summary: edgesSummary,
+      id: atom.id,
+      kind: atom.kind,
+      label: atom.label,
+      ...(atom.f !== undefined ? { f: atom.f } : {}),
+      ...(atom.cell ? { cell: atom.cell } : {}),
+      ...(atom.supercell ? { supercell: atom.supercell } : {}),
+      organs: atom.organs,
+      organs_by_kind: organsByKind(atom),
+      ...(atom.breadcrumb ? { breadcrumb: atom.breadcrumb } : {}),
+      synapses_summary: synapsesSummary(atom),
+      synapses_preview: preview,
+      counts: atom.counts,
+      ...(atom.truncated ? { truncated: atom.truncated } : {}),
     },
   };
 }
@@ -345,16 +507,32 @@ export async function transferFor(
   };
 }
 
+function declHit(o: Organ, atom: Atom): Record<string, unknown> {
+  const name = o.label ?? o.id.split(":").slice(2).join(":");
+  return {
+    decl: name,
+    module: o.module ?? null,
+    bond: o.bond ?? null,
+    decl_kind: o.decl_kind ?? null,
+    docs_url: o.module ? docsUrlFor(o.module, name) : `${SITE_ORIGIN}/decl/${encodeURIComponent(name)}`,
+    via_cell: atom.id,
+    cell_label: atom.label,
+  };
+}
+
+// Concept → the formal side. With cells this is "resolve to the atom, read its
+// decl organs" — no edge walk: an atom's decls ARE its own organs by the merge
+// function (`exact` fuses both ways), which is exactly why Vector space and
+// Module answer identically.
 async function informalToFormal(c: Ctx, q: string, limit: number): Promise<ApiResult> {
-  let resolved = BRAIN_ID_RE.test(q) ? await resolveUnitKey(c, q) : null;
+  let resolved = await resolveAtomKey(c, q);
   let resolvedFrom: string | null = resolved?.resolved_from ?? null;
   if (!resolved && q.length >= 2) {
-    // free text: best label-search concept hit
-    const labels = await getLabels(c);
-    const hits = labels ? searchLabels(labels, q.toLowerCase(), "concept", 5) : [];
-    const first = hits.find((h) => QID_RE.test(h.id));
-    if (first) {
-      resolved = { qid: first.id, resolved_from: "label" };
+    // free text: best label/aka search hit
+    const labels = await cellLabels(c);
+    const hits = labels ? searchLabels(labels, q.toLowerCase(), "", 5) : [];
+    if (hits.length) {
+      resolved = { id: hits[0].id, resolved_from: "label" };
       resolvedFrom = "search";
     }
   }
@@ -363,209 +541,216 @@ async function informalToFormal(c: Ctx, q: string, limit: number): Promise<ApiRe
       status: 404,
       body: {
         ok: false,
-        error: "no concept matched q",
+        error: "no atom matched q",
         q,
-        suggestions: await suggestionsFor(c, q, ""),
+        suggestions: await suggestionsFor(c, q),
         hint: "try /api/brain/search?q= for fuzzy lookup",
       },
     };
   }
-  const qid = resolved.qid;
-  const entry = resolved.entry ?? (await entryFor(c, qid));
-  if (!entry) {
-    return { status: 404, body: { ok: false, error: "concept not in the brain shards", qid } };
+  const atom = resolved.atom ?? (await atomFor(c, resolved.id));
+  if (!atom) {
+    return { status: 404, body: { ok: false, error: "atom not in the brain shards", id: resolved.id } };
   }
-  const unit = unitFromEntry(entry);
-  const qidLabel = entry.node.label ?? null;
-  const ranked = [...unit.decls].sort(rankDecl);
-  const hits = ranked.slice(0, limit).map((d) => ({
-    decl: d.name,
-    module: d.module,
-    match_kind: d.match_kind,
-    confidence: d.confidence,
-    docs_url: d.module ? docsUrlFor(d.module, d.name) : `${SITE_ORIGIN}/decl/${encodeURIComponent(d.name)}`,
-    via_qid: qid,
-    qid_label: qidLabel,
-  }));
+  const hits = organsOf(atom, "decl").sort(rankDecl).slice(0, limit).map((o) => declHit(o, atom));
   const body: Record<string, unknown> = {
     ok: true,
     direction: "informal_to_formal",
     q,
     resolved_from: resolvedFrom,
-    qid,
-    qid_label: qidLabel,
+    id: atom.id,
+    kind: atom.kind,
+    label: atom.label,
     hits,
   };
-  if (!hits.length) {
-    body.note = "no formalizing decls recorded for this concept";
-    if (unit.containers.length) body.containers = unit.containers; // field-level home, if any
-    body.suggestions = await suggestionsFor(c, q, "concept");
+  if (atom.kind === "supercell") {
+    // rule 5: a field-of-study concept's formal home is a FOLDER, not a decl.
+    // That is the honest answer, not an empty result — say so.
+    body.note =
+      "this is a field-of-study concept: its formal home is a Mathlib folder (supercell), not a single declaration";
+    body.container = atom.id;
+    body.cells_in_container = atom.supercell?.cells?.length ?? 0;
+  } else if (!hits.length) {
+    body.note = "no Mathlib declaration is an organ of this atom";
+    if (atom.cell?.supercells?.length) body.containers = atom.cell.supercells;
+    body.suggestions = await suggestionsFor(c, q);
   }
   return { status: 200, body };
 }
 
+// Decl name → the informal side: the atom's concept + article organs. A decl
+// resolves to exactly ONE atom (aliases.json is a function — SCHEMA C4), and
+// that atom's concept organs are the multi-to-multi answer v2 walked in-edges
+// for (Module → Q18848 AND Q125977, one fetch).
 async function formalToInformal(c: Ctx, q: string, limit: number): Promise<ApiResult> {
   const name = q.startsWith("decl:") ? q.split(":").slice(2).join(":") : q;
-  const declId = q.startsWith("decl:") ? q : `decl:Mathlib:${q}`;
-  const entry = await entryFor(c, declId);
-  const qids = entry?.node.type === "decl" ? formalizingQids(entry) : [];
+  const resolved = await resolveAtomKey(c, q.startsWith("decl:") ? q : `decl:Mathlib:${q}`)
+    ?? (await resolveAtomKey(c, name));
+  const atom = resolved ? resolved.atom ?? (await atomFor(c, resolved.id)) : null;
   const hits: Record<string, unknown>[] = [];
-  for (const qid of qids.slice(0, limit)) {
-    const ce = await entryFor(c, qid);
-    if (!ce) {
-      hits.push({ qid, label: null, slug: null, article_url: null, description: null, snippet_sources: [] });
-      continue;
+  if (atom) {
+    const pages = organsOf(atom, "page");
+    for (const o of organsOf(atom, "concept").slice(0, limit)) {
+      const slug = o.slug ?? null;
+      hits.push({
+        qid: o.id,
+        label: o.label ?? null,
+        bond: o.bond ?? null,
+        slug,
+        article_url: slug ? `${SITE_ORIGIN}/${encodeURIComponent(slug)}` : null,
+        description: o.description ?? null,
+        snippet_sources: [...new Set(pages.map((p) => p.db ?? "").filter(Boolean))].sort(),
+        via_cell: atom.id,
+      });
     }
-    const u = unitFromEntry(ce);
-    const slug = ce.node.slug ?? null;
-    hits.push({
-      qid,
-      label: ce.node.label ?? null,
-      slug,
-      article_url: slug ? `${SITE_ORIGIN}/${encodeURIComponent(slug)}` : null,
-      description: u.description ?? null,
-      snippet_sources: Object.keys(u.xrefs).sort(),
-    });
   }
   const body: Record<string, unknown> = {
     ok: true,
     direction: "formal_to_informal",
     q,
     decl: name,
+    ...(atom ? { id: atom.id, kind: atom.kind, label: atom.label } : {}),
     hits,
   };
   if (!hits.length) {
-    body.note = entry
-      ? "decl is a brain node but no concept formalizes-edge points at it"
-      : "decl is not a brain node — it may still exist in Mathlib (check the decl_exists tool or /decl/<name>)";
-    body.suggestions = await suggestionsFor(c, name.split(".").pop() ?? name, "concept");
+    body.note = atom
+      ? "the decl's atom holds no concept organ — it is a formal-only cell (see organs on /api/brain/cell)"
+      : "decl is not an organ of any atom — it may still exist in Mathlib (check decl_exists or /decl/<name>)";
+    body.suggestions = await suggestionsFor(c, name.split(".").pop() ?? name);
   }
   return { status: 200, body };
 }
 
-// ---- neighborhood: filtered projection of a shard entry's edges --------------
+// ---- neighborhood: an atom's synapses ----------------------------------------
 
+// v2 returned raw per-particle edges; v3 returns SYNAPSES — one aggregated edge
+// per atom pair, carrying `w` (every constituent bond), a `kinds` histogram and
+// the individual `traces`. There is no `dir`: a synapse is an UNDIRECTED
+// aggregate of bonds that may run either way, and direction lives on each trace.
 export async function neighborhoodFor(
   c: Ctx,
   id: string,
   kindsCsv?: string,
-  dirRaw?: string,
   limitRaw?: unknown,
+  tracesRaw?: unknown,
 ): Promise<ApiResult> {
-  if (!BRAIN_ID_RE.test(id || "")) return { status: 400, body: { ok: false, error: "bad node id" } };
-  const dir = dirRaw || "both";
-  if (dir !== "out" && dir !== "in" && dir !== "both") {
-    return { status: 400, body: { ok: false, error: "dir must be out | in | both" } };
-  }
+  if (!BRAIN_ID_RE.test(id || "")) return { status: 400, body: { ok: false, error: "bad atom id" } };
   const limit = clampLimit(limitRaw, 50, 200);
+  const wantTraces = !(tracesRaw === "0" || tracesRaw === false || tracesRaw === "false");
   const kinds = kindsCsv
     ? new Set(kindsCsv.split(",").map((s) => s.trim()).filter(Boolean))
     : null;
-  const entry = await entryFor(c, id);
-  if (!entry) return { status: 404, body: { ok: false, error: "unknown node id", id } };
-  const dirs: Array<"out" | "in"> = dir === "both" ? ["out", "in"] : [dir];
+  const resolved = await resolveAtomKey(c, id);
+  const atom = resolved ? resolved.atom ?? (await atomFor(c, resolved.id)) : null;
+  if (!atom) return { status: 404, body: { ok: false, error: "unknown atom id", id, hint: KEY_HINT } };
   const rows: Record<string, unknown>[] = [];
-  const matched = { out: 0, in: 0 };
-  for (const d of dirs) {
-    for (const e of entry.edges?.[d] ?? []) {
-      if (kinds && !kinds.has(e.kind)) continue;
-      matched[d] += 1;
-      if (rows.length < limit) rows.push({ direction: d, ...e });
-    }
+  let matched = 0;
+  for (const s of atom.syn) {
+    const synKinds = Object.keys(s.kinds ?? {});
+    if (kinds && !synKinds.some((k) => kinds.has(k))) continue;
+    matched += 1;
+    if (rows.length >= limit) continue;
+    const traces = kinds ? (s.traces ?? []).filter((t) => kinds.has(t.kind)) : s.traces ?? [];
+    rows.push({
+      id: s.id,
+      w: s.w,
+      kinds: s.kinds,
+      ...(s.tt !== undefined ? { traces_total: s.tt } : {}),
+      ...(wantTraces ? { traces } : {}),
+    });
   }
-  const shardTruncated = dirs.some((d) => entry.edges?.truncated?.[d]);
   return {
     status: 200,
     body: {
       ok: true,
-      id,
-      dir,
+      id: atom.id,
+      ...(atom.id !== id ? { resolved_from: resolved?.resolved_from, key: id } : {}),
+      kind: atom.kind,
       ...(kinds ? { kinds: [...kinds] } : {}),
-      edges: rows,
+      synapses: rows,
       returned: rows.length,
-      matched, // matches within the (capped) shard lists, per direction
-      counts: entry.edges?.counts ?? { out: 0, in: 0 }, // total edges on the node
-      truncated: rows.length < matched.out + matched.in || shardTruncated,
+      matched, // matches within the (capped) shard list
+      counts: atom.counts, // the atom's TOTAL synapse count
+      // traces are trimmed per synapse (`traces_total` vs the returned list) and
+      // the shard caps the synapse LIST itself — brain/query.py serves the full set
+      truncated: rows.length < matched || (atom.truncated?.syn ?? 0) > 0,
     },
   };
 }
 
-// ---- snippets: every stored content snippet for a unit ------------------------
+// ---- snippets: every stored content snippet on an atom ------------------------
 
-const MAX_SNIPPET_FETCHES = 16;
-
-function extRow(id: string, node: BrainNodePayload): Record<string, unknown> {
-  return {
-    source_db: node.db ?? "",
-    id,
-    label: node.label ?? null,
-    ...(node.snippet ? { snippet: node.snippet } : {}),
-    ...(node.snippet_license ? { license: node.snippet_license } : {}),
-    ...(node.url ? { url: node.url } : {}),
-  };
-}
-
+// v2 fanned out one shard fetch per xref target; v3 reads the EMBEDDED organ
+// payloads — one shard fetch answers the whole call. Every row carries its
+// licence; `safeOrgan` has already dropped any snippet that lost one.
 export async function snippetsFor(c: Ctx, id: string): Promise<ApiResult> {
-  if (!BRAIN_ID_RE.test(id || "")) return { status: 400, body: { ok: false, error: "bad node id" } };
-  const entry = await entryFor(c, id);
-  if (!entry) return { status: 404, body: { ok: false, error: "unknown node id", id } };
-  const node = entry.node;
-  if (node.type === "ext") {
-    return { status: 200, body: { ok: true, id, rows: [extRow(node.id, node)] } };
-  }
-  const unit = unitFromEntry(entry);
+  if (!BRAIN_ID_RE.test(id || "")) return { status: 400, body: { ok: false, error: "bad atom id" } };
+  const resolved = await resolveAtomKey(c, id);
+  const atom = resolved ? resolved.atom ?? (await atomFor(c, resolved.id)) : null;
+  if (!atom) return { status: 404, body: { ok: false, error: "unknown atom id", id, hint: KEY_HINT } };
   const rows: Record<string, unknown>[] = [];
-  if (QID_RE.test(node.id)) {
-    rows.push({
-      source_db: "wikidata",
-      id: node.id,
-      label: node.label ?? null,
-      ...(unit.description ? { snippet: unit.description, license: "CC0 (Wikidata)" } : {}),
-      url: `https://www.wikidata.org/wiki/${node.id}`,
-    });
-  }
-  if (node.slug) {
-    // pointer to the annotated WikiLean article (annotations live in D1, not here)
-    rows.push({
-      source_db: "wikilean",
-      id: node.slug,
-      label: node.label ?? null,
-      url: `${SITE_ORIGIN}/${encodeURIComponent(node.slug)}`,
-    });
-  }
-  const allXrefs = (entry.edges?.out ?? [])
-    .filter((e) => e.kind === "xref" && e.id.startsWith("xref:"));
-  const xrefTargets = allXrefs.slice(0, MAX_SNIPPET_FETCHES);
-  for (const e of xrefTargets) {
-    const xe = await entryFor(c, e.id);
-    if (xe && xe.node.type === "ext") {
-      rows.push(extRow(e.id, xe.node));
-    } else {
-      // xref target without a minted ext node (pre-v2 data / beyond the cap):
-      // still surface the pointer so the agent knows the identity exists
-      const m = XREF_ID_RE.exec(e.id);
-      rows.push({ source_db: m ? m[1].toLowerCase() : "", id: e.id, label: m ? m[2] : e.id });
+  for (const o of atom.organs) {
+    if (o.kind === "concept") {
+      rows.push({
+        source_db: "wikidata",
+        id: o.id,
+        label: o.label ?? null,
+        ...(o.description ? { snippet: o.description, license: "CC0 (Wikidata)" } : {}),
+        url: `https://www.wikidata.org/wiki/${o.id}`,
+      });
+    } else if (o.kind === "article") {
+      // pointer to the annotated WikiLean article (annotations live in D1)
+      rows.push({
+        source_db: "wikilean",
+        id: o.id,
+        label: o.label ?? null,
+        url: `${SITE_ORIGIN}/${encodeURIComponent(o.id)}`,
+      });
+    } else if (o.kind === "page") {
+      rows.push({
+        source_db: o.db ?? "",
+        id: o.id,
+        label: o.label ?? null,
+        ...(o.snippet ? { snippet: o.snippet, license: o.snippet_license } : {}),
+        ...(o.url ? { url: o.url } : {}),
+      });
+    } else if (o.kind === "decl") {
+      const name = o.label ?? o.id.split(":").slice(2).join(":");
+      rows.push({
+        source_db: "mathlib",
+        id: o.id,
+        label: name,
+        ...(o.docstring ? { snippet: o.docstring, license: MATHLIB_LICENSE } : {}),
+        ...(o.code ? { code: o.code, code_license: MATHLIB_LICENSE } : {}),
+        ...(o.module ? { url: docsUrlFor(o.module, name) } : {}),
+      });
+    } else if (o.kind === "statement") {
+      // arXiv statement TEXT is never redistributed — ids/labels/links only
+      rows.push({
+        source_db: "arxiv",
+        id: o.id,
+        label: o.label ?? null,
+        ...(o.license_open !== undefined ? { license_open: o.license_open } : {}),
+        ...(o.arxiv_id ? { url: `https://arxiv.org/abs/${o.arxiv_id}` } : {}),
+      });
     }
   }
-  // beyond-cap xrefs surface as pointer-only rows (no shard fetch) so the
-  // response is still complete — `truncated` says snippet fetches were capped
-  for (const e of allXrefs.slice(MAX_SNIPPET_FETCHES)) {
-    const m = XREF_ID_RE.exec(e.id);
-    rows.push({ source_db: m ? m[1].toLowerCase() : "", id: e.id, label: m ? m[2] : e.id });
-  }
-  const body: Record<string, unknown> = { ok: true, id, rows };
-  if (allXrefs.length > MAX_SNIPPET_FETCHES) body.truncated = true;
-  return { status: 200, body };
+  return { status: 200, body: { ok: true, id: atom.id, kind: atom.kind, rows } };
 }
 
-// ---- filter: facet-bitmask enumeration over labels.json -----------------------
+// ---- filter: facet-bitmask enumeration ----------------------------------------
 
+// `type=cell` (default) enumerates labels.json — one row per atom, `f` = the
+// cell's OWN facets. `type=supercell` enumerates supercells.json by `fa`, the
+// subtree-AGGREGATE mask ("something under this folder matches"), which is a
+// deliberately different question — hence a separate type rather than a mixed list.
 export async function filterFor(
   c: Ctx,
   fRaw: unknown,
   type?: string,
   limitRaw?: unknown,
   cursorRaw?: unknown,
+  under?: string,
 ): Promise<ApiResult> {
   const mask = intOr(fRaw, -1);
   if (mask < 0 || mask > 0x7fffffff || (typeof fRaw === "string" && fRaw.trim() === "")) {
@@ -574,29 +759,69 @@ export async function filterFor(
       body: { ok: false, error: "f must be a non-negative integer bitmask (see brain/SCHEMA.md facet bits)" },
     };
   }
+  const kind = type || "cell";
+  if (kind !== "cell" && kind !== "supercell") {
+    return {
+      status: 400,
+      body: {
+        ok: false,
+        error: "type must be cell | supercell",
+        hint: "v3 has two node kinds; the v2 concept/container/ext types are gone (ext pages are organs inside cells)",
+      },
+    };
+  }
   const limit = clampLimit(limitRaw, 100, 500);
   const cursor = intOr(cursorRaw, 0);
   if (cursor < 0) return { status: 400, body: { ok: false, error: "bad cursor" } };
-  const labels = await getLabels(c);
-  if (!labels) return { status: 503, body: { ok: false, error: "brain data unavailable" } };
-  const hits: BrainLabelRow[] = [];
+
+  let pool: Array<{ id: string; f?: number; row: Record<string, unknown> }>;
+  if (kind === "supercell") {
+    const file = await supercellsFile(c);
+    if (!file?.supercells) return { status: 503, body: { ok: false, error: "brain data unavailable" } };
+    pool = Object.entries(file.supercells).map(([path, e]) => ({
+      id: path,
+      f: e.fa,
+      row: {
+        id: path,
+        label: e.label ?? null,
+        ...(e.fa !== undefined ? { fa: e.fa } : {}),
+        ...(e.parent ? { parent: e.parent } : {}),
+        ...(e.cells?.length ? { n_cells: e.cells.length } : {}),
+      },
+    }));
+  } else {
+    const labels = await cellLabels(c);
+    if (!labels) return { status: 503, body: { ok: false, error: "brain data unavailable" } };
+    pool = labels.map((r) => ({ id: r.id, f: r.f, row: r as unknown as Record<string, unknown> }));
+  }
+  // `under` restricts to a containment subtree: cells carry `p` (their deepest
+  // supercell); supercells match on their own path prefix.
+  const prefix = (under || "").trim();
+  const inSubtree = (e: { id: string; row: Record<string, unknown> }): boolean => {
+    if (!prefix) return true;
+    const p = kind === "supercell" ? e.id : (e.row.p as string | undefined) ?? "";
+    return p === prefix || p.startsWith(prefix + "/");
+  };
+
+  const hits: unknown[] = [];
   let nextCursor: number | null = null;
-  for (let i = cursor; i < labels.length; i++) {
-    const r = labels[i];
-    if (type && r.type !== type) continue;
-    if (((r.f ?? 0) & mask) !== mask) continue;
+  for (let i = cursor; i < pool.length; i++) {
+    const e = pool[i];
+    if (((e.f ?? 0) & mask) !== mask) continue;
+    if (!inSubtree(e)) continue;
     if (hits.length >= limit) {
       nextCursor = i; // index of the first matching row NOT returned — stable
       break;
     }
-    hits.push(r);
+    hits.push(e.row);
   }
   return {
     status: 200,
     body: {
       ok: true,
       f: mask,
-      ...(type ? { type } : {}),
+      type: kind,
+      ...(prefix ? { under: prefix } : {}),
       hits,
       returned: hits.length,
       cursor,
@@ -605,25 +830,87 @@ export async function filterFor(
   };
 }
 
-// ---- search + node (MCP twins of the existing REST routes in brain.ts) --------
+// ---- search over the atom label index -----------------------------------------
 
+// Matches an atom's own label AND its `aka` list — every organ's label — so
+// "Vector space" finds the Module atom (they are one atom; the anchor names it).
+// A key that resolves exactly (QID, decl name, slug, xref id) is promoted to the
+// top hit, which keeps the v2 "a bare QID query matches by id" behavior alive
+// even though cell ids are now `cell:<anchor>`.
 export async function searchFor(c: Ctx, qRaw: string, type?: string, limitRaw?: unknown): Promise<ApiResult> {
-  const q = (qRaw || "").trim().toLowerCase();
+  const q = (qRaw || "").trim();
   if (q.length < 2) return { status: 400, body: { ok: false, error: "query too short (min 2 chars)" } };
   const limit = clampLimit(limitRaw, 25, 100);
-  const labels = await getLabels(c);
-  if (!labels) return { status: 503, body: { ok: false, error: "brain data unavailable" } };
-  return { status: 200, body: { ok: true, q, hits: searchLabels(labels, q, type || "", limit) } };
-}
+  const kind = type || "";
+  if (kind && kind !== "cell" && kind !== "supercell") {
+    return {
+      status: 400,
+      body: {
+        ok: false,
+        error: "type must be cell | supercell",
+        hint: "v3 has two node kinds; the v2 concept/container/ext types are gone (ext pages are organs inside cells)",
+      },
+    };
+  }
+  const ql = q.toLowerCase();
+  const labels = await cellLabels(c);
+  if (!labels && kind !== "supercell") {
+    return { status: 503, body: { ok: false, error: "brain data unavailable" } };
+  }
+  const file = await supercellsFile(c);
+  if (!file?.supercells && kind === "supercell") {
+    return { status: 503, body: { ok: false, error: "brain data unavailable" } };
+  }
 
-export async function nodeFor(c: Ctx, id: string): Promise<ApiResult> {
-  if (!BRAIN_ID_RE.test(id || "")) return { status: 400, body: { ok: false, error: "bad node id" } };
-  const resolved = await resolveBrainEntry(c, id);
-  if (!resolved) return { status: 404, body: { ok: false, error: "unknown node id", id } };
-  return {
-    status: 200,
-    body: { ok: true, id, ...(resolved.entry as Record<string, unknown>), prov_table: resolved.prov },
+  const hits: Record<string, unknown>[] = [];
+  const seen = new Set<string>();
+  const push = (r: Record<string, unknown>) => {
+    const id = String(r.id);
+    if (seen.has(id) || hits.length >= limit) return;
+    seen.add(id);
+    hits.push(r);
   };
+  const superRow = (path: string, e: SupercellEntry, extra?: Record<string, unknown>) => ({
+    id: path,
+    kind: "supercell",
+    label: e.label ?? null,
+    ...(e.organs?.length ? { aka: e.organs.map((o) => o.label ?? o.id) } : {}),
+    ...(e.cells?.length ? { n_cells: e.cells.length } : {}),
+    ...extra,
+  });
+
+  // 1. An exactly-resolving key takes the top slot, whichever kind it names.
+  // This is how a bare QID still "matches by id" now that atom ids are
+  // cell:<anchor> — and it is the ONLY way q=Q82571 (or its exact label "Linear
+  // algebra") finds its folder, since labels.json indexes cells alone.
+  const exact = await resolveAtomKey(c, q);
+  if (exact?.id.startsWith("cell:") && kind !== "supercell") {
+    const row = labels?.find((r) => r.id === exact.id);
+    if (row) push({ ...pickSuggestion(row), matched: exact.resolved_from });
+  } else if (exact?.id.startsWith("path:") && kind !== "cell") {
+    const e = own(file?.supercells, exact.id);
+    if (e) push(superRow(exact.id, e, { matched: exact.resolved_from }));
+  }
+
+  // 2. cells by label + aka (searchLabels already ranks prefix before substring)
+  if (kind !== "supercell" && labels) {
+    for (const r of searchLabels(labels, ql, "", limit)) push(pickSuggestion(r));
+  }
+
+  // 3. supercells, matched on the folder label AND its organ labels — a folder's
+  // human name lives on its field concept ("Linear algebra", not "LinearAlgebra")
+  if (kind !== "cell" && hits.length < limit) {
+    const starts: Record<string, unknown>[] = [], contains: Record<string, unknown>[] = [];
+    for (const [path, e] of Object.entries(file?.supercells ?? {})) {
+      const names = [e.label ?? "", ...(e.organs ?? []).map((o) => o.label ?? "")]
+        .map((n) => n.toLowerCase())
+        .filter(Boolean);
+      if (names.some((n) => n.startsWith(ql))) starts.push(superRow(path, e));
+      else if (names.some((n) => n.includes(ql))) contains.push(superRow(path, e));
+    }
+    for (const r of [...starts, ...contains]) push(r);
+  }
+  return { status: 200, body: { ok: true, q, ...(kind ? { type: kind } : {}), hits } };
 }
 
 // ---- decl existence oracle (the decl-index shards GET /decl resolves against) --
@@ -684,13 +971,20 @@ async function rateLimitGate(
 }
 
 export function registerBrainApiRoutes(app: Hono<{ Bindings: Env }>): void {
+  app.use("/api/brain/cell", rateLimitGate);
   app.use("/api/brain/unit", rateLimitGate);
   app.use("/api/brain/transfer", rateLimitGate);
   app.use("/api/brain/neighborhood", rateLimitGate);
   app.use("/api/brain/snippets", rateLimitGate);
   app.use("/api/brain/filter", rateLimitGate);
+  app.use("/api/brain/search", rateLimitGate);
 
-  app.get("/api/brain/unit", async (c) => send(c, await unitFor(c, c.req.query("key") ?? "")));
+  app.get("/api/brain/cell", async (c) => send(c, await cellFor(c, c.req.query("key") ?? "")));
+
+  // v2 entry point. The unit card became the CELL card (the atom subsumes it —
+  // a unit was QID ∘ article ∘ decls ∘ xrefs, which is exactly a cell's organs),
+  // so this is a true alias rather than a shim: nothing that resolved before 404s.
+  app.get("/api/brain/unit", async (c) => send(c, await cellFor(c, c.req.query("key") ?? "")));
 
   app.get("/api/brain/transfer", async (c) =>
     send(
@@ -706,8 +1000,8 @@ export function registerBrainApiRoutes(app: Hono<{ Bindings: Env }>): void {
         c,
         c.req.query("id") ?? "",
         c.req.query("kinds"),
-        c.req.query("dir"),
         c.req.query("limit"),
+        c.req.query("traces"),
       ),
     ),
   );
@@ -717,8 +1011,19 @@ export function registerBrainApiRoutes(app: Hono<{ Bindings: Env }>): void {
   app.get("/api/brain/filter", async (c) =>
     send(
       c,
-      await filterFor(c, c.req.query("f"), c.req.query("type"), c.req.query("limit"), c.req.query("cursor")),
+      await filterFor(
+        c,
+        c.req.query("f"),
+        c.req.query("type"),
+        c.req.query("limit"),
+        c.req.query("cursor"),
+        c.req.query("under"),
+      ),
     ),
+  );
+
+  app.get("/api/brain/search", async (c) =>
+    send(c, await searchFor(c, c.req.query("q") ?? "", c.req.query("type"), c.req.query("limit"))),
   );
 
   // The human-readable reference for everything above + the MCP endpoint.
@@ -775,79 +1080,131 @@ th { color:#9aa3b2; font-weight:600; }
   </nav>
 </header>
 <main>
-<h1>Wikibrain API <span class="pill">v2</span></h1>
+<h1>Wikibrain API <span class="pill">v3 — cells</span></h1>
 <p class="muted">Read-only, unauthenticated, cached (<code>Cache-Control: public, max-age=3600</code> —
 data rebuilds nightly). Base URL <code>https://wikilean.jackmccarthy.org</code>.
 Full reference with response schemas: <a href="https://github.com/Deicyde/WikiLean/blob/main/docs/BRAIN-API.md">docs/BRAIN-API.md</a>.</p>
 
+<h2>The model: cells, organs, supercells, synapses</h2>
+<p>The addressable thing is the <b>cell</b> — an <em>atom</em> of mathematics, id
+<code>cell:&lt;anchor&gt;</code>. A Mathlib declaration, a Wikidata concept, an external-database
+page, a WikiLean article and an arXiv statement that all denote <em>one object</em> are
+<b>organs</b> of that one cell: <code>Module</code>, <code>Q18848</code> (module) and
+<code>Q125977</code> (vector space) are the same atom, because Mathlib has no
+<code>VectorSpace</code> — <code>Module</code> generalizes it.</p>
+<table>
+<tr><th>thing</th><th>what it is</th></tr>
+<tr><td><b>organ</b></td><td>A particle — <em>never</em> a node. Kinds: <code>concept</code>
+  (<code>Q&lt;digits&gt;</code>) · <code>decl</code> (<code>decl:&lt;Lib&gt;:&lt;Name&gt;</code>) ·
+  <code>page</code> (<code>xref:&lt;db&gt;:&lt;id&gt;</code>) · <code>article</code> (a WikiLean slug) ·
+  <code>statement</code> (<code>lit:&lt;arxiv&gt;#&lt;ref&gt;</code>). Payloads are EMBEDDED — the Lean
+  code, the Wikidata description, the licensed DB snippet all ship on the cell.</td></tr>
+<tr><td><b>cell</b></td><td>The atom, the node of the graph. <code>cell:&lt;anchor&gt;</code>, where the
+  anchor is the cell's <code>exact</code> concept.</td></tr>
+<tr><td><b>supercell</b></td><td>A Mathlib folder, <code>path:&lt;Lib&gt;/&lt;Dir&gt;</code>. Cells render
+  inside it, and it owns organs of its own: <b>field-of-study concepts</b> (Q82571 "Linear
+  algebra" → <code>path:Mathlib/LinearAlgebra</code>, <em>not</em> a cell) and area-level pages.</td></tr>
+<tr><td><b>synapse</b></td><td>ONE aggregated edge per atom pair: <code>w</code> (weight — every
+  constituent bond), a <code>kinds</code> histogram (<code>depends</code>, <code>links</code>,
+  <code>relates</code>, <code>cites</code>, <code>mentions</code>, …) and the individual
+  <code>traces</code>, each with its own direction, provenance and evidence. Undirected by
+  construction, so there is no <code>dir</code> parameter.</td></tr>
+</table>
+<p><b>Every v2 entry point still resolves.</b> <code>aliases.json</code> maps every organ id to
+its owning atom, and every route below accepts <em>any</em> organ id or an atom id:
+<code>Q125977</code>, <code>decl:Mathlib:Module</code> and <code>Vector_space</code> all answer as
+<code>cell:Q18848</code>; <code>Q82571</code> answers as <code>path:Mathlib/LinearAlgebra</code>.</p>
+
 <h2>Connect over MCP (recommended for agents)</h2>
 <pre><code>claude mcp add --transport http wikibrain https://wikilean.jackmccarthy.org/mcp</code></pre>
 <p>A dependency-free streamable-HTTP MCP server (JSON-RPC 2.0, stateless, single-response
-mode) exposing eight tools: <code>brain_search</code>, <code>brain_node</code>,
-<code>brain_unit</code>, <code>brain_transfer</code>, <code>brain_neighborhood</code>,
-<code>brain_snippets</code>, <code>brain_filter</code>, <code>decl_exists</code>.
-Rate limit: 120 requests/min per IP.</p>
+mode) exposing seven tools: <code>brain_search</code>, <code>brain_cell</code>,
+<code>brain_transfer</code>, <code>brain_neighborhood</code>, <code>brain_snippets</code>,
+<code>brain_filter</code>, <code>decl_exists</code>. <code>brain_unit</code> and
+<code>brain_node</code> still answer, as aliases of <code>brain_cell</code> — the v2 unit card
+<em>became</em> the cell card, and v3 has no particle nodes. Rate limit: 120 requests/min per IP.</p>
 
-<h2>Node id grammar</h2>
+<h2>Id grammar</h2>
 <table>
-<tr><th>form</th><th>type</th><th>example</th></tr>
-<tr><td><code>Q&lt;digits&gt;</code></td><td>concept (Wikidata QID)</td><td><code>Q181296</code></td></tr>
-<tr><td><code>path:&lt;Lib&gt;[/&lt;Dir&gt;…]</code></td><td>container (Mathlib folder)</td><td><code>path:Mathlib/CategoryTheory</code></td></tr>
-<tr><td><code>decl:&lt;Lib&gt;:&lt;FQ name&gt;</code></td><td>Lean declaration</td><td><code>decl:Mathlib:CommGroup</code></td></tr>
-<tr><td><code>lit:&lt;arxiv&gt;#&lt;ref&gt;</code></td><td>literature statement</td><td><code>lit:1707.04448#thm1.2</code></td></tr>
-<tr><td><code>xref:&lt;db&gt;:&lt;id&gt;</code></td><td>external DB page</td><td><code>xref:lmfdb_knowl:group.abelian</code></td></tr>
+<tr><th>form</th><th>what</th><th>example</th></tr>
+<tr><td><code>cell:&lt;anchor&gt;</code></td><td>an atom (the node)</td><td><code>cell:Q18848</code></td></tr>
+<tr><td><code>path:&lt;Lib&gt;[/&lt;Dir&gt;…]</code></td><td>supercell (Mathlib folder)</td><td><code>path:Mathlib/LinearAlgebra</code></td></tr>
+<tr><td><code>Q&lt;digits&gt;</code></td><td>concept organ (Wikidata QID)</td><td><code>Q181296</code></td></tr>
+<tr><td><code>decl:&lt;Lib&gt;:&lt;FQ name&gt;</code></td><td>decl organ</td><td><code>decl:Mathlib:CommGroup</code></td></tr>
+<tr><td><code>xref:&lt;db&gt;:&lt;id&gt;</code></td><td>page organ (external DB)</td><td><code>xref:nlab:module</code></td></tr>
+<tr><td><code>lit:&lt;arxiv&gt;#&lt;ref&gt;</code></td><td>statement organ</td><td><code>lit:1707.04448#thm1.2</code></td></tr>
 </table>
 
 <h2>REST endpoints</h2>
 
-<h3>GET /api/brain/unit?key=</h3>
-<p>Resolve <em>any</em> member key — QID, <code>decl:Lib:Name</code>, bare decl name,
-article slug, <code>xref:db:id</code>, or exact concept label — to the owning concept's
-atomic unit card (article ∘ QID ∘ decls ∘ containers ∘ cross-refs).</p>
-<pre><code>curl 'https://wikilean.jackmccarthy.org/api/brain/unit?key=CommGroup'</code></pre>
+<h3>GET /api/brain/cell?key=</h3>
+<p>Resolve <em>any</em> organ id — QID, <code>decl:Lib:Name</code>, bare decl name, article slug,
+<code>xref:db:id</code>, <code>lit:…</code>, an exact label or <code>aka</code>, or an atom id — to the
+owning atom's card: the cell head, <b>every organ with its embedded payload</b>, the containment
+breadcrumb, a synapse summary and the strongest partners. One request renders the whole card.
+<code>/api/brain/unit?key=</code> is an alias (the v2 unit card <em>became</em> the cell card).</p>
+<pre><code>curl 'https://wikilean.jackmccarthy.org/api/brain/cell?key=CommGroup'
+curl 'https://wikilean.jackmccarthy.org/api/brain/cell?key=Vector_space'   # → cell:Q18848</code></pre>
 
 <h3>GET /api/brain/transfer?q=&amp;direction=&amp;limit=</h3>
-<p>The informal ↔ formal jump. <code>direction=informal_to_formal</code>: concept text /
-QID / slug → ranked Mathlib decls with modules, docs URLs, <code>match_kind</code> and
-confidence. <code>direction=formal_to_informal</code>: a decl name → concepts, article
-URLs and snippet sources. Empty results include near-miss suggestions.</p>
+<p>The informal ↔ formal jump. <code>direction=informal_to_formal</code>: concept text / QID /
+slug → the atom's ranked Mathlib <code>decl</code> organs with modules, docs URLs and
+<code>bond</code>. <code>direction=formal_to_informal</code>: a decl name → the same atom's
+<code>concept</code> organs, article URLs and snippet sources. A field-of-study concept answers
+with its <b>supercell</b> (folder), which is the honest formal home. Empty results include
+near-miss suggestions.</p>
 <pre><code>curl 'https://wikilean.jackmccarthy.org/api/brain/transfer?q=abelian%20group&amp;direction=informal_to_formal'
-curl 'https://wikilean.jackmccarthy.org/api/brain/transfer?q=CommGroup&amp;direction=formal_to_informal'</code></pre>
+curl 'https://wikilean.jackmccarthy.org/api/brain/transfer?q=Module&amp;direction=formal_to_informal'</code></pre>
 
-<h3>GET /api/brain/neighborhood?id=&amp;kinds=&amp;dir=&amp;limit=</h3>
-<p>Filtered projection of a node's typed edges. <code>kinds</code> is a CSV of
-<code>formalizes,mentions,depends,matches,xref,relates,links,cites</code>;
-<code>dir</code> ∈ <code>out|in|both</code>; <code>limit</code> ≤ 200.</p>
-<pre><code>curl 'https://wikilean.jackmccarthy.org/api/brain/neighborhood?id=Q181296&amp;kinds=xref&amp;dir=out'</code></pre>
+<h3>GET /api/brain/neighborhood?id=&amp;kinds=&amp;limit=&amp;traces=</h3>
+<p>An atom's <b>synapses</b>: one row per partner atom with <code>w</code>, the <code>kinds</code>
+histogram, <code>traces_total</code>, and the <code>traces</code> themselves (each
+<code>{kind, src, dst, prov, evidence}</code> — <code>src</code>/<code>dst</code> are the ORGAN ids that
+witnessed the bond). <code>kinds</code> is a CSV of <code>depends,links,relates,cites,mentions,
+invocation,formalizes,matches</code>; <code>limit</code> ≤ 200; <code>traces=0</code> omits traces for a
+compact partner list. No <code>dir</code>: a synapse is an undirected aggregate — direction lives
+on each trace.</p>
+<pre><code>curl 'https://wikilean.jackmccarthy.org/api/brain/neighborhood?id=Q18848&amp;kinds=depends'</code></pre>
 
 <h3>GET /api/brain/snippets?id=</h3>
-<p>Every stored content snippet for a unit — Wikidata description, WikiLean article
-pointer, and each cross-referenced external page's stored snippet — with a per-row
-license. No-content sources (MathWorld, DLMF, EoM, Kerodon) return deep links only.</p>
+<p>Every stored content snippet on an atom, read from the embedded organ payloads (no fan-out):
+Wikidata description (CC0), WikiLean article pointer, each page organ's stored snippet, the
+Mathlib docstring + code, and arXiv statement links. Every row carries its license; no-content
+sources (MathWorld, DLMF, EoM, Kerodon) return deep links only, and arXiv statement text is
+never redistributed.</p>
 <pre><code>curl 'https://wikilean.jackmccarthy.org/api/brain/snippets?id=Q181296'</code></pre>
 
-<h3>GET /api/brain/filter?f=&amp;type=&amp;limit=&amp;cursor=</h3>
-<p>Enumerate nodes whose facet bitmask contains <code>f</code> (i.e. <code>(node.f &amp; f) == f</code>).
-Bits (brain/SCHEMA.md): 0 gold <code>@[wikidata]</code> · 1 <code>@[stacks]</code> ·
-2 <code>@[kerodon]</code> · 3 any xref · 4 formalized · 5 partial · 6 has article ·
-7 has literature · 8 is ext · 9 lmfdb · 10 nlab · 11 mathworld · 12 proofwiki ·
-13 stacks-tag · 14 oeis · 15 has snippet. Bits 0&ndash;2 sit on the tagged decl AND
-propagate to the concept(s) it formalizes. Paginate with the returned
-<code>next_cursor</code>.</p>
-<pre><code>curl 'https://wikilean.jackmccarthy.org/api/brain/filter?f=1&amp;limit=50'</code></pre>
+<h3>GET /api/brain/filter?f=&amp;type=&amp;under=&amp;limit=&amp;cursor=</h3>
+<p>Enumerate atoms whose facet bitmask contains <code>f</code> (i.e. <code>(f_row &amp; f) == f</code>).
+<code>type=cell</code> (default) reads each cell's OWN mask; <code>type=supercell</code> reads
+<code>fa</code>, the subtree-AGGREGATE mask. <code>under=path:…</code> restricts to a containment
+subtree. Bits (brain/SCHEMA.md): 0 gold <code>@[wikidata]</code> · 1 <code>@[stacks]</code> ·
+2 <code>@[kerodon]</code> · 3 any xref · 4 formalized · 5 partial · 6 has WikiLean article ·
+7 has literature · <s>8 is ext</s> (never set on a cell — external pages are organs) ·
+9 lmfdb · 10 nlab · 11 mathworld · 12 proofwiki · 13 stacks-tag · 14 oeis · 15 has stored
+snippet. Paginate with the returned <code>next_cursor</code>.</p>
+<pre><code>curl 'https://wikilean.jackmccarthy.org/api/brain/filter?f=1&amp;limit=50'
+curl 'https://wikilean.jackmccarthy.org/api/brain/filter?f=1&amp;under=path:Mathlib/Algebra'</code></pre>
 
-<h3>Existing routes</h3>
-<p><code>GET /api/brain/node?id=</code> (full shard entry) ·
-<code>GET /api/brain/search?q=&amp;type=&amp;limit=</code> (label search) ·
-<code>GET /api/brain/edges?id=</code> (live community overlay, uncached) ·
-<code>GET /decl/&lt;name&gt;</code> (decl → docs redirect; JSON with <code>Accept: application/json</code>).</p>
+<h3>GET /api/brain/search?q=&amp;type=&amp;limit=</h3>
+<p>Label search over the atom index. Matches an atom's own label AND its <code>aka</code> list —
+every organ's label — so <code>q=Vector space</code> returns the <b>Module</b> atom. A key that
+resolves exactly (QID, decl name, slug, xref id) is promoted to the top hit.
+<code>type</code> ∈ <code>cell|supercell</code>.</p>
+<pre><code>curl 'https://wikilean.jackmccarthy.org/api/brain/search?q=vector%20space'</code></pre>
+
+<h3>Related routes</h3>
+<p><code>GET /api/brain/edges?id=</code> (live community overlay, uncached) ·
+<code>GET /decl/&lt;name&gt;</code> (decl → docs redirect; JSON with <code>Accept: application/json</code>) ·
+<code>GET /api/brain/node?id=</code> (the v2 particle shards — <b>legacy</b>, retiring with the v2
+render path; use <code>/api/brain/cell</code>).</p>
 
 <h2>Provenance &amp; licensing</h2>
-<p>Brain node/edge data is CC0. Every edge carries provenance
-(<code>prov_table</code> on <code>/api/brain/node</code>). Snippets are stored only where
-the source license permits and each row carries its license
+<p>Brain cell/synapse data is CC0. Every organ and every synapse trace carries a
+<code>prov</code> index into the shard manifest's <code>prov</code> table. Snippets are stored only
+where the source license permits and each row carries its license
 (nLab attribution · Stacks GFDL · LMFDB/OEIS CC-BY-SA-4.0 · ProofWiki CC-BY-SA-3.0 ·
-PlanetMath CC-BY-SA); other sources deep-link out.</p>
+PlanetMath CC-BY-SA · Mathlib Apache-2.0); other sources deep-link out.</p>
 </main>
 </body>
 </html>`;

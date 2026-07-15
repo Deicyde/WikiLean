@@ -3,7 +3,7 @@
 
 Arms (same model, same prompt — the ONLY difference is tool availability):
   no_tools  — model alone: built-in tools disallowed, no MCP servers.
-  wikibrain — same, plus the Wikibrain MCP server (mcp__wikibrain__* tools).
+  wikibrain — same, plus the Wikibrain MCP server (mcp__wikibrain__* cell tools).
 
 The claude CLI runs on Max auth: ANTHROPIC_API_KEY is REMOVED from the child
 environment (CLAUDE.md Max-auth gotcha — a set key makes calls fail silently).
@@ -51,12 +51,17 @@ from tasklib import BENCH, DATA_DIR, TASKS_PATH, build_prompt, load_tasks, parse
 MCP_CONFIG_TEMPLATE = BENCH / "mcp-config.json"
 DEFAULT_MODEL = "claude-haiku-4-5-20251001"
 
-# The eight Wikibrain MCP tools (docs/BRAIN-V2.md axis 5) + the server-level
-# rule as a catch-all if the tool list grows.
+# The seven Wikibrain MCP tools (BRAIN v3 — docs/BRAIN-API.md) + the
+# server-level rule as a catch-all if the tool list grows. `brain_cell`
+# replaced brain_node + brain_unit at the cell cut: v3 has no particle nodes,
+# and the unit card became the cell card. The v2 names still dispatch as
+# aliases, so listing them costs nothing and keeps an older resumed run's
+# transcripts replayable.
 WIKIBRAIN_TOOLS = ["mcp__wikibrain"] + [
     f"mcp__wikibrain__{t}" for t in (
-        "brain_search", "brain_node", "brain_unit", "brain_transfer",
-        "brain_neighborhood", "brain_snippets", "brain_filter", "decl_exists")
+        "brain_search", "brain_cell", "brain_transfer", "brain_neighborhood",
+        "brain_snippets", "brain_filter", "decl_exists",
+        "brain_unit", "brain_node")  # v2 aliases of brain_cell
 ]
 # Belt-and-suspenders: -p mode auto-denies unapproved tools, but disallow the
 # built-ins outright so neither arm can read files or search the web.

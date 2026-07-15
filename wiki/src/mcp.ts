@@ -1,4 +1,4 @@
-// POST /mcp — the Wikibrain MCP server (BRAIN v2 axis 5, docs/BRAIN-API.md).
+// POST /mcp — the Wikibrain MCP server (BRAIN v3, docs/BRAIN-API.md).
 //
 // A dependency-free, STATELESS streamable-HTTP MCP server: plain JSON-RPC 2.0
 // over POST, application/json single-response mode (no SSE, no sessions, no
@@ -15,14 +15,13 @@
 import type { Context, Hono } from "hono";
 import type { Env } from "./env.js";
 import {
+  cellFor,
   declExistsFor,
   filterFor,
   neighborhoodFor,
-  nodeFor,
   searchFor,
   snippetsFor,
   transferFor,
-  unitFor,
   type ApiResult,
 } from "./brain-api.js";
 
@@ -32,21 +31,34 @@ type Ctx = Context<{ Bindings: Env }>;
 // subset: initialize / tools/list / tools/call / ping, single JSON responses).
 const PROTOCOLS = new Set(["2025-06-18", "2025-03-26"]);
 const DEFAULT_PROTOCOL = "2025-06-18";
-const SERVER_INFO = { name: "wikibrain", version: "2.0.0" };
+const SERVER_INFO = { name: "wikibrain", version: "3.0.0" };
 
 const INSTRUCTIONS =
   "Wikibrain: WikiLean's verified map of mathematics joining Wikipedia/Wikidata " +
   "concepts, Mathlib4 Lean declarations, and external math databases (LMFDB, nLab, " +
-  "Stacks, ProofWiki, …). Node id grammar: Q<digits> = concept, " +
-  "decl:<Lib>:<Name> = Lean declaration, path:<Lib>/<Dir> = Mathlib folder, " +
-  "xref:<db>:<id> = external DB page, lit:<arxiv>#<ref> = literature statement. " +
+  "Stacks, ProofWiki, …). " +
+  "THE MODEL: the node is a CELL — an atom of mathematics, id cell:<anchor>. A Lean " +
+  "decl, a Wikidata concept, an external-DB page, a WikiLean article and an arXiv " +
+  "statement that denote ONE object are ORGANS of one cell (Module, Q18848 'module' " +
+  "and Q125977 'vector space' are the same atom — Mathlib has no VectorSpace because " +
+  "Module generalizes it). Organs are particles, never nodes, and their content is " +
+  "embedded: one brain_cell call returns the Lean code, the Wikidata description and " +
+  "the licensed DB snippets. Mathlib folders are SUPERCELLS (path:<Lib>/<Dir>) which " +
+  "own field-of-study concepts (Q82571 'Linear algebra' IS path:Mathlib/LinearAlgebra, " +
+  "not a cell). All weak bonds between two atoms aggregate into ONE SYNAPSE carrying " +
+  "weight, a kinds histogram and every trace (each trace keeps its own direction, " +
+  "provenance and evidence) — so synapses are undirected and there is no dir argument. " +
+  "IDS: pass ANY organ id (Q<digits>, decl:<Lib>:<Name>, xref:<db>:<id>, an article " +
+  "slug, lit:<arxiv>#<ref>) or an atom id (cell:…, path:…) to any tool — they all " +
+  "resolve to the owning atom. " +
   "Mid-proof workflow: brain_transfer jumps informal↔formal (concept text → ranked " +
   "Mathlib decls with docs URLs, or decl name → concepts/articles); decl_exists " +
-  "verifies a decl name is real before citing it; brain_unit shows everything known " +
-  "about one mathematical object; brain_search finds ids from fuzzy text. " +
-  "match_kind semantics on formalizes evidence: 'exact' = the decl IS the concept's " +
-  "formalization; 'related'/'partial' = nearby or partial; 'field' = the concept is " +
-  "a whole area whose formal home is a Mathlib folder. Confidence is high|medium|low.";
+  "verifies a decl name is real before citing it; brain_cell shows everything known " +
+  "about one mathematical object; brain_search finds ids from fuzzy text (it matches " +
+  "organ labels, so 'Vector space' finds the Module atom). " +
+  "An organ's `bond` says why it is in the cell: 'exact' = it IS the atom (identity); " +
+  "'generalization'/'special_case' = it has no formal home of its own and attaches to " +
+  "its single best target; 'xref'/'field' = a cross-reference / an area concept.";
 
 // ---- tool catalog -------------------------------------------------------------
 
@@ -65,53 +77,54 @@ export const TOOLS: ToolDef[] = [
   {
     name: "brain_search",
     description:
-      "Search the Brain's label index by text. Returns node ids (Q… concepts, " +
-      "path:… Mathlib folders, xref:… external pages) usable with every other tool. " +
-      "Start here when you only have informal text or an approximate name. A bare " +
-      "QID query matches by id.",
+      "Search the Brain's atom index by text. Returns cell ids (cell:<anchor>) and " +
+      "supercell paths (path:…) usable with every other tool. Matches an atom's own " +
+      "label AND its `aka` list — every organ's label — so q='Vector space' returns " +
+      "the Module atom (they are ONE atom, named by its anchor concept). Start here " +
+      "when you only have informal text or an approximate name. A key that resolves " +
+      "exactly (QID, decl name, article slug, xref id) is promoted to the top hit.",
     inputSchema: obj(
       {
         q: { type: "string", description: "search text, min 2 chars" },
-        type: { type: "string", description: "optional node-type filter: concept | container | ext" },
+        type: { type: "string", enum: ["cell", "supercell"], description: "optional kind filter" },
         limit: { type: "number", description: "max hits (default 25, cap 100)" },
       },
       ["q"],
     ),
   },
   {
-    name: "brain_node",
+    name: "brain_cell",
     description:
-      "Fetch one node's full shard entry: payload, typed 1-hop edges in both " +
-      "directions (formalizes / mentions / depends / matches / xref / relates / " +
-      "links / cites, each with confidence + evidence + provenance via prov_table), " +
-      "containment breadcrumb, and children for containers. The maximal-detail call; " +
-      "prefer brain_unit or brain_neighborhood for focused answers.",
+      "THE first call when you have any handle on a mathematical object. Resolve ANY " +
+      "organ id — QID, decl:<Lib>:<Name>, bare fully-qualified Lean decl name, " +
+      "WikiLean article slug, xref:<db>:<id>, lit:<arxiv>#<ref>, an exact label — or " +
+      "an atom id (cell:… / path:…) to the owning ATOM's card, in one request: every " +
+      "organ WITH its embedded content (Lean docstring + code, the Wikidata " +
+      "description, licensed external-DB snippets, article annotation counts), each " +
+      "organ's `bond` and provenance, the containment breadcrumb, a synapse summary " +
+      "and the strongest partners. Because the atom fuses them, key='Q125977' " +
+      "(vector space), 'decl:Mathlib:Module' and 'Vector_space' all return the SAME " +
+      "cell — that is the answer, not a redirect. A field-of-study concept resolves " +
+      "to its Mathlib folder (kind='supercell'). Use brain_neighborhood for the full " +
+      "synapse list with traces.",
     inputSchema: obj(
-      { id: { type: "string", description: "node id, e.g. Q181296 | decl:Mathlib:CommGroup | path:Mathlib/Algebra" } },
-      ["id"],
+      { key: { type: "string", description: "any organ id, atom id, or exact label" } },
+      ["key"],
     ),
-  },
-  {
-    name: "brain_unit",
-    description:
-      "Resolve ANY member key of an atomic unit — QID, decl:<Lib>:<Name>, bare " +
-      "fully-qualified Lean decl name, WikiLean article slug, xref:<db>:<id>, or an " +
-      "exact concept label — to the owning concept's unit card: the one identity " +
-      "joining Wikipedia article, Wikidata QID, formalizing Mathlib decls (with " +
-      "match_kind + confidence), Mathlib folder homes, and external-DB cross-refs. " +
-      "The best first call when you have any handle on a mathematical object.",
-    inputSchema: obj({ key: { type: "string", description: "any member key" } }, ["key"]),
   },
   {
     name: "brain_transfer",
     description:
       "THE informal↔formal jump for proof work. direction=informal_to_formal: q is " +
-      "a concept (QID / slug / label / free text) → ranked Mathlib declarations with " +
-      "module, mathlib4_docs URL, match_kind ('exact' = is the formalization; " +
-      "'related'/'partial' = nearby) and confidence. direction=formal_to_informal: " +
-      "q is a Lean decl name → the concepts it formalizes, with Wikipedia-mirror " +
-      "article URLs and available snippet sources. Empty results carry near-miss " +
-      "suggestions — read them before concluding something is unformalized.",
+      "a concept (QID / slug / label / free text) → the atom's ranked Mathlib decl " +
+      "organs with module, mathlib4_docs URL and `bond` ('exact' = it IS this atom's " +
+      "formalization). direction=formal_to_informal: q is a Lean decl name → the same " +
+      "atom's concept organs, with Wikipedia-mirror article URLs, descriptions and " +
+      "available snippet sources (multi-to-multi: Module answers with BOTH module and " +
+      "vector space). A field-of-study concept answers with its supercell — the " +
+      "Mathlib FOLDER that is its formal home, not a declaration; that is the honest " +
+      "answer, not a miss. Empty results carry near-miss suggestions — read them " +
+      "before concluding something is unformalized.",
     inputSchema: obj(
       {
         q: { type: "string", description: "concept text/QID/slug (informal_to_formal) or decl name (formal_to_informal)" },
@@ -124,16 +137,20 @@ export const TOOLS: ToolDef[] = [
   {
     name: "brain_neighborhood",
     description:
-      "A node's typed edges, filtered. kinds is a CSV subset of formalizes, " +
-      "mentions, depends, matches, xref, relates, links, cites; dir is out|in|both. " +
-      "Use it to walk the graph one hop at a time (e.g. kinds=depends on a decl for " +
-      "its formal dependencies, kinds=formalizes&dir=in on a decl for its concepts).",
+      "An atom's SYNAPSES — one aggregated edge per partner atom, not raw edges. Each " +
+      "row carries `w` (weight: every constituent bond), a `kinds` histogram, " +
+      "`traces_total`, and the `traces` themselves: {kind, src, dst, prov, evidence}, " +
+      "where src/dst are the ORGAN ids that witnessed the bond and each trace keeps " +
+      "its own direction. A synapse is UNDIRECTED (A may depend on B while B links A), " +
+      "so there is no dir argument — read the traces for direction. kinds is a CSV " +
+      "subset of depends, links, relates, cites, mentions, invocation, formalizes, " +
+      "matches; traces=false gives a compact partner list. Accepts any organ id.",
     inputSchema: obj(
       {
-        id: { type: "string", description: "node id" },
-        kinds: { type: "string", description: "CSV edge-kind filter (optional)" },
-        dir: { type: "string", enum: ["out", "in", "both"], description: "default both" },
-        limit: { type: "number", description: "max edges (default 50, cap 200)" },
+        id: { type: "string", description: "atom id (cell:… / path:…) or any organ id" },
+        kinds: { type: "string", description: "CSV synapse-kind filter (optional)" },
+        traces: { type: "boolean", description: "include per-bond traces (default true)" },
+        limit: { type: "number", description: "max synapses (default 50, cap 200)" },
       },
       ["id"],
     ),
@@ -141,30 +158,37 @@ export const TOOLS: ToolDef[] = [
   {
     name: "brain_snippets",
     description:
-      "Every stored content snippet for a concept (or one external page): Wikidata " +
-      "description, WikiLean annotated-article pointer, and each cross-referenced " +
-      "external database's stored snippet — one row per source with license and URL. " +
-      "No-content sources (MathWorld/DLMF/EoM/Kerodon) return deep links only.",
+      "Every stored content snippet on an atom, one row per source, read straight " +
+      "from its embedded organ payloads: the Wikidata description (CC0), the WikiLean " +
+      "annotated-article pointer, each external page organ's stored snippet, the " +
+      "Mathlib docstring + source code, and arXiv statement links. Every row carries " +
+      "its license. No-content sources (MathWorld/DLMF/EoM/Kerodon) return deep links " +
+      "only, and arXiv statement text is never redistributed. Accepts any organ id.",
     inputSchema: obj(
-      { id: { type: "string", description: "concept QID or ext node id (xref:<db>:<id>)" } },
+      { id: { type: "string", description: "atom id or any organ id (QID, decl:…, xref:<db>:<id>, slug)" } },
       ["id"],
     ),
   },
   {
     name: "brain_filter",
     description:
-      "Enumerate nodes by facet bitmask: returns label rows where (node.f & f) == f. " +
+      "Enumerate atoms by facet bitmask: returns rows where (f_row & f) == f. " +
+      "type='cell' (default) reads each cell's OWN mask; type='supercell' reads `fa`, " +
+      "the subtree-AGGREGATE mask ('something under this folder matches'). " +
+      "under='path:…' restricts to a containment subtree. " +
       "Bits: 0 gold @[wikidata] tag · 1 @[stacks] · 2 @[kerodon] · 3 any xref · " +
       "4 formalized · 5 partial · 6 has WikiLean article · 7 has literature · " +
-      "8 is ext · 9 lmfdb · 10 nlab · 11 mathworld · 12 proofwiki · 13 stacks-tag · " +
-      "14 oeis · 15 has snippet. Bits 0-2 sit on the tagged decl AND propagate to the " +
-      "concept(s) it formalizes — f=1 returns tagged decls + their concepts; f=17 " +
-      "(bits 0+4) = formalized concept with a gold-tagged formalization. " +
+      "8 (unused on cells — an external page is an organ, never an atom) · 9 lmfdb · " +
+      "10 nlab · 11 mathworld · 12 proofwiki · 13 stacks-tag · 14 oeis · " +
+      "15 has stored snippet. A cell's mask is the OR over its organs, so f=1 returns " +
+      "every atom holding a gold-tagged declaration and f=17 (bits 0+4) every " +
+      "formalized atom whose formalization carries a gold @[wikidata] tag. " +
       "Paginate with next_cursor.",
     inputSchema: obj(
       {
         f: { type: "number", description: "facet bitmask (required; 0 matches everything)" },
-        type: { type: "string", description: "optional node-type filter: concept | container | ext" },
+        type: { type: "string", enum: ["cell", "supercell"], description: "default cell" },
+        under: { type: "string", description: "restrict to a subtree, e.g. path:Mathlib/Algebra" },
         limit: { type: "number", description: "max rows (default 100, cap 500)" },
         cursor: { type: "number", description: "resume cursor from a previous call's next_cursor" },
       },
@@ -193,14 +217,24 @@ function argStr(v: unknown): string {
 }
 
 const IMPLS = new Map<string, (c: Ctx, a: Record<string, unknown>) => Promise<ApiResult>>([
-  ["brain_search", (c, a) => searchFor(c, argStr(a.q), argStr(a.type), a.limit)],
-  ["brain_node", (c, a) => nodeFor(c, argStr(a.id))],
-  ["brain_unit", (c, a) => unitFor(c, argStr(a.key))],
+  ["brain_search", (c, a) => searchFor(c, argStr(a.q), argStr(a.type) || undefined, a.limit)],
+  ["brain_cell", (c, a) => cellFor(c, argStr(a.key))],
   ["brain_transfer", (c, a) => transferFor(c, argStr(a.q), argStr(a.direction), a.limit)],
-  ["brain_neighborhood", (c, a) => neighborhoodFor(c, argStr(a.id), argStr(a.kinds) || undefined, argStr(a.dir) || undefined, a.limit)],
+  ["brain_neighborhood", (c, a) =>
+    neighborhoodFor(c, argStr(a.id), argStr(a.kinds) || undefined, a.limit, a.traces)],
   ["brain_snippets", (c, a) => snippetsFor(c, argStr(a.id))],
-  ["brain_filter", (c, a) => filterFor(c, a.f, argStr(a.type) || undefined, a.limit, a.cursor)],
+  ["brain_filter", (c, a) => filterFor(c, a.f, argStr(a.type) || undefined, a.limit, a.cursor, argStr(a.under) || undefined)],
   ["decl_exists", (c, a) => declExistsFor(c, argStr(a.name))],
+
+  // v2 aliases — dispatch-only, deliberately NOT advertised in TOOLS. An agent
+  // session that connected before the cell cut holds the old catalog and will
+  // keep calling these; they answer with the atom rather than hard-failing.
+  // brain_unit: the unit card BECAME the cell card (a unit was QID ∘ article ∘
+  // decls ∘ xrefs — exactly a cell's organs). brain_node: v3 has no particle
+  // nodes, so a node id is an organ id and resolves to its atom. Both accept
+  // either argument name, since the two tools disagreed on it.
+  ["brain_unit", (c, a) => cellFor(c, argStr(a.key) || argStr(a.id))],
+  ["brain_node", (c, a) => cellFor(c, argStr(a.id) || argStr(a.key))],
 ]);
 
 // {status, body} → MCP tool result. Failures are isError tool results (the
@@ -398,9 +432,27 @@ Wikipedia/Wikidata concepts, Mathlib4 Lean declarations, and ten external math d
 <p>The design premise: <b>reasoning about mathematics is faster informally, but only
 formalization checks correctness</b>. Wikibrain lets an agent jump between the two
 mid-proof — resolve an informal idea to the exact Mathlib declaration (with docs link
-and match quality), or start from a Lean name and pull the surrounding informal context:
+and bond quality), or start from a Lean name and pull the surrounding informal context:
 the Wikipedia article, the Wikidata identity, LMFDB knowl text, nLab and Stacks entries.
-Every edge carries provenance, confidence, and machine-checkable evidence.</p>
+Every bond carries provenance and machine-checkable evidence.</p>
+
+<h2>The unit of the Brain is a <em>cell</em></h2>
+<p>The node is an <b>atom</b> of mathematics, id <code>cell:&lt;anchor&gt;</code>. A Lean
+declaration, a Wikidata concept, an external-database page, a WikiLean article and an arXiv
+statement that all denote <em>one object</em> are <b>organs</b> of that one cell — particles,
+never nodes. <code>Module</code>, <code>Q18848</code> (module) and <code>Q125977</code> (vector
+space) are <em>the same atom</em>, because Mathlib has no <code>VectorSpace</code>:
+<code>Module</code> fully generalizes it. So <code>brain_cell</code> answers identically
+whichever of them you hold.</p>
+<p>Organ content is <b>embedded</b>: one <code>brain_cell</code> call returns the Lean docstring
+and source, the Wikidata description, and each licensed DB snippet — no fan-out. Mathlib folders
+are <b>supercells</b> (<code>path:&lt;Lib&gt;/&lt;Dir&gt;</code>) that own <em>field-of-study</em>
+concepts: <code>Q82571</code> "Linear algebra" <em>is</em> <code>path:Mathlib/LinearAlgebra</code>,
+not a cell of its own. And every weak bond between two atoms aggregates into one <b>synapse</b>
+carrying weight, a kinds histogram, and every trace — so synapses are undirected, and direction
+lives on each trace.</p>
+<p class="muted">Any organ id works anywhere: pass a QID, a decl name, an article slug or an
+<code>xref:</code> page to any tool and it resolves to the owning atom.</p>
 
 <h2>Connect</h2>
 <h3>Claude Code</h3>
@@ -423,57 +475,70 @@ body; responses are plain <code>application/json</code> (no SSE, no sessions, no
 <code>initialize</code>, <code>tools/list</code>, <code>tools/call</code>, <code>ping</code>.
 Rate limit: 120 calls/min per IP. Read-only by construction.</p>
 
-<h2>The eight tools</h2>
+<h2>The seven tools</h2>
 <table>
 <tr><th>tool</th><th>what it does</th></tr>
 <tr><td><code>brain_transfer</code></td><td><b>The informal&harr;formal jump.</b>
-  <code>informal_to_formal</code>: concept text/QID/slug &rarr; ranked Mathlib declarations
-  with module, mathlib4_docs URL, <code>match_kind</code> (<code>exact</code> = IS the
-  formalization) and confidence. <code>formal_to_informal</code>: a Lean decl name &rarr;
-  the concepts it formalizes, with article URLs and snippet sources. Empty results carry
-  near-miss suggestions.</td></tr>
-<tr><td><code>brain_unit</code></td><td>Resolve ANY handle on a mathematical object —
-  QID, decl name, article slug, <code>xref:&lt;db&gt;:&lt;id&gt;</code>, exact label — to its
-  atomic unit card: article &compfn; QID &compfn; formalizing decls &compfn; Mathlib folders
-  &compfn; cross-database identities. The best first call.</td></tr>
+  <code>informal_to_formal</code>: concept text/QID/slug &rarr; the atom's ranked Mathlib decl
+  organs with module, mathlib4_docs URL and <code>bond</code> (<code>exact</code> = IS this
+  atom's formalization). <code>formal_to_informal</code>: a Lean decl name &rarr; the same
+  atom's concept organs, with article URLs and snippet sources. A field-of-study concept
+  answers with its <em>supercell</em> — the Mathlib folder that is its formal home. Empty
+  results carry near-miss suggestions.</td></tr>
+<tr><td><code>brain_cell</code></td><td>Resolve ANY handle on a mathematical object —
+  QID, decl name, article slug, <code>xref:&lt;db&gt;:&lt;id&gt;</code>, <code>lit:…</code>, exact
+  label, or an atom id — to the owning atom's card: every organ with its embedded content
+  (Lean code, Wikidata description, licensed DB snippets, article annotations), breadcrumb,
+  synapse summary. <b>The best first call.</b></td></tr>
 <tr><td><code>decl_exists</code></td><td>Verify a Mathlib declaration name is real before
   citing it (existence oracle over the decl index; returns module + docs URL).</td></tr>
-<tr><td><code>brain_search</code></td><td>Fuzzy label search &rarr; node ids, when all you
-  have is approximate text.</td></tr>
-<tr><td><code>brain_node</code></td><td>One node's full record: payload, typed 1-hop edges
-  with evidence + provenance, breadcrumb, children.</td></tr>
-<tr><td><code>brain_neighborhood</code></td><td>Typed edge walk: filter by kind CSV
-  (<code>formalizes,depends,xref,links,&hellip;</code>) and direction.</td></tr>
-<tr><td><code>brain_snippets</code></td><td>Every stored content snippet for a concept:
-  Wikidata description, article pointer, LMFDB/nLab/Stacks/ProofWiki/PlanetMath/OEIS text
-  (each with license); link-only rows for no-content sources.</td></tr>
-<tr><td><code>brain_filter</code></td><td>Enumerate nodes by facet bitmask — e.g.
-  <code>f=1</code> every gold <code>@[wikidata]</code>-tagged declaration (+ their concepts),
-  <code>f=17</code> formalized concepts with a gold-tagged formalization. Bit table on the
+<tr><td><code>brain_search</code></td><td>Label search &rarr; atom ids, when all you
+  have is approximate text. Matches organ labels too, so "Vector space" finds the
+  <b>Module</b> atom.</td></tr>
+<tr><td><code>brain_neighborhood</code></td><td>An atom's <b>synapses</b>: one row per partner
+  with weight, a kinds histogram (<code>depends,links,relates,cites,&hellip;</code>) and every
+  trace (each with its own direction, provenance and evidence).</td></tr>
+<tr><td><code>brain_snippets</code></td><td>Every stored content snippet on an atom:
+  Wikidata description, article pointer, LMFDB/nLab/Stacks/ProofWiki/PlanetMath/OEIS text,
+  Mathlib docstring + code (each with license); link-only rows for no-content sources.</td></tr>
+<tr><td><code>brain_filter</code></td><td>Enumerate atoms by facet bitmask — e.g.
+  <code>f=1</code> every atom holding a gold <code>@[wikidata]</code>-tagged declaration,
+  <code>f=17</code> formalized atoms with a gold-tagged formalization. Bit table on the
   <a href="/brain/api">API reference</a>.</td></tr>
 </table>
+<p class="muted"><code>brain_unit</code> and <code>brain_node</code> still answer, as aliases of
+<code>brain_cell</code> — the v2 unit card <em>became</em> the cell card, and v3 has no particle
+nodes.</p>
 
-<h2>Node id grammar</h2>
+<h2>Id grammar</h2>
 <table>
 <tr><th>form</th><th>meaning</th><th>example</th></tr>
-<tr><td><code>Q&lt;digits&gt;</code></td><td>concept (Wikidata identity)</td><td><code>Q181296</code></td></tr>
-<tr><td><code>decl:&lt;Lib&gt;:&lt;Name&gt;</code></td><td>Lean declaration</td><td><code>decl:Mathlib:CommGroup</code></td></tr>
-<tr><td><code>path:&lt;Lib&gt;/&lt;Dir&gt;</code></td><td>Mathlib folder</td><td><code>path:Mathlib/Algebra</code></td></tr>
-<tr><td><code>xref:&lt;db&gt;:&lt;id&gt;</code></td><td>external DB page</td><td><code>xref:lmfdb_knowl:group.abelian</code></td></tr>
-<tr><td><code>lit:&lt;arxiv&gt;#&lt;ref&gt;</code></td><td>literature statement</td><td><code>lit:1707.04448#thm1.2</code></td></tr>
+<tr><td><code>cell:&lt;anchor&gt;</code></td><td>an atom — the node</td><td><code>cell:Q18848</code></td></tr>
+<tr><td><code>path:&lt;Lib&gt;/&lt;Dir&gt;</code></td><td>supercell (Mathlib folder)</td><td><code>path:Mathlib/LinearAlgebra</code></td></tr>
+<tr><td><code>Q&lt;digits&gt;</code></td><td>concept organ (Wikidata identity)</td><td><code>Q181296</code></td></tr>
+<tr><td><code>decl:&lt;Lib&gt;:&lt;Name&gt;</code></td><td>decl organ</td><td><code>decl:Mathlib:CommGroup</code></td></tr>
+<tr><td><code>xref:&lt;db&gt;:&lt;id&gt;</code></td><td>page organ (external DB)</td><td><code>xref:lmfdb_knowl:group.abelian</code></td></tr>
+<tr><td><code>lit:&lt;arxiv&gt;#&lt;ref&gt;</code></td><td>statement organ</td><td><code>lit:1707.04448#thm1.2</code></td></tr>
 </table>
+<p class="muted">Organ ids are accepted everywhere an atom id is — that is the compat layer,
+and it is why every pre-v3 id still resolves.</p>
 
 <h2>A worked mid-proof exchange</h2>
 <pre><code>&rarr; brain_transfer {"q": "Euler's totient function", "direction": "informal_to_formal"}
-&larr; {"qid": "Q190026", "hits": [{"decl": "Nat.totient",
-      "module": "Mathlib.Data.Nat.Totient", "match_kind": "exact",
+&larr; {"id": "cell:Q190026", "kind": "cell", "hits": [{"decl": "Nat.totient",
+      "module": "Mathlib.Data.Nat.Totient", "bond": "exact",
       "docs_url": "https://leanprover-community.github.io/mathlib4_docs/..."}]}
 
 &rarr; decl_exists {"name": "Nat.ModEq.pow_totient"}
 &larr; {"exists": true, "module": "Mathlib.Data.Nat.Totient", "docs_url": "..."}
 
 &rarr; brain_snippets {"id": "Q190026"}
-&larr; rows from Wikidata, WikiLean, EoM, MathWorld, OEIS, PlanetMath, ProofWiki &hellip;</code></pre>
+&larr; rows from Wikidata, WikiLean, Mathlib, EoM, MathWorld, OEIS, PlanetMath &hellip;
+
+&rarr; brain_neighborhood {"id": "Q190026", "kinds": "depends"}
+&larr; {"synapses": [{"id": "cell:Q11567", "w": 31, "kinds": {"depends": 31},
+      "traces": [{"kind": "depends", "src": "decl:Mathlib:Nat.totient", "dst": "...",
+                  "evidence": {"witnesses": [["Nat.totient_prime", "Nat.Prime"]]}}]}]}</code></pre>
 
 <p class="muted">Identical REST twins of every tool live under <code>/api/brain/*</code> —
 full parameter-level documentation on the <a href="/brain/api">Wikibrain API reference</a>.

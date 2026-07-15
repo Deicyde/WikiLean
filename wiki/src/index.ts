@@ -456,7 +456,7 @@ const gone = (c: Context<{ Bindings: Env }>) =>
   c.json({
     ok: false, error: "gone",
     note: "this endpoint is retired — the Brain supersedes the old concept graph/atlas",
-    see: { page: "/brain", api: "/api/brain/node?id=", reference: "/brain/api", mcp: "/mcp" },
+    see: { page: "/brain", api: "/api/brain/cell?key=", reference: "/brain/api", mcp: "/mcp" },
   }, 410, GONE_HEADERS);
 app.get("/graph_data.json", gone);
 app.get("/atlas_data.json", gone);

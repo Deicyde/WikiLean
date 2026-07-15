@@ -1,11 +1,12 @@
-# bench/ — the Wikibrain benchmark (BRAIN v2 axis 5's referee)
+# bench/ — the Wikibrain benchmark (axis 5's referee)
 
 Measures whether giving an agent **Wikibrain MCP access** improves outcomes on
 informal ↔ formal math tasks, versus the same model with no tools. Spec:
-`docs/BRAIN-V2.md` "Benchmark (axis 5's referee)".
+`docs/BRAIN-V2.md` "Benchmark (axis 5's referee)"; the data model it queries is
+BRAIN v3 (`brain/SCHEMA.md#v3`, `docs/BRAIN-V3.md`).
 
 **The design target: T1/T2 lift is the number the Wikibrain API design
-optimizes.** If `brain_transfer`/`brain_unit` don't move T1/T2, the API is not
+optimizes.** If `brain_transfer`/`brain_cell` don't move T1/T2, the API is not
 earning its keep — re-design the tools, not the benchmark.
 
 ## Quick start
@@ -47,6 +48,37 @@ multi-to-multi (a QID may accept several decls, a decl several QID/slug pairs);
 dedup by QID (T1) / decl (T2); ≤2 statements per article; per-task `provenance`
 records exactly which source produced it.
 
+### Accept sets are keyed on the v3 atom layer (`brain/data/cells.jsonl`)
+
+A **cell** is one mathematical object, so every decl organ of an atom is a valid
+answer for every concept organ of that atom, and vice versa. This is not a
+refactor detail — it fixes real gold: "Vector space" (Q125977) has no
+`VectorSpace` to find (Mathlib generalizes it to `Module`) and grades as
+`generalization`, so the tag/grounding sources accept **nothing** for it and a
+model answering `Module` would score *wrong*. Its atom holds `Module`. Likewise
+T2: `Module` legitimately answers Q18848 *or* Q125977. Cells only **add** to the
+accept sets — the sampled gold decl/pair still comes from the tag harvest /
+grounding / annotations, so the strongest source stays primary. Each task
+records the `gold.cell` it drew from. Measured on the current build: 6 of 180
+accept sets widened; task ids and splits are unchanged.
+
+**Suspect grades are excluded.** `brain/data/cell_review.jsonl` names the exact
+organ claims the builder distrusts (a ballooned cell = bad AI tagger grades,
+SCHEMA "A ballooning cell is a TAGGER signal"). Each such claim asserts *this
+concept has no formal home of its own and belongs in this atom* — precisely what
+the widening would build gold on. Importing them makes the benchmark leniently
+wrong: measured, they let `MonoidHom` accept the generic concept "Homomorphism"
+and `Polygon` accept "Hexagon". Gold must be at least as strict as the truth, so
+the 53 flagged claims are dropped until re-graded via
+`grounding_overrides.jsonl` (the rest of a flagged cell is still trusted — the
+review names claims, not whole atoms). This is what keeps the benchmark an
+independent referee rather than an echo of the tagger it grades.
+
+`brain/data/nodes.jsonl` is still read for organ label/slug payloads — cells are
+DERIVED from that organ layer, so the two are layers of one graph, not
+alternatives. Both files are build artifacts: if either is absent the generator
+degrades to the pre-v3 accept sets rather than failing.
+
 Answers are STRICT final-line formats parsed mechanically (`tasklib.py`):
 `ANSWER: <Decl>` (T1) · `ANSWER: <QID> <slug>` (T2) · `ANSWER: YES <Decl>` or
 `ANSWER: NO` (T3). Slug comparison is sanitized on both sides (WikiLean slugs
@@ -60,9 +92,11 @@ Same model, same prompt — the ONLY difference is tool availability:
   ENTIRE built-in tool set) **plus** the `--disallowedTools` deny-list, plus
   `--strict-mcp-config` with no MCP config.
 - `wikibrain` — the deny-list + `--strict-mcp-config`, plus
-  `--mcp-config bench/mcp-config.json` and `--allowedTools` for the eight
+  `--mcp-config bench/mcp-config.json` and `--allowedTools` for the seven
   `mcp__wikibrain__*` tools
-  (`brain_search/node/unit/transfer/neighborhood/snippets/filter`, `decl_exists`).
+  (`brain_search/cell/transfer/neighborhood/snippets/filter`, `decl_exists`)
+  plus the `brain_unit`/`brain_node` aliases and the server-level catch-all.
+  `brain_cell` replaced `brain_node` + `brain_unit` at the v3 cell cut.
 
 **Wikibrain preflight + degradation canary.** The claude CLI degrades
 *silently* to a no-tools run when the MCP server is unreachable — which would

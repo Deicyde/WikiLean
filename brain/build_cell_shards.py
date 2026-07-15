@@ -300,17 +300,28 @@ def main() -> int:
             row["cells"] = sorted(sup_cells[path])
         if supercell_organs.get(path):
             row["organs"] = supercell_organs[path]
-        # a supercell's own synapses (rule-5 field-concept bonds), heaviest first
+        # A supercell's own synapses (rule-5 field-concept bonds), heaviest first.
+        # Traces are DELIBERATELY omitted: this file is fetched eagerly to draw the
+        # bubble tree, and 9,529 supercell synapses x ~380B of evidence would treble
+        # it (2.0 -> ~5.6 MB) to carry evidence nobody has clicked yet. The drawer
+        # fetches them on demand — `traces` below says exactly where from, so the
+        # omission is declared in the artifact rather than discovered by a reader.
         if by_cell.get(path):
             syns = sorted(by_cell[path], key=lambda e: (-e["w"], e["id"]))
             row["syn"] = [{k: v for k, v in e.items() if k != "traces"}
                           for e in syns[:SYN_CAP]]
             row["counts"] = {"syn": len(syns)}
         supercells[path] = row
+    n_sup_syn = sum(len(r.get("syn") or []) for r in supercells.values())
     sup_doc = {"_meta": {"schema": "brain/SCHEMA.md#v3", "generated_at": gen,
+                         "traces": "supercell `syn` rows carry NO traces (byte budget: "
+                                   "this file is fetched eagerly). Fetch them from "
+                                   "/api/brain/neighborhood?id=<path:…>, or "
+                                   "brain/query.py --full for the untruncated set.",
                          "counts": {"supercells": len(supercells),
                                     "with_cells": sum(1 for r in supercells.values()
-                                                      if r.get("cells"))}},
+                                                      if r.get("cells")),
+                                    "synapse_rows": n_sup_syn}},
                "roots": sorted(p for p in supercells if p not in parent),
                "supercells": supercells}
 

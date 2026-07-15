@@ -1,14 +1,50 @@
 # Wikibrain API — the agent-facing query surface over the Brain
 
-> BRAIN v2 axis 5 (`docs/BRAIN-V2.md`). REST routes + a remote MCP server so
-> AI-for-math agents can jump informal ↔ formal mid-proof. Human-readable
-> version of this reference is served live at
+> **BRAIN v3 — the cell model** (`docs/BRAIN-V3.md`). REST routes + a remote MCP
+> server so AI-for-math agents can jump informal ↔ formal mid-proof.
+> Human-readable version of this reference is served live at
 > <https://wikilean.jackmccarthy.org/brain/api>.
-> Data contract: `brain/SCHEMA.md`. Implementation: `wiki/src/brain-api.ts`
-> (REST + shared helpers) and `wiki/src/mcp.ts` (MCP). The MCP tools call the
-> same exported helpers the REST routes use — the two surfaces cannot drift.
+> Data contract: `brain/SCHEMA.md` (the v3 section is normative). Implementation:
+> `wiki/src/brain-api.ts` (REST + shared helpers) and `wiki/src/mcp.ts` (MCP).
+> The MCP tools call the same exported helpers the REST routes use — the two
+> surfaces cannot drift.
 
 Base URL: `https://wikilean.jackmccarthy.org`
+
+## The model: cells, organs, supercells, synapses
+
+The addressable thing is the **cell** — an *atom* of mathematics, id
+`cell:<anchor>`. A Mathlib declaration, a Wikidata concept, an external-database
+page, a WikiLean article and an arXiv statement that all denote **one object**
+are **organs** of that one cell. `Module`, `Q18848` (module) and `Q125977`
+(vector space) are the same atom, because Mathlib has no `VectorSpace` —
+`Module` fully generalizes it.
+
+| thing | what it is |
+|---|---|
+| **organ** | A particle — *never* a node. Kinds: `concept` (`Q<digits>`) · `decl` (`decl:<Lib>:<FQ name>`) · `page` (`xref:<db>:<id>`) · `article` (a WikiLean slug) · `statement` (`lit:<arxiv>#<ref>`). Payloads are **embedded**: the Lean docstring + code, the Wikidata description, the licensed DB snippet all ship on the cell, so one fetch renders the whole card. |
+| **cell** | The atom, and the node of the graph. The anchor NAMES it — the cell's `exact` concept, not merely its lowest QID. |
+| **supercell** | A Mathlib folder, `path:<Lib>/<Dir>`. Cells render inside it, and it owns organs of its own: **field-of-study concepts** (`Q82571` "Linear algebra" → `path:Mathlib/LinearAlgebra`, *never* a cell — SCHEMA rule 5) and area-level pages. A synapse endpoint may therefore be a supercell. |
+| **synapse** | ONE aggregated edge per atom pair: `w` (weight — every constituent bond), a `kinds` histogram, and the individual `traces`, each with its own direction, provenance and evidence. **Undirected by construction** — A may `depends` on B while B `links` A — so there is no `dir` parameter; direction lives on each trace. |
+
+An organ's `bond` says *why* it is in the cell: `exact` = it IS the atom
+(identity, and transitive — this is what fuses both zeta decls into one atom);
+`generalization`/`special_case` = the concept has no formal home of its own and
+attaches to its single best target; `xref` = a cross-reference; `field` = an area
+concept on a supercell. v3 organs carry `bond` + `prov`, **not** the v2
+`confidence` — confidence lived on the grounding edge the builder consumed.
+
+### Every v2 entry point still resolves
+
+`aliases.json` maps every organ id to its owning atom, and **every route accepts
+any organ id or an atom id**. `Q125977`, `decl:Mathlib:Module` and
+`Vector_space` all answer as `cell:Q18848`; `Q82571` answers as
+`path:Mathlib/LinearAlgebra`. Breaking v2 ids/API/MCP was explicitly authorized
+(Jack, 2026-07-17) — this is early-phase — but nothing that resolved before 404s
+now. Since the alias table is a total function over organs (SCHEMA C4), a miss
+in it is a real miss: the v2 fallbacks (shard in-edges, an ext node's own `qid`)
+have no v3 analogue, because organs have no inbound edges — they ARE the atom's
+content.
 
 ## Quickstart (MCP — recommended for agents)
 
@@ -30,29 +66,28 @@ curl -s https://wikilean.jackmccarthy.org/mcp \
   -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"brain_transfer","arguments":{"q":"abelian group","direction":"informal_to_formal"}}}'
 ```
 
-## Node id grammar
+## Id grammar
 
-Every Brain node has a globally unique string id (see `brain/SCHEMA.md`):
-
-| form | type | example |
+| form | what | example |
 |---|---|---|
-| `Q<digits>` | concept (Wikidata QID — the only dedup layer) | `Q181296` |
-| `path:<Lib>[/<Dir>…]` | container (Mathlib folder) | `path:Mathlib/CategoryTheory` |
-| `decl:<Lib>:<FQ name>` | Lean declaration | `decl:Mathlib:CommGroup` |
-| `lit:<arxiv>#<ref>` | literature statement | `lit:1707.04448#thm1.2` |
-| `obj:<db>:<label>` | mathematical object | `obj:oeis:A000045` |
-| `xref:<db>:<id>` | external DB page (v2 `ext` node) | `xref:lmfdb_knowl:group.abelian` |
+| `cell:<anchor>` | **an atom — the node** | `cell:Q18848` |
+| `path:<Lib>[/<Dir>…]` | **supercell** (Mathlib folder) | `path:Mathlib/LinearAlgebra` |
+| `Q<digits>` | concept organ (Wikidata QID) | `Q181296` |
+| `decl:<Lib>:<FQ name>` | decl organ | `decl:Mathlib:CommGroup` |
+| `xref:<db>:<id>` | page organ (external DB) | `xref:lmfdb_knowl:group.abelian` |
+| `lit:<arxiv>#<ref>` | statement organ | `lit:1707.04448#thm1.2` |
+| *(an article slug)* | article organ | `Abelian_group` |
 
-Edge kinds: `formalizes`, `mentions`, `depends`, `matches`, `xref`, `relates`,
-`links`, `cites` (+ machine-only `contains`). Every edge carries
-`{kind, confidence, evidence}` and a provenance index into the shard
-manifest's `prov` table — the Brain can always answer "why do you believe
-this?".
+Synapse kinds: `depends`, `links`, `relates`, `cites`, `mentions`,
+`invocation`, `formalizes` (the unmerged ones — a real relationship the merge
+function did not fuse), `matches`. Every synapse carries `w` + `kinds`, and
+every trace carries `{kind, src, dst, prov, evidence}` — the Brain can always
+answer "why do you believe this?". A trace's `src`/`dst` are the **organ** ids
+that witnessed the bond, not the atom ids.
 
-`match_kind` semantics on `formalizes` evidence: `exact` = the decl IS the
-concept's formalization; `related`/`partial` = nearby or partial; `field` =
-the concept is a whole area whose formal home is a Mathlib *folder*
-(container). Confidence is `high | medium | low`.
+`prov` indexes the shard manifest's `prov` table (returned as `prov_table` /
+`_prov_table` where relevant). The provenance single-source-of-truth is
+`catalog/data/source_registry.json`.
 
 ## REST endpoints
 
@@ -60,172 +95,255 @@ All GET, read-only, unauthenticated, JSON, `Cache-Control: public,
 max-age=3600` on success (the underlying shards rebuild nightly). Errors are
 `{ok:false, error, …hint}` with 400/404/503 and are not cached.
 
-### `GET /api/brain/unit?key=<any member key>` — the flagship
+### `GET /api/brain/cell?key=<any organ id>` — the flagship
 
-Resolve **any** member key of an atomic unit to the owning concept's unit
-card — the one identity joining Wikipedia article ∘ Wikidata QID ∘ Mathlib
-decls ∘ folder homes ∘ external-DB cross-refs.
+Resolve **any** organ id (or an atom id) to the owning atom's card — the one
+identity joining Wikipedia article ∘ Wikidata QID ∘ Mathlib decls ∘ folder
+homes ∘ external-DB cross-refs — **in one request**, organ payloads embedded.
+
+`GET /api/brain/unit?key=` is an **alias** of this route, not a shim: the v2
+unit card *became* the cell card (a unit was QID ∘ article ∘ decls ∘ xrefs,
+which is exactly a cell's organs).
 
 Accepted key forms, tried in order:
 
-1. exact QID (`Q181296`)
-2. decl — `decl:Mathlib:CommGroup` or a bare FQ decl name (`CommGroup`),
-   via the `aliases.json` decl map, falling back to the decl shard entry's
-   inbound `formalizes` edges
-3. article slug (`Abelian_group`), via `aliases.json`, falling back to the
-   label index
-4. `xref:<db>:<id>`, via the ext node's own `qid`, falling back to its
-   inbound `xref` edges
-5. exact concept label, case-insensitive (`abelian group`)
+1. an atom id — `cell:<anchor>` or `path:<Lib>/<Dir>` (an explicit atom id that
+   does not exist 404s; it must not fall through to label search)
+2. any organ id via `aliases.json` `organs` — QID, `decl:<Lib>:<Name>`,
+   `xref:<db>:<id>`, an article slug, `lit:<arxiv>#<ref>`
+3. a bare FQ decl name (`CommGroup`) via the `decls` index
+4. an article slug via the `slugs` index
+5. an exact label or `aka` (an organ's label), case-insensitive — including a
+   field concept's label, matched through the supercell organs
 
 ```bash
-curl 'https://wikilean.jackmccarthy.org/api/brain/unit?key=CommGroup'
+curl 'https://wikilean.jackmccarthy.org/api/brain/cell?key=CommGroup'
+curl 'https://wikilean.jackmccarthy.org/api/brain/cell?key=Vector_space'   # → cell:Q18848
 ```
 
 ```jsonc
 {
   "ok": true,
-  "resolved_from": "decl",        // qid | decl | slug | xref | label
+  "resolved_from": "decl",        // cell | supercell | organ | decl | slug | label
   "key": "CommGroup",
-  "qid": "Q181296",
-  "unit": {
-    "qid": "Q181296",
-    "label": "Abelian group",
-    "description": "…",           // Wikidata description (when built)
-    "article": { "slug": "Abelian_group", "annotations": { "total": 60, "formalized": 39 } },
-    "decls": [ { "name": "CommGroup", "module": "Mathlib.Algebra.Group.Defs",
-                 "match_kind": "exact", "confidence": "high" } ],
-    "containers": [],             // formalizes → path:… (field-level concepts)
-    "xrefs": { "lmfdb_knowl": [ { "id": "group.abelian" } ], "nlab": [ { "id": "abelian+group" } ] }
-  },
-  "display": { "primary_decl": "CommGroup", "status": "formalized" },
-  "edges_summary": { "formalizes": 1, "xref": 3, "relates": 2 }
+  "id": "cell:Q181296",
+  "kind": "cell",                 // cell | supercell
+  "label": "Abelian group",
+  "f": 5,
+  "cell": { "id": "cell:Q181296", "anchor": "Q181296", "label": "Abelian group",
+            "supercells": ["path:Mathlib/Algebra/Group/Defs"], "f": 5, "xy": [12.5, 8.1] },
+  "organs": [
+    { "kind": "concept", "id": "Q181296", "label": "Abelian group", "bond": "exact", "prov": 0,
+      "description": "…", "slug": "Abelian_group",
+      "article_annotations": { "total": 60, "formalized": 39 }, "status": "formalized" },
+    { "kind": "decl", "id": "decl:Mathlib:CommGroup", "label": "CommGroup", "bond": "exact",
+      "module": "Mathlib.Algebra.Group.Defs", "decl_kind": "class", "library": "Mathlib",
+      "docstring": "…", "code": "class CommGroup …" },
+    { "kind": "page", "id": "xref:lmfdb_knowl:group.abelian", "db": "lmfdb_knowl", "bond": "xref",
+      "url": "…", "snippet": "…", "snippet_license": "CC-BY-SA-4.0 (LMFDB)" },
+    { "kind": "article", "id": "Abelian_group", "bond": "article", "annotations": {…} }
+  ],
+  "organs_by_kind": { "concept": 1, "decl": 1, "page": 3, "article": 1 },
+  "breadcrumb": [ { "id": "path:Mathlib", "label": "Mathlib" }, … ],
+  "synapses_summary": { "depends": 12, "relates": 2, "mentions": 1 },
+  "synapses_preview": [ { "id": "cell:Q18848", "w": 15, "kinds": {…} } ],  // strongest 10, no traces
+  "counts": { "syn": 757, "organs": 16 },
+  "truncated": { "syn": 557 }     // a COUNT of synapses the shard dropped, not a flag
 }
 ```
 
-404 responses include a `hint` pointing at `/api/brain/search` for fuzzy
-lookup. `resolved_from` tells you which key form matched.
+For a **supercell** the body carries `supercell: {path, parent, children, cells,
+fa}` in place of `cell`, and its `organs` are the rule-5 field concepts and area
+pages. Traces are deliberately not on this card — `/api/brain/neighborhood`
+serves them, so the card stays an identity answer rather than a graph dump.
+404 responses include a `hint`; `resolved_from` tells you which key form matched.
 
 ### `GET /api/brain/transfer?q=&direction=&limit=` — informal ↔ formal
 
+With cells this is "resolve to the atom, read its organs" — no edge walk, which
+is both simpler and better: an atom's decls ARE its own organs, so an absorbed
+concept answers correctly for free.
+
 `direction=informal_to_formal`: `q` is a concept (QID / slug / exact label /
-free text — free text falls back to label search, `resolved_from:"search"`) →
-ranked decls:
+free text — free text falls back to label+`aka` search, `resolved_from:"search"`)
+→ the atom's ranked decl organs:
 
 ```bash
 curl 'https://wikilean.jackmccarthy.org/api/brain/transfer?q=abelian%20group&direction=informal_to_formal'
 ```
 
 ```jsonc
-{ "ok": true, "qid": "Q181296", "qid_label": "Abelian group",
+{ "ok": true, "id": "cell:Q181296", "kind": "cell", "label": "Abelian group",
+  "resolved_from": "search",
   "hits": [ {
     "decl": "CommGroup",
     "module": "Mathlib.Algebra.Group.Defs",
-    "match_kind": "exact",
-    "confidence": "high",
+    "bond": "exact",
+    "decl_kind": "class",
     "docs_url": "https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Defs.html#CommGroup",
-    "via_qid": "Q181296",
-    "qid_label": "Abelian group"
+    "via_cell": "cell:Q181296",
+    "cell_label": "Abelian group"
   } ] }
 ```
 
-Hits are ranked by confidence, then `exact` match_kind first. When a decl's
-module is unknown, `docs_url` falls back to the durable
+Hits rank `exact` bonds first, then any other graded bond, then an ungraded one
+(the anchor decl of a lone-particle cell carries no bond), then name. When a
+decl's module is unknown, `docs_url` falls back to the durable
 `https://wikilean.jackmccarthy.org/decl/<name>` resolver (302 → current docs).
 
+A **field-of-study concept resolves to a supercell**, and that is the honest
+answer rather than an empty result: `hits: []` plus `kind: "supercell"`,
+`container: "path:Mathlib/LinearAlgebra"`, `cells_in_container`, and a `note`.
+
 `direction=formal_to_informal`: `q` is a decl name (bare or `decl:Lib:Name`) →
-the concepts it formalizes (multi-to-multi by design):
+the same atom's concept organs (multi-to-multi by design — one fetch, where v2
+walked in-edges):
 
 ```bash
 curl 'https://wikilean.jackmccarthy.org/api/brain/transfer?q=Module&direction=formal_to_informal'
 ```
 
 ```jsonc
-{ "ok": true, "decl": "Module",
-  "hits": [ { "qid": "Q18848", "label": "Module", "slug": "Module_(mathematics)",
-              "article_url": "https://wikilean.jackmccarthy.org/Module_(mathematics)",
-              "description": "…", "snippet_sources": ["lmfdb_knowl", "nlab"] },
-            { "qid": "Q125977", "label": "Vector space", … } ] }
+{ "ok": true, "decl": "Module", "id": "cell:Q18848",
+  "hits": [ { "qid": "Q18848", "label": "Module", "bond": "exact", "slug": "Module_mathematics",
+              "article_url": "https://wikilean.jackmccarthy.org/Module_mathematics",
+              "description": "…", "snippet_sources": ["nlab", "mathworld"],
+              "via_cell": "cell:Q18848" },
+            { "qid": "Q125977", "label": "Vector space", "bond": "generalization", … } ] }
 ```
 
 Empty results in either direction return 200 with `hits: []`, a `note`, and
-near-miss `suggestions` from the label index — read them before concluding
-something is unformalized. `limit` defaults to 10, caps at 50.
+near-miss `suggestions` — read them before concluding something is
+unformalized. A decl whose atom holds no concept organ is a *formal-only cell*
+(5,082 of these ship), which the `note` says explicitly. `limit` defaults to 10,
+caps at 50.
 
-### `GET /api/brain/neighborhood?id=&kinds=&dir=&limit=`
+### `GET /api/brain/neighborhood?id=&kinds=&limit=&traces=`
 
-Filtered projection of a node's shard edges. `kinds` = CSV subset of the edge
-kinds above; `dir` ∈ `out|in|both` (default `both`); `limit` ≤ 200 (default
-50).
+An atom's **synapses** — one aggregated row per partner atom, not raw edges.
+Accepts any organ id. `kinds` = CSV subset of the synapse kinds above (it
+filters the traces too, so asking for `depends` never dumps `links`);
+`limit` ≤ 200 (default 50); `traces=0` omits traces for a compact partner list.
+
+**There is no `dir`.** A synapse is an undirected aggregate of bonds that may
+run either way; direction lives on each trace.
 
 ```bash
-curl 'https://wikilean.jackmccarthy.org/api/brain/neighborhood?id=Q181296&kinds=xref&dir=out'
+curl 'https://wikilean.jackmccarthy.org/api/brain/neighborhood?id=Q18848&kinds=depends'
 ```
 
-Response: `edges` (each row `{direction, id, kind, confidence, evidence,
-prov}`), `returned`, `matched` (kind-filtered matches per direction within the
-shard's capped lists), `counts` (the node's TOTAL edges per direction), and
-`truncated` (true when `limit` cut matches OR the shard itself capped the
-direction at 200 — fetch `/api/brain/node?id=` and the nightly
-`brain/data/edges.jsonl` for the full set).
+```jsonc
+{ "ok": true, "id": "cell:Q18848", "kind": "cell",
+  "synapses": [ { "id": "cell:Q1000660", "w": 15,
+                  "kinds": { "depends": 12, "mentions": 1, "relates": 2 },
+                  "traces_total": 15,
+                  "traces": [ { "kind": "depends", "src": "Q1000660", "dst": "Q125977", "prov": 24,
+                                "evidence": { "weight": 16, "w_types": { "sig": 15, "def": 2, "proof": 0 },
+                                              "witnesses": [["AlgHom", "Algebra"]] } } ] } ],
+  "returned": 50, "matched": 199, "counts": { "syn": 757, "organs": 16 }, "truncated": true }
+```
+
+`traces_total` (`tt` in the shard) vs the returned list is how you know traces
+were trimmed — the shard keeps **6 traces per synapse** and caps the synapse
+list at **200**, heaviest first. `brain/query.py neighborhood <key> --full`
+serves the untruncated set with full traces from `brain/data/synapses.jsonl`.
+
+> **Data caveat:** a *supercell's* synapses ship **without traces**
+> (`build_cell_shards.py` strips them from `supercells.json` rows for byte
+> budget), so a supercell neighborhood returns `traces: []` with `w`/`kinds`
+> intact. Use `brain/query.py --full` for those traces.
 
 ### `GET /api/brain/snippets?id=`
 
-Every stored content snippet for a unit, one row per source:
-`{source_db, id, label, snippet?, license?, url?}`.
+Every stored content snippet on an atom, one row per source:
+`{source_db, id, label, snippet?, license?, url?}`. Accepts any organ id.
+Read straight from the **embedded organ payloads** — v2 fanned out one shard
+fetch per xref target; v3 answers the whole call from one fetch.
 
-- concept id → Wikidata description row (CC0) + WikiLean article pointer +
-  each cross-referenced external page's stored snippet
-- ext id (`xref:<db>:<id>`) → that page's own row
+- `concept` organ → Wikidata description row (CC0)
+- `article` organ → WikiLean article pointer (annotations live in D1)
+- `page` organ → its stored snippet + license, or a deep link
+- `decl` organ → the Mathlib docstring (`snippet`) + source (`code`), licensed
+  Apache-2.0 per `source_registry.json` `node_sources.mathlib.target_license`
+- `statement` organ → an arXiv link; statement TEXT is never redistributed
 
-Snippets are stored only where the source license permits (nLab, Stacks,
-LMFDB, ProofWiki, PlanetMath, OEIS); no-content sources (MathWorld, DLMF, EoM,
-Kerodon) return deep-link rows without snippets. Cross-ref targets not (yet)
-minted as ext nodes still appear as pointer rows.
+Snippets are stored only where the source license permits (nLab, Stacks, LMFDB,
+ProofWiki, PlanetMath, OEIS); no-content sources (MathWorld, DLMF, EoM, Kerodon)
+return deep-link rows without snippets. **A snippet is never served without its
+license**: the builder guarantees the pair and the API re-checks it, degrading a
+licence-less snippet to a deep link rather than emitting unlicensed text.
 
 ```bash
 curl 'https://wikilean.jackmccarthy.org/api/brain/snippets?id=Q181296'
 ```
 
-### `GET /api/brain/filter?f=&type=&limit=&cursor=`
+### `GET /api/brain/filter?f=&type=&under=&limit=&cursor=`
 
-Enumerate label-index rows whose facet bitmask contains `f`:
-`(row.f & f) == f` (rows without `f` read as 0, so `f=0` matches everything).
-`type` optionally narrows to `concept | container | ext`. `limit` ≤ 500
-(default 100).
+Enumerate atoms whose facet bitmask contains `f`: `(f_row & f) == f` (rows
+without `f` read as 0, so `f=0` matches everything). `limit` ≤ 500 (default 100).
+
+- `type=cell` (default) — `labels.json`, each cell's **own** mask.
+- `type=supercell` — `supercells.json` by `fa`, the subtree-**aggregate** mask
+  ("something under this folder matches"). A deliberately different question,
+  hence a separate type rather than one mixed list.
+- `under=path:…` — restrict to a containment subtree (cells carry `p`, their
+  deepest supercell; supercells match on their own path prefix).
+
+The v2 `type=concept|container|ext` values **400** — they no longer denote
+anything (an external page is an organ, never an atom), and silently ignoring
+them would be worse than failing.
 
 Facet bits (`brain/SCHEMA.md`): 0 gold `@[wikidata]` tag · 1 `@[stacks]` ·
 2 `@[kerodon]` · 3 any xref · 4 formalized · 5 partial · 6 has WikiLean
-article · 7 has literature · 8 is ext · 9 lmfdb · 10 nlab · 11 mathworld ·
-12 proofwiki · 13 stacks-tag · 14 oeis · 15 has snippet.
+article · 7 has literature · ~~8 is ext~~ · 9 lmfdb · 10 nlab · 11 mathworld ·
+12 proofwiki · 13 stacks-tag · 14 oeis · 15 has stored snippet.
 
-Bits 0–2 are set on the tagged declaration itself AND propagate to the
-concept(s) it formalizes, so `f=1` returns both the gold-tagged decls and
-their concepts, and `f=17` (bits 0+4) means "formalized concept whose
-formalization carries a gold `@[wikidata]` tag".
+**Bit 8 is never set on a cell** (verified on the shipped build: 0 of 8,914) —
+it meant "this node IS an external page", which no atom is; the builder masks
+it off when a page organ's facets fold into its cell. A cell's mask is the OR
+over its organs, so `f=1` returns every atom holding a gold-tagged declaration
+and `f=17` (bits 0+4) every formalized atom whose formalization carries a gold
+`@[wikidata]` tag.
 
 Pagination is by stable row-index cursor: pass the previous response's
 `next_cursor` back as `cursor`; `next_cursor: null` means done. (Cursors are
-positions in the nightly-built label index — treat a nightly rebuild as
-invalidating outstanding cursors.)
+positions in the nightly-built index — treat a nightly rebuild as invalidating
+outstanding cursors.)
 
 ```bash
-# everything carrying a gold @[wikidata] tag AND formalized (bits 0+4 = 17)
 curl 'https://wikilean.jackmccarthy.org/api/brain/filter?f=17&limit=50'
+curl 'https://wikilean.jackmccarthy.org/api/brain/filter?f=1&under=path:Mathlib/Algebra'
 ```
 
-### Pre-existing routes (unchanged)
+### `GET /api/brain/search?q=&type=&limit=`
 
-- `GET /api/brain/node?id=` — the full shard entry: node payload, capped
-  1-hop edges both directions, breadcrumb, children, rollups, `prov_table`.
-- `GET /api/brain/search?q=&type=&limit=` — label search (prefix hits rank
-  before substring hits; a bare QID matches by id).
+Label search over the atom index. Matches an atom's own label **and its `aka`
+list — every organ's label** — so `q=Vector space` returns the **Module** atom
+(they are one atom, named by its anchor). Prefix hits rank before substring
+hits. A key that resolves exactly (QID, decl name, article slug, xref id) is
+promoted to the top hit with `matched: <resolved_from>`, which keeps the v2
+"a bare QID query matches by id" behavior alive now that ids are `cell:<anchor>`.
+`type` ∈ `cell | supercell`; supercells are matched through their folder label
+AND their organ labels (so "linear algebra" finds `path:Mathlib/LinearAlgebra`).
+
+```bash
+curl 'https://wikilean.jackmccarthy.org/api/brain/search?q=vector%20space'
+```
+
+### Related routes
+
 - `GET /api/brain/edges?id=` — the LIVE community-edit overlay (D1-backed,
   `Cache-Control: no-store`) including inferred xref-shared partners.
 - `GET /decl/<name>` — durable decl resolver; 302 → mathlib4_docs, or JSON
   (module, docs_url, reverse citations) with `Accept: application/json`.
-- `GET /api/atlas`, `/api/atlas/:key`, `/graph_data.json`,
-  `/atlas_data.json` — the coarse-grain atlas/graph data surfaces.
+- `GET /api/brain/node?id=` — **legacy**: the v2 particle shards
+  (`wiki/src/brain.ts`). Still served because the community-edit write path uses
+  the v2 shard set as its node-existence oracle and the v2 `/brain` page reads
+  it; it retires with the v2 render path (docs/BRAIN-V3.md phase 5). Use
+  `/api/brain/cell`. Note its ids are ORGAN ids, so they all feed the v3 routes.
+- `/map`, `/graph`, `/atlas`, `/article-graph` → 301 `/brain`;
+  `/graph_data.json`, `/atlas_data.json`, `/api/atlas` → **410** (retired
+  2026-07-10).
 
 ## The MCP server
 
@@ -242,13 +360,19 @@ the text is exactly the corresponding REST response body.
 | tool | arguments | REST twin |
 |---|---|---|
 | `brain_search` | `q` (req), `type?`, `limit?` | `/api/brain/search` |
-| `brain_node` | `id` (req) | `/api/brain/node` |
-| `brain_unit` | `key` (req) | `/api/brain/unit` |
+| `brain_cell` | `key` (req) | `/api/brain/cell` |
 | `brain_transfer` | `q`, `direction` (req), `limit?` | `/api/brain/transfer` |
-| `brain_neighborhood` | `id` (req), `kinds?`, `dir?`, `limit?` | `/api/brain/neighborhood` |
+| `brain_neighborhood` | `id` (req), `kinds?`, `traces?`, `limit?` | `/api/brain/neighborhood` |
 | `brain_snippets` | `id` (req) | `/api/brain/snippets` |
-| `brain_filter` | `f` (req), `type?`, `limit?`, `cursor?` | `/api/brain/filter` |
+| `brain_filter` | `f` (req), `type?`, `under?`, `limit?`, `cursor?` | `/api/brain/filter` |
 | `decl_exists` | `name` (req) | (decl-index oracle; see below) |
+
+**Seven tools, down from eight**: `brain_cell` replaces `brain_node` +
+`brain_unit`. v3 has no particle nodes, and the unit card became the cell card,
+so the two collapsed into one. `brain_unit` and `brain_node` remain as
+**dispatch-only aliases** — not advertised in `tools/list`, but still answering
+(with the atom) so an agent session holding the old catalog does not hard-fail.
+Both accept either `key` or `id`, since the two tools disagreed on the name.
 
 `decl_exists` verifies a fully-qualified Lean decl name against the same
 doc-gen4 declaration index `GET /decl/<name>` resolves with, returning
@@ -256,10 +380,10 @@ doc-gen4 declaration index `GET /decl/<name>` resolves with, returning
 name — hallucinated/renamed names (`Basis` → `Module.Basis`) are the #1
 failure mode.
 
-A typical mid-proof loop: `brain_search` (text → ids) → `brain_unit` (one
-identity, everything known) → `brain_transfer` (jump directions) →
+A typical mid-proof loop: `brain_search` (text → atom ids) → `brain_cell` (one
+identity, everything known, one request) → `brain_transfer` (jump directions) →
 `decl_exists` (verify before citing) → `brain_neighborhood(kinds=depends)`
-(walk formal dependencies).
+(walk formal dependencies through synapses and read the traces).
 
 ## Rate limits & caching
 
@@ -268,32 +392,55 @@ identity, everything known) → `brain_transfer` (jump directions) →
 - REST routes: unauthenticated and edge-cached (`public, max-age=3600`);
   responses change on the nightly data rebuild. `/api/brain/edges` is the one
   live, uncached route.
-- Be a good citizen: batch-style crawling should use the static shard assets
-  (`/assets/brain/manifest.json` + shards, `labels.json`) or the repo's
-  `brain/data/*.jsonl` instead of hammering the API.
+- Be a good citizen: batch-style crawling should use the static cell assets
+  (`/assets/brain/cells/manifest.json` + shards, `labels.json`, `aliases.json`,
+  `supercells.json`, `explorer.json`) or the repo's `brain/data/*.jsonl`
+  instead of hammering the API.
+
+## The local CLI (`brain/query.py`)
+
+Same data, no network, and the only surface that serves **untruncated** traces:
+
+```bash
+python3 brain/query.py cell Vector_space              # → cell:Q18848, organs embedded
+python3 brain/query.py organs Q82571                  # → path:Mathlib/LinearAlgebra's organs
+python3 brain/query.py neighborhood Q18848 --kinds depends --full
+python3 brain/query.py search "vector space"          # label + aka, prefix-ranked
+python3 brain/query.py supercell Mathlib/LinearAlgebra
+```
+
+`--full` scans `brain/data/synapses.jsonl` for the whole synapse set with every
+trace — the shards trim to 6 traces per synapse and 200 synapses per atom.
+(`unit`/`node` remain as aliases of `cell`.)
 
 ## Provenance & licensing
 
-- Brain node/edge data itself is **CC0**. Every edge carries provenance;
-  `prov` indexes on `/api/brain/node` edges resolve through the response's
-  `prov_table`. `catalog/data/source_registry.json` is the provenance
-  single-source-of-truth.
+- Brain cell/synapse data itself is **CC0**. Every organ and every synapse trace
+  carries a `prov` index resolving through the manifest's `prov` table.
+  `catalog/data/source_registry.json` is the provenance single-source-of-truth.
 - Snippets carry per-row licenses and are stored only where permitted:
   nLab (attribution) · Stacks (GFDL) · LMFDB / OEIS (CC-BY-SA-4.0) ·
-  ProofWiki (CC-BY-SA-3.0; reference use only) · PlanetMath (CC-BY-SA).
-  MathWorld / DLMF / EoM / Kerodon are ids + titles + links only — display
-  deep-links out.
+  ProofWiki (CC-BY-SA-3.0; reference use only) · PlanetMath (CC-BY-SA) ·
+  Mathlib (Apache-2.0). MathWorld / DLMF / EoM / Kerodon are ids + titles +
+  links only — display deep-links out.
 - TheoremGraph-derived edges carry CC-BY-SA attribution in artifact `_meta`;
   arXiv statement text is never redistributed.
 
 ## Graceful degradation (implementation contract)
 
-The v2 data artifacts ship independently of the Worker: `node.unit`
-(prebuilt unit cards), labels `f` bits, `ext` nodes, and
-`/assets/brain/aliases.json` may lag a deploy. Every endpoint
-feature-detects: a missing `unit` is assembled on the fly from
-formalizes/xref edges, missing `aliases.json` falls back to shard in-edge /
-label-index resolution, missing `f` reads as 0, and unminted xref targets
-degrade to pointer rows. The dedicated `MCP_LIMITER` binding likewise falls
-back to `BRAIN_API_LIMITER` (same 120/min budget) until configured in
-`wrangler.jsonc`.
+The cell artifacts ship independently of the Worker and may lag a deploy. The
+posture changed with v3 and the change is deliberate:
+
+- **`aliases.json` is load-bearing, not optional.** In v2 a missing alias table
+  fell back to shard in-edge resolution; v3 has no such fallback, because organs
+  have no inbound edges — they ARE the atom's content. Without it only atom ids
+  and exact labels resolve. It is a total function over organs (SCHEMA C4), so a
+  miss in it is a real miss, and every route treats it as authoritative.
+- A missing `f` reads as 0; a missing `aka`/`p` degrades search/`under` rather
+  than erroring; a supercell absent from `supercells.json` 404s rather than
+  guessing.
+- A snippet that arrives without `snippet_license` is served **as a deep link
+  with the text dropped** — the licence floor is enforced in the API, not only
+  trusted from the builder.
+- The dedicated `MCP_LIMITER` binding falls back to `BRAIN_API_LIMITER` (same
+  120/min budget) until configured in `wrangler.jsonc`.
