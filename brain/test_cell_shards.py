@@ -146,6 +146,18 @@ def main() -> int:
           all(not tree[r].get("parent") for r in supercells["roots"]))
     check("S5 supercells carry rule-5 organs",
           any(r.get("organs") for r in tree.values()))
+    # A supercell has no tag bits of its own, so a facet chip would dim every folder
+    # — "showing 0 of N" over a grey canvas (the v2 bug report). `fa` aggregates the
+    # subtree's bits so folders survive the filter.
+    root_fa = tree.get("path:Mathlib", {}).get("fa", 0)
+    check("S5 supercells carry subtree-aggregate facet bits (fa)", root_fa > 0,
+          "path:Mathlib has no fa — every facet chip would grey the canvas")
+    leaked = [p for p, r in tree.items()
+              if r.get("cells") and not r.get("fa")
+              and any(c in ids and explorer["nodes"][all_ids.index(c)].get("f")
+                      for c in r["cells"][:3])]
+    check("S5 a supercell holding a faceted cell has fa", not leaked,
+          f"{len(leaked)} folders would dim wrongly, e.g. {leaked[:3]}")
 
     # ---- S6: licensing. Snippets exist only for permitting sources and must carry
     # their per-source licence wherever they are rendered.

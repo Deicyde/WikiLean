@@ -269,10 +269,29 @@ def main() -> int:
     labels.sort(key=lambda r: (-len(r.get("aka") or []), r["label"]))
 
     # ---- supercells.json: the containment tree, leaves are CELLS ---------------
+    # `fa` = subtree-aggregate facet bits. A supercell carries no tag bits of its
+    # own, so without this a facet chip dims EVERY folder — "showing 0 of N" over a
+    # grey canvas, the bug reported against v2 on 2026-07-10. Same fix as v2's
+    # aggregate_facets, recomputed over cells.
+    fa: dict[str, int] = defaultdict(int)
+    for cid, cell in cells.items():
+        bits = cell.get("f", 0)
+        if not bits:
+            continue
+        for sup in cell.get("supercells") or []:
+            cur = sup
+            while cur is not None:
+                if fa[cur] & bits == bits:
+                    break          # ancestors already carry these bits
+                fa[cur] |= bits
+                cur = parent.get(cur)
+
     supercells = {}
     for path in sorted(set(sup_cells) | set(sup_children) | set(parent)):
         node = nodes.get(path) or {}
         row = {"label": node.get("label") or path.split("/")[-1]}
+        if fa.get(path):
+            row["fa"] = fa[path]
         if parent.get(path):
             row["parent"] = parent[path]
         if sup_children.get(path):
