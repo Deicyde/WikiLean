@@ -1,30 +1,33 @@
 #!/usr/bin/env python3
-"""Generate /brain — the bubble+graph explorer over the BRAIN dataset.
+"""Generate /brain — the cell map over the BRAIN v3 dataset.
 
 One zoomable canvas, zero baked-in data: everything is fetched on demand from
-the prefix shards in /assets/brain/ (manifest.json → one shard fetch per node),
-so the client never loads the whole graph — brain/SCHEMA.md's locality law as UX.
+the prefix shards in /assets/brain/cells/ (manifest.json → one shard fetch per
+cell), so the client never loads the whole graph — brain/SCHEMA.md's locality
+law as UX.
 
-  · Bubbles — one circle-pack level per focus container (library → module → …
-              → file → decl), children sized by decl count, concepts packed
-              beside the containers that anchor them. Click a bubble to zoom
-              in (d3.interpolateZoom, the /map bubbles feel); click the
-              background or breadcrumb to zoom out.
-  · Graph   — real database connections drawn in space: sibling `depends`
-              edges from the typed rollups (sig-weighted), and the selected
-              node's ontology edges (formalizes / xref / cites / relates)
-              overlaid by kind.
-  · Panel   — the selected node: breadcrumb, altitude evidence, slogan, and
-              every edge with its provenance one tap away (anti-slop drawer).
-  · Layers  — per-source-kind toggles overlay or hide edge families.
-  · Search  — label search over concepts + areas (labels.json, lazy).
-  · v2      — unit cards (concept ∘ article ∘ decls ∘ xrefs as one identity),
-              a Sources accordion (Wikidata / Wikipedia lead / external-DB
-              snippets), first-class ext nodes (xref:<db>:<id>, db-ringed
-              bubbles), the `links` edge kind, facet-chip node filters over
-              the f bitmask (state in the URL hash), and the cross-ref
-              Explorer view over views/xref_explorer.json. All of it
-              feature-detects: pre-v2 shard data still renders.
+v3 (brain/SCHEMA.md#v3, docs/BRAIN-V3.md): the node is the **cell** — an atom of
+**organs** (a Wikidata concept, a Lean decl, an external-DB page, a WikiLean
+article, an arXiv statement). External pages are NOT nodes any more; they are
+organs inside cells. Cells nest in **supercells** (module folders). All weak
+bonds between two cells collapse to ONE **synapse** carrying every trace.
+
+  · Bubbles  — one circle-pack level per supercell (library → module → … → file),
+               with the cells it holds as the leaves. supercells.json IS the
+               tree; a cell spanning several modules renders inside each.
+  · Explorer — the complete flat cell graph (explorer.json: 8.9k cells, 76k
+               synapses), drawn at its BUILD-TIME `xy`. The client runs no
+               physics at all — SCHEMA "Layout is BUILD-TIME" — which is what
+               killed the freeze and the ring-around-a-clump artefact.
+  · Card     — the selected cell's organs grouped by kind, each with its bond,
+               its provenance (a merged @[wikidata] tag never reads like an
+               AI-queued candidate — C7) and its embedded payload: Lean code,
+               the Wikidata description, licensed DB snippets, arXiv refs. ONE
+               fetch renders the whole card.
+  · Drawer   — a synapse's weight, its kind histogram and EVERY trace, in prose
+               that names the actual database and page.
+  · Search   — label + `aka` (every organ label) over labels.json, so searching
+               "Vector space" surfaces the Module atom.
 
 Run: python3 site/build_brain_page.py   (writes site/out/brain.html; build-public
 copies it + site/assets/brain/ into the Worker's static assets)
@@ -40,7 +43,7 @@ HTML = r"""<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>WikiLean — The Brain</title>
-<meta name="description" content="Explore the BRAIN: a zoomable bubble map of mathematics joining Wikipedia/Wikidata concepts, Lean formalizations across 39 libraries, cross-database identities (LMFDB, nLab, MathWorld, …) and arXiv literature — real dependency edges between bubbles, machine-checkable provenance on every link.">
+<meta name="description" content="Explore the BRAIN: a zoomable map of mathematics as cells — atoms that fuse a Wikidata concept, its Lean formalization, its external-database entries (LMFDB, nLab, MathWorld, …), its WikiLean article and its arXiv statements into one object, joined by synapses with machine-checkable provenance on every trace.">
 <script>(function(){try{var s=localStorage.getItem("wl-theme");var t=s==="dark"||s==="light"?s:(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.dataset.theme=t;}catch(e){}})();</script>
 <style>
 * { box-sizing:border-box; }
@@ -63,17 +66,22 @@ a:hover { text-decoration:underline; }
   border-right:1px solid #262c3a; }
 .toolbar .grp:last-child { border-right:none; }
 .toolbar b { color:#e6e4de; }
+/* a group whose data the current view doesn't carry: visibly inert, never a
+   silent no-op (the flat map ships weights only — no per-kind/per-trace data) */
+.toolbar .grp.inert { opacity:.4; }
+.toolbar .grp.inert label { cursor:not-allowed; }
 #structstat { color:#7f8a9c; font-size:.78rem; font-style:italic; white-space:nowrap; }
 #search { position:relative; }
 #search input { width:290px; padding:5px 9px; border:1px solid #33405c; border-radius:6px;
   font-size:.88rem; background:#0b0e14; color:#e6e4de; }
 #search input:focus { outline:2px solid #38bdf855; }
-#hits { position:absolute; top:32px; left:0; z-index:30; width:420px; max-height:380px;
+#hits { position:absolute; top:32px; left:0; z-index:30; width:460px; max-height:380px;
   overflow:auto; background:#151b28; border:1px solid #33405c; border-radius:8px;
   box-shadow:0 8px 24px rgba(0,0,0,.5); display:none; }
 #hits .hit { padding:6px 10px; cursor:pointer; display:flex; gap:8px; align-items:baseline; }
 #hits .hit:hover { background:#1e2635; }
 #hits .hit .t { font-size:.72rem; color:#9aa3b2; min-width:64px; }
+#hits .hit .aka { font-size:.72rem; color:#7f8a9c; font-style:italic; }
 #crumbbar { background:#10141d; border-bottom:1px solid #1c2230; padding:6px 20px;
   font-size:.82rem; color:#9aa3b2; display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
 #crumbbar a { cursor:pointer; }
@@ -97,7 +105,7 @@ text.blabel { pointer-events:none; text-anchor:middle;
 text.bcount { pointer-events:none; text-anchor:middle; fill:#9aa3b2;
   font-family:Georgia,serif; }
 path.link { pointer-events:none; }
-path.ov { fill:none; pointer-events:none; stroke-dasharray:4 3; }
+path.synbatch { pointer-events:none; fill:none; }   /* the flat map's batched synapses */
 
 /* the reading surface: an encyclopedia page beside a star map */
 #panel { flex:1 1 38%; overflow-y:auto; padding:20px 26px; background:#f6f1e5;
@@ -126,11 +134,11 @@ section.kind h3 .cnt { color:#8a8272; font-weight:400; font-size:.8rem; }
   font-size:.86rem; flex-wrap:wrap; }
 .edge .row:hover { background:#f3ecda; }
 .edge .mk { color:#6d28d9; font-size:.74rem; font-style:italic; }
-.edge .prov { font-size:.7rem; border-radius:8px; padding:0 6px; border:1px solid #c8bfa8;
+.prov { font-size:.7rem; border-radius:8px; padding:0 6px; border:1px solid #c8bfa8;
   color:#5a544a; margin-left:auto; white-space:nowrap; font-family:-apple-system,sans-serif; }
-.edge .prov.human { border-color:#1a7f37; color:#116329; }
-.edge .prov.machine { border-color:#6d28d9; color:#5b21b6; }
-.edge .prov.ai { border-color:#c2540a; color:#9a3f00; }
+.prov.human { border-color:#1a7f37; color:#116329; }
+.prov.machine { border-color:#6d28d9; color:#5b21b6; }
+.prov.ai { border-color:#c2540a; color:#9a3f00; }
 .edge .drawer { display:none; border-top:1px solid #ddd4bd; padding:8px 10px; font-size:.78rem;
   background:#f3ecda; border-radius:0 0 6px 6px; }
 .edge .drawer pre { margin:4px 0 0; white-space:pre-wrap; word-break:break-word;
@@ -160,7 +168,7 @@ section.kind h3 .cnt { color:#8a8272; font-weight:400; font-size:.8rem; }
   font-family:-apple-system,sans-serif; user-select:none; }
 .rawtoggle:hover { color:#5a544a; }
 .rawjson { margin:4px 0 0 !important; }
-/* edge-evidence trace: the step-by-step chain that connects two nodes */
+/* synapse-evidence trace: the step-by-step chain that connects two cells */
 .ev-trace { margin:6px 0 2px; border-left:2px solid #d8cfb6; padding-left:9px; }
 .ev-step { display:flex; align-items:baseline; gap:6px; padding:1px 0; }
 .ev-step .role { color:#8a8272; font-size:.72rem; min-width:14px; }
@@ -219,9 +227,6 @@ section.kind.community h3 { border-bottom-color:#c9b98a; }
   border-radius:5px; cursor:pointer; font-size:.82rem; font-family:-apple-system,sans-serif; }
 #cf-submit:disabled { opacity:.5; cursor:default; }
 #cf-msg { font-size:.76rem; }
-.slogan { border-left:3px solid #6d28d9; padding:6px 10px; background:#fdfbf4; margin:8px 0;
-  font-size:.88rem; border-radius:0 6px 6px 0; font-style:italic; }
-.slogan .src { display:block; color:#8a8272; font-size:.7rem; margin-top:3px; font-style:normal; }
 .codeblock { margin:8px 0; border:1px solid #ddd4bd; border-radius:6px; background:#fbf8ef; }
 .codeblock pre { margin:0; padding:8px 10px; overflow-x:auto; font-size:.76rem;
   font-family:ui-monospace,SFMono-Regular,Menlo,monospace; line-height:1.45; color:#1f1d18; }
@@ -240,25 +245,34 @@ section.kind.community h3 { border-bottom-color:#c9b98a; }
   border-left:1px solid #2a3244; padding-left:9px; cursor:help; }
 .fgrouplabel:first-of-type { border-left:none; padding-left:0; }
 #filterstat { color:#7f8a9c; font-size:.78rem; font-style:italic; }
-/* the atomic-unit card: one identity strip for a concept */
+/* the cell card: one identity strip for the atom */
 .unitcard { border:1px solid #d8cfb8; border-radius:8px; background:#fdfbf4;
   padding:12px 14px 8px; margin-bottom:12px; }
 .unitcard h2 { margin:0 0 4px; }
 .uc-desc { color:#3d382e; font-size:.9rem; margin:0 0 8px; }
 .uc-src { color:#8a8272; font-size:.7rem; margin-left:6px; font-style:italic; }
-.uc-primary { font-size:.66rem; color:#116329; border:1px solid #1a7f37; border-radius:8px;
+.uc-anchor { font-size:.66rem; color:#116329; border:1px solid #1a7f37; border-radius:8px;
   padding:0 5px; font-family:-apple-system,sans-serif; }
-/* Sources accordion + snippet rows (TeX stays raw — no math renderer ships) */
+/* one organ row per particle (Sources-accordion styling; TeX stays raw — no
+   math renderer ships) */
 .srcacc summary { cursor:pointer; color:#1a4b8f; font-size:.85rem; user-select:none; }
 .srcrow { border:1px solid #ddd4bd; border-radius:6px; background:#fbf8ef; margin:8px 0;
   padding:8px 10px; }
-.srchead { font-size:.84rem; margin-bottom:4px; }
+.srchead { font-size:.84rem; margin-bottom:4px; display:flex; gap:6px; align-items:baseline;
+  flex-wrap:wrap; }
+.srchead .oname { font-weight:700; color:#0d0c0a; }
 .snip { font-size:.86rem; line-height:1.5; color:#2b2822; }
 .srclic { margin-top:6px; border-top:1px solid #e3dac4; padding-top:4px; color:#8a8272;
   font-size:.7rem; font-family:-apple-system,sans-serif; }
 .snipblock { margin:8px 0; border:1px solid #ddd4bd; border-radius:6px; background:#fbf8ef;
   padding:8px 10px; }
 .snipblock .src { display:block; color:#8a8272; font-size:.7rem; margin-top:6px; }
+/* the bond that pulled this organ into the atom (SCHEMA v3 "Strong bonds") */
+.bond { font-size:.7rem; border:1px solid #c8bfa8; border-radius:8px; padding:0 6px;
+  color:#5a544a; font-family:-apple-system,sans-serif; }
+.bond.exact { border-color:#1a7f37; color:#116329; }
+.osub { color:#5a544a; font-size:.76rem; margin:4px 0 0;
+  font-family:-apple-system,sans-serif; }
 body.embed .wl-header, body.embed #crumbbar { display:none; }   /* flex column fills the rest */
 /* On a phone the stage + panel stack and the PAGE scrolls again (no fixed
    viewport to pan within), so restore normal document overflow there. */
@@ -275,7 +289,7 @@ body.embed .wl-header, body.embed #crumbbar { display:none; }   /* flex column f
   <span><a class="wl-brand" href="/">WikiLean</a> <span style="color:#57606a">/ brain</span></span>
   <nav class="wl-nav">
     <div id="search">
-      <input id="q" type="search" placeholder="Search concepts &amp; areas… (e.g. abelian group)" autocomplete="off">
+      <input id="q" type="search" placeholder="Search cells &amp; areas… (e.g. vector space)" autocomplete="off">
       <div id="hits"></div>
     </div>
     <a class="wl-navlink" id="srcbtn" style="cursor:pointer" title="every external database the brain links to — layer, provenance, license">Sources</a>
@@ -286,49 +300,41 @@ body.embed .wl-header, body.embed #crumbbar { display:none; }   /* flex column f
 </header>
 <div class="toolbar">
   <span class="grp"><b>View</b>
-    <button id="explorerbtn" class="fchip" title="flatten the current folder's subtree into one force-directed graph of its tagged &amp; cross-referenced nodes and the edges among them — facet chips narrow it further; at the top level it covers everything">Explorer</button>
-    <button id="explorer-ext" class="fchip xctl" style="display:none" title="show the external-database PAGE nodes (nLab / MathWorld / LMFDB / … entries) and their internal page-to-page links. Off at the top level so the concept/declaration backbone stays legible — the projected concept-to-concept cross-database links still show. On automatically in small scoped or filtered views.">database pages</button>
-    <button id="explorer-iso" class="fchip xctl" style="display:none" title="show nodes with no connection in the current view, parked in an outer ring. Off by default — usually just noise.">unlinked</button>
+    <button id="explorerbtn" class="fchip" title="flatten the current area's subtree into the complete cell graph — every cell at its build-time position and every synapse among them. Facet chips narrow it; at the top level it covers all 8.9k cells.">Explorer</button>
   </span>
-  <span class="grp"><b>Layers</b>
+  <span class="grp" id="grp-layers"><b>Layers</b>
     <label><input type="checkbox" data-k="depends" checked> formal deps</label>
-    <label><input type="checkbox" data-k="formalizes" checked> formalizations</label>
-    <label><input type="checkbox" data-k="xref,links" checked> cross-refs</label>
-    <label><input type="checkbox" data-k="cites,matches" checked> literature</label>
+    <label title="concept→declaration claims that did NOT fuse the two into one atom: invocation/related never merge (SCHEMA rule 3), and a generalization/special_case claim past the concept's single best target stays a synapse."><input type="checkbox" data-k="generalization,special_case,invocation,related" checked> loose formalization claims</label>
+    <label><input type="checkbox" data-k="links,co-page" checked> cross-refs</label>
+    <label><input type="checkbox" data-k="cites,co-statement" checked> literature</label>
     <label><input type="checkbox" data-k="relates" checked> wikidata relations</label>
     <label><input type="checkbox" data-k="mentions" checked> article mentions</label>
   </span>
-  <span class="grp"><b>Libraries</b>
-    <label><input type="checkbox" data-lk="math" checked> math</label>
-    <label><input type="checkbox" data-lk="cs" checked> CS</label>
-    <label><input type="checkbox" data-lk="physics" checked> physics</label>
-    <label><input type="checkbox" data-lk="tooling"> tooling</label>
-  </span>
   <span class="grp"><b>Structure</b>
-    <label title="Rank dependency edges by affinity (lift = observed ÷ expected flow) instead of raw volume, so genuine mathematical links survive the cut and shared infrastructure (everything-uses-Mathlib) recedes. Corrects the hub bias of arXiv 2604.24797. Bites hardest inside a dense library, where it changes which edges are shown."><input type="checkbox" id="dehub" checked> de-hub (lift)</label>
-    <label title="Tint each bubble by its dependency-flow community — clusters of areas that lean on each other, regardless of where the folder tree files them (arXiv 2604.24797's Finding 1). Dive into a library to watch its modules regroup."><input type="checkbox" id="commColor" checked> logical communities</label>
-    <span class="note" id="structstat" title="what the Structure toggles are doing at this level"></span>
+    <label title="Tint each cell by its dependency-flow community — clusters of atoms that lean on each other, regardless of which folder the tree files them under (arXiv 2604.24797's Finding 1). Needs the level's synapse web, so it works where the cells are few enough to fetch."><input type="checkbox" id="commColor" checked> logical communities</label>
+    <span class="note" id="structstat" title="what this level's synapse web is doing"></span>
   </span>
-  <span class="grp"><b>Provenance</b>
+  <span class="grp" id="grp-prov"><b>Provenance</b>
     <label title="community/human-curated: Wikidata properties &amp; claims, @[wikidata]/@[stacks]/@[kerodon] attributes written in Mathlib source"><input type="checkbox" data-p="human" checked> human</label>
-    <label title="machine-verified: kernel-extracted dependencies and the file tree — checked by the Lean compiler, no judgment involved"><input type="checkbox" data-p="machine" checked> machine</label>
+    <label title="machine-verified: kernel-extracted dependencies and mechanically-scraped page links — no judgment involved"><input type="checkbox" data-p="machine" checked> machine</label>
     <label title="AI-generated: agent-proposed concept matches (skeptic-reviewed), LLM-judged paper matches (TheoremGraph), pipeline annotations"><input type="checkbox" data-p="ai" checked> AI</label>
   </span>
   <span class="grp"><b>Show only</b>
-    <span class="fgrouplabel" title="Cross-reference ATTRIBUTES hand-written into the mathlib4 source. Each links a Lean declaration to an external catalog (and rides up to the concept it formalizes). These three are literally the @[…] attributes in Mathlib.">Mathlib tags:</span>
-    <button class="fchip" data-fbit="1" title="declarations carrying an @[wikidata] attribute in mathlib4 — the gold, human-written link from a Lean declaration to its Wikidata concept (a formalization claim)">@[wikidata]</button>
-    <button class="fchip" data-fbit="2" title="declarations carrying an @[stacks] attribute in mathlib4 — a human-written link from a Lean declaration to a Stacks Project tag">@[stacks]</button>
-    <button class="fchip" data-fbit="4" title="declarations carrying an @[kerodon] attribute in mathlib4 — a human-written link from a Lean declaration to a Kerodon tag">@[kerodon]</button>
-    <span class="fgrouplabel" title="External-database identities that WIKIDATA records for a math concept, independent of Mathlib. Each links a concept to its page in that database via a Wikidata external-ID property.">Wikidata cross-refs:</span>
-    <button class="fchip" data-fbit="1024" title="concepts Wikidata cross-references to an nLab page (property P4215)">nLab</button>
-    <button class="fchip" data-fbit="2048" title="concepts Wikidata cross-references to a MathWorld page (property P2812)">MathWorld</button>
-    <button class="fchip" data-fbit="512" title="concepts Wikidata cross-references to an LMFDB knowl (property P12987)">LMFDB</button>
-    <button class="fchip" data-fbit="4096" title="concepts Wikidata cross-references to a ProofWiki page (property P6781)">ProofWiki</button>
-    <button class="fchip" data-fbit="16384" title="concepts Wikidata cross-references to an OEIS sequence (property P829)">OEIS</button>
-    <button class="fchip" data-fbit="8" title="nodes with ANY external-database cross-reference — the union of every database above PLUS the @[stacks]/@[kerodon] Mathlib tags (all the xref edges in one filter)">any</button>
+    <span class="fgrouplabel" title="Cross-reference ATTRIBUTES hand-written into the mathlib4 source. Each links a Lean declaration to an external catalog, and rides up to the cell that declaration is an organ of. These three are literally the @[…] attributes in Mathlib.">Mathlib tags:</span>
+    <button class="fchip" data-fbit="1" title="cells holding a declaration that carries an @[wikidata] attribute in mathlib4 — the gold, human-written link from a Lean declaration to its Wikidata concept">@[wikidata]</button>
+    <button class="fchip" data-fbit="2" title="cells holding a declaration that carries an @[stacks] attribute in mathlib4 — a human-written link to a Stacks Project tag">@[stacks]</button>
+    <button class="fchip" data-fbit="4" title="cells holding a declaration that carries an @[kerodon] attribute in mathlib4 — a human-written link to a Kerodon tag">@[kerodon]</button>
+    <span class="fgrouplabel" title="External-database identities that WIKIDATA records for a math concept, independent of Mathlib. Each becomes a `page` organ inside the cell.">Wikidata cross-refs:</span>
+    <button class="fchip" data-fbit="1024" title="cells with an nLab page organ (Wikidata property P4215)">nLab</button>
+    <button class="fchip" data-fbit="2048" title="cells with a MathWorld page organ (Wikidata property P2812)">MathWorld</button>
+    <button class="fchip" data-fbit="512" title="cells with an LMFDB knowl organ (Wikidata property P12987)">LMFDB</button>
+    <button class="fchip" data-fbit="4096" title="cells with a ProofWiki page organ (Wikidata property P6781)">ProofWiki</button>
+    <button class="fchip" data-fbit="16384" title="cells with an OEIS sequence organ (Wikidata property P829)">OEIS</button>
+    <button class="fchip" data-fbit="8" title="cells with ANY external-database page organ — the union of every database above PLUS the @[stacks]/@[kerodon] Mathlib tags">any</button>
     <span class="fgrouplabel">Status:</span>
-    <button class="fchip" data-fbit="16" title="formalized concepts — a Mathlib declaration formalizes them">formalized</button>
-    <button class="fchip" data-fbit="64" title="concepts with an annotated WikiLean article">article</button>
+    <button class="fchip" data-fbit="16" title="cells whose concept is formalized — a Mathlib declaration formalizes it">formalized</button>
+    <button class="fchip" data-fbit="64" title="cells holding an annotated WikiLean article organ">article</button>
+    <button class="fchip" data-fbit="128" title="cells holding an arXiv statement organ (a TheoremGraph match)">literature</button>
     <span class="note" id="filterstat"></span>
   </span>
   <span class="grp"><a id="srcbtn2" style="cursor:pointer"
@@ -338,29 +344,43 @@ body.embed .wl-header, body.embed #crumbbar { display:none; }   /* flex column f
 <div id="crumbbar"></div>
 <div class="main">
   <div id="stage"><svg id="svg"></svg>
-    <div class="hint">scroll to zoom · drag to pan · click a bubble to dive in ·
-      background to go up · arrows point along dependencies · click any edge
-      for its evidence · <span style="color:#a78bfa">formal deps</span> ·
-      <span style="color:#38bdf8">formalizes</span> ·
+    <div class="hint">scroll to zoom · drag to pan · click an area to dive in ·
+      background to go up · click any synapse for its evidence ·
+      dots = <b>cells</b> (atoms of organs) ·
+      <span style="color:#3b82f6">blue</span> = has a Lean formalization ·
+      <span style="color:#8c959f">grey</span> = no formal home yet ·
+      gold ring = a hand-written <span style="color:#eab308">@[wikidata]</span> tag ·
+      lines = <b>synapses</b> (thicker = more bonds):
+      <span style="color:#a78bfa">formal deps</span> ·
+      <span style="color:#38bdf8">loose formalization claims</span> ·
       <span style="color:#fbbf24">wikidata relations</span> ·
-      <span style="color:#f472b6">cross-database</span> ·
+      <span style="color:#f472b6">shared DB page</span> ·
       <span style="color:#84cc16">page links</span> ·
       <span style="color:#fb923c">literature</span> ·
-      <span style="color:#2dd4bf">matches</span> ·
-      dots = concepts (blue) / decls (green) · tinted regions = logical communities ·
-      selecting a node orbits its neighbors (click to travel)</div>
+      <span style="color:#2dd4bf">shared statement</span> ·
+      tinted cells = logical communities</div>
   </div>
-  <div id="panel"><p class="note">The Brain as bubbles: areas nest by containment
-    (Mathlib → Algebra → Group → …), concepts float beside the code that formalizes
-    them, and the links between bubbles are real, provenance-carrying dependency
-    edges. Click anything — every edge opens its evidence drawer here.</p></div>
+  <div id="panel"><p class="note">The Brain as cells: every atom fuses a Wikidata
+    concept, the Lean declaration that formalizes it, its entries in nLab / LMFDB /
+    Stacks / MathWorld / …, its WikiLean article and its arXiv statements into ONE
+    object. Atoms nest inside the Mathlib folders that hold their code, and the
+    lines between them are synapses — every weak bond between two atoms, collapsed
+    into one edge that keeps every trace. Click anything.</p></div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 <script>
 "use strict";
-const BASE = "/assets/brain/";
-const LIBS_ID = "__libs__";           // pseudo-focus: the 39 library roots
-let manifest = null, labels = null;
+// ============================ data layer ====================================
+// v3 lives in its OWN namespace: cells/ ships the atoms, the containment tree,
+// the flat map, the organ→atom alias table and the search index.
+const BASE = "/assets/brain/cells/";
+const SOURCES_URL = "/assets/brain/sources.json";   // the legend is v-agnostic
+const ROOTS_ID = "__libs__";          // pseudo-focus: the library roots
+const UNPLACED_ID = "__unplaced__";   // pseudo-focus: cells with no decl organ,
+                                      // so no supercell to nest in (1.5k of 8.9k)
+const STRAYS_ID = "__strays__";       // the collapsed "cells filed at this level"
+                                      // bubble (see focusItems)
+let manifest = null, labels = null, labelById = null, tree = null, aliases = null;
 const shardCache = new Map(), entryCache = new Map();
 
 function shardKey(id, len) {
@@ -383,7 +403,7 @@ function shardFor(id) {
 }
 // Every data fetch is pinned to the manifest's data version: shard KEY NAMES
 // change across rebuilds, so a cached manifest + fresh shards (or vice versa)
-// silently 404s — the "Unknown node" ghost bug. The manifest revalidates
+// silently 404s — the "Unknown cell" ghost bug. The manifest revalidates
 // (no-cache) and a missing shard triggers one manifest re-sync + retry.
 let dataV = "";
 const vq = () => (dataV ? "?v=" + dataV : "");
@@ -393,6 +413,8 @@ async function fetchManifest() {
   manifest = await r.json();
   dataV = encodeURIComponent(manifest._meta.generated_at || "");
 }
+// ONE fetch renders a whole card: the shard entry embeds every organ payload
+// (Lean code, the Wikidata description, licensed DB snippets) + the synapses.
 async function getEntry(id, canRetry = true) {
   if (entryCache.has(id)) return entryCache.get(id);
   const key = shardFor(id);
@@ -422,17 +444,73 @@ const crumbEl = $("#crumbbar");
 const esc = s => String(s ?? "").replace(/[&<>"']/g,
   c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
+const isCellId = id => typeof id === "string" && id.startsWith("cell:");
+const isPathId = id => typeof id === "string" && id.startsWith("path:");
+
+async function ensureLabels() {
+  if (!labels) {
+    const r = await fetch(BASE + "labels.json" + vq());
+    labels = r.ok ? await r.json() : [];
+    labelById = new Map(labels.map(r2 => [r2.id, r2]));
+  }
+  return labels;
+}
+// The containment tree. supercells.json IS the bubble view's data source — its
+// leaves are cells, so no shard fetch is needed to lay out a level; labels.json
+// supplies each cell's label + facet bits. Subtree cell counts and the
+// no-supercell bucket are derived once, here.
+async function ensureTree() {
+  if (tree) return tree;
+  const [j] = await Promise.all([
+    fetch(BASE + "supercells.json" + vq()).then(r => (r.ok ? r.json() : null)).catch(() => null),
+    ensureLabels(),
+  ]);
+  if (!j) { tree = {roots: [], sc: {}, unplaced: [], unplacedFa: 0, count: () => 0}; return tree; }
+  const sc = j.supercells || {};
+  const memo = new Map();
+  const count = p => {
+    if (memo.has(p)) return memo.get(p);
+    const v = sc[p];
+    if (!v) return 0;
+    memo.set(p, 0);   // cycle guard: the tree is acyclic, but never hang on bad data
+    let n = (v.cells || []).length;
+    for (const ch of v.children || []) n += count(ch);
+    memo.set(p, n);
+    return n;
+  };
+  const placed = new Set();
+  for (const p of Object.keys(sc)) for (const c of sc[p].cells || []) placed.add(c);
+  // a cell with no decl organ has no module to nest in — it would otherwise be
+  // browsable only through search and the Explorer
+  const unplaced = (labels || []).map(r => r.id).filter(id => !placed.has(id));
+  let unplacedFa = 0;
+  for (const id of unplaced) unplacedFa |= (labelById.get(id) || {}).f || 0;
+  tree = {roots: j.roots || [], sc, unplaced, unplacedFa, count};
+  return tree;
+}
+async function ensureAliases() {
+  if (!aliases) {
+    const r = await fetch(BASE + "aliases.json" + vq());
+    aliases = r.ok ? await r.json() : {organs: {}, decls: {}, slugs: {}};
+  }
+  return aliases;
+}
+// The v2→v3 compat layer: /brain#Q181296, #Vector_space and #decl:Mathlib:Module
+// must all land on the atom that OWNS that organ (SCHEMA C4 — aliases is a
+// function). A rule-5 organ (a field-of-study concept) resolves to its folder.
+async function resolveId(id) {
+  if (!id) return null;
+  if (id === ROOTS_ID || id === UNPLACED_ID || isCellId(id)) return id;
+  await ensureTree();
+  if (isPathId(id)) return tree.sc[id] ? id : null;
+  const a = await ensureAliases();
+  return a.organs[id] || a.decls[id] || a.slugs[id] || null;
+}
+
 function activeKinds() {
   const ks = new Set();
   document.querySelectorAll(".toolbar input[data-k]").forEach(cb => {
     if (cb.checked) cb.dataset.k.split(",").forEach(k => ks.add(k));
-  });
-  return ks;
-}
-function activeLibKinds() {
-  const ks = new Set();
-  document.querySelectorAll(".toolbar input[data-lk]").forEach(cb => {
-    if (cb.checked) ks.add(cb.dataset.lk);
   });
   return ks;
 }
@@ -446,34 +524,32 @@ function activeProv() {
 
 // Provenance CLASS is what matters, not a vacuous high/medium/low: did a human
 // write this link (Wikidata properties/claims, @[wikidata]/@[stacks] source
-// attributes), did the Lean kernel certify it (dependencies, the file tree),
-// or did an AI propose it (agent grounding, LLM-judged paper matches)?
+// attributes), did the Lean kernel certify it (dependencies, page scrapes), or
+// did an AI propose it (agent grounding, LLM-judged paper matches)?
 function provClass(kind, prov, ev) {
   // `links` = a hyperlink mechanically extracted from the source database's
   // own pages (and its CC0-anchored concept projection) — no judgment involved
   if (kind === "depends" || kind === "contains" || kind === "links") return "machine";
   if (((prov && prov.method) || "").includes("@[")) return "human";
   if (ev && ev.source_tagged) return "human";   // gold pair reached via another path
-  if (kind === "xref" || kind === "xref-shared" || kind === "relates") return "human";
+  // co-page = two cells cross-referencing one page; the cross-refs themselves
+  // are Wikidata properties / Mathlib attributes, i.e. human-written
+  if (kind === "xref" || kind === "co-page" || kind === "relates") return "human";
   return "ai";
 }
 const PROV_TITLE = {
   human: "human-curated (Wikidata property/claim or a source attribute in Mathlib)",
-  machine: "machine-verified (Lean kernel / file tree / mechanically-extracted page links)",
+  machine: "machine-verified (Lean kernel / mechanically-extracted page links)",
   ai: "AI-generated (agent-proposed or LLM-judged), verified by oracle + skeptic",
 };
-
 // ============================ canvas state ==================================
-let focusId = null;        // container id (or LIBS_ID) whose children fill the stage
+let focusId = null;        // supercell path / ROOTS_ID / UNPLACED_ID / a cell id
 let selectedId = null;     // node the panel shows / ring highlights
-let layout = null;         // {items: Map(id -> {x,y,r,item}), root}
-let explorerOn = false;    // the Explorer: the focus subtree flattened into one
-                           // force-directed cross-ref graph (views/xref_explorer.json)
-let showExtPages = false;  // explorer: show external-DB PAGE nodes (else backbone)
-let showIsolates = false;  // explorer: show the outer ring of unlinked nodes
-let explorerTogglesUser = false;  // did the user pin the two toggles this session
-let filterMask = 0;        // facet-filter bitmask over node `f` (0 = no filter)
+let layout = null;         // {items: Map(id -> {x,y,r,data}), leaves, ego?, explorer?}
+let explorerOn = false;    // the Explorer: the flat cell graph at its build-time xy
+let filterMask = 0;        // facet-filter bitmask over `f` (0 = no filter)
 let currentUser = null;    // {id, name, role} once /api/auth/me resolves (community edits)
+let renderSeq = 0;         // guards against out-of-order async renders
 const svg = d3.select("#svg");
 // One <g> holds the whole scene so free pan/zoom is a single transform on it,
 // layered UNDER the semantic click-to-descend. Everything drawn (edges,
@@ -483,31 +559,16 @@ const gEdges = gViewport.append("g");
 const gBubbles = gViewport.append("g");
 const gOverlay = gViewport.append("g");
 const gLabels = gViewport.append("g");
-const defs = svg.append("defs");
-
-// directed edge kinds get an arrowhead pointing at the dependency/target end
-const DIRECTED = new Set(["depends", "contains", "cites", "mentions", "formalizes", "links"]);
-function ensureMarker(color) {
-  const id = "arw_" + color.replace(/[^a-z0-9]/gi, "");
-  if (defs.select("#" + id).empty()) {
-    defs.append("marker").attr("id", id).attr("viewBox", "0 0 10 10")
-      .attr("refX", 8.5).attr("refY", 5).attr("markerWidth", 5.5).attr("markerHeight", 5.5)
-      .attr("orient", "auto-start-reverse")
-      .append("path").attr("d", "M0.6,1 L9,5 L0.6,9 Z").attr("fill", color);
-  }
-  return "url(#" + id + ")";
-}
 
 // Free pan/zoom over the canvas: scroll wheel zooms, drag pans (the /map feel).
 // A pan must not read as a background click (which zooms out to the parent), so
 // we swallow the click that follows a real drag.
 let panMoved = false;
 const isPhone = () => window.matchMedia && window.matchMedia("(max-width: 900px)").matches;
-const zoomBehav = d3.zoom().scaleExtent([0.1, 16])
+const zoomBehav = d3.zoom().scaleExtent([0.02, 16])
   // On a phone the page scrolls (the stack layout); d3-zoom's touch handlers
   // call preventDefault, which would trap a vertical swipe started over the
   // >50vh stage. Reject every gesture below 900px so native scroll wins there.
-  // Desktop keeps the default gating (allow wheel, ignore ctrl/secondary-button).
   .filter(ev => !isPhone() && (!ev.ctrlKey || ev.type === "wheel") && !ev.button)
   .on("start", ev => { panMoved = false;
     if (ev.sourceEvent && ev.sourceEvent.type === "mousedown") stageEl.classList.add("grabbing"); })
@@ -518,632 +579,406 @@ svg.call(zoomBehav).on("dblclick.zoom", null);
 // every fresh level fits the viewport — discard any lingering pan/zoom
 function resetZoom() { svg.call(zoomBehav.transform, d3.zoomIdentity); }
 
-const CONCEPT_COLOR = {formalized: "#3b82f6", partial: "#eab308", not_formalized: "#ef4444"};
-// ext nodes (external-database pages) wear their db's ring color + short badge
 const DB_COLOR = {lmfdb_knowl: "#facc15", nlab: "#4ade80", mathworld: "#f87171",
   proofwiki: "#60a5fa", stacks: "#f97316", kerodon: "#22d3ee", oeis: "#a3e635",
   dlmf: "#c084fc", eom: "#fb7185", planetmath: "#34d399", metamath: "#94a3b8",
   msc: "#eab308"};
-const DB_ABBR = {lmfdb_knowl: "LMF", nlab: "nLab", mathworld: "MW", proofwiki: "PW",
-  stacks: "St", kerodon: "Ker", oeis: "OEIS", dlmf: "DLMF", eom: "EoM",
-  planetmath: "PM", metamath: "MM", msc: "MSC"};
 const extDbOf = id => id.split(":")[1] || "";
 const extValueOf = id => id.split(":").slice(2).join(":");
-function fillFor(item, depthShade) {
-  if (item.type === "concept") return CONCEPT_COLOR[item.status] || "#0969da";
-  if (item.type === "decl") return "#22c55e";
+
+const SHADE = "#22304d";              // supercell fill — the canvas is always dark
+const CELL_FORMAL = "#3b82f6";        // the atom has a decl organ (a formal home)
+const CELL_INFORMAL = "#8c959f";      // concept-only atom — nothing formalizes it yet
+const GOLD = "#eab308";               // a hand-written @[wikidata] tag rides in this atom
+function fillFor(item) {
+  if (item.type === "folder") return SHADE;
   if (item.type === "strays") return "#8c959f";
-  if (item.type === "external") return "#f472b6";
-  if (item.type === "ext") return "#1b2436";   // dark fill; the db ring carries color
-  if (item.type === "literature") return "#d4a72c";
-  return depthShade;   // container
+  return item.p ? CELL_FORMAL : CELL_INFORMAL;
 }
 
-// children of the current focus, as pack-able items
+// ---- level items: a supercell's sub-folders + the CELLS it holds ------------
+function folderItem(p) {
+  const sc = tree.sc[p] || {};
+  return {id: p, type: "folder", label: sc.label || p, n: tree.count(p),
+          f: 0, fa: sc.fa || 0};
+}
+function cellItem(cid) {
+  // a synapse endpoint may legitimately be a SUPERCELL: a field concept's bonds
+  // hang off the module that holds it (SCHEMA rule 5), so it reads as its folder
+  if (isPathId(cid)) {
+    const sc = (tree.sc || {})[cid] || {};
+    return {id: cid, type: "folder", label: sc.label || cid.slice(5),
+            n: tree.count ? tree.count(cid) : 0, f: 0, fa: sc.fa || 0};
+  }
+  const r = (labelById && labelById.get(cid)) || null;
+  return {id: cid, type: "cell", label: (r && r.label) || cid,
+          f: (r && r.f) || 0, p: (r && r.p) || null, aka: (r && r.aka) || null};
+}
 async function focusItems(id) {
-  if (id === LIBS_ID) {
-    const kinds = activeLibKinds();
-    return manifest.roots
-      .filter(r => kinds.has(r.library_kind || "math"))
-      .map(r => ({id: r.id, label: r.label, type: "container",
-                  n_decls: r.n_decls || 1, n_concepts: 0,
-                  ...(r.f !== undefined ? {f: r.f} : {}),
-                  ...(r.fa !== undefined ? {fa: r.fa} : {})}));
+  await ensureTree();
+  if (id === ROOTS_ID) {
+    // a root with no cells has nothing to dive into — v3 ships no library_kind,
+    // so emptiness (not a taxonomy toggle) is what prunes the 39 roots to 6
+    const items = tree.roots.filter(p => tree.count(p) > 0).map(folderItem);
+    if (tree.unplaced.length)
+      items.push({id: UNPLACED_ID, type: "folder", label: "no formal home",
+                  n: tree.unplaced.length, f: 0, fa: tree.unplacedFa});
+    return items;
   }
-  const e = await getEntry(id);
-  if (!e) return [];
-  const kids = (e.children && e.children.first || []).map(c => ({...c}));
-  const conts = kids.filter(c => c.type === "container");
-  let decls = kids.filter(c => c.type !== "container");
-  // At levels that have sub-containers, loose decls (placed here because the
-  // depth-capped tree has no deeper node) would flood the pack — collapse
-  // them into one small bubble; the panel's children list still has them all.
-  if (conts.length && decls.length > 12) {
-    // an active facet filter must still see matching loose decls — only the
-    // non-matching remainder collapses into the strays bubble
-    const keep = filterMask ? decls.filter(d => ((d.f || 0) & filterMask) !== 0) : [];
-    const rest = decls.length - keep.length;
-    decls = keep.concat(rest > 0
-      ? [{id: "__strays__", type: "strays",
-          label: rest + " loose decls", n: rest}] : []);
+  if (id === UNPLACED_ID) return tree.unplaced.map(cellItem);
+  const sc = tree.sc[id];
+  if (!sc) return [];
+  const folders = (sc.children || []).map(folderItem);
+  // a cell that spans several modules is listed by EACH of them, so it renders
+  // inside each — exactly what SCHEMA's `supercells` array asks for
+  let cells = (sc.cells || []).map(cellItem);
+  // At a level that HAS sub-areas, the cells filed directly here (Mathlib holds
+  // 567 of them) would flood the pack and shrink Algebra to a dot — collapse
+  // them into one bubble; the card still lists every one. An active facet filter
+  // must still see its matches, so only the remainder collapses.
+  if (folders.length && cells.length > 12) {
+    const keep = filterMask ? cells.filter(c => ((c.f || 0) & filterMask) !== 0) : [];
+    const rest = cells.length - keep.length;
+    cells = keep.concat(rest > 0
+      ? [{id: STRAYS_ID, type: "strays", label: rest + " cells filed here", n: rest}] : []);
   }
-  // concepts anchored to THIS container (field-of-study altitude links)
-  const anchored = (e.edges && e.edges.in || [])
-    .filter(x => x.kind === "formalizes")
-    .map(x => ({id: x.id, label: x.id, type: "concept",
-                mk: x.evidence && x.evidence.match_kind}));
-  // file level: concepts formalized by the decls here float beside them
-  // (decls of one file share shard prefixes, so this is a handful of fetches)
-  if (!conts.length && decls.length) {
-    const seen = new Set(anchored.map(a => a.id));
-    await Promise.all(decls.map(async d => {
-      const de = await getEntry(d.id);
-      for (const x of (de && de.edges && de.edges.in) || []) {
-        if (x.kind !== "formalizes" || seen.has(x.id)) continue;
-        seen.add(x.id);
-        anchored.push({id: x.id, label: x.id, type: "concept",
-                       mk: x.evidence && x.evidence.match_kind});
-      }
-    }));
-  }
-  // leaf level: ghost decls — in the formal snapshot but not yet linked by any
-  // brain edge. Rendered dimmer so a file's real contents are never invisible.
-  if (!conts.length && e.ghosts && e.ghosts.first) {
-    const lib = e.node.library || "Mathlib";
-    for (const name of e.ghosts.first)
-      decls.push({id: `decl:${lib}:${name}`, label: name, type: "decl", ghost: true});
-  }
-  return conts.concat(decls, anchored);
+  return folders.concat(cells);
 }
-
-// pack values: container area ~ decl-count^0.6 (compresses Algebra=52k vs a
-// 100-decl module into a ~6:1 radius ratio); concepts/decls small fixed dots
+// pack values: folder area ~ cell-count^0.6 (compresses Mathlib=7.3k vs a
+// 2-cell module into a ~10:1 radius ratio); cells are small fixed dots
 function packValue(item) {
-  if (item.type === "container") return Math.pow(Math.max(item.n_decls || 1, 1), 0.6);
-  if (item.type === "strays") return 30;
-  return item.type === "concept" ? 6 : 2.5;
+  if (item.type === "folder") return Math.pow(Math.max(item.n || 1, 1), 0.6);
+  return item.type === "strays" ? 30 : 6;
 }
 
-const SHADE = "#22304d";   // container fill — the canvas is always dark
 function drawNodes() {
   const leaves = layout.leaves;
+  // 8.9k <title> children is real DOM weight on the flat map and the labels
+  // already name the big ones — hover text is a level-view affordance
+  const withTitles = !(layout.explorer && leaves.length > 2000);
   const bubbles = gBubbles.selectAll("circle.node").data(leaves, l => l.data.id);
   bubbles.exit().remove();
   const entered = bubbles.enter().append("circle")
-    .attr("class", l => l.data.type === "container" ? "bubble node" : "dot node");
-  entered.append("title");
-  entered.merge(bubbles)
+    .attr("class", l => l.data.type === "folder" ? "bubble node" : "dot node");
+  if (withTitles) entered.append("title");
+  const all = entered.merge(bubbles);
+  all
     .attr("cx", l => l.x).attr("cy", l => l.y)
-    .attr("r", l => Math.max(l.r, 2.5))
-    .attr("fill", l => fillFor(l.data, SHADE))
-    .attr("fill-opacity", l => l.data.dim ? 0.15
-      : l.data.type === "container" ? 0.55 : l.data.ghost ? 0.35 : 0.9)
-    // ext bubbles wear their database's ring — inline style, because the
-    // .dot/.bubble CSS stroke would override a presentation attribute
-    .style("stroke", l => l.data.type === "ext"
-      ? (DB_COLOR[l.data.db || extDbOf(l.data.id)] || "#f472b6") : null)
-    .style("stroke-width", l => l.data.type === "ext" ? "2px" : null)
-    .on("click", (ev, l) => { ev.stopPropagation(); nodeClick(l.data); })
-    .select("title").text(l => l.data.label
-      + (l.data.type === "ext"
-        ? ` — ${XREF_NAME[l.data.db || extDbOf(l.data.id)] || "external"} page` : "")
-      + (l.data.n_decls ? ` — ${l.data.n_decls.toLocaleString()} decls` : "")
-      + (l.data.ghost ? " — in Mathlib, not yet linked in the brain" : ""));
+    .attr("r", l => Math.max(l.r, 2))
+    .attr("fill", l => fillFor(l.data))
+    .attr("fill-opacity", l => l.data.dim ? 0.15 : l.data.type === "folder" ? 0.55 : 0.9)
+    // the gold ring marks an atom carrying a hand-written @[wikidata] tag —
+    // inline style, because the .dot/.bubble CSS stroke overrides an attribute
+    .style("stroke", l => l.data.type === "cell" && !l.data.dim && ((l.data.f || 0) & 1)
+      ? GOLD : null)
+    .style("stroke-width", l => l.data.type === "cell" && ((l.data.f || 0) & 1) ? "1.6px" : null)
+    .on("click", (ev, l) => { ev.stopPropagation(); nodeClick(l.data); });
+  if (withTitles) all.select("title").text(l => l.data.label
+    + (l.data.type === "folder" ? ` — ${(l.data.n || 0).toLocaleString()} cells`
+      : l.data.type === "strays" ? " — filed at this level; the card lists them all"
+      : ((l.data.f || 0) & 1 ? " — carries a hand-written @[wikidata] tag" : "")));
 }
 
 function drawLabels() {
   gLabels.selectAll("*").remove();
-  // ego view lays labels flat under the node (edge-first); level views set them
+  // ego lays labels flat under the node (edge-first); level views set them
   // inside/over the bubble (containment-first)
   const flat = layout && layout.ego;
-  const ego = layout && layout.ego;
   for (const l of layout.leaves) {
-    if (ego && l.data.type !== "container" && l.data.type !== "concept") {
-      if (l.data.type === "ext") {   // db badge inside the ringed bubble
-        const db = l.data.db || extDbOf(l.data.id);
-        gLabels.append("text").attr("class", "blabel")
-          .attr("x", l.x).attr("y", l.y + 2.5).attr("font-size", 6.5)
-          .style("fill", DB_COLOR[db] || "#f472b6")
-          .text(DB_ABBR[db] || db.slice(0, 3));
-      }
-      const raw = l.data.label || l.data.id;
-      const short = l.data.type === "decl" && raw.includes(":")
-        ? raw.split(":").pop().split(".").slice(-2).join(".") : raw;
-      gLabels.append("text").attr("class", "blabel")
-        .attr("x", l.x).attr("y", l.y + l.r + 10).attr("font-size", 9)
-        .text(short.length > 28 ? short.slice(0, 26) + "…" : short);
-      continue;
-    }
-    if (l.data.type === "container") {
+    if (l.data.type === "folder") {
       if (!flat && l.r < 24) continue;
       const fs = flat ? 10 : Math.max(10, Math.min(16, l.r / 4.5));
       gLabels.append("text").attr("class", "blabel")
         .attr("x", l.x).attr("y", flat ? l.y + l.r + 11 : l.y - (l.r > 40 ? 4 : -4))
         .attr("font-size", fs).attr("opacity", l.data.dim ? 0.35 : null)
         .text(l.data.label);
-      if (!flat && l.r > 40) {
+      if (!flat && l.r > 40)
         gLabels.append("text").attr("class", "bcount")
           .attr("x", l.x).attr("y", l.y + fs - 2).attr("font-size", fs * 0.72)
           .attr("opacity", l.data.dim ? 0.35 : null)
-          .text(`${(l.data.n_decls || 0).toLocaleString()}${
-            l.data.n_concepts ? " · " + l.data.n_concepts + "★" : ""}`);
-      }
-    } else if (l.data.type === "concept" && l.data.label && !/^Q\d+$/.test(l.data.label)) {
-      if (!flat && l.r < 11) continue;
-      gLabels.append("text").attr("class", "blabel")
-        .attr("x", l.x).attr("y", l.y + Math.max(l.r, 3) + 10).attr("font-size", 9)
-        .text(l.data.label.length > 26 ? l.data.label.slice(0, 24) + "…" : l.data.label);
+          .text(`${(l.data.n || 0).toLocaleString()} cells`);
+      continue;
     }
+    if (!flat && l.r < 5) continue;
+    const raw = l.data.label || l.data.id;
+    gLabels.append("text").attr("class", "blabel")
+      .attr("x", l.x).attr("y", l.y + Math.max(l.r, 3) + 10).attr("font-size", 9)
+      .text(raw.length > 26 ? raw.slice(0, 24) + "…" : raw);
   }
 }
 
-// Ego view: a concept/decl/paper becomes the focus — it sits centered and
-// EVERYTHING it links to expands around it (formalizing decls, related
-// concepts, external database pages, papers, its home folders), laid out by a
-// static force pass. Clicking a neighbor re-centers on it, so you can walk
-// the Wikidata relation graph and the formal graph in one continuous motion.
-// Same edgeStore pipeline as the level views: the Layers + Provenance toggles
-// and edge evidence cards all apply.
-const EGO_DIST = {formalizes: 95, relates: 135, links: 150, xref: 160, depends: 175,
-                  matches: 195, cites: 205, mentions: 215};
-async function renderEgo(seq, entry, anim) {
-  const id = entry.node.id;
-  selectedId = id;
-  const kinds = activeKinds(), provs = activeProv();
-  const neigh = new Map();
-  let skipped = 0;
-  for (const dir of ["out", "in"]) {
-    for (const x of (entry.edges && entry.edges[dir]) || []) {
-      const pc = provClass(x.kind, manifest.prov[x.prov], x.evidence);
-      if (!kinds.has(x.kind) || !provs.has(pc)) continue;
-      if (neigh.has(x.id)) continue;
-      const t = idType(x.id);
-      const nd = {id: x.id, type: t, label: x.id, dir, edge: x,
-                  rank: SAT_RANK[x.kind] ?? 9};
-      if (t === "ext") {
-        // a REAL external-page node (shard-resolvable in v2 data) rendered as
-        // a db-ringed bubble; pre-v2 xref edges still resolve db/value/url
-        // from the id + evidence, so old data keeps working
-        const db = extDbOf(x.id);
-        nd.db = db;
-        nd.label = x.evidence && x.evidence.value !== undefined
-          ? `${XREF_NAME[db] || db}: ${x.evidence.value}` : extValueOf(x.id);
-        nd.url = nodeUrl(x.id);
-        if (x.kind === "xref") nd.rank = SAT_RANK.relates + 0.5;
-      }
-      neigh.set(x.id, nd);
-    }
-  }
-  if (entry.node.article_annotations && entry.node.slug) {
-    const aa = entry.node.article_annotations;
-    neigh.set("article:" + entry.node.slug, {
-      id: "article:" + entry.node.slug, type: "external", dir: "out",
-      label: `WikiLean article — ${aa.total} annotations`,
-      url: "/" + entry.node.slug,
-      edge: {kind: "mentions", prov: 0,
-             evidence: {role: "article", ...aa,
-                        note: "the concept's annotated Wikipedia mirror"}},
-      rank: -1});
-  }
-  let nodesArr = [...neigh.values()];
-  let fstat = null;
-  if (filterMask) {   // facet filter — resolve f lazily, then OR-match
-    await Promise.all(nodesArr.map(async nd => {
-      if (nd.f !== undefined) return;
-      const ne2 = await getEntry(nd.id);
-      if (ne2 && ne2.node && ne2.node.f !== undefined) nd.f = ne2.node.f;
-    }));
-    if (seq !== renderSeq) return;
-    const total = nodesArr.length;
-    const hasF = nodesArr.some(nd => nd.f !== undefined);
-    if (hasF) nodesArr = nodesArr.filter(nd => ((nd.f || 0) & filterMask) !== 0);
-    fstat = {active: true, shown: nodesArr.length, total, noF: !hasF};
-  }
-  updateFilterStat(fstat);
-  nodesArr.sort((a, b) => a.rank - b.rank);
-  if (nodesArr.length > 72) { skipped = nodesArr.length - 72; nodesArr = nodesArr.slice(0, 72); }
-
-  const W = stageEl.clientWidth || 800, H = stageEl.clientHeight || 600;
-  const R_BY_TYPE = {concept: 11, decl: 8, container: 13, literature: 7, external: 7, ext: 9};
-  const center = {data: {id, label: entry.node.label || id, type: entry.node.type},
-                  x: W / 2, y: H / 2, r: 24};
-  const leaves = [center].concat(nodesArr.map(nd => ({
-    data: nd, x: W / 2 + (Math.random() - 0.5), y: H / 2 + (Math.random() - 0.5),
-    r: R_BY_TYPE[nd.type] || 8,
-  })));
-  const sims = leaves.map(l => ({id: l.data.id, l, x: l.x, y: l.y, r: l.r}));
-  sims[0].fx = W / 2; sims[0].fy = H / 2;
-  const links = nodesArr.map(nd => ({source: id, target: nd.id,
-    dist: EGO_DIST[nd.edge.kind] || 180}));
-  const sim = d3.forceSimulation(sims)
-    .force("link", d3.forceLink(links).id(d => d.id).distance(l => l.dist).strength(0.6))
-    .force("charge", d3.forceManyBody().strength(-170).distanceMax(420))
-    .force("collide", d3.forceCollide(d => d.r + 11))
-    .stop();
-  for (let i = 0; i < 220; i++) sim.tick();
-  for (const sm of sims) {
-    sm.l.x = Math.max(sm.r + 6, Math.min(W - sm.r - 6, sm.x));
-    sm.l.y = Math.max(sm.r + 6, Math.min(H - sm.r - 18, sm.y));
-  }
-
-  layout = {items: new Map(leaves.map(l => [l.data.id, l])), leaves, ego: true};
-  edgeStore = nodesArr.map(nd => ({kind: nd.edge.kind, a: id, b: nd.id,
-    w: (nd.edge.evidence && nd.edge.evidence.w_types && nd.edge.evidence.w_types.sig) || 1,
-    payload: nd.edge,
-    from: nd.dir === "in" ? nd.id : id,   // arrow points the true way (in = neighbor → focus)
-    to: nd.dir === "in" ? id : nd.id}));
-  gEdges.selectAll("*").remove();
-  gOverlay.selectAll("*").remove();
-  gBubbles.selectAll("circle.preview").remove();
-  drawNodes();
-  drawLabels();
-  renderEdges();
-  drawSelRing();
-  renderCrumb();
-  statusEl.textContent = `${nodesArr.length} linked nodes${
-    skipped ? ` (+${skipped} more in the panel)` : ""} · ` +
-    `${entry.node.type === "concept" ? id : entry.node.type} ego view`;
-  if (anim) {
-    const g = [gEdges, gBubbles, gOverlay, gLabels];
-    for (const gr of g) gr.attr("opacity", 0).transition().duration(260).attr("opacity", 1);
-    setTimeout(() => g.forEach(gr => { gr.interrupt(); gr.attr("opacity", 1); }), 600);
-  }
-  // resolve neighbor labels lazily (shared prefix shards — few fetches)
-  let pending = 0;
-  for (const nd of nodesArr) {
-    if (nd.type === "external" || (nd.label && nd.label !== nd.id)) continue;
-    pending++;
-    getEntry(nd.id).then(ne => {
-      if (seq !== renderSeq) return;
-      if (ne && ne.node.label) nd.label = ne.node.label;
-      else if (nd.type === "decl") nd.label = nd.id.split(":").pop().split(".").slice(-2).join(".");
-      if (--pending <= 0) drawLabels();
-    });
-  }
-  renderPanel(id);
-}
-
-let renderSeq = 0;   // guards against out-of-order async renders
-
-// ---- facet filter (the f bitmask; SCHEMA.md v2) -----------------------------
-// Chips OR together; a node shows iff (f & mask) != 0. Non-matching leaf nodes
-// (and every edge touching them) drop out of the level; containers stay as
-// dimmed context. Feature-detect: pre-v2 shard data carries no f — an active
-// filter must then leave the canvas alone rather than blank it.
-async function applyFacetFilter(items, seq) {
+// ---- facet filter (the f bitmask; SCHEMA v2 `f` / v3 `fa`) ------------------
+// Chips OR together; a CELL shows iff (f & mask) != 0. A FOLDER survives on its
+// subtree-aggregate bits `fa` — testing a folder's own `f` (always 0 in v3) is
+// what greys the whole canvas to "showing 0 of 77".
+function applyFacetFilter(items) {
   for (const it of items) delete it.dim;
   if (!filterMask)
     return {items, shown: items.length, total: items.length, active: false};
-  // children rows carry f when the data is v2-built; anchored concepts come
-  // from edges and resolve theirs from the node payload (cached shards)
-  await Promise.all(items.map(async it => {
-    if (it.f !== undefined || it.type !== "concept") return;
-    const ce = await getEntry(it.id);
-    if (ce && ce.node && ce.node.f !== undefined) it.f = ce.node.f;
-  }));
-  const total = items.length;
-  if (seq !== renderSeq) return {items, shown: total, total, active: true};
-  if (!items.some(it => it.f !== undefined || it.fa !== undefined))
-    return {items, shown: total, total, active: true, noF: true};
   const match = it => ((it.f || 0) & filterMask) !== 0;
-  // a container also matches when its SUBTREE does (fa = aggregate facet
-  // bits) — it stays bright and navigable so the user can descend to the
-  // matching decls/concepts instead of staring at a fully-dimmed level
-  const matchAgg = it => it.type === "container" &&
-    (((it.f || 0) | (it.fa || 0)) & filterMask) !== 0;
+  const folderMatch = it => (((it.f || 0) | (it.fa || 0)) & filterMask) !== 0;
   const kept = [];
   let shown = 0;
   for (const it of items) {
-    if (it.type === "container") {
-      it.dim = !(match(it) || matchAgg(it));
+    if (it.type === "folder") {
+      // a folder stays bright and navigable whenever its SUBTREE matches, so
+      // the user can descend to the matching cells instead of a dead level
+      it.dim = !folderMatch(it);
       kept.push(it);
       if (!it.dim) shown++;
-    }
-    else if (match(it)) { kept.push(it); shown++; }
+    } else if (match(it)) { kept.push(it); shown++; }
   }
-  return {items: kept, shown, total, active: true};
+  return {items: kept, shown, total: items.length, active: true};
 }
 function updateFilterStat(fv) {
   const el = $("#filterstat");
   if (!el) return;
   el.textContent = !fv || !fv.active ? ""
-    : fv.noF ? "facet data not in this build yet"
     : fv.text ? fv.text
-    : `showing ${fv.shown} of ${fv.total} nodes`;
+    : `showing ${fv.shown} of ${fv.total}`;
 }
-
-async function renderFocus(anim) {
-  if (explorerOn) return renderExplorer(anim);
-  const seq = ++renderSeq;
-  resetZoom();   // a fresh level is laid out to fit the stage — drop any pan/zoom
-  if (focusId !== LIBS_ID) {
-    const fe = await getEntry(focusId);
-    if (seq !== renderSeq) return;
-    if (fe && fe.node.type !== "container") return renderEgo(seq, fe, anim);
-  }
-  const items = await focusItems(focusId);
-  if (seq !== renderSeq) return;
-  const fv = await applyFacetFilter(items, seq);
-  if (seq !== renderSeq) return;
-  updateFilterStat(fv);
-  const shownItems = fv.items;
-  const W = stageEl.clientWidth || 800, H = stageEl.clientHeight || 600;
-  const root = d3.hierarchy({children: shownItems}).sum(d => d.children ? 0 : packValue(d));
-  d3.pack().size([W, H]).padding(shownItems.length > 150 ? 1.5 : 4)(root);
-  const leaves = root.leaves().filter(l => l.data.id);
-
-  layout = {items: new Map(leaves.map(l => [l.data.id, l])), leaves: leaves};
-  gEdges.selectAll("*").remove();
-  gOverlay.selectAll("*").remove();
-  gBubbles.selectAll("circle.preview").remove();
-  drawNodes();
-  drawLabels();
-
-  // concept dots boot with their QID as label; resolve real labels lazily
-  let pendingLabels = 0;
-  for (const l of leaves) {
-    if (l.data.type !== "concept") continue;
-    pendingLabels++;
-    getEntry(l.data.id).then(ce => {
-      if (seq !== renderSeq || !ce || !ce.node.label) return;
-      l.data.label = ce.node.label;
-      gBubbles.selectAll("circle.node").filter(d => d.data.id === l.data.id)
-        .select("title").text(ce.node.label);
-      if (--pendingLabels <= 0) drawLabels();
-    });
-  }
-
-  drawSelRing();
-  renderCrumb();
-  if (anim) {
-    const g = [gEdges, gBubbles, gOverlay, gLabels];
-    for (const gr of g) gr.attr("opacity", 0).transition().duration(260).attr("opacity", 1);
-    // rAF-driven transitions pause in background tabs — never leave the
-    // canvas stuck invisible
-    setTimeout(() => g.forEach(gr => { gr.interrupt(); gr.attr("opacity", 1); }), 600);
-  }
-
-  // background enrichment: children shards → inner previews + the edge web
-  enrich(seq, leaves);
-}
-
-// EVERY drawn edge is a real brain edge (or a pair of xref edges to the same
-// external page) and carries its payload for the click-to-inspect panel card.
+// ============================ synapses =======================================
+// A synapse is ONE undirected aggregate of every weak bond between two cells
+// (SCHEMA: "src/dst are ordered lexicographically, not directionally") — so no
+// arrowheads on the canvas; direction lives on each trace, in the drawer.
 const EDGE_STYLE = {
-  depends:      {color: "#a78bfa", dash: null,   label: "formal dependency"},
-  formalizes:   {color: "#38bdf8", dash: null,   label: "formalizes (formal↔informal join)"},
-  relates:      {color: "#fbbf24", dash: "5 3",  label: "Wikidata relation (informal)"},
-  mentions:     {color: "#94a3b8", dash: "2 3",  label: "article mention (informal)"},
-  "xref-shared":{color: "#f472b6", dash: "5 3",  label: "same external-database page"},
-  xref:         {color: "#f472b6", dash: "3 3",  label: "cross-database identity"},
-  cites:        {color: "#fb923c", dash: "2 4",  label: "stated in the literature (TheoremGraph)"},
-  matches:      {color: "#2dd4bf", dash: null,   label: "formal ↔ literature match"},
-  links:        {color: "#84cc16", dash: "2 2",  label: "page link (external database)"},
+  depends:         {color: "#a78bfa", dash: null,  label: "formal dependency"},
+  generalization:  {color: "#38bdf8", dash: "4 3", label: "formalization claim (generalization)"},
+  special_case:    {color: "#38bdf8", dash: "4 3", label: "formalization claim (special case)"},
+  invocation:      {color: "#38bdf8", dash: "4 3", label: "formalization claim (invocation)"},
+  related:         {color: "#38bdf8", dash: "4 3", label: "formalization claim (related)"},
+  relates:         {color: "#fbbf24", dash: "5 3", label: "Wikidata relation (informal)"},
+  mentions:        {color: "#94a3b8", dash: "2 3", label: "article mention (informal)"},
+  "co-page":       {color: "#f472b6", dash: "5 3", label: "same external-database page"},
+  "co-statement":  {color: "#2dd4bf", dash: "5 3", label: "same arXiv statement"},
+  cites:           {color: "#fb923c", dash: "2 4", label: "stated in the literature (TheoremGraph)"},
+  links:           {color: "#84cc16", dash: "2 2", label: "page link (external database)"},
 };
-let edgeStore = [];
-
-// prefetch visible shards: grandchild previews, container rollup edges, and
-// the ontology web among visible concepts/decls (formal + informal)
-async function enrich(seq, leaves) {
-  const visible = new Set(leaves.map(l => l.data.id));
-  const containers = leaves.filter(l => l.data.type === "container");
-  const store = new Map();   // kind|a|b -> edge
-  // from/to carry the true dependency direction (a/b are only the dedup key
-  // order); the heavier of the two directions wins and its arrow is drawn.
-  const put = (kind, a, b, w, payload, from, to) => {
-    const key = kind + "|" + (a < b ? a + "|" + b : b + "|" + a);
-    const prev = store.get(key);
-    if (!prev || w > prev.w) store.set(key, {kind, a, b, w, payload, from: from ?? a, to: to ?? b});
-  };
-
-  await Promise.all(containers.map(async l => {
-    const e = await getEntry(l.data.id);
-    if (seq !== renderSeq || !e) return;
-    // grandchild preview: faint inner circles (top 24 by size)
-    const kids = (e.children && e.children.first || [])
-      .filter(c => c.type === "container").slice(0, 24);
-    if (kids.length > 1 && l.r > 26) {
-      const inner = d3.hierarchy({children: kids})
-        .sum(d => d.children ? 0 : Math.pow(Math.max(d.n_decls || 1, 1), 0.6));
-      d3.pack().size([l.r * 1.7, l.r * 1.7]).padding(2)(inner);
-      for (const k of inner.leaves()) {
-        gBubbles.append("circle").attr("class", "preview")
-          .attr("cx", l.x - l.r * 0.85 + k.x).attr("cy", l.y - l.r * 0.85 + k.y)
-          .attr("r", k.r).attr("fill", "none")
-          .attr("stroke", "currentColor").attr("stroke-opacity", 0.14);
-      }
-    }
-    // informal rollups: relates (Wikidata, human) + mentions (articles, AI)
-    // aggregated between concept homes — the human/AI synapses between bubbles
-    const inf = e.rollup && e.rollup.informal;
-    if (inf) {
-      for (const row of inf) {
-        if (!visible.has(row.id)) continue;
-        put(row.kind, l.data.id, row.id, row.count,
-            {prov: row.prov, confidence: "high",
-             evidence: {aggregated: true, count: row.count, sample_pairs: row.samples,
-                        note: "concept-level " + row.kind + " flows between these areas"}},
-            l.data.id, row.id);
-      }
-    }
-    // container↔container depends from the typed rollups (sig weights) —
-    // both directions: a sibling link crowded out of A's top-N by global
-    // hubs often survives in B's
-    for (const grain of ["tree", "module", "dir"]) {
-      const b = e.rollup && e.rollup[grain];
-      if (!b) continue;
-      for (const dir of ["out", "in"]) {
-        for (const row of b[dir] || []) {
-          if (!visible.has(row.id)) continue;
-          const sig = row.evidence && row.evidence.w_types ? row.evidence.w_types.sig : 0;
-          if (sig) put("depends", l.data.id, row.id, sig, row,
-                        dir === "out" ? l.data.id : row.id,
-                        dir === "out" ? row.id : l.data.id);
-        }
-      }
-    }
-  }));
-
-  // the ontology web: every visible concept's edges to other visible nodes,
-  // plus same-external-page pairs (two concepts both xref-ing one nLab/
-  // MathWorld/LMFDB/… page — the cross-database fabric made visible)
-  const concepts = leaves.filter(l => l.data.type === "concept");
-  const xrefPages = new Map();   // external page id -> [concept ids]
-  await Promise.all(concepts.map(async l => {
-    const e = await getEntry(l.data.id);
-    if (seq !== renderSeq || !e) return;
-    for (const dir of ["out", "in"]) {
-      for (const x of (e.edges && e.edges[dir]) || []) {
-        if (x.kind === "xref") {
-          const arr = xrefPages.get(x.id) || [];
-          arr.push([l.data.id, x]);
-          xrefPages.set(x.id, arr);
-          continue;
-        }
-        if (!visible.has(x.id) || !EDGE_STYLE[x.kind]) continue;
-        const w = x.kind === "depends" && x.evidence && x.evidence.w_types
-          ? x.evidence.w_types.sig || 1 : 1;
-        put(x.kind, l.data.id, x.id, w, x,
-            dir === "out" ? l.data.id : x.id,
-            dir === "out" ? x.id : l.data.id);
-      }
-    }
-  }));
-  for (const [page, arr] of xrefPages) {
-    if (arr.length < 2) continue;
-    for (let i = 0; i < arr.length; i++)
-      for (let j = i + 1; j < arr.length; j++)
-        put("xref-shared", arr[i][0], arr[j][0], 1,
-            {evidence: {shared_page: page, via: [arr[i][1], arr[j][1]]},
-             confidence: "high"});
-  }
-
-  if (seq !== renderSeq) return;
-  edgeStore = [...store.values()];
-  renderEdges();
-  if (lastPanelId === focusId && !selectedId) renderPanel(focusId);
+const SYN_COLOR = "#7c8db5";   // the flat map ships weights only — no kind to colour by
+// concept→decl claims that did not fuse the two into one atom (rules 2/3)
+const FORM_FAMILY = new Set(["generalization", "special_case", "invocation", "related"]);
+// the kind that gives a synapse its colour: the heaviest constituent
+function dominantKind(kinds) {
+  let best = null, bw = -1;
+  for (const [k, v] of Object.entries(kinds || {})) if (v > bw) { bw = v; best = k; }
+  return best;
 }
-
-function liftOf(e) {
-  return (e.payload && e.payload.evidence && e.payload.evidence.lift) || null;
+// a synapse survives the Layers filter if ANY constituent bond does, and the
+// Provenance filter if ANY trace does (an area-level synapse ships no traces —
+// it can't be judged, so it is never silently dropped)
+function synVisible(e, kinds, provs) {
+  const ks = Object.keys(e.kinds || {});
+  if (ks.length && !ks.some(k => kinds.has(k))) return false;
+  const tr = e.traces || [];
+  if (!tr.length) return true;
+  return tr.some(t => provs.has(provClass(t.kind, manifest.prov[t.prov], t.evidence)));
 }
+let edgeStore = [];   // [{a, b, w, kinds, traces, tt}] for the level/ego views
+
 function renderEdges() {
   gEdges.selectAll("*").remove();
-  if (!layout) return;
-  const kinds = activeKinds();
-  const provs = activeProv();
-  const dehub = $("#dehub").checked;
-  const show = edgeStore.filter(e =>
-    (e.kind === "xref-shared" ? kinds.has("xref") : kinds.has(e.kind))
-    && provs.has(provClass(e.kind,
-        e.payload && e.payload.prov !== undefined ? manifest.prov[e.payload.prov] : null,
-        e.payload && e.payload.evidence)));
-  // depends dominates by count — cap it, keep every join/informal edge.
-  // De-hub mode ranks by lift×√sig (affinity × volume) instead of raw volume,
-  // per arXiv 2604.24797: raw weights measure infrastructure, not relevance.
-  const rank = e => dehub ? (liftOf(e) || 0.05) * Math.sqrt(e.w) : e.w;
-  const depAll = show.filter(e => e.kind === "depends");
-  const dep = depAll.slice().sort((x, y) => rank(y) - rank(x)).slice(0, 250);
-  const rest = show.filter(e => e.kind !== "depends");
-  depCap = {shown: dep.length, total: depAll.length, dehub};
-  const maxSig = dep.reduce((m, e) => Math.max(m, e.w), 1);
-  const depOpacity = e => {
-    const lf = liftOf(e);
-    return dehub && lf !== null
-      ? Math.min(0.9, Math.max(0.06, 0.06 + 0.17 * Math.log2(1 + lf)))
-      : 0.16 + 0.3 * (e.w / maxSig);
-  };
-  // every drawn edge keeps its fat hit twin — an uninspectable edge reads as
-  // a bug (the explorer caps TOTAL edges instead of shedding twins)
-  for (const e of [...dep, ...rest]) {
-    const directed = DIRECTED.has(e.kind);
-    // undirected kinds use a/b; directed kinds draw from source → target so the
-    // arrowhead lands on the dependency/target end
-    const A = layout.items.get(directed ? (e.from || e.a) : e.a);
-    const B = layout.items.get(directed ? (e.to || e.b) : e.b);
+  if (!layout || layout.explorer) return;
+  const kinds = activeKinds(), provs = activeProv();
+  const show = edgeStore
+    .filter(e => synVisible(e, kinds, provs))
+    .sort((x, y) => y.w - x.w).slice(0, 400);
+  const maxW = show.reduce((m, e) => Math.max(m, e.w), 1);
+  const widthOf = e => 0.7 + 2.4 * Math.sqrt(e.w / maxW);
+  for (const e of show) {
+    const A = layout.items.get(e.a), B = layout.items.get(e.b);
     if (!A || !B) continue;
-    if (A.data.dim || B.data.dim) continue;   // filtered-out context containers
+    if (A.data.dim || B.data.dim) continue;   // filtered-out context folders
     const mx = (A.x + B.x) / 2, my = (A.y + B.y) / 2;
     const dx = B.x - A.x, dy = B.y - A.y;
     // deterministic per-pair bend so parallel routes fan out instead of piling
     let h = 0;
-    const hk = e.a + "|" + e.b + e.kind;
+    const hk = e.a + "|" + e.b;
     for (let i = 0; i < hk.length; i++) h = (h * 31 + hk.charCodeAt(i)) >>> 0;
     const bend = (0.08 + (h % 1000) / 1000 * 0.22) * ((h & 1) ? 1 : -1);
     const cpx = mx - dy * bend, cpy = my + dx * bend;   // quadratic control point
-    // trim the arrow end back to the node's rim so the head isn't buried
-    let ex = B.x, ey = B.y;
-    if (directed) {
-      let tx = B.x - cpx, ty = B.y - cpy;               // tangent at the end ≈ B - control
-      const tl = Math.hypot(tx, ty) || 1;
-      const back = Math.max(B.r || 3, 3) + 3.5;
-      ex = B.x - (tx / tl) * back; ey = B.y - (ty / tl) * back;
-    }
-    const d = `M${A.x},${A.y} Q${cpx},${cpy} ${ex},${ey}`;
-    const hitD = `M${A.x},${A.y} Q${cpx},${cpy} ${B.x},${B.y}`;
-    const st = EDGE_STYLE[e.kind];
-    const isDep = e.kind === "depends";
-    const baseOp = isDep ? depOpacity(e) : 0.5;
+    const d = `M${A.x},${A.y} Q${cpx},${cpy} ${B.x},${B.y}`;
+    const st = EDGE_STYLE[dominantKind(e.kinds)] || {color: SYN_COLOR, dash: null};
+    const baseOp = 0.3 + 0.45 * (e.w / maxW);
     const p = gEdges.append("path").attr("class", "link")
       .attr("d", d).attr("fill", "none")
-      .attr("stroke", st.color)
-      .attr("stroke-width", isDep ? 0.6 + 2.6 * Math.sqrt(e.w / maxSig)
-            : 1 + Math.min(2.2, Math.log2(1 + e.w) * 0.5))
+      .attr("stroke", st.color).attr("stroke-width", widthOf(e))
       .attr("stroke-opacity", baseOp);
     if (st.dash) p.attr("stroke-dasharray", st.dash);
-    if (directed) p.attr("marker-end", ensureMarker(st.color));
-    // invisible fat twin = the click/hover target
+    // every drawn edge keeps its fat hit twin — an uninspectable edge reads as
+    // a bug
     gEdges.append("path").attr("class", "hit")
-      .attr("d", hitD).attr("fill", "none")
+      .attr("d", d).attr("fill", "none")
       .attr("stroke", "transparent").attr("stroke-width", 14)
       .style("cursor", "pointer")
-      .on("mouseenter", () => p.attr("stroke-opacity", 0.95)
-        .attr("stroke-width", (isDep ? 0.6 + 2.6 * Math.sqrt(e.w / maxSig)
-          : 1 + Math.min(2.2, Math.log2(1 + e.w) * 0.5)) + 1.4))
-      .on("mouseleave", () => p.attr("stroke-opacity", baseOp)
-        .attr("stroke-width", isDep ? 0.6 + 2.6 * Math.sqrt(e.w / maxSig)
-          : 1 + Math.min(2.2, Math.log2(1 + e.w) * 0.5)))
-      .on("click", ev => { ev.stopPropagation(); showEdgePanel(e); });
+      .on("mouseenter", () => p.attr("stroke-opacity", 0.95).attr("stroke-width", widthOf(e) + 1.4))
+      .on("mouseleave", () => p.attr("stroke-opacity", baseOp).attr("stroke-width", widthOf(e)))
+      .on("click", ev => { ev.stopPropagation(); showSynapsePanel(e.a, e.b, e); });
   }
   paintCommunities();
   updateStructStat();
 }
 
-// Live readout of what the two Structure toggles are doing at this level, so the
-// controls visibly earn their place: de-hub reports whether the depends-cap is
-// biting (it only changes which edges show once there are >250 candidates —
-// i.e. inside a dense library), and communities reports the cluster count.
-let depCap = {shown: 0, total: 0, dehub: true};
-let commState = {n: 0, reason: ""};
-function updateStructStat() {
-  const el = $("#structstat");
-  if (!el) return;
-  const parts = [];
-  const capped = depCap.total > depCap.shown;
-  if (depCap.dehub)
-    parts.push(capped ? `de-hub: top ${depCap.shown} of ${depCap.total} deps by affinity`
-                      : "de-hub: weighting deps by affinity");
-  else
-    parts.push(capped ? `raw volume: top ${depCap.shown} of ${depCap.total} deps`
-                      : "raw volume");
-  if (commState.reason === "off") parts.push("communities off");
-  else if (commState.reason === "nodeps") parts.push("communities need formal deps");
-  else if (commState.reason === "sparse") parts.push("one community here");
-  else if (commState.reason === "ok")
-    parts.push(`${commState.n} logical ${commState.n === 1 ? "community" : "communities"}`);
-  el.textContent = parts.join(" · ");
+// ---- level view ------------------------------------------------------------
+// A folder level is laid out straight from the tree — no fetch. The synapse web
+// among its CELLS costs one shard fetch per cell, so it only runs where that
+// fan-out stays sane; a big folder's web is the Explorer's job (locality law).
+const CELL_WEB_CAP = 60;
+let webState = {shown: 0, cells: 0, capped: false};
+async function enrich(seq, leaves) {
+  const visible = new Set(leaves.map(l => l.data.id));
+  const store = new Map();
+  const put = (a, b, s) => {
+    const key = a < b ? a + "|" + b : b + "|" + a;   // the SAME synapse is listed
+    if (store.has(key)) return;                      // by both of its endpoints
+    store.set(key, {a, b, w: s.w, kinds: s.kinds || {}, traces: s.traces || [], tt: s.tt});
+  };
+  // grandchild preview: faint inner circles (top 24 by size) — free, from the tree
+  for (const l of leaves) {
+    if (l.data.type !== "folder" || l.r <= 26) continue;
+    const kids = (tree.sc[l.data.id] && tree.sc[l.data.id].children || [])
+      .map(folderItem).sort((a, b) => b.n - a.n).slice(0, 24);
+    if (kids.length < 2) continue;
+    const inner = d3.hierarchy({children: kids})
+      .sum(d => d.children ? 0 : Math.pow(Math.max(d.n || 1, 1), 0.6));
+    d3.pack().size([l.r * 1.7, l.r * 1.7]).padding(2)(inner);
+    for (const k of inner.leaves()) {
+      gBubbles.append("circle").attr("class", "preview")
+        .attr("cx", l.x - l.r * 0.85 + k.x).attr("cy", l.y - l.r * 0.85 + k.y)
+        .attr("r", k.r).attr("fill", "none")
+        .attr("stroke", "currentColor").attr("stroke-opacity", 0.14);
+    }
+  }
+  // rule-5 synapses: a field concept's bonds hang off the FOLDER that holds it,
+  // so a synapse endpoint may legitimately be a supercell. They ship on the
+  // tree — free, and they carry no traces (the API has the full set).
+  for (const l of leaves) {
+    if (l.data.type !== "folder") continue;
+    for (const s of (tree.sc[l.data.id] || {}).syn || [])
+      if (visible.has(s.id)) put(l.data.id, s.id, s);
+  }
+  const cells = leaves.filter(l => l.data.type === "cell");
+  webState = {shown: 0, cells: cells.length, capped: cells.length > CELL_WEB_CAP};
+  if (cells.length && !webState.capped) {
+    await Promise.all(cells.map(async l => {
+      const e = await getEntry(l.data.id);
+      if (seq !== renderSeq || !e) return;
+      for (const s of e.syn || []) if (visible.has(s.id)) put(l.data.id, s.id, s);
+    }));
+  }
+  if (seq !== renderSeq) return;
+  edgeStore = [...store.values()];
+  webState.shown = edgeStore.length;
+  renderEdges();
+  if (lastPanelId === focusId && !selectedId) renderPanel(focusId);
 }
 
-// blend two #rrggbb colors, t=0 → a, t=1 → b
+async function renderFocus(anim) {
+  if (explorerOn) return renderExplorer(anim);
+  const seq = ++renderSeq;
+  resetZoom();
+  await ensureTree();
+  if (seq !== renderSeq) return;
+  if (isCellId(focusId)) {
+    const fe = await getEntry(focusId);
+    if (seq !== renderSeq) return;
+    if (fe) return renderCellEgo(seq, fe, anim);
+    focusId = ROOTS_ID;   // unknown atom → don't strand the canvas
+  }
+  const items = await focusItems(focusId);
+  if (seq !== renderSeq) return;
+  const fv = applyFacetFilter(items);
+  updateFilterStat(fv);
+  const W = stageEl.clientWidth || 800, H = stageEl.clientHeight || 600;
+  const root = d3.hierarchy({children: fv.items}).sum(d => d.children ? 0 : packValue(d));
+  d3.pack().size([W, H]).padding(fv.items.length > 150 ? 1.5 : 4)(root);
+  const leaves = root.leaves().filter(l => l.data.id);
+
+  layout = {items: new Map(leaves.map(l => [l.data.id, l])), leaves};
+  edgeStore = [];
+  gEdges.selectAll("*").remove();
+  gOverlay.selectAll("*").remove();
+  gBubbles.selectAll("circle.preview").remove();
+  drawNodes();
+  drawLabels();
+  drawSelRing();
+  renderCrumb();
+  const folders = fv.items.filter(i => i.type === "folder").length;
+  statusEl.textContent = `${(fv.items.length - folders).toLocaleString()} cells · ` +
+    `${folders} areas · ${focusId === ROOTS_ID ? "all libraries"
+      : focusId === UNPLACED_ID ? "no formal home" : focusId.slice(5)}`;
+  if (anim) fadeIn();
+  enrich(seq, leaves);   // background: previews + the synapse web
+}
+function fadeIn() {
+  const g = [gEdges, gBubbles, gOverlay, gLabels];
+  for (const gr of g) gr.attr("opacity", 0).transition().duration(260).attr("opacity", 1);
+  // rAF-driven transitions pause in background tabs — never leave the canvas
+  // stuck invisible
+  setTimeout(() => g.forEach(gr => { gr.interrupt(); gr.attr("opacity", 1); }), 600);
+}
+
+// ---- ego view: one atom and its synapses ------------------------------------
+// The cell sits centered and its heaviest synapses fan around it on rings,
+// ranked by weight. Deterministic placement, NOT a simulation — SCHEMA "Layout
+// is BUILD-TIME: the client renders and never simulates". Labels come from
+// labels.json, so the whole view costs the one shard fetch already made.
+const EGO_CAP = 60;
+async function renderCellEgo(seq, entry, anim) {
+  const id = entry.cell.id;
+  selectedId = id;
+  const kinds = activeKinds(), provs = activeProv();
+  const all = (entry.syn || []).map(s =>
+    ({a: id, b: s.id, w: s.w, kinds: s.kinds || {}, traces: s.traces || [], tt: s.tt}));
+  let shown = all.filter(e => synVisible(e, kinds, provs));
+  const skipped = Math.max(0, shown.length - EGO_CAP);
+  shown = shown.slice(0, EGO_CAP);          // syn ships sorted by weight
+  const W = stageEl.clientWidth || 800, H = stageEl.clientHeight || 600;
+  const cx = W / 2, cy = H / 2;
+  const center = {data: {id, label: entry.cell.label || id, type: "cell",
+                         f: entry.cell.f || 0, p: (entry.cell.supercells || [])[0] || null},
+                  x: cx, y: cy, r: 22};
+  const leaves = [center];
+  // concentric rings, capacity growing with circumference: heaviest synapses
+  // land closest, and no two neighbours share a point
+  let i = 0, ring = 0;
+  while (i < shown.length) {
+    const rr = 105 + ring * 78;
+    const cap = Math.max(8, Math.floor((2 * Math.PI * rr) / 58));
+    const count = Math.min(cap, shown.length - i);
+    for (let j = 0; j < count; j++, i++) {
+      const a = -Math.PI / 2 + (j / count) * 2 * Math.PI + ring * 0.21;
+      const it = cellItem(shown[i].b);
+      leaves.push({data: it, x: cx + rr * Math.cos(a), y: cy + rr * Math.sin(a), r: 8});
+    }
+    ring++;
+  }
+  layout = {items: new Map(leaves.map(l => [l.data.id, l])), leaves, ego: true};
+  edgeStore = shown.filter(e => layout.items.has(e.b));
+  gEdges.selectAll("*").remove();
+  gOverlay.selectAll("*").remove();
+  gBubbles.selectAll("circle.preview").remove();
+  drawNodes();
+  drawLabels();
+  renderEdges();
+  drawSelRing();
+  renderCrumb();
+  statusEl.textContent = `${shown.length} synapse${shown.length === 1 ? "" : "s"}` +
+    `${skipped ? ` (+${skipped} more in the card)` : ""} · ` +
+    `${(entry.counts && entry.counts.organs) || (entry.organs || []).length} organs · cell view`;
+  updateFilterStat(null);
+  if (anim) fadeIn();
+  renderPanel(id);
+}
+// ---- logical communities ---------------------------------------------------
+// Greedy modularity merging over the level's `depends` synapses. Makes arXiv
+// 2604.24797's Finding 1 visible — where dependency communities cut across the
+// folder tree. Inside a folder every cell is formal, so the blue/grey fill
+// carries no information there and the community tint costs nothing.
 function mix(a, b, t) {
   const ch = (h, i) => parseInt(h.slice(1 + 2 * i, 3 + 2 * i), 16);
   const hx = x => Math.round(x).toString(16).padStart(2, "0");
   return "#" + [0, 1, 2].map(i => hx(ch(a, i) + (ch(b, i) - ch(a, i)) * t)).join("");
 }
-
-// Logical-community coloring of the visible level: greedy modularity merging
-// over the sibling depends graph (lift-corrected weights). Makes the paper's
-// Finding 1 visible — where dependency communities cut across the folder tree.
 const COMM_PALETTE = ["#f2711c", "#3fb950", "#58a6ff", "#d2a8ff", "#e3b341",
                       "#ff7b72", "#39c5cf", "#a5d6ff", "#ffa657", "#bc8cff"];
 function communitiesOf(ids, links) {
@@ -1175,207 +1010,70 @@ function communitiesOf(ids, links) {
   }
   return comm;
 }
+let commState = {n: 0, reason: ""};
 function paintCommunities() {
-  const conts = [...layout.items.values()].filter(l => l.data.type === "container");
-  // clear pass: restore the base dark fill + drop any prior community ring
-  gBubbles.selectAll("circle.bubble")
+  // clear pass: restore the base fills + drop any prior community ring
+  gBubbles.selectAll("circle.node")
     .attr("stroke", null).attr("stroke-width", null).attr("stroke-opacity", null)
-    .attr("fill", l => fillFor(l.data, SHADE));
+    .attr("fill", l => fillFor(l.data));
   if (!$("#commColor").checked) { commState = {n: 0, reason: "off"}; return; }
   if (!activeKinds().has("depends")) { commState = {n: 0, reason: "nodeps"}; return; }
-  const ids = conts.map(l => l.data.id);
-  const idset = new Set(ids);
-  const links = edgeStore.filter(e => e.kind === "depends"
-      && idset.has(e.a) && idset.has(e.b))
-    .map(e => ({a: e.a, b: e.b, w: e.w * (liftOf(e) || 1)}));
-  const comm = communitiesOf(ids, links);
+  const nodes = [...layout.items.values()].filter(l => !l.data.dim);
+  const idset = new Set(nodes.map(l => l.data.id));
+  const links = edgeStore
+    .filter(e => (e.kinds || {}).depends && idset.has(e.a) && idset.has(e.b))
+    .map(e => ({a: e.a, b: e.b, w: e.kinds.depends}));
+  const comm = communitiesOf(nodes.map(l => l.data.id), links);
   if (!comm) { commState = {n: 0, reason: "sparse"}; return; }
   const sizes = new Map();
   for (const c of comm.values()) sizes.set(c, (sizes.get(c) || 0) + 1);
   const colorOf = new Map();
   let ci = 0;
-  gBubbles.selectAll("circle.bubble").each(function(l) {
-    if (l.data.dim) return;   // filtered-out context stays dim, not tinted
+  gBubbles.selectAll("circle.node").each(function (l) {
+    if (l.data.dim) return;
     const c = comm.get(l.data.id);
     if (c === undefined || sizes.get(c) < 2) return;
     if (!colorOf.has(c)) colorOf.set(c, COMM_PALETTE[ci++ % COMM_PALETTE.length]);
     const col = colorOf.get(c);
-    // a colored region (fill wash) + a bright ring, both scaled so the grouping
-    // reads against the dark bubbles instead of vanishing into a thin outline
-    d3.select(this).attr("fill", mix(SHADE, col, 0.34))
-      .attr("stroke", col)
+    const isFolder = l.data.type === "folder";
+    d3.select(this).attr("fill", mix(fillFor(l.data), col, isFolder ? 0.34 : 0.62));
+    if (isFolder) d3.select(this).attr("stroke", col)
       .attr("stroke-width", Math.max(2, Math.min(4.5, (l.r || 6) * 0.07)))
       .attr("stroke-opacity", 0.95);
   });
   commState = {n: colorOf.size, reason: colorOf.size ? "ok" : "sparse"};
 }
-
-// click-to-inspect: the edge's provenance card in the panel
-function showEdgePanel(e) {
-  lastPanelId = "__edge__";
-  const st = EDGE_STYLE[e.kind];
-  const prov = (e.payload && e.payload.prov !== undefined && manifest.prov[e.payload.prov]) || null;
-  const ev = (e.payload && e.payload.evidence) || {};
-  const name = id => {
-    const L = layout.items.get(id);
-    return (L && L.data.label) || id;
-  };
-  const eprov = e.payload && e.payload.prov !== undefined ? manifest.prov[e.payload.prov] : null;
-  const epc = provClass(e.kind, eprov, e.payload && e.payload.evidence);
-  // directed kinds read source → target; undirected read A ↔ B
-  const directed = DIRECTED.has(e.kind);
-  const fromId = directed ? (e.from || e.a) : e.a;
-  const toId = directed ? (e.to || e.b) : e.b;
-  panelEl.innerHTML = `
-    <h2 style="font-size:1.05rem">${esc(st.label)}</h2>
-    <div class="sub"><span style="color:${st.color}">●</span> ${esc(e.kind)}
-      · <span class="prov ${epc}" style="margin-left:0" title="${esc(PROV_TITLE[epc])}">${epc}</span>${
-      liftOf(e) !== null ? ` · lift ${liftOf(e)}× vs null model` : ""}</div>
-    <div class="chips">
-      <span class="chip"><a data-nav="${esc(fromId)}">${esc(name(fromId))}</a></span>
-      <span class="chip dirarrow">${directed ? "→" : "↔"}</span>
-      <span class="chip"><a data-nav="${esc(toId)}">${esc(name(toId))}</a></span>
-    </div>
-    <section class="kind"><h3>Evidence</h3>
-      <div class="edge open"><div class="drawer" style="display:block">${
-        evidenceProse(e.kind, ev, eprov, null, toId,
-          {fromId, fromLabel: name(fromId), toId, toLabel: name(toId)})}</div></div>
-    </section>
-    <p class="note">Every line on the canvas is a stored brain edge${
-      directed ? " — the arrowhead points from the source to what it depends on / joins to" : ""}.
-    Click either endpoint to inspect that node.</p>`;
-  panelEl.querySelectorAll("[data-nav]").forEach(a =>
-    a.addEventListener("click", () => navigate(a.dataset.nav)));
-  bindRawToggles();
-  enrichEvidence(panelEl);
-}
-
-// overlay: the selected node's ontology edges to visible endpoints
-const OV_COLOR = {formalizes: "#38bdf8", xref: "#f472b6", cites: "#fb923c",
-                  matches: "#2dd4bf", relates: "#fbbf24", mentions: "#94a3b8",
-                  depends: "#a78bfa", links: "#84cc16"};
-async function drawOverlay() {
-  gOverlay.selectAll("path.ov").remove();
-  if (!selectedId || !layout) return;
-  const S = layout.items.get(selectedId);
-  const e = await getEntry(selectedId);
-  if (!e || !S) return;
-  const kinds = activeKinds();
-  for (const dir of ["out", "in"]) {
-    for (const x of (e.edges && e.edges[dir]) || []) {
-      if (!kinds.has(x.kind)) continue;
-      const T = layout.items.get(x.id);
-      if (!T || T.data.dim) continue;
-      // point the arrow the true way: an incoming edge is neighbour → selection
-      const directed = DIRECTED.has(x.kind);
-      const F = dir === "in" && directed ? T : S;
-      const G = dir === "in" && directed ? S : T;
-      let gx = G.x, gy = G.y;
-      if (directed) {
-        let tx = G.x - F.x, ty = G.y - F.y; const tl = Math.hypot(tx, ty) || 1;
-        const back = Math.max(G.r || 3, 3) + 3;
-        gx = G.x - (tx / tl) * back; gy = G.y - (ty / tl) * back;
-      }
-      const color = OV_COLOR[x.kind] || "#57606a";
-      const ov = gOverlay.append("path").attr("class", "ov")
-        .attr("d", `M${F.x},${F.y} L${gx},${gy}`)
-        .attr("stroke", color)
-        .attr("stroke-width", 1.6).attr("stroke-opacity", 0.8);
-      if (directed) ov.attr("marker-end", ensureMarker(color));
-    }
-  }
+// Live readout of what this level's web is doing, so the control visibly earns
+// its place: the web is capped by fetch fan-out, and communities need deps.
+function updateStructStat() {
+  const el = $("#structstat");
+  if (!el) return;
+  const parts = [];
+  if (webState.capped)
+    parts.push(`${webState.cells.toLocaleString()} cells — too many to fetch each web; use the Explorer`);
+  else if (webState.cells)
+    parts.push(`${webState.shown} synapse${webState.shown === 1 ? "" : "s"} among ${webState.cells} cells`);
+  if (commState.reason === "off") parts.push("communities off");
+  else if (commState.reason === "nodeps") parts.push("communities need formal deps");
+  else if (commState.reason === "sparse") parts.push("one community here");
+  else if (commState.reason === "ok")
+    parts.push(`${commState.n} logical ${commState.n === 1 ? "community" : "communities"}`);
+  el.textContent = parts.join(" · ");
 }
 function drawSelRing() {
   gOverlay.selectAll("circle.selring").remove();
   const S = selectedId && layout && layout.items.get(selectedId);
   if (S) gOverlay.append("circle").attr("class", "selring")
     .attr("cx", S.x).attr("cy", S.y).attr("r", Math.max(S.r, 3) + 3);
-  drawOverlay();
-  drawSatellites();
-}
-
-// Satellites: the selected node's OFF-CANVAS neighborhood — Wikidata relations,
-// formal dependencies, formalizations and paper matches whose other endpoint
-// lives elsewhere in the containment tree — orbiting the selection so the
-// Wikidata graph, the Mathlib graph and the literature overlay in one view.
-// Click a satellite to travel there. Filtered by the Layers + Provenance toggles.
-const SAT_RANK = {relates: 0, formalizes: 1, matches: 2, xref: 2.5, depends: 3,
-                  cites: 4, mentions: 5, links: 6};
-function idType(id) {
-  if (/^Q\d+$/.test(id)) return "concept";
-  if (id.startsWith("decl:")) return "decl";
-  if (id.startsWith("lit:")) return "literature";
-  if (id.startsWith("path:")) return "container";
-  if (id.startsWith("xref:")) return "ext";   // external-DB page — a real node (v2)
-  return "external";
-}
-async function drawSatellites() {
-  gOverlay.selectAll("g.sat").remove();
-  if (!selectedId || !layout || layout.ego || layout.explorer) return;
-  const S = layout.items.get(selectedId);
-  const e = await getEntry(selectedId);
-  if (!S || !e) return;
-  const kinds = activeKinds(), provs = activeProv();
-  const seen = new Set();
-  const cand = [];
-  for (const dir of ["out", "in"]) {
-    for (const x of (e.edges && e.edges[dir]) || []) {
-      if (!kinds.has(x.kind)) continue;   // xref satellites = ext nodes (v2)
-      if (!provs.has(provClass(x.kind, manifest.prov[x.prov], x.evidence))) continue;
-      if (layout.items.has(x.id) || seen.has(x.id)) continue;
-      seen.add(x.id);
-      cand.push({x, rank: SAT_RANK[x.kind] ?? 9});
-    }
-  }
-  cand.sort((a, b) => a.rank - b.rank);
-  const sats = cand.slice(0, 18);
-  if (!sats.length) return;
-  const W = stageEl.clientWidth || 800, H = stageEl.clientHeight || 600;
-  const R = Math.max(S.r, 8) + 54;
-  sats.forEach((s, i) => {
-    const a = -Math.PI / 2 + i * 2 * Math.PI / sats.length;
-    const sx = Math.max(16, Math.min(W - 16, S.x + R * Math.cos(a)));
-    const sy = Math.max(16, Math.min(H - 22, S.y + R * Math.sin(a)));
-    const st = EDGE_STYLE[s.x.kind] || {};
-    const g = gOverlay.append("g").attr("class", "sat").style("cursor", "pointer")
-      .on("click", ev => { ev.stopPropagation(); navigate(s.x.id); });
-    const p = g.append("path").attr("fill", "none")
-      .attr("d", `M${S.x},${S.y} L${sx},${sy}`)
-      .attr("stroke", st.color || "#57606a")
-      .attr("stroke-width", 1.4).attr("stroke-opacity", 0.75);
-    if (st.dash) p.attr("stroke-dasharray", st.dash);
-    const t = idType(s.x.id);
-    const db = t === "ext" ? extDbOf(s.x.id) : null;
-    g.append("circle").attr("cx", sx).attr("cy", sy).attr("r", 7)
-      .attr("fill", t === "concept" ? "#0969da" : t === "decl" ? "#1a7f37"
-            : t === "literature" ? "#bf5af2" : t === "ext" ? "#151b28" : "#8250df")
-      .attr("fill-opacity", 0.92)
-      .attr("stroke", t === "ext" ? (DB_COLOR[db] || "#f472b6") : "#fff")
-      .attr("stroke-width", t === "ext" ? 2 : 1.2);
-    if (t === "ext") g.append("text").attr("class", "blabel")
-      .attr("x", sx).attr("y", sy + 2.5).attr("font-size", 6)
-      .style("fill", DB_COLOR[db] || "#f472b6")
-      .text(DB_ABBR[db] || db.slice(0, 3));
-    const rawLab = t === "ext"
-      ? `${XREF_NAME[db] || db}: ${extValueOf(s.x.id)}` : s.x.id;
-    const label = g.append("text").attr("class", "blabel")
-      .attr("x", sx).attr("y", sy + 17).attr("font-size", 9)
-      .text(rawLab.length > 22 ? rawLab.slice(0, 20) + "…" : rawLab);
-    getEntry(s.x.id).then(se => {
-      if (se && se.node.label && se.node.label !== s.x.id)
-        label.text(se.node.label.length > 26 ? se.node.label.slice(0, 24) + "…" : se.node.label);
-    });
-    g.append("title").text(`${s.x.kind} · ${s.x.id} — click to open`);
-  });
 }
 
 // ============================ zoom navigation ================================
 // The URL hash carries the whole shareable view state:
-//   #<node-id>&f=<facet mask>&view=explorer
-// The id segment is fully URI-encoded (any raw "&" became %26), so splitting
-// on "&" is safe and pre-v2 "#<id>" hashes parse unchanged.
+//   #<id>&f=<facet mask>&view=explorer
+// The id segment is fully URI-encoded (any raw "&" became %26), so splitting on
+// "&" is safe and a v2 "#Q181296" hash still resolves — through aliases.json.
 function setHash(id) {
-  let h = "#" + (id && id !== LIBS_ID ? encodeURIComponent(id) : "");
+  let h = "#" + (id && id !== ROOTS_ID ? encodeURIComponent(id) : "");
   if (filterMask) h += "&f=" + filterMask;
   if (explorerOn) h += "&view=explorer";
   history.replaceState(null, "", h);
@@ -1399,16 +1097,14 @@ function setExplorer(on) {
   explorerOn = on;
   const b = $("#explorerbtn");
   if (b) b.classList.toggle("on", on);
-  // the two explorer-only toggles appear with the view; entering fresh clears
-  // any pinned choice so the auto defaults (backbone / no ring) apply again
-  if (on) explorerTogglesUser = false;
-  document.querySelectorAll(".xctl").forEach(el => el.style.display = on ? "" : "none");
-  syncExplorerToggles();
-}
-function syncExplorerToggles() {
-  const ex = $("#explorer-ext"), is = $("#explorer-iso");
-  if (ex) ex.classList.toggle("on", showExtPages);
-  if (is) is.classList.toggle("on", showIsolates);
+  // the flat map ships weights only (explorer.json: [i, j, w]) — there is no
+  // per-kind or per-trace data to filter on, so say so instead of no-op-ing
+  for (const g of [$("#grp-layers"), $("#grp-prov")]) {
+    if (!g) continue;
+    g.classList.toggle("inert", on);
+    g.title = on ? "the flat map ships synapse weights only — open a cell or an area to filter by kind/provenance" : "";
+    g.querySelectorAll("input").forEach(cb => { cb.disabled = on; });
+  }
 }
 
 async function zoomInto(id) {
@@ -1441,127 +1137,101 @@ async function zoomInto(id) {
   setHash(id);
   await renderFocus(true);
 }
+// the supercell an atom calls home (for zoom-out + the breadcrumb). A cell with
+// no decl organ has no breadcrumb at all — its home is the unplaced bucket.
+function homeOf(entry) {
+  const bc = entry.breadcrumb || [];
+  return bc.length ? bc[bc.length - 1].id : UNPLACED_ID;
+}
 async function zoomOut() {
-  if (focusId === LIBS_ID) return;
-  const e = await getEntry(focusId);
-  if (e && e.node.type !== "container") {     // leaving an ego view
-    const home = await homeContainerOf(e);
-    const ego = focusId;
+  if (focusId === ROOTS_ID) return;
+  if (isCellId(focusId)) {
+    const e = await getEntry(focusId);
+    const home = e ? homeOf(e) : ROOTS_ID;
+    const cell = focusId;
     focusId = home;
-    selectedId = ego;                         // keep it ringed at its home level
+    selectedId = cell;                        // keep it ringed at its home level
     setHash(home);
     await renderFocus(true);
     return;
   }
-  const bc = (e && e.breadcrumb) || [];
-  const parent = bc.length > 1 ? bc[bc.length - 2].id : LIBS_ID;
+  const parent = focusId === UNPLACED_ID ? ROOTS_ID
+    : ((tree.sc[focusId] || {}).parent || ROOTS_ID);
   focusId = parent;
   selectedId = null;
   setHash(parent);
   await renderFocus(true);
 }
-svg.on("click", () => {
+svg.on("click", ev => {
   if (panMoved) { panMoved = false; return; }
-  if (layout && layout.explorer) return;   // explorer: background = nothing
+  if (layout && layout.explorer) { explorerClick(ev); return; }
   zoomOut();
 });
 
 async function nodeClick(item) {
-  if (layout && layout.explorer) {   // explorer: select + panel, stay put
+  if (layout && layout.explorer) {   // explorer: select + card, stay put
     selectedId = item.id;
     renderPanel(item.id);
     drawSelRing();
     return;
   }
-  if (item.type === "strays") {   // the collapsed loose-decl bubble: list them
-    renderPanel(focusId);
-    return;
-  }
-  if (item.ghost) {               // snapshot decl with no brain edges yet
-    ghostPanel(item);
-    return;
-  }
-  if (item.type === "container") {
+  if (item.type === "strays") { renderPanel(focusId); return; }   // the card lists them
+  if (item.type === "folder") {
     selectedId = null;
     renderPanel(item.id);
     await zoomInto(item.id);
     return;
   }
-  if (item.type === "ext") {               // external-page node: travel there
-    const ee = await getEntry(item.id);
-    if (ee) { await zoomInto(item.id); return; }
-    selectedId = item.id;                  // pre-v2 shards: panel + deep link only
-    renderPanel(item.id);
-    return;
-  }
-  if (item.type === "external") {          // article pseudo-node → its page
-    if (safeUrl(item.url)) window.open(safeUrl(item.url), "_blank", "noopener");
-    return;
-  }
-  // concept/decl/paper: zoom in and expand its whole neighborhood (ego view)
-  await zoomInto(item.id);
+  await zoomInto(item.id);   // a cell → its ego view + card
 }
 
-// land the canvas on any node id: containers focus themselves; leaves focus
-// their parent container and select themselves
-async function navigate(id) {
-  if (explorerOn) setExplorer(false);   // navigation = travel to the node's home
-  const e = await getEntry(id);
-  if (!e) { renderPanel(id); return; }
-  focusId = id;                    // containers → level view; others → ego view
-  selectedId = e.node.type === "container" ? null : id;
+// land the canvas on ANY id — a cell, an area, or any organ id (which resolves
+// through aliases.json to the atom that owns it)
+async function navigate(rawId) {
+  if (explorerOn) setExplorer(false);   // navigation = travel to the atom's home
+  const id = await resolveId(rawId);
+  if (!id) { renderPanel(rawId); return; }
+  focusId = id;
+  selectedId = isCellId(id) ? id : null;
   setHash(id);
   renderPanel(id);
   await renderFocus(true);
 }
 
-// the container an ego node calls home (for zoom-out + the breadcrumb)
-async function homeContainerOf(entry) {
-  if (entry.breadcrumb && entry.breadcrumb.length > 1)
-    return entry.breadcrumb[entry.breadcrumb.length - 2].id;
-  if (entry.node.type === "concept") {
-    const f = ((entry.edges || {}).out || []).find(x => x.kind === "formalizes");
-    const fe = f && await getEntry(f.id);
-    if (fe && fe.node.type === "container") return f.id;
-    if (fe && fe.breadcrumb && fe.breadcrumb.length > 1)
-      return fe.breadcrumb[fe.breadcrumb.length - 2].id;
+function pathChain(p) {
+  const out = [];
+  let cur = p;
+  for (let i = 0; i < 24 && cur && tree.sc[cur]; i++) {
+    out.unshift({id: cur, label: tree.sc[cur].label || cur});
+    cur = tree.sc[cur].parent;
   }
-  return "path:Mathlib";
+  return out;
 }
-
 async function renderCrumb() {
-  let html = `<a data-nav="${LIBS_ID}">all libraries</a>`;
-  if (focusId !== LIBS_ID) {
+  let html = `<a data-nav="${ROOTS_ID}">all libraries</a>`;
+  if (focusId === UNPLACED_ID) {
+    html += ` <span class="sep">/</span> <b>no formal home</b>`;
+  } else if (isCellId(focusId)) {
     const e = await getEntry(focusId);
-    if (e && e.node.type !== "container") {   // ego view: home chain + ● node
-      const home = await homeContainerOf(e);
-      const he = await getEntry(home);
-      for (const b of (he && he.breadcrumb) || [])
-        html += ` <span class="sep">/</span> <a data-nav="${esc(b.id)}">${esc(b.label)}</a>`;
-      html += ` <span class="sep">/</span> <b>● ${esc(e.node.label || focusId)}</b>`;
-    } else {
-      for (const b of (e && e.breadcrumb) || []) {
-        html += ` <span class="sep">/</span> ` + (b.id === focusId
-          ? `<b>${esc(b.label)}</b>` : `<a data-nav="${esc(b.id)}">${esc(b.label)}</a>`);
-      }
-    }
+    for (const b of (e && e.breadcrumb) || [])
+      html += ` <span class="sep">/</span> <a data-nav="${esc(b.id)}">${esc(b.label)}</a>`;
+    if (e && !(e.breadcrumb || []).length)
+      html += ` <span class="sep">/</span> <a data-nav="${UNPLACED_ID}">no formal home</a>`;
+    html += ` <span class="sep">/</span> <b>● ${esc((e && e.cell.label) || focusId)}</b>`;
+  } else if (focusId !== ROOTS_ID) {
+    for (const b of pathChain(focusId))
+      html += ` <span class="sep">/</span> ` + (b.id === focusId
+        ? `<b>${esc(b.label)}</b>` : `<a data-nav="${esc(b.id)}">${esc(b.label)}</a>`);
   }
   crumbEl.innerHTML = html;
   crumbEl.querySelectorAll("[data-nav]").forEach(a =>
     a.addEventListener("click", () => {
-      if (a.dataset.nav === LIBS_ID) { focusId = LIBS_ID; selectedId = null;
-        setHash(""); renderFocus(true); }
+      if (a.dataset.nav === ROOTS_ID) { focusId = ROOTS_ID; selectedId = null;
+        setHash(""); renderFocus(true); renderPanel(ROOTS_ID); }
       else navigate(a.dataset.nav);
     }));
 }
-
 // ============================ panel ==========================================
-const KIND_LABEL = {
-  formalizes: "Formalizations", mentions: "Article mentions", depends: "Formal dependencies",
-  matches: "Formal ↔ literature matches", xref: "Cross-database identity",
-  relates: "Wikidata relations", cites: "Stated in the literature (TheoremGraph)",
-  contains: "Contains", links: "Links to",
-};
 const XREF_NAME = {mathworld: "MathWorld", nlab: "nLab", proofwiki: "ProofWiki",
   eom: "Encyclopedia of Math", planetmath: "PlanetMath", metamath: "Metamath",
   lmfdb_knowl: "LMFDB", oeis: "OEIS", dlmf: "DLMF", msc: "MSC",
@@ -1580,11 +1250,11 @@ const XREF_URL = {
   kerodon: v => `https://kerodon.net/tag/${encodeURIComponent(v)}`,
   msc: () => null,
 };
-// external-data urls are template-built by the ingest adapters, but never
-// trust a stored url into an href without a scheme check (javascript:/data:
-// would ride through esc() untouched)
+// external-data urls are template-built by the ingest adapters, but never trust
+// a stored url into an href without a scheme check (javascript:/data: would ride
+// through esc() untouched)
 function safeUrl(u) { return u && /^https?:\/\//i.test(u) ? u : null; }
-function nodeUrl(id) {
+function organUrl(id) {
   if (id.startsWith("decl:")) return "/decl/" + encodeURIComponent(id.slice(id.indexOf(":", 5) + 1));
   if (id.startsWith("xref:")) {
     const mkUrl = XREF_URL[extDbOf(id)];
@@ -1604,7 +1274,7 @@ function nodeUrl(id) {
 const MK_LABEL = {field: "field-of-study link"};
 
 // ---- evidence, in plain English --------------------------------------------
-// The drawer used to dump raw JSON. Instead we say what the edge ASSERTS and
+// The drawer used to dump raw JSON. Instead we say what the bond ASSERTS and
 // where it came from — one sentence, plus the structured bits (annotation
 // samples, dependency witnesses, judge verdicts) rendered legibly. The raw
 // object stays one click away for anyone who wants it.
@@ -1616,11 +1286,6 @@ function statusChip(s) {
 const evList = items => items.length
   ? `<ul class="ev-list"><li>${items.join("</li><li>")}</li></ul>` : "";
 const shortDecl = s => String(s).split(".").slice(-2).join(".");
-function pairText(p) {
-  const a = Array.isArray(p) ? p[0] : (p && (p.a ?? p[0]));
-  const b = Array.isArray(p) ? p[1] : (p && (p.b ?? p[1]));
-  return b !== undefined ? `${esc(a)} <span class="dirarrow">↔</span> ${esc(b)}` : esc(p);
-}
 function judgeVerdict(ev) {
   const verd = [ev.gpt54, ev.deepseek].filter(Boolean);
   const agree = verd.length === 2 && verd[0] === verd[1];
@@ -1635,6 +1300,8 @@ const SRC_NICE = {
   wikidata_props: "Wikidata properties &amp; claims",
   theoremgraph: "the TheoremGraph corpus (arXiv 2606.25363)",
   mathlib: "Mathlib source",
+  wikilean: "the WikiLean annotation stack",
+  "tag-queue": "the @[wikidata] tag queue (AI-generated, not yet in Mathlib)",
 };
 function provAttribHtml(kind, ev, prov) {
   // deterministic field-of-study altitude links aren't an AI proposal — label
@@ -1654,10 +1321,9 @@ function provAttribHtml(kind, ev, prov) {
   }[pc];
   let src = "";
   if (pc === "machine") {
-    // machine edges come from the kernel / file tree regardless of which rollup
-    // file happened to carry them — never mislabel a formal dep as "TheoremGraph"
-    src = kind === "contains" ? "the library file tree"
-      : kind === "links" ? "the external database's own hyperlinks"
+    // machine bonds come from the kernel / page scrapes regardless of which file
+    // happened to carry them — never mislabel a formal dep as "TheoremGraph"
+    src = kind === "links" ? "the external database's own hyperlinks"
       : "Mathlib's kernel dependency graph";
   } else if (prov) {
     src = SRC_NICE[prov.source] || String(prov.source || "").replace(/_/g, " ");
@@ -1671,17 +1337,15 @@ function provAttribHtml(kind, ev, prov) {
   return `<div class="attrib"><span class="prov ${pc}">${who}</span> (${esc(gloss)})${
     src ? ` · from ${src}` : ""}${pin}</div>`;
 }
-// the sentence + structured detail for one edge; otherId (when known) names
-// the far endpoint so ext-page edges can say WHICH database they live in
-// One node's row in an evidence trace. `who` is clickable-navigable; ext
-// pages also get a ↗ deep link. Labels resolve lazily (data-lbl) via
-// enrichEvidence when only an id is known at render time.
+// One organ's row in an evidence trace. `who` is clickable-navigable (through
+// aliases, so it lands on the atom that owns the organ); ext pages also get a ↗
+// deep link. Labels resolve lazily (data-lbl) via enrichEvidence when only an id
+// is known at render time.
 function traceStep(role, id, label, tag) {
   const isExt = id && id.startsWith("xref:");
-  const isQid = id && /^Q\d+$/.test(id);
   const shown = label || (isExt ? extValueOf(id) : id);
-  const needsLbl = !label && isQid;   // QID with no label yet → resolve async
-  const url = isExt ? nodeUrl(id) : null;
+  const needsLbl = !label && !isExt;   // a bare QID / decl id → resolve async
+  const url = isExt ? organUrl(id) : null;
   const who = `<span class="nav" data-nav="${esc(id)}"${
     needsLbl ? ` data-lbl="${esc(id)}"` : ""}>${esc(shown)}</span>${
     url ? ` <a class="extlink" href="${esc(url)}" rel="noopener" target="_blank" title="view on the source site">↗</a>` : ""}`;
@@ -1690,10 +1354,9 @@ function traceStep(role, id, label, tag) {
 }
 function connector(text) { return `<div class="ev-conn">↓ ${esc(text)}</div>`; }
 
-// The step-by-step chain behind a `links` edge + a lazily-loaded snippet of
-// the page whose text actually contains the link (data-snip-page). `ctx`
-// carries the two endpoint {id,label} in from→to order when the caller knows
-// them (showEdgePanel always does; the node drawer passes what it has).
+// The step-by-step chain behind a `links` bond + a lazily-loaded snippet of the
+// page whose text actually contains the link (data-snip-page). `ctx` carries the
+// two endpoint {id,label} in from→to order.
 function linkTraceHtml(ev, ctx) {
   ctx = ctx || {};
   const via = ev.via || (ctx.fromId && ctx.fromId.startsWith("xref:") ? extDbOf(ctx.fromId)
@@ -1732,21 +1395,35 @@ function evidenceProse(kind, ev, prov, dir, otherId, ctx) {
   let lead = "", detail = "";
 
   if (kind === "depends") {
-    lead = (ev.aggregated || ev.top_witnesses)
-      ? `<b>Formal dependency.</b> The Lean proofs in one area reference declarations in the other — read straight off Mathlib's compiled kernel graph.`
-      : (inbound
-          ? `<b>Formal dependency.</b> Declarations elsewhere use the declaration here in their proofs.`
-          : `<b>Formal dependency.</b> The proof here uses the declaration on the other side.`);
+    lead = inbound
+      ? `<b>Formal dependency.</b> Declarations on the other side use this one in their proofs.`
+      : `<b>Formal dependency.</b> The proofs on the left use the declaration on the right.`;
     const wt = ev.w_types || {}, bits = [];
     if (wt.sig) bits.push(`${wt.sig.toLocaleString()} statement-level references`);
     if (wt.proof) bits.push(`${wt.proof.toLocaleString()} uses inside proofs`);
     if (wt.def) bits.push(`${wt.def.toLocaleString()} uses in definitions`);
-    if (typeof ev.lift === "number")
-      bits.push(`${ev.lift}× the volume a random graph of the same shape predicts — ${ev.lift >= 1.5 ? "a genuine affinity" : ev.lift >= 0.8 ? "about as expected" : "mostly shared infrastructure"}`);
     detail += evList(bits);
-    const wit = ev.top_witnesses || ev.witnesses;
+    const wit = ev.witnesses;
     if (wit && wit.length)
       detail += `<div class="ev-sub">for example, <code>${esc(shortDecl(wit[0][0]))}</code> uses <code>${esc(shortDecl(wit[0][1]))}</code></div>`;
+  } else if (FORM_FAMILY.has(kind)) {
+    // A concept→decl claim that did NOT fuse the two into one atom: `exact`
+    // fuses (rule 1), a home-less concept attaches to its single best
+    // generalization/special_case target (rule 2), and invocation/related never
+    // merge (rule 3). Everything left over is a real relationship, kept here.
+    const mk = MK_LABEL[ev.match_kind || kind] || ev.match_kind || kind;
+    const reviewed = (prov && String(prov.method || "").includes("verified")) ||
+      (ev.skeptic && ev.skeptic !== "pending");
+    lead = `<b>Formalization claim (unmerged).</b> This concept↔declaration claim is graded <b>${
+      esc(mk)}</b>, which does not fuse the two into one atom — so it stays a synapse between them${
+      ev.verified_by ? `. The declaration was verified to exist in Mathlib` : ""}${
+      reviewed ? "; the match also passed skeptic review" : ""}.`;
+    const d = [];
+    if (ev.module) d.push(`declared in <code>${esc(ev.module)}</code>`);
+    if (ev.skeptic === "pending") d.push(`skeptic review: <b>pending</b>`);
+    if (ev.verified_by) d.push(`existence oracle: <b>${esc(ev.verified_by)}</b>`);
+    detail += evList(d);
+    if (ev.grounding_note) detail += `<div class="ev-sub">“${esc(ev.grounding_note)}”</div>`;
   } else if (kind === "formalizes") {
     if (ev.role) {                                   // annotation-sourced
       const n = ev.n_annotations || (ev.sample ? ev.sample.length : 1);
@@ -1772,35 +1449,60 @@ function evidenceProse(kind, ev, prov, dir, otherId, ctx) {
       if (ev.grounding_note) detail += `<div class="ev-sub">“${esc(ev.grounding_note)}”</div>`;
     }
   } else if (kind === "relates") {
-    if (ev.aggregated) {
-      const c = ev.count || (ev.sample_pairs ? ev.sample_pairs.length : 0);
-      lead = `<b>Wikidata relation.</b> Wikidata connects these two areas through ${c ? "<b>" + c + "</b> " : ""}concept-to-concept relation${c === 1 ? "" : "s"} (subclass-of, part-of, …).`;
-      if (ev.sample_pairs && ev.sample_pairs.length)
-        detail = evList(ev.sample_pairs.slice(0, 4).map(pairText));
-    } else {
-      lead = `<b>Wikidata relation.</b> Wikidata records a direct relationship between these two concepts.`;
-      const props = ev.properties || [];
-      if (props.length) detail = evList(props.map(p => `${esc(p.label || p.p)} <span class="pin">(${esc(p.p)})</span>`));
-    }
+    lead = `<b>Wikidata relation.</b> Wikidata records a direct relationship between these two concepts.`;
+    const props = ev.properties || [];
+    if (props.length) detail = evList(props.map(p => `${esc(p.label || p.p)} <span class="pin">(${esc(p.p)})</span>`));
   } else if (kind === "mentions") {
-    if (ev.aggregated) {                              // area↔area rollup (concept homes)
-      const c = ev.count || (ev.sample_pairs ? ev.sample_pairs.length : 0);
-      lead = `<b>Article mentions.</b> WikiLean articles link these two areas through ${c ? "<b>" + c + "</b> " : ""}annotation-level mention${c === 1 ? "" : "s"} of declarations across the boundary.`;
-      if (ev.sample_pairs && ev.sample_pairs.length)
-        detail = evList(ev.sample_pairs.slice(0, 4).map(pairText));
-    } else {
-      const n = ev.n_annotations || ev.total || (ev.sample ? ev.sample.length : 1);
-      lead = `<b>Article mention.</b> ${ev.role === "article"
-        ? "This is the concept's annotated Wikipedia mirror on WikiLean, carrying"
-        : "A WikiLean article cites this in"} <b>${n}</b> Lean annotation${n > 1 ? "s" : ""}.`;
-      if (ev.sample && ev.sample.length)
-        detail = evList(ev.sample.filter(s => s.label).slice(0, 4).map(s => `“${esc(s.label)}” — ${statusChip(s.status)}`));
-      else if (ev.statuses)
-        detail = evList(Object.entries(ev.statuses).map(([k, v]) => `${v} ${STATUS_WORD[k] || k}`));
+    const n = ev.n_annotations || ev.total || (ev.sample ? ev.sample.length : 1);
+    lead = `<b>Article mention.</b> ${ev.role === "article"
+      ? "This is the concept's annotated Wikipedia mirror on WikiLean, carrying"
+      : "A WikiLean article on one side cites the other's declaration in"} <b>${n}</b> Lean annotation${n > 1 ? "s" : ""}.`;
+    if (ev.sample && ev.sample.length)
+      detail = evList(ev.sample.filter(s => s.label).slice(0, 4).map(s => `“${esc(s.label)}” — ${statusChip(s.status)}`));
+    else if (ev.statuses)
+      detail = evList(Object.entries(ev.statuses).map(([k, v]) => `${v} ${STATUS_WORD[k] || k}`));
+  } else if (kind === "co-page") {
+    // SCHEMA rule 4: a page claimed by >1 cell is evidence the claimants are
+    // RELATED, not that either owns it — so the page becomes an area-level organ
+    // and the claimants get this weak synapse.
+    const db = ev.db || (ev.page ? extDbOf(ev.page) : null);
+    const dbName = db ? (XREF_NAME[db] || db) : null;
+    lead = `<b>Same object, two entries.</b> Both atoms cross-reference the same page${
+      dbName ? ` in <b>${esc(dbName)}</b>` : ""}${
+      ev.label ? ` (<code>${esc(ev.label)}</code>)` : ""}. A page claimed by more than one
+      atom never merges them — it is evidence they are related, so it hangs off their
+      common area instead and leaves this synapse behind.`;
+    if (ev.page) {
+      const url = organUrl(ev.page);
+      detail = `<div class="ev-sub">the shared page: <span class="nav" data-nav="${esc(ev.page)}" data-lbl="${esc(ev.page)}">${
+        esc(extValueOf(ev.page))}</span>${
+        url ? ` <a class="extlink" href="${esc(url)}" rel="noopener" target="_blank">↗</a>` : ""}</div>` +
+        `<div class="ev-snip loading" data-snip-page="${esc(ev.page)}">loading the shared page…</div>`;
     }
-  } else if (kind === "xref-shared") {
-    const key = ev.shared_page ? ev.shared_page.split(":")[1] : null;
-    lead = `<b>Same object, two entries.</b> Both concepts point at the same page${key ? ` in <b>${esc(XREF_NAME[key] || key)}</b>` : ""}, so Wikidata treats them as the same object across databases.`;
+  } else if (kind === "co-statement") {
+    lead = `<b>Same statement, two atoms.</b> One arXiv statement was matched to declarations
+      in both atoms${ev.label ? ` — “${esc(ev.label)}”` : ""}. Attaching it to either would put
+      one organ in two cells, so it stays a synapse between them.`;
+    if (ev.statement) {
+      const url = organUrl(ev.statement);
+      detail = `<div class="ev-sub">the shared statement: <code>${esc(ev.statement)}</code>${
+        url ? ` <a class="extlink" href="${esc(url)}" rel="noopener" target="_blank">↗</a>` : ""}</div>`;
+    }
+  } else if (kind === "cites") {
+    lead = `<b>Stated in the literature.</b> This result appears in the mathematical literature; ${judgeVerdict(ev)}.`;
+    if (ev.via_decls && ev.via_decls.length)
+      detail = `<div class="ev-sub">via ${ev.via_decls.slice(0, 3).map(d => `<code>${esc(shortDecl(d))}</code>`).join(", ")}</div>`;
+  } else if (kind === "matches") {
+    lead = `<b>Formal ↔ literature match.</b> A Lean declaration was matched to an informal statement in the literature; ${judgeVerdict(ev)}.`;
+  } else if (kind === "links") {
+    const db = ev.via || (ctx && ctx.fromId && ctx.fromId.startsWith("xref:") ? extDbOf(ctx.fromId)
+      : otherId && otherId.startsWith && otherId.startsWith("xref:") ? extDbOf(otherId) : null);
+    const dbName = db ? (XREF_NAME[db] || db) : "the external database";
+    lead = ev.projected
+      ? `<b>Projected link.</b> These two atoms are joined because <b>${esc(dbName)}</b>'s own pages link to each other — the trace below shows exactly how:`
+      : `<b>Page link.</b> One page hyperlinks the other inside <b>${esc(dbName)}</b>${
+          ev.context ? `, in the ${esc(ev.context)}` : ""} — the trace below shows which and quotes the linking page:`;
+    detail = linkTraceHtml(ev, ctx);
   } else if (kind === "xref") {
     // name the actual database + page: the ext endpoint is xref:<db>:<value>
     const xid = (ctx && ctx.toId && ctx.toId.startsWith("xref:")) ? ctx.toId
@@ -1815,23 +1517,6 @@ function evidenceProse(kind, ev, prov, dir, otherId, ctx) {
     if (ev.property) d.push(`via Wikidata property <span class="pin">${esc(ev.property)}</span>`);
     else if (prov && String(prov.method || "").startsWith("@[")) d.push(`from an <code>${esc(prov.method.split(" ")[0])}</code> attribute in the Mathlib source`);
     if (d.length) detail = evList(d);
-  } else if (kind === "cites") {
-    lead = `<b>Stated in the literature.</b> This result appears in the mathematical literature; ${judgeVerdict(ev)}.`;
-    if (ev.via_decls && ev.via_decls.length)
-      detail = `<div class="ev-sub">via ${ev.via_decls.slice(0, 3).map(d => `<code>${esc(shortDecl(d))}</code>`).join(", ")}</div>`;
-  } else if (kind === "matches") {
-    lead = `<b>Formal ↔ literature match.</b> A Lean declaration was matched to an informal statement in the literature; ${judgeVerdict(ev)}.`;
-  } else if (kind === "links") {
-    const db = ev.via || (ctx && ctx.fromId && ctx.fromId.startsWith("xref:") ? extDbOf(ctx.fromId)
-      : otherId && otherId.startsWith && otherId.startsWith("xref:") ? extDbOf(otherId) : null);
-    const dbName = db ? (XREF_NAME[db] || db) : "the external database";
-    lead = ev.projected
-      ? `<b>Projected link.</b> These two concepts are joined because <b>${esc(dbName)}</b>'s own pages link to each other — the trace below shows exactly how:`
-      : `<b>Page link.</b> One page hyperlinks the other inside <b>${esc(dbName)}</b>${
-          ev.context ? `, in the ${esc(ev.context)}` : ""} — the trace below shows which and quotes the linking page:`;
-    detail = linkTraceHtml(ev, ctx);
-  } else if (kind === "contains") {
-    lead = `<b>Containment.</b> One directly contains the other in the library's folder tree.`;
   } else {
     lead = esc((EDGE_STYLE[kind] && EDGE_STYLE[kind].label) || kind);
   }
@@ -1850,10 +1535,32 @@ function bindRawToggles() {
   }));
 }
 
-// Post-render enrichment of edge-evidence traces: resolve QID labels the
-// synchronous render couldn't know, and fetch + quote the actual page whose
-// text contains a `links` edge (its stored snippet, licensed). Best-effort:
-// any fetch miss just leaves the placeholder text. Scoped to `root` so a
+// An organ id → the label its owning atom gives it. v3 has no per-organ shard,
+// so this goes through aliases (organ → atom) and reads the organ back off the
+// atom's entry — one cached fetch, and it is the atom's own wording.
+const organInfoCache = new Map();
+function organInfo(id) {
+  if (!organInfoCache.has(id)) {
+    organInfoCache.set(id, (async () => {
+      const owner = await resolveId(id);
+      if (!owner) return null;
+      if (isPathId(owner)) {
+        const sc = (tree.sc || {})[owner];
+        const o = ((sc || {}).organs || []).find(x => x.id === id);
+        return o || (sc ? {label: sc.label, id} : null);
+      }
+      const e = await getEntry(owner);
+      if (!e) return null;
+      return (e.organs || []).find(x => x.id === id) || {label: e.cell.label, id};
+    })().catch(() => null));
+  }
+  return organInfoCache.get(id);
+}
+
+// Post-render enrichment of evidence traces: resolve organ labels the
+// synchronous render couldn't know, and quote the actual page whose text
+// contains a `links`/`co-page` bond (its stored snippet, with its licence).
+// Best-effort: any miss just leaves the placeholder text. Scoped to `root` so a
 // newer panel render can't be clobbered by an older in-flight fetch.
 async function enrichEvidence(root) {
   // skip work inside a collapsed drawer (display:none → no offsetParent); the
@@ -1862,398 +1569,352 @@ async function enrichEvidence(root) {
   root.querySelectorAll("[data-lbl]").forEach(async el => {
     if (!vis(el)) return;
     const id = el.dataset.lbl;
-    try {
-      const ce = await getEntry(id);
-      if (ce && ce.node && ce.node.label && root.contains(el)) {
-        el.textContent = ce.node.label;
-        el.removeAttribute("data-lbl");
-      }
-    } catch (e) { /* leave the id showing */ }
+    const o = await organInfo(id);
+    if (o && o.label && root.contains(el)) {
+      el.textContent = o.label;
+      el.removeAttribute("data-lbl");
+    }
   });
   root.querySelectorAll(".ev-snip[data-snip-page]").forEach(async box => {
     if (!vis(box)) return;
     const pid = box.dataset.snipPage;
     const db = extDbOf(pid), dbName = XREF_NAME[db] || db;
-    let ce = null;
-    try { ce = await getEntry(pid); } catch (e) { /* fall through to link-out */ }
+    const o = await organInfo(pid);
     if (!root.contains(box)) return;
     box.removeAttribute("data-snip-page");   // one-shot: re-opens don't refetch
-    const url = (ce && ce.node && ce.node.url) || nodeUrl(pid);
-    const title = (ce && ce.node && ce.node.label) || extValueOf(pid);
+    const url = (o && safeUrl(o.url)) || organUrl(pid);
+    const title = (o && o.label) || extValueOf(pid);
     const link = url ? ` <a href="${esc(url)}" rel="noopener" target="_blank">read on ${esc(dbName)} ↗</a>` : "";
     box.classList.remove("loading");
-    if (ce && ce.node && ce.node.snippet) {
-      const lic = ce.node.snippet_license ? ` · ${esc(ce.node.snippet_license)}` : "";
-      box.innerHTML = `“${esc(ce.node.snippet)}”<span class="cite">— from “${esc(title)}” on ${esc(dbName)}${lic}${link}</span>`;
+    // a snippet NEVER renders without its licence — if the licence didn't ship,
+    // neither does the text
+    if (o && o.snippet && o.snippet_license) {
+      box.innerHTML = `“${esc(o.snippet)}”<span class="cite">— from “${esc(title)}” on ${
+        esc(dbName)} · ${esc(o.snippet_license)}${link}</span>`;
     } else {
       // no-content source (MathWorld/DLMF/EoM/Kerodon) — link out, no quote
       box.innerHTML = `<span class="cite">“${esc(title)}” on ${esc(dbName)} stores no reusable text here.${link}</span>`;
     }
   });
 }
-
-function edgeHtml(x, provTable, dir, focus) {
-  const ev = x.evidence || {};
-  const mkv = ev.match_kind && (MK_LABEL[ev.match_kind] || ev.match_kind);
-  let mk = mkv ? `<span class="mk">${esc(mkv)}</span>` : "";
-  if (ev.n_annotations > 1) mk += ` <span class="lit-ref">×${ev.n_annotations} annotations</span>`;
-  // arrow reflects real direction for directed kinds; undirected kinds get ↔
-  const arrow = DIRECTED.has(x.kind) ? (dir === "in" ? "←" : "→") : "↔";
-  let target = esc(x.id);
-  if (x.id.startsWith("xref:")) {
-    // ext endpoints are real nodes now — navigable in-brain, deep link beside
-    const db = extDbOf(x.id);
-    const val = ev.value !== undefined ? String(ev.value) : extValueOf(x.id);
-    const url = nodeUrl(x.id)
-      || (ev.value !== undefined && XREF_URL[db] && XREF_URL[db](ev.value)) || null;
-    target = `<span class="nav" data-nav="${esc(x.id)}" style="color:#1a4b8f;cursor:pointer">${
-      esc(`${XREF_NAME[db] || db}: ${val}`)}</span>`
-           + (url ? ` <a class="extlink" href="${esc(url)}" rel="noopener" target="_blank">↗</a>` : "");
-  } else {
-    const u = nodeUrl(x.id);
-    target = `<span class="nav" data-nav="${esc(x.id)}" style="color:#1a4b8f;cursor:pointer">${target}</span>`
-           + (u ? ` <a class="extlink" href="${esc(u)}" rel="noopener" target="_blank">↗</a>` : "");
-  }
-  const prov = provTable[x.prov] || {};
-  const pc = provClass(x.kind, prov, ev);
-  // orient the trace from→to: an "out" edge is focus→x.id, an "in" edge is x.id→focus
-  const ctx = focus ? (dir === "in"
-    ? {fromId: x.id, fromLabel: null, toId: focus.id, toLabel: focus.label}
-    : {fromId: focus.id, fromLabel: focus.label, toId: x.id, toLabel: null}) : null;
-  return `<div class="edge"><div class="row"><span class="dirarrow">${arrow}</span> ${target} ${mk}
-    <span class="prov ${pc}" title="${esc(PROV_TITLE[pc])}">${pc}${ev.skeptic === "pending" ? " · unreviewed" : ""}${ev.source_tagged ? " · @[wikidata]" : ""}</span></div>
-    <div class="drawer">${evidenceProse(x.kind, ev, prov, dir, x.id, ctx)}</div></div>`;
+// ---- organ provenance ------------------------------------------------------
+// C7's whole point: a merged @[wikidata] tag and an AI-queued candidate make the
+// SAME claim, so they must never read alike. `source: "tag-queue"` is the AI one.
+function provChipHtml(prov) {
+  if (!prov) return "";
+  const src = String(prov.source || ""), meth = String(prov.method || "");
+  let cls = "ai", text = src.replace(/_/g, " "), title = meth;
+  if (src === "tag-queue") {
+    cls = "ai";
+    text = "AI-queued tag — not in Mathlib";
+    title = meth + (prov.queue ? ` · queue: ${prov.queue}` : "") +
+      " — an AI proposed this @[wikidata] tag; it has NOT been merged into mathlib4";
+  } else if (meth.includes("@[")) {
+    cls = "human";
+    text = meth.split(" ")[0] + " · merged";
+    title = "hand-written in the mathlib4 source and merged upstream";
+  } else if (meth === "wikidata-property") {
+    cls = "human"; text = (XREF_NAME[src] || src) + " · Wikidata";
+    title = "a Wikidata external-ID property (CC0)";
+  } else if (meth === "wikidata-claims") { cls = "human"; text = "Wikidata claims"; }
+  else if (meth === "container_links") { cls = "machine"; text = "deterministic"; }
+  else if (meth === "external-ingest page qid") {
+    cls = "machine"; text = (XREF_NAME[src] || src) + " · page QID";
+    title = "the source database's own page states the QID";
+  } else if (src === "mathlib_deps") { cls = "machine"; text = "Lean kernel"; }
+  else if (src === "wikilean") { cls = "ai"; text = "WikiLean article"; }
+  else if (src === "annotations") { cls = "ai"; text = "annotations"; }
+  else if (src === "theoremgraph") {
+    cls = "ai"; text = "TheoremGraph"; title = meth + " (LLM-judged, CC-BY-SA-4.0)";
+  } else if (meth.includes("agent")) { cls = "ai"; text = "AI agent + oracle"; }
+  else if (meth.includes("discovery_proposals")) { cls = "ai"; text = "discovery (verified)"; }
+  const pin = prov.pin ? ` · ${String(prov.pin).slice(0, 10)}` : "";
+  return `<span class="prov ${cls}" title="${esc(title + pin)}">${esc(text)}</span>`;
 }
-let lastPanelId = null;
-let lastLevelEdges = [];
-async function renderPanel(id) {
-  lastPanelId = id;
-  const e = await getEntry(id);
-  if (!e) {
-    // not in the static shards — an ext page from pre-v2 data / an unminted
-    // page, or a community-added Wikidata concept node
-    if (id.startsWith("xref:")) return extFallbackPanel(id);
-    if (/^Q\d+$/.test(id)) return renderCommunityNodePanel(id);
-    panelEl.innerHTML = `<p class="note">Unknown node: ${esc(id)}</p>`;
-    return;
-  }
-  const n = e.node, prov = manifest.prov;
-  let html = "";
-  if (e.breadcrumb) {
-    html += `<div class="crumb">` + e.breadcrumb.map((b, i) =>
-      i === e.breadcrumb.length - 1 ? esc(b.label)
-        : `<a data-nav="${esc(b.id)}">${esc(b.label)}</a>`).join(" / ") + `</div>`;
-  }
-  // the atomic-unit card replaces the plain header when the build carries one
-  const unit = n.type === "concept" && n.unit ? n.unit : null;
-  if (unit) html += unitCardHtml(n, e);
-  else html += `<h2>${esc(n.label || n.id)}</h2>`;
-  const sub = [];
-  if (n.type) sub.push(n.type);
-  if (n.library_kind) sub.push(n.library_kind + " library");
-  if (n.module) sub.push(esc(n.module));
-  if (n.slug) sub.push(`<a href="/${esc(n.slug)}">WikiLean article</a>`);
-  if (n.type === "concept") sub.push(`<a href="https://www.wikidata.org/wiki/${esc(n.id)}" rel="noopener" target="_blank">${esc(n.id)}</a>`);
-  if (n.type === "container" && n.qid) sub.push(`<a href="https://www.wikidata.org/wiki/${esc(n.qid)}" rel="noopener" target="_blank">Wikidata ${esc(n.qid)}</a>`);
-  if (n.type === "decl") sub.push(`<a href="${esc(nodeUrl(n.id))}" rel="noopener" target="_blank">${esc(n.library || "Mathlib")} docs ↗</a>`);
-  if (n.type === "ext") {
-    sub.push(`<span class="badge" style="border-color:${esc(DB_COLOR[n.db] || "#c8bfa8")}">${
-      esc(XREF_NAME[n.db] || n.db || "external database")}</span>`);
-    if (n.kind_hint) sub.push(esc(n.kind_hint));
-    const xu = safeUrl(n.url) || nodeUrl(n.id);
-    if (xu) sub.push(`<a href="${esc(xu)}" rel="noopener" target="_blank">page ↗</a>`);
-  }
-  if (!unit) html += `<div class="sub">${sub.join(" · ")}</div>`;
-  // "Also in" — every external identity of this concept as one chip strip
-  // (the /map concept-panel affordance): article, Wikidata, Google KG, and
-  // each cross-referenced database, deep-linked. The unit card already covers
-  // all of this, so it renders only without one.
-  if (n.type === "concept" && !unit) {
-    const chips = [];
-    if (n.slug) chips.push(`<a href="/${esc(n.slug)}">WikiLean article</a>`);
-    if (n.slug) chips.push(`<a href="https://en.wikipedia.org/wiki/${esc(n.slug)}" rel="noopener" target="_blank">Wikipedia</a>`);
-    chips.push(`<a href="https://www.wikidata.org/wiki/${esc(n.id)}" rel="noopener" target="_blank">Wikidata</a>`);
-    if (n.kgmid) chips.push(`<a href="https://www.google.com/search?kgmid=${encodeURIComponent(n.kgmid)}" rel="noopener" target="_blank">Google Knowledge Graph</a>`);
-    for (const x of (e.edges && e.edges.out) || []) {
-      if (x.kind !== "xref") continue;
-      const key = x.id.split(":")[1];
-      const mkUrl = XREF_URL[key];
-      const url = mkUrl && x.evidence && mkUrl(x.evidence.value);
-      const nm = XREF_NAME[key] || key;
-      chips.push(url ? `<a href="${esc(url)}" rel="noopener" target="_blank">${esc(nm)}</a>` : esc(nm));
-    }
-    if (chips.length)
-      html += `<div class="chips"><span class="note">Also in:</span> ` +
-              chips.map(c => `<span class="chip">${c}</span>`).join("") + `</div>`;
-  }
-  if (n.article_annotations && !unit) {
-    const aa = n.article_annotations;
-    html += `<div class="chips"><span class="chip"><a href="/${esc(n.slug)}">WikiLean article</a>:
-      <b>${aa.total}</b> Lean annotations</span>
+const BOND_TITLE = {
+  exact: "the concept IS this declaration's formalization — `exact` asserts identity, and identity fuses both ways (SCHEMA rule 1)",
+  generalization: "this concept has no `exact` declaration of its own, so it attaches to its single best generalization target (SCHEMA rule 2)",
+  special_case: "this concept has no `exact` declaration of its own, so it attaches to its single best special-case target (SCHEMA rule 2)",
+  xref: "an external-database page this atom cross-references, claimed by this atom alone (SCHEMA rule 4)",
+  article: "the WikiLean article about this object",
+  matches: "a TheoremGraph match between an arXiv statement and a Lean declaration here",
+  field: "a field-of-study concept: its formal home is this folder, never a cell (SCHEMA rule 5)",
+};
+function bondChip(bond) {
+  if (!bond) return "";
+  return `<span class="bond ${bond === "exact" ? "exact" : ""}" title="${
+    esc(BOND_TITLE[bond] || bond)}">${esc(bond)}</span>`;
+}
+const ORGAN_ORDER = ["concept", "decl", "article", "page", "statement"];
+const ORGAN_HEAD = {
+  concept: ["Wikidata concepts", "the informal identity — an atom may hold several (Module holds both “Module” and “Vector space”)"],
+  decl: ["Lean declarations", "the formal identity — the code that IS this object"],
+  article: ["WikiLean articles", "the annotated Wikipedia mirror of this object"],
+  page: ["External database pages", "the same object, catalogued elsewhere"],
+  statement: ["arXiv statements", "where this object is stated in the literature"],
+};
+
+// One organ, with its payload rendered in full — the card is ONE fetch, so
+// nothing here is a promise of data that lives elsewhere.
+function organHtml(o, anchor) {
+  const isAnchor = o.id === anchor;
+  const url = safeUrl(o.url) || organUrl(o.id);
+  let head = `<div class="srchead"><span class="oname">${esc(o.label || o.id)}</span>`;
+  if (isAnchor) head += ` <span class="uc-anchor" title="the organ that NAMES this atom — the anchor (SCHEMA v3 “Identity”)">anchor</span>`;
+  head += bondChip(o.bond);
+  if (o.kind === "page" && o.db)
+    head += ` <span class="badge" style="border-color:${esc(DB_COLOR[o.db] || "#c8bfa8")}">${
+      esc(XREF_NAME[o.db] || o.db)}</span>`;
+  if (o.kind === "decl" && o.decl_kind) head += ` <span class="mk">${esc(o.decl_kind)}</span>`;
+  if (url) head += ` <a class="extlink" href="${esc(url)}" rel="noopener" target="_blank">↗</a>`;
+  head += provChipHtml(o.prov !== undefined ? manifest.prov[o.prov] : null);
+  head += `</div>`;
+  let body = "";
+  if (o.kind === "concept") {
+    if (o.description)
+      body += `<div class="snip">${esc(o.description)}</div>
+        <div class="srclic">Wikidata (CC0) · <a href="https://www.wikidata.org/wiki/${
+        esc(o.id)}" rel="noopener" target="_blank">${esc(o.id)}</a></div>`;
+    const bits = [];
+    if (o.status) bits.push(`<span class="badge ${o.status === "formalized" ? "f"
+      : o.status === "partial" ? "p" : "n"}">${esc(String(o.status).replace("_", " "))}</span>`);
+    const aa = o.article_annotations;
+    if (aa) bits.push(`<span class="chip"><a href="/${esc(o.slug || "")}">article</a>:
+      <b>${aa.total}</b> annotations</span>
       <span class="badge f">${aa.formalized} formalized</span>
       <span class="badge p">${aa.partial} partial</span>
-      <span class="badge n">${aa.not_formalized} not</span></div>`;
+      <span class="badge n">${aa.not_formalized} not</span>`);
+    if (bits.length) body += `<div class="chips">${bits.join(" ")}</div>`;
+    if (o.slug)
+      body += `<details class="srcacc" data-wplead="${esc(o.slug)}"><summary>read the Wikipedia lead</summary>
+        <div class="wplead"><p class="note">loading…</p></div></details>`;
+  } else if (o.kind === "decl") {
+    if (o.code)
+      body += `<div class="codeblock"><pre>${esc(o.code)}</pre><span class="src">${
+        esc(o.decl_kind || "decl")} — mathlib4 source (Apache-2.0)${
+        o.module ? ` · <code>${esc(o.module)}</code>` : ""} · <a href="${
+        esc(organUrl(o.id))}" rel="noopener" target="_blank">${esc(o.library || "Mathlib")} docs ↗</a></span></div>`;
+    if (o.docstring) body += `<p class="osub">${esc(o.docstring)}</p>`;
+    if (!o.code && o.module) body += `<p class="osub"><code>${esc(o.module)}</code></p>`;
+  } else if (o.kind === "article") {
+    const aa = o.annotations;
+    body += `<div class="chips"><span class="chip"><a href="/${esc(o.id)}">WikiLean article</a>${
+      aa ? `: <b>${aa.total}</b> Lean annotations` : ""}</span>${
+      aa ? `<span class="badge f">${aa.formalized} formalized</span>
+            <span class="badge p">${aa.partial} partial</span>
+            <span class="badge n">${aa.not_formalized} not</span>` : ""}
+      <span class="chip"><a href="https://en.wikipedia.org/wiki/${esc(o.id)}" rel="noopener" target="_blank">Wikipedia</a></span></div>`;
+  } else if (o.kind === "page") {
+    // A snippet NEVER renders without its licence. No-content sources
+    // (MathWorld/DLMF/EoM/Kerodon) ship ids + titles + links only, by their
+    // license — say that instead of quoting.
+    if (o.snippet && o.snippet_license)
+      body += `<div class="snip">${esc(o.snippet)}</div>
+        <div class="srclic">${esc(o.snippet_license)}${
+        url ? ` · <a href="${esc(url)}" rel="noopener" target="_blank">read at ${
+        esc(XREF_NAME[o.db] || o.db)} ↗</a>` : ""}</div>`;
+    else
+      body += `<div class="srclic">no stored content — ${esc(XREF_NAME[o.db] || o.db)}'s
+        license permits ids, titles and links only${
+        url ? ` · <a href="${esc(url)}" rel="noopener" target="_blank">read it at the source ↗</a>` : ""}</div>`;
+    if (o.kind_hint) body += `<p class="osub">${esc(o.kind_hint)}</p>`;
+    if (o.claimants) body += `<p class="osub">claimed by ${o.claimants} atoms — an area page (SCHEMA rule 4)</p>`;
+  } else if (o.kind === "statement") {
+    body += `<p class="osub">appears as <b>${esc(o.ref || "?")}</b> of
+      <a href="${esc(organUrl(o.id))}" rel="noopener" target="_blank">${esc(o.arxiv_id || o.id)}</a>${
+      o.license_open ? "" : " — text not redistributable, link only"}</p>`;
   }
-  if (n.description && !unit) html += `<p style="font-size:.9rem">${esc(n.description)}</p>`;
-  const st = n.display && n.display.status;
-  if (st) html += `<span class="badge ${st === "formalized" ? "f" : st === "partial" ? "p" : "n"}">${esc(st.replace("_", " "))}</span>`;
-  const ae = n.altitude_evidence;
-  if (ae) {
-    if ((ae.p31 || []).includes("Q1936384")) html += `<span class="badge">field of study</span>`;
-    (ae.match_kinds || []).forEach(k => { html += `<span class="badge">${esc(k)}</span>`; });
-    (ae.module_span || []).forEach(m => { html += `<span class="badge">${esc(m)}</span>`; });
-  }
-  if (n.n_decls) html += `<span class="badge">${n.n_decls.toLocaleString()} decls</span>`;
-  if (n.superseded) html += `<span class="badge n">superseded snapshot module</span>`;
-  if (n.slogan) html += `<div class="slogan">${esc(n.slogan)}<span class="src">slogan — math-graph (CC-BY-4.0)</span></div>`;
-  if (n.code) {
-    html += `<div class="codeblock"><pre>${esc(n.code)}</pre><span class="src">${
-      esc(n.decl_kind || "decl")} — mathlib4 source (Apache-2.0) · ` +
-      `<a href="${esc(nodeUrl(n.id))}" rel="noopener" target="_blank">${esc(n.library || "Mathlib")} docs ↗</a></span></div>`;
-  }
-  if (n.docstring) html += `<p class="note">${esc(n.docstring)}</p>`;
-  if (n.arxiv_id) html += `<p class="note">appears as <b>${esc(n.ref || "?")}</b> of
-    <a href="${esc(nodeUrl(n.id))}" rel="noopener" target="_blank">${esc(n.arxiv_id)}</a>
-    ${n.license_open ? "" : " (text not redistributable — link only)"}</p>`;
+  return `<div class="srcrow">${head}${body}</div>`;
+}
 
-  // ext node: the stored snippet (license permitting) or an honest deep link
-  if (n.type === "ext") {
-    const xu = safeUrl(n.url) || nodeUrl(n.id);
-    const dbName = XREF_NAME[n.db] || n.db || "the source";
-    if (n.snippet) {
-      html += `<div class="snipblock"><div class="snip">${esc(n.snippet)}</div>
-        <span class="src">${esc(n.snippet_license || "source license applies")}${
-        xu ? ` · <a href="${esc(xu)}" rel="noopener" target="_blank">read at ${esc(dbName)} ↗</a>` : ""}</span></div>`;
-    } else {
-      html += `<p class="note">No content stored for ${esc(dbName)} pages (its
-        license permits ids, titles and links only)${
-        xu ? ` — <a href="${esc(xu)}" rel="noopener" target="_blank">read it at the source ↗</a>` : ""}.</p>`;
-    }
-    if (n.qid) html += `<div class="chips"><span class="chip"><a data-nav="${esc(n.qid)}">anchored concept ${esc(n.qid)}</a></span></div>`;
-  }
+// ---- the cell card: the atom, its organs, its synapses ---------------------
+function cellHeaderHtml(entry) {
+  const c = entry.cell;
+  const organs = entry.organs || [];
+  const concept = organs.find(o => o.kind === "concept" && o.description)
+    || organs.find(o => o.kind === "concept");
+  const qid = organs.find(o => o.kind === "concept");
+  const article = organs.find(o => o.kind === "article");
+  const decls = organs.filter(o => o.kind === "decl");
+  let h = `<div class="unitcard"><h2>${esc(c.label || c.id)}</h2>`;
+  if (concept && concept.description)
+    h += `<div class="uc-desc">${esc(concept.description)}<span class="uc-src">— Wikidata (CC0)</span></div>`;
+  const chips = [];
+  const slug = (article && article.id) || (qid && qid.slug);
+  if (slug) chips.push(`<span class="chip"><a href="/${esc(slug)}">WikiLean article</a></span>`);
+  if (slug) chips.push(`<span class="chip"><a href="https://en.wikipedia.org/wiki/${
+    esc(slug)}" rel="noopener" target="_blank">Wikipedia</a></span>`);
+  if (qid) chips.push(`<span class="chip"><a href="https://www.wikidata.org/wiki/${
+    esc(qid.id)}" rel="noopener" target="_blank">${esc(qid.id)}</a></span>`);
+  for (const d of decls.slice(0, 8))
+    chips.push(`<span class="chip"><a href="${esc(organUrl(d.id))}" rel="noopener" target="_blank">${
+      esc(shortDecl(d.label || d.id))}</a></span>`);
+  if (decls.length > 8) chips.push(`<span class="chip">+${decls.length - 8} more decls</span>`);
+  for (const p of c.supercells || [])
+    chips.push(`<span class="chip"><a data-nav="${esc(p)}">${esc(p.slice(5))}</a></span>`);
+  return h + `<div class="chips">${chips.join("")}</div></div>`;
+}
+async function renderCellPanel(id, e) {
+  const c = e.cell, organs = e.organs || [];
+  let html = "";
+  if (e.breadcrumb && e.breadcrumb.length)
+    html += `<div class="crumb">` + e.breadcrumb.map(b =>
+      `<a data-nav="${esc(b.id)}">${esc(b.label)}</a>`).join(" / ") + `</div>`;
+  html += cellHeaderHtml(e);
+  const nOrg = (e.counts && e.counts.organs) || organs.length;
+  const nSyn = (e.counts && e.counts.syn) || (e.syn || []).length;
+  html += `<div class="sub">cell · <code>${esc(c.id)}</code> · ${nOrg} organ${
+    nOrg === 1 ? "" : "s"} · ${nSyn.toLocaleString()} synapse${nSyn === 1 ? "" : "s"}${
+    (c.supercells || []).length > 1
+      ? ` · spans ${c.supercells.length} modules — it renders inside each` : ""}</div>`;
 
-  // concept: the Sources accordion — every stored content snippet in one place
-  let srcAccIds = null;
-  if (n.type === "concept") {
-    srcAccIds = conceptSourceRefs(n, e);
-    html += sourcesAccordionHtml(n, srcAccIds);
+  // organs, grouped by kind: the informal identity, the formal identity, the
+  // article, the outside world, the literature — in that order
+  const byKind = new Map();
+  for (const o of organs) {
+    if (!byKind.has(o.kind)) byKind.set(o.kind, []);
+    byKind.get(o.kind).push(o);
   }
-
-  if (e.children && e.children.count) {
-    html += `<section class="kind"><h3>Children <span class="cnt">(${e.children.count})</span></h3><div class="chips">`;
-    for (const c of e.children.first.slice(0, 60))
-      html += `<span class="chip"><a data-nav="${esc(c.id)}">${esc(c.label || c.id)}</a>${c.n_decls ? ` <small>${c.n_decls.toLocaleString()}</small>` : ""}</span>`;
-    if (e.children.count > 60)
-      html += `<span class="chip">… +${e.children.count - 60} more</span>`;
-    html += `</div></section>`;
-  }
-
-  const kinds = activeKinds();
-  const provs = activeProv();
-  const groups = new Map();
-  for (const dir of ["out", "in"]) {
-    for (const x of (e.edges && e.edges[dir]) || []) {
-      if (!kinds.has(x.kind)) continue;
-      if (!provs.has(provClass(x.kind, prov[x.prov], x.evidence))) continue;
-      const key = x.kind + ":" + dir;
-      if (!groups.has(key)) groups.set(key, []);
-      groups.get(key).push([x, dir]);
-    }
-  }
-  const order = ["formalizes:out", "formalizes:in", "xref:out", "xref:in",
-                 "links:out", "links:in", "cites:out", "matches:out",
-                 "matches:in", "depends:out", "depends:in", "relates:out", "relates:in",
-                 "mentions:out", "mentions:in", "cites:in"];
-  for (const key of [...order, ...[...groups.keys()].filter(k => !order.includes(k))]) {
-    const rows = groups.get(key);
+  const order = [...ORGAN_ORDER, ...[...byKind.keys()].filter(k => !ORGAN_ORDER.includes(k))];
+  for (const k of order) {
+    const rows = byKind.get(k);
     if (!rows) continue;
-    const [kind, dir] = key.split(":");
-    const label = KIND_LABEL[kind] + (dir === "in" ?
-      (kind === "formalizes" ? " (concepts this formalizes)" : " (incoming)") : "");
-    html += `<section class="kind"><h3>${esc(label)} <span class="cnt">(${rows.length}${
-      e.edges.truncated && e.edges.truncated[dir] ? "+, truncated" : ""})</span></h3>`;
-    for (const [x, d] of rows.slice(0, 40)) html += edgeHtml(x, prov, d, {id: n.id, label: n.label || n.id});
-    if (rows.length > 40) html += `<div class="more">… ${rows.length - 40} more (use brain/query.py or the API)</div>`;
+    const [head, why] = ORGAN_HEAD[k] || [k, ""];
+    html += `<section class="kind"><h3 title="${esc(why)}">${esc(head)}
+      <span class="cnt">(${rows.length})</span></h3>`;
+    for (const o of rows) html += organHtml(o, c.anchor);
     html += `</section>`;
   }
 
-  if (e.rollup) {
-    for (const grain of ["tree", "module", "dir"]) {
-      const b = e.rollup[grain];
-      if (!b || !kinds.has("depends")) continue;
-      html += `<section class="kind"><h3>Strongest ${esc(grain === 'tree' ? 'sibling' : grain)}-level dependencies
-        <span class="cnt">(${b.counts.out} out / ${b.counts.in} in)</span></h3>`;
-      for (const x of b.out.slice(0, 12)) html += edgeHtml(x, prov, "out", {id: n.id, label: n.label || n.id});
-      html += `</section>`;
-      break;
-    }
-  }
-
-  // the focused container also lists the strongest connections AMONG its
-  // children — the easy way to pick an edge that is hard to hit on canvas
-  if (n.type === "container" && id === focusId && layout) {
-    const short = nid => {
-      const L = layout.items.get(nid);
-      if (L && L.data.label && !/^Q\d+$/.test(L.data.label)) return L.data.label;
-      return nid.startsWith("path:") ? nid.split("/").slice(-1)[0] : nid;
-    };
-    lastLevelEdges = edgeStore
-      .filter(e2 => layout.items.has(e2.a) && layout.items.has(e2.b)
-        && !layout.items.get(e2.a).data.dim && !layout.items.get(e2.b).data.dim
-        && (e2.kind === "xref-shared" ? kinds.has("xref") : kinds.has(e2.kind))
-        && provs.has(provClass(e2.kind,
-            e2.payload && e2.payload.prov !== undefined ? manifest.prov[e2.payload.prov] : null,
-            e2.payload && e2.payload.evidence)))
-      .sort((x, y) => y.w - x.w).slice(0, 15);
-    if (lastLevelEdges.length) {
-      html += `<section class="kind"><h3>Connections at this level
-        <span class="cnt">(strongest ${lastLevelEdges.length})</span></h3>`;
-      lastLevelEdges.forEach((e2, i) => {
-        const st2 = EDGE_STYLE[e2.kind] || {};
-        const dd = DIRECTED.has(e2.kind);
-        const l = dd ? (e2.from || e2.a) : e2.a, r = dd ? (e2.to || e2.b) : e2.b;
-        html += `<div class="edge"><div class="row" data-lvledge="${i}">
-          <span style="color:${st2.color}">●</span>
-          <span>${esc(short(l))} <span class="dirarrow">${dd ? "→" : "↔"}</span> ${esc(short(r))}</span>
-          <span class="mk">${esc(st2.label || e2.kind)}</span>${
-          e2.kind === "depends" ? ` <span class="lit-ref">sig ${e2.w}</span>` : ""}</div></div>`;
-      });
-      html += `</section>`;
-    }
+  // synapses, heaviest first (the shard ships them sorted)
+  const kinds = activeKinds(), provs = activeProv();
+  const syn = (e.syn || []).filter(s =>
+    synVisible({kinds: s.kinds, traces: s.traces}, kinds, provs));
+  if (syn.length) {
+    const trunc = (e.truncated && e.truncated.syn) || 0;
+    html += `<section class="kind"><h3>Synapses <span class="cnt">(${syn.length}${
+      trunc ? ` shown of ${nSyn.toLocaleString()}` : ""})</span></h3>`;
+    syn.slice(0, 40).forEach((s, i) => {
+      const st = EDGE_STYLE[dominantKind(s.kinds)] || {color: SYN_COLOR};
+      const other = (labelById && labelById.get(s.id)) || null;
+      html += `<div class="edge"><div class="row" data-syn="${i}">
+        <span style="color:${st.color}">●</span>
+        <span>${esc((other && other.label) || s.id)}</span>
+        <span class="mk">${esc(Object.keys(s.kinds || {}).join(", "))}</span>
+        <span class="prov" title="the number of constituent bonds">weight ${s.w}</span></div></div>`;
+    });
+    if (syn.length > 40)
+      html += `<div class="more">… ${syn.length - 40} more shown here; the full set is at
+        <code>/api/brain/*</code> or <code>brain/query.py</code></div>`;
+    if (trunc)
+      html += `<div class="more">${trunc.toLocaleString()} lighter synapses were trimmed from
+        this shard (cap: ${manifest._meta.caps.synapses_per_cell}/cell) — the full set is at
+        <code>/api/brain/*</code>.</div>`;
+    html += `</section>`;
   }
   html += `<div id="community-slot"></div>`;
   panelEl.innerHTML = html;
-  panelEl.querySelectorAll("[data-nav]").forEach(a =>
-    a.addEventListener("click", () => navigate(a.dataset.nav)));
-  bindRawToggles();
-  enrichEvidence(panelEl);
-  // Sources accordion loads its content on first open (Wikipedia lead +
-  // ext-node snippets are on-demand fetches, never paid on panel render)
-  const acc = panelEl.querySelector("#srcacc");
-  if (acc) acc.addEventListener("toggle", () => {
-    if (acc.open) populateSources(id, n, srcAccIds || []);
-  });
-  renderCommunity(id);   // async: overlay the live community edges + add-a-connection form
-  panelEl.querySelectorAll(".edge .row").forEach(r =>
+  wirePanel();
+  // clicking a synapse row opens its drawer in the panel
+  panelEl.querySelectorAll("[data-syn]").forEach(r =>
     r.addEventListener("click", ev => {
-      if (ev.target.closest("a") || ev.target.closest("[data-nav]")) return;
-      if (r.dataset.lvledge !== undefined) {
-        showEdgePanel(lastLevelEdges[Number(r.dataset.lvledge)]);
-        return;
-      }
-      const edge = r.parentElement;
-      edge.classList.toggle("open");
-      if (edge.classList.contains("open")) enrichEvidence(edge);   // lazy snippet/label load
+      if (ev.target.closest("a")) return;
+      const s = syn[Number(r.dataset.syn)];
+      showSynapsePanel(id, s.id, {a: id, b: s.id, w: s.w, kinds: s.kinds,
+                                  traces: s.traces || [], tt: s.tt});
     }));
-  // literature rows boot as raw lit: ids — resolve paper titles lazily (their
-  // entries share arXiv-prefix shards, so this is a handful of fetches)
-  [...panelEl.querySelectorAll('[data-nav^="lit:"]')].slice(0, 20).forEach(async el => {
-    const lid = el.dataset.nav;
-    const le = await getEntry(lid);
-    if (!le || !le.node.label || le.node.label === lid) return;
-    const t = le.node.label.length > 90 ? le.node.label.slice(0, 88) + "…" : le.node.label;
-    el.innerHTML = `${esc(t)} <span class="lit-ref">${esc(le.node.ref || "")} · ${
-      esc(le.node.arxiv_id || "")}</span>`;
-  });
-  // concept rows likewise boot as bare QIDs — show the human label
-  // (a "← Q3968 field-of-study link" row must read "Algebra", not "field")
-  [...panelEl.querySelectorAll('[data-nav]')].filter(el => /^Q\d+$/.test(el.dataset.nav))
-    .slice(0, 40).forEach(async el => {
-      const qe = await getEntry(el.dataset.nav);
-      if (!qe || !qe.node.label) return;
-      el.innerHTML = `${esc(qe.node.label)} <span class="lit-ref">${esc(el.dataset.nav)}</span>`;
-    });
+  // the community overlay is keyed by v2 node ids — the anchor IS one
+  renderCommunity(c.anchor, id);
 }
 
-// ghost decls have no brain node — the panel explains and links out instead
-// of erroring with "Unknown node"
-function ghostPanel(item) {
-  lastPanelId = "__ghost__";
-  const name = item.label;
-  const mod = focusId.startsWith("path:")
-    ? focusId.slice(5).replaceAll("/", ".") : "";
-  panelEl.innerHTML = `
-    <h2 style="font-size:1.1rem">${esc(name)}</h2>
-    <div class="sub">decl${mod ? " · " + esc(mod) : ""} ·
-      <a href="/decl/${encodeURIComponent(name)}" rel="noopener" target="_blank">docs ↗</a></div>
-    <span class="badge">not yet linked</span>
-    <p class="note" style="margin-top:10px">This declaration exists in the formal
-    snapshot, but no brain edge reaches it yet — no concept formalizes it, no
-    article cites it, no judged paper match. It renders dimmed so the file's
-    real contents stay visible. Links grow through the discovery pipeline
-    (<code>brain/proposals/</code>) or a WikiLean annotation citing it.</p>`;
-}
-
-// ext id not in the shards (pre-v2 data, or an unminted frontier page):
-// a minimal deep-link panel instead of "Unknown node"
-function extFallbackPanel(id) {
-  lastPanelId = id;
-  const db = extDbOf(id), val = extValueOf(id);
-  const url = nodeUrl(id);
-  panelEl.innerHTML = `
-    <h2 style="font-size:1.1rem">${esc(val || id)}</h2>
-    <div class="sub">external page ·
-      <span class="badge" style="border-color:${esc(DB_COLOR[db] || "#c8bfa8")}">${
-      esc(XREF_NAME[db] || db || "external database")}</span></div>
-    <p class="note">This external page isn't in the current shard build — ${
-      url ? `<a href="${esc(url)}" rel="noopener" target="_blank">open it at the source ↗</a>` : "no deep link available"}.</p>`;
-}
-
-// ---- the atomic-unit card (SCHEMA.md v2 `unit`) -----------------------------
-// One identity strip: label ∘ Wikidata description ∘ article ∘ Wikipedia ∘
-// QID ∘ formalizing decls (primary first) ∘ containers ∘ external DB pages.
-function unitCardHtml(n) {
-  const u = n.unit;
-  let h = `<div class="unitcard"><h2>${esc(u.label || n.label || n.id)}</h2>`;
-  if (u.description)
-    h += `<div class="uc-desc">${esc(u.description)}<span class="uc-src">— Wikidata (CC0)</span></div>`;
-  const chips = [];
-  const slug = (u.article && u.article.slug) || n.slug;
-  const aa = (u.article && u.article.annotations) || n.article_annotations;
-  if (slug) {
-    let b = "";
-    if (aa && typeof aa === "object")
-      b = ` <span class="badge f">${aa.formalized ?? 0}</span><span class="badge p">${
-        aa.partial ?? 0}</span><span class="badge n">${aa.not_formalized ?? 0}</span>`;
-    else if (typeof aa === "number") b = ` <small>${aa} annotations</small>`;
-    chips.push(`<span class="chip"><a href="/${esc(slug)}">WikiLean article</a>${b}</span>`);
+// ---- the synapse drawer ----------------------------------------------------
+// Weight, the kind histogram, and EVERY trace the shard carries — each one named
+// down to the actual database and page, in the same prose the node drawers use.
+async function synBetween(a, b) {
+  for (const [x, y] of [[a, b], [b, a]]) {
+    if (!isCellId(x)) continue;
+    const e = await getEntry(x);
+    const s = e && (e.syn || []).find(s2 => s2.id === y);
+    if (s) return {a, b, w: s.w, kinds: s.kinds || {}, traces: s.traces || [], tt: s.tt};
   }
-  const wslug = u.wikipedia_slug || slug;
-  if (wslug) chips.push(`<span class="chip"><a href="https://en.wikipedia.org/wiki/${
-    esc(wslug)}" rel="noopener" target="_blank">Wikipedia</a></span>`);
-  chips.push(`<span class="chip"><a href="https://www.wikidata.org/wiki/${
-    esc(u.qid || n.id)}" rel="noopener" target="_blank">${esc(u.qid || n.id)}</a></span>`);
-  const primary = n.display && n.display.primary_decl;
-  const decls = (u.decls || []).slice()
-    .sort((a, b2) => (a.name === primary ? -1 : 0) - (b2.name === primary ? -1 : 0));
-  for (const d of decls.slice(0, 12)) {
-    const lib = (d.module || "Mathlib").split(".")[0] || "Mathlib";
-    chips.push(`<span class="chip"><a data-nav="decl:${esc(lib)}:${esc(d.name)}">${
-      esc(shortDecl(d.name))}</a>${
-      d.match_kind ? ` <span class="mk">${esc(MK_LABEL[d.match_kind] || d.match_kind)}</span>` : ""}${
-      d.name === primary ? ` <span class="uc-primary" title="display hint — never identity">primary</span>` : ""}</span>`);
+  return null;
+}
+async function labelOf(id) {
+  if (isPathId(id)) return ((tree.sc || {})[id] || {}).label || id;
+  const r = labelById && labelById.get(id);
+  if (r) return r.label;
+  const e = await getEntry(id);
+  return (e && e.cell.label) || id;
+}
+async function showSynapsePanel(a, b, syn) {
+  lastPanelId = "__syn__";
+  // the flat map ships [i, j, w] only — fetch the kinds + traces on demand
+  if (!syn || !syn.kinds || !Object.keys(syn.kinds).length) {
+    const got = await synBetween(a, b);
+    syn = got || {a, b, w: (syn && syn.w) || 0, kinds: {}, traces: []};
   }
-  if ((u.decls || []).length > 12)
-    chips.push(`<span class="chip">+${u.decls.length - 12} more decls</span>`);
-  for (const c of u.containers || [])
-    chips.push(`<span class="chip"><a data-nav="${esc(c)}">${
-      esc(c.startsWith("path:") ? c.slice(5) : c)}</a></span>`);
-  for (const [db, arr] of Object.entries(u.xrefs || {})) {
-    for (const x of (arr || []).slice(0, 4)) {
-      const xid = x.id && String(x.id).startsWith("xref:") ? x.id : `xref:${db}:${x.id}`;
-      const url = x.url || nodeUrl(xid);
-      chips.push(`<span class="chip" style="border-color:${esc(DB_COLOR[db] || "#c8bfa8")}"><a data-nav="${
-        esc(xid)}">${esc(XREF_NAME[db] || db)}: ${esc(x.label || extValueOf(xid))}</a>${
-        url ? ` <a class="extlink" href="${esc(url)}" rel="noopener" target="_blank">↗</a>` : ""}</span>`);
+  if (lastPanelId !== "__syn__") return;
+  const [la, lb] = await Promise.all([labelOf(a), labelOf(b)]);
+  const traces = syn.traces || [];
+  const kinds = Object.entries(syn.kinds || {}).sort((x, y) => y[1] - x[1]);
+  const dom = EDGE_STYLE[dominantKind(syn.kinds)] || {color: SYN_COLOR, label: "synapse"};
+  let html = `<h2 style="font-size:1.05rem">Synapse</h2>
+    <div class="sub"><span style="color:${dom.color}">●</span> weight <b>${syn.w}</b> —
+      every weak bond between these two atoms, collapsed into one edge. A synapse is
+      <b>undirected</b>: direction lives on each trace below.</div>
+    <div class="chips">
+      <span class="chip"><a data-nav="${esc(a)}">${esc(la)}</a></span>
+      <span class="chip dirarrow">↔</span>
+      <span class="chip"><a data-nav="${esc(b)}">${esc(lb)}</a></span>
+    </div>`;
+  if (kinds.length)
+    html += `<section class="kind"><h3>Bonds <span class="cnt">(${kinds.length} kind${
+      kinds.length === 1 ? "" : "s"})</span></h3><div class="chips">` +
+      kinds.map(([k, v]) => {
+        const st = EDGE_STYLE[k] || {color: SYN_COLOR, label: k};
+        return `<span class="chip" title="${esc(st.label)}"><span style="color:${
+          st.color}">●</span> ${esc(k)} <b>×${v}</b></span>`;
+      }).join("") + `</div></section>`;
+  if (traces.length) {
+    html += `<section class="kind"><h3>Traces <span class="cnt">(${traces.length}${
+      syn.tt && syn.tt > traces.length ? ` of ${syn.tt}` : ""})</span></h3>`;
+    for (const t of traces) {
+      const st = EDGE_STYLE[t.kind] || {color: SYN_COLOR, label: t.kind};
+      const prov = t.prov !== undefined ? manifest.prov[t.prov] : null;
+      const pc = provClass(t.kind, prov, t.evidence);
+      const ctx = {fromId: t.src, fromLabel: null, toId: t.dst, toLabel: null};
+      html += `<div class="edge open"><div class="row">
+        <span style="color:${st.color}">●</span>
+        <span class="nav" data-nav="${esc(t.src)}" data-lbl="${esc(t.src)}"
+          style="color:#1a4b8f;cursor:pointer">${esc(t.src)}</span>
+        <span class="dirarrow">→</span>
+        <span class="nav" data-nav="${esc(t.dst)}" data-lbl="${esc(t.dst)}"
+          style="color:#1a4b8f;cursor:pointer">${esc(t.dst)}</span>
+        <span class="mk">${esc(st.label)}</span>
+        <span class="prov ${pc}" title="${esc(PROV_TITLE[pc])}">${pc}</span></div>
+        <div class="drawer" style="display:block">${
+          evidenceProse(t.kind, t.evidence, prov, "out", t.dst, ctx)}</div></div>`;
     }
+    if (syn.tt && syn.tt > traces.length)
+      html += `<div class="more">${syn.tt - traces.length} further trace${
+        syn.tt - traces.length === 1 ? " is" : "s are"} not shipped in this shard (cap:
+        ${manifest._meta.caps.traces_per_synapse}/synapse) — the full set is at
+        <code>/api/brain/*</code> or <code>brain/query.py</code>.</div>`;
+    html += `</section>`;
+  } else {
+    html += `<section class="kind"><h3>Traces</h3>
+      <p class="note">This synapse's traces aren't shipped in the static view${
+      isPathId(a) || isPathId(b)
+        ? " — area-level synapses (a field concept's bonds, hanging off the folder that holds it) carry their weight and kinds here only"
+        : ""}. The full set is at <code>/api/brain/*</code> or <code>brain/query.py</code>.</p></section>`;
   }
-  return h + `<div class="chips">${chips.join("")}</div></div>`;
+  html += `<p class="note">Every line on the canvas is a stored synapse. Click either
+    atom to inspect it.</p>`;
+  panelEl.innerHTML = html;
+  wirePanel();
 }
-
-// ---- Sources accordion: every content snippet attached to a concept ---------
-// (a) Wikidata description (build-time), (b) Wikipedia lead (on-demand REST
-// summary, CORS-safe, cached), (c) ext-node snippets from their shard entries
-// (license-permitting dbs), plus plain deep-link rows for no-content dbs.
+// ---- panel dispatch --------------------------------------------------------
+let lastPanelId = null;
 const wpLeadCache = new Map();   // slug -> Promise<extract|null>
 function wikipediaLead(slug) {
   if (!wpLeadCache.has(slug)) {
@@ -2265,80 +1926,177 @@ function wikipediaLead(slug) {
   }
   return wpLeadCache.get(slug);
 }
-function conceptSourceRefs(n, e) {
-  const refs = [], seen = new Set();
-  const u = n.unit;
-  if (u && u.xrefs) {
-    for (const [db, arr] of Object.entries(u.xrefs)) {
-      for (const x of arr || []) {
-        const xid = x.id && String(x.id).startsWith("xref:") ? x.id : `xref:${db}:${x.id}`;
-        if (!seen.has(xid)) { seen.add(xid); refs.push(xid); }
-      }
-    }
-  }
-  for (const x of (e.edges && e.edges.out) || []) {
-    if (x.kind !== "xref" || !x.id.startsWith("xref:") || seen.has(x.id)) continue;
-    seen.add(x.id);
-    refs.push(x.id);
-  }
-  return refs;
+// shared wiring for every freshly-rendered panel
+function wirePanel() {
+  panelEl.querySelectorAll("[data-nav]").forEach(a =>
+    a.addEventListener("click", ev => {
+      if (ev.target.closest("a[href]") && ev.target !== a) return;
+      navigate(a.dataset.nav);
+    }));
+  bindRawToggles();
+  enrichEvidence(panelEl);
+  // the Wikipedia lead is an on-demand REST fetch — never paid on card render
+  panelEl.querySelectorAll("details[data-wplead]").forEach(d =>
+    d.addEventListener("toggle", async () => {
+      const box = d.querySelector(".wplead");
+      if (!d.open || !box || box.dataset.loaded) return;
+      box.dataset.loaded = "1";
+      const slug = d.dataset.wplead;
+      const lead = await wikipediaLead(slug);
+      if (!panelEl.contains(box)) return;
+      box.innerHTML = lead
+        ? `<div class="snip">${esc(lead)}</div><div class="srclic">Wikipedia (CC-BY-SA-4.0) ·
+           <a href="https://en.wikipedia.org/wiki/${esc(slug)}" rel="noopener" target="_blank">read the article ↗</a></div>`
+        : `<p class="note">no lead available.</p>`;
+    }));
+  // collapsed drawers load their snippets/labels on expand
+  panelEl.querySelectorAll(".edge .row").forEach(r =>
+    r.addEventListener("click", ev => {
+      if (ev.target.closest("a") || ev.target.closest("[data-nav]")) return;
+      if (r.dataset.syn !== undefined) return;   // synapse rows open the drawer panel
+      const edge = r.parentElement;
+      edge.classList.toggle("open");
+      if (edge.classList.contains("open")) enrichEvidence(edge);
+    }));
 }
-function sourcesAccordionHtml(n, extIds) {
-  const slug = n.slug || (n.unit && n.unit.article && n.unit.article.slug);
-  const desc = (n.unit && n.unit.description) || n.description;
-  const count = (desc ? 1 : 0) + (slug ? 1 : 0) + extIds.length;
-  if (!count) return "";
-  return `<section class="kind"><h3>Sources <span class="cnt">(${count})</span></h3>
-    <details class="srcacc" id="srcacc"><summary>what each database says about this concept</summary>
-    <div id="srcacc-body"><p class="note">loading…</p></div></details></section>`;
-}
-// snippet text renders verbatim — inline $TeX$ stays raw (the page ships no
-// math renderer); the serif .snip block keeps it readable
-function srcRow(name, url, text, license, navId) {
-  return `<div class="srcrow"><div class="srchead"><b>${esc(name)}</b>${
-    navId ? ` <a data-nav="${esc(navId)}" style="cursor:pointer;font-size:.75rem">open node</a>` : ""}${
-    url ? ` <a class="extlink" href="${esc(url)}" rel="noopener" target="_blank">↗</a>` : ""}</div>
-    <div class="snip">${esc(text)}</div>${
-    license ? `<div class="srclic">${esc(license)}</div>` : ""}</div>`;
-}
-function srcLinkRow(name, url, navId) {
-  return `<div class="srcrow"><div class="srchead"><b>${esc(name)}</b>
-    <a data-nav="${esc(navId)}" style="cursor:pointer;font-size:.75rem">open node</a>${
-    url ? ` <a class="extlink" href="${esc(url)}" rel="noopener" target="_blank">↗</a>` : ""}</div>
-    <div class="srclic">no stored content (license) — read it at the source</div></div>`;
-}
-async function populateSources(id, n, extIds) {
-  const body = $("#srcacc-body");
-  if (!body || body.dataset.loaded) return;
-  body.dataset.loaded = "1";
-  const rows = [];
-  const desc = (n.unit && n.unit.description) || n.description;
-  const qid = (n.unit && n.unit.qid) || n.id;
-  if (desc) rows.push(srcRow("Wikidata", `https://www.wikidata.org/wiki/${qid}`, desc, "CC0"));
-  body.innerHTML = rows.join("") || `<p class="note">loading…</p>`;
-  const slug = n.slug || (n.unit && n.unit.article && n.unit.article.slug);
-  if (slug) {
-    const lead = await wikipediaLead(slug);
-    if (lastPanelId !== id) return;
-    if (lead) rows.push(srcRow("Wikipedia (lead)",
-      `https://en.wikipedia.org/wiki/${slug}`, lead, "CC-BY-SA-4.0"));
+async function renderPanel(id) {
+  lastPanelId = id;
+  if (id === ROOTS_ID) return rootsPanel();
+  if (id === UNPLACED_ID) return unplacedPanel();
+  if (isPathId(id)) return renderSupercellPanel(id);
+  const resolved = isCellId(id) ? id : await resolveId(id);
+  if (lastPanelId !== id) return;
+  if (resolved && resolved !== id) return renderPanel(resolved);
+  const e = resolved ? await getEntry(resolved) : null;
+  if (lastPanelId !== id) return;
+  if (!e) {
+    // not in the shards: an unminted external page, or a community-added
+    // Wikidata concept that never entered a build
+    if (id.startsWith("xref:")) return extFallbackPanel(id);
+    if (/^Q\d+$/.test(id)) return renderCommunityNodePanel(id);
+    panelEl.innerHTML = `<p class="note">Unknown id: ${esc(id)}. Every organ id
+      (a QID, a <code>decl:</code> name, an <code>xref:</code> page, an article slug)
+      resolves through <code>aliases.json</code> to the atom that owns it.</p>`;
+    return;
   }
-  for (const xid of extIds.slice(0, 12)) {
-    const ee = await getEntry(xid);
-    if (lastPanelId !== id) return;
-    const db = extDbOf(xid);
-    const nm = XREF_NAME[db] || db;
-    const url = (ee && safeUrl(ee.node.url)) || nodeUrl(xid);
-    if (ee && ee.node.snippet)
-      rows.push(srcRow(nm, url, ee.node.snippet, ee.node.snippet_license || "", xid));
-    else rows.push(srcLinkRow(nm, url, xid));   // no-content db → deep link out
+  return renderCellPanel(resolved, e);
+}
+function rootsPanel() {
+  const rows = tree.roots.filter(p => tree.count(p) > 0)
+    .map(p => [tree.count(p), p]).sort((a, b) => b[0] - a[0]);
+  let html = `<h2>The Brain</h2>
+    <div class="sub">${(manifest._meta.counts.cells || 0).toLocaleString()} cells ·
+      ${(manifest._meta.counts.organs || 0).toLocaleString()} organs ·
+      ${(manifest._meta.counts.synapses || 0).toLocaleString()} synapses ·
+      data ${esc(manifest._meta.generated_at.slice(0, 10))}</div>
+    <p class="note">A <b>cell</b> is an atom: one mathematical object, holding every
+    particle that denotes it — its Wikidata concept(s), the Lean declaration(s) that
+    formalize it, its pages in nLab / LMFDB / Stacks / MathWorld / …, its WikiLean
+    article, its arXiv statements. Atoms nest inside the Mathlib folders their code
+    lives in; every weak bond between two atoms collapses into one <b>synapse</b> that
+    keeps its traces.</p>
+    <section class="kind"><h3>Libraries <span class="cnt">(${rows.length} with cells)</span></h3>
+    <div class="chips">`;
+  for (const [n, p] of rows)
+    html += `<span class="chip"><a data-nav="${esc(p)}">${esc(p.slice(5))}</a>
+      <small>${n.toLocaleString()}</small></span>`;
+  html += `</div><p class="note">${
+    tree.roots.length - rows.length} further library roots hold no cells yet.</p></section>`;
+  if (tree.unplaced.length)
+    html += `<section class="kind"><h3>No formal home <span class="cnt">(${
+      tree.unplaced.length.toLocaleString()})</span></h3>
+      <p class="note">Atoms with no Lean declaration have no module to nest in — nothing
+      formalizes them yet. <a data-nav="${UNPLACED_ID}">Browse them</a>, or find them in the
+      Explorer, which places every atom.</p></section>`;
+  panelEl.innerHTML = html;
+  wirePanel();
+}
+function unplacedPanel() {
+  panelEl.innerHTML = `<h2>No formal home</h2>
+    <div class="sub">${tree.unplaced.length.toLocaleString()} cells</div>
+    <p class="note">These atoms hold no Lean declaration, so they have no module to nest
+    inside — the containment tree can't place them. They are real atoms with real
+    synapses: the Explorer places every one of them, and search finds them by any of
+    their organs' names.</p>`;
+  wirePanel();
+}
+async function renderSupercellPanel(p) {
+  await ensureTree();
+  const sc = tree.sc[p];
+  if (lastPanelId !== p) return;
+  if (!sc) { panelEl.innerHTML = `<p class="note">Unknown area: ${esc(p)}</p>`; return; }
+  const chain = pathChain(p);
+  let html = `<div class="crumb">` + chain.map((b, i) =>
+    i === chain.length - 1 ? esc(b.label) : `<a data-nav="${esc(b.id)}">${esc(b.label)}</a>`)
+    .join(" / ") + `</div>`;
+  html += `<h2>${esc(sc.label || p)}</h2>
+    <div class="sub">supercell · <code>${esc(p)}</code> · ${tree.count(p).toLocaleString()}
+      cells in the subtree${(sc.cells || []).length ? ` · ${sc.cells.length} here` : ""}</div>`;
+  // rule-5 organs: field-of-study concepts and area pages belong to the FOLDER,
+  // never to a cell — "Linear algebra" is this module, not the Module atom
+  if ((sc.organs || []).length) {
+    html += `<section class="kind"><h3 title="a field-of-study concept or an area-level page belongs to the module, never to a cell (SCHEMA rules 4 &amp; 5)">This area <em>is</em>
+      <span class="cnt">(${sc.organs.length})</span></h3>`;
+    for (const o of sc.organs) html += organHtml(o, null);
+    html += `</section>`;
   }
-  if (extIds.length > 12)
-    rows.push(`<p class="note">… +${extIds.length - 12} more cross-references (see the chips above)</p>`);
-  if (lastPanelId !== id || !$("#srcacc-body")) return;
-  $("#srcacc-body").innerHTML = rows.join("") || `<p class="note">no stored source content.</p>`;
-  $("#srcacc-body").querySelectorAll("[data-nav]").forEach(a =>
-    a.addEventListener("click", () => navigate(a.dataset.nav)));
+  if ((sc.children || []).length) {
+    html += `<section class="kind"><h3>Areas <span class="cnt">(${sc.children.length})</span></h3><div class="chips">`;
+    for (const ch of sc.children.slice(0, 60))
+      html += `<span class="chip"><a data-nav="${esc(ch)}">${esc((tree.sc[ch] || {}).label || ch)}</a>
+        <small>${tree.count(ch).toLocaleString()}</small></span>`;
+    if (sc.children.length > 60) html += `<span class="chip">… +${sc.children.length - 60} more</span>`;
+    html += `</div></section>`;
+  }
+  if ((sc.cells || []).length) {
+    html += `<section class="kind"><h3>Cells here <span class="cnt">(${sc.cells.length})</span></h3><div class="chips">`;
+    for (const cid of sc.cells.slice(0, 80))
+      html += `<span class="chip"><a data-nav="${esc(cid)}">${
+        esc(((labelById && labelById.get(cid)) || {}).label || cid)}</a></span>`;
+    if (sc.cells.length > 80) html += `<span class="chip">… +${sc.cells.length - 80} more</span>`;
+    html += `</div></section>`;
+  }
+  const kinds = activeKinds(), provs = activeProv();
+  const syn = (sc.syn || []).filter(s => synVisible({kinds: s.kinds, traces: s.traces}, kinds, provs));
+  if (syn.length) {
+    html += `<section class="kind"><h3>Synapses <span class="cnt">(${syn.length}${
+      (sc.counts && sc.counts.syn && sc.counts.syn > syn.length) ? ` of ${sc.counts.syn.toLocaleString()}` : ""})</span></h3>`;
+    syn.slice(0, 30).forEach((s, i) => {
+      const st = EDGE_STYLE[dominantKind(s.kinds)] || {color: SYN_COLOR};
+      const other = isPathId(s.id) ? ((tree.sc[s.id] || {}).label || s.id)
+        : (((labelById && labelById.get(s.id)) || {}).label || s.id);
+      html += `<div class="edge"><div class="row" data-scsyn="${i}">
+        <span style="color:${st.color}">●</span><span>${esc(other)}</span>
+        <span class="mk">${esc(Object.keys(s.kinds || {}).join(", "))}</span>
+        <span class="prov">weight ${s.w}</span></div></div>`;
+    });
+    html += `</section>`;
+  }
+  html += `<div id="community-slot"></div>`;
+  panelEl.innerHTML = html;
+  wirePanel();
+  panelEl.querySelectorAll("[data-scsyn]").forEach(r =>
+    r.addEventListener("click", ev => {
+      if (ev.target.closest("a")) return;
+      const s = syn[Number(r.dataset.scsyn)];
+      showSynapsePanel(p, s.id, {a: p, b: s.id, w: s.w, kinds: s.kinds, traces: s.traces || [], tt: s.tt});
+    }));
+  renderCommunity(p, p);
+}
+// an external page id not in aliases (an unminted frontier page): a minimal
+// deep-link panel instead of "Unknown id"
+function extFallbackPanel(id) {
+  lastPanelId = id;
+  const db = extDbOf(id), val = extValueOf(id);
+  const url = organUrl(id);
+  panelEl.innerHTML = `
+    <h2 style="font-size:1.1rem">${esc(val || id)}</h2>
+    <div class="sub">external page ·
+      <span class="badge" style="border-color:${esc(DB_COLOR[db] || "#c8bfa8")}">${
+      esc(XREF_NAME[db] || db || "external database")}</span></div>
+    <p class="note">No atom claims this page in the current build — external pages are
+    organs inside cells now, and only anchored ones ship. ${
+      url ? `<a href="${esc(url)}" rel="noopener" target="_blank">Open it at the source ↗</a>` : "No deep link available."}</p>`;
 }
 
 // ---- the transparency legend: /map's Sources view, rendered in the panel ----
@@ -2346,7 +2104,7 @@ let sourcesData = null;
 async function showSourcesPanel() {
   lastPanelId = "__sources__";
   if (!sourcesData) {
-    const r = await fetch(BASE + "sources.json" + vq());
+    const r = await fetch(SOURCES_URL);
     if (!r.ok) { panelEl.innerHTML = `<p class="note">sources.json unavailable</p>`; return; }
     sourcesData = await r.json();
   }
@@ -2375,7 +2133,7 @@ async function showSourcesPanel() {
         s.homepage ? `<a href="${esc(s.homepage)}" rel="noopener" target="_blank"><b>${esc(s.name || s.key)}</b></a>` : `<b>${esc(s.name || s.key)}</b>`}
         <span class="mk">${esc(s.layer)}</span>${
         s.wikidata_property ? ` <span class="lit-ref">${esc(s.wikidata_property)}</span>` : ""}
-        <span class="conf">${esc(s.target_license || "—")}</span></div>
+        <span class="prov">${esc(s.target_license || "—")}</span></div>
         <div class="drawer">${esc(s.kind || "")}${s.kind ? "<br>" : ""}<i>${esc(s.our_provenance || "")}</i>${
         s.note ? `<br>${esc(s.note)}` : ""}</div></div>`;
     }
@@ -2391,12 +2149,24 @@ $("#srcbtn").addEventListener("click", showSourcesPanel);
 $("#srcbtn2").addEventListener("click", showSourcesPanel);
 
 // ============================ search =========================================
-async function ensureLabels() {
-  if (!labels) {
-    const r = await fetch(BASE + "labels.json" + vq());
-    labels = r.ok ? await r.json() : [];
+// Over labels + `aka` (EVERY organ label the atom holds), so "Vector space"
+// surfaces the Module atom — the whole point of the cell model.
+let searchIndex = null;
+async function ensureSearchIndex() {
+  if (searchIndex) return searchIndex;
+  await ensureTree();
+  const rows = (labels || []).map(r => ({
+    id: r.id, label: r.label, type: "cell", aka: r.aka || null,
+    hay: [r.label, ...(r.aka || [])].map(s => s.toLowerCase()),
+  }));
+  for (const [p, sc] of Object.entries(tree.sc || {})) {
+    const n = tree.count(p);
+    if (!n) continue;   // an empty folder is not a destination
+    rows.push({id: p, label: sc.label || p, type: "area", n,
+               hay: [(sc.label || "").toLowerCase(), p.slice(5).toLowerCase()]});
   }
-  return labels;
+  searchIndex = rows;
+  return rows;
 }
 let searchT = null;
 $("#q").addEventListener("input", () => {
@@ -2405,20 +2175,22 @@ $("#q").addEventListener("input", () => {
     const q = $("#q").value.trim().toLowerCase();
     const box = $("#hits");
     if (q.length < 2) { box.style.display = "none"; return; }
-    const L = await ensureLabels();
+    const L = await ensureSearchIndex();
     const starts = [], contains = [];
     for (const r of L) {
-      const l = r.label.toLowerCase();
-      if (l.startsWith(q)) starts.push(r);
-      else if (l.includes(q)) contains.push(r);
+      if (r.hay.some(h => h.startsWith(q))) starts.push(r);
+      else if (r.hay.some(h => h.includes(q))) contains.push(r);
       if (starts.length >= 20) break;
     }
     const hits = [...starts, ...contains].slice(0, 20);
-    box.innerHTML = hits.map(r =>
-      `<div class="hit" data-id="${esc(r.id)}"><span class="t">${esc(r.type)}${
-        r.status ? " · " + esc(r.status).replace("_", " ") : ""}</span> ${esc(r.label)}${
-        r.n_decls ? ` <small style="color:#8c959f">${r.n_decls.toLocaleString()}</small>` : ""}</div>`).join("")
-      || `<div class="hit"><span class="t">no hits</span> try /decl/&lt;name&gt; for declarations</div>`;
+    box.innerHTML = hits.map(r => {
+      // say WHY a hit matched when it matched on an organ name, not the label
+      const via = r.aka && !r.label.toLowerCase().includes(q)
+        ? r.aka.find(a => a.toLowerCase().includes(q)) : null;
+      return `<div class="hit" data-id="${esc(r.id)}"><span class="t">${esc(r.type)}</span> ${
+        esc(r.label)}${via ? ` <span class="aka">— its organ “${esc(via)}”</span>` : ""}${
+        r.n ? ` <small style="color:#8c959f">${r.n.toLocaleString()}</small>` : ""}</div>`;
+    }).join("") || `<div class="hit"><span class="t">no hits</span> try /decl/&lt;name&gt; for declarations</div>`;
     box.style.display = "block";
     box.querySelectorAll("[data-id]").forEach(h =>
       h.addEventListener("click", () => { box.style.display = "none"; $("#q").value = ""; navigate(h.dataset.id); }));
@@ -2427,18 +2199,25 @@ $("#q").addEventListener("input", () => {
 document.addEventListener("click", ev => {
   if (!ev.target.closest("#search")) $("#hits").style.display = "none";
 });
-
-// ============================ xref explorer ==================================
-// The whole cross-referenced subgraph (views/xref_explorer.json — every
-// tagged / cross-linked node + the edges among them) as ONE static-tick force
-// layout: the cross-ref explorer for Mathlib. Facet chips, Layers and
-// Provenance toggles all apply; clicking a node opens its panel; labels are
-// capped by zoom so a few thousand nodes stay legible. Degrades to a status
-// message when the view file hasn't been built yet.
+// ============================ the Explorer ===================================
+// The COMPLETE flat cell graph, drawn at its BUILD-TIME positions.
+//
+// The client runs NO physics (SCHEMA "Layout is BUILD-TIME"). brain/layout.py
+// solves the layout once, deterministically, with SHORT-RANGE repulsion and
+// parks synapse-less cells near their supercell's centre of mass. Re-simulating
+// here would resurrect exactly what that fixed: textbook long-range repulsion
+// pushes weakly-attached cells out to r = √(n·k²/g) — measured 84,200 vs 1,985
+// for the core — so fit-to-content zooms out ~42× and the graph renders as a ring
+// around a clump. It also makes the map STABLE: the same shape every visit, so it
+// can be learned.
+//
+// explorer.json ships edges as index triples [i, j, w] into `nodes` (ids average
+// ~11 chars and repeat twice per edge, so objects cost ~4×) — which is what buys
+// shipping all 76,083 synapses in 2.3 MB with no draw cap.
 let xdata = null;
 async function fetchExplorerData() {
   if (xdata) return xdata;
-  const get = () => fetch(BASE + "views/xref_explorer.json" + vq())
+  const get = () => fetch(BASE + "explorer.json" + vq())
     .then(r => (r.ok ? r.json() : null)).catch(() => null);
   let j = await get();
   if (!j) {   // stale manifest → one re-sync + retry, same as getEntry
@@ -2448,236 +2227,170 @@ async function fetchExplorerData() {
   xdata = j;
   return j;
 }
+// 76k <path> elements is not a thing a browser survives, so the synapses batch
+// into one path per weight tier (a single `d` of M…L subpaths). Nothing is
+// dropped — the click target is a nearest-segment hit test below, so every drawn
+// synapse stays inspectable.
+const SYN_TIERS = [
+  {min: 1, max: 1, w: 0.5, op: 0.10},
+  {min: 2, max: 3, w: 0.7, op: 0.18},
+  {min: 4, max: 7, w: 1.1, op: 0.30},
+  {min: 8, max: Infinity, w: 1.8, op: 0.50},
+];
+let xEdges = [];   // [{a, b, w, ax, ay, bx, by}] for the hit test
+function drawExplorerEdges() {
+  gEdges.selectAll("*").remove();
+  for (const t of SYN_TIERS) {
+    let d = "";
+    for (const e of xEdges) {
+      if (e.w < t.min || e.w > t.max) continue;
+      d += `M${e.ax.toFixed(1)},${e.ay.toFixed(1)}L${e.bx.toFixed(1)},${e.by.toFixed(1)}`;
+    }
+    if (!d) continue;
+    gEdges.append("path").attr("class", "synbatch").attr("d", d)
+      .attr("stroke", SYN_COLOR).attr("stroke-width", t.w).attr("stroke-opacity", t.op);
+  }
+}
+// distance from p to segment ab, squared
+function segDist2(px, py, ax, ay, bx, by) {
+  const dx = bx - ax, dy = by - ay;
+  const l2 = dx * dx + dy * dy;
+  let t = l2 ? ((px - ax) * dx + (py - ay) * dy) / l2 : 0;
+  t = t < 0 ? 0 : t > 1 ? 1 : t;
+  const qx = ax + t * dx, qy = ay + t * dy;
+  return (px - qx) * (px - qx) + (py - qy) * (py - qy);
+}
+function explorerClick(ev) {
+  if (!xEdges.length) return;
+  const [px, py] = d3.pointer(ev, gViewport.node());
+  const k = d3.zoomTransform(svg.node()).k || 1;
+  const tol = 7 / k;                    // a constant on-screen grab radius
+  let best = null, bd = tol * tol;
+  for (const e of xEdges) {
+    const d2 = segDist2(px, py, e.ax, e.ay, e.bx, e.by);
+    if (d2 < bd) { bd = d2; best = e; }
+  }
+  if (best) showSynapsePanel(best.a, best.b, {a: best.a, b: best.b, w: best.w});
+}
+// the explorer scopes by AREA: an area id scopes to its subtree, a cell id
+// scopes to that cell's home area (and is selected), anything else = everything
+async function explorerFocusFor(rawId) {
+  const id = await resolveId(rawId);
+  if (isPathId(id)) return id;
+  if (isCellId(id)) {
+    const e = await getEntry(id);
+    const home = e ? homeOf(e) : null;
+    return isPathId(home) ? home : ROOTS_ID;
+  }
+  return ROOTS_ID;
+}
 async function renderExplorer(anim) {
   const seq = ++renderSeq;
+  await ensureTree();
   const j = await fetchExplorerData();
   if (seq !== renderSeq) return;
   if (!j || !(j.nodes || []).length) {
     setExplorer(false);
     setHash(focusId || "");   // drop the stale &view=explorer
-    statusEl.textContent = "explorer data not built yet (views/xref_explorer.json)";
+    statusEl.textContent = "explorer data not built yet (cells/explorer.json)";
     return renderFocus(false);
   }
   resetZoom();
   selectedId = null;
-  // tolerate {nodes, edges} or {nodes, links}; infer type/db/label from ids
-  let nodesArr = (j.nodes || []).map(r => {
-    const t = r.type || idType(r.id);
-    return {id: r.id, type: t, f: r.f, status: r.status, p: r.p,
-            db: r.db || (t === "ext" ? extDbOf(r.id) : undefined),
-            label: r.label || (t === "ext" ? extValueOf(r.id) : r.id)};
-  });
-  const totalN = nodesArr.length;
-  const rawEdges = (j.edges || j.links || []).map(r => ({
-    src: r.src ?? r.source ?? r.a, dst: r.dst ?? r.target ?? r.b,
-    kind: r.kind || "links", prov: r.prov, evidence: r.evidence || {},
-    w: r.w || 1}));
-  // ---- scope: the explorer flattens the CURRENT focus subtree (the old
-  // separate Flatten view is merged into this). Decls carry p (containment
-  // path); concepts/ext have no tree home, so they join by induction — kept
-  // iff they touch an in-scope node. At the top level everything is in scope.
-  const scope = focusId && focusId !== LIBS_ID && focusId.startsWith("path:")
-    ? focusId : null;
-  const inSub = pp => !scope || pp === scope || (pp || "").startsWith(scope + "/");
-  let noF = false;
-  const maskOk = nd => ((nd.f || 0) & filterMask) !== 0;
-  if (filterMask && !nodesArr.some(nd => nd.f !== undefined)) noF = true;
-  const treeOk = nd => (nd.type === "decl" || nd.type === "container")
-    ? inSub(nd.type === "container" ? nd.id : nd.p) : true;
-  let kept = nodesArr.filter(nd => treeOk(nd) && (!filterMask || noF || maskOk(nd)));
-  if (scope) {
-    // induction pass: floating types stay only if they touch the subtree core
-    const core = new Set(kept.filter(nd => nd.type === "decl" || nd.type === "container")
-      .map(nd => nd.id));
-    const touch = new Set(core);
-    for (const ed of rawEdges) {
-      if (core.has(ed.src)) touch.add(ed.dst);
-      if (core.has(ed.dst)) touch.add(ed.src);
+  const nodes = j.nodes;
+  const totalN = nodes.length;
+  // ---- scope: the explorer flattens the CURRENT focus subtree. A cell carries
+  // `p` (its containment path) iff it has a decl organ; a concept-only atom has
+  // no tree home, so it joins by induction — kept iff it synapses with an
+  // in-scope atom. At the top level everything is in scope.
+  const scope = isPathId(focusId) ? focusId : null;
+  const inSub = pp => pp === scope || (pp || "").startsWith(scope + "/");
+  const maskOk = i => ((nodes[i].f || 0) & filterMask) !== 0;
+  const keep = new Uint8Array(totalN);
+  if (!scope) {
+    for (let i = 0; i < totalN; i++) keep[i] = (!filterMask || maskOk(i)) ? 1 : 0;
+  } else {
+    const core = new Uint8Array(totalN);
+    for (let i = 0; i < totalN; i++) if (nodes[i].p && inSub(nodes[i].p)) core[i] = 1;
+    const touch = core.slice();
+    for (const [i, k2] of j.edges) {   // one ripple: homeless atoms hanging off the core
+      if (core[i]) touch[k2] = 1;
+      if (core[k2]) touch[i] = 1;
     }
-    // second ripple so ext pages hanging off an induced concept stay too
-    for (const ed of rawEdges) {
-      if (touch.has(ed.src)) touch.add(ed.dst);
-      if (touch.has(ed.dst)) touch.add(ed.src);
-    }
-    kept = kept.filter(nd => core.has(nd.id) || touch.has(nd.id));
+    for (let i = 0; i < totalN; i++)
+      keep[i] = (touch[i] && (!filterMask || maskOk(i))) ? 1 : 0;
   }
-  // ---- (change 3) database-pages visibility: at the unscoped top level the
-  // 3.6k external-DB PAGES + their internal links are what clump the middle,
-  // so hide them by default and keep the concept/declaration backbone (the
-  // projected concept↔concept cross-database links still show). Small
-  // scoped/filtered views (< EXT_AUTO) show pages automatically. A user click
-  // pins the choice for the session (explorerTogglesUser).
-  const EXT_AUTO = 700;
-  const backboneN = kept.filter(nd => nd.type !== "ext").length;
-  if (!explorerTogglesUser) showExtPages = backboneN <= EXT_AUTO;
-  const nExtHidden = showExtPages ? 0 : kept.filter(nd => nd.type === "ext").length;
-  let nodesKept = showExtPages ? kept : kept.filter(nd => nd.type !== "ext");
-  let keep = new Set(nodesKept.map(nd => nd.id));
-  // client-side unordered dedupe as a safety net for pre-dedupe cached data
-  const seen = new Map();
-  let allEdges = [];   // every kept, deduped edge (drives CONNECTIVITY)
-  for (const ed of rawEdges) {
-    if (!keep.has(ed.src) || !keep.has(ed.dst)) continue;
-    const k = ed.kind + "|" + (ed.src < ed.dst ? ed.src + "|" + ed.dst
-                                               : ed.dst + "|" + ed.src);
-    const prev = seen.get(k);
-    if (prev) { prev.w = Math.max(prev.w, ed.w) + 1; continue; }
-    seen.set(k, ed);
-    allEdges.push(ed);
+  const leaves = [];
+  const idxOf = new Uint32Array(totalN);
+  const deg = new Uint32Array(totalN);
+  for (const [i, k2] of j.edges) if (keep[i] && keep[k2]) { deg[i]++; deg[k2]++; }
+  for (let i = 0; i < totalN; i++) {
+    if (!keep[i]) continue;
+    const n = nodes[i];
+    idxOf[i] = leaves.length;
+    leaves.push({data: {id: n.id, type: "cell", label: n.label, f: n.f || 0, p: n.p || null},
+                 x: n.xy[0], y: n.xy[1],           // BUILD-TIME layout, verbatim
+                 r: 2.2 + Math.min(4.5, Math.sqrt(deg[i]) * 0.55)});
   }
-  // (change 1) connected-vs-isolate is decided from the FULL edge set, BEFORE
-  // the draw budget — a node connected in the data must never be ringed just
-  // because its edges lost the 4,000-edge cut. deg here only weights sizes.
-  const fullDeg = new Map();
-  for (const ed of allEdges) {
-    fullDeg.set(ed.src, (fullDeg.get(ed.src) || 0) + 1);
-    fullDeg.set(ed.dst, (fullDeg.get(ed.dst) || 0) + 1);
+  xEdges = [];
+  for (const [i, k2, w] of j.edges) {
+    if (!keep[i] || !keep[k2]) continue;
+    const A = leaves[idxOf[i]], B = leaves[idxOf[k2]];
+    xEdges.push({a: A.data.id, b: B.data.id, w, ax: A.x, ay: A.y, bx: B.x, by: B.y});
   }
-  const totalE = allEdges.length;
-  // draw budget: coverage-first (one edge per node) then fill by weight, so
-  // capping never strands a node the full graph connects
-  let edges = allEdges;
-  if (allEdges.length > 4000) {
-    const byW = allEdges.slice().sort((a, b) => (b.w || 1) - (a.w || 1));
-    const covered = new Set(), pick = [];
-    for (const ed of byW) {
-      if (!covered.has(ed.src) || !covered.has(ed.dst)) {
-        pick.push(ed); covered.add(ed.src); covered.add(ed.dst);
-        if (pick.length >= 4000) break;
-      }
-    }
-    for (const ed of byW) {
-      if (pick.length >= 4000) break;
-      if (!pick.includes(ed)) pick.push(ed);   // pick is small-ish; fill the rest
-    }
-    edges = pick.slice(0, 4000);
-  }
-  const deg = fullDeg;
-  const W = stageEl.clientWidth || 800, H = stageEl.clientHeight || 600;
-  const R_T = {concept: 5, decl: 3.5, ext: 4, container: 6, literature: 4};
-  let connected = nodesKept.filter(nd => fullDeg.has(nd.id));
-  let isolates = nodesKept.filter(nd => !fullDeg.has(nd.id));
-  // (change 2) unlinked nodes are hidden by default — with the budget fix
-  // above there are only a handful, and they read as noise. The toggle brings
-  // back the outer ring.
-  const nIsoHidden = showIsolates ? 0 : isolates.length;
-  if (!showIsolates) { nodesKept = connected; isolates = []; keep = new Set(connected.map(nd => nd.id)); }
-  const scopeLabel = scope ? scope.slice(5) : "all libraries";
-  const extras = [];
-  if (nExtHidden) extras.push(`${nExtHidden.toLocaleString()} DB pages hidden`);
-  if (nIsoHidden) extras.push(`${nIsoHidden.toLocaleString()} unlinked hidden`);
-  updateFilterStat({active: true, noF: filterMask ? noF : false,
-    shown: nodesKept.length, total: totalN,
-    text: `${nodesKept.length.toLocaleString()} nodes · ${scopeLabel}${
-      extras.length ? " · " + extras.join(" · ") : ""}`});
-  const N = connected.length;
-  // THE de-clump principle: thousands of nodes geometrically cannot fit in
-  // one viewport, so the layout takes whatever area it needs and the CAMERA
-  // fits to the content afterwards (fit-transform below). Any real centering
-  // pull at this scale re-creates the blob — it ~vanishes as N grows.
-  const sims = [];
-  connected.forEach((nd, i) => {
-    // phyllotaxis seed centered on the stage (d3's default seeds around the
-    // ORIGIN); ~13px spacing gives the spiral roughly area-proportional room
-    const a = i * 2.39996, rr = 13 * Math.sqrt(i + 1);
-    sims.push({id: nd.id, nd, x: W / 2 + rr * Math.cos(a), y: H / 2 + rr * Math.sin(a),
-      r: (R_T[nd.type] || 4) + Math.min(4, Math.sqrt(deg.get(nd.id) || 0) * 0.7)});
-  });
-  const EXP_DIST = {formalizes: 42, xref: 58, links: 70};
-  // Forces ADAPT to N because the camera fits to the content afterward:
-  // few nodes → strong long-range repulsion + long links spread the core so
-  // labels are readable (fit zooms IN); many nodes → gentle short-range
-  // repulsion keeps a compact disc that stays above the zoom floor (fit
-  // zooms OUT). A single fixed tuning can only serve one end of that range.
-  const distMul = Math.max(1, Math.min(2.6, Math.sqrt(1600 / Math.max(N, 1))));
-  const chargeStr = -Math.max(9, Math.min(140, 9 + 7000 / Math.max(N, 1)));
-  const chargeMax = Math.max(180, Math.min(650, 150 + 45000 / Math.max(N, 1)));
-  const links = edges.map(ed => ({source: ed.src, target: ed.dst, kind: ed.kind}));
-  const sim = d3.forceSimulation(sims)
-    // d3's DEFAULT link strength (1/min endpoint degree) — a flat strength
-    // collapses hub stars (CommGroup and friends) into knots
-    .force("link", d3.forceLink(links).id(d => d.id)
-      .distance(l => (EXP_DIST[l.kind] || 55) * distMul))
-    .force("charge", d3.forceManyBody().strength(chargeStr).distanceMax(chargeMax).theta(0.95))
-    .force("collide", d3.forceCollide(d => d.r + 3).iterations(3))
-    .force("x", d3.forceX(W / 2).strength(0.03))
-    .force("y", d3.forceY(H / 2).strength(0.035))
-    .stop();
-  const ticks = N > 3000 ? 220 : N > 1500 ? 250 : 300;
-  for (let i = 0; i < ticks; i++) sim.tick();
-  if (seq !== renderSeq) return;
-  // isolates ring OUTSIDE the connected cloud's bounding box, ring by ring
-  // (capacity grows with circumference), so strangers never share the core
-  let bx0 = W / 2 - 80, bx1 = W / 2 + 80, by0 = H / 2 - 80, by1 = H / 2 + 80;
-  for (const sm of sims) {
-    bx0 = Math.min(bx0, sm.x); bx1 = Math.max(bx1, sm.x);
-    by0 = Math.min(by0, sm.y); by1 = Math.max(by1, sm.y);
-  }
-  const icx = (bx0 + bx1) / 2, icy = (by0 + by1) / 2;
-  const coreR = Math.hypot(bx1 - bx0, by1 - by0) / 2;
-  let ii = 0, ring = 0;
-  while (ii < isolates.length) {
-    const ringR = coreR + 70 + 16 * ring;
-    const cap = Math.max(24, Math.floor((2 * Math.PI * ringR) / 15));
-    const count = Math.min(cap, isolates.length - ii);
-    for (let j = 0; j < count; j++, ii++) {
-      const a = (j / count) * 2 * Math.PI + ring * 0.13;
-      const nd = isolates[ii];
-      sims.push({id: nd.id, nd, x: icx + ringR * Math.cos(a),
-        y: icy + ringR * Math.sin(a), r: R_T[nd.type] || 4});
-    }
-    ring++;
-  }
-  const leaves = sims.map(sm => ({data: sm.nd, x: sm.x, y: sm.y, r: sm.r}));
   layout = {items: new Map(leaves.map(l => [l.data.id, l])), leaves, explorer: true};
-  edgeStore = edges.map(ed => ({kind: ed.kind, a: ed.src, b: ed.dst, w: ed.w,
-    payload: {kind: ed.kind, prov: ed.prov, evidence: ed.evidence},
-    from: ed.src, to: ed.dst}));
-  gEdges.selectAll("*").remove();
+  edgeStore = [];
   gOverlay.selectAll("*").remove();
   gBubbles.selectAll("circle.preview").remove();
   drawNodes();
+  drawExplorerEdges();
   drawExplorerLabels();
-  renderEdges();
-  // fit the camera to the content (this is what makes big graphs legible —
-  // the layout above never compressed itself into the viewport)
-  {
-    let fx0 = Infinity, fx1 = -Infinity, fy0 = Infinity, fy1 = -Infinity;
-    for (const l of leaves) {
-      fx0 = Math.min(fx0, l.x - l.r); fx1 = Math.max(fx1, l.x + l.r);
-      fy0 = Math.min(fy0, l.y - l.r); fy1 = Math.max(fy1, l.y + l.r);
-    }
-    const bw = Math.max(fx1 - fx0, 1), bh = Math.max(fy1 - fy0, 1);
-    const k = Math.max(0.1, Math.min(1.5, Math.min((W - 70) / bw, (H - 70) / bh)));
-    const t = d3.zoomIdentity
-      .translate(W / 2 - k * (fx0 + fx1) / 2, H / 2 - k * (fy0 + fy1) / 2)
-      .scale(k);
+  // Fit the camera to where the cells actually ARE, not to the bounding box.
+  //
+  // The build-time layout takes whatever area it needs, so a scope's extent is set
+  // by its few most distant stragglers. Fitting to min/max hands the zoom to them:
+  // measured on Mathlib/LinearAlgebra, 68 of 1,373 cells (5%) stretched the extent
+  // to r=567 while the other 95% sat inside r=218 — so the part worth reading drew
+  // 2.6x smaller than it should, which is a dot-in-a-void by another route. Same
+  // failure as the layout halo (an extreme minority dictating the view), just moved
+  // into the camera.
+  //
+  // So fit to a robust extent (FIT_PCTL of cells by distance from the median centre)
+  // and let the stragglers fall outside — panning still reaches them, and they are
+  // never hidden, only off-frame at rest.
+  const W = stageEl.clientWidth || 800, H = stageEl.clientHeight || 600;
+  if (leaves.length) {
+    const FIT_PCTL = 0.97;
+    const mid = a => a.length ? a.slice().sort((p, q) => p - q)[a.length >> 1] : 0;
+    const cx = mid(leaves.map(l => l.x)), cy = mid(leaves.map(l => l.y));
+    const rad = leaves.map(l => Math.hypot(l.x - cx, l.y - cy)).sort((a, b) => a - b);
+    const rFit = Math.max(rad[Math.min(rad.length - 1,
+      Math.floor(rad.length * FIT_PCTL))], 1);
+    const pad = leaves[0] ? leaves[0].r * 2 : 0;
+    const bw = (rFit + pad) * 2, bh = bw;
+    const k = Math.max(0.02, Math.min(2, Math.min((W - 70) / bw, (H - 70) / bh)));
+    const t = d3.zoomIdentity.translate(W / 2 - k * cx, H / 2 - k * cy).scale(k);
     svg.call(zoomBehav.transform, t);
     updateExplorerLabels(k);
   }
-  const scopeCrumb = focusId && focusId !== LIBS_ID && focusId.startsWith("path:")
-    ? esc(focusId.slice(5)) : "all libraries";
-  crumbEl.innerHTML = `<a data-nav="${LIBS_ID}">all libraries</a>
-    <span class="sep">/</span> <b>${scopeCrumb} · explorer</b>`;
+  const scopeLabel = scope ? scope.slice(5) : "all libraries";
+  updateFilterStat({active: !!filterMask, shown: leaves.length, total: totalN,
+    text: filterMask ? `${leaves.length.toLocaleString()} of ${totalN.toLocaleString()} cells match` : ""});
+  crumbEl.innerHTML = `<a data-nav="${ROOTS_ID}">all libraries</a>
+    <span class="sep">/</span> <b>${esc(scopeLabel)} · explorer</b>`;
   crumbEl.querySelectorAll("[data-nav]").forEach(a =>
     a.addEventListener("click", () => {
-      setExplorer(false); focusId = LIBS_ID; selectedId = null;
-      setHash(""); renderFocus(true);
+      setExplorer(false); focusId = ROOTS_ID; selectedId = null;
+      setHash(""); renderFocus(true); renderPanel(ROOTS_ID);
     }));
-  statusEl.textContent = `explorer: ${nodesKept.length.toLocaleString()} nodes · ${
-    edges.length.toLocaleString()}${
-    totalE > edges.length ? ` of ${totalE.toLocaleString()}` : ""} edges${
-    nExtHidden ? ` · ${nExtHidden.toLocaleString()} DB pages hidden` : ""}${
-    nIsoHidden ? ` · ${nIsoHidden.toLocaleString()} unlinked hidden` : ""}`;
-  syncExplorerToggles();   // reflect the auto ext/isolate decision on the chips
-  if (anim) {
-    const g = [gEdges, gBubbles, gOverlay, gLabels];
-    for (const gr of g) gr.attr("opacity", 0).transition().duration(260).attr("opacity", 1);
-    setTimeout(() => g.forEach(gr => { gr.interrupt(); gr.attr("opacity", 1); }), 600);
-  }
+  statusEl.textContent = `explorer: ${leaves.length.toLocaleString()} cells · ${
+    xEdges.length.toLocaleString()} synapses · ${scopeLabel} · build-time layout`;
+  const el = $("#structstat");
+  if (el) el.textContent = "no client simulation — positions are solved at build time";
+  if (anim) fadeIn();
 }
-// labels capped by zoom: only the biggest nodes are labelled zoomed-out;
-// zooming in reveals more (up to 250 text elements at any graph size)
+// labels capped by zoom: only the biggest atoms are labelled zoomed-out; zooming
+// in reveals more (up to 250 text elements at any graph size)
 function drawExplorerLabels() {
   gLabels.selectAll("*").remove();
   const ranked = layout.leaves.slice().sort((a, b) => b.r - a.r).slice(0, 250);
@@ -2692,25 +2405,26 @@ function drawExplorerLabels() {
 }
 function updateExplorerLabels(k) {
   if (!layout || !layout.explorer) return;
-  const lim = Math.max(30, Math.min(250, Math.round(50 * k * k)));
+  const lim = Math.max(30, Math.min(250, Math.round(50 * k * k * 100)));
   gLabels.selectAll("text.xlab").attr("display", function () {
     return Number(this.dataset.rank) < lim ? null : "none";
   });
+  // the build-time layout spans ±3,000 units, so a fitted view sits near k≈0.1 —
+  // scale the glyphs back up or nothing is readable until you zoom
+  gLabels.selectAll("text.xlab").attr("font-size", Math.max(2, Math.min(14, 1.1 / k)));
 }
 zoomBehav.on("zoom.xplabels", ev => {
   if (layout && layout.explorer) updateExplorerLabels(ev.transform.k);
 });
-
 // ============================ toolbar + boot =================================
 document.querySelectorAll(".toolbar input").forEach(el =>
   el.addEventListener("change", () => {
-    if (explorerOn) { renderExplorer(false); return; }
-    if (el.dataset.lk && focusId === LIBS_ID) { renderFocus(false); return; }
+    if (explorerOn) return;   // the flat map carries no kind/provenance data
     if (layout && layout.ego) { renderFocus(false); return; }
     renderEdges();
     drawSelRing();
     if (selectedId) renderPanel(selectedId);
-    else if (focusId !== LIBS_ID) renderPanel(focusId);
+    else if (focusId) renderPanel(focusId);
   }));
 
 // facet chips: OR together into filterMask; the state rides the URL hash
@@ -2722,42 +2436,36 @@ document.querySelectorAll(".fchip[data-fbit]").forEach(b =>
   b.addEventListener("click", () => {
     filterMask ^= Number(b.dataset.fbit);
     syncChips();
-    setHash(focusId || "");
+    setHash(focusId === ROOTS_ID ? "" : focusId || "");
     if (explorerOn) renderExplorer(false);
     else renderFocus(false);
   }));
 $("#explorerbtn").addEventListener("click", () => {
   setExplorer(!explorerOn);
-  setHash(focusId || "");
+  setHash(focusId === ROOTS_ID ? "" : focusId || "");
   if (explorerOn) renderExplorer(true);
   else renderFocus(true);
 });
-// explorer-only toggles: pin the choice for the session, then re-lay-out. The
-// updateExplorerLabels after render keeps the toggle chips in sync via the
-// re-render (syncExplorerToggles is called from setExplorer + here).
-$("#explorer-ext").addEventListener("click", () => {
-  showExtPages = !showExtPages; explorerTogglesUser = true;
-  syncExplorerToggles(); if (explorerOn) renderExplorer(false);
-});
-$("#explorer-iso").addEventListener("click", () => {
-  showIsolates = !showIsolates; explorerTogglesUser = true;
-  syncExplorerToggles(); if (explorerOn) renderExplorer(false);
-});
 
-window.addEventListener("hashchange", () => {
+window.addEventListener("hashchange", async () => {
   const h = parseHash();
   filterMask = h.f;
   syncChips();
   if (h.view === "explorer") {
     setExplorer(true);
-    renderExplorer(true).then(() => {
-      if (h.id && explorerOn) { selectedId = h.id; renderPanel(h.id); drawSelRing(); }
-    });
+    // the explorer scopes by AREA, so the id segment picks the subtree (a cell
+    // id selects instead) — without this the scope silently stays where it was
+    focusId = await explorerFocusFor(h.id);
+    await renderExplorer(true);
+    if (h.id && explorerOn) {
+      const sel = await resolveId(h.id);
+      if (isCellId(sel)) { selectedId = sel; renderPanel(sel); drawSelRing(); }
+    }
     return;
   }
   if (explorerOn) setExplorer(false);
   if (h.id) navigate(h.id);
-  else renderFocus(false);
+  else { focusId = ROOTS_ID; renderFocus(false); renderPanel(ROOTS_ID); }
 });
 // Re-pack only on a real WIDTH change (the layout is width-driven), debounced.
 // This skips the height-only resize storm a mobile URL bar fires on every
@@ -2774,10 +2482,10 @@ window.addEventListener("resize", () => {
 });
 
 // ======================= community connections (Project 2) ==================
-// Live, user/API-submitted edges (docs/BRAIN-EDITS-ROADMAP.md). Fetched per-node
-// from the D1 overlay and merged into the panel with an attribution + human/AI
-// chip; logged-in users get an "add a connection" form and can delete any edge
-// (soft-delete gravestone). All fetches degrade silently when the API is absent
+// Live, user/API-submitted edges (docs/BRAIN-EDITS-ROADMAP.md). The overlay is
+// keyed by the v2 node ids the API stores, and an atom's ANCHOR is exactly one
+// of those — so a cell asks about its anchor and any target navigates back
+// through aliases.json. All fetches degrade silently when the API is absent
 // (e.g. the static preview), so the page still works read-only.
 const COMMUNITY_KINDS_UI = [
   ["formalizes", "formalizes (concept ↔ Lean decl)"],
@@ -2819,7 +2527,7 @@ async function fetchCommunityEdges(id) {
     return {edges: j.edges || [], shared: j.shared || [], nodeLabels: j.node_labels || {}, self: j.self || null};
   } catch (e) { return {edges: [], shared: [], nodeLabels: {}, self: null}; }
 }
-// full-text autocomplete over ALL of Wikidata (not just the ingested nodes)
+// full-text autocomplete over ALL of Wikidata (not just the ingested atoms)
 async function searchWikidata(q) {
   try {
     const r = await fetch("https://www.wikidata.org/w/api.php?action=wbsearchentities" +
@@ -2841,27 +2549,26 @@ async function deleteCommunityEdge(edgeId) {
   catch (e) { /* ignore; the refresh will show the true state */ }
 }
 // HTML for a community-edge endpoint: an xref reads "<DB>: value"; a
-// community-added Wikidata node (in nodeLabels) links OUT to Wikidata (it isn't
-// in the static shards, so in-brain nav would 404); a static node navigates
-// in-brain.
+// community-added Wikidata node (in nodeLabels) links OUT to Wikidata (no atom
+// owns it, so in-brain nav would dead-end); anything else navigates in-brain,
+// where aliases resolves it to its atom.
 function communityTargetHtml(other, nodeLabels) {
   nodeLabels = nodeLabels || {};
   if (other.startsWith("xref:")) {
     const p = other.split(":");
-    return esc((XREF_NAME[p[1]] || p[1]) + ": " + p.slice(2).join(":"));
+    return `<a data-nav="${esc(other)}">${esc((XREF_NAME[p[1]] || p[1]) + ": " + p.slice(2).join(":"))}</a>`;
   }
   if (/^Q\d+$/.test(other) && nodeLabels[other]) {
     return `<a href="https://www.wikidata.org/wiki/${esc(other)}" target="_blank" rel="noopener"
       title="community-added Wikidata concept">${esc(nodeLabels[other])} <span class="lit-ref">${esc(other)}</span></a>`;
   }
-  const L = layout && layout.items.get(other);
-  return `<a data-nav="${esc(other)}">${esc((L && L.data.label) || other)}</a>`;
+  return `<a data-nav="${esc(other)}" data-lbl="${esc(other)}">${esc(other)}</a>`;
 }
-// minimal panel for a community-added Wikidata concept (not in the static shards)
+// minimal panel for a community-added Wikidata concept (no atom claims it)
 async function renderCommunityNodePanel(id) {
   const {self} = await fetchCommunityEdges(id);
   if (lastPanelId !== id) return;
-  if (!self) { panelEl.innerHTML = `<p class="note">Unknown node: ${esc(id)}</p>`; return; }
+  if (!self) { panelEl.innerHTML = `<p class="note">Unknown id: ${esc(id)}</p>`; return; }
   let html = `<h2>${esc(self.label)}</h2>
     <div class="sub">community concept ·
       <a href="https://www.wikidata.org/wiki/${esc(id)}" target="_blank" rel="noopener">${esc(id)}</a>
@@ -2875,17 +2582,19 @@ async function renderCommunityNodePanel(id) {
     try { await fetch("/api/brain/node/" + encodeURIComponent(id) + "/delete", {method: "POST"}); } catch (e) {}
     navigate("path:Mathlib");
   }));
-  renderCommunity(id);
+  renderCommunity(id, id);
 }
-async function renderCommunity(id) {
+// `apiId` is the v2 node id the API knows (an atom's anchor); `panelId` is what
+// the panel is currently showing, so a stale fetch can't paint over a newer card
+async function renderCommunity(apiId, panelId) {
   const slot = $("#community-slot");
   if (!slot) return;
-  const {edges, shared, nodeLabels} = await fetchCommunityEdges(id);
-  if (lastPanelId !== id || !$("#community-slot")) return;   // panel moved on
+  const {edges, shared, nodeLabels} = await fetchCommunityEdges(apiId);
+  if (lastPanelId !== panelId || !$("#community-slot")) return;   // panel moved on
   let html = `<section class="kind community"><h3>Community connections
     <span class="cnt">(${edges.length})</span></h3>`;
   for (const e of edges) {
-    const out = e.src === id;
+    const out = e.src === apiId;
     const note = (e.evidence && e.evidence.note) || "";
     html += `<div class="cedge">
       <span class="dirarrow">${out ? "→" : "←"}</span>
@@ -2898,8 +2607,7 @@ async function renderCommunity(id) {
       note ? `<div class="cnote">${esc(note)}</div>` : ""}</div>`;
   }
   if (!edges.length) html += `<p class="note">No community connections yet.</p>`;
-  // cross-pollination: nodes that share an external-database page with this one
-  // (discovered, not drawn) — the same object catalogued in two places.
+  // cross-pollination: atoms that share an external-database page with this one
   if (shared && shared.length) {
     html += `<div class="cshared"><h4>Same object elsewhere
       <span class="cnt">(${shared.length} discovered)</span></h4>`;
@@ -2915,7 +2623,7 @@ async function renderCommunity(id) {
       object. Add a cross-database link above to discover more.</p></div>`;
   }
   if (currentUser) {
-    // ADD AN EDGE (a connection between this node and another)
+    // ADD AN EDGE (a connection between this atom and another)
     html += `<details class="caddform"><summary>＋ Add a connection (edge)</summary><div class="cform">
       <label>Type<select id="cf-kind">${
         COMMUNITY_KINDS_UI.map(([k, l]) => `<option value="${k}">${esc(l)}</option>`).join("")}</select></label>
@@ -2940,17 +2648,18 @@ async function renderCommunity(id) {
   }
   html += `</section>`;
   slot.innerHTML = html;
-  wireCommunity(id);
+  wireCommunity(apiId, panelId);
 }
-function wireCommunity(id) {
+function wireCommunity(apiId, panelId) {
   const slot = $("#community-slot");
   if (!slot) return;
   slot.querySelectorAll("[data-nav]").forEach(a =>
     a.addEventListener("click", () => navigate(a.dataset.nav)));
+  enrichEvidence(slot);   // resolve any bare organ ids the API handed back
   slot.querySelectorAll("[data-del]").forEach(b => b.addEventListener("click", async () => {
     if (!confirm("Delete this connection? It stays as a gravestone that records who removed it.")) return;
     await deleteCommunityEdge(b.dataset.del);
-    if (lastPanelId === id) renderCommunity(id);
+    if (lastPanelId === panelId) renderCommunity(apiId, panelId);
   }));
   const kindSel = $("#cf-kind");
   if (!kindSel) return;
@@ -2961,14 +2670,14 @@ function wireCommunity(id) {
   };
   kindSel.addEventListener("change", sync); sync();
   const tin = $("#cf-target"), hits = $("#cf-hits"), tid = $("#cf-target-id");
-  let searchT;
+  let searchT2;
   if (tin) tin.addEventListener("input", () => {
-    clearTimeout(searchT);
+    clearTimeout(searchT2);
     tid.value = "";
     const q = tin.value.trim();
     if (q.length < 2) { hits.innerHTML = ""; return; }
-    searchT = setTimeout(async () => {
-      // brain nodes (decls, containers, ingested concepts) AND all of Wikidata
+    searchT2 = setTimeout(async () => {
+      // brain nodes (decls, areas, ingested concepts) AND all of Wikidata
       let brainHits = [];
       try { brainHits = (await (await fetch("/api/brain/search?limit=6&q=" + encodeURIComponent(q))).json()).hits || []; }
       catch (e) { /* no API */ }
@@ -3002,9 +2711,9 @@ function wireCommunity(id) {
       if (!dst) { msg.textContent = "pick a target from the search results"; return; }
     }
     submit.disabled = true; msg.textContent = "saving…";
-    const res = await submitCommunityEdge({src: id, dst, kind, evidence: {note}});
+    const res = await submitCommunityEdge({src: apiId, dst, kind, evidence: {note}});
     submit.disabled = false;
-    if (res.ok) { if (lastPanelId === id) renderCommunity(id); }
+    if (res.ok) { if (lastPanelId === panelId) renderCommunity(apiId, panelId); }
     else msg.textContent = res.error || "could not add";
   });
 
@@ -3039,7 +2748,7 @@ function wireCommunity(id) {
       if (!ok) err = ((await r.json().catch(() => ({}))).error) || ("HTTP " + r.status);
     } catch (e) { err = String(e); }
     cnSubmit.disabled = false;
-    if (ok) { msg.innerHTML = `added ✓ — now searchable & linkable`; cnId.value = ""; cnIn.value = ""; }
+    if (ok) { msg.innerHTML = `added ✓ — now searchable &amp; linkable`; cnId.value = ""; cnIn.value = ""; }
     else msg.textContent = err;
   });
 }
@@ -3058,20 +2767,26 @@ function wireCommunity(id) {
     await fetchManifest();
   } catch (e) {
     statusEl.textContent = "brain data unavailable (" + e.message +
-      ") — run brain/build_shards.py + build-public";
+      ") — run brain/build_cell_shards.py + build-public";
     return;
   }
-  statusEl.textContent = `${manifest._meta.counts.entries.toLocaleString()} nodes · ` +
-    `${manifest._meta.counts.ontology_edges.toLocaleString()} edges · ` +
+  const c = manifest._meta.counts || {};
+  statusEl.textContent = `${(c.cells || 0).toLocaleString()} cells · ` +
+    `${(c.organs || 0).toLocaleString()} organs · ` +
+    `${(c.synapses || 0).toLocaleString()} synapses · ` +
     `data ${manifest._meta.generated_at.slice(0, 10)}`;
+  await ensureTree();
   const h = parseHash();
   filterMask = h.f;
   syncChips();
   if (h.view === "explorer") {
     setExplorer(true);
-    focusId = h.id || "path:Mathlib";
+    focusId = await explorerFocusFor(h.id);
     await renderExplorer(false);
-    if (h.id && explorerOn) { selectedId = h.id; renderPanel(h.id); drawSelRing(); }
+    if (h.id && explorerOn) {
+      const sel = await resolveId(h.id);
+      if (isCellId(sel)) { selectedId = sel; renderPanel(sel); drawSelRing(); }
+    }
   } else if (h.id) { await navigate(h.id); }
   else { focusId = "path:Mathlib"; await renderFocus(false); renderPanel(focusId); }
   lastStageW = stageEl.clientWidth;   // baseline for the width-change resize guard
