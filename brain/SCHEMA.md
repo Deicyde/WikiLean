@@ -22,11 +22,18 @@ cell holds Q18848 *and* Q125977).
             {"kind": "concept", "id": "Q125977", "bond": "generalization"},
             {"kind": "decl", "id": "decl:Mathlib:Module", "bond": "exact"},
             {"kind": "page", "id": "xref:nlab:module", "bond": "xref"}],
- "supercells": ["path:Mathlib/Algebra/Module"], "f": 25, "xy": [412.5, 88.1]}
+ "supercells": ["path:Mathlib/Algebra/Module/Defs"], "f": 40409, "xy": [412.5, 88.1]}
 ```
-`id` = `cell:<anchor>`; anchor = lowest QID, else the primary decl. `xy` is the
-BUILD-TIME layout (the client never simulates). `supercells` may hold >1 entry
-(a cell spanning modules renders inside each).
+`id` = `cell:<anchor>`. The anchor NAMES the atom, so it is **the `exact` concept**
+(lowest QID among them), falling back to lowest QID, then the primary decl. A plain
+"lowest QID" rule is WRONG and was measured wrong: it names the Euclidean-space atom
+"plane" (Q17285 < Q17295) and the polygon atom "Quadrilateral", because a
+rule-2-absorbed organ often carries a lower QID than the exact match (27 cells).
+
+`supercells` = the cell's decl organs' **immediate** containers; ancestors follow
+from the container tree, so the bubble view nests exactly as it does today. >1 entry
+means a cell spanning modules — it renders inside each. `prov` indexes `_meta.prov`.
+`xy` is the BUILD-TIME layout (the client never simulates).
 
 **Supercell** — a module/folder (`path:…`), carrying its own organs: `field`
 concepts (Q82571 "Linear algebra" → `path:Mathlib/LinearAlgebra`) and area pages
@@ -49,13 +56,32 @@ never silently — `truncated` flags it). Weight drives prominence.
    its own** to its **single best** target (rank: confidence, then generalization
    before special_case, then id). One target ⇒ cannot bridge two cells.
 3. `invocation`/`related` NEVER merge — they are synapses.
-4. Pages NEVER bridge: single-claimant ⇒ organ; multi-claimant ⇒ supercell organ
-   + a weak synapse between the claimants.
+4. **No organ ever bridges.** Claimed by exactly one cell ⇒ organ. Claimed by >1
+   ⇒ it is evidence the claimants are *related*, not that either owns it: a page
+   becomes a **supercell** organ (the common module ancestor) plus a weak synapse
+   between claimants; a shared arXiv statement becomes a synapse alone. Applies to
+   pages AND statements — TheoremGraph matches 219 statements to decls in different
+   cells, and attaching those would put one organ in two cells, breaking C4.
 5. `field` match_kind / concept→container ⇒ supercell organ, never a cell.
 
 A transitive closure is FORBIDDEN: measured, it fuses Module↔EuclideanSpace↔plane
 (28 organs) and, via coarse DLMF pages, produces a 212-organ blob. The function
-above yields 8,960 cells, largest 16.
+above yields **8,982 cells, largest 17** — no blob.
+
+### A ballooning cell is a TAGGER signal, not a merge-rule failure
+
+Rule 2 is deliberately kept wide ({exact, generalization, special_case}) — *Jack,
+2026-07-17: "If it causes a cell to balloon to a massive size, that probably means
+that the AI taggers are doing a bad job (e.g. tagging something as special_case
+when it is actually a related / invocation)."* So the rule does not narrow to dodge
+bad data; instead cell size is EMITTED as a diagnostic. `brain/data/cell_review.jsonl`
+ranks cells by how many home-less concepts they absorbed and names the exact claim
+to re-grade, shaped to drop into `catalog/data/grounding_overrides.jsonl`.
+
+It works: of 8,982 cells only **18** flag, and they are exactly the mis-grades —
+`Real.binEntropy` (the binary entropy *function*) absorbing "Information",
+"Information theory" AND "Entropy"; `Module.Dual` absorbing "Duality (mathematics)".
+Fix the grade, not the rule.
 
 ### Strong-bond sources (organ attach)
 
@@ -70,6 +96,28 @@ single-claimant Wikidata `xref` pages.
 `depends` · `mentions` · `links` · `relates` · `cites` · TheoremGraph informal
 dependency · multi-claimant page sharing.
 
+### Layout is BUILD-TIME, and repulsion must be short-range
+
+`brain/layout.py` runs the force sim once at build time and writes `xy`; the client
+renders and never simulates. Two properties are load-bearing:
+
+- **Deterministic** (phyllotaxis seeding, no RNG, fixed iterations) — same inputs
+  reproduce the same map, so the picture can be *learned*. A map that reshuffles
+  every visit cannot be.
+- **Short-range repulsion** (`REPULSION_RANGE = 4k`). Textbook Fruchterman-Reingold
+  repels every pair at k²/d, which is long-range: a weakly-attached node is pushed
+  out until `n·k²/r` balances gravity `g·r`, i.e. `r = √(n·k²/g)`. Measured here that
+  predicts **86,516** and the layout put its 488 isolated cells at r≈**84,200** while
+  the 8,494 real cells sat at r≈**1,985** — fit-to-content then zooms out 42× and the
+  graph renders as a dot inside a ring. **That is the reported v2 explorer artefact**
+  ("a ring of nodes that circle around the outside, and then a ton of nodes that clump
+  in the middle"); d3-force's charge is long-range by default too. With the cutoff:
+  spread 42× → **3.1×**, no overlaps. Regression-tested (L2).
+
+Synapse-less cells never enter the sim (they would either halo or pile on the
+origin — both read as the clump bug). They are parked deterministically around their
+supercell's centre of mass, or in a tidy outer band if they have no supercell.
+
 ### v3 acceptance datapoints (brain/test_cells.py)
 
 C1. `cell:Q18848` contains organs Q18848, Q125977 **and** `decl:Mathlib:Module`
@@ -82,6 +130,12 @@ C5. A page claimed by >1 cell is an organ of a supercell, never of a cell.
 C6. Every synapse carries ≥1 trace, and no synapse duplicates a cell pair.
 C7. Tag-queue organs with status `rejected` are absent; queued (AI) organs are
     provenance-distinguishable from merged `@[wikidata]` ones.
+L1. Every cell gets an `xy`.
+L2. No halo: max radius stays within 8× the median, and synapse-less cells sit near
+    the core rather than in orbit (the regression above).
+L3. The layout is deterministic across rebuilds.
+
+Status: **25/25 green** (`python3 brain/test_cells.py`; the nightly aborts on red).
 
 ---
 
