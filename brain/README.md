@@ -112,8 +112,42 @@ no-op when the directory is empty: zero ext nodes, zero `links` edges.
   `catalog/data/wikidata_descriptions.json`.
 - **`f` facet bitmask** — on every node payload, labels.json row, and children entry;
   bit table in SCHEMA.md (bit0 gold `@[wikidata]` … bit15 has-snippet). Omitted at 0.
+- **decl `module`** — the containment altitude of a decl organ, resolved in order:
+  TheoremGraph module votes → `theorem_matching.csv` → `statement_formal.csv` →
+  the `@[wikidata]`/`@[stacks]` tag row's source file → **the decl-module oracle**
+  (`_decl_module_oracle`). The first four only cover decls the *corpus* saw; a decl
+  cited solely by a WikiLean annotation resolved nowhere and landed at the library
+  ROOT (the grey "filed here" ball — 567 of them). The oracle is the last resort:
+  the doc-gen4 declaration index (416k decls, incl. structure fields and
+  `to_additive` output that no source scan can see — it is elaborator output, not
+  syntax) with the checkout's own `.ilean` files as the floor. **Exact
+  fully-qualified names only**, and only inside the decl's own library — a
+  suffix guess misfiles a cell into the wrong area of mathematics (`zero_mul` →
+  `Mathlib.Data.Holor`), and a cross-library hit (`And.left` → `Init.Prelude`) has
+  no container tree here and would orphan the decl. Both are worse than the root.
+  Measured 2026-07-17: 193/567 filed (the other 374 are names that no longer exist
+  in mathlib — stale renames + hallucinated citations, an annotation-quality
+  problem for `manage/decl_existence_sweep.py`, not a placement one). Fail-soft:
+  no oracle ⇒ the pre-fix behaviour.
+- **decl `code`** — the statement header, read from the live checkout by
+  `_lean_decl_lines`, which indexes a file's declarations by **fully-qualified**
+  name (tracking the `namespace` stack, honouring `_root_.`, skipping comments).
+  It used to match the decl's BARE last segment with any namespace prefix and take
+  the first hit, which silently showed a DIFFERENT declaration's statement: 344
+  decls carried the wrong code (`AddGroup.FG` displayed `def Submonoid.FG`;
+  `AddCircle.toCircle` displayed `Real.Angle.toCircle`) — shipped to readers and
+  agents under the mathlib license as that decl's source. Same bar as `module`: a
+  wrong fact is worse than none, so this **fails closed** — no exact match, no
+  snippet. Elaborator output (structure/class fields, `to_additive` twins) is never
+  textually declared and now correctly shows nothing instead of a lookalike.
+  Coverage still went UP (6,301 → 6,340: −70 false positives, +109 exact hits the
+  old pattern missed, incl. `public` decls). Validated against Lean's own `.ilean`
+  index over 600 modules (97% of returned names confirmed verbatim; the rest are
+  `private` decls, whose true names are mangled, and stale .ilean modules).
 - **Env overrides**: `BRAIN_EXTERNAL_DIR` (external dir, used by tests),
-  `BRAIN_EXT_NODE_CAP` (per-db mint cap).
+  `BRAIN_EXT_NODE_CAP` (per-db mint cap), `BRAIN_MATHLIB_CHECKOUT` (checkout root —
+  code snippets + the `.ilean` oracle floor), `BRAIN_DECL_ORACLE` (path to
+  doc-gen4 `declaration-data.json`; default is the mathlib-search skill's cache).
 
 New shard-level assets (`build_shards.py`): `views/xref_explorer.json` — the global
 cross-ref explorer view (seeds = facet bits 0-3, plus connected concepts/decls via
