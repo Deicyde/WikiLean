@@ -167,7 +167,8 @@ estimated).
 
 ### Phase 1 — builder ☑  `brain/build_cells.py` + `brain/layout.py` + `brain/test_cells.py`
 Measured on live data: **8,982 cells / 86,884 synapses / largest cell 17 organs**,
-built in ~5s (+3min layout). Acceptance **25/25 green**.
+built in ~5s (+3min layout). Acceptance **29/29 green** (`python3 brain/test_cells.py`).
+Hardened by an adversarial review (61 agents, 28 findings, 20 confirmed) — below.
 
 All seven planned items landed (merge function; organ attach incl. the tag queue;
 supercell organs; synapse aggregation with full traces; build-time layout; facet
