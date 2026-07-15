@@ -435,16 +435,13 @@ def build_cells(nodes: dict[str, dict], edges_by_kind: dict[str, list],
 
     groups = dsu.groups()
 
-    # Lone particles: a concept or decl that merged with nothing is still an atom.
-    for nid, node in nodes.items():
-        if node["type"] in ("concept", "decl") and nid not in dsu.parent:
-            groups[nid] = [nid]
-
     # Rule 5 — `field` / concept->container: the concept is an organ of the
-    # SUPERCELL, never of a cell ("Linear algebra" belongs to the folder, not to
-    # the `Module` atom). A concept that also merged into a cell keeps the cell as
-    # its owner; the supercell listing is additional.
+    # SUPERCELL, **never a cell** ("Linear algebra" is the LinearAlgebra folder, not
+    # the `Module` atom, and not an atom of its own — searching it should land on the
+    # folder). A concept that ALSO merged into a cell keeps the cell as its owner and
+    # is merely listed on the supercell too.
     supercell_organs: dict[str, list] = defaultdict(list)
+    field_only: set[str] = set()
     for edge in formalizes:
         if not edge["dst"].startswith("path:"):
             continue
@@ -455,6 +452,21 @@ def build_cells(nodes: dict[str, dict], edges_by_kind: dict[str, list],
             "prov": prov.intern(edge.get("provenance")),
         })
         stats["supercell_concept_organ"] += 1
+        if edge["src"] not in dsu.parent:
+            # Its only home is the supercell. It owns no cell — but it keeps its
+            # edges: they now hang off the SUPERCELL (see owner[] below). These are
+            # field-level hubs ("Linear algebra", "manifold"), so dropping their
+            # relates/mentions/links instead would cost ~10.8k synapses.
+            field_only.add(edge["src"])
+
+    # Lone particles: a concept or decl that merged with nothing is still an atom —
+    # unless rule 5 already gave it a supercell home.
+    for nid, node in nodes.items():
+        if node["type"] in ("concept", "decl") and nid not in dsu.parent:
+            if nid in field_only:
+                stats["field_concept_no_cell"] += 1
+                continue
+            groups[nid] = [nid]
 
     # ---- cells
     cells: dict[str, dict] = {}
@@ -495,6 +507,16 @@ def build_cells(nodes: dict[str, dict], edges_by_kind: dict[str, list],
             cell["f"] = facets
         cells[cid] = cell
 
+    # A rule-5 field concept owns no cell, but its bonds are real: route them to the
+    # supercell that DOES hold it, so a synapse may legitimately land on a module
+    # ("this atom relates to the whole of LinearAlgebra"). v2 already drew
+    # container-level rollup edges between bubbles, so this is a shape the renderer
+    # understands.
+    for path, organs in supercell_organs.items():
+        for organ in organs:
+            if organ["kind"] == "concept" and organ["id"] in field_only:
+                owner[organ["id"]] = path
+
     return cells, owner, supercell_organs, merged_pairs
 
 
@@ -519,6 +541,19 @@ def attach_pages(cells: dict[str, dict], owner: dict[str, str], nodes: dict[str,
     for page, rows in sorted(claims.items()):
         claimants = sorted({r["cell"] for r in rows})
         node = nodes[page]
+        if len(claimants) == 1 and claimants[0].startswith("path:"):
+            # Its sole claimant is a rule-5 field concept, which lives on a supercell
+            # — so its pages do too ("linear algebra" the nLab page belongs to the
+            # LinearAlgebra folder, not to any atom inside it).
+            supercell_organs[claimants[0]].append({
+                "kind": "page", "id": page, "label": node.get("label"),
+                "db": node.get("db"), "bond": "xref",
+                "prov": prov.intern(rows[0]["edge"].get("provenance")),
+            })
+            owner[page] = claimants[0]
+            stats["page_organ_supercell"] += 1
+            continue
+
         if len(claimants) == 1:
             cid = claimants[0]
             cells[cid]["organs"].append({
@@ -569,15 +604,23 @@ def attach_pages(cells: dict[str, dict], owner: dict[str, str], nodes: dict[str,
     return co_claims
 
 
+def _stake(cells: dict[str, dict], claimant: str) -> str | None:
+    """The supercell a claimant stands in — itself, if it IS one (rule-5 concepts)."""
+    if claimant.startswith("path:"):
+        return claimant
+    sups = (cells.get(claimant) or {}).get("supercells") or []
+    # a cell may span modules: take its shallowest home as that cell's stake
+    return min(sups, key=lambda s: (s.count("/"), s)) if sups else None
+
+
 def common_supercell(cells: dict[str, dict], claimants: list[str]) -> str | None:
-    """Deepest `path:` prefix shared by every claimant cell's supercells."""
+    """Deepest `path:` prefix shared by every claimant's supercell."""
     paths: list[list[str]] = []
     for cid in claimants:
-        sups = cells[cid].get("supercells") or []
-        if not sups:
+        stake = _stake(cells, cid)
+        if not stake:
             return None
-        # a cell may span modules: take its shallowest home as that cell's stake
-        paths.append(min(sups, key=lambda s: s.count("/")).split("/"))
+        paths.append(stake.split("/"))
     shared: list[str] = []
     for parts in zip(*paths):
         if len(set(parts)) != 1:
@@ -593,7 +636,9 @@ def fallback_supercell(cells: dict[str, dict], claimants: list[str]) -> str | No
     concept-only cell with no decl and therefore no supercell at all). A library
     root is a coarse home, but a coarse home beats vanishing.
     """
-    sups = sorted({s for cid in claimants for s in (cells[cid].get("supercells") or [])})
+    sups = sorted({s for cid in claimants
+                   for s in ([cid] if cid.startswith("path:")
+                             else (cells.get(cid) or {}).get("supercells") or [])})
     return min(sups, key=lambda s: (s.count("/"), s)) if sups else None
 
 
@@ -671,14 +716,18 @@ def build_synapses(cells: dict[str, dict], owner: dict[str, str],
                    edges_by_kind: dict[str, list], co_claims: list[dict],
                    merged_pairs: set[tuple[str, str]],
                    stats: Counter, prov: Prov, *,
+                   supercells: set[str] | None = None,
                    links_path: Path = EDGES_LINKS_IN) -> list[dict]:
-    """Aggregate every weak bond into ONE synapse per cell pair, retaining traces.
+    """Aggregate every weak bond into ONE synapse per endpoint pair, keeping traces.
 
-    Both endpoints must resolve to cells: that IS the v3 projection. Unanchored
-    frontier pages own no cell, so their links drop out (docs/BRAIN-V3.md
-    "Dropped in v3") — they carried no concept-level connectivity anyway.
+    Both endpoints must resolve to an ATOM — a cell, or a supercell for a rule-5
+    field concept (which owns no cell but keeps its bonds). That resolution IS the
+    v3 projection: unanchored frontier pages own nothing, so their links drop out
+    (docs/BRAIN-V3.md "Dropped in v3") — they carried no concept-level connectivity
+    anyway.
     """
     agg: dict[tuple[str, str], dict] = {}
+    valid = set(cells) | (supercells or set())
 
     def add(a: str, b: str, kind: str, trace: dict) -> None:
         # Counted HERE, not at the call sites: an edge whose endpoints land in the
@@ -687,7 +736,7 @@ def build_synapses(cells: dict[str, dict], owner: dict[str, str],
         if a == b:
             stats[f"intracell_{kind}"] += 1
             return
-        if a not in cells or b not in cells:
+        if a not in valid or b not in valid:
             stats[f"unowned_{kind}"] += 1
             return
         stats[f"synapse_{kind}"] += 1
@@ -898,7 +947,8 @@ def build(*, do_layout: bool = True, attach_kinds: tuple[str, ...] = ATTACH,
 
     print("aggregating synapses…", file=sys.stderr)
     synapses = build_synapses(cells, owner, edges_by_kind, co_claims, merged_pairs,
-                              stats, prov, links_path=links_path)
+                              stats, prov, supercells=set(supercell_organs),
+                              links_path=links_path)
     print(f"  {len(synapses)} synapses", file=sys.stderr)
 
     review = cell_review(cells, nodes, stats)
