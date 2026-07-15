@@ -1,4 +1,91 @@
-# BRAIN schema — one graph, six node types, two edge families
+# BRAIN schema — cells of organs, joined by synapses
+
+> **v3 (2026-07-17) supersedes the node model below.** The graph's node is now the
+> **cell** (atom); the former node types (concept / decl / ext / literature) are
+> **organs** inside cells and are no longer rendered as nodes. Containers become
+> **supercells**. Ontology edges between cells aggregate into **synapses**. The
+> v1/v2 sections below remain the contract for the *organ layer* and the ingest
+> pipeline that feeds it — cells are DERIVED from them. Design: `docs/BRAIN-V3.md`.
+
+## v3 — the cell model (normative)
+
+**Organ** — a particle; never a node. Kinds + id forms: `decl:<Lib>:<FQ name>`,
+`Q<digits>` (concept), `xref:<db>:<value>` (page), the WikiLean slug (article),
+`lit:<arxiv>#<ref>` (statement). Organs MAY repeat within a cell (the `Module`
+cell holds Q18848 *and* Q125977).
+
+**Cell** — the atom, and the node of the v3 graph.
+`brain/data/cells.jsonl`:
+```json
+{"id": "cell:Q18848", "anchor": "Q18848", "label": "Module (mathematics)",
+ "organs": [{"kind": "concept", "id": "Q18848", "bond": "exact", "prov": 3},
+            {"kind": "concept", "id": "Q125977", "bond": "generalization"},
+            {"kind": "decl", "id": "decl:Mathlib:Module", "bond": "exact"},
+            {"kind": "page", "id": "xref:nlab:module", "bond": "xref"}],
+ "supercells": ["path:Mathlib/Algebra/Module"], "f": 25, "xy": [412.5, 88.1]}
+```
+`id` = `cell:<anchor>`; anchor = lowest QID, else the primary decl. `xy` is the
+BUILD-TIME layout (the client never simulates). `supercells` may hold >1 entry
+(a cell spanning modules renders inside each).
+
+**Supercell** — a module/folder (`path:…`), carrying its own organs: `field`
+concepts (Q82571 "Linear algebra" → `path:Mathlib/LinearAlgebra`) and area pages
+(DLMF §1.9 → `path:Mathlib/Analysis/Complex`). Cells render inside them.
+
+**Synapse** — ONE aggregated edge per cell pair. `brain/data/synapses.jsonl`:
+```json
+{"src": "cell:Q18848", "dst": "cell:Q11348", "weight": 37,
+ "kinds": {"depends": 31, "links": 4, "relates": 2},
+ "traces": [{"kind": "depends", "src": "decl:Mathlib:Module", "dst": "decl:Mathlib:Ring",
+             "evidence": {...}, "prov": 0}]}
+```
+Every constituent bond is retained in `traces` (capped only by shard byte budget,
+never silently — `truncated` flags it). Weight drives prominence.
+
+### The merge function — a FUNCTION, never a transitive closure
+
+1. `formalizes` `match_kind == exact` **fuses both ways** (concept↔decl).
+2. `generalization`/`special_case` attach a concept that has **no `exact` decl of
+   its own** to its **single best** target (rank: confidence, then generalization
+   before special_case, then id). One target ⇒ cannot bridge two cells.
+3. `invocation`/`related` NEVER merge — they are synapses.
+4. Pages NEVER bridge: single-claimant ⇒ organ; multi-claimant ⇒ supercell organ
+   + a weak synapse between the claimants.
+5. `field` match_kind / concept→container ⇒ supercell organ, never a cell.
+
+A transitive closure is FORBIDDEN: measured, it fuses Module↔EuclideanSpace↔plane
+(28 organs) and, via coarse DLMF pages, produces a 212-organ blob. The function
+above yields 8,960 cells, largest 16.
+
+### Strong-bond sources (organ attach)
+
+`@[wikidata]`/`@[stacks]`/`@[kerodon]` attributes · the **tag queue**
+(`/api/queue`) — the same claim as `@[wikidata]` but AI-generated: status
+`rejected` ⇒ NO bond, and provenance MUST distinguish merged-into-Mathlib from
+AI-queued · the WikiLean article about the object · TheoremGraph `matches` ·
+single-claimant Wikidata `xref` pages.
+
+### Weak bonds (synapses)
+
+`depends` · `mentions` · `links` · `relates` · `cites` · TheoremGraph informal
+dependency · multi-claimant page sharing.
+
+### v3 acceptance datapoints (brain/test_cells.py)
+
+C1. `cell:Q18848` contains organs Q18848, Q125977 **and** `decl:Mathlib:Module`
+    (Jack's example: Module and Vector space are one atom).
+C2. Euclidean space is a **separate** cell from `cell:Q18848` (it has its own
+    `exact` decl `EuclideanSpace`) — the anti-chaining guarantee.
+C3. No cell exceeds `CELL_MAX_ORGANS` (48) — a blob means the merge rule broke.
+C4. Every organ id resolves to exactly one cell via `aliases.json`.
+C5. A page claimed by >1 cell is an organ of a supercell, never of a cell.
+C6. Every synapse carries ≥1 trace, and no synapse duplicates a cell pair.
+C7. Tag-queue organs with status `rejected` are absent; queued (AI) organs are
+    provenance-distinguishable from merged `@[wikidata]` ones.
+
+---
+
+# (v1/v2) organ-layer schema — one graph, six node types, two edge families
 
 > The canonical data contract for the WikiLean Math Brain. Everything in `brain/data/` is
 > built to this spec. It instantiates the granularity model + anti-slop doctrine of
