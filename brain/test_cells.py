@@ -23,7 +23,8 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
-from build_cells import ATTACH, CELL_MAX_ORGANS, FUSE, build  # noqa: E402
+from build_cells import (ATTACH, CELL_MAX_ORGANS, FUSE, build,  # noqa: E402
+                         load_rejected)
 
 FAILURES: list[str] = []
 CHECKS = 0
@@ -48,10 +49,20 @@ def check_layout() -> None:
 
     Kept synthetic so this stays fast: the real layout is ~3 minutes, and these are
     properties of the algorithm, not of the data.
+
+    L2 is the HALO regression — the bug this project has re-encountered most — so it
+    is guarded twice, at the mechanism AND at the symptom. It used to be guarded at
+    neither: the old L2 ran a 151-cell ring at 60 iterations, in which the halo is
+    structurally INEXPRESSIBLE (every cell sat in a degree>=2 ring, isolated cells
+    never enter the sim, and n=151 is orders of magnitude below where the halo
+    equilibrium bites). Measured: setting `REPULSION_RANGE = 1e9` — i.e. deleting the
+    fix and reverting to textbook long-range Fruchterman-Reingold — left all 7 checks
+    GREEN, so the nightly would have built, gated and published a halo'd map.
     """
     import math
 
-    from layout import layout_cells
+    import layout
+    from layout import SPAN, layout_cells
 
     def fixture() -> dict:
         # a connected core + isolated cells (the halo bait). The isolated set covers
@@ -96,10 +107,6 @@ def check_layout() -> None:
 
     check("L1 every cell gets an xy", all("xy" in c for c in cells.values()))
 
-    # L2 — the halo regression. Long-range repulsion parked isolated cells at
-    # r~84,200 while the real graph sat at r~1,985 (a 42x spread; fit-to-content
-    # then rendered the graph as a dot inside a ring). Isolated cells must land
-    # near the core, not in orbit.
     radii = sorted(math.hypot(*c["xy"]) for c in cells.values())
     median = radii[len(radii) // 2] or 1.0
     spread = radii[-1] / median
@@ -109,6 +116,82 @@ def check_layout() -> None:
     iso_r = [math.hypot(*cells[k]["xy"]) for k in cells if ":iso" in k or ":lone" in k]
     check("L2 isolated cells sit near the core, not in orbit",
           max(iso_r) < median * 8.0, f"isolated max radius={max(iso_r):.0f}")
+
+    # ---- L2a: the MECHANISM. Probe the force law directly.
+    #
+    # Repulsion MUST be zero beyond REPULSION_RANGE*k, or a weakly-held cell is
+    # pushed out until n*k^2/r balances gravity g*r — the halo (SCHEMA "Layout is
+    # BUILD-TIME, and repulsion must be short-range").
+    #
+    # PROBE_GAP is deliberately an ABSOLUTE distance and NOT derived from
+    # REPULSION_RANGE: deriving it would make this test self-defeating, since
+    # REPULSION_RANGE=1e9 would push the probe out to 1e11 and it would report "still
+    # beyond the range" and pass. 6k is a separation the live map is full of — its
+    # MEDIAN cell radius alone is ~8.6k and its max ~32k — so "two unbonded cells 6k
+    # apart must not shove each other" is a property of the shipped map, not of a
+    # constant. Both directions are pinned: a range of 0 (repulsion deleted outright)
+    # collapses the map onto the origin and must fail just as loudly.
+    PROBE_GAP = 6.0 * SPAN
+    try:
+        import numpy as np
+
+        def probe(half: float) -> float:
+            """One step on two unbonded nodes at (+-half, 0); returns the new |x|."""
+            empty = np.asarray([], dtype=np.int64)
+            out = layout._simulate(np.array([[-half, 0.0], [half, 0.0]]),
+                                   empty, empty, np.asarray([]),
+                                   iterations=1, k=SPAN)
+            return abs(float(out[1][0]))
+
+        far = probe(PROBE_GAP / 2.0)
+        near = probe(SPAN / 2.0)
+        check("L2a repulsion is OFF beyond the cutoff (unbonded cells 6k apart are "
+              "pulled together, not shoved apart)",
+              far < PROBE_GAP / 2.0,
+              f"a pair {PROBE_GAP:.0f} apart moved OUT to {far * 2:.0f} — repulsion is "
+              f"long-range, the halo is back (REPULSION_RANGE={getattr(layout, 'REPULSION_RANGE', None)!r})")
+        check("L2a repulsion is ON inside the cutoff (cells k apart still separate)",
+              near > SPAN / 2.0,
+              f"a pair {SPAN:.0f} apart collapsed to {near * 2:.0f} — repulsion is gone "
+              f"entirely, the map piles on the origin")
+    except Exception as exc:   # a deleted REPULSION_RANGE raises NameError in _simulate
+        check("L2a the repulsion cutoff exists and is probeable", False,
+              f"{type(exc).__name__}: {exc}")
+
+    # ---- L2b: the SYMPTOM. A halo, on a fixture that can actually express one.
+    #
+    # The victim shape is a component with nothing holding it IN: edge attraction
+    # grows as d^2, so a bonded cell is always reeled back, but a DETACHED component
+    # only feels repulsion out and gravity in — it settles at r = sqrt(n*k^2/g),
+    # exactly the halo formula. (The old fixture had no such component, which is why
+    # it could not see the bug.) 200 iterations because the step is temperature-capped
+    # and the halo is ~8.7k away: at 60 the sim cannot physically reach equilibrium
+    # and the fixture reports a false GREEN.
+    #
+    # Asserted against the PREDICTED halo radius rather than a max/median ratio,
+    # because long-range repulsion inflates the core too: measured, the ratio only
+    # reaches 3.1x (median rises with it) and would slip under any threshold loose
+    # enough to be stable — the absolute radius is what actually separates the two
+    # regimes (fix ON r=1,366 = 0.16x predicted; fix OFF r=8,505 = 0.98x predicted).
+    n_core = 150
+    halo = {f"cell:h{i}": {"id": f"cell:h{i}", "organs": [], "supercells": ["path:X"]}
+            for i in range(n_core)}
+    halo["cell:far0"] = {"id": "cell:far0", "organs": []}
+    halo["cell:far1"] = {"id": "cell:far1", "organs": []}
+    halo_syn = [{"src": f"cell:h{i}", "dst": f"cell:h{(i + 1) % n_core}", "weight": 3}
+                for i in range(n_core)]
+    halo_syn += [{"src": "cell:far0", "dst": "cell:far1", "weight": 1}]  # detached pair
+    layout_cells(halo, halo_syn, iterations=200)
+    core_r = sorted(math.hypot(*halo[f"cell:h{i}"]["xy"]) for i in range(n_core))
+    core_med = core_r[len(core_r) // 2] or 1.0
+    far_r = math.hypot(*halo["cell:far0"]["xy"])
+    predicted = math.sqrt(len(halo) * SPAN ** 2 / layout.GRAVITY)   # the halo formula
+    check("L2b a detached component settles near the core, nowhere near the "
+          "long-range equilibrium radius",
+          far_r < predicted * 0.5,
+          f"detached component at r={far_r:.0f}, which is {far_r / predicted:.0%} of the "
+          f"predicted halo radius sqrt(n*k^2/g)={predicted:.0f} (core median {core_med:.0f}) "
+          f"— it is orbiting, not settling")
 
     # L3 — determinism. The map must be the same every rebuild, or it cannot be
     # learned (the whole reason layout moved to build time).
@@ -228,9 +311,28 @@ def main() -> int:
     check("C7 queued tags are provenance-distinguishable",
           bool(queued_prov) and bool(merged_prov) and not (queued_prov & merged_prov),
           f"queued={len(queued_prov)} merged={len(merged_prov)}")
-    check("C7 rejected queue claims never bond",
+    check("C7 the rejected-claim guard was exercised at all",
           meta["stats"].get("queue_rejected", 0) > 0,
           "no rejected claim was exercised — the guard is untested")
+    # The counter above only proves the guard RAN; it would stay green while a
+    # rejected claim leaked through, so assert what the contract actually says: no
+    # rejected (qid, decl) pair may be fused BY THE QUEUE. Deliberately not "may not
+    # share a cell" — 8 rejected pairs legitimately do, fused by a merged
+    # @[wikidata]/oracle grounding, which rule 1 permits. The rejection binds the
+    # QUEUE claim, not the pair.
+    owner = {o["id"]: c["id"] for c in cells.values() for o in c["organs"]}
+    leaked = []
+    for qid, decl in load_rejected():
+        did = f"decl:Mathlib:{decl}"
+        if not owner.get(qid) or owner.get(qid) != owner.get(did):
+            continue
+        for organ in cells[owner[qid]]["organs"]:
+            if (organ["id"] in (qid, did) and "prov" in organ
+                    and prov[organ["prov"]].get("source") == "tag-queue"):
+                leaked.append((qid, decl))
+    check("C7 no rejected queue claim fused its pair (the guard WORKS, not just ran)",
+          not leaked,
+          f"{len(leaked)} rejected pairs bonded via the queue, e.g. {leaked[:3]}")
     # Jack's example: the zeta atom should hold BOTH zeta decls (the completion's
     # tag is `revise`, not rejected, so the queue bond is legitimate).
     zeta = cells.get("cell:Q187235")

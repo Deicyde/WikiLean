@@ -41,11 +41,17 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 BRAIN_DATA = HERE / "data"
 OUT_DIR = ROOT / "site" / "assets" / "brain" / "cells"
+SCRATCH_DIR = ROOT / "site" / "assets"   # scratch swap dirs — OUTSIDE the copied tree
 
-SYN_CAP = 200         # synapses kept per cell entry, heaviest first
+SYN_CAP = 200         # synapses kept per cell entry (every KIND first: pick_synapses)
 SHARD_TRACE_CAP = 6   # traces kept per synapse IN THE SHARD (full set: query.py)
 EXPLORER_BUDGET = 4_200_000
 SNIPPET_CAP = 400     # chars of a licensed DB snippet carried into the card
+AKA_CAP = 16          # search aliases per cell — statement titles yield first
+# Organ kinds a human actually SEARCHES an atom by. A statement organ's label is an
+# arXiv paper TITLE — the name of a document that mentions the atom, not a name for
+# the atom — so it must never evict `Module.Dual` from the search index.
+AKA_SEARCHABLE = ("concept", "decl", "article", "page")
 
 
 def _iter(path: Path):
@@ -149,6 +155,59 @@ def pick_traces(traces: list[dict], cap: int) -> list[dict]:
     return out
 
 
+def pick_synapses(syns: list[dict], cap: int) -> list[dict]:
+    """Choose WHICH synapses ship — every bond KIND represented before the cap is
+    spent on more of the heaviest kind.
+
+    The same disease pick_traces() cures, one level up. Sorting by `-w` and cutting
+    at `cap` drops whole KINDS from a hub cell's card, because rare kinds are
+    weight-1 BY NATURE: a single generalization/special_case/co-statement bond
+    aggregates to weight 1, so ordering by weight GUARANTEES they sort last and are
+    cut first (measured: every dropped synapse had weight 1-3). Measured on
+    cell:Q17278 (Circle) — its one `generalization`, "a circle is a 2-sphere"
+    (-> decl:Mathlib:EuclideanGeometry.Sphere), ranked 267/292 by weight and never
+    shipped, so the card showed 200 rows of bulk `depends` and the reader could not
+    learn the cell has a cross-database bond at all. Same for Identity function's
+    `special_case` (771/789) and Fourier series' `co-statement` (249/260) — the
+    entire payoff of the TheoremGraph ingest.
+
+    Round-robin over kinds, rarest first, so every kind the cell HAS claims a slot
+    before any kind repeats; survivors are re-sorted heaviest-first because that is
+    the reading order the card renders in. A synapse carrying several kinds counts
+    for all of them, so representing a rare kind is never wasted. Guaranteed
+    complete: with <=11 kinds and cap=200 the first pass always seats every kind.
+    """
+    if len(syns) <= cap:
+        return sorted(syns, key=lambda e: (-e["w"], e["id"]))
+    by_kind: dict[str, list[dict]] = defaultdict(list)
+    for entry in syns:
+        for kind in entry["kinds"]:
+            by_kind[kind].append(entry)
+    for arr in by_kind.values():
+        arr.sort(key=lambda e: (-e["w"], e["id"]))   # heaviest first WITHIN a kind
+    # rarest kind first: the lone `generalization` must claim its slot before
+    # `depends` (~10:1 more common) spends the budget
+    order = sorted(by_kind, key=lambda k: (len(by_kind[k]), k))
+    picked: dict[str, dict] = {}
+    cursor: dict[str, int] = {k: 0 for k in order}
+    while len(picked) < cap:
+        progressed = False
+        for kind in order:
+            if len(picked) >= cap:
+                break
+            arr = by_kind[kind]
+            i = cursor[kind]
+            while i < len(arr) and arr[i]["id"] in picked:
+                i += 1               # already seated by an earlier (rarer) kind
+            cursor[kind] = i + 1
+            if i < len(arr):
+                picked[arr[i]["id"]] = arr[i]
+                progressed = True
+        if not progressed:
+            break
+    return sorted(picked.values(), key=lambda e: (-e["w"], e["id"]))
+
+
 def main() -> int:
     t0 = time.monotonic()
     cell_meta, cell_rows = load_jsonl(BRAIN_DATA / "cells.jsonl")
@@ -203,8 +262,9 @@ def main() -> int:
     serialized: dict[str, str] = {}
     n_syn_attached = 0
     for cid, cell in sorted(cells.items()):
-        syns = sorted(by_cell.get(cid, []), key=lambda e: (-e["w"], e["id"]))
-        kept = syns[:SYN_CAP]
+        syns = by_cell.get(cid, [])
+        # every bond KIND before the cap is spent on more of the heaviest (pick_synapses)
+        kept = pick_synapses(syns, SYN_CAP)
         n_syn_attached += len(kept)
         sups = cell.get("supercells") or []
         entry = {
@@ -282,15 +342,34 @@ def main() -> int:
     # `aka` carries every organ label, so searching "vector space" finds the Module
     # atom even though the atom is named "Module (mathematics)" — the v2 search
     # returned the separate Vector-space node, which no longer exists.
+    #
+    # RANKED by what a human would type, not alphabetically. `aka` used to be
+    # sorted(...)[:8], and ASCII orders uppercase before lowercase, so long arXiv
+    # STATEMENT titles ("Gravity and its wonders: braneworlds and holography") won
+    # slots over the names people actually search: measured, `Module.Dual`,
+    # `Surjective function` and `extDeriv` were all UNFINDABLE, because the client's
+    # search index is built ONLY from this file. A paper title is not a name for the
+    # atom, so statement organs yield first and every searchable label is kept
+    # (max 12 on live data, under AKA_CAP). Whatever a cap drops is COUNTED below
+    # and declared in manifest.caps — never silently (SCHEMA).
     labels = []
+    aka_dropped = 0
     for cid, cell in sorted(cells.items()):
-        aka = sorted({str(o.get("label")) for o in cell["organs"]
-                      if o.get("label") and o["label"] != cell["label"]})
+        seen_aka: dict[str, int] = {}
+        for organ in cell["organs"]:
+            label = organ.get("label")
+            if not label or label == cell["label"]:
+                continue
+            rank = 0 if organ["kind"] in AKA_SEARCHABLE else 1
+            # an organ label may arrive under several kinds; the best rank wins
+            seen_aka[str(label)] = min(seen_aka.get(str(label), rank), rank)
+        aka = [a for _, a in sorted((r, a) for a, r in seen_aka.items())]
+        aka_dropped += max(0, len(aka) - AKA_CAP)
         row = {"id": cid, "label": cell["label"]}
         if cell.get("f"):
             row["f"] = cell["f"]
         if aka:
-            row["aka"] = aka[:8]
+            row["aka"] = aka[:AKA_CAP]
         sups = cell.get("supercells") or []
         if sups:
             row["p"] = min(sups, key=lambda s: (s.count("/"), s))
@@ -348,10 +427,18 @@ def main() -> int:
         # fetches them on demand — `traces` below says exactly where from, so the
         # omission is declared in the artifact rather than discovered by a reader.
         if by_cell.get(path):
-            syns = sorted(by_cell[path], key=lambda e: (-e["w"], e["id"]))
+            syns = by_cell[path]
+            kept = pick_synapses(syns, SYN_CAP)   # every KIND first, as for cells
             row["syn"] = [{k: v for k, v in e.items() if k != "traces"}
-                          for e in syns[:SYN_CAP]]
+                          for e in kept]
             row["counts"] = {"syn": len(syns)}
+            # SYN_CAP applies here too, so it must be COUNTED here too. Without this
+            # a reader (and /api/brain/neighborhood, which reads these rows straight)
+            # can only infer the drop by comparing len(syn) against counts.syn — and
+            # the API instead reported truncated:false while withholding up to 728 of
+            # 928 synapses on path:Mathlib/Algebra. A cap is never silent (SCHEMA).
+            if len(kept) < len(syns):
+                row["truncated"] = {"syn": len(syns) - len(kept)}
         supercells[path] = row
     n_sup_syn = sum(len(r.get("syn") or []) for r in supercells.values())
     sup_doc = {"_meta": {"schema": "brain/SCHEMA.md#v3", "generated_at": gen,
@@ -373,8 +460,8 @@ def main() -> int:
     #
     # Edges are index triples [i, j, w] into `nodes`, not {src,dst} id objects: ids
     # average ~11 chars and repeat twice per edge, so objects cost ~4x. That is the
-    # difference between shipping the COMPLETE graph (86,884 edges) and silently
-    # dropping 39% of it to fit a byte budget. No cap, so no phantoms are possible.
+    # difference between shipping the COMPLETE cell graph and silently dropping a
+    # chunk of it to fit a byte budget. No cap, so no phantoms are possible.
     order = sorted(cell_rows, key=lambda c: c["id"])
     index = {c["id"]: i for i, c in enumerate(order)}
     explorer = {
@@ -417,6 +504,18 @@ def main() -> int:
                        "organs": sum(len(c["organs"]) for c in cell_rows)},
             "caps": {"synapses_per_cell": SYN_CAP,
                      "traces_per_synapse": SHARD_TRACE_CAP,
+                     # Every cap this file applies is named here, with what it
+                     # actually dropped — a cap a reader cannot see is a lie about
+                     # the artifact (SCHEMA: a COUNT, not a flag).
+                     "aka_per_cell": AKA_CAP,
+                     "aka_labels_dropped": aka_dropped,
+                     "selection": "synapses_per_cell and traces_per_synapse are "
+                                  "selected round-robin by kind, rarest first, so a "
+                                  "cap never hides a whole bond KIND; `aka` keeps "
+                                  "searchable organ labels (concept/decl/article/"
+                                  "page) ahead of arXiv statement titles. Per-cell "
+                                  "synapse drops are counted in each entry's "
+                                  "`truncated`; supercell rows carry it too.",
                      "evidence_trim": "depends witnesses kept to their first pair; "
                                       "full traces in brain/data/synapses.jsonl "
                                       "(brain/query.py)"},
@@ -446,8 +545,16 @@ def main() -> int:
     }
 
     # ---- atomic directory swap ------------------------------------------------
-    tmp = OUT_DIR.parent / ".cells.tmp"
-    old = OUT_DIR.parent / ".cells.old"
+    # The scratch dirs live OUTSIDE the published tree. They used to sit in
+    # OUT_DIR.parent (site/assets/brain), which build-public.ts cpSyncs wholesale
+    # with no filter — so an interrupted build left .cells.tmp behind and the next
+    # deploy shipped a duplicate half-written shard set (+1,463 files against
+    # Cloudflare's 20,000-file assets ceiling) at a live URL. site/assets is NOT
+    # copied wholesale (build-public names individual files there), same filesystem
+    # so the renames stay atomic, and build_shards.py's swap of site/assets/brain —
+    # which carries cells/ across via its NESTED tuple — never sees them.
+    tmp = SCRATCH_DIR / ".cells.tmp"
+    old = SCRATCH_DIR / ".cells.old"
     for stale in (tmp, old):
         if stale.exists():
             shutil.rmtree(stale)

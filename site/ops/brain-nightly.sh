@@ -15,13 +15,20 @@
 #   3. FOLD + BUILD: fold_proposals -> build_nodes -> build_edges ->
 #      test_acceptance (RED = abort publish, keep old shards) -> build_shards ->
 #      build_cells -> test_cells -> build_cell_shards -> test_cell_shards
-#      (the v3 atom layer; any RED aborts the publish the same way).
+#      (the v3 atom layer; any RED aborts the publish the same way) ->
+#      build_brain_page (the /brain page itself, so the page we PUBLISH is the
+#      page we just BUILT, from the source the deploy gate verifies below).
 #      Rollups are pinned — not rebuilt nightly.
 #   4. PUBLISH (WIKILEAN_BRAIN_DEPLOY=1): build-public, then the GATED deploy —
-#      `npm run deploy` ONLY if the checked-out branch is `main` (no detached
-#      HEAD, no rebase/merge in progress), `git status --porcelain -- wiki/
-#      site/assets site/build_brain_page.py` is empty, AND `npx tsc --noEmit`
-#      passes. Never ships uncommitted Worker WIP or asset-source WIP.
+#      `npm run deploy` ONLY if site/out/brain.html actually exists (build-public
+#      skips a missing page silently, shipping the previous one), the checked-out
+#      branch is `main` (no detached HEAD, no rebase/merge in progress), `git
+#      status --porcelain -- wiki/ site/assets site/build_brain_page.py` is empty,
+#      AND `npx tsc --noEmit` passes. Never ships uncommitted Worker WIP or
+#      asset-source WIP. (The generated artifacts are gitignored — site/out/ at
+#      .gitignore:48, site/assets/brain/ at :66 — so the clean-tree gate is a
+#      statement about SOURCE; step 3 is what makes it a statement about the
+#      shipped bytes too.)
 #
 # Runs as the logged-in user so the Claude Max-plan login is available to the
 # agent step. launchd hands a bare environment: absolute paths, explicit PATH.
@@ -223,6 +230,26 @@ cd "$REPO" || exit 1
       PUBLISH_OK=0
     fi
   fi
+  # ---- the /brain PAGE (site/build_brain_page.py -> site/out/brain.html) ------
+  # This step was MISSING, and the page is what a reader actually looks at. The
+  # nightly rebuilt the shards and then shipped whatever brain.html happened to be
+  # sitting on disk at 02:20: site/out/ is gitignored (.gitignore:48), so the file
+  # survives `git checkout` and can be an artifact of a completely different branch
+  # than the one the deploy gate just verified as clean and on main. The page and the
+  # shards are version-coupled — the v3 page reads /assets/brain/cells/ — so a stale
+  # page against fresh shards is exactly how /brain dies on "data unavailable".
+  # Built here, under the same PUBLISH_OK gate as everything else: if the shards
+  # failed acceptance we do NOT refresh the page either, so the old page and the old
+  # shards stay live TOGETHER (consistent), which is the whole point of the gate.
+  if [ "$PUBLISH_OK" = "1" ]; then
+    if python3 "$REPO/site/build_brain_page.py" && [ -s "$REPO/site/out/brain.html" ]; then
+      echo "(brain page rebuilt: $(wc -c <"$REPO/site/out/brain.html" | tr -d ' ') B)"
+    else
+      echo "!!! build_brain_page FAILED (or wrote no page) — publish aborted, the live page stays"
+      PUBLISH_OK=0
+    fi
+  fi
+
   # The tagger-quality worklist: cells that ballooned via a bad AI grade. Not a
   # gate — a signal (SCHEMA "A ballooning cell is a TAGGER signal").
   if [ "$PUBLISH_OK" = "1" ] && [ -f "$REPO/brain/data/cell_review.jsonl" ]; then
@@ -234,7 +261,15 @@ cd "$REPO" || exit 1
   # ---- 4. PUBLISH (clean-tree-gated deploy) -----------------------------------
   if [ "$PUBLISH_OK" = "1" ] && [ "$BRAIN_DEPLOY" = "1" ]; then
     echo "=== publish: build-public + clean-tree-gated deploy ==="
-    if ! (cd "$REPO/wiki" && node --experimental-strip-types scripts/build-public.ts); then
+    # Guard the ARTIFACT, not just its source. build-public copies site/out/brain.html
+    # only `if (existsSync(src))` — a missing page is silently skipped and
+    # wiki/public/ keeps the PREVIOUS brain.html, so a stale page ships against
+    # tonight's shards with no error anywhere. The build step above is gated on this
+    # same file, so reaching here with it missing means something deleted it since.
+    if [ ! -s "$REPO/site/out/brain.html" ]; then
+      echo "!!! SKIPPED-DEPLOY: site/out/brain.html missing/empty — build-public would"
+      echo "    silently ship the previous page against tonight's shards"
+    elif ! (cd "$REPO/wiki" && node --experimental-strip-types scripts/build-public.ts); then
       echo "!!! SKIPPED-DEPLOY: build-public failed — shards rebuilt on disk but NOT shipped"
     else
       # Deploy gate: main-branch only, no rebase/merge in flight, and a clean
