@@ -1035,9 +1035,29 @@ def build() -> tuple[list[dict], list[dict], dict]:
         return (_majority(mod_votes[d]) or csv_mod.get(d) or sf_mod.get(d)
                 or tag_mod.get(d))
 
+    # Verified renames: a cited name that no longer exists, mapped to the decl's
+    # CURRENT fully-qualified name (catalog/data/decl_renames.jsonl — written only
+    # after an agent read the declaration in the checkout AND an adversarial
+    # verifier upheld it; a suffix-heuristic guess never lands here). The cited
+    # organ keeps its identity; it just files where the current decl lives, and
+    # the node carries `renamed_to` so the card can say so. Fail-soft: no file,
+    # no renames.
+    decl_renames: dict[str, str] = {}
+    _renames_path = DATA / "decl_renames.jsonl"
+    if _renames_path.exists():
+        for line in _renames_path.read_text().splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            row = json.loads(line)
+            if row.get("cited") and row.get("current"):
+                decl_renames[row["cited"]] = row["current"]
+
     # Last-resort module for decls no corpus source covers (annotation-only
-    # citations). Built once, over just the names that still need it.
+    # citations). Built once, over just the names that still need it — plus the
+    # rename TARGETS, whose module is what a renamed citation files under.
     _need_mod = {d for d in decl_set if not _voted(d)}
+    _need_mod |= set(decl_renames.values())
     oracle_mod = _decl_module_oracle(_need_mod)
 
     def resolve(d: str) -> tuple[str, str | None]:
@@ -1046,6 +1066,11 @@ def build() -> tuple[list[dict], list[dict], dict]:
         if not lib:
             root = module.split(".", 1)[0] if module else None
             lib = root if root in lib_meta else "Mathlib"
+        if not module and d in decl_renames:
+            cur = decl_renames[d]
+            module = _voted(cur) or (oracle_mod.get(cur) or (None, None))[0]
+            if module and module.split(".", 1)[0] != lib:
+                module = None   # same-library rule, as below
         if not module:
             cand = (oracle_mod.get(d) or (None, None))[0]
             # Accept the oracle ONLY inside the decl's own library. A
@@ -1079,7 +1104,12 @@ def build() -> tuple[list[dict], list[dict], dict]:
                 continue
             declared = _lean_decl_lines(lines)   # FQ name -> line, exact
             for d in decls:
+                # a renamed citation's file holds the CURRENT name, not the cited
+                # one — show the current decl's code (the node's renamed_to says
+                # whose it is; never attribute it to the dead name silently)
                 i = declared.get(d)
+                if i is None and d in decl_renames:
+                    i = declared.get(decl_renames[d])
                 if i is None:
                     continue                     # fail closed — see _lean_decl_lines
                 snip: list[str] = []
@@ -1128,6 +1158,9 @@ def build() -> tuple[list[dict], list[dict], dict]:
         decl_nodes.append(_prune({
             "id": did, "type": "decl", "label": d, "library": lib,
             "module": module, "slogan": slogans.get(d), "pin": snapshot_pin,
+            # the cited name is HISTORY: the decl now goes by another name, and
+            # the card must say so rather than presenting a dead name as current
+            "renamed_to": decl_renames.get(d),
             **gloss,
         }))
         # placement: deepest hierarchy container prefixing the decl's module
