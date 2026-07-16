@@ -82,7 +82,8 @@ def organ_payload(organ: dict, nodes: dict[str, dict]) -> dict:
     out = dict(organ)
     kind = organ["kind"]
     if kind == "decl":
-        for key in ("module", "decl_kind", "docstring", "code", "library"):
+        for key in ("module", "decl_kind", "docstring", "code", "library",
+                    "renamed_to"):
             if node.get(key):
                 out[key] = node[key]
     elif kind == "concept":

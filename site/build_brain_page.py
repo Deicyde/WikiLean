@@ -641,8 +641,8 @@ async function focusItems(id) {
   // a cell that spans several modules is listed by EACH of them, so it renders
   // inside each — exactly what SCHEMA's `supercells` array asks for
   let cells = (sc.cells || []).map(cellItem);
-  // At a level that HAS sub-areas, the cells filed directly here (Mathlib holds
-  // 373 of them) would flood the pack and shrink Algebra to a dot — collapse
+  // At a level that HAS sub-areas, the cells filed directly here would flood the
+  // pack and shrink Algebra to a dot (Mathlib once held 567) — collapse
   // them into one DIVE-ABLE bubble. An active facet filter must still see its
   // matches, so only the remainder collapses. At a library ROOT the honest label
   // is different: nothing is legitimately "filed" at path:Mathlib — a decl lands
@@ -1800,6 +1800,10 @@ function organHtml(o, anchor) {
     head += ` <span class="badge" style="border-color:${esc(DB_COLOR[o.db] || "#c8bfa8")}">${
       esc(XREF_NAME[o.db] || o.db)}</span>`;
   if (o.kind === "decl" && o.decl_kind) head += ` <span class="mk">${esc(o.decl_kind)}</span>`;
+  // a cited name that Mathlib has since renamed: say so, never present the dead
+  // name as current (the code shown below is the CURRENT declaration's)
+  if (o.kind === "decl" && o.renamed_to)
+    head += ` <span class="mk" style="color:#d97706" title="the annotation cites a name Mathlib has since renamed — the code shown is the current declaration's">now ${esc(o.renamed_to)}</span>`;
   if (url) head += ` <a class="extlink" href="${esc(url)}" rel="noopener" target="_blank">↗</a>`;
   head += provChipHtml(o.prov !== undefined ? manifest.prov[o.prov] : null);
   head += `</div>`;
