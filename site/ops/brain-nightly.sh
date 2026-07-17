@@ -145,9 +145,11 @@ cd "$REPO" || exit 1
     py_soft "eom ingest"                     "$REPO/brain/ingest/eom.py"
     py_soft "planetmath ingest"              "$REPO/brain/ingest/planetmath.py"
     py_soft "wikidata descriptions"          "$REPO/brain/ingest/wikidata_descriptions.py"
+    py_soft "formal-conjectures harvest"     "$REPO/brain/ingest/formal_conjectures.py"
+    py_soft "erdosproblems ingest"           "$REPO/brain/ingest/erdosproblems.py"
     touch "$LOGDIR/.stamp.brain-weekly"
   else
-    echo "(weekly sources not due — skipping lmfdb/eom/planetmath/descriptions)"
+    echo "(weekly sources not due — skipping lmfdb/eom/planetmath/descriptions/formal-conjectures/erdos)"
   fi
   echo
   if due brain-monthly 27; then

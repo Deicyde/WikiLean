@@ -51,6 +51,12 @@ OPTIONAL_INPUTS = {
     "discovery_proposals.jsonl": BRAIN_DATA / "discovery_proposals.jsonl",
     "mathlib_tag_xrefs.jsonl": DATA / "mathlib_tag_xrefs.jsonl",
     "wikidata_descriptions.json": DATA / "wikidata_descriptions.json",
+    # unsolved-problems frontier (brain/ingest/formal_conjectures.py +
+    # brain/ingest/erdosproblems.py + fold_proposals fc_link rows) — each
+    # fail-soft: missing file = that slice of the layer skipped
+    "formal_conjectures.jsonl": DATA / "formal_conjectures.jsonl",
+    "erdos_joins.jsonl": DATA / "erdos_joins.jsonl",
+    "fc_links.jsonl": BRAIN_DATA / "fc_links.jsonl",
 }
 REGISTRY = DATA / "source_registry.json"
 
@@ -1500,6 +1506,214 @@ def build() -> tuple[list[dict], list[dict], dict]:
               f"{n_gold_minted} ({n_gold_unknown_qid} skipped — QID not in the "
               f"universe)", file=sys.stderr)
 
+    # ---- formal-conjectures frontier: decl:FormalConjectures:* organs -------
+    # The unsolved-problems corpus (google-deepmind/formal-conjectures,
+    # harvested by brain/ingest/formal_conjectures.py) enters as a first-class
+    # library: its own container tree, one decl node per declaration
+    # (docstring + code are Apache-2.0), decl→xref:erdos:<n> / xref:oeis:A…
+    # edges from the verbatim reference URLs + the teorth/erdosproblems YAML
+    # join table, and concept joins two ways: DETERMINISTIC docstring
+    # citations (a Wikipedia URL in the source resolved through the universe
+    # slug map — formalizes only for single-reference Wikipedia/ files, whose
+    # file IS the article's conjecture; everything else is a mentions), and
+    # AGENT joins fold-verified into brain/data/fc_links.jsonl. Runs BEFORE
+    # the external layer so xref:erdos dsts anchor the erdos pages.
+    fc_stats = {"decls": 0, "containers": 0, "xref_erdos": 0, "xref_oeis": 0,
+                "formalizes_det": 0, "mentions_det": 0, "agent_links": 0,
+                "skipped_unknown_qid": 0, "agent_rows_skipped": 0,
+                "duplicate_decls": 0}
+    p = OPTIONAL_INPUTS["formal_conjectures.jsonl"]
+    if p.exists():
+        FC_LIB = "FormalConjectures"
+        fc_root = f"path:{FC_LIB}"
+        fc_rows: list[dict] = []
+        fc_meta: dict = {}
+        with p.open() as fh:
+            for line in fh:
+                line = line.strip()
+                if not line:
+                    continue
+                r = json.loads(line)
+                if "_meta" in r:
+                    fc_meta = r["_meta"]
+                    continue
+                if r.get("decl") and r.get("module") and r.get("file"):
+                    fc_rows.append(r)
+        pin_fc = (fc_meta.get("commit") or _pin("formal_conjectures.jsonl"))[:12]
+
+        erdos_oeis: dict[str, list[str]] = {}
+        ej = OPTIONAL_INPUTS["erdos_joins.jsonl"]
+        if ej.exists():
+            with ej.open() as fh:
+                for line in fh:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    r = json.loads(line)
+                    if "_meta" in r or not r.get("erdos"):
+                        continue
+                    erdos_oeis[str(r["erdos"])] = [str(a) for a in r.get("oeis") or []]
+
+        # container tree from module paths (dir grain — files are the decl's
+        # module payload, not containers, matching the depth-capped hierarchy)
+        fc_dirs: dict[str, int] = Counter()
+        for r in fc_rows:
+            parts = r["module"].split(".")[:-1]        # drop the file stem
+            for i in range(1, len(parts)):
+                fc_dirs["/".join(parts[:i + 1])] += 1
+        containers[fc_root] = _prune({
+            "id": fc_root, "type": "container", "label": FC_LIB,
+            "library": FC_LIB, "library_kind": "math",
+            "n_decls": len(fc_rows), "n_files": fc_meta.get("n_files")})
+        for d in sorted(fc_dirs):
+            cid = f"path:{d}"
+            parent_id = f"path:{d.rsplit('/', 1)[0]}" if "/" in d else fc_root
+            containers[cid] = {"id": cid, "type": "container",
+                               "label": d.rsplit("/", 1)[-1], "library": FC_LIB,
+                               "library_kind": "math", "n_decls": fc_dirs[d]}
+            edges.append(_edge(parent_id, cid, "contains", "formal_conjectures",
+                               "file-tree (formal_conjectures.jsonl)", pin_fc,
+                               "high", {"n_decls": fc_dirs[d]}))
+        fc_stats["containers"] = 1 + len(fc_dirs)
+
+        slug_lookup = dict(uni_slug2qid)
+        slug_lookup.update(slug2qid_local)
+        fc_decl_ids: dict[str, str] = {}       # bare FQ name -> node id
+        fc_pair_seen: set[tuple[str, str]] = set()   # (qid, decl id) joins
+        for r in sorted(fc_rows, key=lambda r: r["decl"]):
+            if r["decl"] in fc_decl_ids:
+                fc_stats["duplicate_decls"] += 1
+                continue
+            did = f"decl:{FC_LIB}:{r['decl']}"
+            fc_decl_ids[r["decl"]] = did
+            decl_nodes.append(_prune({
+                "id": did, "type": "decl", "label": r["decl"],
+                "library": FC_LIB, "module": r["module"], "pin": pin_fc,
+                "decl_kind": r.get("kind"), "category": r.get("category"),
+                "ams": r.get("ams"), "docstring": r.get("docstring"),
+                "code": r.get("code")}))
+            fc_stats["decls"] += 1
+            parts = r["module"].split(".")[:-1]
+            cur = fc_root
+            for comp in parts[1:]:
+                nxt = f"{cur}/{comp}"
+                if nxt not in containers:
+                    break
+                cur = nxt
+            edges.append(_edge(cur, did, "contains", "formal_conjectures",
+                               "module-prefix placement", pin_fc, "high",
+                               {"module": r["module"]}))
+
+            refs: dict[str, list[str]] = {}
+            for src_key in ("refs", "file_refs"):
+                for k, vals in (r.get(src_key) or {}).items():
+                    acc = refs.setdefault(k, [])
+                    acc.extend(v for v in vals if v not in acc)
+            seen_oeis: set[str] = set()
+            for n in refs.get("erdos", []):
+                edges.append(_edge(did, f"xref:erdos:{n}", "xref", "erdos",
+                                   "formal-conjectures reference URL", pin_fc,
+                                   "high", {"value": n,
+                                            "url": f"https://www.erdosproblems.com/{n}"}))
+                fc_stats["xref_erdos"] += 1
+                for a in erdos_oeis.get(n, []):
+                    if a not in seen_oeis:
+                        seen_oeis.add(a)
+                        edges.append(_edge(did, f"xref:oeis:{a}", "xref", "oeis",
+                                           "erdosproblems.com join (problems.yaml)",
+                                           pin_fc, "high", {"value": a}))
+                        fc_stats["xref_oeis"] += 1
+            for a in refs.get("oeis", []):
+                if a not in seen_oeis:
+                    seen_oeis.add(a)
+                    edges.append(_edge(did, f"xref:oeis:{a}", "xref", "oeis",
+                                       "formal-conjectures reference URL",
+                                       pin_fc, "high", {"value": a}))
+                    fc_stats["xref_oeis"] += 1
+
+            research = (r.get("category") or "").startswith("research")
+            if not research:
+                continue
+            file_wiki = (r.get("file_refs") or {}).get("wikipedia") or []
+            is_wiki_single = (r["file"].startswith("FormalConjectures/Wikipedia/")
+                              and len(set(file_wiki)) == 1)
+            for slug in refs.get("wikipedia", []):
+                qid = slug_lookup.get(slug) or slug_lookup.get(
+                    slug.replace("–", "-"))
+                if not qid or not ensure_concept(qid):
+                    fc_stats["skipped_unknown_qid"] += 1
+                    continue
+                if (qid, did) in fc_pair_seen:
+                    continue
+                fc_pair_seen.add((qid, did))
+                url = f"https://en.wikipedia.org/wiki/{slug}"
+                if is_wiki_single and slug in file_wiki:
+                    # the file is this article's conjecture; its research
+                    # statements formally state it (Apache-2.0 source cites
+                    # the article verbatim). Single-reference files only —
+                    # a two-article header must never weld two concepts.
+                    edges.append(_edge(qid, did, "formalizes",
+                                       "formal_conjectures",
+                                       "wikipedia-reference (module docstring)",
+                                       pin_fc, "medium",
+                                       {"match_kind": "exact", "url": url,
+                                        "verified_by": "verbatim reference URL"}))
+                    fc_stats["formalizes_det"] += 1
+                else:
+                    edges.append(_edge(qid, did, "mentions",
+                                       "formal_conjectures",
+                                       "wikipedia-citation (docstring)",
+                                       pin_fc, "high",
+                                       {"role": "citation", "url": url}))
+                    fc_stats["mentions_det"] += 1
+
+        # agent joins, fold-verified (brain/fold_proposals.py fc_link rows)
+        p = OPTIONAL_INPUTS["fc_links.jsonl"]
+        if p.exists():
+            pin_fcl = _pin("fc_links.jsonl")
+            with p.open() as fh:
+                for line in fh:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    rec = json.loads(line)
+                    if "_meta" in rec:
+                        continue
+                    did = fc_decl_ids.get(rec.get("decl") or "")
+                    kind = rec.get("kind")
+                    qid = rec.get("qid")
+                    if (not did or kind not in ("formalizes", "mentions")
+                            or not qid or not ensure_concept(qid)):
+                        fc_stats["agent_rows_skipped"] += 1
+                        continue
+                    if (qid, did) in fc_pair_seen:
+                        continue
+                    fc_pair_seen.add((qid, did))
+                    ev = dict(rec.get("evidence") or {})
+                    if kind == "formalizes":
+                        ev.setdefault("match_kind", rec.get("match_kind") or "exact")
+                    else:
+                        ev.setdefault("role", "citation")
+                    edges.append(_edge(qid, did, kind, "formal_conjectures",
+                                       "fc-agent (fold-verified)", pin_fcl,
+                                       rec.get("confidence") or "medium", ev))
+                    fc_stats["agent_links"] += 1
+        else:
+            print("NOTE: brain/data/fc_links.jsonl missing — agent "
+                  "formal-conjectures joins skipped", file=sys.stderr)
+        print(f"  formal-conjectures layer: {fc_stats['decls']} decls in "
+              f"{fc_stats['containers']} containers; xrefs erdos="
+              f"{fc_stats['xref_erdos']} oeis={fc_stats['xref_oeis']}; "
+              f"deterministic joins formalizes={fc_stats['formalizes_det']} "
+              f"mentions={fc_stats['mentions_det']}; agent joins "
+              f"{fc_stats['agent_links']} ({fc_stats['agent_rows_skipped']} "
+              f"rows skipped, {fc_stats['skipped_unknown_qid']} unknown QIDs)",
+              file=sys.stderr)
+    else:
+        print("NOTE: catalog/data/formal_conjectures.jsonl missing — "
+              "formal-conjectures layer skipped "
+              "(brain/ingest/formal_conjectures.py)", file=sys.stderr)
+
     # ---- external DB pages → ext nodes + links edges (SCHEMA v2) ------------
     # Runs after every xref-emitting layer so anchoring sees the full dst set.
     # No catalog/data/external/ files → exact no-op (zero nodes, zero edges).
@@ -1669,6 +1883,13 @@ def build() -> tuple[list[dict], list[dict], dict]:
             "mathlib_tags": "@[stacks]/@[kerodon]/@[wikidata] cross-reference tags "
                             "harvested from the mathlib4 source (Apache-2.0, mathlib4 "
                             "contributors) — human-reviewed gold links",
+            "formal_conjectures": "decl:FormalConjectures:* docstrings/code are "
+                                  "Apache-2.0 (The Formal Conjectures Authors, "
+                                  "google-deepmind/formal-conjectures), stored "
+                                  "with attribution; erdos pages/joins derive "
+                                  "from teorth/erdosproblems problems.yaml "
+                                  "(Apache-2.0) — erdosproblems.com prose is "
+                                  "never stored",
             "external": "ext node ids/titles/urls/links are CC0 link facts; "
                         "stored snippets carry a per-node snippet_license and "
                         "exist ONLY for license-permitting sources "
@@ -1705,6 +1926,16 @@ def build() -> tuple[list[dict], list[dict], dict]:
             "links_page_edges": ext_stats["links_page"],
             "links_projected_edges": ext_stats["links_projected"],
             "xref_edges_from_page_qids": ext_stats["xref_from_page_qid"],
+            "fc_decls": fc_stats["decls"],
+            "fc_containers": fc_stats["containers"],
+            "fc_xref_erdos": fc_stats["xref_erdos"],
+            "fc_xref_oeis": fc_stats["xref_oeis"],
+            "fc_formalizes_deterministic": fc_stats["formalizes_det"],
+            "fc_mentions_deterministic": fc_stats["mentions_det"],
+            "fc_agent_links": fc_stats["agent_links"],
+            "fc_agent_rows_skipped": fc_stats["agent_rows_skipped"],
+            "fc_unknown_qids_skipped": fc_stats["skipped_unknown_qid"],
+            "fc_duplicate_decls": fc_stats["duplicate_decls"],
             "lit_papers": lit_stats["papers"],
             "lit_paper_nodes_minted": lit_stats["papers_new"],
             "lit_contains_edges": lit_stats["contains"],

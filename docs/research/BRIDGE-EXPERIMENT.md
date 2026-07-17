@@ -155,7 +155,11 @@ Deferred (needs new data/infra — tracked, not forgotten):
   problem (TheoremGraph's negative result). Needs a premise-level index.
 - **Ingest formal-conjectures + erdosproblems.com as first-class atoms**
   (`decl:FormalConjectures:*` joined via the teorth/erdosproblems YAML) — Tier 3
-  is only a Wikibrain test if the brain spans that corpus.
+  is only a Wikibrain test if the brain spans that corpus. **DONE 2026-07-17:**
+  `brain/ingest/formal_conjectures.py` + `brain/ingest/erdosproblems.py` +
+  build_common's formal-conjectures layer + the `fc_link` fold channel
+  (SCHEMA.md "Unsolved-problems frontier") — 4,190 FC decls, 1,217 erdos
+  problems, erdos/OEIS/Wikipedia joins, agent-fleet concept tags.
 - Statement-level embedding transfer (LSv2-style sketch-then-retrieve) — currently
   transfer ranks by concept labels/aliases; hypotheses get lost (TheoremGraph:
   slogans compress away hypotheses).

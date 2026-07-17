@@ -183,6 +183,8 @@ def main() -> int:
     fz_concepts: set[str] = set()      # concepts with >=1 formalizes->decl
     n_projected = 0                    # concept->concept projected links edges
     n_biblio = 0                       # paper->paper bibliography links edges
+    n_fc_fz = 0                        # formalizes edges onto FormalConjectures decls
+    fc_e1_xref = False                 # Erdos1.erdos_1 -> xref:erdos:1 witness
 
     edge_streams = [iter_jsonl(EDGES, "src")]
     if EDGES_LINKS.exists():
@@ -210,6 +212,8 @@ def main() -> int:
                     fz_bad_dst.append(f"{src} -> {dst}")
             if src.startswith("Q") and dst.startswith("decl:"):
                 fz_concepts.add(src)
+            if dst.startswith("decl:FormalConjectures:"):
+                n_fc_fz += 1
             if src == ABELIAN:
                 abelian_fz.add(dst)
             elif src == CAT_THEORY:
@@ -225,6 +229,9 @@ def main() -> int:
                     contains_bad.append(f"{src} -> {dst}")
         elif kind == "xref" and src == ABELIAN:
             abelian_xref.add(dst)
+        elif kind == "xref" and dst == "xref:erdos:1" \
+                and src == "decl:FormalConjectures:Erdos1.erdos_1":
+            fc_e1_xref = True
         elif kind == "links":
             ev = rec.get("evidence") or {}
             if ev.get("projected") is True \
@@ -414,6 +421,27 @@ def main() -> int:
             ["no links edge with evidence.context=='bibliography' between two "
              "lit:<arxiv_id> paper nodes (rebuild edges_links.jsonl with "
              "brain/build_edges.py)"],
+        ))
+
+    # ---- unsolved-problems frontier (SCHEMA "Unsolved-problems frontier") ----
+    if not (ROOT / "catalog" / "data" / "formal_conjectures.jsonl").exists():
+        checks.append(("P11", "Erdős round-trip: FC decl node + minted "
+                       "xref:erdos page + >=1 concept formalizes join", "skip",
+                       ["no catalog/data/formal_conjectures.jsonl — "
+                        "formal-conjectures ingest not run"]))
+    else:
+        e1 = "decl:FormalConjectures:Erdos1.erdos_1"
+        has_decl = e1 in node_ids
+        has_page = "xref:erdos:1" in node_ids
+        checks.append((
+            "P11", "Erdős round-trip: Erdos1.erdos_1 decl node -> xref:erdos:1 "
+                   "(minted page) + >=1 concept formalizes join onto FC",
+            has_decl and has_page and fc_e1_xref and n_fc_fz >= 1,
+            ([] if has_decl else [f"{e1} not a node"])
+            + ([] if has_page else ["xref:erdos:1 not minted as an ext node"])
+            + ([] if fc_e1_xref else [f"no xref edge {e1} -> xref:erdos:1"])
+            + ([] if n_fc_fz else ["no formalizes edge lands on any "
+                                   "decl:FormalConjectures:* node"]),
         ))
 
     # ---- report ---------------------------------------------------------------
