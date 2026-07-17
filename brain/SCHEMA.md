@@ -321,7 +321,7 @@ ontology edges at whatever altitude their evidence supports).
 | `mentions` | concept → decl | `{"role": "citation"}` (provenance.source `annotations`) | `decl_qid_roles_v2.json` role=citation — annotation-cited decls; EXCLUDED from all formalization-status logic |
 | `depends` | decl → decl (rolled up to file/dir/module grains) | edge_type from kernel extraction | TheoremGraph formal_dependency.csv @ pin |
 | `matches` | decl ↔ literature | judge + similarity + license flag | theorem_matching.csv (dual-judge) |
-| `xref` | concept → external DB page; decl → Stacks/Kerodon tag | Wikidata property id; `@[stacks]`/`@[kerodon]` attribute in the mathlib4 source | P12987 LMFDB, P4215 nLab, P2812 MathWorld, P6781 ProofWiki, P7554 EoM, P7726 PlanetMath, P829 OEIS, P12888 Metamath, P11497 DLMF, P3285 MSC; `mathlib_tag_xrefs.jsonl` (harvest_mathlib_tags.py) |
+| `xref` | concept → external DB page; decl → Stacks/Kerodon tag; decl:FormalConjectures → erdos/OEIS page | Wikidata property id; `@[stacks]`/`@[kerodon]` attribute in the mathlib4 source; verbatim reference URL in the FC source / problems.yaml join | P12987 LMFDB, P4215 nLab, P2812 MathWorld, P6781 ProofWiki, P7554 EoM, P7726 PlanetMath, P829 OEIS, P12888 Metamath, P11497 DLMF, P3285 MSC; `mathlib_tag_xrefs.jsonl` (harvest_mathlib_tags.py); `formal_conjectures.jsonl` + `erdos_joins.jsonl` |
 | `relates` | concept ↔ concept | Wikidata P-property (P279, P361, P2579...) | wikidata_edges.jsonl |
 | `links` | ext → ext; concept → concept (projected); literature paper → paper | `{"context": "statement"\|"proof"\|"body"\|"related"\|"bibliography"}`; projected form adds `{"projected": true, "via": "<db>", "src_page", "dst_page"}`; `bibliography` = src paper's bibliography cites dst paper (OpenAlex `referenced_works`, CC0, both endpoints ours) | `catalog/data/external/<db>_links.jsonl` (v2 ingest adapters); projection joins page-level links through xref anchors; `catalog/data/external/arxiv_citations.jsonl` (brain/ingest/openalex_citations.py, provenance `openalex`) |
 | `cites` | concept → literature | lifted via decl (transitive join) | theoremgraph_links.json |
@@ -428,6 +428,38 @@ Adapters are atomic-write and fail-soft (failed fetch leaves the previous file i
 and honor each source's rate limits / robots policy. `qid` is set ONLY from CC0 Wikidata
 property values (P4215/P2812/P6781/P7554/P7726/P829/P11497/P12987), never guessed —
 fuzzy anchoring is the agent team's job via `brain/proposals/` + `fold_proposals.py`.
+
+## Unsolved-problems frontier (formal-conjectures + erdosproblems.com)
+
+The open-conjecture corpus enters as a first-class library (the Bridge
+Experiment Tier-3 prerequisite):
+
+- `brain/ingest/formal_conjectures.py` (weekly) harvests EVERY declaration of
+  google-deepmind/formal-conjectures (Apache-2.0) from a local clone →
+  `catalog/data/formal_conjectures.jsonl`: FQ name, module, category/AMS
+  attribute, docstring + code header (storable, attributed), and the verbatim
+  reference URLs (erdosproblems.com ids, Wikipedia slugs, OEIS A-numbers).
+- `brain/ingest/erdosproblems.py` (weekly) reads teorth/erdosproblems
+  `data/problems.yaml` (Apache-2.0; the site's prose is never stored) →
+  ext db `erdos` pages (id = problem number, kind_hint = open/proved/disproved)
+  + `catalog/data/erdos_joins.jsonl` (status/prize/OEIS/tags per problem).
+- build_common's formal-conjectures layer (fail-soft) mints
+  `decl:FormalConjectures:*` nodes with a `path:FormalConjectures/*` container
+  tree, `xref` edges decl→`xref:erdos:<n>` / `xref:oeis:A…` (these anchor the
+  erdos pages for ext minting), and deterministic concept joins from docstring
+  citations: a single-reference `Wikipedia/` file yields `formalizes`
+  (match_kind exact — the file IS the article's conjecture; multi-reference
+  headers never weld), all other Wikipedia citations yield `mentions`.
+- Fuzzy joins are the agent fleet's job: `action:"fc_link"` rows in
+  `brain/proposals/` (kind formalizes|mentions), folded by fold_proposals.py
+  into `brain/data/fc_links.jsonl` — decl checked against the harvest (with
+  unique dotted-suffix completion), QID live-checked with label agreement,
+  and `formalizes` NEVER folds without a skeptic accept (a wrong exact welds
+  two atoms).
+
+In the v3 cell layer each conjecture decl is its own atom (or fuses into its
+concept's atom via rule 1), its erdos page attaches as a single-claimant organ,
+and `path:FormalConjectures/ErdosProblems` renders as a supercell.
 
 ## Build pipeline (brain/*.py, all deterministic, no LLM on the build path)
 
