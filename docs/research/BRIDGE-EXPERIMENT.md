@@ -175,6 +175,30 @@ Deferred (needs new data/infra — tracked, not forgotten):
   grounding the brain serves — it stays a diagnostic; all end-task golds external.
 - **Tier-2 D<C is pre-registered as an API finding**, not a hypothesis failure.
 
+## Protocol deviations, recorded BEFORE any result exists (2026-07-16)
+
+Discovered while standing the campaign up; none was tuned on outcomes:
+
+1. **Turn budget is prompt-stated, wall-clock-enforced.** The installed `claude`
+   CLI has no `--max-turns`; the enforceable bound is the 10-minute per-task
+   timeout, with the 30-turn budget stated in the prompt and turns recorded per
+   row. Identical across arms.
+2. **Arm D talks to a local server, not production.** Production still serves
+   pre-v3; the branch cannot deploy before review. Arm D hits the real Hono app
+   (the code that would ship) served locally over the shipped shard bytes
+   (`bench/arms/local_worker.mts`). Snapshot pins are echoed per response.
+3. **`import Mathlib` economics.** All 371 ProofNet# golds use the everything-
+   import; measured single-shot elaboration is ~122 s WARM, so grading uses a
+   persistent REPL (Mathlib env loaded once, checks in seconds). Same toolchain
+   and Mathlib pins; only the process model differs.
+4. **In-loop typechecking is unavailable to agents in this campaign** (grading is
+   post-hoc); the prompt instructs verifying cited names through the arm's tools.
+   This makes hallucinated-decl rate a pure grounding measure. The design's
+   "≤4 typecheck calls" clause therefore does not apply to Tier 1a runs.
+5. **Judge model note:** the judge harness excludes strict/evaluated grades from
+   campaign claims until the 50-item human calibration is graded and agreement
+   reported.
+
 ## Execution order
 
 1. Freeze prompts on the existing dev split; this doc's commit = preregistration.
