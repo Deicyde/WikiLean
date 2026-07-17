@@ -270,6 +270,22 @@
    "our_provenance": "Wikidata P2671 (/g/ form) + P646 (Freebase form), both CC0.",
    "target_license": "© Google (proprietary)",
    "note": "CRITICAL: the kgmid is sourced from WIKIDATA (CC0), NEVER from Google's Knowledge Graph API — Google ToS §5.e forbids building a database from that API. Link/bridge only."
+  },
+  "erdos": {
+   "name": "Erdős Problems",
+   "homepage": "https://www.erdosproblems.com",
+   "wikidata_property": null,
+   "layer": "literature",
+   "url_template": "https://www.erdosproblems.com/{id}",
+   "our_provenance": "teorth/erdosproblems data/problems.yaml (Apache-2.0) — problem ids, status, prize, OEIS + tag joins; no site prose",
+   "target_license": "erdosproblems.com content (c) Thomas Bloom — link facts + constructed titles only, no snippets",
+   "ingest": {
+    "mode": "git-yaml",
+    "bulk_path": "github.com/teorth/erdosproblems data/problems.yaml (clone/pull, no site scraping)",
+    "cadence": "weekly",
+    "snippets": false,
+    "verified": "2026-07-17"
+   }
   }
  },
  "literature_sources": {
@@ -336,8 +352,15 @@
    "homepage": "https://github.com/google-deepmind/formal-conjectures",
    "layer": "formal",
    "kind": "Open-problem frontier: formalized conjecture STATEMENTS (proof_wanted) mapped to QIDs; dashed 'shoreline' nodes on the map.",
-   "our_provenance": "catalog/ingest_formal_conjectures.py over the FC repo; 342 statements -> 114 QIDs (101 new frontier nodes). 'research solved' != proved.",
-   "target_license": "Apache-2.0"
+   "our_provenance": "brain/ingest/formal_conjectures.py over a local clone of the FC repo -> catalog/data/formal_conjectures.jsonl (every declaration: FQ name, module, category/AMS attribute, docstring, code header, erdos/wikipedia/oeis refs). build_common's formal-conjectures layer mints decl:FormalConjectures:* nodes, path:FormalConjectures/* containers, xref:erdos/oeis edges and deterministic docstring-citation joins; fuzzy concept joins arrive as fc_link proposal rows via fold_proposals.py. Supersedes catalog/ingest_formal_conjectures.py (fc_tagged.jsonl, retired with the v1 map). 'research solved' != proved.",
+   "target_license": "Apache-2.0",
+   "ingest": {
+    "mode": "git-clone",
+    "bulk_path": "github.com/google-deepmind/formal-conjectures (clone/pull at BRAIN_FC_CHECKOUT)",
+    "cadence": "weekly",
+    "snippets": true,
+    "verified": "2026-07-17"
+   }
   },
   "wikilean_tags": {
    "name": "WikiLean @[wikidata] tags",

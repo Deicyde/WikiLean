@@ -132,6 +132,25 @@ def row_key(r: dict) -> tuple:
             x.get("db"), str(x["id"]) if x.get("id") is not None else None)
 
 
+def fc_decl_names() -> set[str] | None:
+    """FQ decl names of the formal-conjectures harvest — the existence oracle
+    for fc_link rows (catalog/data/formal_conjectures.jsonl, first line _meta).
+    None when the harvest is absent (rows then reject with a clear reason)."""
+    f = CATALOG / "formal_conjectures.jsonl"
+    if not f.exists():
+        return None
+    names: set[str] = set()
+    with f.open() as fh:
+        for line in fh:
+            line = line.strip()
+            if not line:
+                continue
+            r = json.loads(line)
+            if "_meta" not in r and r.get("decl"):
+                names.add(r["decl"])
+    return names
+
+
 def known_qids() -> dict[str, dict]:
     """qid -> {label, aliases?} from the universe + extension (labels only)."""
     out: dict[str, dict] = {}
@@ -256,7 +275,8 @@ def main() -> int:
     # ---- live-fetch every not-yet-known QID ----------------------------------
     need = sorted({r["qid"] for r in rows
                    if r.get("qid") and QID_RE.match(r["qid"]) and r["qid"] not in known
-                   and rtype(r) in ("container", "discover", "replace_decl", "xref")})
+                   and rtype(r) in ("container", "discover", "replace_decl",
+                                    "xref", "fc_link")})
     fetched = fetch_entities(need) if need else {}
     print(f"fetched {len(fetched)}/{len(need)} unknown QIDs from Wikidata", file=sys.stderr)
 
@@ -281,9 +301,11 @@ def main() -> int:
         return checkout_cache[d]
 
     xref_dbs = crossref_dbs()
+    fc_names = fc_decl_names()
     containers_out: dict[tuple[str, str], dict] = {}
     discovery_out: dict[tuple[str, str], dict] = {}
     xref_out: dict[tuple[str, str, str], dict] = {}
+    fc_out: dict[tuple[str, str], dict] = {}
     overrides_out: list[dict] = []
     rejected: list[dict] = []
     disputes: list[dict] = []
@@ -310,6 +332,8 @@ def main() -> int:
                 x = r.get("xref") or {}
                 vetoed.add(("xref", r.get("qid"), x.get("db"),
                             str(x["id"]) if x.get("id") is not None else None))
+            elif t == "fc_link":
+                vetoed.add(("fc_link", r.get("qid"), r.get("decl")))
 
     for r in rows:
         t = rtype(r)
@@ -341,6 +365,10 @@ def main() -> int:
                 reject(r, "fold-check: conflicting skeptic verdicts across batches "
                           "(any-reject wins)")
                 continue
+        if t == "fc_link" and ("fc_link", r.get("qid"), r.get("decl")) in vetoed:
+            reject(r, "fold-check: conflicting skeptic verdicts across batches "
+                      "(any-reject wins)")
+            continue
         skeptic = "accept" if verdict == "accept" else "pending"
         conf = r.get("confidence") or "medium"
         if skeptic == "pending" and CONF_ORDER.get(conf, 1) > CONF_ORDER["medium"]:
@@ -474,6 +502,70 @@ def main() -> int:
             }
             continue
 
+        if t == "fc_link":
+            # fc-tagger fleet rows: join a Wikidata concept to a
+            # decl:FormalConjectures:* declaration. Existence oracle = the
+            # deterministic harvest (catalog/data/formal_conjectures.jsonl);
+            # QID checks are the same live-Wikidata machinery as discover
+            # rows. Policy mirrors xref/override for the STRONG kind:
+            # formalizes NEVER folds on a pending verdict (a wrong "exact"
+            # welds two atoms downstream); mentions folds pending at capped
+            # medium like discover rows.
+            qid, d, kind = r.get("qid"), r.get("decl"), r.get("kind")
+            if not (qid and QID_RE.match(qid)):
+                reject(r, "fold-check: bad qid")
+                continue
+            if kind not in ("formalizes", "mentions"):
+                reject(r, f"fold-check: bad fc_link kind {kind!r}")
+                continue
+            if fc_names is None:
+                reject(r, "fold-check: formal-conjectures harvest missing "
+                          "(run brain/ingest/formal_conjectures.py)")
+                continue
+            d_orig = d
+            if d and d not in fc_names:
+                # taggers sometimes drop the file's top-level namespace
+                # (erdos_1095.variants.x for Erdos1095.erdos_1095.variants.x).
+                # Complete it ONLY on a unique dotted-suffix match — exact
+                # boundary, one candidate in the 4k-name harvest; ambiguity
+                # still rejects (never the bare-suffix-guess trap).
+                cands = [n for n in fc_names if n.endswith("." + d)]
+                if len(cands) == 1:
+                    d = cands[0]
+            if not d or d not in fc_names:
+                reject(r, f"fold-check: decl not in the formal-conjectures "
+                          f"harvest: {d}")
+                continue
+            if kind == "formalizes" and skeptic == "pending":
+                reject(r, "fold-check: fc_link formalizes requires a skeptic "
+                          "verdict — left in proposals for the next skeptic pass")
+                continue
+            info = qid_info(qid)
+            if info is None or info.get("missing"):
+                reject(r, "fold-check: qid missing upstream")
+                continue
+            if not label_agrees(r, info):
+                reject(r, f"fold-check: label mismatch (upstream: {info.get('label')!r})")
+                continue
+            mk = r.get("match_kind") or "exact"
+            if kind == "formalizes" and mk != "exact":
+                reject(r, f"fold-check: fc_link formalizes must be match_kind "
+                          f"exact, got {mk!r}")
+                continue
+            evidence = {"note": r.get("evidence"), "url": r.get("url"),
+                        "wikipedia_slug": r.get("wikipedia_slug"),
+                        "file": r.get("file"), "proposer": r.get("proposer"),
+                        "skeptic": skeptic, "shard": r.get("_shard"),
+                        "decl_as_proposed": d_orig if d != d_orig else None}
+            row_out = {
+                "qid": qid, "decl": d, "kind": kind, "confidence": conf,
+                "evidence": {k: v for k, v in evidence.items() if v is not None},
+            }
+            if kind == "formalizes":
+                row_out["match_kind"] = mk
+            fc_out[(qid, d)] = row_out
+            continue
+
         reject(r, f"fold-check: unknown row type {t!r}")
 
     # ---- writes ---------------------------------------------------------------
@@ -521,6 +613,35 @@ def main() -> int:
                           "n_rows": n_xref}}
         dump(xa_path, [meta] + [merged[k] for k in sorted(merged)])
 
+    # fc links: same merge/retraction semantics as ext anchors — regenerated
+    # from all verified proposals, merged with the existing file, minus every
+    # (qid, decl) key rejected THIS fold (a refuted join must be withdrawable).
+    fc_retract: set[tuple[str, str]] = set()
+    for r in rejected:
+        if rtype(r) == "fc_link" and r.get("qid") and r.get("decl"):
+            fc_retract.add((r["qid"], r["decl"]))
+    fcl_path = DATA / "fc_links.jsonl"
+    n_fc = 0
+    if fc_out or fcl_path.exists():
+        fc_merged: dict[tuple[str, str], dict] = {}
+        if fcl_path.exists():
+            for line in fcl_path.read_text().splitlines():
+                if not line.strip():
+                    continue
+                row = json.loads(line)
+                if "_meta" in row:
+                    continue
+                if row.get("qid") and row.get("decl"):
+                    key = (row["qid"], row["decl"])
+                    if key not in fc_retract:
+                        fc_merged[key] = row
+        fc_merged.update(fc_out)
+        n_fc = len(fc_merged)
+        meta = {"_meta": {"source": "brain/fold_proposals.py",
+                          "inputs": "brain/proposals/fc_links_*.jsonl",
+                          "n_rows": n_fc}}
+        dump(fcl_path, [meta] + [fc_merged[k] for k in sorted(fc_merged)])
+
     ov_path = CATALOG / "grounding_overrides.jsonl"
     existing = set()
     if ov_path.exists():
@@ -546,7 +667,7 @@ def main() -> int:
                 have.add(json.loads(line).get("qid"))
     added_ext = 0
     accepted_qids = {k[0] for k in containers_out} | {k[0] for k in discovery_out} \
-        | {k[0] for k in xref_out}
+        | {k[0] for k in xref_out} | {k[0] for k in fc_out}
     with ext_path.open("a") as fh:
         for qid in sorted(accepted_qids):
             info = fetched.get(qid)
@@ -562,10 +683,11 @@ def main() -> int:
             added_ext += 1
 
     n_pending = sum(1 for v in list(containers_out.values()) + list(discovery_out.values())
-                    + list(xref_out.values())
+                    + list(xref_out.values()) + list(fc_out.values())
                     if (v.get("skeptic") or v["evidence"].get("skeptic")) == "pending")
     print(f"folded: {len(containers_out)} container links, {len(discovery_out)} discovery "
           f"links, {len(xref_out)} ext-anchor links ({n_xref} total in file), "
+          f"{len(fc_out)} fc links ({n_fc} total in file), "
           f"{added_ov} new overrides, {added_ext} universe-extension rows; "
           f"{n_ok} ok-confirmations; {len(rejected)} rejected; "
           f"{len(disputes)} grading disputes (review → grounding_overrides.jsonl); "
