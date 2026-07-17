@@ -43,6 +43,19 @@
     "RepresentationTheory": 1,
     "SetTheory": 1
   },
+  "determinacy_second_annotator": {
+    "determinate_both": 74,
+    "determinate_either": 95,
+    "agreement_rate": 0.79,
+    "det1_determinate": 86,
+    "det2_determinate": 83,
+    "det1_indeterminate": 14,
+    "det2_indeterminate": 17,
+    "indeterminate_both": 5,
+    "n_disagreements": 21,
+    "primary_analysis_set": 74,
+    "note": "Independent second determinacy annotation (BRIDGE-ISSUES.md #11), judged from informal_statement alone before seeing gold_formal/determinate. Verdicts stored per-row as det2/det2_reason; determinate/determinacy_reason (annotator 1) untouched. The PRIMARY analysis set is the 74 rows where BOTH annotators call the informal statement determinate. Cohen's kappa ~= 0.20 (slight-to-fair): the annotators apply different criteria more than they apply the same criterion inconsistently -- annotator 1 flags sibling near-duplicates (the informal matches several lemmas in a family), annotator 2 flags semantic underdetermination (missing domain/codomain types, garbled glosses, ambiguous quantifiers) and one byte-identical NL pair (034==036). Of 21 disagreements: 9 are det1-indeterminate/det2-determinate (annotator 1's family/near-duplicate calls), 12 are det1-determinate/det2-indeterminate (annotator 2's type/semantic calls)."
+  },
   "grading_note": "gold_formal ends `:= sorry` and is the exact Mathlib master statement. It uses standard Mathlib section-variable/open style, so it typechecks standalone only after prepending gold_context (the enclosing variable/open/universe lines, given in scope order) under gold_header; a superset header `import Mathlib` also works. Grading = BEq+/equivalence vs gold (typecheck is never success), per the design.",
-  "determinacy_note": "Determinacy is a single-annotator first-pass screen (the design calls for two independent formalizers). The determinate fraction is high because candidates were pre-filtered to docstringed, self-contained statements and bespoke-helper/unrecoverable-hypothesis decls were dropped outright rather than flagged. Flagged rows are genuine near-duplicates or informally-underdetermined variants; they are excluded from primary analysis."
+  "determinacy_note": "Determinacy is now a TWO-annotator screen (design calls for two independent formalizers). counts.determinate (86) is annotator 1's first-pass; annotator 2 is in determinacy_second_annotator (83 determinate). The determinate fraction is high because candidates were pre-filtered to docstringed, self-contained statements and bespoke-helper/unrecoverable-hypothesis decls were dropped outright rather than flagged. The design's contamination-proof primary set = the 74 rows both annotators call determinate; report the excluded fraction both ways (14% single-annotator, 26% either-annotator-excludes)."
 }
