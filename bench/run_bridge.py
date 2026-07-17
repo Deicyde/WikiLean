@@ -360,7 +360,12 @@ def main() -> int:
         return 0
 
     env = dict(os.environ)
-    env.pop("ANTHROPIC_API_KEY", None)  # Max-auth gotcha (CLAUDE.md)
+    # Max-auth gotcha (CLAUDE.md) + endpoint hygiene: a parent Claude Code session
+    # exports ANTHROPIC_BASE_URL/USE_*_OAUTH, which sends the child CLI's valid
+    # production token to the wrong endpoint (a misleading 401).
+    for k in ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "ANTHROPIC_BASE_URL",
+              "USE_STAGING_OAUTH", "USE_LOCAL_OAUTH", "CLAUDE_CODE_OAUTH_SCOPES"):
+        env.pop(k, None)
     workdir = Path(tempfile.mkdtemp(prefix="bridgebench-"))
     try:
         done: set[str] = set()
