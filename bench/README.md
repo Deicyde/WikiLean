@@ -173,3 +173,52 @@ keep the runner dumb).
 - The generation-time oracle filter drops real-but-undocumented decls the
   doc-gen4 cache misses (see `mathlib_decl_oracle_incomplete` memory) — a purity
   trade: every kept gold decl definitely exists.
+
+---
+
+# The Bridge Experiment harness (Tier 1 — see docs/research/BRIDGE-EXPERIMENT.md)
+
+The preregistered five-arm test of the informal↔formal-bridge hypothesis. The
+180-task bench above is DEMOTED to an API diagnostic (its gold derives from the
+same grounding the Brain serves — circular for hypothesis testing; see the design
+doc's threats). All end-task golds here are external.
+
+## Pieces
+
+| file | what |
+|---|---|
+| `data/bridge_tasks.jsonl` | Tier 1a: ProofNet# 371 (30 dev / 341 eval); gold NL proofs quarantined |
+| `data/fresh_tasks.jsonl` | Tier 1b: 100 post-snapshot Mathlib theorems; PRIMARY = the 74 both-determinate rows (`determinate` AND `det2`) |
+| `data/gold_census.json` / `data/fresh_census.json` | which golds elaborate on which pin — grading eligibility |
+| `arms/` | per-arm tool manifests + the B/C stdio MCP servers (`wiki_mcp.py`, `formal_mcp.py`) |
+| `run_bridge.py` | the runner: arms differ ONLY in `--mcp-config`/`--allowedTools` |
+| `run_campaign.sh dev|eval|fresh` | auth-preflighted campaign launcher (resumable) |
+| `typecheck.py` | pinned grading: single-shot or `--server` (persistent REPL) |
+| `construct.py` | THE shared code assembly (census + scorer both use it — never diverge) |
+| `score_bridge.py` | typecheck + hallucinated-decl + paired matrix + McNemar |
+| `judge_bridge.py` | dual strict/evaluated judge + `--calibration 50` (human-graded before any judge number is quoted) |
+
+## The two grading servers (pins are per-row facts)
+
+```
+# Tier 1a — wikifunctions pin (Lean v4.32.0-rc1 / Mathlib a33a5ccd):
+python3 bench/typecheck.py --server &                        # /tmp/wikilean_tc.sock
+# Tier 1b — fresh pin (v4.33.0-rc1 / 9944fe29); --repl-bin is MANDATORY:
+python3 bench/typecheck.py --server \
+  --project /Users/jack/Desktop/LEAN/bench-lean-fresh \
+  --socket /tmp/wikilean_tc_fresh.sock \
+  --repl-bin /Users/jack/Desktop/LEAN/lean-repl-fresh/.lake/build/bin/repl &
+```
+
+A toolchain-mismatched repl "loads" a bare prelude and would serve wrong answers;
+the server's post-import ℝ-sanity gate refuses READY in that state. Beware the
+router's fallback: if `BENCH_TC_SERVER` names a dead socket, checks silently fall
+back to single-shot and mass-timeout at 120s — every-row-timeout means "server
+died", not "hard statements".
+
+## Order of operations
+
+1. `bench/run_campaign.sh dev` (150-run smoke; watch per-arm `tool_calls_by_name`)
+2. `eval` then `fresh` (resumable; `--resume` after interruptions)
+3. `score_bridge.py` → `judge_bridge.py --arm A..E` → `--calibration 50` →
+   Jack hand-grades → report judge–human agreement → McNemar D-vs-E.
