@@ -176,7 +176,11 @@ def typecheck_stub(task: dict, run: dict) -> bool | None:
             _TC_ENV = _tcmod.resolve_env(Path(_tcmod.DEFAULT_PROJECT))
         tc_env = _TC_ENV
         prev = None
-    code = (task.get("gold_header") or "") + "\n" + run["output_lean"]
+    # rename the produced decl so it can never collide with an existing Mathlib
+    # name — the fresh grading env CONTAINS the gold theorems by construction
+    produced = re.sub(r"^(\s*(?:@\[[^\]]*\]\s*)*(?:private\s+|protected\s+|noncomputable\s+)*(?:theorem|lemma|def|abbrev|instance)\s+)([A-Za-z_][\w.']*)",
+                      r"\1__cand__", run["output_lean"], count=1, flags=re.M)
+    code = (task.get("gold_header") or "") + "\n" + produced
     r = _tcmod.typecheck(code, tc_env, timeout=90,
                          max_workers=_tcmod.auto_workers() if hasattr(_tcmod, "auto_workers") else 4,
                          wait_timeout=900)
