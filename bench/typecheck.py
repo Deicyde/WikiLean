@@ -60,6 +60,43 @@ Because each check writes a unique temp ``.lean`` file (``tempfile``) and reads 
 the shared, read-only Mathlib oleans, checks never interfere with one another and
 never write into the Lean project (no ``.lake`` churn).
 
+PERSISTENT-REPL MODE (``--server`` / ``BENCH_TC_SERVER``) — for ``import Mathlib``
+---------------------------------------------------------------------------------
+Single-shot is fatal for the ``import Mathlib`` everything-import (>120 s per check).
+The ProofNet# gold set (``bench/data/bridge_tasks.jsonl``) *all* import Mathlib, and a
+campaign is ~2 000 checks — impossible one-shot. So we add a long-lived server that
+loads ``import Mathlib`` ONCE (~3 min) into a `leanprover-community/repl` process and
+then elaborates each subsequent declaration against that in-memory environment in a
+few seconds:
+
+    # start the server (blocks; prints readiness after import Mathlib finishes)
+    python3 bench/typecheck.py --server               # unix socket at /tmp/wikilean_tc.sock
+
+    # any client (this same module, in-process or CLI) auto-routes to it:
+    export BENCH_TC_SERVER=/tmp/wikilean_tc.sock
+    echo 'theorem t : 1+1=2 := by norm_num' | python3 bench/typecheck.py
+
+``repl`` (checkout ``/Users/jack/Desktop/LEAN/lean-repl`` at tag v4.32.0-rc1, matching
+the pinned toolchain exactly) speaks JSON on stdin/stdout: ``{"cmd":"import Mathlib"}``
+returns an env id; ``{"cmd":<decl>,"env":<id>}`` elaborates in that env and returns
+``{"messages":[{severity,pos,data}],"sorries":[...]}``. The server wraps ONE repl
+process behind a request lock; a ``ThreadingUnixStreamServer`` lets many client
+processes submit concurrently — checks run ~sequentially (seconds each) rather than in
+parallel (minutes each). Because every check builds on the pristine ``import Mathlib``
+env (env 0, never a chain), checks are independent and can't leak decls into each other.
+
+The client seam is transparent: ``typecheck()`` (hence ``score_bridge.typecheck_stub``,
+unchanged) routes to the server when ``BENCH_TC_SERVER`` names a reachable socket, and
+**falls back to single-shot** otherwise. The output contract is byte-identical (same
+``ok/errors/warnings/elapsed_s/toolchain/mathlib_rev/lean_commit/project/timed_out``).
+Since the env already has Mathlib, the server **drops every ``import`` line** from the
+submitted code (you can't ``import`` against an existing env anyway) and elaborates the
+remainder (the ``open …`` lines + the decl) against env 0. Per-check ``--timeout`` still
+applies; a check that blows it is reported ``timed_out`` and the repl is recycled (the
+shared stream would otherwise desync) — the next check re-imports Mathlib under the lock.
+NB: a server restart re-pays the full ~3 min import (pickling the pure-imports env saves
+nothing — unpickle still re-imports), so keep the server up for the whole campaign.
+
 PINS (recorded in every response, per the preregistration)
 ----------------------------------------------------------
 ``toolchain``, ``mathlib_rev`` and ``lean_commit`` come straight from the project's
@@ -96,9 +133,15 @@ import contextlib
 import fcntl
 import json
 import os
+import re
+import select
+import signal
+import socket
+import socketserver
 import subprocess
 import sys
 import tempfile
+import threading
 import time
 from pathlib import Path
 
@@ -107,6 +150,13 @@ DEFAULT_PROJECT = os.environ.get(
 )
 HERE = Path(__file__).resolve().parent
 ENV_CACHE = HERE / ".typecheck_env.json"
+
+# Persistent-REPL server (see PERSISTENT-REPL MODE in the module docstring).
+DEFAULT_REPL_BIN = os.environ.get(
+    "BENCH_REPL_BIN", "/Users/jack/Desktop/LEAN/lean-repl/.lake/build/bin/repl"
+)
+DEFAULT_SOCKET = os.environ.get("BENCH_TC_SERVER", "/tmp/wikilean_tc.sock")
+_IMPORT_LINE_RE = re.compile(r"(?m)^[ \t]*import[ \t]+\S.*$")
 
 
 # --------------------------------------------------------------------------- env
@@ -257,15 +307,9 @@ def _diag(obj: dict) -> dict:
     }
 
 
-def typecheck(
-    code: str,
-    env: dict,
-    *,
-    timeout: float,
-    max_workers: int,
-    wait_timeout: float,
-) -> dict:
-    result = {
+def _base_result(env: dict) -> dict:
+    """The empty result skeleton — identical shape for single-shot and server."""
+    return {
         "ok": False,
         "errors": [],
         "warnings": [],
@@ -276,6 +320,91 @@ def typecheck(
         "project": env["project"],
         "timed_out": False,
     }
+
+
+def _strip_import_lines(code: str) -> str:
+    """Drop every top-level ``import`` line — server mode already has Mathlib in env,
+    and the repl forbids ``import`` against an existing env (README: "You can only use
+    import commands when you do not specify the env field")."""
+    return _IMPORT_LINE_RE.sub("", code)
+
+
+# ------------------------------------------------------------- client (server seam)
+def _server_socket_path() -> str | None:
+    """The unix socket a client should route to, or None if server mode is off.
+
+    Server mode is on when BENCH_TC_SERVER is set AND names an existing socket file.
+    (An unset/empty var, or a missing socket, means single-shot.)
+    """
+    p = os.environ.get("BENCH_TC_SERVER", "").strip()
+    if not p:
+        return None
+    return p if os.path.exists(p) else None
+
+
+def _server_typecheck(code: str, env: dict, *, timeout: float) -> dict | None:
+    """Submit one check to the persistent-REPL server. Returns the full result dict
+    (same contract), or None if the server is unreachable (caller falls back to
+    single-shot). The server itself strips imports and elaborates against env 0."""
+    sock_path = _server_socket_path()
+    if sock_path is None:
+        return None
+    req = json.dumps({"code": code, "timeout": timeout}).encode("utf-8")
+    try:
+        with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as s:
+            # Generous connect timeout; the read blocks for the check itself (which
+            # may queue behind other clients on the server's single-repl lock).
+            s.settimeout(max(30.0, timeout + 120.0))
+            s.connect(sock_path)
+            s.sendall(req)
+            s.shutdown(socket.SHUT_WR)
+            chunks = []
+            while True:
+                b = s.recv(65536)
+                if not b:
+                    break
+                chunks.append(b)
+    except (OSError, socket.timeout):
+        return None  # unreachable / hung — fall back to single-shot
+    if not chunks:
+        return None
+    try:
+        return json.loads(b"".join(chunks).decode("utf-8"))
+    except (ValueError, UnicodeDecodeError):
+        return None
+
+
+def typecheck(
+    code: str,
+    env: dict,
+    *,
+    timeout: float,
+    max_workers: int,
+    wait_timeout: float,
+) -> dict:
+    """Typecheck one declaration. Transparently routes to the persistent-REPL server
+    when ``BENCH_TC_SERVER`` names a reachable socket; otherwise single-shot. The
+    signature and returned dict are identical either way (score_bridge relies on this).
+    """
+    if _server_socket_path() is not None:
+        r = _server_typecheck(code, env, timeout=timeout)
+        if r is not None:
+            return r
+        # else: server was named but unreachable — fall through to single-shot.
+    return _single_shot_typecheck(
+        code, env, timeout=timeout, max_workers=max_workers, wait_timeout=wait_timeout
+    )
+
+
+def _single_shot_typecheck(
+    code: str,
+    env: dict,
+    *,
+    timeout: float,
+    max_workers: int,
+    wait_timeout: float,
+) -> dict:
+    result = _base_result(env)
 
     run_env = dict(os.environ)
     run_env["LEAN_PATH"] = env["lean_path"]
@@ -344,6 +473,260 @@ def typecheck(
     return result
 
 
+# -------------------------------------------------------------- persistent server
+class _ReplTimeout(Exception):
+    """The repl did not answer a command within the deadline."""
+
+
+class _ReplDead(Exception):
+    """The repl process exited / the stream desynced."""
+
+
+class ReplServer:
+    """Wraps ONE `leanprover-community/repl` process that has ``import Mathlib`` loaded,
+    and serves typecheck requests behind a single lock. Thread-safe: every check
+    acquires ``self.lock``, so concurrent client threads queue and run ~sequentially.
+
+    A pathological check that exceeds its per-call timeout recycles the repl (kill +
+    lazy re-import) so one bad statement can't wedge the campaign.
+    """
+
+    def __init__(self, env: dict, repl_bin: str):
+        self.env = env
+        self.repl_bin = repl_bin
+        self.lock = threading.Lock()
+        self.proc: subprocess.Popen | None = None
+        self.env_id: int | None = None
+        self._buf = b""
+        self.n_checks = 0
+        self.n_imports = 0
+
+    # -- low-level repl I/O (must hold self.lock) --------------------------------
+    def _spawn(self) -> None:
+        run_env = dict(os.environ)
+        run_env["LEAN_PATH"] = self.env["lean_path"]
+        run_env.pop("ANTHROPIC_API_KEY", None)  # project max-auth gotcha; harmless here
+        self.proc = subprocess.Popen(
+            [self.repl_bin],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            bufsize=0,  # unbuffered binary; we frame lines ourselves over the raw fd
+            env=run_env,
+            cwd=self.env["project"],
+        )
+        self._buf = b""
+
+    def _kill(self) -> None:
+        if self.proc is not None:
+            with contextlib.suppress(Exception):
+                self.proc.kill()
+            with contextlib.suppress(Exception):
+                self.proc.wait(timeout=10)
+        self.proc = None
+        self.env_id = None
+        self._buf = b""
+
+    def _readline(self, deadline: float) -> bytes:
+        """Read one line (sans trailing newline) from the repl, honoring a deadline."""
+        assert self.proc is not None and self.proc.stdout is not None
+        fd = self.proc.stdout.fileno()
+        while b"\n" not in self._buf:
+            remaining = deadline - time.time()
+            if remaining <= 0:
+                raise _ReplTimeout()
+            r, _, _ = select.select([fd], [], [], remaining)
+            if not r:
+                raise _ReplTimeout()
+            chunk = os.read(fd, 65536)
+            if not chunk:
+                raise _ReplDead("repl stdout closed (process died)")
+            self._buf += chunk
+        line, self._buf = self._buf.split(b"\n", 1)
+        return line
+
+    def _exchange(self, obj: dict, timeout: float) -> dict:
+        """Send one JSON command, read its response (JSON up to the blank-line
+        separator). Must hold self.lock."""
+        assert self.proc is not None and self.proc.stdin is not None
+        payload = (json.dumps(obj) + "\n\n").encode("utf-8")
+        try:
+            self.proc.stdin.write(payload)
+            self.proc.stdin.flush()
+        except (BrokenPipeError, OSError) as e:
+            raise _ReplDead(f"repl stdin write failed: {e}")
+        deadline = time.time() + timeout
+        lines: list[bytes] = []
+        while True:
+            line = self._readline(deadline)
+            if line.strip() == b"":
+                if lines:
+                    break
+                continue  # leading blank line — keep waiting for content
+            lines.append(line)
+        text = b"\n".join(lines).decode("utf-8", "replace")
+        try:
+            return json.loads(text)
+        except ValueError as e:
+            raise _ReplDead(f"unparseable repl response: {e}: {text[:400]!r}")
+
+    def _ensure_imported(self) -> None:
+        """Guarantee a live repl with ``import Mathlib`` loaded. Must hold self.lock."""
+        if self.proc is not None and self.proc.poll() is None and self.env_id is not None:
+            return
+        self._kill()
+        self._spawn()
+        t0 = time.time()
+        # The import is the slow one; give it a very generous ceiling (~10 min).
+        resp = self._exchange({"cmd": "import Mathlib"}, timeout=900.0)
+        self.env_id = resp.get("env")
+        if self.env_id is None:
+            raise _ReplDead(f"import Mathlib returned no env: {resp}")
+        self.n_imports += 1
+        dt = time.time() - t0
+        print(
+            f"[typecheck-server] import Mathlib loaded in {dt:.1f}s "
+            f"(env={self.env_id}, import #{self.n_imports})",
+            flush=True,
+        )
+
+    # -- public: one check -------------------------------------------------------
+    def check(self, code: str, timeout: float) -> dict:
+        result = _base_result(self.env)
+        stripped = _strip_import_lines(code)
+        with self.lock:
+            try:
+                self._ensure_imported()
+            except Exception as e:  # import failed — surface, don't crash the server
+                result["errors"].append(
+                    {"line": None, "col": None,
+                     "message": f"server could not import Mathlib: {e}",
+                     "kind": "server-init"}
+                )
+                self._kill()
+                return result
+            t0 = time.time()
+            try:
+                resp = self._exchange({"cmd": stripped, "env": self.env_id}, timeout)
+            except _ReplTimeout:
+                result["elapsed_s"] = round(time.time() - t0, 3)
+                result["timed_out"] = True
+                result["errors"].append(
+                    {"line": None, "col": None,
+                     "message": f"typecheck exceeded {timeout}s budget",
+                     "kind": "timeout"}
+                )
+                self._kill()  # stream is desynced; force re-import next check
+                return result
+            except _ReplDead as e:
+                result["elapsed_s"] = round(time.time() - t0, 3)
+                result["errors"].append(
+                    {"line": None, "col": None,
+                     "message": f"repl error: {e}", "kind": "repl-error"}
+                )
+                self._kill()
+                return result
+            result["elapsed_s"] = round(time.time() - t0, 3)
+            self.n_checks += 1
+
+        # Parse outside the lock. A repl Error object is {"message": ...} with no env.
+        if isinstance(resp, dict) and "env" not in resp and "message" in resp:
+            result["errors"].append(
+                {"line": None, "col": None,
+                 "message": str(resp["message"]), "kind": "repl-error"}
+            )
+        else:
+            for m in resp.get("messages", []) or []:
+                pos = m.get("pos") or {}
+                diag = {
+                    "line": pos.get("line"),
+                    "col": pos.get("column"),
+                    "message": m.get("data", ""),
+                    "kind": "",
+                }
+                sev = m.get("severity")
+                if sev == "error":
+                    result["errors"].append(diag)
+                elif sev == "warning":
+                    result["warnings"].append(diag)
+                # info/trace ignored (matches single-shot)
+        result["ok"] = not result["errors"] and not result["timed_out"]
+        return result
+
+
+def run_server(env: dict, socket_path: str, repl_bin: str) -> int:
+    """Start the persistent-REPL server: import Mathlib once, then serve checks over a
+    unix socket until SIGINT/SIGTERM. Blocks."""
+    if not Path(repl_bin).exists():
+        raise SystemExit(
+            f"[typecheck-server] repl binary not found: {repl_bin}\n"
+            f"  Build it: cd /Users/jack/Desktop/LEAN/lean-repl && lake build repl\n"
+            f"  or set $BENCH_REPL_BIN."
+        )
+    with contextlib.suppress(FileNotFoundError):
+        os.unlink(socket_path)  # clear a stale socket from a prior run
+
+    backend = ReplServer(env, repl_bin)
+    # Warm it now, so the socket only appears once checks can actually be served.
+    print(f"[typecheck-server] importing Mathlib (one-time, ~3 min) …", flush=True)
+    with backend.lock:
+        backend._ensure_imported()
+
+    class Handler(socketserver.BaseRequestHandler):
+        def handle(self):
+            chunks = []
+            while True:
+                b = self.request.recv(65536)
+                if not b:
+                    break
+                chunks.append(b)
+            try:
+                req = json.loads(b"".join(chunks).decode("utf-8"))
+            except Exception:
+                self.request.sendall(b'{"error":"bad request"}')
+                return
+            if req.get("ping"):
+                self.request.sendall(json.dumps({
+                    "ok": True, "n_checks": backend.n_checks,
+                    "n_imports": backend.n_imports, "toolchain": env["toolchain"],
+                    "mathlib_rev": env["mathlib_rev"],
+                }).encode("utf-8"))
+                return
+            code = req.get("code", "")
+            timeout = float(req.get("timeout", 90.0))
+            result = backend.check(code, timeout)
+            self.request.sendall(json.dumps(result).encode("utf-8"))
+
+    class Server(socketserver.ThreadingUnixStreamServer):
+        daemon_threads = True
+        allow_reuse_address = True
+
+    srv = Server(socket_path, Handler)
+
+    def _shutdown(signum, frame):
+        print(f"\n[typecheck-server] signal {signum} — shutting down "
+              f"({backend.n_checks} checks served)", flush=True)
+        threading.Thread(target=srv.shutdown, daemon=True).start()
+
+    signal.signal(signal.SIGINT, _shutdown)
+    signal.signal(signal.SIGTERM, _shutdown)
+
+    print(
+        f"[typecheck-server] READY on {socket_path}\n"
+        f"  toolchain={env['toolchain']}  mathlib_rev={env['mathlib_rev'][:12]}\n"
+        f"  clients: export BENCH_TC_SERVER={socket_path}",
+        flush=True,
+    )
+    try:
+        srv.serve_forever()
+    finally:
+        srv.server_close()
+        backend._kill()
+        with contextlib.suppress(FileNotFoundError):
+            os.unlink(socket_path)
+    return 0
+
+
 # ------------------------------------------------------------------------- cli
 def _gather_code(args) -> str:
     if args.code is not None:
@@ -390,6 +773,18 @@ def main() -> int:
     ap.add_argument(
         "--print-env", action="store_true", help="print resolved env cache and exit"
     )
+    ap.add_argument(
+        "--server", action="store_true",
+        help="run the persistent-REPL server (import Mathlib once, serve over a socket)",
+    )
+    ap.add_argument(
+        "--socket", default=DEFAULT_SOCKET,
+        help=f"unix socket path for --server / clients (default {DEFAULT_SOCKET})",
+    )
+    ap.add_argument(
+        "--repl-bin", default=DEFAULT_REPL_BIN,
+        help=f"leanprover-community/repl binary (default {DEFAULT_REPL_BIN})",
+    )
     args = ap.parse_args()
 
     env = resolve_env(Path(args.project).resolve(), refresh=args.refresh_env)
@@ -397,6 +792,11 @@ def main() -> int:
     if args.print_env:
         print(json.dumps(env, indent=2))
         return 0
+
+    if args.server:
+        # Note: as the server, we do NOT read BENCH_TC_SERVER as a client would — the
+        # --socket path is where we LISTEN. (BENCH_TC_SERVER is for clients.)
+        return run_server(env, args.socket, args.repl_bin)
 
     code = _gather_code(args)
     if not code.strip():
