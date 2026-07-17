@@ -42,7 +42,7 @@ else
 fi
 for arm in A B C D E; do
   echo; echo "=== arm $arm ==="
-  python3 bench/run_bridge.py --arm "$arm" "${EXTRA[@]}" \
+  python3 bench/run_bridge.py --arm "$arm" "${EXTRA[@]}" --resume \
     --model "$MODEL" --concurrency "$CONC" || echo "(arm $arm exited $? — resumable, continuing)"
 done
 
