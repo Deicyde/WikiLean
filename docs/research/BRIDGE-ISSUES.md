@@ -61,6 +61,9 @@ review: `cd wiki && npx wrangler versions upload`, then `npx wrangler versions
 deploy` (or `npm run deploy`). After deploy, arm D could target production and
 `WIKIBRAIN_MCP_URL` becomes unnecessary. Reminder: nightly deploy stays gated
 (`WIKILEAN_BRAIN_DEPLOY=1` + clean tree + main branch).
+Review-pass addendum (post-faf142d): the branch now also carries the FC/Erdős
+ingest campaign (issue 8), including **7 grading disputes in
+`catalog/data/grounding_overrides.jsonl` that need Jack's call**.
 
 ### 5. ~~Codify the gold-census construction as ONE shared helper~~ DONE
 `bench/construct.py`: `assemble_gold` / `prepare_candidate` / `rename_last_decl`
@@ -85,11 +88,16 @@ config LOWERED premise Recall@10 0.224→0.165). Tier 2 (FATE-H/MathlibMPR provi
 is expected to expose this; pre-registered as an API finding. Needs a premise-level
 index (decl-to-decl usage stats exist in rollup_edges + synapse witnesses).
 
-### 8. Ingest formal-conjectures + erdosproblems.com (Tier 3 prerequisite)
-Already chipped as a spawn-task (task_b560333b) with a full brief: adapters →
-`decl:FormalConjectures:*` atoms joined via the teorth/erdosproblems YAML →
-source_registry licences → nightly cadence. Tier 3a (offline re-formalization of
-150 accepted Erdős statements) reuses the bridge grading rig once this lands.
+### 8. ~~Ingest formal-conjectures + erdosproblems.com~~ DONE (merged faf142d)
+The spawned agent (task_b560333b) delivered the full campaign: deterministic
+adapters (`brain/ingest/formal_conjectures.py` + `erdosproblems.py`, weekly
+nightly cadence, source_registry licences), 1,217 FC decls + 1,217 Erdős ext
+pages, and a 100-agent tagging fleet (829/829 files, every shard
+skeptic-verified) folding 2,115 joins (148 `formalizes`) via a new validated
+`fc_link` row type in fold_proposals.py. Acceptance P11 (Erdős round-trip)
+green in the canonical tree: 16/16 + 36/36 + 33/33. Tier 3a now has its corpus.
+**NEW for Jack: 7 grading disputes routed to `catalog/data/grounding_overrides.jsonl`
+await review** (see issue 4's review pass).
 
 ### 9. BEq+ equivalence grading
 This campaign grades typecheck + judge + hallucinated-decl rate. The preregistered
@@ -132,10 +140,13 @@ without workerd. Retest after a wrangler upgrade; if fixed, arm D can use it.
 Stale gitignored fixtures (memory: wikilean_golden_fixtures). Regenerate site/out
 via render.py per slug, or re-bless. It pollutes every `npm test` reading.
 
-## Numbers at handoff (2026-07-17, HEAD ec2a9e1, ~48 commits ahead of main)
+## Numbers at handoff (2026-07-17, HEAD faf142d, ~55 commits ahead of main)
 - Tier 1a: 371 tasks, 370 typecheck-gradable (gold_census ok=407/bad=64 — the 64
   are fresh rows counted vs the OLD pin; they grade 100/100 on the fresh pin).
 - Tier 1b: 100 tasks, PRIMARY = 74 both-determinate (determinate AND det2).
+- Tier 3a corpus (merged faf142d): 1,217 FC decls + 1,217 Erdős pages in the
+  brain; 2,115 verified joins; brain = 78,437 nodes / 772,782 edges; full chain
+  re-verified in the canonical tree (16/16 + 36/36 + 33/33, shards + page rebuilt).
 - Campaign: `bench/run_campaign.sh dev` → `eval` → `fresh`, then score_bridge →
   judge_bridge → `--calibration 50` → Jack hand-grades → McNemar D-vs-E.
 - Uncommitted tree at handoff: clean (check `git status` first regardless).
