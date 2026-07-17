@@ -140,6 +140,19 @@ def extract_cited(lean: str | None) -> list[str]:
 # Each returns None ("not available"); `success` folds them in when they don't. #
 # --------------------------------------------------------------------------- #
 _TC_ENV = None
+_FRESH_SOCK = "/tmp/wikilean_tc_fresh.sock"
+_FRESH_PROJECT = "/Users/jack/Desktop/LEAN/bench-lean-fresh"
+_TC_ENV_FRESH = None
+
+def _route_for(task_id: str) -> tuple[str | None, str | None]:
+    """Fresh-set rows grade on the fresh pin (theorems NEWER than the Tier-1a pin
+    — that is the held-out design, docs/research/BRIDGE-EXPERIMENT.md deviations).
+    Everything else grades on the default env/server."""
+    import os
+    if task_id.startswith("fresh_") and os.path.exists(_FRESH_SOCK):
+        return _FRESH_SOCK, _FRESH_PROJECT
+    return None, None
+
 def typecheck_stub(task: dict, run: dict) -> bool | None:
     """Wired to the sibling rig (bench/typecheck.py): compile gold_header +
     output_lean against the pinned toolchain. `sorry` is a warning, not an error,
@@ -149,12 +162,29 @@ def typecheck_stub(task: dict, run: dict) -> bool | None:
     if not run.get("output_lean"):
         return None
     import typecheck as _tcmod
-    if _TC_ENV is None:
-        _TC_ENV = _tcmod.resolve_env(Path(_tcmod.DEFAULT_PROJECT))
+    import os
+    sock, project = _route_for(task.get("id") or run.get("task_id") or "")
+    global _TC_ENV_FRESH
+    if sock:
+        if _TC_ENV_FRESH is None:
+            _TC_ENV_FRESH = _tcmod.resolve_env(Path(project))
+        tc_env = _TC_ENV_FRESH
+        prev = os.environ.get("BENCH_TC_SERVER")
+        os.environ["BENCH_TC_SERVER"] = sock
+    else:
+        if _TC_ENV is None:
+            _TC_ENV = _tcmod.resolve_env(Path(_tcmod.DEFAULT_PROJECT))
+        tc_env = _TC_ENV
+        prev = None
     code = (task.get("gold_header") or "") + "\n" + run["output_lean"]
-    r = _tcmod.typecheck(code, _TC_ENV, timeout=90,
+    r = _tcmod.typecheck(code, tc_env, timeout=90,
                          max_workers=_tcmod.auto_workers() if hasattr(_tcmod, "auto_workers") else 4,
                          wait_timeout=900)
+    if sock:
+        if prev is None:
+            os.environ.pop("BENCH_TC_SERVER", None)
+        else:
+            os.environ["BENCH_TC_SERVER"] = prev
     run["_typecheck"] = {k: r[k] for k in ("ok", "elapsed_s", "timed_out")}
     run["_typecheck"]["errors"] = [e.get("message", "")[:200] for e in r.get("errors", [])][:4]
     return bool(r["ok"])
