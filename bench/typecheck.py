@@ -584,9 +584,23 @@ class ReplServer:
             raise _ReplDead(f"import Mathlib returned no env: {resp}")
         self.n_imports += 1
         dt = time.time() - t0
+        # A failed import can still "succeed" as a bare-prelude env (seen live: a
+        # stale env cache pointed the repl at no Mathlib, the import "loaded" in
+        # 0.6s, and the server served wrong answers behind a READY banner). Prove
+        # env 0 actually holds Mathlib before accepting it: ℝ must elaborate.
+        sanity = self._exchange(
+            {"cmd": "theorem __tc_sanity : (1:ℝ) + 1 = 2 := sorry", "env": self.env_id},
+            timeout=120.0,
+        )
+        errs = [m for m in sanity.get("messages", []) if m.get("severity") == "error"]
+        if errs:
+            raise _ReplDead(
+                "import Mathlib produced an env that cannot elaborate ℝ — stale "
+                f"LEAN_PATH/env cache? Re-run with --refresh-env. ({errs[0].get('data', '')[:120]})"
+            )
         print(
             f"[typecheck-server] import Mathlib loaded in {dt:.1f}s "
-            f"(env={self.env_id}, import #{self.n_imports})",
+            f"(env={self.env_id}, import #{self.n_imports}, sanity ok)",
             flush=True,
         )
 
