@@ -195,22 +195,35 @@ curl 'https://wikilean.jackmccarthy.org/api/brain/transfer?q=abelian%20group&dir
 
 ```jsonc
 { "ok": true, "id": "cell:Q181296", "kind": "cell", "label": "Abelian group",
-  "resolved_from": "search",
+  "resolved_from": "search", "match": "exact",
+  "confidence_floor": "a hit clears the floor when the atom resolved by IDENTITY …",
   "hits": [ {
     "decl": "CommGroup",
     "module": "Mathlib.Algebra.Group.Defs",
+    "import_line": "import Mathlib.Algebra.Group.Defs",
     "bond": "exact",
     "decl_kind": "class",
+    "code": "class CommGroup (G : Type u) extends Group G, CommMonoid G",
     "docs_url": "https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Defs.html#CommGroup",
     "via_cell": "cell:Q181296",
     "cell_label": "Abelian group"
   } ] }
 ```
 
-Hits rank `exact` bonds first, then any other graded bond, then an ungraded one
-(the anchor decl of a lone-particle cell carries no bond), then name. When a
-decl's module is unknown, `docs_url` falls back to the durable
+Every decl hit carries `module`, `import_line` (`"import " + module`) and the
+statement `code` when the shard has it — existence plus a name is not enough to
+write compiling code. Hits rank `exact` bonds first, then any other graded bond,
+then an ungraded one (the anchor decl of a lone-particle cell), then name. When
+a decl's module is unknown, `docs_url` falls back to the durable
 `https://wikilean.jackmccarthy.org/decl/<name>` resolver (302 → current docs).
+
+`match` classifies the answer and `confidence_floor` states the rule in the
+response itself: `exact` · `generalization`/`special_case` (the query resolved
+through a non-exact concept — a `note` explains, e.g. "Module generalizes Vector
+space") · `field` (a supercell answer) · `none`. **Honest abstention**: a fuzzy
+free-text match whose best bond is weaker than `exact` does not clear the floor —
+the response returns `match: "none"` with `nearest` (top 3, each with a `why`)
+instead of a forced weak grounding.
 
 A **field-of-study concept resolves to a supercell**, and that is the honest
 answer rather than an empty result: `hits: []` plus `kind: "supercell"`,
@@ -239,15 +252,28 @@ unformalized. A decl whose atom holds no concept organ is a *formal-only cell*
 (5,082 of these ship), which the `note` says explicitly. `limit` defaults to 10,
 caps at 50.
 
-### `GET /api/brain/neighborhood?id=&kinds=&limit=&traces=`
+### `GET /api/brain/neighborhood?id=&kinds=&limit=&traces=&min_w=&cursor=&min_conf=`
 
 An atom's **synapses** — one aggregated row per partner atom, not raw edges.
 Accepts any organ id. `kinds` = CSV subset of the synapse kinds above (it
 filters the traces too, so asking for `depends` never dumps `links`);
 `limit` ≤ 200 (default 50); `traces=0` omits traces for a compact partner list.
 
-**There is no `dir`.** A synapse is an undirected aggregate of bonds that may
-run either way; direction lives on each trace.
+Rows come in a **stable `(-w, id)` order** so a long-running agent can walk a
+chain across turns:
+
+- `cursor` — an **opaque** token; pass the previous response's `next_cursor`
+  back to resume. `next_cursor` is present only while filtered rows remain.
+- `min_w` — floor the synapse weight.
+- `min_conf` — drop traces whose `evidence.confidence` is below the floor
+  (traces with no confidence are KEPT, and the number dropped is reported in
+  `traces_conf_filtered`; shipped traces carry no confidence, so this is inert
+  on prod but correct where present).
+
+The shard cap stays the only HARD stop and is always declared in
+`withheld_by_shard` — cursoring never silently caps. **There is no `dir`**: a
+synapse is an undirected aggregate of bonds that may run either way; direction
+lives on each trace.
 
 ```bash
 curl 'https://wikilean.jackmccarthy.org/api/brain/neighborhood?id=Q18848&kinds=depends'
@@ -351,6 +377,80 @@ AND their organ labels (so "linear algebra" finds `path:Mathlib/LinearAlgebra`).
 curl 'https://wikilean.jackmccarthy.org/api/brain/search?q=vector%20space'
 ```
 
+### `GET /api/brain/decl?name=` · `?names=<comma-separated>`
+
+Verify decl names against the doc-gen4 oracle. `name` is the single form;
+`names` (comma-separated, cap 16) is the batch — a drafted statement's 3–8
+citations verify in one round trip. Each verdict:
+
+```jsonc
+// GET /api/brain/decl?names=Basis,Module.Basis,AddCircle.fourierCoeff,NotARealName
+{ "ok": true,
+  "results": [
+    { "decl": "Basis", "exists": false, "renamed_to": "Module.Basis",
+      "suggestion_basis": "verified-rename", "module": "Mathlib.LinearAlgebra.Basis.Defs",
+      "import_line": "import Mathlib.LinearAlgebra.Basis.Defs", "docs_url": "…" },
+    { "decl": "Module.Basis", "exists": true, "library": "mathlib",
+      "module": "Mathlib.LinearAlgebra.Basis.Defs", "import_line": "…", "docs_url": "…" },
+    { "decl": "AddCircle.fourierCoeff", "exists": false, "renamed_to": "fourierCoeff",
+      "suggestion_basis": "verified-rename", "module": "Mathlib.Analysis.Fourier.AddCircle", … },
+    { "decl": "NotARealName", "exists": false, "hint": "…" }
+  ],
+  "counts": { "total": 4, "exists": 1, "renamed": 2, "missing": 1 } }
+```
+
+A dead name returns a **labelled** suggestion, never a fact:
+`suggestion_basis: "verified-rename"` (the agent-and-adversary-verified
+`decl_renames.jsonl`, read off the owning cell's decl organ) or
+`"unique-suffix-match"` (exactly one decl in the brain's decl-organ index shares
+the last segment, then verified to exist against the oracle). Two or more
+suffix candidates ⇒ no suggestion (never force one).
+
+### `GET /api/brain/bridge?q=<informal statement>&limit=`
+
+The composite **first call of an autoformalization loop**: search → resolve to
+atoms → rank decl organs across the top atoms → verify existence → attach
+signature / `import_line` / `bond` / breadcrumb → one-hop `depends`. `limit` ≤ 16
+(default 8).
+
+```bash
+curl 'https://wikilean.jackmccarthy.org/api/brain/bridge?q=every%20finitely%20generated%20vector%20space%20has%20a%20basis'
+```
+
+```jsonc
+{ "ok": true, "q": "every finitely generated vector space has a basis",
+  "match": "exact", "confidence_floor": "…",
+  "atoms": [ { "id": "cell:Q18848", "label": "Module (mathematics)", "resolved_from": "statement", "breadcrumb": […] }, … ],
+  "hits": [
+    { "decl": "Basis", "exists": false, "module": "Mathlib.LinearAlgebra.Basis.Defs",
+      "import_line": "…", "bond": "exact", "code": "structure Basis where",
+      "via_cell": "cell:Q189569", "breadcrumb": […],
+      "renamed_to": "Module.Basis", "suggestion_basis": "verified-rename", "suggested_import_line": "…" },
+    { "decl": "Module", "exists": true, "module": "Mathlib.Algebra.Module.Defs", "import_line": "…", "bond": "exact", … }
+  ],
+  "depends": { "partners": [ { "id": "cell:Q1000660", "label": "Algebra over a field", "w": 15 }, … ],
+               "returned": 12, "total": 155, "withheld_by_shard": 557, "truncated": true },
+  "next_tools": [ "brain_cell <via_cell> — …", "decl_exists {names:[…]} — …", … ] }
+```
+
+It resolves a full statement two ways — labels that CONTAIN the query (short
+concept queries) and atoms whose label appears IN the query (statement queries,
+word-bounded and length-floored) — then ranks decl organs `exact`-first across
+the top three atoms. Every hit is **existence-verified** against the decl-index
+oracle; a dead cited name gets the same labelled `renamed_to` suggestion
+`decl_exists` serves. Honest abstention applies: nothing clearing the floor ⇒
+`match: "none"` with `nearest`. Statement-level embedding transfer stays deferred
+(a slogan compresses away hypotheses), so this ranks by concept labels/aliases.
+
+### Snapshot echo
+
+**Every** API/MCP response carries `snapshot: {generated_at, pin}` — the brain
+build time (`cells/manifest.json` `_meta.generated_at`) and the Mathlib rev the
+decl organs were built against (the commit-shaped `pin` off the manifest's
+`prov` table, e.g. `"bf3266149cda603f"`). A held-out evaluation is dishonest
+without it. `snapshot: null` when the manifest is unavailable. `?rev=`
+time-travel over archived snapshots comes later.
+
 ### Related routes
 
 - `GET /api/brain/edges?id=` — the LIVE community-edit overlay (D1-backed,
@@ -380,31 +480,47 @@ the text is exactly the corresponding REST response body.
 
 | tool | arguments | REST twin |
 |---|---|---|
+| `brain_bridge` | `q` (req), `limit?` | `/api/brain/bridge` |
 | `brain_search` | `q` (req), `type?`, `limit?` | `/api/brain/search` |
 | `brain_cell` | `key` (req) | `/api/brain/cell` |
 | `brain_transfer` | `q`, `direction` (req), `limit?` | `/api/brain/transfer` |
-| `brain_neighborhood` | `id` (req), `kinds?`, `traces?`, `limit?` | `/api/brain/neighborhood` |
+| `brain_neighborhood` | `id` (req), `kinds?`, `traces?`, `limit?`, `min_w?`, `cursor?`, `min_conf?` | `/api/brain/neighborhood` |
 | `brain_snippets` | `id` (req) | `/api/brain/snippets` |
 | `brain_filter` | `f` (req), `type?`, `under?`, `limit?`, `cursor?` | `/api/brain/filter` |
-| `decl_exists` | `name` (req) | (decl-index oracle; see below) |
+| `decl_exists` | `name` OR `names` (array, cap 16) | `/api/brain/decl` |
 
-**Seven tools, down from eight**: `brain_cell` replaces `brain_node` +
-`brain_unit`. v3 has no particle nodes, and the unit card became the cell card,
-so the two collapsed into one. `brain_unit` and `brain_node` remain as
-**dispatch-only aliases** — not advertised in `tools/list`, but still answering
-(with the atom) so an agent session holding the old catalog does not hard-fail.
-Both accept either `key` or `id`, since the two tools disagreed on the name.
+**Eight tools**: `brain_bridge` is the composite first call of an
+autoformalization loop (below); `brain_cell` replaces `brain_node` +
+`brain_unit` (v3 has no particle nodes, and the unit card became the cell card).
+`brain_unit` and `brain_node` remain as **dispatch-only aliases** — not
+advertised in `tools/list`, but still answering (with the atom) so an agent
+session holding the old catalog does not hard-fail. Both accept either `key` or
+`id`, since the two tools disagreed on the name.
 
-`decl_exists` verifies a fully-qualified Lean decl name against the same
-doc-gen4 declaration index `GET /decl/<name>` resolves with, returning
-`{exists, module?, docs_url?}`. Agents should call it before citing any decl
-name — hallucinated/renamed names (`Basis` → `Module.Basis`) are the #1
-failure mode.
+`decl_exists` verifies fully-qualified Lean decl names against the same doc-gen4
+declaration index `GET /decl/<name>` resolves with. Pass `name` (one) or `names`
+(a batch, cap 16 — a drafted statement's 3–8 citations verify in one round
+trip). Each verdict is `{exists, module?, import_line?, docs_url?}`; a DEAD name
+also returns a labelled suggestion — `suggestion_basis: "verified-rename"` (the
+verified rename map, e.g. `Basis` → `Module.Basis`) or `"unique-suffix-match"`
+(one indexed decl shares the last segment; verified against the oracle before
+suggesting) — **never presented as fact**. The batch response adds a `counts`
+summary. Hallucinated/renamed names are the #1 failure mode.
 
-A typical mid-proof loop: `brain_search` (text → atom ids) → `brain_cell` (one
-identity, everything known, one request) → `brain_transfer` (jump directions) →
-`decl_exists` (verify before citing) → `brain_neighborhood(kinds=depends)`
-(walk formal dependencies through synapses and read the traces).
+**THE CANONICAL LOOP** (autoformalization): `brain_bridge` (informal statement →
+existence-verified decls with signatures + one-hop depends — the FIRST call) →
+`brain_cell` (the full atom for the winner) → `decl_exists` (batch: re-verify
+every name you write) → `brain_neighborhood(kinds=depends)` (walk the dependency
+chain across turns — it is cursored). `brain_search`/`brain_transfer` are the
+lower-level jumps `brain_bridge` composes.
+
+**Honest abstention**: `brain_bridge` and `brain_transfer` (informal→formal)
+carry a `match` and a `confidence_floor`; a fuzzy match that does not clear the
+floor returns `match: "none"` with `nearest` candidates rather than a forced
+weak grounding — a forced match is what CREATES hallucinated citations. When the
+query resolves through a generalization/special_case concept (Vector space →
+`Module`, which is exact for the atom but a generalization of the query), a
+top-level `note` says so.
 
 ## Rate limits & caching
 

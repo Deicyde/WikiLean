@@ -17,6 +17,8 @@ export const ABELIAN_CELL = "cell:Q181296"; // concept ∘ decl ∘ pages ∘ ar
 export const MODULE_CELL = "cell:Q18848"; // the C1 atom: Module + Vector space are ONE
 export const EMPTY_CELL = "cell:Q555000"; // concept organ only — no formalization
 export const DECL_CELL = "cell:decl:Mathlib:Finset.sum_comm"; // lone-particle decl cell
+export const BASIS_CELL = "cell:Q189569"; // decl organ carries a verified `renamed_to`
+export const FOURIER_DEAD_CELL = "cell:decl:Mathlib:AddCircle.fourierCoeff"; // dead-name decl cell
 export const LINALG_SUPER = "path:Mathlib/LinearAlgebra"; // owns the rule-5 field concept
 export const ALGEBRA_SUPER = "path:Mathlib/Algebra";
 
@@ -54,12 +56,21 @@ export const DEFAULT_ALIASES = {
     [LIT_STMT]: MODULE_CELL,
     [EMPTY_Q]: EMPTY_CELL,
     "decl:Mathlib:Finset.sum_comm": DECL_CELL,
+    // the dead cited name `Basis` and its current form `Module.Basis` are both
+    // organs of the same atom; the dead one carries `renamed_to`
+    "Q189569": BASIS_CELL,
+    "decl:Mathlib:Basis": BASIS_CELL,
+    "decl:Mathlib:Module.Basis": BASIS_CELL,
+    "decl:Mathlib:AddCircle.fourierCoeff": FOURIER_DEAD_CELL,
     [FIELD_Q]: LINALG_SUPER, // rule 5: a field concept is a SUPERCELL organ, never a cell
   },
   decls: {
     CommGroup: ABELIAN_CELL,
     Module: MODULE_CELL,
     "Finset.sum_comm": DECL_CELL,
+    Basis: BASIS_CELL,
+    "Module.Basis": BASIS_CELL,
+    "AddCircle.fourierCoeff": FOURIER_DEAD_CELL,
   },
   slugs: {
     Abelian_group: ABELIAN_CELL,
@@ -85,13 +96,24 @@ export const LABELS = [
   { id: DECL_CELL, label: "Finset.sum_comm", f: 16, p: "path:Mathlib/Algebra/BigOperators" },
 ];
 
+// The doc-gen4 decl-index oracle. `Basis` and `AddCircle.fourierCoeff` are
+// DELIBERATELY ABSENT (their prefixes `ba`/`ad` are not shards) — they are dead
+// names whose current forms `Module.Basis` / `fourierCoeff` DO resolve, so a
+// batch decl_exists can serve a verified rename. `Finset.sum_comm` is present so
+// a unique-suffix candidate can be verified against the oracle. Pairs stay sorted
+// (lookupInShard binary-searches).
 const DECL_MANIFEST = {
   scheme: { min_len: 2, max_len: 2, pad: "_" },
-  shards: { co: 1, mo: 1 } as Record<string, number>,
+  shards: { co: 1, mo: 2, fi: 1, fo: 1 } as Record<string, number>,
 };
 const DECL_SHARDS: Record<string, Array<[string, string]>> = {
   co: [["CommGroup", "Mathlib.Algebra.Group.Defs"]],
-  mo: [["Module", "Mathlib.Algebra.Module.Defs"]],
+  mo: [
+    ["Module", "Mathlib.Algebra.Module.Defs"],
+    ["Module.Basis", "Mathlib.LinearAlgebra.Basis.Defs"],
+  ],
+  fi: [["Finset.sum_comm", "Mathlib.Algebra.BigOperators.Basic"]],
+  fo: [["fourierCoeff", "Mathlib.Analysis.Fourier.AddCircle"]],
 };
 
 // supercells.json. Note LINALG_SUPER carries the field concept Q82571 as an
@@ -281,7 +303,12 @@ function fixtureCells(): Record<string, CellSpec> {
             { kind: "invocation", src: MODULE_Q, dst: FIELD_Q, prov: 0, evidence: { property: "P361" } },
           ],
         },
-        { id: EMPTY_CELL, w: 2, kinds: { links: 2 }, traces: [{ kind: "links", src: MODULE_Q, dst: EMPTY_Q, prov: 0 }] },
+        {
+          id: EMPTY_CELL, w: 2, kinds: { links: 2 },
+          // this trace carries an explicit low confidence — the only shipped-shape
+          // trace that does — so min_conf trace filtering (item 5) is exercisable
+          traces: [{ kind: "links", src: MODULE_Q, dst: EMPTY_Q, prov: 0, evidence: { confidence: 0.4 } }],
+        },
       ],
       truncated: { syn: 3 }, // 3 more synapses exist than the shard carries
       synTotal: 6,
@@ -310,6 +337,49 @@ function fixtureCells(): Record<string, CellSpec> {
           kind: "decl", id: "decl:Mathlib:Finset.sum_comm", label: "Finset.sum_comm",
           module: "Mathlib.Algebra.BigOperators.Basic", decl_kind: "theorem", library: "Mathlib",
           docstring: "Sums over a product commute.",
+        },
+      ],
+    },
+    // The `Basis` → `Module.Basis` rename, exactly as the shipped cell:Q189569
+    // carries it: the dead-name decl organ holds `renamed_to`, and the current
+    // name is a second decl organ of the SAME atom. Not in LABELS/SUPERCELLS —
+    // it exists only to exercise batch decl_exists' rename resolution.
+    [BASIS_CELL]: {
+      cell: {
+        id: BASIS_CELL, anchor: "Q189569", label: "Basis (linear algebra)",
+        supercells: ["path:Mathlib/LinearAlgebra/Basis/Defs"], f: 20, xy: [43.8, -1.2],
+      },
+      organs: [
+        {
+          kind: "concept", id: "Q189569", label: "Basis (linear algebra)", bond: "exact", prov: 0,
+          description: "set of vectors that spans a space and is linearly independent",
+          slug: "Basis_(linear_algebra)", status: "formalized",
+        },
+        {
+          kind: "decl", id: "decl:Mathlib:Basis", label: "Basis", bond: "exact", prov: 1,
+          module: "Mathlib.LinearAlgebra.Basis.Defs", library: "Mathlib",
+          code: "structure Basis where", renamed_to: "Module.Basis",
+        },
+        {
+          kind: "decl", id: "decl:Mathlib:Module.Basis", label: "Module.Basis", bond: "exact", prov: 1,
+          module: "Mathlib.LinearAlgebra.Basis.Defs", decl_kind: "struct", library: "Mathlib",
+          code: "structure Basis where",
+        },
+      ],
+    },
+    // A dead-name lone-particle decl cell (cell:decl:Mathlib:AddCircle.fourierCoeff
+    // in the shipped build): the organ's `renamed_to` points at the current bare
+    // `fourierCoeff`, which lives on a DIFFERENT atom.
+    [FOURIER_DEAD_CELL]: {
+      cell: {
+        id: FOURIER_DEAD_CELL, anchor: "decl:Mathlib:AddCircle.fourierCoeff", label: "AddCircle.fourierCoeff",
+        supercells: ["path:Mathlib/Analysis/Fourier/AddCircle"], xy: [1.0, 2.0],
+      },
+      organs: [
+        {
+          kind: "decl", id: "decl:Mathlib:AddCircle.fourierCoeff", label: "AddCircle.fourierCoeff",
+          bond: "exact", prov: 1, module: "Mathlib.Analysis.Fourier.AddCircle", library: "Mathlib",
+          code: "def fourierCoeff (f : AddCircle T → E) (n : ℤ) : E :=", renamed_to: "fourierCoeff",
         },
       ],
     },

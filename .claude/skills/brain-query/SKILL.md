@@ -117,11 +117,26 @@ adversarially reviewed — treat as candidate-quality.
 - `GET https://wikilean.jackmccarthy.org/api/brain/cell?key=<any organ id>`,
   `/api/brain/search?q=…&type=cell|supercell`,
   `/api/brain/transfer?q=…&direction=informal_to_formal|formal_to_informal`,
-  `/api/brain/neighborhood?id=…&kinds=…&traces=`, `/api/brain/snippets?id=…`,
-  `/api/brain/filter?f=<mask>&type=&under=` — full reference:
-  `docs/BRAIN-API.md` or https://wikilean.jackmccarthy.org/brain/api
+  `/api/brain/neighborhood?id=…&kinds=…&traces=&min_w=&cursor=&min_conf=`,
+  `/api/brain/snippets?id=…`, `/api/brain/filter?f=<mask>&type=&under=`,
+  `/api/brain/decl?name=|names=<csv,cap 16>`,
+  `/api/brain/bridge?q=<informal statement>` — full reference: `docs/BRAIN-API.md`
+  or https://wikilean.jackmccarthy.org/brain/api
 - Remote MCP for any agent:
   `claude mcp add --transport http wikibrain https://wikilean.jackmccarthy.org/mcp`
-  (tools: brain_search, brain_cell, brain_transfer, brain_neighborhood,
-  brain_snippets, brain_filter, decl_exists — `brain_unit`/`brain_node` still
-  answer as aliases of `brain_cell`).
+  (tools: brain_bridge, brain_search, brain_cell, brain_transfer,
+  brain_neighborhood, brain_snippets, brain_filter, decl_exists —
+  `brain_unit`/`brain_node` still answer as aliases of `brain_cell`).
+- **The autoformalization loop the remote surface is built for:** `brain_bridge`
+  (informal statement → existence-verified decls with signatures, `import_line`,
+  bond quality, one-hop `depends` — the FIRST call) → `brain_cell` (the full
+  atom) → `decl_exists` (batch `names`, cap 16 — re-verify every name you write)
+  → `brain_neighborhood kinds=depends` (walk the dependency chain across turns;
+  cursored). `decl_exists` on a dead name returns a labelled suggestion
+  (`verified-rename` | `unique-suffix-match`), never a fact. **Honest
+  abstention**: `brain_bridge`/`brain_transfer` carry a `match` + `confidence_floor`
+  and return `match:"none"` + `nearest` rather than forcing a weak grounding; a
+  non-exact best hit adds a `note` ("Module generalizes Vector space"). **Every**
+  response echoes `snapshot:{generated_at,pin}` (the Mathlib rev the decls were
+  built against). These live on the remote API/MCP only — the local CLI above is
+  unchanged.

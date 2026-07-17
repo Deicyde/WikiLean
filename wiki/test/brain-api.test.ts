@@ -16,6 +16,7 @@ import {
   MODULE_CELL,
   EMPTY_CELL,
   DECL_CELL,
+  BASIS_CELL,
   LINALG_SUPER,
   ALGEBRA_SUPER,
   ABELIAN,
@@ -176,13 +177,16 @@ describe("GET /api/brain/transfer — informal_to_formal", () => {
     const h = harness();
     const { status, j } = await getJson(h, `/api/brain/transfer?q=${ABELIAN}&direction=informal_to_formal`);
     expect(status).toBe(200);
-    expect(j).toMatchObject({ id: ABELIAN_CELL, kind: "cell", resolved_from: "organ" });
+    expect(j).toMatchObject({ id: ABELIAN_CELL, kind: "cell", resolved_from: "organ", match: "exact" });
+    // item 2: every decl hit ships module + import_line + the statement code
     expect(j.hits).toEqual([
       {
         decl: "CommGroup",
         module: "Mathlib.Algebra.Group.Defs",
+        import_line: "import Mathlib.Algebra.Group.Defs",
         bond: "exact",
         decl_kind: "class",
+        code: "class CommGroup (G : Type u) extends Group G, CommMonoid G",
         docs_url:
           "https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Defs.html#CommGroup",
         via_cell: ABELIAN_CELL,
@@ -636,6 +640,255 @@ describe("GET /api/brain/search — atoms, matched by any organ's label", () => 
     const h = harness();
     expect((await get(h.env, "/api/brain/search?q=a")).status).toBe(400);
     expect((await get(h.env, "/api/brain/search?q=abelian&type=ext")).status).toBe(400);
+  });
+});
+
+// BRIDGE item 1 — batch decl_exists with labelled rename suggestions.
+describe("GET /api/brain/decl — batch existence + rename suggestions", () => {
+  it("the batch example: ['Basis','Module.Basis','AddCircle.fourierCoeff','NotARealName']", async () => {
+    const h = harness();
+    const { status, j } = await getJson(
+      h,
+      `/api/brain/decl?names=${q("Basis,Module.Basis,AddCircle.fourierCoeff,NotARealName")}`,
+    );
+    expect(status).toBe(200);
+    const results = j.results as Array<Record<string, unknown>>;
+    const byName = Object.fromEntries(results.map((r) => [String(r.decl), r]));
+    // Basis is dead → verified-rename to Module.Basis, whose module is served
+    expect(byName["Basis"]).toMatchObject({
+      exists: false,
+      renamed_to: "Module.Basis",
+      suggestion_basis: "verified-rename",
+      module: "Mathlib.LinearAlgebra.Basis.Defs",
+      import_line: "import Mathlib.LinearAlgebra.Basis.Defs",
+    });
+    // Module.Basis is real → module + import_line (item 2)
+    expect(byName["Module.Basis"]).toMatchObject({
+      exists: true,
+      module: "Mathlib.LinearAlgebra.Basis.Defs",
+      import_line: "import Mathlib.LinearAlgebra.Basis.Defs",
+    });
+    // a removed-prefix rename resolves the same way
+    expect(byName["AddCircle.fourierCoeff"]).toMatchObject({
+      exists: false,
+      renamed_to: "fourierCoeff",
+      suggestion_basis: "verified-rename",
+    });
+    // a true hallucination gets NO suggestion — never a forced one
+    expect(byName["NotARealName"]).toMatchObject({ exists: false });
+    expect(byName["NotARealName"].renamed_to).toBeUndefined();
+    expect(String(byName["NotARealName"].hint)).toContain("decl index");
+    // everything dropped is counted, never silent
+    expect(j.counts).toEqual({ total: 4, exists: 1, renamed: 2, missing: 1 });
+  });
+
+  it("a unique last-segment match is a labelled suggestion, verified against the oracle", async () => {
+    const h = harness();
+    const { j } = await getJson(h, `/api/brain/decl?name=sum_comm`);
+    expect(j).toMatchObject({
+      exists: false,
+      renamed_to: "Finset.sum_comm",
+      suggestion_basis: "unique-suffix-match",
+      module: "Mathlib.Algebra.BigOperators.Basic",
+    });
+  });
+
+  it("the single-name form still works and gains import_line", async () => {
+    const h = harness();
+    const { j } = await getJson(h, "/api/brain/decl?name=CommGroup");
+    expect(j).toMatchObject({
+      ok: true,
+      exists: true,
+      module: "Mathlib.Algebra.Group.Defs",
+      import_line: "import Mathlib.Algebra.Group.Defs",
+    });
+    expect(j.results).toBeUndefined(); // single, not batch
+  });
+
+  it("rejects an over-long batch and a bad name", async () => {
+    const h = harness();
+    const many = Array.from({ length: 17 }, (_, i) => `X${i}`).join(",");
+    expect((await get(h.env, `/api/brain/decl?names=${q(many)}`)).status).toBe(400);
+    expect((await get(h.env, `/api/brain/decl?names=${q("Ok,bad name")}`)).status).toBe(400);
+  });
+});
+
+// BRIDGE item 3 — the generalization note (Module generalizes Vector space).
+describe("GET /api/brain/transfer — generalization surfaced + honest abstention", () => {
+  it("querying an absorbed generalization concept says the decl generalizes it", async () => {
+    const h = harness();
+    const { j } = await getJson(h, `/api/brain/transfer?q=${q("Vector space")}&direction=informal_to_formal`);
+    expect(j).toMatchObject({ id: MODULE_CELL, match: "generalization" });
+    expect((j.hits as Array<{ decl: string }>)[0].decl).toBe("Module");
+    expect(String(j.note)).toContain("generalizes");
+    expect(String(j.note)).toContain("Vector space");
+    // the confidence-floor rule is stated in the response itself (item 4)
+    expect(String(j.confidence_floor)).toContain("clears the floor");
+  });
+
+  it("an exact identity match is match:'exact' with no note", async () => {
+    const h = harness();
+    const { j } = await getJson(h, `/api/brain/transfer?q=${ABELIAN}&direction=informal_to_formal`);
+    expect(j.match).toBe("exact");
+    expect(j.note).toBeUndefined();
+    // item 3: the atom's breadcrumb is shared across its hits
+    expect(j.breadcrumb).toEqual([
+      { id: "path:Mathlib", label: "Mathlib" },
+      { id: ALGEBRA_SUPER, label: "Algebra" },
+    ]);
+  });
+});
+
+// BRIDGE item 5 — cursored, filterable neighborhood.
+describe("GET /api/brain/neighborhood — cursor, min_w, min_conf", () => {
+  it("paginates by opaque cursor in stable (-w, id) order without silent caps", async () => {
+    const h = harness();
+    const p1 = await getJson(h, `/api/brain/neighborhood?id=${MODULE_CELL}&limit=1&traces=0`);
+    const s1 = p1.j.synapses as Array<{ id: string; w: number }>;
+    expect(s1).toHaveLength(1);
+    expect(s1[0].id).toBe(ABELIAN_CELL); // heaviest (w=15) first
+    expect(typeof p1.j.next_cursor).toBe("string");
+    expect(p1.j.truncated).toBe(true);
+    const p2 = await getJson(
+      h,
+      `/api/brain/neighborhood?id=${MODULE_CELL}&limit=1&traces=0&cursor=${q(String(p1.j.next_cursor))}`,
+    );
+    expect((p2.j.synapses as Array<{ id: string }>)[0].id).toBe(LINALG_SUPER); // next heaviest (w=9)
+    // walk to the end
+    const p3 = await getJson(
+      h,
+      `/api/brain/neighborhood?id=${MODULE_CELL}&limit=1&traces=0&cursor=${q(String(p2.j.next_cursor))}`,
+    );
+    expect((p3.j.synapses as Array<{ id: string }>)[0].id).toBe(EMPTY_CELL); // w=2
+    expect(p3.j.next_cursor).toBeUndefined(); // no more in the shard list
+    // but the shard cap is still declared, never silently swallowed
+    expect(p3.j.withheld_by_shard).toBe(3);
+  });
+
+  it("min_w floors the synapse weight", async () => {
+    const h = harness();
+    const { j } = await getJson(h, `/api/brain/neighborhood?id=${MODULE_CELL}&min_w=9&traces=0`);
+    const ids = (j.synapses as Array<{ id: string }>).map((s) => s.id);
+    expect(ids).toEqual([ABELIAN_CELL, LINALG_SUPER]); // w=15, 9 — EMPTY (w=2) dropped
+    expect(j.min_w).toBe(9);
+    expect(j.matched).toBe(2);
+  });
+
+  it("min_conf drops only sub-threshold traces that CARRY a confidence, keeping unscored ones", async () => {
+    const h = harness();
+    const { j } = await getJson(h, `/api/brain/neighborhood?id=${MODULE_CELL}&min_conf=0.5`);
+    expect(j.min_conf).toBe(0.5);
+    // the Module→Empty links trace carries confidence 0.4 < 0.5 → dropped + counted
+    expect(j.traces_conf_filtered).toBe(1);
+    const empty = (j.synapses as Array<Record<string, unknown>>).find((s) => s.id === EMPTY_CELL)!;
+    expect(empty.traces).toEqual([]); // its only trace was below the floor
+    // the Abelian synapse's traces carry no confidence, so they are KEPT
+    const abelian = (j.synapses as Array<Record<string, unknown>>).find((s) => s.id === ABELIAN_CELL)!;
+    expect((abelian.traces as unknown[]).length).toBeGreaterThan(0);
+  });
+
+  it("a garbage cursor restarts from the top rather than throwing", async () => {
+    const h = harness();
+    const { status, j } = await getJson(h, `/api/brain/neighborhood?id=${MODULE_CELL}&traces=0&cursor=not-base64`);
+    expect(status).toBe(200);
+    expect((j.synapses as Array<{ id: string }>)[0].id).toBe(ABELIAN_CELL);
+  });
+});
+
+// BRIDGE item 6 — snapshot echo on EVERY response.
+describe("snapshot echo", () => {
+  it("every route carries snapshot:{generated_at, pin} from the manifest", async () => {
+    const h = harness();
+    for (const path of [
+      `/api/brain/cell?key=${ABELIAN}`,
+      `/api/brain/transfer?q=${ABELIAN}&direction=informal_to_formal`,
+      `/api/brain/neighborhood?id=${ABELIAN}`,
+      `/api/brain/snippets?id=${ABELIAN}`,
+      "/api/brain/filter?f=0",
+      "/api/brain/search?q=abelian",
+      "/api/brain/decl?name=CommGroup",
+      "/api/brain/bridge?q=abelian%20group",
+    ]) {
+      const { j } = await getJson(h, path);
+      // pin is the first Mathlib-source prov pin in the fixture manifest
+      expect(j.snapshot).toEqual({ generated_at: "2026-07-15", pin: "2026-07-04" });
+    }
+  });
+
+  it("error responses echo it too", async () => {
+    const h = harness();
+    const { j } = await getJson(h, "/api/brain/cell?key=Q999999999");
+    expect(j.snapshot).toMatchObject({ generated_at: "2026-07-15" });
+  });
+});
+
+// BRIDGE item 7 — the composite brain_bridge call.
+describe("GET /api/brain/bridge — the first call of an autoformalization loop", () => {
+  it("informal statement → existence-verified decls with signatures, imports, depends", async () => {
+    const h = harness();
+    const { status, j } = await getJson(h, `/api/brain/bridge?q=${q("abelian group")}`);
+    expect(status).toBe(200);
+    expect(j).toMatchObject({ q: "abelian group", match: "exact" });
+    // the candidate atoms considered, with resolution provenance
+    expect((j.atoms as Array<{ id: string }>)[0].id).toBe(ABELIAN_CELL);
+    const hits = j.hits as Array<Record<string, unknown>>;
+    expect(hits[0]).toMatchObject({
+      decl: "CommGroup",
+      exists: true, // verified against the decl-index oracle
+      module: "Mathlib.Algebra.Group.Defs",
+      import_line: "import Mathlib.Algebra.Group.Defs",
+      bond: "exact",
+      code: "class CommGroup (G : Type u) extends Group G, CommMonoid G",
+      via_cell: ABELIAN_CELL,
+    });
+    // per-hit breadcrumb (hits span atoms in the bridge)
+    expect(hits[0].breadcrumb).toEqual([
+      { id: "path:Mathlib", label: "Mathlib" },
+      { id: ALGEBRA_SUPER, label: "Algebra" },
+    ]);
+    // one-hop depends from the primary atom: ids + labels, capped + counted
+    expect(j.depends).toMatchObject({ returned: 1, total: 1 });
+    expect((j.depends as { partners: Array<{ id: string; label: string }> }).partners[0]).toMatchObject({
+      id: MODULE_CELL,
+      label: "Module (mathematics)",
+    });
+    // it teaches the next step of the loop
+    expect((j.next_tools as string[]).join(" ")).toContain("decl_exists");
+    expect(j.snapshot).toBeTruthy();
+  });
+
+  it("surfaces a rename suggestion when a cited decl is dead", async () => {
+    const h = harness();
+    // resolve straight to the Basis atom by its concept QID (an organ handle)
+    const { j } = await getJson(h, `/api/brain/bridge?q=Q189569`);
+    const hits = j.hits as Array<Record<string, unknown>>;
+    const dead = hits.find((x) => x.decl === "Basis")!;
+    expect(dead).toMatchObject({
+      exists: false, // `Basis` is not in the decl-index oracle
+      renamed_to: "Module.Basis",
+      suggestion_basis: "verified-rename",
+      suggested_import_line: "import Mathlib.LinearAlgebra.Basis.Defs",
+    });
+    // and the current name verifies clean on the same atom
+    expect(hits.find((x) => x.decl === "Module.Basis")).toMatchObject({ exists: true });
+  });
+
+  it("abstains with match:'none' + nearest when nothing clears the floor", async () => {
+    const h = harness();
+    // "Parity conjecture" resolves (exact label) but holds no decl
+    const { j } = await getJson(h, `/api/brain/bridge?q=${q("Parity conjecture")}`);
+    expect(j.match).toBe("none");
+    expect(j.hits).toEqual([]);
+    expect((j.nearest as Array<{ id: string }>)[0].id).toBe(EMPTY_CELL);
+    expect(String((j.nearest as Array<{ why: string }>)[0].why)).toContain("no Mathlib declaration");
+  });
+
+  it("404s (with match:none + suggestions) when no atom matches, 400s empty q", async () => {
+    const h = harness();
+    const miss = await getJson(h, "/api/brain/bridge?q=zzzz-nothing-at-all");
+    expect(miss.status).toBe(404);
+    expect(miss.j.match).toBe("none");
+    expect((await get(h.env, "/api/brain/bridge?q=")).status).toBe(400);
   });
 });
 
