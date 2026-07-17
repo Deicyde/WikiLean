@@ -101,9 +101,13 @@ semantic care), `Subgroup.relindex` rename (2), `QuotientMap`→`Topology.IsQuot
 (3), Munkres binder drift (~5), misc. Each repair must be re-verified through
 /tmp/wikilean_tc.sock and tagged in `gold_repairs`.
 
-### 11. Fresh-set determinacy second annotator
-The 86/100 determinate screen is single-annotator (design wants two independent
-formalizers agreeing). Cheap agent pass; report the excluded fraction both ways.
+### 11. ~~Fresh-set determinacy second annotator~~ DONE
+det2 on all 100 rows (independent, informal-only protocol). Agreement 79%,
+κ≈0.20 — the annotators apply COMPLEMENTARY strictness (family near-dups vs
+semantic underdetermination). **Primary Tier-1b set = 74 both-determinate rows**
+(excluded fraction: 14% single, 26% either). Catches: fresh_034/036 share
+byte-identical NL but different decls; fresh_030's "alternating signs" gloss
+misdescribes Euler's (−1)^k pattern.
 
 ## P3 — infrastructure debt surfaced this session
 
