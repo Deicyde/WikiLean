@@ -1,0 +1,48 @@
+{
+  "description": "Tier 1b fresh-decls task set for the Bridge Experiment (docs/research/BRIDGE-EXPERIMENT.md). Theorems added to Mathlib master AFTER the Brain decl snapshot, with every retrieval index pinned older => held out from all arms (including the Wikibrain). TheoremGraph recipe at larger n.",
+  "held_out": {
+    "brain_decl_pin_sha256": "bf3266149cda603f",
+    "brain_decl_pin_source": "uw-math-ai/math-graph statement_formal.csv (TheoremGraph), catalog/data/hierarchy.json meta.source_sha256",
+    "brain_snapshot_generated_at": "2026-07-03T01:56:29+00:00",
+    "brain_nodes_generated_at": "2026-07-12T05:23:20+00:00",
+    "guarantee": "every kept decl name is ABSENT from both the pinned decl universe (statement_formal.csv, 388105 decls) and the Brain nodes (brain/data/nodes.jsonl), and was added to Mathlib master strictly after the pin date."
+  },
+  "mathlib_window": {
+    "ref": "upstream/master (leanprover-community/mathlib4)",
+    "since": "2026-07-03T01:56:29Z (Brain snapshot generation time)",
+    "head_commit": "9944fe2973b8dc0b86949101ed98232c07cd54a0",
+    "head_date": "2026-07-16T22:25:54Z",
+    "first_kept_added": "2026-07-03",
+    "last_kept_added": "2026-07-16",
+    "kept_added_in_commits_distinct": 44,
+    "earliest_kept_commit": "6fd5453dbccbeb09a0d5461e7d47735648d1f0ca",
+    "latest_kept_commit": "170a0e5a87e15d8dffaded4386226cd9ab5015b4"
+  },
+  "counts": {
+    "raw_added_theorem_lemma_lines": 1326,
+    "candidates_with_docstring": 187,
+    "kept_tasks": 100,
+    "determinate": 86,
+    "indeterminate_flagged": 14,
+    "determinate_fraction": 0.86
+  },
+  "by_area": {
+    "Analysis": 19,
+    "Topology": 16,
+    "MeasureTheory": 11,
+    "NumberTheory": 10,
+    "Algebra": 9,
+    "LinearAlgebra": 8,
+    "Order": 6,
+    "RingTheory": 6,
+    "Geometry": 4,
+    "GroupTheory": 3,
+    "CategoryTheory": 2,
+    "Combinatorics": 2,
+    "Data": 2,
+    "RepresentationTheory": 1,
+    "SetTheory": 1
+  },
+  "grading_note": "gold_formal ends `:= sorry` and is the exact Mathlib master statement. It uses standard Mathlib section-variable/open style, so it typechecks standalone only after prepending gold_context (the enclosing variable/open/universe lines, given in scope order) under gold_header; a superset header `import Mathlib` also works. Grading = BEq+/equivalence vs gold (typecheck is never success), per the design.",
+  "determinacy_note": "Determinacy is a single-annotator first-pass screen (the design calls for two independent formalizers). The determinate fraction is high because candidates were pre-filtered to docstringed, self-contained statements and bespoke-helper/unrecoverable-hypothesis decls were dropped outright rather than flagged. Flagged rows are genuine near-duplicates or informally-underdetermined variants; they are excluded from primary analysis."
+}
