@@ -33,9 +33,16 @@ if ! curl -sf -X POST "$WIKIBRAIN_MCP_URL" -H 'Content-Type: application/json' \
 fi
 
 echo "=== Bridge campaign: split=$SPLIT model=$MODEL concurrency=$CONC ==="
+# `fresh` = Tier 1b (the contamination-proof held-out set, all-eval)
+EXTRA=()
+if [ "$SPLIT" = "fresh" ]; then
+  EXTRA=(--tasks bench/data/fresh_tasks.jsonl --split all)
+else
+  EXTRA=(--split "$SPLIT")
+fi
 for arm in A B C D E; do
   echo; echo "=== arm $arm ==="
-  python3 bench/run_bridge.py --arm "$arm" --split "$SPLIT" \
+  python3 bench/run_bridge.py --arm "$arm" "${EXTRA[@]}" \
     --model "$MODEL" --concurrency "$CONC" || echo "(arm $arm exited $? — resumable, continuing)"
 done
 
