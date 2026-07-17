@@ -1,6 +1,6 @@
 # Bridge Experiment + BRAIN v3 — issue queue for the next iteration
 
-> Written 2026-07-17 at a context boundary. Each issue is self-contained: state,
+> Written 2026-07-17; REFRESHED 2026-07-17 (second boundary, pre-/compact). Each issue is self-contained: state,
 > blocker, exact next command. Branch `brain-v3-cells` (~40 commits ahead of
 > `main`; `main` untouched and still deployed). Companions:
 > `docs/research/BRIDGE-EXPERIMENT.md` (the preregistration — its deviations
@@ -9,13 +9,13 @@
 ## P0 — unblock and run the campaign
 
 ### 1. Re-authenticate the terminal `claude` CLI (JACK, ~30s)
-Every benchmark child process fails `401 OAuth access token has expired`. Two-layer
-diagnosis is DONE: layer 1 (session env `ANTHROPIC_BASE_URL`/`USE_*_OAUTH` sending
-the token to the wrong endpoint) is fixed — all four CLI-shelling surfaces scrub
-those vars (commit 644fd89). Layer 2 remains: the CLI keychain's own OAuth token +
-refresh token are expired. **Fix: run `claude` interactively in Terminal once.**
-The desktop app's auth is a separate, auto-refreshing store — its usage meter says
-nothing about the CLI keychain.
+STATE NOW: probe says `Not logged in · Please run /login` — the stale token is
+CLEARED (progress vs the earlier 401s). **Fix: run `claude` in Terminal, type
+`/login`, complete the browser flow.** Env-var layer already fixed (644fd89: all
+CLI-shelling surfaces scrub ANTHROPIC_BASE_URL/USE_*_OAUTH). Probe to confirm:
+`env -u ANTHROPIC_API_KEY -u ANTHROPIC_AUTH_TOKEN -u ANTHROPIC_BASE_URL \
+ -u USE_STAGING_OAUTH -u USE_LOCAL_OAUTH -u CLAUDE_CODE_OAUTH_SCOPES \
+ claude -p "reply with exactly: ok" --model claude-haiku-4-5-20251001 < /dev/null`
 
 ### 2. Run the Tier-1 campaign
 Prereqs all green (471 census-gated tasks, arms pilot-verified, servers hot).
@@ -32,6 +32,11 @@ hand-grades the 50** → report judge–human agreement BEFORE quoting judge num
 Analysis is preregistered: McNemar D-vs-E on faithful@budget + cost axes.
 
 ### 3. Restart the three local servers if the machine rebooted
+(Restarted again this session: main READY on /tmp/wikilean_tc.sock; fresh was
+mid-load at handoff — check `grep READY .../scratchpad/tc_fresh.log`; arm-D
+worker status UNKNOWN after the last session teardown — re-check pgrep tsx.)
+EVERY-ROW-120s-TIMEOUT = a dead socket silently falling back to single-shot,
+not hard statements. Servers die with each session teardown.
 All three die with the machine; the campaign preflights will catch it:
 ```
 # arm D (real v3 Worker app, local):
@@ -70,10 +75,7 @@ only in agent-written scratch scripts. Extract `assemble_gold(row)` +
 and make any future census + the scorer both call them. Divergence here produced a
 false alarm already (fresh_039).
 
-### 6. bench/README.md documents only the old 180-task bench
-Add the bridge harness: arms, run_campaign, the two grading servers/pins, census
-files, judge calibration protocol. The old bench is demoted to an API diagnostic
-(gold circularity — see the design doc's threats).
+### 6. ~~bench/README.md~~ DONE (dd7651b) — bridge harness fully documented.
 
 ## P2 — the deferred design requirements (needed for Tiers 2–3)
 
@@ -95,11 +97,10 @@ PRIMARY metric (faithful@budget = typecheck AND BEq+ vs gold) needs the
 ProofNetVerif BEq implementation (bidirectional `exact?`-style proving between
 gold and candidate). Build against the two REPL servers.
 
-### 10. Repair the 21 judge-only ProofNet golds (optional, raises n)
-Families: `Lattice ℂ` abs-resolution (6 — needs `Complex.abs`/`‖·‖` rewrite,
-semantic care), `Subgroup.relindex` rename (2), `QuotientMap`→`Topology.IsQuotientMap`
-(3), Munkres binder drift (~5), misc. Each repair must be re-verified through
-/tmp/wikilean_tc.sock and tagged in `gold_repairs`.
+### 10. ~~Repair the 21 judge-only ProofNet golds~~ DONE (ec2a9e1)
+20/21 repaired+verified via construct.assemble_gold; Tier-1a typecheck-gradable
+370/371. Munkres|exercise_25_9 PERMANENTLY judge-only (IsNormalSubgroup deleted
+from Mathlib; restructuring a gold is off-limits).
 
 ### 11. ~~Fresh-set determinacy second annotator~~ DONE
 det2 on all 100 rows (independent, informal-only protocol). Agreement 79%,
@@ -130,6 +131,14 @@ without workerd. Retest after a wrangler upgrade; if fixed, arm D can use it.
 ### 15. engine.golden.test.ts fails at HEAD (pre-existing)
 Stale gitignored fixtures (memory: wikilean_golden_fixtures). Regenerate site/out
 via render.py per slug, or re-bless. It pollutes every `npm test` reading.
+
+## Numbers at handoff (2026-07-17, HEAD ec2a9e1, ~48 commits ahead of main)
+- Tier 1a: 371 tasks, 370 typecheck-gradable (gold_census ok=407/bad=64 — the 64
+  are fresh rows counted vs the OLD pin; they grade 100/100 on the fresh pin).
+- Tier 1b: 100 tasks, PRIMARY = 74 both-determinate (determinate AND det2).
+- Campaign: `bench/run_campaign.sh dev` → `eval` → `fresh`, then score_bridge →
+  judge_bridge → `--calibration 50` → Jack hand-grades → McNemar D-vs-E.
+- Uncommitted tree at handoff: clean (check `git status` first regardless).
 
 ## Standing decisions on record (do not relitigate)
 - Merge rule stays wide; ballooning cells = tagger signal (`cell_review.jsonl`,
