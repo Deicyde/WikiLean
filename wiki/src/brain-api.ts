@@ -93,6 +93,7 @@ export interface Organ {
   docstring?: string;
   code?: string;
   library?: string;
+  renamed_to?: string; // the verified current FQ name when the cited name is dead (decl_renames.jsonl, baked in)
   // concept
   description?: string;
   slug?: string;
@@ -223,6 +224,51 @@ function isAtomId(id: string): boolean {
   return id.startsWith("cell:") || id.startsWith("path:");
 }
 
+// Existence plus a name is not enough to write compiling code (SCHEMA/BRIDGE
+// item 2): every decl hit ships `module` + `import_line`. Adds `import_line`
+// derived from the organ's module without mutating the shared Atom.organs.
+function withImportLine(o: Organ): Organ {
+  if (o.kind === "decl" && o.module && o.import_line === undefined) {
+    return { ...o, import_line: `import ${o.module}` };
+  }
+  return o;
+}
+
+// The confidence floor for informal→formal answers (transfer + bridge), stated
+// in the response itself so a reader never has to guess it. A forced weak match
+// is what CREATES the hallucinated-citation failure the bridge exists to prevent
+// (BRIDGE item 4), so the API abstains rather than answer under the floor.
+const CONFIDENCE_FLOOR =
+  "a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, " +
+  "resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose " +
+  "best bond is weaker than exact does NOT clear it — the API returns match:'none' with " +
+  "nearest candidates instead of forcing a weak grounding.";
+
+// exact | generalization | special_case | related | none — the classification of
+// the best hit, and whether it clears the floor.
+function matchClass(
+  bestBond: string | null,
+  resolvedByIdentity: boolean,
+): { match: string; clears: boolean } {
+  const clears = resolvedByIdentity || bestBond === "exact";
+  if (!clears) return { match: "none", clears };
+  // an ungraded organ is a lone-particle cell's anchor decl — you named the decl
+  // and got the decl, so identity holds.
+  if (bestBond === "exact" || bestBond == null) return { match: "exact", clears };
+  return { match: bestBond, clears };
+}
+
+// The top-level `note` when the best hit is NOT exact (BRIDGE item 3).
+function noteForBond(bond: string | null, declName: string, cellLabel: string | null): string {
+  const kind =
+    bond === "generalization"
+      ? "a generalization"
+      : bond === "special_case"
+        ? "a special case"
+        : "a related declaration";
+  return `no exact formalization; nearest is ${kind} (${declName}${cellLabel ? ` on ${cellLabel}` : ""})`;
+}
+
 // ---- asset loaders (all memoized — see brain.ts memoAssetJson) ----------------
 
 function cellsManifest(c: Ctx): Promise<CellsManifest | null> {
@@ -239,6 +285,45 @@ function cellLabels(c: Ctx): Promise<BrainLabelRow[] | null> {
 
 function supercellsFile(c: Ctx): Promise<SupercellsFile | null> {
   return memoAssetJson<SupercellsFile>(c, `${CELLS}/supercells.json`);
+}
+
+// ---- snapshot echo (SCHEMA v3; held-out evaluation is dishonest without it) ----
+
+// The Mathlib pin the decl organs were built against. Organs carry a `prov`
+// index; the pointed-at prov row carries the pin. Rather than open an organ, we
+// read the SAME rows off the manifest's `prov` table (already fetched): prefer a
+// git-commit-shaped pin from a Mathlib-family source (the @[wikidata]/@[stacks]/
+// @[kerodon] attribute rows carry the mathlib4 checkout commit — e.g.
+// "bf3266149cda603f"), else the first Mathlib-source pin (a data date), else
+// null. Honest about what is available: no pin ⇒ null, never a guess.
+function mathlibPin(prov: Array<Record<string, string>> | undefined): string | null {
+  if (!prov) return null;
+  let fallback: string | null = null;
+  for (const p of prov) {
+    const pin = p.pin;
+    if (!pin) continue;
+    if (p.source !== "mathlib" && p.source !== "kerodon" && p.source !== "stacks") continue;
+    if (/^[0-9a-f]{7,40}$/.test(pin)) return pin; // a git commit — the real Mathlib rev
+    if (fallback === null) fallback = pin;
+  }
+  return fallback;
+}
+
+export interface Snapshot {
+  generated_at: string | null;
+  pin: string | null;
+}
+
+// EVERY brain API/MCP response echoes this. Zero EXTRA fetches: the cells
+// manifest is memoized and already loaded on every cell-backed path; the
+// derivation (a 39-row scan) is trivial, so it recomputes rather than adding a
+// second memo the tests would have to reset separately. `null` when the manifest
+// is unavailable — the echo is honest about a missing snapshot, not silent.
+export async function snapshotFor(c: Ctx): Promise<Snapshot | null> {
+  const manifest = await cellsManifest(c);
+  if (!manifest) return null;
+  const generatedAt = (manifest._meta?.generated_at as string | undefined) ?? null;
+  return { generated_at: generatedAt, pin: mathlibPin(manifest.prov) };
 }
 
 // One cell shard entry, via the manifest's documented prefix scheme (identical
@@ -594,7 +679,7 @@ export async function cellFor(c: Ctx, keyRaw: string): Promise<ApiResult> {
       ...(atom.f !== undefined ? { f: atom.f } : {}),
       ...(atom.cell ? { cell: atom.cell } : {}),
       ...(atom.supercell ? { supercell: atom.supercell } : {}),
-      organs: atom.organs,
+      organs: atom.organs.map(withImportLine), // item 2: decl organs carry `import_line`
       organs_by_kind: organsByKind(atom),
       ...(atom.breadcrumb ? { breadcrumb: atom.breadcrumb } : {}),
       synapses_summary: synapsesSummary(atom),
@@ -624,17 +709,39 @@ export async function transferFor(
   };
 }
 
+// A decl hit carries what it takes to WRITE the code, not just cite the name
+// (BRIDGE item 2): module, `import_line`, the statement `code` when embedded, the
+// organ `bond` (item 3), and a `renamed_to` when the cited name is already dead.
 function declHit(o: Organ, atom: Atom): Record<string, unknown> {
   const name = o.label ?? o.id.split(":").slice(2).join(":");
   return {
     decl: name,
     module: o.module ?? null,
+    import_line: o.module ? `import ${o.module}` : null,
     bond: o.bond ?? null,
     decl_kind: o.decl_kind ?? null,
+    ...(o.code ? { code: o.code } : {}),
+    ...(o.renamed_to ? { renamed_to: o.renamed_to } : {}),
     docs_url: o.module ? docsUrlFor(o.module, name) : `${SITE_ORIGIN}/decl/${encodeURIComponent(name)}`,
     via_cell: atom.id,
     cell_label: atom.label,
   };
+}
+
+// The bond of the CONCEPT organ the query resolved through (BRIDGE item 3): when
+// you ask for "Vector space" (a `generalization` concept organ) the atom's exact
+// decl is `Module`, which is exact for the ATOM but a GENERALIZATION of what you
+// asked — the honest note is "Module generalizes Vector space". Decl organs carry
+// exact/None, so this relationship lives on the concept organ, not the decl.
+function queryConceptBond(atom: Atom, key: string): { bond: string | null; label: string | null } {
+  const k = key.trim();
+  const kl = k.toLowerCase();
+  const concepts = organsOf(atom, "concept");
+  const organ =
+    concepts.find((o) => o.id === k) ?? // QID
+    concepts.find((o) => o.slug === k) ?? // article slug
+    concepts.find((o) => (o.label ?? "").toLowerCase() === kl); // exact label
+  return { bond: organ?.bond ?? null, label: organ?.label ?? null };
 }
 
 // Concept → the formal side. With cells this is "resolve to the atom, read its
@@ -678,19 +785,59 @@ async function informalToFormal(c: Ctx, q: string, limit: number): Promise<ApiRe
     id: atom.id,
     kind: atom.kind,
     label: atom.label,
-    hits,
+    confidence_floor: CONFIDENCE_FLOOR,
+    // item 3: all hits are organs of this ONE atom, so its breadcrumb is shared
+    // (per-hit breadcrumb is reserved for the bridge, which spans atoms)
+    ...(atom.breadcrumb ? { breadcrumb: atom.breadcrumb } : {}),
   };
   if (atom.kind === "supercell") {
     // rule 5: a field-of-study concept's formal home is a FOLDER, not a decl.
     // That is the honest answer, not an empty result — say so.
+    body.match = "field";
+    body.hits = [];
     body.note =
       "this is a field-of-study concept: its formal home is a Mathlib folder (supercell), not a single declaration";
     body.container = atom.id;
     body.cells_in_container = atom.supercell?.cells?.length ?? 0;
   } else if (!hits.length) {
+    body.match = "none";
+    body.hits = [];
     body.note = "no Mathlib declaration is an organ of this atom";
     if (atom.cell?.supercells?.length) body.containers = atom.cell.supercells;
     body.suggestions = await suggestionsFor(c, q);
+  } else {
+    // item 3: did the query resolve through a generalization/special_case concept
+    // organ? Then the atom's exact decls formalize a MORE GENERAL / narrower object
+    // than what was asked — surface that per the query, not the decl.
+    const qc = queryConceptBond(atom, q);
+    if (qc.bond === "generalization" || qc.bond === "special_case") {
+      body.match = qc.bond;
+      body.hits = hits;
+      const rel = qc.bond === "generalization" ? "generalizes" : "is a special case of";
+      const kind = qc.bond === "generalization" ? "more general" : "more specific";
+      body.note =
+        `no exact formalization of "${qc.label}"; ${atom.label} ${rel} it — ` +
+        `the decl${hits.length > 1 ? "s" : ""} here formalize${hits.length > 1 ? "" : "s"} the ${kind} object`;
+    } else {
+      // item 4: honest abstention. A fuzzy label match landing on a non-exact bond
+      // does not clear the floor — return nearest, never a forced weak answer.
+      const bestBond = (hits[0].bond as string | null) ?? null;
+      const { match, clears } = matchClass(bestBond, resolvedFrom !== "search");
+      body.match = match;
+      if (!clears) {
+        body.hits = [];
+        body.nearest = hits.slice(0, 3).map((h) => ({
+          ...h,
+          why: "atom matched by label similarity only, and the best bond is not exact",
+        }));
+        body.note =
+          "no formalization cleared the confidence floor (fuzzy label match with a non-exact bond) — nearest candidates returned instead of a forced answer";
+      } else {
+        body.hits = hits;
+        // a non-exact best decl bond still gets a plain note
+        if (match !== "exact") body.note = noteForBond(bestBond, String(hits[0].decl), atom.label);
+      }
+    }
   }
   return { status: 200, body };
 }
@@ -813,15 +960,55 @@ async function hydrateSupercellTraces(
   return out;
 }
 
+// Stable (-w, id) ordering + an OPAQUE cursor over it (BRIDGE item 5): a
+// 60-minute agent walks a chain across turns without a truncation surprise. A
+// synapse comes AFTER the cursor when its weight is lower, or equal weight with a
+// later id. The cursor is the ONLY soft boundary; the shard cap stays a HARD one,
+// declared in `withheld_by_shard` — never silent.
+function synCmp(a: Synapse, b: Synapse): number {
+  return b.w - a.w || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
+}
+function encodeCursor(s: Synapse): string {
+  return btoa(JSON.stringify({ w: s.w, id: s.id }));
+}
+function afterCursor(s: Synapse, cur: { w: number; id: string }): boolean {
+  return s.w < cur.w || (s.w === cur.w && s.id > cur.id);
+}
+function decodeCursor(raw: unknown): { w: number; id: string } | null {
+  if (typeof raw !== "string" || !raw) return null;
+  try {
+    const o = JSON.parse(atob(raw)) as { w?: unknown; id?: unknown };
+    if (o && typeof o.w === "number" && typeof o.id === "string") return { w: o.w, id: o.id };
+  } catch {
+    /* opaque token: a malformed one restarts from the top rather than throwing */
+  }
+  return null;
+}
+
 export async function neighborhoodFor(
   c: Ctx,
   id: string,
   kindsCsv?: string,
   limitRaw?: unknown,
   tracesRaw?: unknown,
+  minWRaw?: unknown,
+  cursorRaw?: unknown,
+  minConfRaw?: unknown,
 ): Promise<ApiResult> {
   if (!BRAIN_ID_RE.test(id || "")) return { status: 400, body: { ok: false, error: "bad atom id" } };
   const limit = clampLimit(limitRaw, 50, 200);
+  const minW = Math.max(intOr(minWRaw, 0), 0);
+  // min_conf floors trace-level confidence WHERE a trace carries one; shipped
+  // traces do not, so it is inert on prod but correct where present. Traces with
+  // no score are KEPT (we never drop evidence we cannot score) and the number
+  // dropped is DECLARED in `traces_conf_filtered`.
+  const minConf =
+    typeof minConfRaw === "number"
+      ? minConfRaw
+      : typeof minConfRaw === "string" && minConfRaw.trim() !== "" && Number.isFinite(Number(minConfRaw))
+        ? Number(minConfRaw)
+        : null;
+  const cursor = decodeCursor(cursorRaw);
   const wantTraces = !(tracesRaw === "0" || tracesRaw === false || tracesRaw === "false");
   const kinds = kindsCsv
     ? new Set(kindsCsv.split(",").map((s) => s.trim()).filter(Boolean))
@@ -846,20 +1033,42 @@ export async function neighborhoodFor(
       },
     };
   }
-  const picked: Synapse[] = [];
-  let matched = 0;
-  for (const s of atom.syn) {
-    const synKinds = Object.keys(s.kinds ?? {});
-    if (kinds && !synKinds.some((k) => kinds.has(k))) continue;
-    matched += 1;
-    if (picked.length < limit) picked.push(s);
-  }
+  // Stable ordering, then the kinds + min_w filter — `matched` is what the filter
+  // selects from the (shard-capped) list, cursor/limit paginate WITHIN it.
+  const ordered = [...atom.syn].sort(synCmp);
+  const filtered = ordered.filter((s) => {
+    if (kinds && !Object.keys(s.kinds ?? {}).some((k) => kinds.has(k))) return false;
+    if (s.w < minW) return false;
+    return true;
+  });
+  const matched = filtered.length;
+  const startIdx = cursor ? filtered.findIndex((s) => afterCursor(s, cursor)) : 0;
+  const from = startIdx < 0 ? filtered.length : startIdx;
+  const picked = filtered.slice(from, from + limit);
+  const nextCursor =
+    picked.length > 0 && from + picked.length < filtered.length ? encodeCursor(picked[picked.length - 1]) : null;
 
   // A supercell's rows arrive traceless; fetch them from the partner cells.
   const hydrated =
     wantTraces && atom.kind === "supercell"
       ? await hydrateSupercellTraces(c, atom.id, picked)
       : null;
+
+  let confFiltered = 0;
+  const filterConf = (traces: Trace[]): Trace[] => {
+    if (minConf == null) return traces;
+    return traces.filter((t) => {
+      const cv =
+        t.evidence && typeof (t.evidence as { confidence?: unknown }).confidence === "number"
+          ? ((t.evidence as { confidence: number }).confidence)
+          : null;
+      if (cv != null && cv < minConf) {
+        confFiltered += 1;
+        return false;
+      }
+      return true; // no score ⇒ keep; we never drop evidence we cannot score
+    });
+  };
 
   const rows = picked.map((s) => {
     const mirror = hydrated?.get(s.id);
@@ -872,7 +1081,7 @@ export async function neighborhoodFor(
     };
     if (!wantTraces) return row;
     if (src.traces?.length) {
-      row.traces = kinds ? src.traces.filter((t) => kinds.has(t.kind)) : src.traces;
+      row.traces = filterConf(kinds ? src.traces.filter((t) => kinds.has(t.kind)) : src.traces);
     } else if (atom.kind === "supercell") {
       // NEVER `traces: []` here — the bond IS witnessed, we just cannot reach
       // the witness from a Worker. Say which, and where it does live.
@@ -899,6 +1108,8 @@ export async function neighborhoodFor(
       ...(atom.id !== id ? { resolved_from: resolved?.resolved_from, key: id } : {}),
       kind: atom.kind,
       ...(kinds ? { kinds: [...kinds] } : {}),
+      ...(minW ? { min_w: minW } : {}),
+      ...(minConf != null ? { min_conf: minConf, traces_conf_filtered: confFiltered } : {}),
       ...(unknownKinds.length
         ? {
             unknown_kinds: unknownKinds,
@@ -910,15 +1121,17 @@ export async function neighborhoodFor(
         : {}),
       synapses: rows,
       returned: rows.length,
-      matched, // matches within the (capped) shard list — see withheld_by_shard
+      matched, // rows passing the kinds/min_w filter within the (capped) shard list
       counts: atom.counts, // the atom's TOTAL synapse count
       withheld_by_shard: withheldByShard,
+      ...(nextCursor ? { next_cursor: nextCursor } : {}),
       ...(hydrated ? { traces_hydrated: hydrated.size } : {}),
-      // TRUE whenever any synapse is missing from `synapses`, by the shard cap
-      // (counts.syn vs the shipped list — NOT `matched`, which only ever counts
-      // rows already in that list) or by ?limit=. brain/query.py serves the full
-      // set; traces are additionally trimmed per synapse (`traces_total`).
-      truncated: rows.length < matched || withheldByShard > 0,
+      // TRUE whenever any synapse is missing from `synapses`: by the shard cap
+      // (counts.syn vs the shipped list — NOT `matched`, which only counts rows
+      // in that list), by ?limit=/cursor pagination (next_cursor set), or by a
+      // filter. brain/query.py serves the full set; traces are additionally
+      // trimmed per synapse (`traces_total`).
+      truncated: rows.length < matched || withheldByShard > 0 || nextCursor != null,
     },
   };
 }
@@ -1204,38 +1417,422 @@ interface DeclManifest {
   shards: Record<string, number>;
 }
 
-export async function declExistsFor(c: Ctx, nameRaw: string): Promise<ApiResult> {
-  const name = (nameRaw || "").trim();
-  if (!name || name.length > 300 || /[\s\p{C}/\\]/u.test(name)) {
-    return { status: 400, body: { ok: false, error: "bad declaration name" } };
+const DECL_NAME_BAD = /[\s\p{C}/\\]/u;
+const BATCH_CAP = 16; // agents draft statements citing 3–8 decls; round-trip economy (BRIDGE item 1)
+const DECL_MISS_HINT =
+  "not in the Mathlib decl index — check spelling/namespace; renames are common " +
+  "(e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.";
+
+// bare fully-qualified name from either `decl:<Lib>:<Name>` or a bare name
+function bareDeclName(name: string): string {
+  return name.startsWith("decl:") ? name.split(":").slice(2).join(":") : name;
+}
+
+// One existence check against the decl-index (the doc-gen4 oracle GET /decl uses).
+// The manifest is memoized; a small per-call shard cache dedupes a batch that
+// shares shards without memoizing every shard for the isolate's lifetime.
+async function declLookup(
+  c: Ctx,
+  name: string,
+  manifest: DeclManifest,
+  shardCache: Map<string, Array<[string, string]> | null>,
+): Promise<{ exists: boolean; module?: string }> {
+  const key = declShardFor(manifest, name);
+  if (!key) return { exists: false };
+  let pairs = shardCache.get(key);
+  if (pairs === undefined) {
+    pairs = await assetJson<Array<[string, string]>>(c, `/assets/decl-index/${key}.json`);
+    shardCache.set(key, pairs);
   }
+  const module = pairs ? lookupInShard(pairs, name) : null;
+  return module ? { exists: true, module } : { exists: false };
+}
+
+// A rename SUGGESTION for a name the oracle rejects — never presented as a fact
+// (BRIDGE item 1). Two clearly-labelled bases:
+//   verified-rename    — the owning cell's decl organ carries `renamed_to`
+//                        (catalog/data/decl_renames.jsonl, agent + adversary
+//                        verified, baked into the shards).
+//   unique-suffix-match — exactly one decl in the brain's decl-organ index shares
+//                        this name's last segment. Weaker; the candidate is then
+//                        verified against the decl-index oracle so a suggestion is
+//                        always a REAL current name, and its uniqueness is scoped
+//                        to the brain's indexed decls (stated in the label).
+async function suggestRename(
+  c: Ctx,
+  name: string,
+  aliases: CellAliases | null,
+  manifest: DeclManifest,
+  shardCache: Map<string, Array<[string, string]> | null>,
+): Promise<{ renamed_to: string; suggestion_basis: string; module?: string } | null> {
+  const bare = bareDeclName(name);
+  // (a) verified rename via the owning cell's organ
+  const cellId = own(aliases?.decls, bare);
+  if (cellId) {
+    const atom = await atomFor(c, cellId);
+    const organ = atom?.organs.find(
+      (o) => o.kind === "decl" && o.renamed_to && (o.label ?? bareDeclName(o.id)) === bare,
+    );
+    if (organ?.renamed_to) {
+      const tgt = await declLookup(c, organ.renamed_to, manifest, shardCache);
+      return {
+        renamed_to: organ.renamed_to,
+        suggestion_basis: "verified-rename",
+        ...(tgt.exists ? { module: tgt.module } : {}),
+      };
+    }
+  }
+  // (b) unique-suffix match over the brain's decl-organ index (aliases.decls),
+  // verified against the oracle
+  const suffix = bare.includes(".") ? bare.slice(bare.lastIndexOf(".") + 1) : bare;
+  let cand: string | null = null;
+  let ambiguous = false;
+  for (const k of Object.keys(aliases?.decls ?? {})) {
+    if (k === bare) continue;
+    const last = k.includes(".") ? k.slice(k.lastIndexOf(".") + 1) : k;
+    if (last !== suffix) continue;
+    if (cand) {
+      ambiguous = true; // ≥2 candidates ⇒ never force one (BRIDGE item 4)
+      break;
+    }
+    cand = k;
+  }
+  if (cand && !ambiguous) {
+    const tgt = await declLookup(c, cand, manifest, shardCache);
+    if (tgt.exists) return { renamed_to: cand, suggestion_basis: "unique-suffix-match", module: tgt.module };
+  }
+  return null;
+}
+
+// One per-name verdict: exists (+module/import) or a labelled rename suggestion.
+async function declVerdict(
+  c: Ctx,
+  name: string,
+  aliases: CellAliases | null,
+  manifest: DeclManifest,
+  shardCache: Map<string, Array<[string, string]> | null>,
+): Promise<Record<string, unknown>> {
+  const hit = await declLookup(c, name, manifest, shardCache);
+  if (hit.exists && hit.module) {
+    return {
+      decl: name,
+      exists: true,
+      library: "mathlib",
+      module: hit.module,
+      import_line: `import ${hit.module}`, // item 2: name alone won't compile
+      docs_url: docsUrlFor(hit.module, name),
+    };
+  }
+  const sugg = await suggestRename(c, name, aliases, manifest, shardCache);
+  return {
+    decl: name,
+    exists: false,
+    ...(sugg
+      ? {
+          renamed_to: sugg.renamed_to,
+          suggestion_basis: sugg.suggestion_basis, // "verified-rename" | "unique-suffix-match"
+          ...(sugg.module
+            ? { module: sugg.module, import_line: `import ${sugg.module}`, docs_url: docsUrlFor(sugg.module, sugg.renamed_to) }
+            : {}),
+        }
+      : { hint: DECL_MISS_HINT }),
+  };
+}
+
+// Single `name` OR batch `names` (cap 16). Per name: exact existence, and when a
+// name is dead, a CLEARLY-LABELLED rename suggestion (never a fact) so an agent
+// that drafted 3–8 names fixes them in one round trip (BRIDGE item 1).
+export async function declExistsFor(c: Ctx, nameRaw: string, namesRaw?: unknown): Promise<ApiResult> {
+  const names = normalizeNames(nameRaw, namesRaw);
+  if ("error" in names) return { status: 400, body: names.error };
   const manifest = await memoAssetJson<DeclManifest>(c, "/assets/decl-index/manifest.json");
   if (!manifest?.shards) return { status: 503, body: { ok: false, error: "decl index unavailable" } };
-  const key = declShardFor(manifest, name);
-  const pairs = key ? await assetJson<Array<[string, string]>>(c, `/assets/decl-index/${key}.json`) : null;
-  const module = pairs ? lookupInShard(pairs, name) : null;
-  if (!module) {
+  const aliases = await cellAliases(c);
+  const shardCache = new Map<string, Array<[string, string]> | null>();
+
+  if (!names.batch) {
+    // single-name shape preserved for back-compat (adds renamed_to/import_line)
+    const body = await declVerdict(c, names.list[0], aliases, manifest, shardCache);
+    return { status: 200, body: { ok: true, ...body } };
+  }
+  const results = await Promise.all(
+    names.list.map((n) => declVerdict(c, n, aliases, manifest, shardCache)),
+  );
+  const counts = { total: results.length, exists: 0, renamed: 0, missing: 0 };
+  for (const r of results) {
+    if (r.exists) counts.exists += 1;
+    else if (r.renamed_to) counts.renamed += 1;
+    else counts.missing += 1;
+  }
+  return { status: 200, body: { ok: true, results, counts } };
+}
+
+// Parse `name` / `names` into a validated list, or an error body. `names` may be
+// a JSON array (MCP) or a comma-separated string (REST). Every name is validated
+// the same way the single path always was.
+function normalizeNames(
+  nameRaw: string,
+  namesRaw: unknown,
+): { list: string[]; batch: boolean } | { error: Record<string, unknown> } {
+  let list: string[];
+  let batch: boolean;
+  if (namesRaw !== undefined && namesRaw !== null && namesRaw !== "") {
+    const arr = Array.isArray(namesRaw)
+      ? namesRaw.map((x) => (typeof x === "string" ? x : String(x)))
+      : String(namesRaw).split(",");
+    list = arr.map((s) => s.trim()).filter(Boolean);
+    batch = true;
+    if (!list.length) return { error: { ok: false, error: "names is empty" } };
+    if (list.length > BATCH_CAP) return { error: { ok: false, error: `too many names (cap ${BATCH_CAP})` } };
+  } else {
+    const name = (nameRaw || "").trim();
+    list = [name];
+    batch = false;
+    if (!name) return { error: { ok: false, error: "bad declaration name" } };
+  }
+  for (const n of list) {
+    if (!n || n.length > 300 || DECL_NAME_BAD.test(n)) {
+      return { error: { ok: false, error: `bad declaration name: ${JSON.stringify(n)}` } };
+    }
+  }
+  return { list, batch };
+}
+
+// ---- bridge: the composite first call of an autoformalization loop (item 7) ----
+
+const NEXT_TOOLS = [
+  "brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)",
+  "decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it",
+  "brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)",
+  "brain_transfer direction=formal_to_informal — pull the informal side (article, description) back",
+];
+const BRIDGE_DEPENDS_CAP = 12; // one-hop depends partners inlined; the rest counted
+
+// Build an id→label map for depends partners (cells from labels.json, supercells
+// from supercells.json — both memoized). Labels only; the bridge never inlines a
+// partner's whole neighborhood.
+async function partnerLabels(c: Ctx): Promise<Map<string, string | null>> {
+  const map = new Map<string, string | null>();
+  const labels = await cellLabels(c);
+  for (const r of labels ?? []) map.set(r.id, r.label ?? null);
+  const file = await supercellsFile(c);
+  for (const [p, e] of Object.entries(file?.supercells ?? {})) map.set(p, e.label ?? null);
+  return map;
+}
+
+function oneHopDepends(
+  atom: Atom,
+  labelMap: Map<string, string | null>,
+): Record<string, unknown> {
+  const partners: Array<Record<string, unknown>> = [];
+  let total = 0;
+  for (const s of [...atom.syn].sort(synCmp)) {
+    if (!s.kinds?.depends) continue;
+    total += 1;
+    if (partners.length < BRIDGE_DEPENDS_CAP) {
+      partners.push({ id: s.id, label: labelMap.get(s.id) ?? null, w: s.w });
+    }
+  }
+  const withheldByShard = atom.truncated?.syn ?? 0;
+  return {
+    partners,
+    returned: partners.length,
+    total, // depends synapses within the (shard-capped) list
+    withheld_by_shard: withheldByShard, // depends bonds may also sit past the shard cap
+    truncated: partners.length < total || withheldByShard > 0,
+  };
+}
+
+// A statement query ("every finitely generated vector space has a basis")
+// matches no single label, so label search (labels CONTAINING the query) finds
+// nothing. The bridge also resolves the other direction: atoms whose label/aka
+// appears IN the statement ("vector space", "basis"), word-bounded and length-
+// floored to keep short English words out, ranked longest-first (more specific).
+// This is still "resolve to atoms by label/alias" — statement-level EMBEDDING
+// transfer stays deferred (BRIDGE, "hypotheses get lost").
+const MIN_STMT_LABEL = 4;
+function containsWord(hay: string, needle: string): boolean {
+  let i = hay.indexOf(needle);
+  while (i >= 0) {
+    const before = i === 0 ? "" : hay[i - 1];
+    const after = i + needle.length >= hay.length ? "" : hay[i + needle.length];
+    if (!/[a-z0-9]/.test(before) && !/[a-z0-9]/.test(after)) return true;
+    i = hay.indexOf(needle, i + 1);
+  }
+  return false;
+}
+function atomsInStatement(labels: BrainLabelRow[], ql: string): Array<{ id: string; len: number }> {
+  const hits: Array<{ id: string; len: number }> = [];
+  for (const r of labels) {
+    let best = 0;
+    for (const name of [r.label, ...(r.aka ?? [])]) {
+      const n = (name || "").toLowerCase();
+      if (n.length >= MIN_STMT_LABEL && n.length > best && containsWord(ql, n)) best = n.length;
+    }
+    if (best) hits.push({ id: r.id, len: best });
+  }
+  hits.sort((a, b) => b.len - a.len || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
+  return hits;
+}
+
+// GET /api/brain/bridge?q=<informal statement> — search + resolve to atoms + rank
+// decl organs across the top atoms + verify existence + attach signature / import
+// / bond / breadcrumb + one-hop depends. ONE response designed to be the FIRST
+// call of an autoformalization loop, ending in `next_tools` hints. Honest
+// abstention (item 4): under the confidence floor it returns match:"none" +
+// nearest rather than a forced grounding.
+export async function bridgeFor(c: Ctx, qRaw: string, limitRaw?: unknown): Promise<ApiResult> {
+  const q = (qRaw || "").trim();
+  if (!q) return { status: 400, body: { ok: false, error: "missing ?q= (an informal statement or concept)" } };
+  const limit = clampLimit(limitRaw, 8, BATCH_CAP);
+
+  // 1. candidate atoms — an exact id/label first (identity), then label+aka search
+  const considered: Array<{ id: string; resolved_from: string }> = [];
+  const seen = new Set<string>();
+  const exact = await resolveAtomKey(c, q);
+  if (exact) {
+    considered.push({ id: exact.id, resolved_from: exact.resolved_from });
+    seen.add(exact.id);
+  }
+  const labels = await cellLabels(c);
+  const ql = q.toLowerCase();
+  if (labels) {
+    // labels CONTAINING the query (short concept queries)…
+    for (const r of searchLabels(labels, ql, "", 5)) {
+      if (!seen.has(r.id)) {
+        considered.push({ id: r.id, resolved_from: "search" });
+        seen.add(r.id);
+      }
+    }
+    // …then atoms whose label appears IN the query (statement queries)
+    for (const s of atomsInStatement(labels, ql).slice(0, 5)) {
+      if (!seen.has(s.id)) {
+        considered.push({ id: s.id, resolved_from: "statement" });
+        seen.add(s.id);
+      }
+    }
+  }
+  if (!considered.length) {
     return {
-      status: 200,
+      status: 404,
       body: {
-        ok: true,
-        decl: name,
-        exists: false,
-        hint: "not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.",
+        ok: false,
+        error: "no atom matched q",
+        q,
+        match: "none",
+        suggestions: await suggestionsFor(c, q),
+        hint: "try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell",
       },
     };
   }
-  return {
-    status: 200,
-    body: { ok: true, decl: name, exists: true, library: "mathlib", module, docs_url: docsUrlFor(module, name) },
+
+  const top = considered.slice(0, 3);
+  const fetched = await Promise.all(top.map((a) => atomFor(c, a.id)));
+  const atomsOut = top.map((a, i) => ({
+    id: a.id,
+    kind: fetched[i]?.kind ?? null,
+    label: fetched[i]?.label ?? null,
+    resolved_from: a.resolved_from,
+    ...(fetched[i]?.breadcrumb ? { breadcrumb: fetched[i]!.breadcrumb } : {}),
+  }));
+
+  // 2. rank decl organs ACROSS the top atoms (exact first, then atom order, name)
+  const declOrgans: Array<{ o: Organ; atom: Atom }> = [];
+  top.forEach((_a, i) => {
+    const atom = fetched[i];
+    if (!atom) return;
+    for (const o of organsOf(atom, "decl").sort(rankDecl)) declOrgans.push({ o, atom });
+  });
+  declOrgans.sort((x, y) => {
+    const rank = (o: Organ) => (o.bond === "exact" ? 0 : o.bond ? 1 : 2);
+    const r = rank(x.o) - rank(y.o);
+    if (r) return r;
+    const lx = x.o.label ?? x.o.id, ly = y.o.label ?? y.o.id;
+    return lx < ly ? -1 : lx > ly ? 1 : 0;
+  });
+  const chosen = declOrgans.slice(0, limit);
+
+  // 3. verify existence + attach signature/module/import/bond/breadcrumb
+  const manifest = await memoAssetJson<DeclManifest>(c, "/assets/decl-index/manifest.json");
+  const aliases = await cellAliases(c);
+  const shardCache = new Map<string, Array<[string, string]> | null>();
+  const hits = await Promise.all(
+    chosen.map(async ({ o, atom }) => {
+      const name = o.label ?? bareDeclName(o.id);
+      const exists = manifest ? (await declLookup(c, name, manifest, shardCache)).exists : null;
+      const hit: Record<string, unknown> = {
+        decl: name,
+        exists, // verified against the oracle; null only if the index is unavailable
+        module: o.module ?? null,
+        ...(o.module ? { import_line: `import ${o.module}` } : {}),
+        bond: o.bond ?? null,
+        ...(o.decl_kind ? { decl_kind: o.decl_kind } : {}),
+        ...(o.code ? { code: o.code } : {}),
+        docs_url: o.module ? docsUrlFor(o.module, name) : `${SITE_ORIGIN}/decl/${encodeURIComponent(name)}`,
+        via_cell: atom.id,
+        cell_label: atom.label,
+        ...(atom.breadcrumb ? { breadcrumb: atom.breadcrumb } : {}),
+      };
+      // a dead cited name gets the same labelled suggestion decl_exists serves
+      if (exists === false && manifest) {
+        const sugg = await suggestRename(c, name, aliases, manifest, shardCache);
+        if (sugg) {
+          hit.renamed_to = sugg.renamed_to;
+          hit.suggestion_basis = sugg.suggestion_basis;
+          if (sugg.module) hit.suggested_import_line = `import ${sugg.module}`;
+        }
+      }
+      return hit;
+    }),
+  );
+
+  // 4. one-hop depends from the PRIMARY atom + honest abstention
+  const primary = fetched[0];
+  const labelMap = await partnerLabels(c);
+  const depends = primary ? oneHopDepends(primary, labelMap) : { partners: [], returned: 0, total: 0, truncated: false };
+
+  const bestBond = (chosen[0]?.o.bond as string | null) ?? null;
+  // "search"/"statement" are fuzzy resolutions — not identity
+  const resolvedByIdentity = top[0].resolved_from !== "search" && top[0].resolved_from !== "statement";
+  const { match, clears } = matchClass(bestBond, resolvedByIdentity);
+  const body: Record<string, unknown> = {
+    ok: true,
+    q,
+    match,
+    confidence_floor: CONFIDENCE_FLOOR,
+    atoms: atomsOut,
+    depends,
+    next_tools: NEXT_TOOLS,
   };
+  if (!chosen.length || !clears) {
+    body.match = "none";
+    body.hits = [];
+    body.nearest = atomsOut.slice(0, 3).map((a) => ({
+      ...a,
+      why: chosen.length
+        ? "atom matched by label similarity only, and the best bond is not exact"
+        : "no Mathlib declaration is an organ of this candidate atom",
+    }));
+    body.note = chosen.length
+      ? "no formalization cleared the confidence floor — nearest candidate atoms returned instead of a forced grounding"
+      : "the candidate atoms hold no Mathlib declaration — nearest atoms returned; try brain_neighborhood or a different phrasing";
+  } else {
+    body.hits = hits;
+    if (match !== "exact") body.note = noteForBond(bestBond, String(hits[0].decl), String(hits[0].cell_label ?? ""));
+  }
+  return { status: 200, body };
 }
 
 // ---- routes -------------------------------------------------------------------
 
 const CACHE_HEADERS = { "Cache-Control": "public, max-age=3600" }; // nightly-rebuild cadence
 
-function send(c: Ctx, r: ApiResult): Response {
+// EVERY response echoes the snapshot (item 6). The manifest is already loaded on
+// every cell-backed path, so this is zero extra fetches there; decl-only paths
+// pay one memoized fetch. `snapshot: null` when the manifest is unavailable —
+// honest about a missing snapshot rather than omitting it silently.
+async function send(c: Ctx, r: ApiResult): Promise<Response> {
+  r.body.snapshot = await snapshotFor(c);
   return c.json(r.body, r.status, r.status === 200 ? CACHE_HEADERS : undefined);
 }
 
@@ -1262,6 +1859,8 @@ export function registerBrainApiRoutes(app: Hono<{ Bindings: Env }>): void {
   app.use("/api/brain/snippets", rateLimitGate);
   app.use("/api/brain/filter", rateLimitGate);
   app.use("/api/brain/search", rateLimitGate);
+  app.use("/api/brain/decl", rateLimitGate);
+  app.use("/api/brain/bridge", rateLimitGate);
 
   app.get("/api/brain/cell", async (c) => send(c, await cellFor(c, c.req.query("key") ?? "")));
 
@@ -1286,11 +1885,23 @@ export function registerBrainApiRoutes(app: Hono<{ Bindings: Env }>): void {
         c.req.query("kinds"),
         c.req.query("limit"),
         c.req.query("traces"),
+        c.req.query("min_w"),
+        c.req.query("cursor"),
+        c.req.query("min_conf"),
       ),
     ),
   );
 
   app.get("/api/brain/snippets", async (c) => send(c, await snippetsFor(c, c.req.query("id") ?? "")));
+
+  // Batch decl existence + labelled rename suggestions (BRIDGE item 1). `names`
+  // is comma-separated over REST (cap 16); `name` stays the single-decl form.
+  app.get("/api/brain/decl", async (c) =>
+    send(c, await declExistsFor(c, c.req.query("name") ?? "", c.req.query("names"))),
+  );
+
+  // The composite first call of an autoformalization loop (BRIDGE item 7).
+  app.get("/api/brain/bridge", async (c) => send(c, await bridgeFor(c, c.req.query("q") ?? "", c.req.query("limit"))));
 
   app.get("/api/brain/filter", async (c) =>
     send(
@@ -1411,11 +2022,13 @@ both from the v2 shards, so the two route families deliberately answer different
 <h2>Connect over MCP (recommended for agents)</h2>
 <pre><code>claude mcp add --transport http wikibrain https://wikilean.jackmccarthy.org/mcp</code></pre>
 <p>A dependency-free streamable-HTTP MCP server (JSON-RPC 2.0, stateless, single-response
-mode) exposing seven tools: <code>brain_search</code>, <code>brain_cell</code>,
-<code>brain_transfer</code>, <code>brain_neighborhood</code>, <code>brain_snippets</code>,
-<code>brain_filter</code>, <code>decl_exists</code>. <code>brain_unit</code> and
-<code>brain_node</code> still answer, as aliases of <code>brain_cell</code> — the v2 unit card
-<em>became</em> the cell card, and v3 has no particle nodes. Rate limit: 120 requests/min per IP.</p>
+mode) exposing eight tools: <code>brain_bridge</code>, <code>brain_search</code>,
+<code>brain_cell</code>, <code>brain_transfer</code>, <code>brain_neighborhood</code>,
+<code>brain_snippets</code>, <code>brain_filter</code>, <code>decl_exists</code>.
+<code>brain_unit</code> and <code>brain_node</code> still answer, as aliases of
+<code>brain_cell</code> — the v2 unit card <em>became</em> the cell card, and v3 has no particle
+nodes. Rate limit: 120 requests/min per IP. Every response echoes
+<code>snapshot:{generated_at,pin}</code>.</p>
 
 <h2>Id grammar</h2>
 <table>
@@ -1449,7 +2062,26 @@ near-miss suggestions.</p>
 <pre><code>curl 'https://wikilean.jackmccarthy.org/api/brain/transfer?q=abelian%20group&amp;direction=informal_to_formal'
 curl 'https://wikilean.jackmccarthy.org/api/brain/transfer?q=Module&amp;direction=formal_to_informal'</code></pre>
 
-<h3>GET /api/brain/neighborhood?id=&amp;kinds=&amp;limit=&amp;traces=</h3>
+<h3>GET /api/brain/bridge?q=&amp;limit=</h3>
+<p>The composite <b>first call of an autoformalization loop</b>: an informal statement in,
+existence-verified Mathlib decls out — each with its <code>code</code> signature,
+<code>module</code> + <code>import_line</code>, <code>bond</code> quality
+(<code>exact</code> vs <code>generalization</code>/…), the atom's breadcrumb, and capped
+one-hop <code>depends</code> synapses. Abstains honestly: below the confidence floor it
+returns <code>match:"none"</code> with the nearest atoms instead of a forced answer, and
+says so in <code>match_rule</code>. Ends with <code>next_tools</code> hints.</p>
+<pre><code>curl 'https://wikilean.jackmccarthy.org/api/brain/bridge?q=every%20finitely%20generated%20vector%20space%20has%20a%20basis'</code></pre>
+
+<h3>GET /api/brain/decl?name= | names=&lt;csv, ≤16&gt;</h3>
+<p>Existence oracle for declaration names — <b>batch it</b>: agents draft statements citing
+several decls, and one round-trip beats eight. Per name: <code>exists</code>, and when
+false a <code>renamed_to</code> suggestion labelled by <code>suggestion_basis</code> —
+<code>"verified-rename"</code> (an agent read the declaration in the checkout and an
+adversarial verifier upheld it) vs <code>"unique-suffix-match"</code> (heuristic — treat
+as a lead, not a fact).</p>
+<pre><code>curl 'https://wikilean.jackmccarthy.org/api/brain/decl?names=Basis,Module.Basis,AddCircle.fourierCoeff,NotARealName'</code></pre>
+
+<h3>GET /api/brain/neighborhood?id=&amp;kinds=&amp;limit=&amp;traces=&amp;min_w=&amp;min_conf=&amp;cursor=</h3>
 <p>An atom's <b>synapses</b>: one row per partner atom with <code>w</code>, the <code>kinds</code>
 histogram, <code>traces_total</code>, and the <code>traces</code> themselves (each
 <code>{kind, src, dst, prov, evidence}</code> — <code>src</code>/<code>dst</code> are the ORGAN ids that

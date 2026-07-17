@@ -109,14 +109,15 @@ describe("POST /mcp — lifecycle", () => {
 });
 
 describe("POST /mcp — tools/list", () => {
-  it("lists all seven tools with schemas", async () => {
+  it("lists all eight tools with schemas, brain_bridge first", async () => {
     const h = harness();
     const j = (await (await rpc(h, "tools/list")).json()) as {
       result: { tools: Array<{ name: string; description: string; inputSchema: { type: string } }> };
     };
-    // brain_node + brain_unit collapsed into brain_cell: v3 has no particle
-    // nodes, and the unit card IS the cell card
+    // brain_node + brain_unit collapsed into brain_cell (v3 has no particle
+    // nodes); brain_bridge is the composite first call of the loop
     expect(j.result.tools.map((t) => t.name)).toEqual([
+      "brain_bridge",
       "brain_search",
       "brain_cell",
       "brain_transfer",
@@ -203,12 +204,63 @@ describe("POST /mcp — tools/call", () => {
     expect(yes.data).toMatchObject({
       exists: true,
       module: "Mathlib.Algebra.Group.Defs",
+      import_line: "import Mathlib.Algebra.Group.Defs",
       docs_url:
         "https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Defs.html#CommGroup",
     });
     const no = await callTool(h, "decl_exists", { name: "CommGroupoid.fake" });
     expect(no.isError).toBeUndefined(); // a clean miss is an answer, not an error
     expect(no.data.exists).toBe(false);
+  });
+
+  // BRIDGE item 1 — the batch path an agent uses to verify a drafted statement.
+  it("decl_exists takes a batch of names and returns per-name verdicts + counts", async () => {
+    const h = harness();
+    const { isError, data } = await callTool(h, "decl_exists", {
+      names: ["Basis", "Module.Basis", "AddCircle.fourierCoeff", "NotARealName"],
+    });
+    expect(isError).toBeUndefined();
+    const byName = Object.fromEntries(
+      (data.results as Array<Record<string, unknown>>).map((r) => [String(r.decl), r]),
+    );
+    expect(byName["Basis"]).toMatchObject({
+      exists: false,
+      renamed_to: "Module.Basis",
+      suggestion_basis: "verified-rename",
+    });
+    expect(byName["Module.Basis"]).toMatchObject({ exists: true, import_line: "import Mathlib.LinearAlgebra.Basis.Defs" });
+    expect(data.counts).toEqual({ total: 4, exists: 1, renamed: 2, missing: 1 });
+  });
+
+  // BRIDGE item 7 — the composite first call.
+  it("brain_bridge returns existence-verified decls with signatures + depends", async () => {
+    const h = harness();
+    const { isError, data } = await callTool(h, "brain_bridge", { q: "abelian group" });
+    expect(isError).toBeUndefined();
+    expect(data).toMatchObject({ match: "exact" });
+    const hits = data.hits as Array<Record<string, unknown>>;
+    expect(hits[0]).toMatchObject({
+      decl: "CommGroup",
+      exists: true,
+      import_line: "import Mathlib.Algebra.Group.Defs",
+      code: "class CommGroup (G : Type u) extends Group G, CommMonoid G",
+    });
+    expect((data.depends as { partners: Array<{ id: string }> }).partners[0].id).toBe(MODULE_CELL);
+    expect((data.next_tools as string[]).join(" ")).toContain("decl_exists");
+  });
+
+  // BRIDGE item 6 — snapshot echo rides on every tool result (the text body IS
+  // the REST body), so a held-out evaluation always knows which build answered.
+  it("every tool result echoes snapshot:{generated_at, pin}", async () => {
+    const h = harness();
+    for (const [name, args] of [
+      ["brain_cell", { key: "CommGroup" }],
+      ["decl_exists", { name: "CommGroup" }],
+      ["brain_bridge", { q: "abelian group" }],
+    ] as Array<[string, Record<string, unknown>]>) {
+      const { data } = await callTool(h, name, args);
+      expect(data.snapshot).toEqual({ generated_at: "2026-07-15", pin: "2026-07-04" });
+    }
   });
 
   it("input-validation failures are isError tool results, not protocol errors", async () => {

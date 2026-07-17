@@ -15,11 +15,13 @@
 import type { Context, Hono } from "hono";
 import type { Env } from "./env.js";
 import {
+  bridgeFor,
   cellFor,
   declExistsFor,
   filterFor,
   neighborhoodFor,
   searchFor,
+  snapshotFor,
   snippetsFor,
   transferFor,
   SYNAPSE_KINDS,
@@ -57,11 +59,19 @@ const INSTRUCTIONS =
   "cell claims (v3 dropped ~46k unanchored frontier pages; an anchored xref: page does " +
   "resolve) and arXiv PAPER ids (lit:<arxiv> without #ref) — only statements a cell claims " +
   "are organs. A 404 there means 'no atom owns this', not 'unknown to the Brain'. " +
-  "Mid-proof workflow: brain_transfer jumps informal↔formal (concept text → ranked " +
-  "Mathlib decls with docs URLs, or decl name → concepts/articles); decl_exists " +
-  "verifies a decl name is real before citing it; brain_cell shows everything known " +
-  "about one mathematical object; brain_search finds ids from fuzzy text (it matches " +
-  "organ labels, so 'Vector space' finds the Module atom). " +
+  "THE CANONICAL LOOP (autoformalization): brain_bridge (informal statement → " +
+  "existence-verified decls with signatures, imports, bond quality, one-hop depends — " +
+  "the FIRST call) then brain_cell (the full atom for the winner) then decl_exists (batch: " +
+  "re-verify EVERY name you write) then brain_neighborhood kinds=depends (walk the formal " +
+  "dependency chain across turns; it is cursored). brain_search/brain_transfer are the " +
+  "lower-level jumps brain_bridge composes. " +
+  "HONEST ABSTENTION: informal to formal answers (brain_bridge, brain_transfer) carry a " +
+  "`match` and a `confidence_floor`; a fuzzy match that does not clear the floor returns " +
+  "match:'none' with `nearest` candidates instead of a forced weak grounding (a forced " +
+  "match is what creates hallucinated citations). When the best hit is a generalization or " +
+  "special_case rather than exact, a top-level `note` says so. " +
+  "SNAPSHOT ECHO: every response carries snapshot:{generated_at,pin} — the brain build " +
+  "time and the Mathlib rev the decls were built against. " +
   "An organ's `bond` says why it is in the cell: 'exact' = it IS the atom (identity); " +
   "'generalization'/'special_case' = it has no formal home of its own and attaches to " +
   "its single best target; 'xref'/'field' = a cross-reference / an area concept.";
@@ -81,14 +91,35 @@ const obj = (
 
 export const TOOLS: ToolDef[] = [
   {
+    name: "brain_bridge",
+    description:
+      "THE FIRST call of an autoformalization loop. An informal statement in → the top " +
+      "Mathlib decls out, each existence-VERIFIED against the decl index, with its Lean " +
+      "signature (`code`), `module`, `import_line`, `bond` quality, containment breadcrumb, " +
+      "and the atom's one-hop `depends` partners (ids+labels, capped+counted). Collapses the " +
+      "search→cell→transfer chain into one turn. Honest abstention: if nothing clears the " +
+      "stated `confidence_floor` it returns match:'none' with `nearest` candidates rather " +
+      "than a forced weak grounding (which is what creates hallucinated citations); when the " +
+      "best hit is a generalization/special_case not an exact formalization, a `note` says so. " +
+      "Ends with `next_tools`. THEN: brain_cell for the full atom, decl_exists to re-verify " +
+      "every name you write, brain_neighborhood for the dependency chain.",
+    inputSchema: obj(
+      {
+        q: { type: "string", description: "an informal statement or concept, e.g. 'every finitely generated vector space has a basis'" },
+        limit: { type: "number", description: "max decl hits across the top atoms (default 8, cap 16)" },
+      },
+      ["q"],
+    ),
+  },
+  {
     name: "brain_search",
     description:
-      "Search the Brain's atom index by text. Returns cell ids (cell:<anchor>) and " +
-      "supercell paths (path:…) usable with every other tool. Matches an atom's own " +
-      "label AND its `aka` list — every organ's label — so q='Vector space' returns " +
-      "the Module atom (they are ONE atom, named by its anchor concept). Start here " +
-      "when you only have informal text or an approximate name. A key that resolves " +
-      "exactly (QID, decl name, article slug, xref id) is promoted to the top hit.",
+      "Label search over the atom index → cell ids (cell:<anchor>) and supercell paths " +
+      "(path:…). Matches an atom's own label AND its `aka` (every organ's label), so " +
+      "q='Vector space' returns the Module atom (ONE atom, named by its anchor). The " +
+      "lower-level lookup brain_bridge composes — reach for brain_bridge first for proof " +
+      "work; use brain_search when you only need ids. An exactly-resolving key (QID, decl " +
+      "name, slug, xref id) is promoted to the top hit.",
     inputSchema: obj(
       {
         q: { type: "string", description: "search text, min 2 chars" },
@@ -121,16 +152,15 @@ export const TOOLS: ToolDef[] = [
   {
     name: "brain_transfer",
     description:
-      "THE informal↔formal jump for proof work. direction=informal_to_formal: q is " +
-      "a concept (QID / slug / label / free text) → the atom's ranked Mathlib decl " +
-      "organs with module, mathlib4_docs URL and `bond` ('exact' = it IS this atom's " +
-      "formalization). direction=formal_to_informal: q is a Lean decl name → the same " +
-      "atom's concept organs, with Wikipedia-mirror article URLs, descriptions and " +
-      "available snippet sources (multi-to-multi: Module answers with BOTH module and " +
-      "vector space). A field-of-study concept answers with its supercell — the " +
-      "Mathlib FOLDER that is its formal home, not a declaration; that is the honest " +
-      "answer, not a miss. Empty results carry near-miss suggestions — read them " +
-      "before concluding something is unformalized.",
+      "The one-atom informal↔formal jump (brain_bridge composes this across atoms). " +
+      "direction=informal_to_formal: q is a concept (QID / slug / label / free text) → the " +
+      "atom's ranked decl organs, each with module, `import_line`, `code`, mathlib4_docs URL " +
+      "and `bond`. Carries `match` + `confidence_floor`: a fuzzy match under the floor returns " +
+      "match:'none' + `nearest` (never a forced weak answer); a non-exact best hit adds a `note` " +
+      "(e.g. 'nearest is a generalization'). direction=formal_to_informal: q is a Lean decl name " +
+      "→ the same atom's concept organs (multi-to-multi: Module answers with BOTH module and " +
+      "vector space). A field-of-study concept answers with its supercell (the Mathlib FOLDER " +
+      "that is its formal home) — honest, not a miss. Empty results carry near-miss suggestions.",
     inputSchema: obj(
       {
         q: { type: "string", description: "concept text/QID/slug (informal_to_formal) or decl name (formal_to_informal)" },
@@ -158,13 +188,19 @@ export const TOOLS: ToolDef[] = [
       "partner cells' shards; a row that names `traces_unavailable` has evidence this endpoint " +
       "cannot reach (brain/query.py --full serves it) — it is NOT an unwitnessed bond. " +
       "`withheld_by_shard` counts synapses the shard cap withheld, and `truncated` is true " +
-      "whenever any synapse is missing. Accepts any organ id.",
+      "whenever any synapse is missing. Stable order (-w, id): walk long chains across turns " +
+      "with the opaque `cursor` (response returns `next_cursor` when more remain — the shard " +
+      "cap is the only HARD stop and stays counted in withheld_by_shard). `min_w` floors " +
+      "synapse weight. Accepts any organ id.",
     inputSchema: obj(
       {
         id: { type: "string", description: "atom id (cell:… / path:…) or any organ id" },
         kinds: { type: "string", description: "CSV synapse-kind filter (optional)" },
         traces: { type: "boolean", description: "include per-bond traces (default true)" },
         limit: { type: "number", description: "max synapses (default 50, cap 200)" },
+        min_w: { type: "number", description: "only synapses with weight ≥ this" },
+        cursor: { type: "string", description: "opaque cursor from a previous call's next_cursor" },
+        min_conf: { type: "number", description: "drop traces whose evidence.confidence is below this (kept when unscored)" },
       },
       ["id"],
     ),
@@ -212,14 +248,19 @@ export const TOOLS: ToolDef[] = [
   {
     name: "decl_exists",
     description:
-      "Verify a fully-qualified Lean declaration name exists in Mathlib (exact " +
-      "match against the doc-gen4 declaration index) and get its current module + " +
-      "mathlib4_docs URL. Call this BEFORE citing any decl name in a proof or " +
-      "annotation — hallucinated/renamed names are the #1 failure mode " +
-      "(e.g. Basis → Module.Basis).",
+      "Verify Lean decl names against the doc-gen4 declaration index BEFORE citing them — " +
+      "hallucinated/renamed names are the #1 failure mode. Pass `name` (one) or `names` (up " +
+      "to 16, so a drafted statement's 3–8 decls verify in ONE call). Each verdict returns " +
+      "exists + module + `import_line` + docs URL; when a name is DEAD it returns a labelled " +
+      "suggestion — `suggestion_basis:'verified-rename'` (the verified rename map, e.g. " +
+      "Basis → Module.Basis) or `'unique-suffix-match'` (one indexed decl shares the last " +
+      "segment) — never presented as fact. Batch adds a `counts` summary.",
     inputSchema: obj(
-      { name: { type: "string", description: "fully-qualified decl name, e.g. CommGroup or Nat.Prime.two_le" } },
-      ["name"],
+      {
+        name: { type: "string", description: "one fully-qualified decl name, e.g. CommGroup or Nat.Prime.two_le" },
+        names: { type: "array", items: { type: "string" }, description: "a batch of decl names (cap 16) — verify a drafted statement's citations in one call" },
+      },
+      [],
     ),
   },
 ];
@@ -231,14 +272,17 @@ function argStr(v: unknown): string {
 }
 
 const IMPLS = new Map<string, (c: Ctx, a: Record<string, unknown>) => Promise<ApiResult>>([
+  ["brain_bridge", (c, a) => bridgeFor(c, argStr(a.q), a.limit)],
   ["brain_search", (c, a) => searchFor(c, argStr(a.q), argStr(a.type) || undefined, a.limit)],
   ["brain_cell", (c, a) => cellFor(c, argStr(a.key))],
   ["brain_transfer", (c, a) => transferFor(c, argStr(a.q), argStr(a.direction), a.limit)],
   ["brain_neighborhood", (c, a) =>
-    neighborhoodFor(c, argStr(a.id), argStr(a.kinds) || undefined, a.limit, a.traces)],
+    neighborhoodFor(c, argStr(a.id), argStr(a.kinds) || undefined, a.limit, a.traces, a.min_w, a.cursor, a.min_conf)],
   ["brain_snippets", (c, a) => snippetsFor(c, argStr(a.id))],
   ["brain_filter", (c, a) => filterFor(c, a.f, argStr(a.type) || undefined, a.limit, a.cursor, argStr(a.under) || undefined)],
-  ["decl_exists", (c, a) => declExistsFor(c, argStr(a.name))],
+  // decl_exists: `names` (array) OR `name` (single) — the batch verifies a drafted
+  // statement's 3–8 citations in one round trip (BRIDGE item 1).
+  ["decl_exists", (c, a) => declExistsFor(c, argStr(a.name), a.names)],
 
   // v2 aliases — dispatch-only, deliberately NOT advertised in TOOLS. An agent
   // session that connected before the cell cut holds the old catalog and will
@@ -369,7 +413,9 @@ export function registerMcpRoutes(app: Hono<{ Bindings: Env }>): void {
           ? params.arguments
           : {}) as Record<string, unknown>;
         try {
-          return c.json(rpcResult(id, toolResult(await impl(c, args))));
+          const r = await impl(c, args);
+          r.body.snapshot = await snapshotFor(c); // item 6: every response echoes the snapshot
+          return c.json(rpcResult(id, toolResult(r)));
         } catch (err) {
           // an unexpected throw must not become a protocol error — the tool
           // "executed and failed", which the spec wants surfaced via isError.
@@ -489,10 +535,20 @@ body; responses are plain <code>application/json</code> (no SSE, no sessions, no
 <code>initialize</code>, <code>tools/list</code>, <code>tools/call</code>, <code>ping</code>.
 Rate limit: 120 calls/min per IP. Read-only by construction.</p>
 
-<h2>The seven tools</h2>
+<h2>The eight tools</h2>
+<p>The canonical autoformalization loop: <code>brain_bridge</code> (informal statement &rarr;
+existence-verified decls) &rarr; <code>brain_cell</code> (the full atom) &rarr;
+<code>decl_exists</code> (batch: re-verify every name you write) &rarr;
+<code>brain_neighborhood</code> (walk <code>depends</code> across turns; cursored). Every
+response echoes <code>snapshot:{generated_at,pin}</code>.</p>
 <table>
 <tr><th>tool</th><th>what it does</th></tr>
-<tr><td><code>brain_transfer</code></td><td><b>The informal&harr;formal jump.</b>
+<tr><td><code>brain_bridge</code></td><td><b>The FIRST call of a formalization loop.</b>
+  An informal statement &rarr; the top Mathlib decls, each existence-VERIFIED, with Lean
+  signature, <code>import_line</code>, <code>bond</code>, breadcrumb, and one-hop
+  <code>depends</code>. Honest abstention: nothing clearing the <code>confidence_floor</code>
+  &rarr; <code>match:"none"</code> + <code>nearest</code>. Ends with <code>next_tools</code>.</td></tr>
+<tr><td><code>brain_transfer</code></td><td><b>The one-atom informal&harr;formal jump.</b>
   <code>informal_to_formal</code>: concept text/QID/slug &rarr; the atom's ranked Mathlib decl
   organs with module, mathlib4_docs URL and <code>bond</code> (<code>exact</code> = IS this
   atom's formalization). <code>formal_to_informal</code>: a Lean decl name &rarr; the same
@@ -504,14 +560,18 @@ Rate limit: 120 calls/min per IP. Read-only by construction.</p>
   label, or an atom id — to the owning atom's card: every organ with its embedded content
   (Lean code, Wikidata description, licensed DB snippets, article annotations), breadcrumb,
   synapse summary. <b>The best first call.</b></td></tr>
-<tr><td><code>decl_exists</code></td><td>Verify a Mathlib declaration name is real before
-  citing it (existence oracle over the decl index; returns module + docs URL).</td></tr>
+<tr><td><code>decl_exists</code></td><td>Verify decl names before citing them (existence oracle
+  over the decl index). Pass <code>name</code> (one) or <code>names</code> (a batch, cap 16 — a
+  drafted statement's 3&ndash;8 citations in one call); each verdict returns module +
+  <code>import_line</code>, and a DEAD name gets a labelled <code>renamed_to</code> suggestion
+  (<code>verified-rename</code> | <code>unique-suffix-match</code>), never a fact.</td></tr>
 <tr><td><code>brain_search</code></td><td>Label search &rarr; atom ids, when all you
   have is approximate text. Matches organ labels too, so "Vector space" finds the
   <b>Module</b> atom.</td></tr>
 <tr><td><code>brain_neighborhood</code></td><td>An atom's <b>synapses</b>: one row per partner
   with weight, a kinds histogram (<code>depends,links,relates,cites,&hellip;</code>) and every
-  trace (each with its own direction, provenance and evidence).</td></tr>
+  trace (each with its own direction, provenance and evidence). Stable <code>(-w, id)</code>
+  order with an opaque <code>cursor</code> + <code>min_w</code> to walk long chains across turns.</td></tr>
 <tr><td><code>brain_snippets</code></td><td>Every stored content snippet on an atom:
   Wikidata description, article pointer, LMFDB/nLab/Stacks/ProofWiki/PlanetMath/OEIS text,
   Mathlib docstring + code (each with license); link-only rows for no-content sources.</td></tr>
