@@ -40,7 +40,11 @@ cd wiki && npx tsx ../bench/arms/local_worker.mts 8790 &
 python3 bench/typecheck.py --server &                       # /tmp/wikilean_tc.sock
 # Tier-1b grading server (fresh pin):
 python3 bench/typecheck.py --server --project /Users/jack/Desktop/LEAN/bench-lean-fresh \
-  --socket /tmp/wikilean_tc_fresh.sock &
+  --socket /tmp/wikilean_tc_fresh.sock \
+  --repl-bin /Users/jack/Desktop/LEAN/lean-repl-fresh/.lake/build/bin/repl &
+# (the --repl-bin is MANDATORY: the fresh pin is v4.33 and the default repl is
+#  v4.32 — a mismatched repl "loads" a bare prelude; the sanity gate now refuses
+#  READY in that state instead of serving wrong answers)
 ```
 
 ## P1 — before/while the campaign runs
@@ -53,7 +57,11 @@ deploy` (or `npm run deploy`). After deploy, arm D could target production and
 `WIKIBRAIN_MCP_URL` becomes unnecessary. Reminder: nightly deploy stays gated
 (`WIKILEAN_BRAIN_DEPLOY=1` + clean tree + main branch).
 
-### 5. Codify the gold-census construction as ONE shared helper
+### 5. ~~Codify the gold-census construction as ONE shared helper~~ DONE
+`bench/construct.py`: `assemble_gold` / `prepare_candidate` / `rename_last_decl`
+(LAST decl — bundled auxiliary defs keep their names). Verified on both pins.
+Original text follows for context:
+### 5-old. Codify the gold-census construction as ONE shared helper
 The candidate side is unified (score_bridge renames the produced decl `__cand__` —
 fresh env CONTAINS the golds, so name collisions were real). The GOLD census
 construction (rename-to-`__gold__` + namespace-opens, which passed 100/100) lives
