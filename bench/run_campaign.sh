@@ -18,7 +18,7 @@ export WIKIBRAIN_MCP_URL="${WIKIBRAIN_MCP_URL:-http://localhost:8790/mcp}"
 
 # Max-auth preflight: a single trivial CLI call. If this 401s, STOP — every run
 # would fail the same way (re-authenticate by running `claude` interactively).
-if ! env -u ANTHROPIC_API_KEY -u ANTHROPIC_AUTH_TOKEN \
+if ! env -u ANTHROPIC_API_KEY -u ANTHROPIC_AUTH_TOKEN -u ANTHROPIC_BASE_URL -u USE_STAGING_OAUTH -u USE_LOCAL_OAUTH -u CLAUDE_CODE_OAUTH_SCOPES \
      claude -p "reply with exactly: ok" --model "$MODEL" 2>&1 | grep -qi "ok"; then
   echo "ABORT: claude CLI auth check failed (expired OAuth?). Run \`claude\` interactively once, then retry."
   exit 1

@@ -238,7 +238,10 @@ def main() -> int:
                if mcp_config else None)
 
     env = dict(os.environ)
-    env.pop("ANTHROPIC_API_KEY", None)  # Max-auth gotcha (CLAUDE.md)
+    # Max-auth gotcha (CLAUDE.md) + endpoint hygiene (see run_bridge.py)
+    for k in ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "ANTHROPIC_BASE_URL",
+              "USE_STAGING_OAUTH", "USE_LOCAL_OAUTH", "CLAUDE_CODE_OAUTH_SCOPES"):
+        env.pop(k, None)
     # Fresh empty cwd OUTSIDE the repo: the claude CLI discovers CLAUDE.md by
     # walking up from cwd, loads .claude/ hooks+skills+settings from cwd, and
     # keys the user-level auto-memory (~/.claude/projects/<mangled-cwd>) by cwd

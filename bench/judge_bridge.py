@@ -86,7 +86,7 @@ def judge_one(task: dict, run: dict, model: str) -> dict:
         produced=(run.get("output_lean") or "(no output)")[:4000],
     )
     env = {k: v for k, v in os.environ.items()
-           if k not in ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN")}
+           if k not in ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "ANTHROPIC_BASE_URL", "USE_STAGING_OAUTH", "USE_LOCAL_OAUTH", "CLAUDE_CODE_OAUTH_SCOPES")}
     t0 = time.monotonic()
     proc = subprocess.run(
         ["claude", "-p", "--model", model, "--max-turns", "1"],
