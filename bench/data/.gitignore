@@ -1,8 +1,12 @@
-# Runtime outputs — tasks.jsonl (the committed gold task set) is NOT ignored.
+# Runtime outputs — tasks.jsonl + bridge_tasks.jsonl (the committed gold sets) are NOT ignored.
 results_*.jsonl
 summary.json
 .decl_cache.json
 .mcp-config.resolved.json
+.mcp-bridge-*.resolved.json
 .workdir/
 *.tmp
 raw/   # ProofNet# parquet snapshot (re-download via build_bridge_tasks.py; revision pinned in stats)
+# Bridge Experiment per-task run outputs + its scored summary (run_bridge.py / score_bridge.py)
+runs/
+bridge_summary.json
