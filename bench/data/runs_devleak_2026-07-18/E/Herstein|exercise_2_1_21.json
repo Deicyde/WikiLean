@@ -1,0 +1,22 @@
+{
+  "task_id": "Herstein|exercise_2_1_21",
+  "arm": "E",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-17T21:13:52Z",
+  "wall_s": 140.5,
+  "output_lean": "theorem group_of_order_5_is_abelian (G : Type*) [Group G] (h : Nat.card G = 5) : \n  IsMulCommutative G := by\n  haveI : Fact (5 : ℕ).Prime := ⟨prime_five⟩\n  haveI : IsCyclic G := isCyclic_of_prime_card h\n  haveI : CommGroup G := IsCyclic.commGroup\n  exact IsMulCommutative.of_comm mul_comm := sorry",
+  "transcript_stats": {
+    "turns": 60,
+    "tool_calls_by_name": {
+      "Skill": 2,
+      "ToolSearch": 2,
+      "mcp__formal__loogle": 3,
+      "mcp__formal__decl_grep": 42,
+      "mcp__formal__decl_read": 8
+    },
+    "tokens_in": 232,
+    "tokens_out": 11041,
+    "cost_usd": 0.18168020000000007
+  }
+}
