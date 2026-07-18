@@ -202,6 +202,16 @@ Discovered while standing the campaign up; none was tuned on outcomes:
 5. **Judge model note:** the judge harness excludes strict/evaluated grades from
    campaign claims until the 50-item human calibration is graded and agreement
    reported.
+6. **Skill-leak fix after the dev smoke, before any eval run (2026-07-18).** The
+   dev tool-use census showed arms B–E calling the CLI's `Skill`/`ToolSearch`
+   built-ins (32–56 calls/arm); a probe confirmed skills actually load (e.g.
+   Mathlib-conventions text) — knowledge arm A structurally cannot reach
+   (`--tools ""`). Fix: `Skill`, `ToolSearch`, `Agent` added to
+   DISALLOWED_TOOLS; a probe confirmed arm MCP tools resolve directly without
+   ToolSearch. The 120 contaminated B–E dev runs were quarantined to
+   `bench/data/runs_devleak_2026-07-18/` and re-run clean; arm A (0 tool calls)
+   was kept. No eval/fresh row ever ran under the leak, and no grading of the
+   contaminated rows was performed before the decision to discard them.
 
 ## Execution order
 
