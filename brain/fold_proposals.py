@@ -68,6 +68,48 @@ def checkout_has(seg_decl: str) -> bool:
         return False
 
 
+# Module resolution for discover rows that arrive without one (a 2026-07-18
+# fleet shipped 150+ verified joins whose cells then fell to the path:Mathlib
+# ROOT — real decl, no module, no supercell). Oracle first (docLink encodes the
+# module), single-hit checkout grep as backstop; an ambiguous suffix returns
+# None rather than guessing (the bare-suffix trap in mathlib_decl_oracles).
+_oracle_modules: dict[str, str] | None = None
+
+
+def oracle_module(decl: str) -> str | None:
+    global _oracle_modules
+    if _oracle_modules is None:
+        _oracle_modules = {}
+        try:
+            for n, v in json.loads(ORACLE.read_text()).get("declarations", {}).items():
+                m = re.match(r"^\./(.+)\.html(?:#|$)", (v or {}).get("docLink") or "")
+                if m:
+                    _oracle_modules[n] = m.group(1).replace("/", ".")
+        except (OSError, json.JSONDecodeError):
+            pass
+    return _oracle_modules.get(decl)
+
+
+def checkout_module(seg_decl: str) -> str | None:
+    kw = r"(theorem|lemma|def|abbrev|structure|class|instance|inductive)"
+    seg = seg_decl.split(".")[-1]
+    pat = f"{kw} +([A-Za-z0-9_'.«»]+\\.)?{re.escape(seg)}($|[^A-Za-z0-9_'])"
+    try:
+        r = subprocess.run(["grep", "-rIlE", pat, str(CHECKOUT)],
+                           capture_output=True, text=True, timeout=30)
+        files = [f for f in r.stdout.splitlines() if f.endswith(".lean")]
+    except (subprocess.SubprocessError, OSError):
+        return None
+    if len(files) != 1:
+        return None
+    rel = os.path.relpath(files[0], str(CHECKOUT))
+    return rel[:-len(".lean")].replace("/", ".")
+
+
+def resolve_module(decl: str) -> str | None:
+    return oracle_module(decl) or checkout_module(decl)
+
+
 def hierarchy_paths() -> dict[str, int]:
     h = json.loads((CATALOG / "hierarchy.json").read_text())
     out: dict[str, int] = {}
@@ -442,7 +484,7 @@ def main() -> int:
             discovery_out[(qid, d)] = {
                 "src": qid, "dst": f"decl:{lib}:{d}", "kind": "formalizes",
                 "confidence": conf, "verified": True,
-                "module": r.get("module"),
+                "module": r.get("module") or resolve_module(d),
                 "evidence": {"match_kind": r.get("match_kind") or "exact",
                              "note": r.get("evidence"),
                              "proposer": r.get("proposer"), "skeptic": skeptic},
