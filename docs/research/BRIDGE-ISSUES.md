@@ -54,16 +54,26 @@ python3 bench/typecheck.py --server --project /Users/jack/Desktop/LEAN/bench-lea
 
 ## P1 — before/while the campaign runs
 
-### 4. Jack's review of `brain-v3-cells` → deploy → merge (Phase 5)
-The whole v3 stack (atom layer, renderer, API/MCP, bench) awaits review. A
-Worker version (pre-API-improvements) sits uploaded-but-unserved; re-upload after
-review: `cd wiki && npx wrangler versions upload`, then `npx wrangler versions
-deploy` (or `npm run deploy`). After deploy, arm D could target production and
-`WIKIBRAIN_MCP_URL` becomes unnecessary. Reminder: nightly deploy stays gated
-(`WIKILEAN_BRAIN_DEPLOY=1` + clean tree + main branch).
-Review-pass addendum (post-faf142d): the branch now also carries the FC/Erdős
-ingest campaign (issue 8), including **7 grading disputes in
-`catalog/data/grounding_overrides.jsonl` that need Jack's call**.
+### 4. ~~Deploy + merge (Phase 5)~~ DONE (2026-07-18, on Jack's direct order)
+Jack waived the detailed pre-review ("I don't want to wait any more"):
+`main` fast-forwarded to the branch tip, `npm run deploy` shipped Worker
+version c7c36e9d, pushed to origin. Live-verified: /brain renders v3 at real
+pixels (34 supercell bubbles → 468 cells on dive), cell API + MCP 3.0.0 + 301s
++ v2 node oracle all answering. TRAP LEARNED: the 440MB asset upload
+fetch-fails under campaign load — pause the campaign (resumable) and deploy on
+a quiet machine (~100s). Still open from the review pass: the **7 grading
+disputes in `catalog/data/grounding_overrides.jsonl`** need Jack's call, and a
+post-hoc code review of the ~65 shipped commits is still worth doing.
+### 4b. Retire the v2 per-node brain assets (~340MB of the 440MB deploy)
+Phase-5 leftover, now the deploy-size tax. Three coupled changes:
+(1) `brainNodeExists` (wiki/src/brain.ts) — swap the per-node-shard oracle for
+a labels.json membership set (8.7MB, already isolate-memoized for search;
+aliases.json is NOT sufficient — only decls+slugs). (2) stop `brain/
+build_shards.py` emitting per-node q*/xref_*/decl_*/path_*/lit_* files (keep
+cells/, views/, labels, aliases, manifest, sources, xref_index/explorer —
+check each against consumers first). (3) retire GET /api/brain/node → 410 like
+the other v2 routes. Then prune site/assets/brain leftovers + rebuild public
+(→ ~100MB) + tests + deploy.
 
 ### 5. ~~Codify the gold-census construction as ONE shared helper~~ DONE
 `bench/construct.py`: `assemble_gold` / `prepare_candidate` / `rename_last_decl`
