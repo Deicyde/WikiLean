@@ -212,6 +212,15 @@ Discovered while standing the campaign up; none was tuned on outcomes:
    `bench/data/runs_devleak_2026-07-18/` and re-run clean; arm A (0 tool calls)
    was kept. No eval/fresh row ever ran under the leak, and no grading of the
    contaminated rows was performed before the decision to discard them.
+7. **Per-call tool traces added mid-eval (2026-07-18), observation-only.** After
+   eval arms A–B had already run, `run_bridge.parse_stream` gained `tool_trace`:
+   ordered calls with truncated input, result size, result head, and error flag
+   (cap 400 calls/run). Nothing the agent sees changed — same prompts, tools,
+   budgets; this only retains telemetry that was previously parsed and discarded.
+   Consequence: eval arms C/D/E (and all fresh runs) carry traces; eval A/B and
+   the dev split carry only per-name counts. The traces feed the planned
+   behavioral analysis (does arm D's final decl actually originate from a
+   brain_bridge/brain_transfer result?) — they are not a graded metric.
 
 ## Execution order
 

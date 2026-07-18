@@ -202,6 +202,12 @@ def parse_stream(stdout: str) -> dict:
     result_text, subtype, is_error, api_err = "", None, None, None
     turns = cost = tin = tout = None
     tool_calls: dict[str, int] = {}
+    # Observation-only per-call trace (added mid-eval, 2026-07-18; prereg dev. 7):
+    # ordered tool calls with truncated inputs + result size/error, keyed by
+    # tool_use id so results attach to the right call. Capped to keep rows small.
+    TRACE_CAP, INPUT_TRUNC, RESULT_TRUNC = 400, 300, 200
+    trace: list[dict] = []
+    by_use_id: dict[str, dict] = {}
     for line in stdout.splitlines():
         line = line.strip()
         if not line:
@@ -216,6 +222,23 @@ def parse_stream(stdout: str) -> dict:
                 if isinstance(blk, dict) and blk.get("type") == "tool_use":
                     nm = blk.get("name", "?")
                     tool_calls[nm] = tool_calls.get(nm, 0) + 1
+                    if len(trace) < TRACE_CAP:
+                        entry = {"i": len(trace), "name": nm,
+                                 "input": json.dumps(blk.get("input"),
+                                                     ensure_ascii=False)[:INPUT_TRUNC]}
+                        trace.append(entry)
+                        if blk.get("id"):
+                            by_use_id[blk["id"]] = entry
+        elif etype == "user":
+            for blk in (ev.get("message") or {}).get("content", []) or []:
+                if isinstance(blk, dict) and blk.get("type") == "tool_result":
+                    entry = by_use_id.get(blk.get("tool_use_id") or "")
+                    if entry is not None:
+                        c = blk.get("content")
+                        s = c if isinstance(c, str) else json.dumps(c, ensure_ascii=False)
+                        entry["ok"] = not bool(blk.get("is_error"))
+                        entry["result_chars"] = len(s)
+                        entry["result_head"] = s[:RESULT_TRUNC]
         elif etype == "result":
             result_text = ev.get("result") or result_text
             subtype = ev.get("subtype")
@@ -228,7 +251,8 @@ def parse_stream(stdout: str) -> dict:
             tout = usage.get("output_tokens", tout)
     return {"result_text": result_text, "subtype": subtype, "is_error": is_error,
             "api_error_status": api_err, "turns": turns, "cost_usd": cost,
-            "tokens_in": tin, "tokens_out": tout, "tool_calls_by_name": tool_calls}
+            "tokens_in": tin, "tokens_out": tout, "tool_calls_by_name": tool_calls,
+            "tool_trace": trace}
 
 
 def now_ts() -> str:
@@ -264,6 +288,7 @@ def run_one(task: dict, args: argparse.Namespace, mcp_config: Path | None,
         "turns": stats["turns"], "tool_calls_by_name": stats["tool_calls_by_name"],
         "tokens_in": stats["tokens_in"], "tokens_out": stats["tokens_out"],
         "cost_usd": stats["cost_usd"]}
+    row["tool_trace"] = stats["tool_trace"]
     if stats["is_error"] or stats["subtype"] not in (None, "success"):
         detail = (stats["result_text"] or "").strip().replace("\n", " ")[:200]
         api = f" api_status={stats['api_error_status']}" if stats["api_error_status"] else ""
