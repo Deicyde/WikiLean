@@ -707,7 +707,10 @@ function drawNodes() {
   const all = entered.merge(bubbles);
   all
     .attr("cx", l => l.x).attr("cy", l => l.y)
-    .attr("r", l => Math.max(l.r, 2))
+    // cells are dots, never discs: a near-empty focus level would otherwise
+    // pack its lone cell to fill the stage (a 568px "plain blue dot")
+    .attr("r", l => l.data.type === "cell" ? Math.min(Math.max(l.r, 2), 42)
+                                           : Math.max(l.r, 2))
     .attr("fill", l => fillFor(l.data))
     .attr("fill-opacity", l => l.data.dim ? 0.15 : l.data.type === "folder" ? 0.55 : 0.9)
     // the gold ring marks an atom carrying a hand-written @[wikidata] tag —
@@ -841,7 +844,15 @@ function applyFacetFilter(items) {
       it.dim = !folderMatch(it);
       kept.push(it);
       if (!it.dim) shown++;
-    } else if (match(it)) { kept.push(it); shown++; }
+    } else {
+      // supercells are CONTAINERS (folders in the Mathlib source): focusing one
+      // always unfolds its full contents. A facet filter DIMS non-matching
+      // cells (the strays-dive rule) — it never empties a level down to one
+      // stage-filling dot.
+      it.dim = !match(it);
+      kept.push(it);
+      if (!it.dim) shown++;
+    }
   }
   return {items: kept, shown, total: items.length, active: true};
 }
