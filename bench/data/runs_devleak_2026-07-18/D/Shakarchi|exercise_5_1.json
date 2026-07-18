@@ -1,0 +1,18 @@
+{
+  "task_id": "Shakarchi|exercise_5_1",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-17T21:10:01Z",
+  "wall_s": 58.6,
+  "output_lean": "theorem bounded_analytic_zeros_summable\n  {f : ℂ → ℂ}\n  (hf_analytic : AnalyticOn ℂ f (Metric.ball 0 1))\n  (hf_bounded : ∃ M, ∀ z ∈ Metric.ball 0 1, ‖f z‖ ≤ M)\n  (hf_not_zero : ∃ z ∈ Metric.ball 0 1, f z ≠ 0)\n  (zeros : ℕ → ℂ)\n  (hzeros : ∀ n, f (zeros n) = 0 ∧ ‖zeros n‖ < 1)\n  : Summable (fun n => 1 - ‖zeros n‖) := sorry",
+  "transcript_stats": {
+    "turns": 7,
+    "tool_calls_by_name": {
+      "Skill": 3
+    },
+    "tokens_in": 20,
+    "tokens_out": 5648,
+    "cost_usd": 0.04354645
+  }
+}

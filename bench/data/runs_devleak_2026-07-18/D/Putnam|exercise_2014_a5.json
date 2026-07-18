@@ -1,0 +1,21 @@
+{
+  "task_id": "Putnam|exercise_2014_a5",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-17T21:08:26Z",
+  "wall_s": 87.7,
+  "output_lean": "theorem P_coprime (j k : ℕ) (hj : 0 < j) (hk : 0 < k) (hjk : j ≠ k) :\n  let P : ℕ → Polynomial ℚ := fun n =>\n    Finset.sum (Finset.range n) (fun i => Polynomial.C (i + 1 : ℚ) * Polynomial.X ^ i)\n  IsCoprime (P j) (P k) := sorry",
+  "transcript_stats": {
+    "turns": 8,
+    "tool_calls_by_name": {
+      "Skill": 1,
+      "ToolSearch": 1,
+      "mcp__wikibrain__decl_exists": 2,
+      "mcp__wikibrain__brain_search": 2
+    },
+    "tokens_in": 62,
+    "tokens_out": 7911,
+    "cost_usd": 0.06752575
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "task_id": "Shakarchi|exercise_5_1",
+  "arm": "E",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-17T21:18:57Z",
+  "wall_s": 103.1,
+  "output_lean": "theorem blaschke_convergence_condition (f : ℂ → ℂ) \n    (hf_diff : DifferentiableOn ℂ f (Metric.ball 0 1))\n    (hf_bdd : ∃ C, ∀ z ∈ Metric.ball 0 1, ‖f z‖ ≤ C)\n    (hf_ne : ∃ z ∈ Metric.ball 0 1, f z ≠ 0)\n    (z : ℕ → ℂ)\n    (hz_zero : ∀ n, f (z n) = 0)\n    (hz_ball : ∀ n, z n ∈ Metric.ball 0 1)\n    (hz_complete : ∀ w ∈ Metric.ball 0 1, f w = 0 → w ∈ Set.range z) :\n    Summable (fun n => 1 - ‖z n‖) := sorry",
+  "transcript_stats": {
+    "turns": 22,
+    "tool_calls_by_name": {
+      "ToolSearch": 1,
+      "mcp__formal__loogle": 20
+    },
+    "tokens_in": 88,
+    "tokens_out": 6040,
+    "cost_usd": 0.06861294999999999
+  }
+}

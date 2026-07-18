@@ -1,0 +1,18 @@
+{
+  "task_id": "Shakarchi|exercise_5_1",
+  "arm": "B",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-17T20:55:20Z",
+  "wall_s": 71.3,
+  "output_lean": "theorem blaschke_convergence_condition \n    (f : ℂ → ℂ) \n    (h_analytic : AnalyticOn ℂ f (Metric.ball (0 : ℂ) 1))\n    (h_bounded : ∃ M, ∀ z ∈ Metric.ball (0 : ℂ) 1, ‖f z‖ ≤ M)\n    (h_not_identically_zero : ∃ z ∈ Metric.ball (0 : ℂ) 1, f z ≠ 0)\n    (zeros : ℕ → ℂ)\n    (h_zeros_in_disc : ∀ n, ‖zeros n‖ < 1)\n    (h_are_zeros : ∀ n, f (zeros n) = 0)\n    : Summable fun n => 1 - ‖zeros n‖ := sorry",
+  "transcript_stats": {
+    "turns": 9,
+    "tool_calls_by_name": {
+      "Skill": 4
+    },
+    "tokens_in": 30,
+    "tokens_out": 6131,
+    "cost_usd": 0.053594949999999995
+  }
+}

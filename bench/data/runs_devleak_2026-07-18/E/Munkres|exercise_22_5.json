@@ -1,0 +1,21 @@
+{
+  "task_id": "Munkres|exercise_22_5",
+  "arm": "E",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-17T21:15:48Z",
+  "wall_s": 195.6,
+  "output_lean": "theorem isOpenMap_restrict {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]\n  {p : X → Y} (hp : IsOpenMap p) {A : Set X} (hA : IsOpen A) :\n  IsOpenMap (fun (a : A) => (⟨p a, Set.mem_image_of_mem p a.property⟩ : {y : Y // y ∈ p '' A})) := sorry",
+  "transcript_stats": {
+    "turns": 38,
+    "tool_calls_by_name": {
+      "ToolSearch": 2,
+      "mcp__formal__decl_grep": 25,
+      "mcp__formal__decl_read": 1,
+      "mcp__formal__loogle": 9
+    },
+    "tokens_in": 316,
+    "tokens_out": 13166,
+    "cost_usd": 0.18922905
+  }
+}

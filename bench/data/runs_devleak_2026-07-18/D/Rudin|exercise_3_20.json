@@ -1,0 +1,22 @@
+{
+  "task_id": "Rudin|exercise_3_20",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-17T21:09:14Z",
+  "wall_s": 73.9,
+  "output_lean": "theorem cauchy_seq_of_subseq_tendsto\n  {X : Type*} [MetricSpace X]\n  {p : ℕ → X} (hp_cauchy : CauchySeq p)\n  {n : ℕ → ℕ} (hn : StrictMono n)\n  {p_lim : X}\n  (hp_subseq : Filter.Tendsto (p ∘ n) Filter.atTop (nhds p_lim)) :\n  Filter.Tendsto p Filter.atTop (nhds p_lim) := sorry",
+  "transcript_stats": {
+    "turns": 24,
+    "tool_calls_by_name": {
+      "Skill": 3,
+      "ToolSearch": 2,
+      "mcp__wikibrain__brain_bridge": 10,
+      "mcp__wikibrain__brain_cell": 4,
+      "mcp__wikibrain__decl_exists": 1
+    },
+    "tokens_in": 164,
+    "tokens_out": 4756,
+    "cost_usd": 0.12143864999999998
+  }
+}
