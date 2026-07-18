@@ -140,6 +140,7 @@ def extract_cited(lean: str | None) -> list[str]:
 # Each returns None ("not available"); `success` folds them in when they don't. #
 # --------------------------------------------------------------------------- #
 _TC_ENV = None
+_MAIN_SOCK = "/tmp/wikilean_tc.sock"
 _FRESH_SOCK = "/tmp/wikilean_tc_fresh.sock"
 _FRESH_PROJECT = "/Users/jack/Desktop/LEAN/bench-lean-fresh"
 _TC_ENV_FRESH = None
@@ -147,10 +148,14 @@ _TC_ENV_FRESH = None
 def _route_for(task_id: str) -> tuple[str | None, str | None]:
     """Fresh-set rows grade on the fresh pin (theorems NEWER than the Tier-1a pin
     — that is the held-out design, docs/research/BRIDGE-EXPERIMENT.md deviations).
-    Everything else grades on the default env/server."""
+    Everything else grades on the default pin — through its server socket when one
+    is up (a warm single-shot is ~60s vs seconds on the server, and 150 rows of
+    single-shot is how a scoring pass silently takes hours)."""
     import os
     if task_id.startswith("fresh_") and os.path.exists(_FRESH_SOCK):
         return _FRESH_SOCK, _FRESH_PROJECT
+    if os.path.exists(_MAIN_SOCK):
+        return _MAIN_SOCK, None
     return None, None
 
 def typecheck_stub(task: dict, run: dict) -> bool | None:
@@ -158,24 +163,23 @@ def typecheck_stub(task: dict, run: dict) -> bool | None:
     output_lean against the pinned toolchain. `sorry` is a warning, not an error,
     so a statement-only decl is expected to come back ok. Returns None only when
     there is no output to check."""
-    global _TC_ENV
+    global _TC_ENV, _TC_ENV_FRESH
     if not run.get("output_lean"):
         return None
     import typecheck as _tcmod
     import os
     sock, project = _route_for(task.get("id") or run.get("task_id") or "")
-    global _TC_ENV_FRESH
-    if sock:
+    if project:  # fresh pin
         if _TC_ENV_FRESH is None:
             _TC_ENV_FRESH = _tcmod.resolve_env(Path(project))
         tc_env = _TC_ENV_FRESH
-        prev = os.environ.get("BENCH_TC_SERVER")
-        os.environ["BENCH_TC_SERVER"] = sock
-    else:
+    else:  # default (Tier-1a) pin, with or without its server
         if _TC_ENV is None:
             _TC_ENV = _tcmod.resolve_env(Path(_tcmod.DEFAULT_PROJECT))
         tc_env = _TC_ENV
-        prev = None
+    prev = os.environ.get("BENCH_TC_SERVER")
+    if sock:
+        os.environ["BENCH_TC_SERVER"] = sock
     from construct import prepare_candidate
     code = prepare_candidate(run["output_lean"], task.get("gold_header") or "")
     r = _tcmod.typecheck(code, tc_env, timeout=90,
@@ -225,6 +229,7 @@ def score_run(task: dict, run: dict, oracle: Oracle) -> dict:
         "n_hallucinated": len(hallucinated), "hallucinated_names": hallucinated,
         "decl_existence_rate": (round(resolved / denom, 4) if denom else None),
         "typecheck": tc, "judge": jd,
+        "typecheck_timed_out": bool((run.get("_typecheck") or {}).get("timed_out")),
         "success_proxy": proxy, "success": success,
         "stats": run.get("transcript_stats") or {},
     }
@@ -271,7 +276,11 @@ def aggregate_arm(scored: dict[str, dict]) -> dict:
     if not n:
         return {"n": 0}
     produced = sum(1 for s in scored.values() if s["produced"])
-    succ = sum(1 for s in scored.values() if s["success"])
+    succ = sum(1 for s in scored.values() if s["success_proxy"])
+    succ_full = sum(1 for s in scored.values() if s["success"])
+    tc_ok = sum(1 for s in scored.values() if s["typecheck"] is True)
+    tc_none = sum(1 for s in scored.values() if s["typecheck"] is None)
+    tc_to = sum(1 for s in scored.values() if s.get("typecheck_timed_out"))
     hall_runs = sum(1 for s in scored.values() if s["n_hallucinated"] > 0)
     cited = sum(s["n_cited"] for s in scored.values())
     hall = sum(s["n_hallucinated"] for s in scored.values())
@@ -291,6 +300,10 @@ def aggregate_arm(scored: dict[str, dict]) -> dict:
         "n": n, "produced": produced,
         "success_proxy_k": succ,
         "success_proxy_rate": round(succ / n, 4),
+        "success_k": succ_full,
+        "success_rate": round(succ_full / n, 4),
+        "typecheck_ok_k": tc_ok, "typecheck_none_k": tc_none,
+        "typecheck_timeout_k": tc_to,
         "runs_with_hallucination": hall_runs,
         "cited_total": cited, "hallucinated_total": hall,
         "hallucinated_decl_rate": round(hall / cited, 4) if cited else None,
@@ -320,8 +333,8 @@ def mcnemar(scored_x: dict[str, dict], scored_y: dict[str, dict]) -> dict:
     return {"n_paired": len(common), "both_success": both,
             "x_only": b, "y_only": c, "neither": neither,
             "discordant": b + c,
-            "note": "McNemar b=x_only, c=y_only on success_proxy "
-                    "(placeholder for typecheck∧judge)"}
+            "note": "McNemar b=x_only, c=y_only on `success` "
+                    "(proxy ∧ typecheck when available; judge pending calibration)"}
 
 
 # --------------------------------------------------------------------------- #
@@ -339,11 +352,15 @@ def run_scoring(runs_dir: Path, tasks_path: Path, oracle: Oracle,
         for tid, row in runs[arm].items():
             scored[arm][tid] = score_run(tasks.get(tid, {}), row, oracle)
 
+    tc_any = any(s["typecheck"] is not None
+                 for a in present for s in scored[a].values())
     summary: dict = {
         "runs_dir": str(runs_dir), "tasks_file": str(tasks_path),
         "oracle_enabled": oracle.enabled,
-        "success_metric": "success_proxy (produced ∧ no hallucinated citations) — "
-                          "PLACEHOLDER; typecheck & judge stubs return None",
+        "success_metric": ("produced ∧ no-halluc ∧ TYPECHECK (judge pending "
+                           "calibration)" if tc_any else
+                           "success_proxy (produced ∧ no hallucinated citations) — "
+                           "PLACEHOLDER; typecheck unavailable, judge stub None"),
         "arms": {a: aggregate_arm(scored[a]) for a in present},
         "paired_matrix": {}, "mcnemar": {},
     }
@@ -382,6 +399,11 @@ def print_table(summary: dict) -> None:
         ("produced decl", lambda a: a["produced"]),
         ("success_proxy", lambda a: f"{a['success_proxy_k']}/{a['n']} "
                                     f"({a['success_proxy_rate'] * 100:.1f}%)"),
+        ("success (folded)", lambda a: f"{a['success_k']}/{a['n']} "
+                                       f"({a['success_rate'] * 100:.1f}%)"),
+        ("typecheck ok", lambda a: f"{a['typecheck_ok_k']}/{a['n']}"
+                                   + (f" (to={a['typecheck_timeout_k']})"
+                                      if a.get('typecheck_timeout_k') else "")),
         ("halluc-decl rate", lambda a: (f"{a['hallucinated_total']}/{a['cited_total']} "
                                         f"({a['hallucinated_decl_rate'] * 100:.1f}%)"
                                         if a.get('hallucinated_decl_rate') is not None
@@ -400,13 +422,12 @@ def print_table(summary: dict) -> None:
             cells.append(str(fn(agg)) if agg.get("n") else "—")
         print(f"{label:<20}" + "".join(f"{c:<{w}}" for c in cells))
     if summary["mcnemar"]:
-        print("\nMcNemar-ready discordant pairs (success_proxy):")
+        print("\nMcNemar-ready discordant pairs (success, tc-folded):")
         for pair, m in summary["mcnemar"].items():
             print(f"  {pair}: n={m['n_paired']} both={m['both_success']} "
                   f"b(x_only)={m['x_only']} c(y_only)={m['y_only']} "
                   f"neither={m['neither']} discordant={m['discordant']}")
-    print("\n(success is a PLACEHOLDER — wire typecheck_stub + judge_stub for the "
-          "real faithful@budget metric.)")
+    print(f"\n(success folds in: {summary['success_metric']})")
 
 
 def main() -> int:
