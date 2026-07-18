@@ -66,7 +66,12 @@ WIKIBRAIN_TOOLS = ["mcp__wikibrain"] + [
 # Belt-and-suspenders: -p mode auto-denies unapproved tools, but disallow the
 # built-ins outright so neither arm can read files or search the web.
 DISALLOWED_TOOLS = ["Bash", "Read", "Glob", "Grep", "Edit", "Write",
-                    "NotebookEdit", "WebFetch", "WebSearch", "Task", "TodoWrite"]
+                    "NotebookEdit", "WebFetch", "WebSearch", "Task", "TodoWrite",
+                    # Skill leaked Mathlib-conventions knowledge into tool arms
+                    # (arm A's --tools "" can't reach it — asymmetric); ToolSearch
+                    # is unnecessary (arm MCP tools resolve directly); Agent is the
+                    # current name of the subagent spawner ("Task" is the old one).
+                    "Skill", "ToolSearch", "Agent"]
 
 
 def resolve_mcp_config() -> Path:
