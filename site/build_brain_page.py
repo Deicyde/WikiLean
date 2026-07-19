@@ -2266,12 +2266,27 @@ async function renderSupercellPanel(p) {
     <div class="sub">supercell · <code>${esc(p)}</code> · ${tree.count(p).toLocaleString()}
       cells in the subtree${(sc.cells || []).length ? ` · ${sc.cells.length} here` : ""}</div>`;
   // rule-5 organs: field-of-study concepts and area pages belong to the FOLDER,
-  // never to a cell — "Linear algebra" is this module, not the Module atom
+  // never to a cell — "Linear algebra" is this module, not the Module atom.
+  // Rule-4 PARKED pages are a different fact (a page shared by several cells
+  // below, displaced up here) — mixing them with the field organs read as
+  // "Parseval's Theorem is an area page about Analysis". Two sections.
   if ((sc.organs || []).length) {
-    html += `<section class="kind"><h3 title="a field-of-study concept or an area-level page belongs to the module, never to a cell (SCHEMA rules 4 &amp; 5)">This area <em>is</em>
-      <span class="cnt">(${sc.organs.length})</span></h3>`;
-    for (const o of sc.organs) html += organHtml(o, null);
-    html += `</section>`;
+    const about = sc.organs.filter(o => o.bond !== "area-page");
+    const parked = sc.organs.filter(o => o.bond === "area-page");
+    if (about.length) {
+      html += `<section class="kind"><h3 title="a field-of-study concept or an area-level page belongs to the module, never to a cell (SCHEMA rule 5)">This area <em>is</em>
+        <span class="cnt">(${about.length})</span></h3>`;
+      for (const o of about) html += organHtml(o, null);
+      html += `</section>`;
+    }
+    if (parked.length) {
+      html += `<section class="kind"><h3 title="an external page cited by several cells below — it describes specific results, not this area, and is parked here because attaching it to any one claimant would merge them into one atom (SCHEMA rule 4)">Shared references parked here
+        <span class="cnt">(${parked.length})</span></h3>
+        <p class="note">Pages cited by <b>several cells below</b> — they describe specific
+        results, not this area; each sits here only because no single cell can own it.</p>`;
+      for (const o of parked) html += organHtml(o, null);
+      html += `</section>`;
+    }
   }
   if ((sc.children || []).length) {
     html += `<section class="kind"><h3>Areas <span class="cnt">(${sc.children.length})</span></h3><div class="chips">`;
