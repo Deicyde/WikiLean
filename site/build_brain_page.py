@@ -1780,7 +1780,7 @@ const BOND_TITLE = {
   exact: "the concept IS this declaration's formalization — `exact` asserts identity, and identity fuses both ways (SCHEMA rule 1)",
   generalization: "this concept has no `exact` declaration of its own, so it attaches to its single best generalization target (SCHEMA rule 2)",
   special_case: "this concept has no `exact` declaration of its own, so it attaches to its single best special-case target (SCHEMA rule 2)",
-  xref: "an external-database page this atom cross-references, claimed by this atom alone (SCHEMA rule 4)",
+  xref: "an external-database page about this atom — no other cell cites it, so it belongs to this atom outright",
   article: "the WikiLean article about this object",
   matches: "a TheoremGraph match between an arXiv statement and a Lean declaration here",
   field: "a field-of-study concept: its formal home is this folder, never a cell (SCHEMA rule 5)",
@@ -1877,9 +1877,27 @@ function organHtml(o, anchor) {
     // that bypassed esc().
     const cl = Array.isArray(o.claimants) ? o.claimants
       : (o.claimants ? [o.claimants] : []);
-    if (cl.length)
-      body += `<p class="osub" title="${esc(cl.join(", "))}">claimed by ${cl.length} atom${
-        cl.length === 1 ? "" : "s"} — an area page (SCHEMA rule 4)</p>`;
+    if (cl.length) {
+      // Say it in English, with the claimants named and clickable: one external
+      // page cited by several cells cannot belong to any of them (an organ in
+      // two cells would MERGE them into one atom — SCHEMA rule 4), so it is
+      // filed with the area they share and the claimants keep a co-page synapse.
+      const names = cl.map(id => {
+        const row = labelById && labelById.get(id.replace(/^cell:/, ""));
+        const lbl = (row && row.label) || id.replace(/^cell:/, "");
+        return `<span class="nav" data-nav="${esc(id)}" data-lbl="${esc(lbl)}">${esc(lbl)}</span>`;
+      }).join(", ");
+      const dbName = esc(XREF_NAME[o.db] || o.db || "external");
+      body += cl.length === 1
+        ? `<p class="osub">an area-level ${dbName} page — cross-referenced by ${names},
+           but broader than that one cell, so it is filed here with the area
+           it describes.</p>`
+        : `<p class="osub">a shared reference: this one ${dbName} page is cited by
+           <b>${cl.length}</b> different cells — ${names}. A page can belong to only
+           one cell (sharing an organ would merge its claimants into a single atom),
+           so it is filed here at their common area instead, and the claimants keep
+           a “same page” synapse recording the relation.</p>`;
+    }
   } else if (o.kind === "statement") {
     body += `<p class="osub">appears as <b>${esc(o.ref || "?")}</b> of
       <a href="${esc(organUrl(o.id))}" rel="noopener" target="_blank">${esc(o.arxiv_id || o.id)}</a>${
