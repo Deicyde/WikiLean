@@ -433,23 +433,27 @@ memorize. Snapshot: the SorryDB-2601 1{,}000-task evaluation split
 (\code{bench/v2/data/sorrydb/SorryDB\_2601\_1000\_evaluation\_split.json}).
 
 \paragraph{Subset construction and the snapshot-rot finding.} Disk permitted
-one repo build at a time, so repos were sampled rather than tasks (every
-task of a chosen repo included; verification amortizes per repo). The
-original freeze --- 8 repos, 164 tasks, chosen for toolchain availability,
-build weight, domain diversity, plus one pedagogical floor --- lost
-\textbf{74/164 tasks (45\%) to upstream garbage collection} in the
-${\sim}$6 months since the snapshot: the pinned commits of GlimpseOfLean,
-LeanCourse25, and most Foundation and SemicircleLaw tasks are unfetchable by
-any method (git fetch by SHA, tarball GET, authenticated API --- GitHub's
-tarball endpoint returns HTTP 200 with wrong content for dead refs, so a
-naive tarball fetch silently builds the wrong tree). Recorded as a
-methodological finding: \emph{live-repo benchmarks rot at the pin level, and
-the rot is silent unless you verify by SHA fetch.} The refreeze
-(\code{bench/v2/sorrydb\_prep.py}, commit \code{db679e8d}) yields
-\textbf{171 live-pin tasks across 10 repos} (PrimeNumberTheoremAnd 21,
-curve25519-dalek-lean-verify 21, category-theory-in-context 21,
-PersistentDecomp 20, brownian-motion 20, graphiti 20, LeanAPAP 20, MiscYD
-20, SemicircleLaw 7, Foundation 1).
+one repository build at a time, so we sampled repositories rather than
+tasks: every task of a chosen repository is included, and verification cost
+amortizes across it. The original freeze --- 8 repositories, 164 tasks,
+chosen for toolchain availability, build weight, and domain diversity, plus
+one pedagogical floor --- lost 74 of 164 tasks (45\%) in the roughly six
+months since the snapshot: the pinned commits of GlimpseOfLean,
+LeanCourse25, and most Foundation and SemicircleLaw tasks no longer exist
+on GitHub. When a repository's history is rewritten, commits no branch
+reaches are eventually deleted, and a snapshot's pins die with them. We
+could not retrieve these commits by any route (direct git fetch by hash,
+GitHub's archive downloads, or the authenticated API). Detection is the
+subtle part: the archive endpoint answers preflight HEAD requests for dead
+commits with HTTP 200, so a liveness check that does not attempt a real
+fetch reports the pins as healthy. We record this as a methodological
+finding: benchmarks pinned to live repositories rot at the commit level,
+and the rot is invisible unless every pin is actually re-fetched before
+use. The refreeze (\code{bench/v2/sorrydb\_prep.py}, commit
+\code{db679e8d}) keeps only verified-fetchable pins: 171 tasks across 10
+repositories (PrimeNumberTheoremAnd 21, curve25519-dalek-lean-verify 21,
+category-theory-in-context 21, PersistentDecomp 20, brownian-motion 20,
+graphiti 20, LeanAPAP 20, MiscYD 20, SemicircleLaw 7, Foundation 1).
 
 \paragraph{Protocol.} Agent phase is build-free and one-shot: the row
 carries the goal state plus a $\pm$60-line file window at the pinned commit;
