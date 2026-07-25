@@ -35,6 +35,11 @@ catalog/data/.cache/
 # catalog/build_wikidata_embeddings.py (like other derived data). ~18MB matrix.
 catalog/data/wikidata_embeddings.npz
 catalog/data/wikidata_embeddings.meta.jsonl
+# User-registered repo harvests — synced/regenerated weekly by the brain
+# nightly from GET /api/repos/enabled (brain/ingest/lean_repo.py --user-repos).
+# tauceti.jsonl and other named-spec harvests stay committed like
+# formal_conjectures.jsonl; only the per-user layer is ephemeral.
+catalog/data/user_repos/
 .wrangler/
 # Collaboration outreach drafts — kept local, NOT for the public repo yet (Jack's
 # call, 2026-07-02). The repo is public; these are unsent drafts to named people.

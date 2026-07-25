@@ -45,6 +45,7 @@ import { registerBrainEditRoutes } from "./brain-edits.js";
 import { registerBrainApiRoutes } from "./brain-api.js";
 import { registerMcpRoutes } from "./mcp.js";
 import { registerQueueRoutes } from "./queue.js";
+import { registerRepoRoutes } from "./repos.js";
 import type { Annotation } from "./engine/types.js";
 import type { Env } from "./env.js";
 import {
@@ -101,6 +102,7 @@ const RESERVED = new Set([
   "brain",
   "articles",
   "mcp",
+  "repos",
 ]);
 
 const app = new Hono<{ Bindings: Env }>();
@@ -112,6 +114,7 @@ registerBrainEditRoutes(app);
 registerBrainApiRoutes(app);
 registerMcpRoutes(app);
 registerQueueRoutes(app);
+registerRepoRoutes(app);
 
 // Renders (and KV-caches) the anonymous base page for an article. Takes the
 // already-SELECTed row so the cached base and the caller's injected editor
