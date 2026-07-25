@@ -19,7 +19,10 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
-REPO = Path(__file__).resolve().parents[3]
+# Repo root = nearest ancestor holding bench/ — works both in the WikiLean
+# working repo (docs/research/bridge-report/) and in the preservation repo
+# Deicyde/wikilean-bridge-experiment (report/bridge-report/).
+REPO = next(p for p in Path(__file__).resolve().parents if (p / "bench").is_dir())
 BENCH = REPO / "bench"
 OUT = Path(__file__).resolve().parent / "figures" / "figdata.json"
 
