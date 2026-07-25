@@ -97,8 +97,8 @@ def main() -> int:
     rows = []
     for f in RUNS.glob("*/*/*.json"):
         r = json.loads(f.read_text())
-        if r.get("proof") and not r.get("gave_up"):
-            rows.append(r)
+        if r.get("proof") and not r.get("gave_up") and r["id"] in tasks:
+            rows.append(r)  # frozen tasks only — stale dead-pin rows excluded
     done = set()
     if VERDICTS.exists():
         for l in VERDICTS.read_text().splitlines():
