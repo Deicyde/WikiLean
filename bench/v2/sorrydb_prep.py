@@ -35,16 +35,35 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 SDB = HERE / "data" / "sorrydb"
 REPOS = [
+    # originals whose pins remain fetchable (2026-07-25 probe)
     "AlexKontorovich/PrimeNumberTheoremAnd",
-    "FormalizedFormalLogic/Foundation",
+    "FormalizedFormalLogic/Foundation",       # 1 live pin of 21
     "rkirov/category-theory-in-context-lean",
-    "FredRaj3/SemicircleLaw",
+    "FredRaj3/SemicircleLaw",                 # 7 live pins of 21
     "RemyDegenne/brownian-motion",
     "Paul-Lez/PersistentDecomp",
-    "fpvandoorn/LeanCourse25",
-    "PatrickMassot/GlimpseOfLean",
+    # replacements: GlimpseOfLean/LeanCourse25/most-of-Foundation/most-of-
+    # SemicircleLaw pins were GARBAGE-COLLECTED upstream (74/164 tasks dead —
+    # live-repo snapshot rot, recorded for the report). Chosen by the same
+    # criteria, pins verified live:
+    "Beneficial-AI-Foundation/curve25519-dalek-lean-verify",
+    "VCA-EPFL/graphiti",
+    "YaelDillies/LeanAPAP",
+    "YaelDillies/MiscYD",
 ]
+# Dangling-but-git-fetchable pins verified individually (git fetch by sha):
+KNOWN_FETCHABLE = {"ddcb6542f2b62883c8642d3db4ecc115afcce33e"}
 WINDOW = 60
+
+
+def live_commits(repo: str) -> set[str]:
+    import subprocess
+    try:
+        out = subprocess.run(["git", "ls-remote", f"https://github.com/{repo}"],
+                             capture_output=True, text=True, timeout=60).stdout
+        return {l.split("\t")[0] for l in out.splitlines() if l.strip()}
+    except Exception:  # noqa: BLE001
+        return set()
 
 
 def fetch_raw(repo: str, commit: str, path: str, retries: int = 3) -> str | None:
@@ -64,9 +83,21 @@ def fetch_raw(repo: str, commit: str, path: str, retries: int = 3) -> str | None
 def main() -> int:
     d = json.load(open(SDB / "SorryDB_2601_1000_evaluation_split.json"))
     rows = d if isinstance(d, list) else d.get("sorries") or []
-    chosen = [r for r in rows
-              if r["repo"]["remote"].removeprefix("https://github.com/") in REPOS]
-    print(f"frozen subset: {len(chosen)} tasks across {len(REPOS)} repos")
+    tips: dict[str, set[str]] = {}
+    chosen = []
+    dropped = 0
+    for r in rows:
+        repo = r["repo"]["remote"].removeprefix("https://github.com/")
+        if repo not in REPOS:
+            continue
+        if repo not in tips:
+            tips[repo] = live_commits(repo)
+        if r["repo"]["commit"] in tips[repo] or r["repo"]["commit"] in KNOWN_FETCHABLE:
+            chosen.append(r)
+        else:
+            dropped += 1
+    print(f"frozen subset: {len(chosen)} live-pin tasks across {len(REPOS)} repos "
+          f"({dropped} dead-pin tasks excluded)")
     out = (SDB / "tasks_frozen.jsonl").open("w")
     cache_hits = fails = 0
     file_cache: dict[tuple, str | None] = {}
