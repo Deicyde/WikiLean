@@ -331,6 +331,8 @@ into `wiki/public/assets/`. Edit sources, then run build-public, never edit
 
 ## Status log
 
+- 2026-07-25 — **Generic Lean-repo frontier ingester live** (brain/ingest/lean_repo.py + build_common's parameterized `_frontier_repo_layer`; FC refactored onto it byte-identically): TauCeti minted as frontier client #2 (7,858 decl:TauCeti:* nodes @ b67da432056b), user-registered repos wired end-to-end (weekly /api/repos/enabled sync → per-repo harvest, caps 50 repos / 20k decls, provenance `user_lean_repos`); acceptance P12–P14 guard the registry entries + count conservation.
+
 - 2026-06-16 — **Search-verified moderation + nightly automation live.** Reviewer
   search skills (.claude/skills/{mathlib,wikidata,wikipedia}-search) built and
   wired into Agent 2 as SDK custom tools (site/search_tools.py) — quality read of

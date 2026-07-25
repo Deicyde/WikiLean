@@ -147,9 +147,26 @@ cd "$REPO" || exit 1
     py_soft "wikidata descriptions"          "$REPO/brain/ingest/wikidata_descriptions.py"
     py_soft "formal-conjectures harvest"     "$REPO/brain/ingest/formal_conjectures.py"
     py_soft "erdosproblems ingest"           "$REPO/brain/ingest/erdosproblems.py"
+    py_soft "tauceti harvest"                "$REPO/brain/ingest/lean_repo.py" tauceti
+    # User-registered Lean repos: sync the enabled list from the live Worker
+    # (pinned contract: GET /api/repos/enabled -> {"repos":[{owner,repo,lib}]}),
+    # fail-soft — a failed curl keeps the previous registrations.json, and a
+    # missing file makes the harvest a no-op. The per-repo clone/harvest loop
+    # (caps: 50 repos, 20k decls each) lives in lean_repo.py --user-repos.
+    mkdir -p "$REPO/catalog/data/user_repos"
+    if curl -fsS --max-time 120 "https://wikilean.jackmccarthy.org/api/repos/enabled" \
+        -o "$REPO/catalog/data/user_repos/registrations.json.tmp"; then
+      mv "$REPO/catalog/data/user_repos/registrations.json.tmp" \
+         "$REPO/catalog/data/user_repos/registrations.json"
+      echo "(user-repo registrations synced)"
+    else
+      rm -f "$REPO/catalog/data/user_repos/registrations.json.tmp"
+      echo "(registrations sync failed — keeping the previous file)"
+    fi
+    py_soft "user Lean repos harvest"        "$REPO/brain/ingest/lean_repo.py" --user-repos
     touch "$LOGDIR/.stamp.brain-weekly"
   else
-    echo "(weekly sources not due — skipping lmfdb/eom/planetmath/descriptions/formal-conjectures/erdos)"
+    echo "(weekly sources not due — skipping lmfdb/eom/planetmath/descriptions/formal-conjectures/erdos/tauceti/user-repos)"
   fi
   echo
   if due brain-monthly 27; then

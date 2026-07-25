@@ -57,8 +57,20 @@ OPTIONAL_INPUTS = {
     "formal_conjectures.jsonl": DATA / "formal_conjectures.jsonl",
     "erdos_joins.jsonl": DATA / "erdos_joins.jsonl",
     "fc_links.jsonl": BRAIN_DATA / "fc_links.jsonl",
+    # generic Lean-repo frontier (brain/ingest/lean_repo.py) — same fail-soft;
+    # user-registered repos live under catalog/data/user_repos/*.jsonl (globbed,
+    # not listed here)
+    "tauceti.jsonl": DATA / "tauceti.jsonl",
 }
 REGISTRY = DATA / "source_registry.json"
+USER_REPOS_DIR = DATA / "user_repos"
+# Mirrors brain/ingest/lean_repo.py's harvest caps (defense in depth — a file
+# someone hand-dropped into user_repos/ gets the same ceiling as a harvested
+# one) and its owner/repo/lib validation (the /api/repos pinned contract).
+USER_REPO_BUILD_CAP = 50
+USER_REPO_DECL_CAP = 20_000
+_REPO_NAME_RE = re.compile(r"^[A-Za-z0-9_.-]{1,100}\Z")
+_LEAN_LIB_RE = re.compile(r"^[A-Z][A-Za-z0-9_]{0,63}\Z")
 
 # The edge set ships as TWO artifacts (GitHub's 100 MB per-file hard limit):
 # EDGES_OUT = every kind EXCEPT `links`; EDGES_LINKS_OUT = only kind=='links'
@@ -322,6 +334,182 @@ def _strip_markup(text: str) -> str:
 
 def _prune(d: dict) -> dict:
     return {k: v for k, v in d.items() if v is not None}
+
+
+# ---- frontier Lean repos: shared minting layer ------------------------------
+# One parameterized layer mints every git-harvested Lean repo (the FC corpus,
+# TauCeti, user-registered repos) as a first-class library: its own
+# path:<Lib>/* container tree, one decl:<Lib>:* node per declaration
+# (docstring + code stored per the repo's license, named in the registry
+# entry), decl→xref:erdos/oeis edges from verbatim reference URLs, and
+# deterministic docstring-citation joins (Wikipedia URLs resolved through the
+# universe slug map). `formalizes` is only ever minted under the FC-specific
+# gates (research category + single-reference Wikipedia/ file); every other
+# repo's citations enter as `mentions` — a formalization claim needs review,
+# a citation is a fact.
+
+def _read_frontier_jsonl(path: Path) -> tuple[dict, list[dict]]:
+    """(first-line _meta, decl rows) of a brain/ingest Lean-repo harvest file
+    (formal_conjectures.py / lean_repo.py); rows missing decl/module/file are
+    dropped — they can be neither minted nor placed."""
+    meta: dict = {}
+    rows: list[dict] = []
+    with path.open() as fh:
+        for line in fh:
+            line = line.strip()
+            if not line:
+                continue
+            r = json.loads(line)
+            if "_meta" in r:
+                meta = r["_meta"]
+                continue
+            if r.get("decl") and r.get("module") and r.get("file"):
+                rows.append(r)
+    return meta, rows
+
+
+def _frontier_stats() -> dict:
+    return {"decls": 0, "containers": 0, "xref_erdos": 0, "xref_oeis": 0,
+            "formalizes_det": 0, "mentions_det": 0, "agent_links": 0,
+            "skipped_unknown_qid": 0, "agent_rows_skipped": 0,
+            "duplicate_decls": 0}
+
+
+def _frontier_repo_layer(*, lib: str, rows: list[dict], n_files, pin: str,
+                         source: str, tree_method: str, ref_method: str,
+                         containers: dict, decl_nodes: list, edges: list,
+                         slug_lookup: dict, ensure_concept, stats: dict,
+                         erdos_oeis: dict | None = None,
+                         research_gate: bool = False,
+                         wikipedia_formalizes: bool = False,
+                         node_extra: dict | None = None,
+                         ) -> tuple[dict[str, str], set[tuple[str, str]]]:
+    """Mint one frontier repo's containers/decls/xrefs/citation joins into the
+    shared node/edge accumulators; returns (bare FQ name -> node id,
+    (qid, decl id) pairs already joined) for repo-specific follow-ups (the FC
+    agent-join fold). `node_extra` rides on every minted node (user repos carry
+    {"repo": "<owner>/<repo>"} — the registry's user_lean_repos entry covers
+    the class, the node names the concrete repo)."""
+    root_id = f"path:{lib}"
+    if root_id in containers:
+        print(f"WARNING: frontier repo lib {lib!r} collides with an existing "
+              f"container tree — layer skipped", file=sys.stderr)
+        return {}, set()
+    erdos_oeis = erdos_oeis or {}
+    extra = node_extra or {}
+
+    # container tree from module paths (dir grain — files are the decl's
+    # module payload, not containers, matching the depth-capped hierarchy)
+    dirs: Counter[str] = Counter()
+    for r in rows:
+        parts = r["module"].split(".")[:-1]        # drop the file stem
+        for i in range(1, len(parts)):
+            dirs["/".join(parts[:i + 1])] += 1
+    containers[root_id] = _prune({
+        "id": root_id, "type": "container", "label": lib,
+        "library": lib, "library_kind": "math",
+        "n_decls": len(rows), "n_files": n_files, **extra})
+    for d in sorted(dirs):
+        cid = f"path:{d}"
+        parent_id = f"path:{d.rsplit('/', 1)[0]}" if "/" in d else root_id
+        containers[cid] = _prune({"id": cid, "type": "container",
+                                  "label": d.rsplit("/", 1)[-1], "library": lib,
+                                  "library_kind": "math", "n_decls": dirs[d],
+                                  **extra})
+        edges.append(_edge(parent_id, cid, "contains", source, tree_method,
+                           pin, "high", {"n_decls": dirs[d]}))
+    stats["containers"] = 1 + len(dirs)
+
+    decl_ids: dict[str, str] = {}          # bare FQ name -> node id
+    pair_seen: set[tuple[str, str]] = set()  # (qid, decl id) joins
+    wiki_prefix = f"{lib}/Wikipedia/"
+    for r in sorted(rows, key=lambda r: r["decl"]):
+        if r["decl"] in decl_ids:
+            stats["duplicate_decls"] += 1
+            continue
+        did = f"decl:{lib}:{r['decl']}"
+        decl_ids[r["decl"]] = did
+        decl_nodes.append(_prune({
+            "id": did, "type": "decl", "label": r["decl"],
+            "library": lib, "module": r["module"], "pin": pin,
+            "decl_kind": r.get("kind"), "category": r.get("category"),
+            "ams": r.get("ams"), "docstring": r.get("docstring"),
+            "code": r.get("code"), **extra}))
+        stats["decls"] += 1
+        parts = r["module"].split(".")[:-1]
+        cur = root_id
+        for comp in parts[1:]:
+            nxt = f"{cur}/{comp}"
+            if nxt not in containers:
+                break
+            cur = nxt
+        edges.append(_edge(cur, did, "contains", source,
+                           "module-prefix placement", pin, "high",
+                           {"module": r["module"]}))
+
+        refs: dict[str, list[str]] = {}
+        for src_key in ("refs", "file_refs"):
+            for k, vals in (r.get(src_key) or {}).items():
+                acc = refs.setdefault(k, [])
+                acc.extend(v for v in vals if v not in acc)
+        seen_oeis: set[str] = set()
+        for n in refs.get("erdos", []):
+            edges.append(_edge(did, f"xref:erdos:{n}", "xref", "erdos",
+                               ref_method, pin,
+                               "high", {"value": n,
+                                        "url": f"https://www.erdosproblems.com/{n}"}))
+            stats["xref_erdos"] += 1
+            for a in erdos_oeis.get(n, []):
+                if a not in seen_oeis:
+                    seen_oeis.add(a)
+                    edges.append(_edge(did, f"xref:oeis:{a}", "xref", "oeis",
+                                       "erdosproblems.com join (problems.yaml)",
+                                       pin, "high", {"value": a}))
+                    stats["xref_oeis"] += 1
+        for a in refs.get("oeis", []):
+            if a not in seen_oeis:
+                seen_oeis.add(a)
+                edges.append(_edge(did, f"xref:oeis:{a}", "xref", "oeis",
+                                   ref_method,
+                                   pin, "high", {"value": a}))
+                stats["xref_oeis"] += 1
+
+        if research_gate and not (r.get("category") or "").startswith("research"):
+            continue
+        file_wiki = (r.get("file_refs") or {}).get("wikipedia") or []
+        is_wiki_single = (wikipedia_formalizes
+                          and r["file"].startswith(wiki_prefix)
+                          and len(set(file_wiki)) == 1)
+        for slug in refs.get("wikipedia", []):
+            qid = slug_lookup.get(slug) or slug_lookup.get(
+                slug.replace("–", "-"))
+            if not qid or not ensure_concept(qid):
+                stats["skipped_unknown_qid"] += 1
+                continue
+            if (qid, did) in pair_seen:
+                continue
+            pair_seen.add((qid, did))
+            url = f"https://en.wikipedia.org/wiki/{slug}"
+            if is_wiki_single and slug in file_wiki:
+                # the file is this article's conjecture; its research
+                # statements formally state it (Apache-2.0 source cites
+                # the article verbatim). Single-reference files only —
+                # a two-article header must never weld two concepts.
+                edges.append(_edge(qid, did, "formalizes",
+                                   source,
+                                   "wikipedia-reference (module docstring)",
+                                   pin, "medium",
+                                   {"match_kind": "exact", "url": url,
+                                    "verified_by": "verbatim reference URL"}))
+                stats["formalizes_det"] += 1
+            else:
+                edges.append(_edge(qid, did, "mentions",
+                                   source,
+                                   "wikipedia-citation (docstring)",
+                                   pin, "high",
+                                   {"role": "citation", "url": url}))
+                stats["mentions_det"] += 1
+    return decl_ids, pair_seen
 
 
 # ---- SCHEMA.md v2: external DB pages → ext nodes / links edges --------------
@@ -1506,39 +1694,24 @@ def build() -> tuple[list[dict], list[dict], dict]:
               f"{n_gold_minted} ({n_gold_unknown_qid} skipped — QID not in the "
               f"universe)", file=sys.stderr)
 
-    # ---- formal-conjectures frontier: decl:FormalConjectures:* organs -------
-    # The unsolved-problems corpus (google-deepmind/formal-conjectures,
-    # harvested by brain/ingest/formal_conjectures.py) enters as a first-class
-    # library: its own container tree, one decl node per declaration
-    # (docstring + code are Apache-2.0), decl→xref:erdos:<n> / xref:oeis:A…
-    # edges from the verbatim reference URLs + the teorth/erdosproblems YAML
-    # join table, and concept joins two ways: DETERMINISTIC docstring
-    # citations (a Wikipedia URL in the source resolved through the universe
-    # slug map — formalizes only for single-reference Wikipedia/ files, whose
-    # file IS the article's conjecture; everything else is a mentions), and
-    # AGENT joins fold-verified into brain/data/fc_links.jsonl. Runs BEFORE
-    # the external layer so xref:erdos dsts anchor the erdos pages.
-    fc_stats = {"decls": 0, "containers": 0, "xref_erdos": 0, "xref_oeis": 0,
-                "formalizes_det": 0, "mentions_det": 0, "agent_links": 0,
-                "skipped_unknown_qid": 0, "agent_rows_skipped": 0,
-                "duplicate_decls": 0}
+    # ---- frontier Lean repos: decl:<Lib>:* organs ---------------------------
+    # The parameterized _frontier_repo_layer mints every git-harvested Lean
+    # repo. Call #1 is the unsolved-problems corpus (google-deepmind/
+    # formal-conjectures, harvested by brain/ingest/formal_conjectures.py) with
+    # its two extra join paths: the teorth/erdosproblems YAML join table and
+    # AGENT joins fold-verified into brain/data/fc_links.jsonl (plus the
+    # research-category + Wikipedia/-file formalizes gates). Call #2 is TauCeti
+    # (brain/ingest/lean_repo.py tauceti); then every user-registered repo
+    # under catalog/data/user_repos/. All run BEFORE the external layer so
+    # xref:erdos/oeis dsts anchor those pages.
+    slug_lookup = dict(uni_slug2qid)
+    slug_lookup.update(slug2qid_local)
+    frontier_stats: dict[str, dict] = {}
+
+    fc_stats = _frontier_stats()
     p = OPTIONAL_INPUTS["formal_conjectures.jsonl"]
     if p.exists():
-        FC_LIB = "FormalConjectures"
-        fc_root = f"path:{FC_LIB}"
-        fc_rows: list[dict] = []
-        fc_meta: dict = {}
-        with p.open() as fh:
-            for line in fh:
-                line = line.strip()
-                if not line:
-                    continue
-                r = json.loads(line)
-                if "_meta" in r:
-                    fc_meta = r["_meta"]
-                    continue
-                if r.get("decl") and r.get("module") and r.get("file"):
-                    fc_rows.append(r)
+        fc_meta, fc_rows = _read_frontier_jsonl(p)
         pin_fc = (fc_meta.get("commit") or _pin("formal_conjectures.jsonl"))[:12]
 
         erdos_oeis: dict[str, list[str]] = {}
@@ -1554,118 +1727,16 @@ def build() -> tuple[list[dict], list[dict], dict]:
                         continue
                     erdos_oeis[str(r["erdos"])] = [str(a) for a in r.get("oeis") or []]
 
-        # container tree from module paths (dir grain — files are the decl's
-        # module payload, not containers, matching the depth-capped hierarchy)
-        fc_dirs: dict[str, int] = Counter()
-        for r in fc_rows:
-            parts = r["module"].split(".")[:-1]        # drop the file stem
-            for i in range(1, len(parts)):
-                fc_dirs["/".join(parts[:i + 1])] += 1
-        containers[fc_root] = _prune({
-            "id": fc_root, "type": "container", "label": FC_LIB,
-            "library": FC_LIB, "library_kind": "math",
-            "n_decls": len(fc_rows), "n_files": fc_meta.get("n_files")})
-        for d in sorted(fc_dirs):
-            cid = f"path:{d}"
-            parent_id = f"path:{d.rsplit('/', 1)[0]}" if "/" in d else fc_root
-            containers[cid] = {"id": cid, "type": "container",
-                               "label": d.rsplit("/", 1)[-1], "library": FC_LIB,
-                               "library_kind": "math", "n_decls": fc_dirs[d]}
-            edges.append(_edge(parent_id, cid, "contains", "formal_conjectures",
-                               "file-tree (formal_conjectures.jsonl)", pin_fc,
-                               "high", {"n_decls": fc_dirs[d]}))
-        fc_stats["containers"] = 1 + len(fc_dirs)
-
-        slug_lookup = dict(uni_slug2qid)
-        slug_lookup.update(slug2qid_local)
-        fc_decl_ids: dict[str, str] = {}       # bare FQ name -> node id
-        fc_pair_seen: set[tuple[str, str]] = set()   # (qid, decl id) joins
-        for r in sorted(fc_rows, key=lambda r: r["decl"]):
-            if r["decl"] in fc_decl_ids:
-                fc_stats["duplicate_decls"] += 1
-                continue
-            did = f"decl:{FC_LIB}:{r['decl']}"
-            fc_decl_ids[r["decl"]] = did
-            decl_nodes.append(_prune({
-                "id": did, "type": "decl", "label": r["decl"],
-                "library": FC_LIB, "module": r["module"], "pin": pin_fc,
-                "decl_kind": r.get("kind"), "category": r.get("category"),
-                "ams": r.get("ams"), "docstring": r.get("docstring"),
-                "code": r.get("code")}))
-            fc_stats["decls"] += 1
-            parts = r["module"].split(".")[:-1]
-            cur = fc_root
-            for comp in parts[1:]:
-                nxt = f"{cur}/{comp}"
-                if nxt not in containers:
-                    break
-                cur = nxt
-            edges.append(_edge(cur, did, "contains", "formal_conjectures",
-                               "module-prefix placement", pin_fc, "high",
-                               {"module": r["module"]}))
-
-            refs: dict[str, list[str]] = {}
-            for src_key in ("refs", "file_refs"):
-                for k, vals in (r.get(src_key) or {}).items():
-                    acc = refs.setdefault(k, [])
-                    acc.extend(v for v in vals if v not in acc)
-            seen_oeis: set[str] = set()
-            for n in refs.get("erdos", []):
-                edges.append(_edge(did, f"xref:erdos:{n}", "xref", "erdos",
-                                   "formal-conjectures reference URL", pin_fc,
-                                   "high", {"value": n,
-                                            "url": f"https://www.erdosproblems.com/{n}"}))
-                fc_stats["xref_erdos"] += 1
-                for a in erdos_oeis.get(n, []):
-                    if a not in seen_oeis:
-                        seen_oeis.add(a)
-                        edges.append(_edge(did, f"xref:oeis:{a}", "xref", "oeis",
-                                           "erdosproblems.com join (problems.yaml)",
-                                           pin_fc, "high", {"value": a}))
-                        fc_stats["xref_oeis"] += 1
-            for a in refs.get("oeis", []):
-                if a not in seen_oeis:
-                    seen_oeis.add(a)
-                    edges.append(_edge(did, f"xref:oeis:{a}", "xref", "oeis",
-                                       "formal-conjectures reference URL",
-                                       pin_fc, "high", {"value": a}))
-                    fc_stats["xref_oeis"] += 1
-
-            research = (r.get("category") or "").startswith("research")
-            if not research:
-                continue
-            file_wiki = (r.get("file_refs") or {}).get("wikipedia") or []
-            is_wiki_single = (r["file"].startswith("FormalConjectures/Wikipedia/")
-                              and len(set(file_wiki)) == 1)
-            for slug in refs.get("wikipedia", []):
-                qid = slug_lookup.get(slug) or slug_lookup.get(
-                    slug.replace("–", "-"))
-                if not qid or not ensure_concept(qid):
-                    fc_stats["skipped_unknown_qid"] += 1
-                    continue
-                if (qid, did) in fc_pair_seen:
-                    continue
-                fc_pair_seen.add((qid, did))
-                url = f"https://en.wikipedia.org/wiki/{slug}"
-                if is_wiki_single and slug in file_wiki:
-                    # the file is this article's conjecture; its research
-                    # statements formally state it (Apache-2.0 source cites
-                    # the article verbatim). Single-reference files only —
-                    # a two-article header must never weld two concepts.
-                    edges.append(_edge(qid, did, "formalizes",
-                                       "formal_conjectures",
-                                       "wikipedia-reference (module docstring)",
-                                       pin_fc, "medium",
-                                       {"match_kind": "exact", "url": url,
-                                        "verified_by": "verbatim reference URL"}))
-                    fc_stats["formalizes_det"] += 1
-                else:
-                    edges.append(_edge(qid, did, "mentions",
-                                       "formal_conjectures",
-                                       "wikipedia-citation (docstring)",
-                                       pin_fc, "high",
-                                       {"role": "citation", "url": url}))
-                    fc_stats["mentions_det"] += 1
+        fc_decl_ids, fc_pair_seen = _frontier_repo_layer(
+            lib="FormalConjectures", rows=fc_rows,
+            n_files=fc_meta.get("n_files"), pin=pin_fc,
+            source="formal_conjectures",
+            tree_method="file-tree (formal_conjectures.jsonl)",
+            ref_method="formal-conjectures reference URL",
+            containers=containers, decl_nodes=decl_nodes, edges=edges,
+            slug_lookup=slug_lookup, ensure_concept=ensure_concept,
+            stats=fc_stats, erdos_oeis=erdos_oeis,
+            research_gate=True, wikipedia_formalizes=True)
 
         # agent joins, fold-verified (brain/fold_proposals.py fc_link rows)
         p = OPTIONAL_INPUTS["fc_links.jsonl"]
@@ -1713,6 +1784,87 @@ def build() -> tuple[list[dict], list[dict], dict]:
         print("NOTE: catalog/data/formal_conjectures.jsonl missing — "
               "formal-conjectures layer skipped "
               "(brain/ingest/formal_conjectures.py)", file=sys.stderr)
+
+    # ---- TauCeti (call #2 of the frontier layer) ----------------------------
+    p = OPTIONAL_INPUTS["tauceti.jsonl"]
+    if p.exists():
+        tc_meta, tc_rows = _read_frontier_jsonl(p)
+        tc_stats = _frontier_stats()
+        _frontier_repo_layer(
+            lib="TauCeti", rows=tc_rows, n_files=tc_meta.get("n_files"),
+            pin=(tc_meta.get("commit") or _pin("tauceti.jsonl"))[:12],
+            source="tauceti",
+            tree_method="file-tree (tauceti.jsonl)",
+            ref_method="tauceti reference URL",
+            containers=containers, decl_nodes=decl_nodes, edges=edges,
+            slug_lookup=slug_lookup, ensure_concept=ensure_concept,
+            stats=tc_stats)
+        frontier_stats["TauCeti"] = tc_stats
+        print(f"  tauceti layer: {tc_stats['decls']} decls in "
+              f"{tc_stats['containers']} containers; deterministic joins "
+              f"mentions={tc_stats['mentions_det']} "
+              f"({tc_stats['skipped_unknown_qid']} unknown QIDs)",
+              file=sys.stderr)
+    else:
+        print("NOTE: catalog/data/tauceti.jsonl missing — tauceti layer "
+              "skipped (brain/ingest/lean_repo.py tauceti)", file=sys.stderr)
+
+    # ---- user-registered Lean repos (frontier layer loop) -------------------
+    # One harvest file per enabled repo (brain/ingest/lean_repo.py
+    # --user-repos); ONE provenance source (user_lean_repos) covers the class,
+    # each minted node's `repo` names the concrete <owner>/<repo>. _meta
+    # repo/lib are re-validated here (the /api/repos pinned contract) so a
+    # hand-dropped file gets the same gates as a harvested one.
+    user_repo_files = (sorted(USER_REPOS_DIR.glob("*.jsonl"))
+                       if USER_REPOS_DIR.is_dir() else [])
+    if len(user_repo_files) > USER_REPO_BUILD_CAP:
+        print(f"WARNING: {len(user_repo_files)} user-repo harvests exceed the "
+              f"{USER_REPO_BUILD_CAP}-repo cap — minting the first "
+              f"{USER_REPO_BUILD_CAP} only", file=sys.stderr)
+        user_repo_files = user_repo_files[:USER_REPO_BUILD_CAP]
+    n_user_repos_skipped = 0
+    for up in user_repo_files:
+        u_meta, u_rows = _read_frontier_jsonl(up)
+        owner_repo = str(u_meta.get("repo") or "")
+        u_lib = str(u_meta.get("lib") or "")
+        owner, _, repo = owner_repo.partition("/")
+        if (not _REPO_NAME_RE.match(owner) or owner.startswith(".")
+                or repo in (".", "..") or not _REPO_NAME_RE.match(repo)
+                or not _LEAN_LIB_RE.match(u_lib)):
+            n_user_repos_skipped += 1
+            print(f"WARNING: user_repos/{up.name} skipped — bad _meta "
+                  f"repo/lib ({owner_repo!r}, {u_lib!r})", file=sys.stderr)
+            continue
+        if len(u_rows) > USER_REPO_DECL_CAP:
+            n_user_repos_skipped += 1
+            print(f"WARNING: user_repos/{up.name} skipped — {len(u_rows)} "
+                  f"decls exceeds the {USER_REPO_DECL_CAP} per-repo cap",
+                  file=sys.stderr)
+            continue
+        if f"path:{u_lib}" in containers:
+            n_user_repos_skipped += 1
+            print(f"WARNING: user_repos/{up.name} skipped — lib {u_lib!r} "
+                  f"collides with an existing container tree", file=sys.stderr)
+            continue
+        pin_u = (u_meta.get("commit")
+                 or datetime.fromtimestamp(up.stat().st_mtime, tz=timezone.utc)
+                 .date().isoformat())[:12]
+        u_stats = _frontier_stats()
+        _frontier_repo_layer(
+            lib=u_lib, rows=u_rows, n_files=u_meta.get("n_files"), pin=pin_u,
+            source="user_lean_repos",
+            tree_method=f"file-tree (user_repos/{up.name})",
+            ref_method=f"user-repo reference URL ({owner_repo})",
+            containers=containers, decl_nodes=decl_nodes, edges=edges,
+            slug_lookup=slug_lookup, ensure_concept=ensure_concept,
+            stats=u_stats, node_extra={"repo": owner_repo})
+        frontier_stats[u_lib] = u_stats
+        print(f"  user repo {owner_repo} ({u_lib}): {u_stats['decls']} decls "
+              f"in {u_stats['containers']} containers; "
+              f"mentions={u_stats['mentions_det']}", file=sys.stderr)
+    if user_repo_files or n_user_repos_skipped:
+        print(f"  user Lean repos: {len(user_repo_files)} harvest files, "
+              f"{n_user_repos_skipped} skipped", file=sys.stderr)
 
     # ---- external DB pages → ext nodes + links edges (SCHEMA v2) ------------
     # Runs after every xref-emitting layer so anchoring sees the full dst set.
@@ -1851,6 +2003,8 @@ def build() -> tuple[list[dict], list[dict], dict]:
             present[f"external/{ep.name}"] = ep
     if cit_path.exists():
         present[f"external/{cit_path.name}"] = cit_path
+    for up in user_repo_files:
+        present[f"user_repos/{up.name}"] = up
     newest = max(v.stat().st_mtime for v in present.values())
     meta = {
         "schema": "brain/SCHEMA.md",
@@ -1890,6 +2044,14 @@ def build() -> tuple[list[dict], list[dict], dict]:
                                   "from teorth/erdosproblems problems.yaml "
                                   "(Apache-2.0) — erdosproblems.com prose is "
                                   "never stored",
+            "tauceti": "decl:TauCeti:* docstrings/code are Apache-2.0 "
+                       "(TauCeti contributors, TauCetiProject/TauCeti), "
+                       "stored with attribution",
+            "user_lean_repos": "decl nodes from owner-registered public Lean "
+                               "repos (GET /api/repos/enabled); docstrings/"
+                               "code stored with per-node `repo` attribution — "
+                               "each repo retains its own license (named in "
+                               "the harvest _meta)",
             "external": "ext node ids/titles/urls/links are CC0 link facts; "
                         "stored snippets carry a per-node snippet_license and "
                         "exist ONLY for license-permitting sources "
@@ -1936,6 +2098,11 @@ def build() -> tuple[list[dict], list[dict], dict]:
             "fc_agent_rows_skipped": fc_stats["agent_rows_skipped"],
             "fc_unknown_qids_skipped": fc_stats["skipped_unknown_qid"],
             "fc_duplicate_decls": fc_stats["duplicate_decls"],
+            # generic frontier Lean repos (TauCeti + user_lean_repos), keyed by
+            # lib — the FC corpus keeps its dedicated fc_* keys above
+            "frontier_repos": {k: frontier_stats[k]
+                               for k in sorted(frontier_stats)},
+            "user_repo_files_skipped": n_user_repos_skipped,
             "lit_papers": lit_stats["papers"],
             "lit_paper_nodes_minted": lit_stats["papers_new"],
             "lit_contains_edges": lit_stats["contains"],

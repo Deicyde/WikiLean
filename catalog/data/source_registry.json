@@ -362,6 +362,36 @@
     "verified": "2026-07-17"
    }
   },
+  "tauceti": {
+   "name": "TauCeti",
+   "homepage": "https://github.com/TauCetiProject/TauCeti",
+   "layer": "formal",
+   "kind": "Formalization frontier: declarations of the TauCeti Lean library minted as decl:TauCeti:* nodes with path:TauCeti/* containers; docstring Wikipedia citations join concepts as `mentions` (never `formalizes` — a formalization claim needs review, a citation is a fact).",
+   "our_provenance": "brain/ingest/lean_repo.py (spec 'tauceti') over a local clone of the canonical org repo (NOT a fork) -> catalog/data/tauceti.jsonl (every declaration: FQ name, module, docstring, code header, reference URLs — the formal_conjectures.jsonl row shape). build_common's parameterized frontier-repo layer (_frontier_repo_layer, the same code path as FormalConjectures) mints the nodes/edges.",
+   "target_license": "Apache-2.0",
+   "ingest": {
+    "mode": "git-clone",
+    "bulk_path": "github.com/TauCetiProject/TauCeti (clone/pull at BRAIN_TC_CHECKOUT)",
+    "cadence": "weekly",
+    "snippets": true,
+    "verified": "2026-07-25"
+   }
+  },
+  "user_lean_repos": {
+   "name": "User-registered Lean repos",
+   "homepage": "https://wikilean.jackmccarthy.org",
+   "layer": "formal",
+   "kind": "Community frontier: declarations from public Lean repos their owners registered on WikiLean, minted as decl:<Lib>:* nodes. ONE provenance key covers the class — every minted node carries `repo` naming the concrete <owner>/<repo>.",
+   "our_provenance": "GET /api/repos/enabled (Worker; enabled rows only, owner/repo match ^[A-Za-z0-9_.-]{1,100}$ with no leading-dot owner, lib matches ^[A-Z][A-Za-z0-9_]{0,63}$, cap 500) -> catalog/data/user_repos/registrations.json (nightly curl sync, fail-soft: curl failure keeps the previous file). brain/ingest/lean_repo.py --user-repos clones/pulls each repo and harvests to catalog/data/user_repos/<owner>__<repo>.jsonl (caps: 50 repos, 20,000 decls each; owner/repo/lib re-validated at build). Internal minting only — nothing is submitted upstream.",
+   "target_license": "per-repo (owner-registered public GitHub repos; docstrings/code stored with per-node repo attribution — each repo retains its own license, recorded in the harvest _meta)",
+   "ingest": {
+    "mode": "git-clone",
+    "bulk_path": "github.com/<owner>/<repo> per registration (clone/pull under BRAIN_USER_REPO_CHECKOUTS)",
+    "cadence": "weekly",
+    "snippets": true,
+    "verified": "2026-07-25"
+   }
+  },
   "wikilean_tags": {
    "name": "WikiLean @[wikidata] tags",
    "homepage": "https://github.com/leanprover-community/mathlib4",

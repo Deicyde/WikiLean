@@ -237,11 +237,18 @@ def load_tag_queue() -> list[dict]:
 
 
 def queue_bonds(nodes: dict[str, dict], rejected: set[tuple[str, str]],
-                stats: Counter) -> list[dict]:
+                stats: Counter, overrides: dict[str, dict] | None = None
+                ) -> list[dict]:
     """Resolve queue items to (qid, decl node id) strong bonds.
 
     Drops: rejected claims (C7), unknown QIDs, and decls that do not resolve to a
     decl node (e.g. a stale name like `Basis` after the `Module.Basis` rename).
+
+    Grounding overrides bind here exactly as `apply_overrides` binds them to real
+    formalizes edges: an override re-labelling (qid, decl) away from `exact` demotes
+    the queue claim to that kind (carried on the bond as `kind`), so an unreviewed
+    AI candidate can never outrank an explicit human override — the moderation
+    contract (see the Q13471665 "Vector" case, 2026-07-17).
     """
     by_bare: dict[str, str] = {}
     for nid, node in nodes.items():
@@ -265,9 +272,14 @@ def queue_bonds(nodes: dict[str, dict], rejected: set[tuple[str, str]],
         if not decl_id:
             stats["queue_unresolved_decl"] += 1
             continue
-        stats["queue_bonded"] += 1
+        want = (overrides or {}).get(qid, {}).get("match_kind:" + decl)
+        if want and want != FUSE:
+            stats["queue_overridden"] += 1
+        else:
+            want = FUSE
+            stats["queue_bonded"] += 1
         bonds.append({"qid": qid, "decl": decl_id, "status": item["status"],
-                      "src": item["src"]})
+                      "src": item["src"], "kind": want})
     return bonds
 
 
@@ -297,16 +309,27 @@ def merge(nodes: dict[str, dict], formalizes: list[dict], qbonds: list[dict],
         # rule 3: invocation/related fall through to synapses
 
     # A queue tag is the same claim as `@[wikidata]` -> treat as `exact` (rule 1),
-    # but keep its own provenance so C7 can tell the two apart.
+    # but keep its own provenance so C7 can tell the two apart. A grounding
+    # override on the pair (bond["kind"] != exact) beats the unreviewed claim:
+    # the edge is classified at the overridden strength like any curated edge —
+    # attach kinds go through rule 2, anything weaker never merges (rule 3).
     for bond in qbonds:
-        exact_by_qid[bond["qid"]].append({
+        kind = bond.get("kind", FUSE)
+        edge = {
             "src": bond["qid"], "dst": bond["decl"], "kind": "formalizes",
             "confidence": "medium",
             "provenance": {"source": "tag-queue",
                            "method": f"AI-queued @[wikidata] candidate ({bond['status']})",
                            "queue": bond["src"]},
-            "evidence": {"match_kind": FUSE, "queued": True, "status": bond["status"]},
-        })
+            "evidence": {"match_kind": kind, "queued": True, "status": bond["status"]},
+        }
+        if kind == FUSE:
+            exact_by_qid[bond["qid"]].append(edge)
+        elif kind in attach_kinds:
+            edge["evidence"]["override"] = True
+            attach_by_qid[bond["qid"]].append(edge)
+        else:  # overridden below attach strength — never merges (rule 3)
+            stats["queue_override_severed"] += 1
 
     # Every (concept, decl) pair actually used for a merge. Any formalizes edge NOT
     # in here stays a synapse — including an attach edge skipped because the concept
@@ -928,12 +951,14 @@ def build(*, do_layout: bool = True, attach_kinds: tuple[str, ...] = ATTACH,
     print(f"  {len(nodes)} organs, "
           f"{sum(len(v) for v in edges_by_kind.values())} edges", file=sys.stderr)
 
-    apply_overrides(edges_by_kind["formalizes"], load_overrides(), stats)
+    overrides = load_overrides()
+    apply_overrides(edges_by_kind["formalizes"], overrides, stats)
     rejected = load_rejected()
-    qbonds = queue_bonds(nodes, rejected, stats)
+    qbonds = queue_bonds(nodes, rejected, stats, overrides)
     print(f"  tag queue: {stats['queue_bonded']} bonded, "
           f"{stats['queue_rejected']} rejected, "
-          f"{stats['queue_unresolved_decl']} unresolved", file=sys.stderr)
+          f"{stats['queue_unresolved_decl']} unresolved, "
+          f"{stats['queue_overridden']} overridden", file=sys.stderr)
 
     print("merging organs into cells…", file=sys.stderr)
     cells, owner, supercell_organs, merged_pairs = build_cells(

@@ -23,7 +23,9 @@ v2 datapoints P6-P10 (ext nodes / projected links / snippet licensing / units +
 gold facet bits / literature bibliography links) auto-SKIP — with a printed
 note, never counted as passing — when catalog/data/external/ lacks the needed
 ingest file (P6-P8, P10) or when nodes.jsonl predates the v2 unit build (P9).
-Skipped checks don't gate exit.
+Skipped checks don't gate exit. P12-P14 cover the generic Lean-repo frontier
+(registry entries; TauCeti minted + count-conserved; FC count conservation);
+P13/P14 auto-SKIP without their catalog/data harvest files.
 
     python3 brain/test_acceptance.py
 """
@@ -90,6 +92,21 @@ def registry_crossrefs() -> dict[str, dict]:
     return json.loads(REGISTRY.read_text()).get("crossref_sources", {})
 
 
+def first_meta(path: Path) -> dict:
+    """The first-line {"_meta": ...} payload of a jsonl artifact, {} if absent."""
+    with path.open() as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                rec = json.loads(line)
+            except json.JSONDecodeError:
+                return {}
+            return rec.get("_meta", {}) if isinstance(rec, dict) else {}
+    return {}
+
+
 def iter_jsonl(path: Path, require_key: str):
     """Stream records, skipping blank lines and _meta/attribution rows
     (rows lacking the identity key)."""
@@ -134,6 +151,8 @@ def main() -> int:
     gold_bit_decls: set[str] = set()   # bare decl labels with f bit0
     decl_labels: set[str] = set()
     lit_paper_ids: set[str] = set()    # lit:<arxiv_id> paper-level nodes
+    n_tc_decl_nodes = 0                # decl:TauCeti:* nodes (P13)
+    n_fc_decl_nodes = 0                # decl:FormalConjectures:* nodes (P14)
     for rec in iter_jsonl(NODES, "id"):
         n_nodes += 1
         nid = rec["id"]
@@ -162,6 +181,10 @@ def main() -> int:
             decl_labels.add(rec.get("label"))
             if rec.get("f", 0) & 1:
                 gold_bit_decls.add(rec.get("label"))
+            if nid.startswith("decl:TauCeti:"):
+                n_tc_decl_nodes += 1
+            elif nid.startswith("decl:FormalConjectures:"):
+                n_fc_decl_nodes += 1
         elif t == "literature" and "#" not in nid:
             lit_paper_ids.add(nid)
 
@@ -442,6 +465,73 @@ def main() -> int:
             + ([] if fc_e1_xref else [f"no xref edge {e1} -> xref:erdos:1"])
             + ([] if n_fc_fz else ["no formalizes edge lands on any "
                                    "decl:FormalConjectures:* node"]),
+        ))
+
+    # ---- generic Lean-repo frontier (TauCeti + user-registered repos) --------
+    frontier = json.loads(REGISTRY.read_text()).get("frontier_sources", {})
+    p12_bad: list[str] = []
+    for key in ("tauceti", "user_lean_repos"):
+        entry = frontier.get(key)
+        if not isinstance(entry, dict):
+            p12_bad.append(f"frontier_sources.{key} missing")
+            continue
+        for field in ("name", "layer", "our_provenance", "target_license",
+                      "ingest"):
+            if not entry.get(field):
+                p12_bad.append(f"frontier_sources.{key}.{field} missing")
+        if key not in valid_sources:
+            p12_bad.append(f"'{key}' not accepted as a provenance source")
+    checks.append((
+        "P12", "frontier registry: tauceti + user_lean_repos entries valid and "
+               "accepted as provenance sources",
+        not p12_bad, p12_bad[:MAX_EXAMPLES],
+    ))
+
+    nodes_notes = first_meta(NODES).get("notes", {})
+    tc_ingest = ROOT / "catalog" / "data" / "tauceti.jsonl"
+    if not tc_ingest.exists():
+        checks.append(("P13", "TauCeti frontier: decl:TauCeti:* nodes + "
+                       "path:TauCeti container; count matches the harvest",
+                       "skip",
+                       ["no catalog/data/tauceti.jsonl — tauceti ingest not "
+                        "run (brain/ingest/lean_repo.py tauceti)"]))
+    else:
+        tc_stats = (nodes_notes.get("frontier_repos") or {}).get("TauCeti", {})
+        tc_expected = first_meta(tc_ingest).get("n_decls")
+        conserved = (isinstance(tc_expected, int)
+                     and n_tc_decl_nodes == tc_stats.get("decls")
+                     and n_tc_decl_nodes + tc_stats.get("duplicate_decls", 0)
+                     == tc_expected)
+        checks.append((
+            "P13", "TauCeti frontier: decl:TauCeti:* nodes + path:TauCeti "
+                   "container; count matches the harvest",
+            n_tc_decl_nodes >= 1 and "path:TauCeti" in node_ids and conserved,
+            ([] if n_tc_decl_nodes else ["no decl:TauCeti:* node in nodes.jsonl"])
+            + ([] if "path:TauCeti" in node_ids else ["path:TauCeti not a node"])
+            + ([] if conserved else
+               [f"count drift: {n_tc_decl_nodes} nodes vs notes {tc_stats} vs "
+                f"harvest n_decls={tc_expected} (rerun brain/build_nodes.py)"]),
+        ))
+
+    fc_ingest = ROOT / "catalog" / "data" / "formal_conjectures.jsonl"
+    if not fc_ingest.exists():
+        checks.append(("P14", "FC decl-count conservation: minted == harvested "
+                       "- duplicates", "skip",
+                       ["no catalog/data/formal_conjectures.jsonl — "
+                        "formal-conjectures ingest not run"]))
+    else:
+        fc_expected = first_meta(fc_ingest).get("n_decls")
+        fc_minted = nodes_notes.get("fc_decls")
+        fc_dups = nodes_notes.get("fc_duplicate_decls", 0)
+        fc_ok = (isinstance(fc_expected, int) and n_fc_decl_nodes == fc_minted
+                 and n_fc_decl_nodes + fc_dups == fc_expected)
+        checks.append((
+            "P14", "FC decl-count conservation: minted == harvested - duplicates",
+            fc_ok,
+            [] if fc_ok else
+            [f"count drift: {n_fc_decl_nodes} decl:FormalConjectures:* nodes, "
+             f"notes fc_decls={fc_minted} fc_duplicate_decls={fc_dups}, "
+             f"harvest n_decls={fc_expected} (rerun brain/build_nodes.py)"],
         ))
 
     # ---- report ---------------------------------------------------------------
