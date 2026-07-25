@@ -6,7 +6,7 @@ direction. Preregistration: `docs/research/BRIDGE-EXPERIMENT.md`, commit
 `0d36f2664ab2ebb2c7b80b350d3c9bd820414335` (2026-07-16). Results log:
 `docs/research/BRIDGE-RESULTS.md`. All data, code, and run transcripts are
 preserved in the private repository `Deicyde/wikilean-bridge-experiment`
-(file map in §8). Every number below is recomputable from a file in that
+(file map in §9). Every number below is recomputable from a file in that
 repository; the file is named where each table appears.
 
 ---
@@ -34,7 +34,43 @@ Third, the join does not help premise selection (0.272 vs 0.453 for formal
 search); this is the concept≠premise boundary we preregistered, now
 quantified as an 18pp API target.
 
-## 2. Hypothesis and preregistered design
+## 2. The system under test: the WikiLean Brain
+
+The artifact everything below measures is the WikiLean "Brain": a curated
+knowledge graph over mathematics that joins Wikipedia/Wikidata concepts,
+Mathlib4 declarations, and the external mathematical databases (nLab,
+LMFDB, the Stacks project, ProofWiki, and others) into one map. Its atom is
+a *cell*: when a Lean declaration, a Wikidata concept, an encyclopedia
+article, and a database page all denote the same mathematical object, they
+are *organs* of one cell rather than separate nodes — Mathlib's `Module`,
+Wikidata's "module" *and* its "vector space" are a single atom, because
+Mathlib has no `VectorSpace`; `Module` generalizes it. Mathlib's folder
+hierarchy supplies the containment altitude, and everything known about a
+cell (Lean source, descriptions, licensed database snippets) is embedded on
+the cell itself. About 12,000 of Mathlib's declarations are concept-joined
+this way; the Brain is a map of Mathlib, not the territory.
+
+Agents reach it through an MCP server (`POST /mcp` on the live site)
+exposing eight tools. `brain_bridge` is the informal→formal entry point:
+free text in, existence-verified declarations out, each with its signature,
+import line, and bond quality. `brain_search` resolves labels and aliases
+to atoms; `brain_cell` returns the full atom card; `brain_transfer` makes
+the one-atom informal↔formal jump; `brain_neighborhood` walks the synapse
+graph; `brain_snippets` and `brain_filter` serve stored content and facet
+queries. The eighth, `decl_exists`, is different in kind: a batch existence
+check against the full declaration index — all of Mathlib, not just the
+joined subset — built to be called on every name an agent is about to cite.
+
+Why build such a thing? The working hypothesis behind WikiLean is that
+informal mathematics (what things are called and mean) and formal
+mathematics (what typechecks) are two corpora whose *join* is the scarce
+artifact: a language model already holds both corpora loosely, and the
+informal↔formal boundary is precisely where its hallucinations live. If
+that is right, then curating the join — names verified, concepts merged,
+bonds carrying provenance — should move performance on end tasks, not just
+on lookup. Whether it actually does is the question this report answers.
+
+## 3. Hypothesis and preregistered design
 
 **Hypothesis (operationalized).** Since "necessary" is unprovable, the
 preregistration commits to three predictions. P1: an agent with the *joined*
@@ -68,7 +104,7 @@ declaration, cited zero hallucinated names, and typechecks on the pinned
 toolchain. We quarantined the preregistered LLM-judge faithfulness leg
 behind a human-calibration gate and ultimately dropped it in favor of
 graders that existed before the arms did — third-party gold labels and the
-Lean kernel; §7 explains why. Hallucinated-decl rate is graded against a
+Lean kernel; §8 explains why. Hallucinated-decl rate is graded against a
 union oracle (doc-gen4 declaration data ∪ verified renames; the extractor is
 documented in `bench/score_bridge.py`).
 
@@ -114,9 +150,9 @@ existed; numbering as in that document):
    eval arms C/D/E and all fresh runs carry traces; eval A/B carry
    name-counts only.
 
-## 3. Tier 1: statement autoformalization (claude-haiku-4-5)
+## 4. Tier 1: statement autoformalization (claude-haiku-4-5)
 
-### 3.1 Tier 1a — ProofNet# (n=371/arm)
+### 4.1 Tier 1a — ProofNet# (n=371/arm)
 
 The source is `docs/research/BRIDGE-RESULTS.md`, and every number is
 recomputable from `bench/data/bridge_summary.json` plus `bench/data/runs/`.
@@ -139,7 +175,7 @@ Tier 1b. And the typecheck row *anti-correlates* with grounding — E leads
 on typecheck (83.3%) while trailing on hallucinations, reproducing
 TheoremGraph's typecheck-is-not-a-signal finding at 15× their n.
 
-### 3.2 Tier 1b — the fresh set (n=100/arm, contamination-proof)
+### 4.2 Tier 1b — the fresh set (n=100/arm, contamination-proof)
 
 Same files, restricted to the fresh tasks. With memorization stripped, the
 field reorders:
@@ -172,7 +208,7 @@ E $0.128, with mean wall-clock C 116 s, D 89 s, E 106 s. The bridge arm
 outscores the cheaper-per-task C and E while costing less than either, so
 P2 holds directionally.
 
-### 3.3 Trace attribution (deviation-7 telemetry, eval C/D/E)
+### 4.3 Trace attribution (deviation-7 telemetry, eval C/D/E)
 
 The traces (`bench/trace_analysis.py` over `bench/data/runs/`, eval split)
 let us ask where cited names actually came from. Between 98% and 100% of
@@ -187,12 +223,12 @@ D**. Binary `decl_exists` verification disciplines the model where the
 fuzzy search neighborhoods of loogle and grep let it fool itself. This is
 the mechanism behind the hallucination rows above.
 
-## 4. Third-party retrieval: MathlibQR-810 and MathlibMPR (claude-sonnet-5)
+## 5. Third-party retrieval: MathlibQR-810 and MathlibMPR (claude-sonnet-5)
 
 Tier-1's remaining faithfulness leg depended on an LLM judge whose error
 could correlate with arm, so Bridge v2 replaces judge-dependent grading with
 graders that predate the arms: third-party expert gold labels here, and the
-Lean kernel in §5. The data come from `frenzymath/LeanSearch-v2`
+Lean kernel in §6. The data come from `frenzymath/LeanSearch-v2`
 @`94f4888cbaf9` (CC BY 4.0; LeanSearch-v2, arXiv:2605.13137), copied under
 `bench/v2/data/`. There are four arms: N (no tools), F (loogle + decl_grep +
 decl_read), W (the Brain MCP), and WF (W ∪ F **plus**
@@ -201,7 +237,7 @@ deliberately part of the condition; see the confound note below). Scoring is
 `bench/v2/score_retrieval.py`, exact full-name match only; run rows with
 full gzipped stream-json transcripts live in `bench/v2/runs/agent/`.
 
-### 4.1 MathlibQR fair-810 — concept retrieval (810 expert query rows, 6 styles)
+### 5.1 MathlibQR fair-810 — concept retrieval (810 expert query rows, 6 styles)
 
 | system | R@10 | nDCG@10 |
 |---|---|---|
@@ -224,7 +260,7 @@ the gap. This is the headline API deficiency.
 Among the agent arms, F and W are statistically tied (paired discordants
 78 F-only vs 66 W-only, exact p = 0.36), and both land nominally above the
 published retriever rows — with the apples-to-oranges caveat that agents
-reason and verify while retrievers embed once (§7). The two toolkits have
+reason and verify while retrievers embed once (§8). The two toolkits have
 different textures: W wins the special_case style (nDCG 0.523 vs F's 0.384
 — the Brain's curated special_case bonds are the signal), while F wins the
 Lean-syntax styles. Grep cannot find what source text never names.
@@ -241,9 +277,15 @@ brain_bridge 608 — a verify-then-cite pattern), while WF averages 4.6 calls
 pooled across both benchmarks in a genuine dual-toolkit mix (decl_grep
 ~1.5k, decl_exists ~0.9k, brain_bridge ~0.7k, decl_read ~0.5k, loogle
 ~0.4k). The brain_cell misuse pattern, a 63% failure rate in the Tier-1
-traces, disappears under the manual.
+traces, disappears under the manual. Figure 5 in the PDF edition
+(`bridge-report/figures/fig5_tooluse.pdf`) draws the whole census, SorryDB
+included. Two compositional facts stand out: `decl_exists` is the single
+most-called tool wherever the Brain is present (1,473 calls in W —
+verify-then-cite made mechanical), and the manual does not so much add
+tools as prune them — WF keeps `brain_bridge` as its informal entry (687
+calls) while `brain_cell` falls from 482 calls in W to exactly one.
 
-### 4.2 MathlibMPR — premise retrieval (69 post-cutoff PR theorems, expert premise groups)
+### 5.2 MathlibMPR — premise retrieval (69 post-cutoff PR theorems, expert premise groups)
 
 | system | group-recall@10 |
 |---|---|
@@ -272,7 +314,7 @@ bare-union ablation is one flag away (`MANUAL_ARMS` in
 "a maximally equipped, briefed agent", not as a clean marginal effect of
 tool union.
 
-## 5. SorryDB: kernel-graded proving in live repositories (claude-sonnet-5)
+## 6. SorryDB: kernel-graded proving in live repositories (claude-sonnet-5)
 
 SorryDB (arXiv:2603.02668, sorrydb.org) serves unsolved `sorry`s from real
 Lean repositories, and success is defined by the repo *building* with your
@@ -305,7 +347,7 @@ graphiti 20, LeanAPAP 20, MiscYD 20, SemicircleLaw 7, Foundation 1).
 
 **Protocol.** The agent phase is build-free and one-shot. Each row carries
 the goal state plus a ±60-line file window at the pinned commit; the agent
-(600 s timeout, arms N / F / WF as in §4) outputs one replacement for the
+(600 s timeout, arms N / F / WF as in §5) outputs one replacement for the
 `sorry`, under an explicit honest-abstention rule (output the literal
 `sorry`). Verification (`bench/v2/verify_sorrydb.py`) clones each repo at
 its pin, establishes a pristine baseline build, splices each candidate over
@@ -313,7 +355,7 @@ the span (asserted to literally read `sorry`), and rebuilds the module;
 success requires exit 0 with no `sorry`/axiom warning.
 
 **Results** — recomputed for this report from
-`bench/v2/runs/sorrydb/verify.jsonl` + the run rows (script logic in §8;
+`bench/v2/runs/sorrydb/verify.jsonl` + the run rows (script logic in §9;
 n = 171 tasks/arm):
 
 | | N no tools | F formal | WF union+manual |
@@ -353,7 +395,7 @@ LeanAPAP) and because the protocol differs materially (published agents
 iterate against the build; ours drafted one-shot with no compiler in the
 loop).
 
-## 6. Synthesis
+## 7. Synthesis
 
 **What the join adds.** Two things, both now measured twice. The first is
 *grounding*: binary existence verification at the informal→formal boundary
@@ -370,7 +412,9 @@ carries this.
 concept identity: W trails F by 18pp on MathlibMPR, exactly as preregistered
 from TheoremGraph's negative transfer. And the API's single-shot free-text
 entry is a label resolver (0.036 R@10 in system mode); everything the agent
-arms recover, they recover by reformulating against it.
+arms recover, they recover by reformulating against it. The agents vote the
+same way with their calls: given both toolkits on SorryDB, WF routes 94% of
+its tool calls to formal search (figure 5 in the PDF edition).
 
 **The composition result.** The toolkits are complementary, and a briefed
 agent composes them into the best rows we know of on both third-party
@@ -399,7 +443,7 @@ $0.18–0.44/query (MPR). In proving, tool arms cut cost-per-proved-theorem
 from $29 to $11 while raising the prove rate 5×. Across all three phases,
 adding the join never made the task more expensive per success.
 
-## 7. Limitations and threats to validity
+## 8. Limitations and threats to validity
 
 1. **One model per phase.** Tier-1 is Haiku-only (per-model run dirs were
    not keyed — fixed in v2, where dirs are (benchmark, arm, model)-keyed)
@@ -438,7 +482,7 @@ adding the join never made the task more expensive per success.
    regex heuristic; hallucination rates are comparable across arms (same
    extractor) but not exact.
 
-## 8. Data availability
+## 9. Data availability
 
 Everything needed to recompute this report lives in the private preservation
 repository **`Deicyde/wikilean-bridge-experiment`** (report at the root as
@@ -463,8 +507,8 @@ working repository.
 | `bench/v2/runs/` | every v2 run row **with full gzipped stream-json transcripts** (QR 810×4, MPR 69×4, SorryDB 508 rows) + `verify.jsonl` (197 kernel verdicts) | `3664aa3d`, `daac6107`, `382e51bf`, `1fe21cca` |
 
 Recomputation entry points: `bench/score_bridge.py` (Tier-1),
-`bench/trace_analysis.py` (§3.3), `bench/v2/score_retrieval.py` (§4 —
-reprints every table), `bench/v2/verify_sorrydb.py` (§5 verdicts; the §5
+`bench/trace_analysis.py` (§4.3), `bench/v2/score_retrieval.py` (§5 —
+reprints every table), `bench/v2/verify_sorrydb.py` (§6 verdicts; the §6
 table is a straight aggregation of `verify.jsonl` × the run rows, filtered to
 `tasks_frozen.jsonl` ids, counting `gave_up`, `error`, verdicts, and
 `transcript_stats.cost_usd`).
@@ -477,3 +521,147 @@ FATE arXiv:2511.02872 · miniCTX arXiv:2408.03350 · LeanDojo
 arXiv:2306.15626 · LeanAgent arXiv:2410.06209 · Numina-Lean-Agent
 arXiv:2601.14027 · miniF2F-v2 arXiv:2511.03108 · ProofNet#/ProofNetVerif
 arXiv:2406.07222 · benchmark-faults survey arXiv:2606.29493.
+
+## Appendix A: the agent manual
+
+> The following is `bench/v2/AGENT_MANUAL.md`, the briefing prepended
+> verbatim to every WF-arm prompt — it is part of the measured condition
+> (§5) and is reproduced here unchanged as a study artifact.
+
+# Tool manual: searching Mathlib with the Brain + formal search
+
+You have two complementary toolkits. Every claim in this manual is measured
+from ~5,500 logged tool calls across 3,500 benchmark runs (Tier-1 +
+Bridge v2); numbers in brackets are those measurements.
+
+## The mental model
+
+- **The Brain (wikibrain, 8 tools)** is a *curated knowledge graph* joining
+  informal mathematics (Wikipedia/Wikidata concepts, external databases) to
+  Mathlib declarations. It knows what things *mean* and how concepts relate —
+  but it only "atomizes" declarations that some concept, annotation, or tag
+  claims (~12k of Mathlib's declarations). It is a map, not the territory.
+- **Formal search (3 tools)** operates on *all* of Mathlib directly: type-
+  pattern search (loogle), source grep, source reading. It knows everything
+  that exists but nothing about what it means informally.
+
+Rule of thumb: **route by what you're holding.** Holding a concept described
+in words → start with the Brain. Holding a type shape or name fragment →
+start with formal search. Always finish with `decl_exists` on every name you
+intend to output.
+
+## Formal search tools
+
+### loogle
+Type-pattern and constant search (the public loogle.lean-lang.org service).
+- USE for: "a lemma whose statement looks like `_ * _ ≤ _ * _`", searches by
+  involved constants (`Real.sqrt`, `tsum`), name substrings.
+- Strengths: covers ALL of Mathlib; ~0% call errors [578 calls, 0 errors];
+  the best premise-finding tool — the loogle+grep toolkit matched a
+  specialist premise retriever [group-recall@10 0.453 vs 0.461 SOTA].
+- Weaknesses: needs Lean syntax fluency; a wrong pattern silently returns
+  unrelated hits; small result payloads mean you often need decl_read next.
+
+### decl_grep
+Regex search over the Mathlib source checkout (ripgrep).
+- USE for: name fragments ("cantor"), notation, docstring phrases, finding
+  the file a declaration lives in.
+- Strengths: the workhorse [1,206 calls, 0% errors]; catches things loogle's
+  type index can't (comments, docstrings, naming conventions).
+- Weaknesses: lexical only — if the concept's name doesn't appear in source,
+  grep cannot find it (descriptive queries like "special case of X" score
+  worst for grep-based agents [nDCG 0.384 vs the Brain's 0.523]).
+
+### decl_read
+Read declaration source (with surrounding context) from the checkout.
+- USE for: verifying a candidate actually says what you think BEFORE citing
+  it; getting exact signatures and hypotheses.
+- Strengths: ground truth for any decl in Mathlib [397 calls, 0% errors].
+- Weaknesses: you need the file/name first — it is a confirmation tool, not
+  a discovery tool.
+
+## Brain tools
+
+### brain_bridge — THE ENTRY POINT for informal→formal
+Free text in, existence-verified declarations + owning atoms out, with
+signatures, import lines, and one-hop dependency context.
+- USE for: "the concept described as ⟨words⟩" — especially nicknames and
+  special-case descriptions, where the Brain's curated bonds beat grep
+  [special_case nDCG 0.523 vs 0.384; nickname 0.779 vs 0.757].
+- CRITICAL LIMITATION (measured): its free-text matching is label/alias
+  anchored, NOT semantic. A single call with a descriptive paraphrase
+  usually misses [single-shot benchmark: 3.6% R@10 vs 82% for an agent that
+  reformulates]. **Never accept one miss as the answer: reformulate 2–4
+  times** — try the concept's canonical name, a synonym, the head noun alone.
+  8.9% of calls return match:"none" [727 calls]; that response includes
+  nearest-candidate suggestions — read them.
+- The `hits` list is existence-verified; bond quality matters: `exact` means
+  the decl IS the concept; `formalizes`/weaker bonds are nearby.
+
+### brain_search
+Fuzzy label + alias search returning atoms (cells).
+- USE for: resolving a name you half-know into an atom id; browsing what the
+  Brain calls something [400 calls, 0% errors — the reliable fallback when
+  brain_bridge misses].
+- Weaknesses: returns atoms, not ranked decls — follow with brain_cell on
+  the winning atom.
+
+### brain_cell
+The full atom card: Lean code, Wikidata description, DB snippets, organs.
+- USE for: everything known about ONE object after bridge/search resolved it.
+- **THE #1 MISUSE [63% of 482 calls failed]: calling it with a bare
+  `decl:Mathlib:Name` for an arbitrary declaration.** The Brain only has
+  atoms for concept-joined decls; "unresolvable key" means *no atom owns
+  this decl*, NOT that the decl doesn't exist. For arbitrary decls use
+  decl_exists (works for all of Mathlib) and decl_read for source. Call
+  brain_cell only with ids that came OUT of a Brain tool.
+
+### decl_exists — THE DISCIPLINE TOOL
+Batch existence check for declaration names (backed by the full oracle —
+covers ALL of Mathlib, unlike brain_cell).
+- **USE ALWAYS, on every name you are about to output.** This is the
+  measured difference between grounded and hallucinated citations: agents
+  that verified before citing cut hallucinated-but-cited-anyway to 13% vs
+  33% for agents relying on fuzzy search results alone. It is cheap
+  [1,473 calls, 0.1% errors] and batched — check 10 names in one call.
+- Also returns verified-rename suggestions for stale names.
+
+### brain_neighborhood
+The synapse graph around an atom (depends/links/relates, cursored).
+- USE for: "what connects to X" — finding the connecting lemma between two
+  concepts, walking dependencies.
+- Weaknesses: needs a valid atom id [24.8% of calls errored — same
+  unresolvable-key trap as brain_cell; resolve the atom first].
+
+### brain_transfer / brain_snippets / brain_filter
+Narrower tools: label↔decl jumps for KNOWN labels (transfer), stored source
+snippets (snippets), facet enumeration (filter). High misuse rates when fed
+non-atom ids [40%/57% errors]. Prefer brain_bridge/brain_search entry; reach
+for these only on ids the Brain already returned.
+
+## Routing playbook
+
+| You are holding | Do this |
+|---|---|
+| A concept in words | brain_bridge → (miss?) reformulate → brain_search → brain_cell |
+| A special case / nickname | brain_bridge (the Brain's best terrain) |
+| A type shape | loogle |
+| A name fragment | decl_grep |
+| Premises for a proof | loogle + decl_grep FIRST [0.453 vs 0.272], Brain for concept grounding |
+| A candidate name to cite | decl_exists (batch, always) → decl_read if the statement matters |
+| An atom id from any Brain tool | brain_cell / brain_neighborhood freely |
+| A bare decl name needing info | decl_exists + decl_read — NOT brain_cell |
+
+## Anti-patterns (each one measured in prior runs)
+
+1. **Citing unverified names.** 33% of hallucinated citations came from
+   agents that had search evidence in front of them and cited a wrong name
+   anyway. decl_exists is binary and kills this.
+2. **One query, then giving up.** The single-call miss rate on descriptive
+   queries is ~96%; agents that reformulate reach ~82%. Iteration IS the
+   algorithm.
+3. **brain_cell as a generic decl inspector.** 63% failure rate. Brain
+   atoms ≠ all of Mathlib.
+4. **Answering outside the requested format.** 143/810 no-tool runs were
+   scored 0 for exactly this. Re-read the output contract before replying.
+5. **Inventing tool names** (e.g. `logue`, `lookie`). Use the names above.
