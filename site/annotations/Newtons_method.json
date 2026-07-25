@@ -70,7 +70,8 @@
         "match_kind": null
       },
       "note": "The defining formula x_{n+1} = x_n − f(x_n)/f'(x_n) for the Newton iterate over a real differentiable function is not stated as such in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2cb322d97a42"
     },
     {
       "kind": "proposition",
@@ -222,7 +223,8 @@
         "match_kind": null
       },
       "note": "The Newton fractal (basin-of-attraction colouring for complex Newton iteration) is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "839dd38e833a"
     },
     {
       "kind": "example",
@@ -920,6 +922,102 @@
       "note": "Implementation code, not a mathematical statement to formalize.",
       "provenance": "ai",
       "id": "49fadb53fe51"
+    },
+    {
+      "kind": "definition",
+      "label": "Householder's methods",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "This algorithm is first in the class of Householder's methods"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Householder's family of higher-order root-finding methods is not formalized in Mathlib (loogle finds no `Householder`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Secant method (finite-difference derivative)",
+      "anchor": {
+        "section": "Difficulty in calculating the derivative of a function",
+        "snippet": "Using this approximation would result in something like the secant method whose convergence is slower than that of Newton's method"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The secant method (Newton with a finite-difference derivative) is not formalized in Mathlib (only convex-slope `secant` lemmas exist).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Gauss–Newton algorithm (nonlinear least squares)",
+      "anchor": {
+        "section": "k variables, m equations, with m > k",
+        "snippet": "See Gauss–Newton algorithm for more information"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Gauss–Newton algorithm for overdetermined nonlinear least-squares systems is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fréchet derivative",
+      "anchor": {
+        "section": "In a Banach space",
+        "snippet": "F ′ ( X n ) is the Fréchet derivative computed at X n"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fderiv",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines the Fréchet derivative `fderiv` between normed spaces, matching the usage in the Banach-space formulation of Newton's method.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Kepler's equation — Newton's own iterative use",
+      "anchor": {
+        "section": "History",
+        "snippet": "he did apply his method in an iterative manner to a nonpolynomial equation, specifically Kepler's equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Newton's iterative solution of Kepler's equation is a historical mathematical example not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Iteration formula x_{n+1} = x_n − f(x_n)/f'(x_n)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a better approximation of the root than x 0"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The general recurrence defining Newton's iterates for a real differentiable function (as opposed to Mathlib's polynomial-only `Polynomial.newtonMap`) is not formalized.",
+      "provenance": "ai"
     }
   ]
 }

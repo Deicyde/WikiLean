@@ -92,6 +92,22 @@
     },
     {
       "kind": "definition",
+      "label": "Opposite category",
+      "anchor": {
+        "section": "Covariance and contravariance",
+        "snippet": "one can also define a contravariant functor as a covariant functor on the opposite category"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Category.opposite",
+        "module": "Mathlib.CategoryTheory.Opposites",
+        "match_kind": "exact"
+      },
+      "note": "The category instance `Category.opposite` on `Opposite C` gives the opposite category `Cᵒᵖ` with morphisms reversed; the standard vehicle for contravariance in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Opposite functor",
       "anchor": {
         "section": "Opposite functor",
@@ -176,6 +192,22 @@
       "id": "3eb69b56ffc0"
     },
     {
+      "kind": "definition",
+      "label": "Category of small categories",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "the category of small categories"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Cat",
+        "module": "Mathlib.CategoryTheory.Category.Cat",
+        "match_kind": "exact"
+      },
+      "note": "`Cat` is the category whose objects are small categories and whose morphisms are functors.",
+      "provenance": "ai"
+    },
+    {
       "kind": "proposition",
       "label": "One-object category as monoid",
       "anchor": {
@@ -191,6 +223,22 @@
       "note": "`SingleObj M` is the one-object category whose endomorphism monoid is `M` (with `End (SingleObj.star M) ≃ M`), realizing the monoid–category correspondence.",
       "provenance": "ai",
       "id": "aed64fc5f592"
+    },
+    {
+      "kind": "proposition",
+      "label": "Functors between one-object categories as monoid homomorphisms",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Functors between one-object categories correspond to monoid homomorphisms"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.SingleObj.mapHom",
+        "module": "Mathlib.CategoryTheory.SingleObj",
+        "match_kind": "exact"
+      },
+      "note": "`SingleObj.mapHom` gives the equivalence between monoid homomorphisms `M →* N` and functors `SingleObj M ⥤ SingleObj N`.",
+      "provenance": "ai"
     },
     {
       "kind": "example",
@@ -305,10 +353,10 @@
       "mathlib": {
         "decl": "CategoryTheory.Functor.diag",
         "module": "Mathlib.CategoryTheory.Products.Basic",
-        "match_kind": "exact"
+        "match_kind": "special_case"
       },
-      "note": "`Functor.diag : C ⥤ C × C` is the diagonal functor; the general diagonal into a functor category is `Functor.const`.",
-      "provenance": "ai",
+      "note": "`Functor.diag : C ⥤ C × C` is the diagonal functor into a binary product; the article's D ⥤ D^C generalization corresponds to `Functor.const C`.",
+      "provenance": "ai-moderated",
       "id": "240a978e2c72"
     },
     {
@@ -381,6 +429,22 @@
     },
     {
       "kind": "example",
+      "label": "Fundamental groupoid",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Thus one has the fundamental groupoid instead of the fundamental group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FundamentalGroupoid",
+        "module": "Mathlib.AlgebraicTopology.FundamentalGroupoid.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`FundamentalGroupoid X` is the groupoid whose objects are points of X and whose morphisms are homotopy classes of paths.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
       "label": "Continuous functions functor",
       "anchor": {
         "section": "Examples",
@@ -429,6 +493,22 @@
       "note": "A group G is realized as a one-object groupoid `SingleObj G`; G-sets correspond to functors `SingleObj G ⥤ Type` (cf. `CategoryTheory.Action`).",
       "provenance": "ai",
       "id": "2b95542e76e4"
+    },
+    {
+      "kind": "example",
+      "label": "Linear representation as functor",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "a functor from G to the category of vector spaces , Vect K , is a linear representation of G"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Representation",
+        "module": "Mathlib.RepresentationTheory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Representation k G V` (and `Rep k G` as `Action (ModuleCat k) G`) realizes a linear representation of `G` as a functor from the one-object category on `G` to k-vector spaces.",
+      "provenance": "ai"
     },
     {
       "kind": "example",
@@ -500,6 +580,22 @@
     },
     {
       "kind": "example",
+      "label": "Free group",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "sends every set X to the free group generated by X"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FreeGroup",
+        "module": "Mathlib.GroupTheory.FreeGroup.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`FreeGroup X` is the free group on a type X; the free functor `Set → Grp` corresponds to `GroupCat.free`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
       "label": "Hom functor (abelian groups)",
       "anchor": {
         "section": "Examples",
@@ -548,6 +644,38 @@
       "note": "`Functor.category` is the category structure on `C ⥤ D` whose morphisms are natural transformations.",
       "provenance": "ai",
       "id": "1b339a71347c"
+    },
+    {
+      "kind": "definition",
+      "label": "Natural transformation",
+      "anchor": {
+        "section": "Relation to other categorical concepts",
+        "snippet": "Morphisms in this category are natural transformations between functors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.NatTrans",
+        "module": "Mathlib.CategoryTheory.NatTrans",
+        "match_kind": "exact"
+      },
+      "note": "`NatTrans F G` is the type of natural transformations between two functors; these are exactly the morphisms of the functor category.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Adjoint functors",
+      "anchor": {
+        "section": "Relation to other categorical concepts",
+        "snippet": "Universal constructions often give rise to pairs of adjoint functors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Adjunction",
+        "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Adjunction F G` (notation `F ⊣ G`) bundles the hom-set isomorphism `Hom(F X, Y) ≃ Hom(X, G Y)` natural in both arguments.",
+      "provenance": "ai"
     },
     {
       "kind": "example",

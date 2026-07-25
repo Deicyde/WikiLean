@@ -3,6 +3,7 @@
   "wikipedia_title": "Formal power series",
   "display_title": "Formal power series",
   "schema_version": 3,
+  "annotation_style": "theorem_article",
   "annotations": [
     {
       "kind": "definition",
@@ -12,7 +13,14 @@
         "snippet": "a formal series is an infinite sum that is considered independently from any notion of convergence"
       },
       "provenance": "ai-agent1",
-      "id": "a75b04cf774c"
+      "id": "a75b04cf774c",
+      "status": "partial",
+      "mathlib": {
+        "decl": "HahnSeries",
+        "module": "Mathlib.RingTheory.HahnSeries.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "No abstract `FormalSeries` in Mathlib; the most general realization is `HahnSeries`, with `PowerSeries`, `MvPowerSeries`, `LaurentSeries` as concrete instances."
     },
     {
       "kind": "definition",
@@ -22,7 +30,14 @@
         "snippet": "A formal power series is a special kind of formal series"
       },
       "provenance": "ai-agent1",
-      "id": "88963240bbed"
+      "id": "88963240bbed",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PowerSeries",
+        "module": "Mathlib.RingTheory.PowerSeries.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`PowerSeries R := MvPowerSeries Unit R` is the univariate formal power series type."
     },
     {
       "kind": "definition",
@@ -32,7 +47,14 @@
         "snippet": "A formal power series with coefficients in a ring"
       },
       "provenance": "ai-agent1",
-      "id": "ec3906877b46"
+      "id": "ec3906877b46",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PowerSeries",
+        "module": "Mathlib.RingTheory.PowerSeries.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`PowerSeries R` inherits the (semi)ring structure from `MvPowerSeries Unit R` (see `MvPowerSeries.instSemiring`)."
     },
     {
       "kind": "example",
@@ -42,7 +64,14 @@
         "snippet": "all that is relevant is the sequence of coefficients"
       },
       "provenance": "ai-agent1",
-      "id": "e62fb172aef1"
+      "id": "e62fb172aef1",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Illustrative expository example, not a named object in Mathlib."
     },
     {
       "kind": "example",
@@ -52,7 +81,14 @@
         "snippet": "with the factorials"
       },
       "provenance": "ai-agent1",
-      "id": "1a9bcd564428"
+      "id": "1a9bcd564428",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Expository example (∑ n! X^n); Mathlib has `PowerSeries.exp` (with 1/n!) but not this specific series."
     },
     {
       "kind": "definition",
@@ -62,7 +98,14 @@
         "snippet": "The multiplicative inverse of a formal power series A is a formal power series C such that AC = 1"
       },
       "provenance": "ai-agent1",
-      "id": "51ff57088b02"
+      "id": "51ff57088b02",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PowerSeries.invOfUnit",
+        "module": "Mathlib.RingTheory.PowerSeries.Inverse",
+        "match_kind": "exact"
+      },
+      "note": "`PowerSeries.invOfUnit` constructs the inverse when the constant term is a unit; `PowerSeries.inv` handles the field case."
     },
     {
       "kind": "definition",
@@ -72,7 +115,14 @@
         "snippet": "Now we can define division of formal power series by defining B / A to be the product"
       },
       "provenance": "ai-agent1",
-      "id": "85cb14dc0f4b"
+      "id": "85cb14dc0f4b",
+      "status": "partial",
+      "mathlib": {
+        "decl": "PowerSeries.inv",
+        "module": "Mathlib.RingTheory.PowerSeries.Inverse",
+        "match_kind": "invocation"
+      },
+      "note": "Division B/A is `B * A⁻¹` via `PowerSeries.inv`; a dedicated `Div` instance exists only via the `Field k⟦X⟧` inference over a field."
     },
     {
       "kind": "definition",
@@ -82,7 +132,14 @@
         "snippet": "An important operation on formal power series is coefficient extraction"
       },
       "provenance": "ai-agent1",
-      "id": "0a7dff49848b"
+      "id": "0a7dff49848b",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PowerSeries.coeff",
+        "module": "Mathlib.RingTheory.PowerSeries.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`PowerSeries.coeff (n : ℕ) : R⟦X⟧ →ₗ[R] R` extracts the n-th coefficient."
     },
     {
       "kind": "definition",
@@ -92,7 +149,14 @@
         "snippet": "the elements of this set collectively constitute another ring"
       },
       "provenance": "ai-agent1",
-      "id": "dc628600d290"
+      "id": "dc628600d290",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PowerSeries",
+        "module": "Mathlib.RingTheory.PowerSeries.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The (semi)ring structure on `PowerSeries R` is provided by `MvPowerSeries.instSemiring` transported via `PowerSeries := MvPowerSeries Unit R`."
     },
     {
       "kind": "definition",
@@ -102,7 +166,14 @@
         "snippet": "abstractly as the completion of the polynomial ring"
       },
       "provenance": "ai-agent1",
-      "id": "f7d7b1d8cdd2"
+      "id": "f7d7b1d8cdd2",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `MvPowerSeries/Basic.lean` explicitly notes the I-adic completion characterization is not yet proved (TODO)."
     },
     {
       "kind": "definition",
@@ -112,17 +183,31 @@
         "snippet": "This type of product is called the Cauchy product of the two sequences of coefficients"
       },
       "provenance": "ai-agent1",
-      "id": "9711bf2bc8cf"
+      "id": "9711bf2bc8cf",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PowerSeries.coeff_mul",
+        "module": "Mathlib.RingTheory.PowerSeries.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`coeff n (φ * ψ) = ∑ p ∈ antidiagonal n, coeff p.1 φ * coeff p.2 ψ` is exactly the Cauchy product."
     },
     {
       "kind": "definition",
       "label": "Product topology on R^N",
       "anchor": {
         "section": "Topological structure",
-        "snippet": "We may give"
+        "snippet": "the product topology , where each copy of"
       },
-      "provenance": "ai-agent1",
-      "id": "598ee06d4cb7"
+      "provenance": "ai-moderated",
+      "id": "598ee06d4cb7",
+      "note": "Sharpened anchor: original snippet 'We may give' was too vague.",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PowerSeries.WithPiTopology",
+        "module": "Mathlib.RingTheory.PowerSeries.PiTopology",
+        "match_kind": "exact"
+      }
     },
     {
       "kind": "definition",
@@ -132,7 +217,14 @@
         "snippet": "the I-adic topology"
       },
       "provenance": "ai-agent1",
-      "id": "d01e6793b272"
+      "id": "d01e6793b272",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Ideal.adicTopology",
+        "module": "Mathlib.Topology.Algebra.Nonarchimedean.AdicTopology",
+        "match_kind": "generalization"
+      },
+      "note": "`Ideal.adicTopology I` gives the I-adic topology for any ideal, but its equality with `WithPiTopology` on `R⟦X⟧` is not proved in Mathlib."
     },
     {
       "kind": "definition",
@@ -142,7 +234,14 @@
         "snippet": "The desired topology could also be derived from the following metric"
       },
       "provenance": "ai-agent1",
-      "id": "7c2331e6de17"
+      "id": "7c2331e6de17",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `MetricSpace (PowerSeries R)` instance in Mathlib; only the pi-topology / uniform structure is provided."
     },
     {
       "kind": "proposition",
@@ -152,7 +251,14 @@
         "snippet": "an infinite summation converges if and only if the sequence of its terms converges to 0"
       },
       "provenance": "ai-agent1",
-      "id": "2ef1d1e30e15"
+      "id": "2ef1d1e30e15",
+      "status": "partial",
+      "mathlib": {
+        "decl": "NonarchimedeanAddGroup.summable_iff_tendsto_cofinite_zero",
+        "module": "Mathlib.Topology.Algebra.InfiniteSum.Nonarchimedean",
+        "match_kind": "generalization"
+      },
+      "note": "General nonarchimedean-group version exists; specialization to `R⟦X⟧` is not stated explicitly."
     },
     {
       "kind": "proposition",
@@ -162,7 +268,14 @@
         "snippet": "an infinite product converges if and only if the sequence of its factors converges to 1"
       },
       "provenance": "ai-agent1",
-      "id": "7ee95f8a7fab"
+      "id": "7ee95f8a7fab",
+      "status": "partial",
+      "mathlib": {
+        "decl": "NonarchimedeanGroup.multipliable_iff_tendsto_cofinite_one",
+        "module": "Mathlib.Topology.Algebra.InfiniteSum.Nonarchimedean",
+        "match_kind": "generalization"
+      },
+      "note": "General nonarchimedean-group version exists; specialization to `R⟦X⟧` is not stated."
     },
     {
       "kind": "theorem",
@@ -172,7 +285,14 @@
         "snippet": "may be characterized by the following universal property"
       },
       "provenance": "ai-agent1",
-      "id": "6125359cbd3d"
+      "id": "6125359cbd3d",
+      "status": "partial",
+      "mathlib": {
+        "decl": "MvPowerSeries.aeval_unique",
+        "module": "Mathlib.RingTheory.MvPowerSeries.Evaluation",
+        "match_kind": "generalization"
+      },
+      "note": "`MvPowerSeries.aeval_unique` gives uniqueness of a continuous R-algebra hom sending X to a fixed value; the univariate specialization is `PowerSeries.aeval`."
     },
     {
       "kind": "definition",
@@ -182,7 +302,14 @@
         "snippet": "the n th power of a formal power series S is defined recursively"
       },
       "provenance": "ai-agent1",
-      "id": "bb64ec6abdf6"
+      "id": "bb64ec6abdf6",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PowerSeries.coeff_pow",
+        "module": "Mathlib.RingTheory.PowerSeries.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The Monoid structure gives `f^n`; `PowerSeries.coeff_pow` computes its coefficients."
     },
     {
       "kind": "proposition",
@@ -192,17 +319,31 @@
         "snippet": "its complex powers are well defined for series f with constant term equal to 1"
       },
       "provenance": "ai-agent1",
-      "id": "8a3cb3b0c824"
+      "id": "8a3cb3b0c824",
+      "status": "partial",
+      "mathlib": {
+        "decl": "PowerSeries.binomialSeries",
+        "module": "Mathlib.RingTheory.PowerSeries.Binomial",
+        "match_kind": "special_case"
+      },
+      "note": "`binomialSeries` gives (1+X)^r for r in a binomial ring; general complex-power operator on 1+m·R⟦X⟧ is not packaged."
     },
     {
       "kind": "theorem",
       "label": "Invertibility criterion",
       "anchor": {
         "section": "Multiplicative inverse",
-        "snippet": "is invertible in"
+        "snippet": "is invertible in [MATH] if and only if its constant coefficient"
       },
-      "provenance": "ai-agent1",
-      "id": "c6313747e3e7"
+      "provenance": "ai-moderated",
+      "id": "c6313747e3e7",
+      "note": "Sharpened anchor to capture the iff criterion, though [MATH] placeholder remains in-source.",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PowerSeries.isUnit_iff_constantCoeff",
+        "module": "Mathlib.RingTheory.PowerSeries.Inverse",
+        "match_kind": "exact"
+      }
     },
     {
       "kind": "proposition",
@@ -212,7 +353,14 @@
         "snippet": "the geometric series formula is valid"
       },
       "provenance": "ai-agent1",
-      "id": "34a41e2c70bb"
+      "id": "34a41e2c70bb",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PowerSeries.mk_one_mul_one_sub_eq_one",
+        "module": "Mathlib.RingTheory.PowerSeries.WellKnown",
+        "match_kind": "exact"
+      },
+      "note": "`(1 + X + X² + …) · (1 − X) = 1`; also `PowerSeries.invUnitsSub` for 1/(u−X)."
     },
     {
       "kind": "proposition",
@@ -222,7 +370,14 @@
         "snippet": "is a discrete valuation ring with uniformizing parameter"
       },
       "provenance": "ai-agent1",
-      "id": "7e08ad5f9976"
+      "id": "7e08ad5f9976",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PowerSeries.instIsDiscreteValuationRing",
+        "module": "Mathlib.RingTheory.PowerSeries.Inverse",
+        "match_kind": "exact"
+      },
+      "note": "`instance : IsDiscreteValuationRing k⟦X⟧` in `PowerSeries/Inverse.lean`, with `maximalIdeal_eq_span_X` giving X as the uniformizer."
     },
     {
       "kind": "definition",
@@ -232,7 +387,14 @@
         "snippet": "The computation of a quotient"
       },
       "provenance": "ai-agent1",
-      "id": "c1fb6d2d7a7c"
+      "id": "c1fb6d2d7a7c",
+      "status": "partial",
+      "mathlib": {
+        "decl": "PowerSeries.inv",
+        "module": "Mathlib.RingTheory.PowerSeries.Inverse",
+        "match_kind": "invocation"
+      },
+      "note": "Division reduces to `B * A⁻¹` via `PowerSeries.inv`; over a field a full `Div` instance follows from the `Field` structure."
     },
     {
       "kind": "definition",
@@ -242,7 +404,14 @@
         "snippet": "The coefficient extraction operator applied to a formal power series"
       },
       "provenance": "ai-agent1",
-      "id": "7700cba1f4f2"
+      "id": "7700cba1f4f2",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PowerSeries.coeff",
+        "module": "Mathlib.RingTheory.PowerSeries.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Same as the earlier coefficient definition; notation like `[X^n]` is not scoped in Mathlib but `coeff n φ` plays the role."
     },
     {
       "kind": "definition",
@@ -252,7 +421,14 @@
         "snippet": "one may form the composition"
       },
       "provenance": "ai-agent1",
-      "id": "96456f62a014"
+      "id": "96456f62a014",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PowerSeries.subst",
+        "module": "Mathlib.RingTheory.PowerSeries.Substitution",
+        "match_kind": "exact"
+      },
+      "note": "`PowerSeries.subst a f` (and `MvPowerSeries.subst`) formalize substitution/composition when `HasSubst a` holds."
     },
     {
       "kind": "proposition",
@@ -262,7 +438,14 @@
         "snippet": "Composition is only valid when"
       },
       "provenance": "ai-agent1",
-      "id": "df894633ebc8"
+      "id": "df894633ebc8",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PowerSeries.HasSubst",
+        "module": "Mathlib.RingTheory.PowerSeries.Substitution",
+        "match_kind": "exact"
+      },
+      "note": "`HasSubst a ↔ IsNilpotent (constantCoeff a)`; `subst` is only mathematically valid under this hypothesis."
     },
     {
       "kind": "theorem",
@@ -272,7 +455,14 @@
         "snippet": "A more explicit description of these coefficients is provided by Faà di Bruno's formula"
       },
       "provenance": "ai-agent1",
-      "id": "49bed223bb6a"
+      "id": "49bed223bb6a",
+      "status": "partial",
+      "mathlib": {
+        "decl": "FormalMultilinearSeries.taylorComp",
+        "module": "Mathlib.Analysis.Calculus.ContDiff.FaaDiBruno",
+        "match_kind": "generalization"
+      },
+      "note": "Faà di Bruno is formalized only for iterated derivatives / Taylor composition in analysis, not for `PowerSeries.subst` coefficients."
     },
     {
       "kind": "example",
@@ -282,7 +472,14 @@
         "snippet": "makes perfect sense as a formal power series"
       },
       "provenance": "ai-agent1",
-      "id": "93f52a24c69c"
+      "id": "93f52a24c69c",
+      "status": "partial",
+      "mathlib": {
+        "decl": "PowerSeries.log",
+        "module": "Mathlib.RingTheory.PowerSeries.Log",
+        "match_kind": "invocation"
+      },
+      "note": "`PowerSeries.log` exists over ℚ-algebras; the article's specific composition example is not stated as a lemma."
     },
     {
       "kind": "theorem",
@@ -292,7 +489,14 @@
         "snippet": "there exists a series"
       },
       "provenance": "ai-agent1",
-      "id": "e7dffe0c7d9b"
+      "id": "e7dffe0c7d9b",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general compositional-inverse existence theorem for `PowerSeries.subst` is present in Mathlib."
     },
     {
       "kind": "definition",
@@ -302,7 +506,14 @@
         "snippet": "we define its formal derivative"
       },
       "provenance": "ai-agent1",
-      "id": "b51e149a1020"
+      "id": "b51e149a1020",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PowerSeries.derivative",
+        "module": "Mathlib.RingTheory.PowerSeries.Derivative",
+        "match_kind": "exact"
+      },
+      "note": "`PowerSeries.derivative R : Derivation R R⟦X⟧ R⟦X⟧` (notation `d⁄dX`)."
     },
     {
       "kind": "proposition",
@@ -312,7 +523,14 @@
         "snippet": "This operation is R - linear"
       },
       "provenance": "ai-agent1",
-      "id": "2154fe26664d"
+      "id": "2154fe26664d",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PowerSeries.derivative",
+        "module": "Mathlib.RingTheory.PowerSeries.Derivative",
+        "match_kind": "invocation"
+      },
+      "note": "Packaged as a `Derivation`, whose bundled type carries the `R`-linearity axioms `map_add'` and `map_smul'`."
     },
     {
       "kind": "proposition",
@@ -322,7 +540,14 @@
         "snippet": "the product rule is valid"
       },
       "provenance": "ai-agent1",
-      "id": "497cf09ebad8"
+      "id": "497cf09ebad8",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PowerSeries.derivativeFun_mul",
+        "module": "Mathlib.RingTheory.PowerSeries.Derivative",
+        "match_kind": "exact"
+      },
+      "note": "Labelled 'Leibniz rule for formal power series' in the file; built into the `Derivation` bundle."
     },
     {
       "kind": "proposition",
@@ -332,7 +557,14 @@
         "snippet": "the chain rule works as well"
       },
       "provenance": "ai-agent1",
-      "id": "c5dd38936218"
+      "id": "c5dd38936218",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PowerSeries.derivative_subst",
+        "module": "Mathlib.RingTheory.PowerSeries.Derivative",
+        "match_kind": "exact"
+      },
+      "note": "`d⁄dX (f.subst g) = (d⁄dX f).subst g * d⁄dX g` under `HasSubst g`."
     },
     {
       "kind": "definition",
@@ -342,7 +574,14 @@
         "snippet": "we define its formal antiderivative or formal indefinite integral"
       },
       "provenance": "ai-agent1",
-      "id": "4488be2940a4"
+      "id": "4488be2940a4",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `PowerSeries.antiderivative` / formal integral operator exists in Mathlib."
     },
     {
       "kind": "proposition",
@@ -352,7 +591,14 @@
         "snippet": "This operation is R - linear"
       },
       "provenance": "ai-agent1",
-      "id": "cccac219c13b"
+      "id": "cccac219c13b",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Depends on the missing formal antiderivative."
     },
     {
       "kind": "proposition",
@@ -362,17 +608,31 @@
         "snippet": "the formal antiderivative is the right inverse of the formal derivative"
       },
       "provenance": "ai-agent1",
-      "id": "5442b5ef3bac"
+      "id": "5442b5ef3bac",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Depends on the missing formal antiderivative."
     },
     {
       "kind": "proposition",
-      "label": "Polynomials as subring",
+      "label": "Formal power series ring contains polynomial ring",
       "anchor": {
         "section": "Algebraic properties of the formal power series ring",
         "snippet": "is an associative algebra over"
       },
-      "provenance": "ai-agent1",
-      "id": "f3499358128f"
+      "provenance": "ai-moderated",
+      "id": "f3499358128f",
+      "note": "Relabeled: original 'Polynomials as subring' captured only part of the statement, which also asserts algebra structure.",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.coeToPowerSeries.algHom",
+        "module": "Mathlib.RingTheory.PowerSeries.Basic",
+        "match_kind": "exact"
+      }
     },
     {
       "kind": "proposition",
@@ -382,7 +642,14 @@
         "snippet": "The Jacobson radical of"
       },
       "provenance": "ai-agent1",
-      "id": "f281dbbdd218"
+      "id": "f281dbbdd218",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma computing `Ring.jacobson R⟦X⟧` (or its containment) is present in the PowerSeries files."
     },
     {
       "kind": "proposition",
@@ -392,7 +659,14 @@
         "snippet": "The maximal ideals of"
       },
       "provenance": "ai-agent1",
-      "id": "88a0c95faae7"
+      "id": "88a0c95faae7",
+      "status": "partial",
+      "mathlib": {
+        "decl": "PowerSeries.maximalIdeal_eq_span_X",
+        "module": "Mathlib.RingTheory.PowerSeries.Inverse",
+        "match_kind": "special_case"
+      },
+      "note": "The unique maximal ideal of `k⟦X⟧` (k a field) is `(X)`; the correspondence with maximal ideals of general `R` is not stated."
     },
     {
       "kind": "proposition",
@@ -402,7 +676,14 @@
         "snippet": "Several algebraic properties of"
       },
       "provenance": "ai-agent1",
-      "id": "2ccac1137e8b"
+      "id": "2ccac1137e8b",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PowerSeries.instIsNoetherianRing",
+        "module": "Mathlib.RingTheory.PowerSeries.Ideal",
+        "match_kind": "invocation"
+      },
+      "note": "`IsNoetherianRing R⟦X⟧` for Noetherian R (`PowerSeries.Ideal`); `IsLocalRing` inheritance is in `MvPowerSeries.Inverse`."
     },
     {
       "kind": "proposition",
@@ -412,7 +693,14 @@
         "snippet": "The metric space"
       },
       "provenance": "ai-agent1",
-      "id": "b956cf22730c"
+      "id": "b956cf22730c",
+      "status": "partial",
+      "mathlib": {
+        "decl": "PowerSeries.WithPiTopology.instCompleteSpace",
+        "module": "Mathlib.RingTheory.PowerSeries.PiTopology",
+        "match_kind": "generalization"
+      },
+      "note": "Completeness is proved for the pi-uniform structure; there is no metric-space version because no metric is defined."
     },
     {
       "kind": "proposition",
@@ -422,7 +710,14 @@
         "snippet": "is compact if and only if R is finite"
       },
       "provenance": "ai-agent1",
-      "id": "e0c1884e20f8"
+      "id": "e0c1884e20f8",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `CompactSpace (PowerSeries R) ↔ Finite R` lemma found in the PowerSeries files."
     },
     {
       "kind": "theorem",
@@ -432,7 +727,14 @@
         "snippet": "satisfies the Weierstrass preparation theorem"
       },
       "provenance": "ai-agent1",
-      "id": "aef63a3f5f1c"
+      "id": "aef63a3f5f1c",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PowerSeries.exists_isWeierstrassFactorization",
+        "module": "Mathlib.RingTheory.PowerSeries.WeierstrassPreparation",
+        "match_kind": "exact"
+      },
+      "note": "For a complete local ring, any power series whose image in the residue field is nonzero factors as (distinguished polynomial)·(unit)."
     },
     {
       "kind": "proposition",
@@ -442,7 +744,14 @@
         "snippet": "This series is guaranteed to converge"
       },
       "provenance": "ai-agent1",
-      "id": "78e06f82fda8"
+      "id": "78e06f82fda8",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PowerSeries.aeval",
+        "module": "Mathlib.RingTheory.PowerSeries.Evaluation",
+        "match_kind": "exact"
+      },
+      "note": "`PowerSeries.aeval ha : R⟦X⟧ →ₐ[R] S` evaluates a power series at a topologically nilpotent element."
     },
     {
       "kind": "proposition",
@@ -452,7 +761,14 @@
         "snippet": "we can give an explicit formula for the multiplicative inverse of a power series"
       },
       "provenance": "ai-agent1",
-      "id": "8bba482a4766"
+      "id": "8bba482a4766",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PowerSeries.coeff_invOfUnit",
+        "module": "Mathlib.RingTheory.PowerSeries.Inverse",
+        "match_kind": "exact"
+      },
+      "note": "Recursive coefficient formula for `invOfUnit`."
     },
     {
       "kind": "definition",
@@ -462,7 +778,14 @@
         "snippet": "The formal Laurent series over a ring"
       },
       "provenance": "ai-agent1",
-      "id": "0c12ddfa97ad"
+      "id": "0c12ddfa97ad",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LaurentSeries",
+        "module": "Mathlib.RingTheory.LaurentSeries",
+        "match_kind": "exact"
+      },
+      "note": "`LaurentSeries R := HahnSeries ℤ R`, notation `R⸨X⸩`."
     },
     {
       "kind": "definition",
@@ -472,7 +795,14 @@
         "snippet": "is called the order of"
       },
       "provenance": "ai-agent1",
-      "id": "abafe7312d4a"
+      "id": "abafe7312d4a",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HahnSeries.order",
+        "module": "Mathlib.RingTheory.HahnSeries.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`HahnSeries.order` / `orderTop` specializes to `LaurentSeries` since it is `HahnSeries ℤ`."
     },
     {
       "kind": "example",
@@ -482,7 +812,14 @@
         "snippet": "is a formal Laurent series of order"
       },
       "provenance": "ai-agent1",
-      "id": "8a098d77cffd"
+      "id": "8a098d77cffd",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Illustrative example, not a named lemma."
     },
     {
       "kind": "definition",
@@ -492,7 +829,14 @@
         "snippet": "Multiplication of such series can be defined"
       },
       "provenance": "ai-agent1",
-      "id": "156200864476"
+      "id": "156200864476",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HahnSeries.instMul",
+        "module": "Mathlib.RingTheory.HahnSeries.Multiplication",
+        "match_kind": "generalization"
+      },
+      "note": "Multiplication is inherited from the `HahnSeries` (semi)ring structure."
     },
     {
       "kind": "proposition",
@@ -502,7 +846,14 @@
         "snippet": "It is equal to the localization of the ring"
       },
       "provenance": "ai-agent1",
-      "id": "886ad66ca522"
+      "id": "886ad66ca522",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LaurentSeries.of_powerSeries_localization",
+        "module": "Mathlib.RingTheory.LaurentSeries",
+        "match_kind": "exact"
+      },
+      "note": "`IsLocalization (Submonoid.powers X) R⸨X⸩` witnesses `R⸨X⸩ = R⟦X⟧[X⁻¹]`."
     },
     {
       "kind": "definition",
@@ -512,7 +863,14 @@
         "snippet": "One may define formal differentiation for formal Laurent series"
       },
       "provenance": "ai-agent1",
-      "id": "8dac3822f501"
+      "id": "8dac3822f501",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LaurentSeries.derivative",
+        "module": "Mathlib.RingTheory.LaurentSeries",
+        "match_kind": "exact"
+      },
+      "note": "`LaurentSeries.derivative = hasseDeriv 1`; a general `hasseDeriv k` operator is also defined."
     },
     {
       "kind": "definition",
@@ -522,7 +880,14 @@
         "snippet": "it is called formal residue of"
       },
       "provenance": "ai-agent1",
-      "id": "7acd7dccf3f5"
+      "id": "7acd7dccf3f5",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `LaurentSeries.residue` (coefficient at X⁻¹ as a K-derivation) in Mathlib."
     },
     {
       "kind": "proposition",
@@ -532,7 +897,14 @@
         "snippet": "one has an exact sequence"
       },
       "provenance": "ai-agent1",
-      "id": "ce9f6d255f13"
+      "id": "ce9f6d255f13",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Depends on the missing formal residue."
     },
     {
       "kind": "proposition",
@@ -542,7 +914,14 @@
         "snippet": "Some rules of calculus"
       },
       "provenance": "ai-agent1",
-      "id": "41d264aa75cc"
+      "id": "41d264aa75cc",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Depends on the missing formal residue."
     },
     {
       "kind": "theorem",
@@ -552,7 +931,14 @@
         "snippet": "The following relation between the coefficients of g n and f"
       },
       "provenance": "ai-agent1",
-      "id": "7e768e3434b8"
+      "id": "7e768e3434b8",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Lagrange inversion formula for formal power series in Mathlib."
     },
     {
       "kind": "theorem",
@@ -562,7 +948,14 @@
         "snippet": "a generalization of the Lagrange inversion formula is already available"
       },
       "provenance": "ai-agent1",
-      "id": "a81efebea88d"
+      "id": "a81efebea88d",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The basic Lagrange inversion theorem is not yet in Mathlib."
     },
     {
       "kind": "definition",
@@ -572,7 +965,14 @@
         "snippet": "Formal power series in any number of indeterminates"
       },
       "provenance": "ai-agent1",
-      "id": "0ed52806cf28"
+      "id": "0ed52806cf28",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MvPowerSeries",
+        "module": "Mathlib.RingTheory.MvPowerSeries.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`MvPowerSeries σ R := (σ →₀ ℕ) → R`."
     },
     {
       "kind": "proposition",
@@ -582,7 +982,14 @@
         "snippet": "The topology on"
       },
       "provenance": "ai-agent1",
-      "id": "3b7507cd5a1d"
+      "id": "3b7507cd5a1d",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MvPowerSeries.WithPiTopology",
+        "module": "Mathlib.RingTheory.MvPowerSeries.PiTopology",
+        "match_kind": "exact"
+      },
+      "note": "Product/pi topology on `MvPowerSeries σ R`."
     },
     {
       "kind": "proposition",
@@ -592,7 +999,14 @@
         "snippet": "A series is invertible if and only if its constant term is invertible"
       },
       "provenance": "ai-agent1",
-      "id": "48d8fc0bd75b"
+      "id": "48d8fc0bd75b",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MvPowerSeries.isUnit_iff_constantCoeff",
+        "module": "Mathlib.RingTheory.MvPowerSeries.Inverse",
+        "match_kind": "exact"
+      },
+      "note": "`IsUnit φ ↔ IsUnit (constantCoeff φ)` for `MvPowerSeries σ R`."
     },
     {
       "kind": "definition",
@@ -602,7 +1016,14 @@
         "snippet": "The composition"
       },
       "provenance": "ai-agent1",
-      "id": "0286af3aa078"
+      "id": "0286af3aa078",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MvPowerSeries.subst",
+        "module": "Mathlib.RingTheory.MvPowerSeries.Substitution",
+        "match_kind": "exact"
+      },
+      "note": "`MvPowerSeries.subst a f` under `MvPowerSeries.HasSubst a`."
     },
     {
       "kind": "definition",
@@ -612,7 +1033,14 @@
         "snippet": "there are now separate partial derivative operators"
       },
       "provenance": "ai-agent1",
-      "id": "a9c0c5129306"
+      "id": "a9c0c5129306",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `MvPowerSeries.pderiv` defined in Mathlib (unlike `MvPolynomial.pderiv`)."
     },
     {
       "kind": "theorem",
@@ -622,7 +1050,14 @@
         "snippet": "the universal property characterizing"
       },
       "provenance": "ai-agent1",
-      "id": "2ba76c51ae53"
+      "id": "2ba76c51ae53",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MvPowerSeries.aeval_unique",
+        "module": "Mathlib.RingTheory.MvPowerSeries.Evaluation",
+        "match_kind": "exact"
+      },
+      "note": "A continuous R-algebra hom `MvPowerSeries σ R →ₐ[R] S` is determined by its values on X_s."
     },
     {
       "kind": "definition",
@@ -632,7 +1067,14 @@
         "snippet": "These formal power series over R form the Magnus ring over R"
       },
       "provenance": "ai-agent1",
-      "id": "c24f809f388c"
+      "id": "c24f809f388c",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Magnus ring / noncommutative-variable formal power series construction in Mathlib."
     },
     {
       "kind": "definition",
@@ -642,7 +1084,14 @@
         "snippet": "The formal power series over"
       },
       "provenance": "ai-agent1",
-      "id": "9f51278e403b"
+      "id": "9f51278e403b",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MvPowerSeries",
+        "module": "Mathlib.RingTheory.MvPowerSeries.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The Mathlib definition is already given for `[Semiring R]` (and `PowerSeries` inherits)."
     },
     {
       "kind": "definition",
@@ -652,7 +1101,14 @@
         "snippet": "the support of"
       },
       "provenance": "ai-agent1",
-      "id": "4889478db58e"
+      "id": "4889478db58e",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `PowerSeries.support` or characteristic-series construction; `HahnSeries.support` exists but that is a different object."
     },
     {
       "kind": "definition",
@@ -662,7 +1118,14 @@
         "snippet": "the sum"
       },
       "provenance": "ai-agent1",
-      "id": "eaf364375a08"
+      "id": "eaf364375a08",
+      "status": "partial",
+      "mathlib": {
+        "decl": "PowerSeries.coeff_mul",
+        "module": "Mathlib.RingTheory.PowerSeries.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Addition and Cauchy product are provided by the (semi)ring instance; no Hadamard-product operator is defined for `PowerSeries`."
     },
     {
       "kind": "definition",
@@ -672,7 +1135,14 @@
         "snippet": "is the ring of formal power series on"
       },
       "provenance": "ai-agent1",
-      "id": "4064f0e676e1"
+      "id": "4064f0e676e1",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HahnSeries",
+        "module": "Mathlib.RingTheory.HahnSeries.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`HahnSeries Γ R` for a partially-ordered Γ with well-founded (isPWO) support."
     },
     {
       "kind": "theorem",
@@ -682,7 +1152,238 @@
         "snippet": "Various properties of"
       },
       "provenance": "ai-agent1",
-      "id": "293fe538bc6b"
+      "id": "293fe538bc6b",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HahnSeries.instField",
+        "module": "Mathlib.RingTheory.HahnSeries.Summable",
+        "match_kind": "exact"
+      },
+      "note": "`HahnSeries Γ R` is a field when Γ is a linearly ordered abelian group and R is a field."
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniqueness of multiplicative inverse",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "if A has a multiplicative inverse, it is unique"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "inv_unique",
+        "module": "Mathlib.Algebra.Group.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Multiplicative-inverse uniqueness holds in any monoid; specializes to `PowerSeries` via `Monoid` instance."
+    },
+    {
+      "kind": "proposition",
+      "label": "Cauchy product finiteness of each coefficient",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "each coefficient in the product AB only depends on a finite number of coefficients of A and B"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PowerSeries.coeff_mul",
+        "module": "Mathlib.RingTheory.PowerSeries.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The finite-antidiagonal formula `coeff n (φ * ψ) = ∑ p ∈ antidiagonal n, …` witnesses the finiteness."
+    },
+    {
+      "kind": "definition",
+      "label": "Embedding of R into R[[X]] and the indeterminate X",
+      "anchor": {
+        "section": "Ring structure",
+        "snippet": "One embeds"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PowerSeries.C",
+        "module": "Mathlib.RingTheory.PowerSeries.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`PowerSeries.C : R →+* R⟦X⟧` embeds R; `PowerSeries.X` is the indeterminate."
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalence of product/I-adic/metric topologies",
+      "anchor": {
+        "section": "Topological structure",
+        "snippet": "There are several equivalent ways to define the desired topology"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines only the pi-topology; equivalence with I-adic or metric topologies is not established (see `MvPowerSeries.PiTopology` TODO)."
+    },
+    {
+      "kind": "proposition",
+      "label": "Recursive formula for coefficients of the n-th power",
+      "anchor": {
+        "section": "Power series raised to powers",
+        "snippet": "the coefficients are given by"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PowerSeries.coeff_pow",
+        "module": "Mathlib.RingTheory.PowerSeries.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Sum-over-antidiagonal formula for `coeff k (φ^n)`."
+    },
+    {
+      "kind": "proposition",
+      "label": "Exponent rules for complex powers",
+      "anchor": {
+        "section": "Power series raised to powers",
+        "snippet": "The exponent rules"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general 'complex-power' operator on 1+m·R⟦X⟧ is packaged, so its exponent laws are not stated."
+    },
+    {
+      "kind": "proposition",
+      "label": "Recursive formula for coefficients of the inverse series",
+      "anchor": {
+        "section": "Multiplicative inverse",
+        "snippet": "we may compute the coefficients of the inverse series"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PowerSeries.coeff_invOfUnit",
+        "module": "Mathlib.RingTheory.PowerSeries.Inverse",
+        "match_kind": "exact"
+      },
+      "note": "Recursive coefficient formula for `invOfUnit`."
+    },
+    {
+      "kind": "proposition",
+      "label": "Coefficient of composition via truncated polynomials",
+      "anchor": {
+        "section": "Composition",
+        "snippet": "the coefficient of [MATH] in the polynomial"
+      },
+      "provenance": "ai",
+      "status": "partial",
+      "mathlib": {
+        "decl": "PowerSeries.coeff_subst",
+        "module": "Mathlib.RingTheory.PowerSeries.Substitution",
+        "match_kind": "generalization"
+      },
+      "note": "`coeff_subst` (and `coeff_subst'`) give the coefficient formula via a `finsum`, not via truncation of `f` to a polynomial."
+    },
+    {
+      "kind": "proposition",
+      "label": "Recursive computation of composition inverse coefficients",
+      "anchor": {
+        "section": "Composition inverse",
+        "snippet": "The coefficients of"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No composition-inverse recursion in Mathlib (composition inverse itself is not formalized)."
+    },
+    {
+      "kind": "proposition",
+      "label": "Taylor-series representation via formal derivatives",
+      "anchor": {
+        "section": "Formal differentiation",
+        "snippet": "in these respects formal power series behave like Taylor series"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma of the form `f = ∑ (coeff n f) · X^n = ∑ (d^n f / n!)|₀ · X^n` linking `derivative` to `coeff` via factorials in `PowerSeries`."
+    },
+    {
+      "kind": "definition",
+      "label": "Field of fractions of K[[X]] equals K((X))",
+      "anchor": {
+        "section": "Formal Laurent series",
+        "snippet": "the field of fractions of the integral domain"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LaurentSeries.instIsFractionRing",
+        "module": "Mathlib.RingTheory.LaurentSeries",
+        "match_kind": "exact"
+      },
+      "note": "`instance {K : Field} : IsFractionRing K⟦X⟧ K⸨X⸩` in `LaurentSeries.lean`."
+    },
+    {
+      "kind": "proposition",
+      "label": "Order/derivative relation ord(f') = ord(f) - 1",
+      "anchor": {
+        "section": "Formal Laurent series",
+        "snippet": "If [MATH] is a non-constant formal Laurent series"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma relating `LaurentSeries.order` (via `HahnSeries.order`) with `derivative`/`hasseDeriv` in `LaurentSeries.lean`."
+    },
+    {
+      "kind": "proposition",
+      "label": "Formal residue is a K-derivation",
+      "anchor": {
+        "section": "Formal residue",
+        "snippet": "is a [MATH] - derivation that satisfies"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Depends on the missing formal residue."
+    },
+    {
+      "kind": "proposition",
+      "label": "Lagrange inversion n=1 special case",
+      "anchor": {
+        "section": "The Lagrange inversion formula",
+        "snippet": "In particular, for n = 1 and all k"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Depends on the missing Lagrange inversion theorem."
     }
   ]
 }

@@ -95,7 +95,7 @@
       "label": "Norm (from seminorm via positive definiteness)",
       "anchor": {
         "section": "Definition via seminorms",
-        "snippet": "If [MATH] satisfies positive definiteness"
+        "snippet": "satisfies positive definiteness, which states that if"
       },
       "status": "formalized",
       "mathlib": {
@@ -104,7 +104,7 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib has `Norm` / `NormedAddCommGroup` (norm with definiteness) but defines them directly, not as a positive-definite `Seminorm`.",
-      "provenance": "ai-agent1",
+      "provenance": "ai-moderated",
       "id": "71da5105ae61"
     },
     {
@@ -214,7 +214,7 @@
       "label": "Neighborhood basis from saturated family",
       "anchor": {
         "section": "Bases of seminorms and saturated families",
-        "snippet": "If [MATH] is a saturated family of continuous seminorms that induces the topology"
+        "snippet": "is a saturated family of continuous seminorms that induces the topology"
       },
       "status": "not_formalized",
       "mathlib": {
@@ -223,7 +223,7 @@
         "match_kind": null
       },
       "note": "Statement depends on saturated families which Mathlib does not define.",
-      "provenance": "ai-agent1",
+      "provenance": "ai-moderated",
       "id": "b8a42fd0b4b8"
     },
     {
@@ -282,7 +282,7 @@
       "label": "Minkowski functional is a seminorm for balanced convex absorbing sets",
       "anchor": {
         "section": "Equivalence of definitions",
-        "snippet": "From this definition it follows that [MATH] is a seminorm if [MATH] is balanced and convex"
+        "snippet": "From this definition it follows that"
       },
       "status": "formalized",
       "mathlib": {
@@ -291,7 +291,7 @@
         "match_kind": "exact"
       },
       "note": "`gaugeSeminorm hs₀ hs₁ hs₂ : Seminorm 𝕜 E` packages `gauge s` as a seminorm given balanced/convex/absorbent hypotheses.",
-      "provenance": "ai-agent1",
+      "provenance": "ai-moderated",
       "id": "f346eb1df88d"
     },
     {
@@ -503,7 +503,7 @@
       "label": "Uncountable-dim space with finest vector topology has HBEP",
       "anchor": {
         "section": "Hahn–Banach extension property",
-        "snippet": "If [MATH] has uncountable dimension and if we endow it with the finest vector topology"
+        "snippet": "has uncountable dimension and if we endow it with the finest vector topology"
       },
       "status": "not_formalized",
       "mathlib": {
@@ -512,7 +512,7 @@
         "match_kind": null
       },
       "note": "Neither the finest vector topology construction nor this example is in Mathlib.",
-      "provenance": "ai-agent1",
+      "provenance": "ai-moderated",
       "id": "964e725008ad"
     },
     {
@@ -542,7 +542,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "mem_closure_iff_nhds",
-        "module": "Mathlib.Topology.Defs.Filter",
+        "module": "Mathlib.Topology.ClusterPt",
         "match_kind": "generalization"
       },
       "note": "The closure characterization is the general topological `mem_closure_iff_nhds`; in LCS the nhds basis is via seminorm balls (`WithSeminorms.hasBasis_ball`).",
@@ -588,7 +588,7 @@
       "label": "Convexity criterion via Minkowski sums",
       "anchor": {
         "section": "Properties of convex subsets",
-        "snippet": "A subset [MATH] is convex if and only if"
+        "snippet": "if and only if for all positive real"
       },
       "status": "formalized",
       "mathlib": {
@@ -597,7 +597,7 @@
         "match_kind": "exact"
       },
       "note": "`convex_iff_pointwise_add_subset` characterizes convexity by `a • s + b • s ⊆ s` for `a, b ≥ 0`, `a + b = 1`.",
-      "provenance": "ai-agent1",
+      "provenance": "ai-moderated",
       "id": "afeef5696210"
     },
     {
@@ -605,7 +605,7 @@
       "label": "Star-shapedness of convex sets containing origin",
       "anchor": {
         "section": "Properties of convex subsets",
-        "snippet": "If [MATH] is a convex set that contains the origin then"
+        "snippet": "is star shaped at the origin and for all non-negative real"
       },
       "status": "formalized",
       "mathlib": {
@@ -614,7 +614,7 @@
         "match_kind": "exact"
       },
       "note": "`Convex.starConvex` shows any convex set is star-convex at each of its points (in particular at 0 if `0 ∈ s`).",
-      "provenance": "ai-agent1",
+      "provenance": "ai-moderated",
       "id": "cc20d7323417"
     },
     {
@@ -639,7 +639,7 @@
       "label": "Open convex subsets via sublinear functionals",
       "anchor": {
         "section": "Properties of convex subsets",
-        "snippet": "the open convex subsets of [MATH] are exactly those that are of the form"
+        "snippet": "are exactly those that are of the form"
       },
       "status": "not_formalized",
       "mathlib": {
@@ -648,7 +648,7 @@
         "match_kind": null
       },
       "note": "Mathlib has Hahn–Banach separation lemmas but no explicit `{x | μ x < 1}` characterization of all open convex sets.",
-      "provenance": "ai-agent1",
+      "provenance": "ai-moderated",
       "id": "6b744561d6ff"
     },
     {
@@ -673,7 +673,7 @@
       "label": "Interior/closure agreement for convex set with non-empty interior",
       "anchor": {
         "section": "Properties of convex subsets",
-        "snippet": "If [MATH] is a convex set with non-empty interior, then the closure of"
+        "snippet": "is a convex set with non-empty interior, then the closure of"
       },
       "status": "formalized",
       "mathlib": {
@@ -682,7 +682,7 @@
         "match_kind": "exact"
       },
       "note": "Mathlib provides both `Convex.closure_interior_eq_closure_of_nonempty_interior` and `Convex.interior_closure_eq_interior_of_nonempty_interior`.",
-      "provenance": "ai-agent1",
+      "provenance": "ai-moderated",
       "id": "8e5442b58ed9"
     },
     {
@@ -690,7 +690,7 @@
       "label": "Open line segment from interior to closure lies in interior",
       "anchor": {
         "section": "Properties of convex subsets",
-        "snippet": "if [MATH] is a convex subset of a TVS"
+        "snippet": "Explicitly, this means that if"
       },
       "status": "formalized",
       "mathlib": {
@@ -699,7 +699,7 @@
         "match_kind": "exact"
       },
       "note": "`Convex.openSegment_interior_closure_subset_interior` (and variants) is exactly this statement.",
-      "provenance": "ai-agent1",
+      "provenance": "ai-moderated",
       "id": "3310ad4e2b99"
     },
     {
@@ -707,7 +707,7 @@
       "label": "Separating a vector from a closed subspace by convex neighborhood",
       "anchor": {
         "section": "Properties of convex subsets",
-        "snippet": "If [MATH] is a closed vector subspace of a (not necessarily Hausdorff) locally convex space"
+        "snippet": "is a closed vector subspace of a (not necessarily Hausdorff) locally convex space"
       },
       "status": "partial",
       "mathlib": {
@@ -716,7 +716,7 @@
         "match_kind": "special_case"
       },
       "note": "`exists_open_convex_of_notMem` separates a point from a closed convex set by a convex open neighborhood, of which the closed-subspace case is a corollary.",
-      "provenance": "ai-agent1",
+      "provenance": "ai-moderated",
       "id": "2e4947f18806"
     },
     {
@@ -860,7 +860,7 @@
       "label": "Closed convex hull is precompact in Hausdorff LCS",
       "anchor": {
         "section": "Properties of convex hulls",
-        "snippet": "the closed convex hull [MATH] of compact subset [MATH] is not necessarily compact although it is a precompact"
+        "snippet": "is not necessarily compact although it is a precompact"
       },
       "status": "partial",
       "mathlib": {
@@ -869,7 +869,7 @@
         "match_kind": "special_case"
       },
       "note": "`totallyBounded_convexHull` gives totally-bounded (=precompact) for `convexHull`, from which the closure being precompact follows; not stated as a separate lemma.",
-      "provenance": "ai-agent1",
+      "provenance": "ai-moderated",
       "id": "3d7bdfeb9510"
     },
     {
@@ -962,7 +962,7 @@
       "label": "Convex combination representation for intersecting convex sets",
       "anchor": {
         "section": "Properties of convex hulls",
-        "snippet": "If [MATH] and [MATH] are convex subsets of a topological vector space"
+        "snippet": "are convex subsets of a topological vector space"
       },
       "status": "not_formalized",
       "mathlib": {
@@ -971,7 +971,7 @@
         "match_kind": null
       },
       "note": "No lemma exactly representing points of `convexHull (s ∪ t)` as convex combinations is recorded in this form.",
-      "provenance": "ai-agent1",
+      "provenance": "ai-moderated",
       "id": "5a6e46d5a2b2"
     },
     {
@@ -979,7 +979,7 @@
       "label": "Convex balanced hull",
       "anchor": {
         "section": "Properties of convex hulls",
-        "snippet": "the convex balanced hull of [MATH] denoted by [MATH] is the smallest subset"
+        "snippet": "that is convex and balanced"
       },
       "status": "formalized",
       "mathlib": {
@@ -988,7 +988,7 @@
         "match_kind": "exact"
       },
       "note": "`absConvexHull` is the smallest absolutely convex (balanced + convex) set containing `s`.",
-      "provenance": "ai-agent1",
+      "provenance": "ai-moderated",
       "id": "c4997f316aa6"
     },
     {
@@ -996,7 +996,7 @@
       "label": "Convex balanced hull equals convex hull of balanced hull",
       "anchor": {
         "section": "Properties of convex hulls",
-        "snippet": "The convex balanced hull of [MATH] is equal to the convex hull of the balanced hull"
+        "snippet": "is equal to the convex hull of the balanced hull"
       },
       "status": "formalized",
       "mathlib": {
@@ -1005,7 +1005,7 @@
         "match_kind": "exact"
       },
       "note": "`absConvexHull_eq_convexHull_balancedHull` states `absConvexHull 𝕜 s = convexHull 𝕜 (balancedHull 𝕜 s)`.",
-      "provenance": "ai-agent1",
+      "provenance": "ai-moderated",
       "id": "3502a117007f"
     },
     {
@@ -1013,7 +1013,7 @@
       "label": "Closed convex hulls compact implies sum closed convex hull compact",
       "anchor": {
         "section": "Properties of convex hulls",
-        "snippet": "If [MATH] are subsets of a TVS [MATH] whose closed convex hulls are compact"
+        "snippet": "whose closed convex hulls are compact"
       },
       "status": "not_formalized",
       "mathlib": {
@@ -1022,7 +1022,7 @@
         "match_kind": null
       },
       "note": "No lemma about compactness of the closed convex hull of a sum is in Mathlib (only `IsCompact.add`).",
-      "provenance": "ai-agent1",
+      "provenance": "ai-moderated",
       "id": "e05ddb0570e4"
     },
     {
@@ -1038,7 +1038,7 @@
         "module": "Mathlib.Analysis.Convex.Caratheodory",
         "match_kind": "exact"
       },
-      "note": "`Caratheodory.convexHull_eq_union` expresses Carathéodory: the convex hull equals the union of convex hulls of affine-independent finite subsets.",
+      "note": "`convexHull_eq_union` in `Mathlib.Analysis.Convex.Caratheodory` expresses Carathéodory: the convex hull equals the union of convex hulls of affine-independent finite subsets.",
       "provenance": "ai-agent1",
       "id": "550323fd33d2"
     },
@@ -1047,7 +1047,7 @@
       "label": "Trivial (indiscrete) topology as coarsest locally convex TVS",
       "anchor": {
         "section": "Coarsest vector topology",
-        "snippet": "Any vector space [MATH] endowed with the trivial topology"
+        "snippet": "endowed with the trivial topology"
       },
       "status": "not_formalized",
       "mathlib": {
@@ -1056,7 +1056,7 @@
         "match_kind": null
       },
       "note": "No explicit example/instance giving the indiscrete topology as an LCS is in Mathlib.",
-      "provenance": "ai-agent1",
+      "provenance": "ai-moderated",
       "id": "c726c57daacd"
     },
     {
@@ -1081,7 +1081,7 @@
       "label": "Properties of the finest locally convex topology",
       "anchor": {
         "section": "Finest locally convex topology",
-        "snippet": "Every linear map from [MATH] into another locally convex TVS is necessarily continuous"
+        "snippet": "into another locally convex TVS is necessarily continuous"
       },
       "status": "not_formalized",
       "mathlib": {
@@ -1090,7 +1090,7 @@
         "match_kind": null
       },
       "note": "Depends on the missing finest-locally-convex-topology construction.",
-      "provenance": "ai-agent1",
+      "provenance": "ai-moderated",
       "id": "4d593419db4f"
     },
     {
@@ -1132,7 +1132,7 @@
       "label": "Space of real-valued sequences as Fréchet space",
       "anchor": {
         "section": "Examples of locally convex spaces",
-        "snippet": "The space [MATH] of real valued sequences with the family of seminorms"
+        "snippet": "of real valued sequences with the family of seminorms"
       },
       "status": "not_formalized",
       "mathlib": {
@@ -1141,7 +1141,7 @@
         "match_kind": null
       },
       "note": "The `ℝ^ℕ` Fréchet-space example with coordinate seminorms is not packaged in Mathlib.",
-      "provenance": "ai-agent1",
+      "provenance": "ai-moderated",
       "id": "cd68a116b597"
     },
     {
@@ -1149,7 +1149,7 @@
       "label": "Weak topology from collection of linear functionals",
       "anchor": {
         "section": "Examples of locally convex spaces",
-        "snippet": "Given any vector space [MATH] and a collection [MATH] of linear functionals on it"
+        "snippet": "of linear functionals on it"
       },
       "status": "formalized",
       "mathlib": {
@@ -1158,7 +1158,7 @@
         "match_kind": "exact"
       },
       "note": "`WeakBilin.locallyConvexSpace` makes the weak topology induced by a bilinear pairing a `LocallyConvexSpace`.",
-      "provenance": "ai-agent1",
+      "provenance": "ai-moderated",
       "id": "2e36cf81b69c"
     },
     {
@@ -1171,7 +1171,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "SchwartzMap",
-        "module": "Mathlib.Analysis.Distribution.SchwartzSpace",
+        "module": "Mathlib.Analysis.Distribution.SchwartzSpace.Basic",
         "match_kind": "exact"
       },
       "note": "`SchwartzMap E F` defines the Schwartz space; its locally convex topology by seminorms is also formalized.",
@@ -1217,7 +1217,7 @@
       "label": "Lp spaces for 0<p<1 lack local convexity",
       "anchor": {
         "section": "Examples of spaces lacking local convexity",
-        "snippet": "The spaces [MATH] for [MATH] are equipped with the F-norm"
+        "snippet": "are equipped with the F-norm"
       },
       "status": "not_formalized",
       "mathlib": {
@@ -1226,7 +1226,7 @@
         "match_kind": null
       },
       "note": "Mathlib defines `MemLp`/`Lp` for `0 < p ≤ ∞` but does not state that for `0 < p < 1` the space fails to be locally convex.",
-      "provenance": "ai-agent1",
+      "provenance": "ai-moderated",
       "id": "e5ad26a56889"
     },
     {
@@ -1251,7 +1251,7 @@
       "label": "Continuity criterion for linear maps via seminorms",
       "anchor": {
         "section": "Continuous mappings",
-        "snippet": "a linear map [MATH] is continuous if and only if for every"
+        "snippet": "a necessary and sufficient criterion for the continuity of a linear map"
       },
       "status": "formalized",
       "mathlib": {
@@ -1260,7 +1260,7 @@
         "match_kind": "exact"
       },
       "note": "`Seminorm.continuous_from_bounded` (and `WithSeminorms.continuous_iff_continuous_comp`) gives the seminorm characterization of continuity.",
-      "provenance": "ai-agent1",
+      "provenance": "ai-moderated",
       "id": "589c79830dde"
     },
     {
@@ -1285,7 +1285,7 @@
       "label": "Linear functional bounded by seminorm criterion",
       "anchor": {
         "section": "Linear functionals",
-        "snippet": "If [MATH] is a real or complex vector space, [MATH] is a linear functional on"
+        "snippet": "is a real or complex vector space,"
       },
       "status": "partial",
       "mathlib": {
@@ -1294,7 +1294,7 @@
         "match_kind": "special_case"
       },
       "note": "Continuity-from-boundedness for linear functionals follows from `Seminorm.continuous_from_bounded` / `continuous_of_isBounded`; a packaged equivalence specifically for functionals is not separate.",
-      "provenance": "ai-agent1",
+      "provenance": "ai-moderated",
       "id": "36f5f7fa1a94"
     },
     {
@@ -1319,7 +1319,7 @@
       "label": "Existence of continuous norm implies Hausdorff",
       "anchor": {
         "section": "Basis of norms",
-        "snippet": "If there exists a continuous norm on a topological vector space [MATH] then [MATH] is necessarily Hausdorff"
+        "snippet": "If there exists a continuous norm on a topological vector space"
       },
       "status": "not_formalized",
       "mathlib": {
@@ -1328,7 +1328,8 @@
         "match_kind": null
       },
       "note": "No theorem of the form `(∃ continuous norm) → T2Space` is stated; the implication is implicit from `WithSeminorms.separating_iff_T1` for a singleton norm.",
-      "provenance": "ai"
+      "provenance": "ai-moderated",
+      "id": "8227f0706cc4"
     },
     {
       "kind": "theorem",
@@ -1344,7 +1345,8 @@
         "match_kind": "special_case"
       },
       "note": "Closest match is the seminorm continuity criterion applied to `𝕜` with `norm_withSeminorms`; the existential equivalence in this exact phrasing isn't separately packaged.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "41d34cdcdb50"
     },
     {
       "kind": "example",
@@ -1360,7 +1362,8 @@
         "match_kind": null
       },
       "note": "No such statement (discrete topology TVS ↔ space is `{0}`) is in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9d1c2c18ded4"
     },
     {
       "kind": "example",
@@ -1376,7 +1379,8 @@
         "match_kind": null
       },
       "note": "Failure of local convexity for `ℓ^p`, `0<p<1`, is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f27ada16e09c"
     },
     {
       "kind": "proposition",
@@ -1392,6 +1396,87 @@
         "match_kind": null
       },
       "note": "Triviality of the topological dual for these specific examples is not in Mathlib.",
+      "provenance": "ai",
+      "id": "68086d77b3e5"
+    },
+    {
+      "kind": "theorem",
+      "label": "Banach–Alaoglu theorem",
+      "anchor": {
+        "section": "History",
+        "snippet": "is the Banach–Alaoglu theorem which Stefan Banach first established in 1932"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WeakDual.isCompact_polar",
+        "module": "Mathlib.Analysis.Normed.Module.WeakDual",
+        "match_kind": "exact"
+      },
+      "note": "Banach–Alaoglu is formalized in Mathlib (e.g. `WeakDual.isCompact_polar` for normed spaces, and `WeakDual.isCompact_of_bounded_of_closed`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hahn–Banach theorem (existence of continuous linear functionals)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the existence of a convex local base for the zero vector is strong enough for the Hahn–Banach theorem to hold"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_extension_norm_eq",
+        "module": "Mathlib.Analysis.Normed.Module.HahnBanach",
+        "match_kind": "exact"
+      },
+      "note": "Hahn–Banach extension is `exists_extension_norm_eq` (normed) and `Module.Dual.exists_extension_of_le_seminorm` (LCS via a continuous seminorm).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Balanced set",
+      "anchor": {
+        "section": "Definition via convex sets",
+        "snippet": "consisting of balanced, convex sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Balanced",
+        "module": "Mathlib.Analysis.LocallyConvex.Balanced.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Balanced 𝕜 s` asserts `a • s ⊆ s` for every scalar `a` with `‖a‖ ≤ 1`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Absorbent (absorbing) set",
+      "anchor": {
+        "section": "Equivalence of definitions",
+        "snippet": "For an absorbing set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Absorbent",
+        "module": "Mathlib.Topology.Bornology.Absorbs",
+        "match_kind": "exact"
+      },
+      "note": "`Absorbent 𝕜 s` captures the absorbing (absorbent) condition on a set in a vector space over `𝕜`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bornological space",
+      "anchor": {
+        "section": "Finest locally convex topology",
+        "snippet": "is a bornological space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The class of bornological locally convex spaces is not defined in Mathlib.",
       "provenance": "ai"
     }
   ]

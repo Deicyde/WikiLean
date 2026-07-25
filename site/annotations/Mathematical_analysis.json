@@ -53,7 +53,8 @@
         "match_kind": "exact"
       },
       "note": "`dist_triangle : dist x z ≤ dist x y + dist y z` is one of the axioms bundled into Mathlib's `PseudoMetricSpace`/`MetricSpace`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cf76288de454"
     },
     {
       "kind": "proposition",
@@ -69,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "`dist_comm : dist x y = dist y x` is Mathlib's symmetry axiom for a (pseudo)metric.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8243fbb94056"
     },
     {
       "kind": "proposition",
@@ -153,7 +155,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib's `Continuous f` predicate generalizes continuity to arbitrary topological spaces via the preimage-of-open characterization.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "277543c645cb"
     },
     {
       "kind": "definition",
@@ -284,11 +287,12 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Real.measureSpace",
-        "module": "Mathlib.MeasureTheory.Measure.Haar.OfBasis",
+        "module": "Mathlib.MeasureTheory.Measure.Lebesgue.Basic",
         "match_kind": "exact"
       },
       "note": "Mathlib formalizes Lebesgue measure on `ℝ` via the `Real.measureSpace` instance providing `volume : Measure ℝ`, and lifts to `ℝⁿ` via the product Lebesgue measure.",
-      "provenance": "ai"
+      "provenance": "ai-moderated",
+      "id": "70ed1c429cc2"
     },
     {
       "kind": "definition",
@@ -321,7 +325,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib's `MeasurableSpace` encodes a σ-algebra: closure of the measurable sets under complements and countable unions/intersections.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e69b1d68fa23"
     },
     {
       "kind": "example",
@@ -337,7 +342,8 @@
         "match_kind": "exact"
       },
       "note": "`MeasureTheory.Measure.count` is Mathlib's formalization of the counting measure on an arbitrary measurable space.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1f1afe56e9e0"
     },
     {
       "kind": "example",
@@ -661,6 +667,214 @@
       "note": "Smooth infinitesimal analysis is not formalized in Mathlib.",
       "provenance": "ai",
       "id": "0dc2b561d7e9"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rolle's theorem",
+      "anchor": {
+        "section": "Medieval",
+        "snippet": "what is now known as Rolle's theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_deriv_eq_zero",
+        "module": "Mathlib.Analysis.Calculus.LocalExtr.Rolle",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib formalizes Rolle's theorem as `exists_deriv_eq_zero` in `Mathlib.Analysis.Calculus.LocalExtr.Rolle`: a real-valued function continuous on `[a,b]`, differentiable on `(a,b)`, with `f a = f b` has a point where `f' c = 0`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Taylor series",
+      "anchor": {
+        "section": "Medieval",
+        "snippet": "infinite series expansions, now called Taylor series"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "taylorWithinEval",
+        "module": "Mathlib.Analysis.Calculus.Taylor",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib formalizes Taylor polynomials via `taylorWithinEval` and `HasTaylorSeriesUpTo`; the full analytic Taylor-series representation is captured via `FormalMultilinearSeries` and `AnalyticOn`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cauchy sequence",
+      "anchor": {
+        "section": "Modernization",
+        "snippet": "the concept of the Cauchy sequence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CauchySeq",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines `CauchySeq u` as `Cauchy (Filter.map u Filter.atTop)`, capturing Cauchy sequences in any uniform space (in particular metric spaces).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "(ε, δ)-definition of limit",
+      "anchor": {
+        "section": "Modernization",
+        "snippet": "(ε, δ)-definition of limit"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.tendsto_nhds",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The classical ε-δ characterization of limits appears in Mathlib as `Metric.tendsto_nhds` (and its variants for `atTop`, `nhdsWithin`, etc.), providing the ε-δ unfolding of `Filter.Tendsto`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Baire category theorem",
+      "anchor": {
+        "section": "Modernization",
+        "snippet": "Baire category theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dense_iInter_of_isOpen",
+        "module": "Mathlib.Topology.Baire.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib formalizes the Baire category theorem via the `BaireSpace` typeclass and the lemma `dense_iInter_of_isOpen`, with instances for complete pseudometric spaces and locally compact regular spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lebesgue integration",
+      "anchor": {
+        "section": "Modernization",
+        "snippet": "Lebesgue integration"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral",
+        "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes the Lebesgue integral (as the Bochner integral of Banach-space-valued functions) as `MeasureTheory.integral`, notation `∫ x, f x ∂μ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hilbert space",
+      "anchor": {
+        "section": "Modernization",
+        "snippet": "Hilbert spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "A Hilbert space in Mathlib is a complete `InnerProductSpace 𝕜 E`, i.e. `InnerProductSpace` together with `[CompleteSpace E]`; there is no single dedicated `HilbertSpace` typeclass.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Normed vector space",
+      "anchor": {
+        "section": "Modernization",
+        "snippet": "The idea of normed vector space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedSpace",
+        "module": "Mathlib.Analysis.Normed.Module.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib formalizes normed vector spaces as `NormedSpace 𝕜 E`, layered over `NormedAddCommGroup E` and a `NormedField 𝕜`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Analytic function",
+      "anchor": {
+        "section": "Complex analysis",
+        "snippet": "the analytic functions of complex variables"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AnalyticOn",
+        "module": "Mathlib.Analysis.Analytic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib formalizes analyticity as `AnalyticAt`/`AnalyticOn`: locally expressible as a convergent power series via `FormalMultilinearSeries`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Meromorphic function",
+      "anchor": {
+        "section": "Complex analysis",
+        "snippet": "meromorphic functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeromorphicOn",
+        "module": "Mathlib.Analysis.Meromorphic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib formalizes meromorphic functions as `MeromorphicAt`/`MeromorphicOn`, defined via analyticity of `(z - z₀)^n • f`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fourier transform",
+      "anchor": {
+        "section": "Functional analysis",
+        "snippet": "Fourier transform"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "VectorFourier.fourierIntegral",
+        "module": "Mathlib.Analysis.Fourier.FourierTransform",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes the Fourier transform generally as `VectorFourier.fourierIntegral` (on locally compact abelian groups with an additive character), with the standard Fourier transform on ℝⁿ obtained by specialization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fourier series",
+      "anchor": {
+        "section": "Harmonic analysis",
+        "snippet": "Fourier series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fourierCoeff",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib formalizes Fourier series on the circle via `fourierCoeff` (Fourier coefficients on `AddCircle T`) with L²-completeness results.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dedekind cuts (construction of ℝ)",
+      "anchor": {
+        "section": "Modernization",
+        "snippet": "constructed the real numbers by Dedekind cuts"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real",
+        "module": "Mathlib.Data.Real.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib constructs `Real` as the completion of `ℚ` via Cauchy sequences rather than Dedekind cuts; the Dedekind-cut construction itself is not the definition used, though the resulting ordered field is the same.",
+      "provenance": "ai"
     }
   ]
 }

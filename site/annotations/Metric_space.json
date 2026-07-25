@@ -121,7 +121,8 @@
         "match_kind": "exact"
       },
       "note": "`HolderWith C r f` formalizes Hölder-continuous maps between (pseudo)e-metric spaces.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "508c0eb14906"
     },
     {
       "kind": "example",
@@ -557,12 +558,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "isCompact_Icc",
+        "decl": "CompactIccSpace.isCompact_Icc",
         "module": "Mathlib.Topology.Order.Compact",
         "match_kind": "exact"
       },
       "note": "`isCompact_Icc` (exported from `CompactIccSpace`) shows closed intervals in linearly-ordered topological spaces are compact.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "184c7c1f8f46"
     },
     {
@@ -1458,12 +1459,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "NonemptyCompacts.instMetricSpace",
+        "decl": "Metric.NonemptyCompacts.instMetricSpace",
         "module": "Mathlib.Topology.MetricSpace.Closeds",
         "match_kind": "exact"
       },
       "note": "`NonemptyCompacts.instMetricSpace` endows nonempty compact subsets with the Hausdorff metric.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "0cedd3e46c10"
     },
     {
@@ -1924,6 +1925,86 @@
       "note": "Requires the absent multiset-metric framework.",
       "provenance": "ai",
       "id": "42fbf8c8206e"
+    },
+    {
+      "kind": "definition",
+      "label": "Closed set in a metric space",
+      "anchor": {
+        "section": "The topology of a metric space",
+        "snippet": "As in any topology, closed sets are the complements of open sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsClosed",
+        "module": "Mathlib.Topology.Defs.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsClosed s ↔ IsOpen sᶜ` is the topological definition inherited by metric spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Metric convergence agrees with topological convergence",
+      "anchor": {
+        "section": "Convergence",
+        "snippet": "In metric spaces, both of these definitions make sense and they are equivalent"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.tendsto_nhds",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Metric.tendsto_nhds` shows filter/topological convergence agrees with the ε–N metric formulation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Metrizable implies paracompact Hausdorff and first-countable",
+      "anchor": {
+        "section": "The topology of a metric space",
+        "snippet": "they are paracompact"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.instParacompactSpace",
+        "module": "Mathlib.Topology.EMetricSpace.Paracompact",
+        "match_kind": "exact"
+      },
+      "note": "`Metric.instParacompactSpace` registers paracompactness of (pseudo-e)metric spaces; `T2Space`/`FirstCountableTopology` instances are also automatic.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bounded operator",
+      "anchor": {
+        "section": "Normed vector spaces",
+        "snippet": "Such transformations are known as bounded operators"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap",
+        "module": "Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ContinuousLinearMap` (`E →L[𝕜] F`) is Mathlib's bundled bounded operator.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Triangle inequality for distance from a point to a set",
+      "anchor": {
+        "section": "Hausdorff and Gromov–Hausdorff distance",
+        "snippet": "distances between points and sets satisfy a version of the triangle inequality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.infDist_le_infDist_add_dist",
+        "module": "Mathlib.Topology.MetricSpace.HausdorffDistance",
+        "match_kind": "exact"
+      },
+      "note": "`Metric.infDist_le_infDist_add_dist : infDist x s ≤ infDist y s + dist x y` is the triangle inequality.",
+      "provenance": "ai"
     }
   ]
 }

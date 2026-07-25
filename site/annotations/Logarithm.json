@@ -83,10 +83,10 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Nat.log2",
-        "module": "Mathlib.Data.Nat.Log",
+        "module": "Init.Data.Nat.Log2",
         "match_kind": "special_case"
       },
-      "note": "`Nat.log2` and `Real.logb 2` provide the binary logarithm, with `Nat.log2_eq_log_two` relating them.",
+      "note": "`Nat.log2` (core) and `Real.logb 2` provide the binary logarithm; `Nat.log2_eq_log_two` in `Mathlib.Data.Nat.Log` relates `Nat.log2` to `Nat.log 2`.",
       "provenance": "ai",
       "id": "678d331bd5c1"
     },
@@ -296,6 +296,38 @@
     },
     {
       "kind": "proposition",
+      "label": "Logarithm of a quotient",
+      "anchor": {
+        "section": "Product, quotient, power, and root",
+        "snippet": "the logarithm of the ratio of two numbers is the difference of the logarithms"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.log_div",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Real.log_div : log (x/y) = log x - log y` (with nonvanishing side conditions); `Real.logb_div` is the base-b analogue.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Logarithm of a power",
+      "anchor": {
+        "section": "Product, quotient, power, and root",
+        "snippet": "The logarithm of the p -th power of a number is p times the logarithm of the number itself"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.log_pow",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Real.log_pow : log (x ^ n) = n * log x`; `Real.log_rpow` handles real exponents.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
       "label": "Change of base formula",
       "anchor": {
         "section": "Change of base",
@@ -355,12 +387,28 @@
       "status": "partial",
       "mathlib": {
         "decl": "StrictMono.orderIsoOfSurjective",
-        "module": "Mathlib.Order.Hom.Basic",
+        "module": "Mathlib.Order.Hom.Set",
         "match_kind": "generalization"
       },
-      "note": "Strict monotonicity plus continuity yields injection/IVT-based surjection (e.g. `StrictMono.injective`, `Continuous.surjective`) but there isn't a single named bijectivity lemma.",
+      "note": "Strict monotonicity plus continuity yields injection/IVT-based surjection (e.g. `StrictMono.injective`, `StrictMono.orderIsoOfSurjective`) but there isn't a single named bijectivity lemma tailored to log.",
       "provenance": "ai",
       "id": "8d4c59515125"
+    },
+    {
+      "kind": "theorem",
+      "label": "Intermediate value theorem",
+      "anchor": {
+        "section": "Existence",
+        "snippet": "This fact follows from the intermediate value theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "intermediate_value_Icc",
+        "module": "Mathlib.Topology.Order.IntermediateValue",
+        "match_kind": "exact"
+      },
+      "note": "`intermediate_value_Icc` (and connected-image results) formalize the IVT used here.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -412,6 +460,38 @@
       "note": "`Real.rpow_logb` and `Real.logb_rpow` express that `logb b` and `b ^ ·` are inverses on positive reals.",
       "provenance": "ai",
       "id": "e5366a3bfbd0"
+    },
+    {
+      "kind": "proposition",
+      "label": "Limit of log at infinity",
+      "anchor": {
+        "section": "Graph of the logarithm function",
+        "snippet": "log b ( x ) diverges to infinity (gets bigger than any given number) if x grows to infinity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.tendsto_log_atTop",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Real.tendsto_log_atTop : Tendsto log atTop atTop` gives the divergence of log at infinity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Limit of log at 0",
+      "anchor": {
+        "section": "Graph of the logarithm function",
+        "snippet": "When x approaches zero, log b x goes to minus infinity for b > 1"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.tendsto_log_nhdsGT_zero",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Real.tendsto_log_nhdsGT_zero : Tendsto Real.log (𝓝[>] 0) atBot` states `Real.log x → -∞` as `x → 0⁺`.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -525,7 +605,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Real.log_rpow",
-        "module": "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "module": "Mathlib.Analysis.SpecialFunctions.Pow.Real",
         "match_kind": "exact"
       },
       "note": "`Real.log_pow` and `Real.log_rpow` give `log (x^r) = r * log x`.",
@@ -584,6 +664,22 @@
       "id": "3b5174dba3e6"
     },
     {
+      "kind": "definition",
+      "label": "Transcendental number",
+      "anchor": {
+        "section": "Transcendence of the logarithm",
+        "snippet": "Real numbers that are not algebraic are called transcendental"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Transcendental",
+        "module": "Mathlib.RingTheory.Algebraic.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Transcendental R x` states `x` is not the root of any nonzero polynomial in `R[X]`.",
+      "provenance": "ai"
+    },
+    {
       "kind": "proposition",
       "label": "Taylor series of ln(z)",
       "anchor": {
@@ -607,7 +703,7 @@
         "section": "Inverse hyperbolic tangent",
         "snippet": "Another series is based on the inverse hyperbolic tangent function"
       },
-      "status": "partial",
+      "status": "formalized",
       "mathlib": {
         "decl": "Real.hasSum_log_sub_log_of_abs_lt_one",
         "module": "Mathlib.Analysis.SpecialFunctions.Log.Deriv",
@@ -704,6 +800,22 @@
     },
     {
       "kind": "definition",
+      "label": "Prime-counting function",
+      "anchor": {
+        "section": "Number theory",
+        "snippet": "the quantity of prime numbers less than or equal to x is denoted"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.primeCounting",
+        "module": "Mathlib.NumberTheory.PrimeCounting",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.primeCounting n` counts primes `≤ n`; this is π(x) restricted to integer arguments.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Offset logarithmic integral",
       "anchor": {
         "section": "Number theory",
@@ -732,9 +844,25 @@
         "module": "Mathlib.Analysis.SpecialFunctions.Stirling",
         "match_kind": "exact"
       },
-      "note": "Stirling-style bounds on `log n!` (e.g. `le_log_factorial_stirling`) are in Mathlib, but the asymptotic `log n! ~ n log n - n` is not stated as such.",
+      "note": "Stirling-style bounds on `log n!` (e.g. `Stirling.le_log_factorial_stirling`) are in Mathlib, but the asymptotic `log n! ~ n log n - n` is not stated as such.",
       "provenance": "ai",
       "id": "43b22d5efadd"
+    },
+    {
+      "kind": "theorem",
+      "label": "Stirling's formula",
+      "anchor": {
+        "section": "Number theory",
+        "snippet": "This can be used to obtain Stirling's formula , an approximation of n"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Stirling.tendsto_stirlingSeq_sqrt_pi",
+        "module": "Mathlib.Analysis.SpecialFunctions.Stirling",
+        "match_kind": "exact"
+      },
+      "note": "`Stirling.tendsto_stirlingSeq_sqrt_pi` proves Stirling's asymptotic `n! ~ √(2πn) (n/e)^n`.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -780,7 +908,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Complex.exp_mul_I",
-        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Circle",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
         "match_kind": "exact"
       },
       "note": "`Complex.exp_mul_I : exp (θ * I) = cos θ + sin θ * I` is Euler's formula.",
@@ -813,6 +941,22 @@
       "note": "`Complex.log` is defined as the principal value via `Real.log ‖x‖ + arg x * I` with `arg ∈ (-π, π]`.",
       "provenance": "ai",
       "id": "8023574dd057"
+    },
+    {
+      "kind": "definition",
+      "label": "Branch cut",
+      "anchor": {
+        "section": "Complex logarithm",
+        "snippet": "Such a locus is called a branch cut"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.log",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Log",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib witnesses the discontinuity of `Complex.log` along the negative real axis (via `Complex.arg` jumping in `(-π, π]`) but has no general `branchCut` concept.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -850,6 +994,22 @@
     },
     {
       "kind": "definition",
+      "label": "Exponential map (differential geometry)",
+      "anchor": {
+        "section": "Inverses of other exponential functions",
+        "snippet": "the exponential map maps the tangent space at a point of a manifold to a neighborhood of that point"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has group/Lie-group exponentials, but a general Riemannian exponential map from `TₚM` to `M` is not packaged; no `Manifold.exp` decl exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Discrete logarithm (formal)",
       "anchor": {
         "section": "Inverses of other exponential functions",
@@ -881,6 +1041,22 @@
       "note": "No formalization of Zech's logarithm was found.",
       "provenance": "ai",
       "id": "d7d98667034f"
+    },
+    {
+      "kind": "definition",
+      "label": "Lambert W function",
+      "anchor": {
+        "section": "Inverses of other exponential functions",
+        "snippet": "the Lambert W function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the Lambert W function (the inverse of `w e^w`) is present in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",

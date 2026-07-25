@@ -176,6 +176,22 @@
       "id": "732784e47d90"
     },
     {
+      "kind": "proposition",
+      "label": "Fourier series decomposition of periodic functions",
+      "anchor": {
+        "section": "Trigonometric functions",
+        "snippet": "an arbitrary periodic function can be expressed as a sum of trigonometric functions with matching periods."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "fourierCoeff",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib formalizes Fourier series of periodic functions via `fourierCoeff` on `AddCircle` (with L² convergence results such as `hasSum_fourier_series_L2`), but no single theorem states the decomposition as claimed.",
+      "provenance": "ai"
+    },
+    {
       "kind": "example",
       "label": "Dirichlet function",
       "anchor": {
@@ -296,6 +312,22 @@
     },
     {
       "kind": "definition",
+      "label": "Periodic sequence",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "the concept of a periodic sequence is defined accordingly."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Periodic",
+        "module": "Mathlib.Algebra.Ring.Periodic",
+        "match_kind": "generalization"
+      },
+      "note": "A periodic sequence is a `Function.Periodic (f : ℕ → α) c` (or on `ℤ`); Mathlib reuses `Function.Periodic` for this since `ℕ`/`ℤ` are additive monoids.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Antiperiodic function",
       "anchor": {
         "section": "Antiperiodic functions",
@@ -316,7 +348,7 @@
       "label": "Antiperiodic implies periodic",
       "anchor": {
         "section": "Antiperiodic functions",
-        "snippet": "the converse is not necessarily true"
+        "snippet": "-antiperiodic function is a"
       },
       "status": "formalized",
       "mathlib": {
@@ -324,8 +356,8 @@
         "module": "Mathlib.Algebra.Ring.Periodic",
         "match_kind": "exact"
       },
-      "note": "`Function.Antiperiodic.periodic` shows any `c`-antiperiodic function is `2 • c`-periodic.",
-      "provenance": "ai",
+      "note": "`Function.Antiperiodic.periodic` shows any `c`-antiperiodic function is `2 • c`-periodic (see also `Antiperiodic.periodic_two_mul`).",
+      "provenance": "ai-moderated",
       "id": "e07c83fae751"
     },
     {

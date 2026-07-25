@@ -18,7 +18,7 @@
         "module": "Mathlib.Algebra.LinearRecurrence",
         "match_kind": "special_case"
       },
-      "note": "Mathlib has no general recurrence-relation definition; only the linear case is formalized as `LinearRecurrence`.",
+      "note": "Mathlib has no general recurrence-relation definition; only the linear constant-coefficient case is formalized as `LinearRecurrence`.",
       "provenance": "ai",
       "id": "d13be601f487"
     },
@@ -35,7 +35,7 @@
         "module": "Mathlib.Algebra.LinearRecurrence",
         "match_kind": "special_case"
       },
-      "note": "The order is captured as a field of `LinearRecurrence`, but only for linear recurrences.",
+      "note": "The order is captured as a field of `LinearRecurrence`; no general recurrence-order definition exists.",
       "provenance": "ai",
       "id": "82c18607b853"
     },
@@ -46,14 +46,14 @@
         "section": "(Lead)",
         "snippet": "In linear recurrences , the n th term is equated to a linear function of the"
       },
-      "status": "formalized",
+      "status": "partial",
       "mathlib": {
         "decl": "LinearRecurrence",
         "module": "Mathlib.Algebra.LinearRecurrence",
         "match_kind": "special_case"
       },
-      "note": "`LinearRecurrence` formalizes linear recurrences (with constant coefficients) over a commutative semiring.",
-      "provenance": "ai",
+      "note": "`LinearRecurrence` formalizes only the constant-coefficient case; variable-coefficient linear recurrences (e.g. polynomial coefficients) are not covered.",
+      "provenance": "ai-moderated",
       "id": "4d294e92c93f"
     },
     {
@@ -69,7 +69,7 @@
         "module": "Mathlib.Algebra.LinearRecurrence",
         "match_kind": "exact"
       },
-      "note": "`LinearRecurrence` is exactly the structure of a linear recurrence with constant coefficients.",
+      "note": "`LinearRecurrence` is exactly the structure of a linear recurrence with constant coefficients (order + coefficient vector).",
       "provenance": "ai",
       "id": "a70883c5c8cb"
     },
@@ -86,7 +86,7 @@
         "module": "Mathlib.Algebra.LinearRecurrence",
         "match_kind": "special_case"
       },
-      "note": "`mkSol` produces the unique solution from initial data inductively, but closed-form solutions are not formalized (see file docstring).",
+      "note": "`mkSol` produces the unique solution from initial data inductively for linear recurrences, but closed-form solutions are not formalized.",
       "provenance": "ai",
       "id": "2a051bd20e53"
     },
@@ -109,7 +109,7 @@
     },
     {
       "kind": "definition",
-      "label": "First-order recurrence relation",
+      "label": "Recurrence relation (formal definition)",
       "anchor": {
         "section": "Definition",
         "snippet": "A recurrence relation is an equation that expresses each element of a sequence as a function of the preceding ones"
@@ -120,9 +120,41 @@
         "module": "Mathlib.Algebra.LinearRecurrence",
         "match_kind": "special_case"
       },
-      "note": "Only linear first-order recurrences are covered (as `LinearRecurrence` with order = 1); general first-order recurrences are not defined.",
-      "provenance": "ai",
+      "note": "Only linear recurrences are formalized (as `LinearRecurrence`); general recurrences defined by an arbitrary function of preceding terms are not defined in Mathlib.",
+      "provenance": "ai-moderated",
       "id": "2ac3dca8e0e8"
+    },
+    {
+      "kind": "definition",
+      "label": "First-order recurrence relation",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "This defines recurrence relation of first order"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearRecurrence",
+        "module": "Mathlib.Algebra.LinearRecurrence",
+        "match_kind": "special_case"
+      },
+      "note": "Only the linear first-order case is captured via `LinearRecurrence` with order 1; general first-order recurrences u_{n+1} = φ(n, u_n) are not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Initial value of a recurrence",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "as its first element, called the initial value"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearRecurrence.IsSolution",
+        "module": "Mathlib.Algebra.LinearRecurrence",
+        "match_kind": "special_case"
+      },
+      "note": "Initial data for a `LinearRecurrence` is passed as a tuple to `mkSol`; there is no standalone `initial_value` definition for general recurrences.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -154,7 +186,7 @@
         "module": "Mathlib.Data.Nat.Factorial.Basic",
         "match_kind": "exact"
       },
-      "note": "`Nat.factorial` is defined by the recurrence and `factorial_succ` states `(n+1)! = (n+1) * n!`.",
+      "note": "`Nat.factorial` is defined by the recurrence and `Nat.factorial_succ` states `(n+1)! = (n+1) * n!`.",
       "provenance": "ai",
       "id": "f62d6e99873b"
     },
@@ -193,6 +225,22 @@
       "id": "22928b5ff492"
     },
     {
+      "kind": "proposition",
+      "label": "Binet's formula for Fibonacci numbers",
+      "anchor": {
+        "section": "Fibonacci numbers",
+        "snippet": "Binet's formula , which involves powers of the two roots"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `Nat.fib` and `Real.goldenRatio`-related infrastructure but no direct closed-form `Nat.fib_eq_binet`-style theorem.",
+      "provenance": "ai"
+    },
+    {
       "kind": "example",
       "label": "Binomial coefficient recurrence",
       "anchor": {
@@ -222,8 +270,9 @@
         "module": "Mathlib.Data.Nat.Choose.Basic",
         "match_kind": "exact"
       },
-      "note": "`Nat.choose_eq_factorial_div_factorial` gives the closed-form `n.choose k = n! / (k! * (n-k)!)` (for `k ≤ n`).",
-      "provenance": "ai"
+      "note": "`Nat.choose_eq_factorial_div_factorial` gives the closed-form `n.choose k = n! / (k! * (n-k)!)` for `k ≤ n`.",
+      "provenance": "ai",
+      "id": "0d45dbbf5e0d"
     },
     {
       "kind": "definition",
@@ -272,7 +321,7 @@
         "module": "Mathlib.Algebra.Group.ForwardDiff",
         "match_kind": "generalization"
       },
-      "note": "The second difference is obtained by iterating `fwdDiff` twice (`fwdDiff h^[2]`); no dedicated name exists.",
+      "note": "The second difference is obtained by iterating `fwdDiff` twice (`(fwdDiff h)^[2]`); no dedicated name exists.",
       "provenance": "ai",
       "id": "2654bb1357d4"
     },
@@ -289,7 +338,7 @@
         "module": "Mathlib.Algebra.Group.ForwardDiff",
         "match_kind": "generalization"
       },
-      "note": "The k-th difference appears as `Function.iterate (fwdDiff h) k` (e.g. in `fwdDiff_iter_eq_sum_shift`) but is not separately defined.",
+      "note": "The k-th difference appears as `Function.iterate (fwdDiff h) k` in lemmas but is not separately defined.",
       "provenance": "ai",
       "id": "b96666c533ab"
     },
@@ -442,8 +491,9 @@
         "module": "Mathlib.Algebra.LinearRecurrence",
         "match_kind": "exact"
       },
-      "note": "`LinearRecurrence.charPoly` defines the characteristic polynomial of a linear recurrence; its roots are the eigenvalues referenced in the stability criterion.",
-      "provenance": "ai"
+      "note": "`LinearRecurrence.charPoly` defines the characteristic polynomial of a linear recurrence, whose roots are the characteristic roots.",
+      "provenance": "ai",
+      "id": "12766bcdfecb"
     },
     {
       "kind": "theorem",

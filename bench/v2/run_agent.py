@@ -40,7 +40,10 @@ BENCH = HERE.parent
 sys.path.insert(0, str(BENCH))
 sys.path.insert(0, str(HERE))
 from run_benchmark import DISALLOWED_TOOLS  # noqa: E402 — the sealed list
+import run_bridge  # noqa: E402
 from run_bridge import resolve_arm_config  # noqa: E402
+
+run_bridge.ARM_CONFIG["WF"] = "mcp-WF.json"  # the union arm's server pair
 from score_retrieval import qr_rows, mpr_rows  # noqa: E402
 
 import os  # noqa: E402
@@ -68,7 +71,14 @@ ARM_CFG = {
     "F": {"mcp": "C", "tools": [
         "mcp__formal", "mcp__formal__loogle", "mcp__formal__decl_grep",
         "mcp__formal__decl_read"]},
+    # WF = W ∪ F tools PLUS the evidence-based manual prepended to the prompt.
+    # The manual is deliberately part of the condition (the "maximally equipped
+    # agent"); a bare-union ablation can be run by blanking MANUAL_ARMS.
+    "WF": {"mcp": "WF", "tools": []},  # tools filled below (W + F union)
 }
+ARM_CFG["WF"]["tools"] = sorted(set(ARM_CFG["W"]["tools"] + ARM_CFG["F"]["tools"]))
+MANUAL_ARMS = {"WF"}
+MANUAL = (HERE / "AGENT_MANUAL.md").read_text()
 
 
 def build_prompt(bench: str, query: str) -> str:
@@ -153,7 +163,10 @@ def parse_stream(stdout: str) -> dict:
 
 def run_one(bench: str, arm: str, model: str, qid: str, query: str,
             out_dir: Path, mcp_config: Path | None, timeout: int) -> str:
-    cmd = ["claude", "-p", build_prompt(bench, query),
+    prompt = build_prompt(bench, query)
+    if arm in MANUAL_ARMS:
+        prompt = f"{MANUAL}\n\n---\n\n{prompt}"
+    cmd = ["claude", "-p", prompt,
            "--output-format", "stream-json", "--verbose", "--model", model,
            "--strict-mcp-config", "--disallowedTools", ",".join(DISALLOWED_TOOLS)]
     cfg = ARM_CFG[arm]

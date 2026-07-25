@@ -109,6 +109,22 @@
     },
     {
       "kind": "definition",
+      "label": "One-to-one correspondence (bijection)",
+      "anchor": {
+        "section": "Size of a collection",
+        "snippet": "one-to-one correspondence , meaning the objects can be arranged in pairs"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv",
+        "module": "Mathlib.Logic.Equiv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Equiv α β` (notation `α ≃ β`) formalizes a bijection between two types, exactly the one-to-one correspondence notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Size relationship between collections",
       "anchor": {
         "section": "Size of a collection",
@@ -140,6 +156,22 @@
       "note": "`Stream'.Seq α` formalizes (possibly infinite) sequences indexed by positions, generalizing the function-on-positions notion.",
       "provenance": "ai",
       "id": "5713b8514aa0"
+    },
+    {
+      "kind": "definition",
+      "label": "Well-ordered set",
+      "anchor": {
+        "section": "Position in a sequence",
+        "snippet": "The positions themselves are labeled using a well-ordered set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsWellOrder",
+        "module": "Mathlib.Order.RelClasses",
+        "match_kind": "exact"
+      },
+      "note": "`IsWellOrder α r` formalizes a well-order — a strict total order in which every non-empty subset has a least element.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -202,7 +234,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "PNat",
-        "module": "Mathlib.Data.PNat.Defs",
+        "module": "Mathlib.Data.PNat.Notation",
         "match_kind": "exact"
       },
       "note": "`PNat` (notation `ℕ+`) formalizes the positive integers, while non-negative integers are `ℕ` itself.",
@@ -320,13 +352,45 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Nat.rec",
-        "module": null,
+        "decl": "Nat.recAux",
+        "module": "Init.Data.Nat.Basic",
         "match_kind": null
       },
-      "note": "`Nat` satisfies the Peano axioms (zero, injective successor, recursor `Nat.rec`), but Mathlib has no single bundled `PeanoAxioms` structure.",
+      "note": "`Nat` satisfies the Peano axioms (zero, injective successor, recursor `Nat.recAux`), but Mathlib has no single bundled `PeanoAxioms` structure.",
       "provenance": "ai",
       "id": "66ff56e95c78"
+    },
+    {
+      "kind": "proposition",
+      "label": "Injectivity of successor",
+      "anchor": {
+        "section": "Peano axioms",
+        "snippet": "If the successor of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.succ_injective",
+        "module": "Mathlib.Data.Nat.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.succ_injective : Function.Injective Nat.succ` (equivalently `Nat.succ_inj`) is the Peano injectivity axiom.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zero is not a successor",
+      "anchor": {
+        "section": "Peano axioms",
+        "snippet": "0 is not the successor of any natural number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.succ_ne_zero",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "`Nat.succ_ne_zero : ∀ n, Nat.succ n ≠ 0` states the Peano axiom that 0 is not in the image of the successor.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -337,11 +401,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Nat.rec",
-        "module": null,
+        "decl": "Nat.recAux",
+        "module": "Init.Data.Nat.Basic",
         "match_kind": "exact"
       },
-      "note": "The induction/recursion principle `Nat.rec` is the core recursor, with variants like `Nat.le_induction` and `Nat.strong_induction_on` in Mathlib.",
+      "note": "The induction/recursion principle `Nat.recAux` is the core recursor, with variants like `Nat.le_induction` and `Nat.strong_induction_on` in Mathlib.",
       "provenance": "ai",
       "id": "247dd6470b21"
     },
@@ -361,6 +425,22 @@
       "note": "`PSet.ofNat n` constructs the n-th von Neumann ordinal (with `PSet.omega` for ω) in the ZFC set-theory development.",
       "provenance": "ai",
       "id": "d60187eb216a"
+    },
+    {
+      "kind": "definition",
+      "label": "Axiom of infinity",
+      "anchor": {
+        "section": "Set-theoretic definition",
+        "snippet": "By the axiom of infinity , there exist sets which contain 0 and are closed under the successor function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PSet.omega",
+        "module": "Mathlib.SetTheory.ZFC.PSet",
+        "match_kind": "generalization"
+      },
+      "note": "`PSet.omega` provides the inductive set of finite von Neumann ordinals, witnessing the axiom of infinity within the `PSet`/`ZFSet` development.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -650,6 +730,22 @@
       "note": "`Nat.instLinearOrder` provides the total (linear) order on `ℕ`.",
       "provenance": "ai",
       "id": "e14783262d73"
+    },
+    {
+      "kind": "proposition",
+      "label": "Characterization of ≤ via existence of c with a + c = b",
+      "anchor": {
+        "section": "Order",
+        "snippet": "a ≤ b if and only if there exists another natural number c where a + c = b"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "le_iff_exists_add",
+        "module": "Mathlib.Algebra.Order.Monoid.Canonical.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`le_iff_exists_add : a ≤ b ↔ ∃ c, b = a + c` (via `CanonicallyOrderedAdd ℕ`) formalizes the characterization; `Nat.le.dest`/`Nat.le.intro` are the direct core versions.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",

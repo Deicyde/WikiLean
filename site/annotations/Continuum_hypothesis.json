@@ -69,7 +69,7 @@
         "module": "Mathlib.SetTheory.Cardinal.Order",
         "match_kind": "exact"
       },
-      "note": "Cardinal.sum_lt_prod is explicitly labelled König's theorem (∀i, f i < g i → sum f < prod g).",
+      "note": "Cardinal.sum_lt_prod is König's theorem: (∀ i, f i < g i) → sum f < prod g.",
       "provenance": "ai",
       "id": "43463be61c9a"
     },
@@ -100,10 +100,10 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Cardinal.mkRat",
-        "module": "Mathlib.Data.Rat.Cardinal",
+        "module": "Mathlib.SetTheory.Cardinal.Rat",
         "match_kind": "exact"
       },
-      "note": "Cardinal.mkRat proves #ℚ = ℵ₀ = #ℤ (Cardinal.mk_int), giving the bijection with the integers.",
+      "note": "Cardinal.mkRat proves #ℚ = ℵ₀, matching Cardinal.mk_int and giving the bijection with the integers.",
       "provenance": "ai",
       "id": "c6bfb88ff425"
     },
@@ -120,9 +120,25 @@
         "module": "Mathlib.SetTheory.Cardinal.Continuum",
         "match_kind": "invocation"
       },
-      "note": "Cardinal.aleph0_lt_continuum (ℵ₀ < 𝔠) with Cardinal.mk_int (#ℤ=ℵ₀) and Cardinal.mk_real (#ℝ=𝔠) gives #ℤ < #ℝ.",
+      "note": "Cardinal.aleph0_lt_continuum (ℵ₀ < 𝔠) with Cardinal.mk_int (#ℤ = ℵ₀) and Cardinal.mk_real (#ℝ = 𝔠) yields #ℤ < #ℝ.",
       "provenance": "ai",
       "id": "716dde66202e"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reals equinumerous with powerset of integers",
+      "anchor": {
+        "section": "Cardinality of infinite sets",
+        "snippet": "Since the real numbers are equinumerous with the powerset of the integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.mk_real",
+        "module": "Mathlib.Analysis.Real.Cardinality",
+        "match_kind": "exact"
+      },
+      "note": "Cardinal.mk_real gives #ℝ = 𝔠 = 2^ℵ₀ = #(Set ℕ), matching the equinumerosity with the powerset of the integers.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",

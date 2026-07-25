@@ -70,7 +70,8 @@
         "match_kind": null
       },
       "note": "Informal arithmetic leaves `a / 0` undefined, while Mathlib makes it definite by the convention `a / 0 = 0` (`div_zero`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4d9e0a2618d3"
     },
     {
       "kind": "definition",
@@ -139,6 +140,22 @@
       "note": "Holds definitionally since `1` is defined as `Nat.succ 0`, but there is no dedicated named lemma — status downgraded to partial to reflect the absence of a citable declaration.",
       "provenance": "ai-moderated",
       "id": "1966fb728e66"
+    },
+    {
+      "kind": "proposition",
+      "label": "No natural precedes zero",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "no natural number precedes 0"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.succ_ne_zero",
+        "module": "Init.Prelude",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.succ_ne_zero : ∀ n, Nat.succ n ≠ 0` shows no natural has 0 as its successor, i.e. no natural precedes 0.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",

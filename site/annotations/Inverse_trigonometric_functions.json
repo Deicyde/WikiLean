@@ -614,7 +614,8 @@
         "match_kind": "invocation"
       },
       "note": "Non-injectivity of the six trig functions follows from their periodicity in Mathlib, but a packaged 'not Injective' statement for each is not a single named lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "14188dee2d80"
     },
     {
       "kind": "proposition",
@@ -630,6 +631,39 @@
         "match_kind": "exact"
       },
       "note": "Complex.arg returns the principal argument in (-π, π], matching the atan2(y, x) interpretation as the argument of x + iy.",
+      "provenance": "ai",
+      "id": "5597a6bcb1e6"
+    },
+    {
+      "kind": "proposition",
+      "label": "Arctan tends to ±π/2 at infinity",
+      "anchor": {
+        "section": "Principal values",
+        "snippet": "the result ranges of the inverse functions are proper (i.e. strict) subsets of the domains of the original functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.arctan_mem_Ioo",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Arctan",
+        "match_kind": "invocation"
+      },
+      "note": "Real.arctan_mem_Ioo (and Real.arcsin_mem_Icc, Real.arccos_mem_Icc) express that the ranges are strict/closed subsets of the corresponding trig-function domains.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuity of inverse trig functions",
+      "anchor": {
+        "section": "Extension to the complex plane",
+        "snippet": "Since the inverse trigonometric functions are analytic functions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.continuous_arcsin",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Inverse",
+        "match_kind": "invocation"
+      },
+      "note": "Real.continuous_arcsin, Real.continuous_arccos, Real.continuous_arctan formalize continuity on the real line; analyticity/branch-cut structure on ℂ is only partly present (Complex.arctan).",
       "provenance": "ai"
     }
   ]

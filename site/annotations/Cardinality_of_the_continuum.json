@@ -75,6 +75,38 @@
     },
     {
       "kind": "definition",
+      "label": "Aleph-null (smallest infinite cardinal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The smallest infinite cardinal number is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.aleph0",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.aleph0` (`ℵ₀`) is the smallest infinite cardinal, with `Cardinal.aleph0_le : ℵ₀ ≤ a ↔ ¬a < ℵ₀` characterising infinite cardinals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Aleph-one (second infinite cardinal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The second smallest is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.aleph",
+        "module": "Mathlib.SetTheory.Cardinal.Aleph",
+        "match_kind": "generalization"
+      },
+      "note": "Aleph-one is `Cardinal.aleph 1` in Mathlib via the aleph function `Cardinal.aleph`, with `Cardinal.aleph0_lt_aleph_one : ℵ₀ < aleph 1` and `Cardinal.aleph_one_le_continuum : aleph 1 ≤ 𝔠`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Continuum hypothesis (no intermediate cardinality)",
       "anchor": {
         "section": "(Lead)",
@@ -259,6 +291,22 @@
       "note": "`Cardinal.beth` is defined with `beth_zero : ℶ_ 0 = ℵ₀`, `beth_succ : ℶ_ (succ o) = 2 ^ ℶ_ o`, and `beth_limit`.",
       "provenance": "ai",
       "id": "0f87cf3304d9"
+    },
+    {
+      "kind": "proposition",
+      "label": "Beth-one equals the continuum",
+      "anchor": {
+        "section": "Beth numbers",
+        "snippet": "is the second beth number, beth-one"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.beth_one",
+        "module": "Mathlib.SetTheory.Cardinal.Continuum",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.beth_one : ℶ_ 1 = 𝔠` identifies the second beth number with the cardinality of the continuum.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",

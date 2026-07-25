@@ -74,6 +74,22 @@
       "id": "3ed85799b3ea"
     },
     {
+      "kind": "theorem",
+      "label": "Khachiyan: LP is polynomial-time solvable",
+      "anchor": {
+        "section": "History",
+        "snippet": "The linear programming problem was first shown to be solvable in polynomial time by Leonid Khachiyan in 1979"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the ellipsoid method nor its polynomial-time bound is formalized in Mathlib (no complexity-class theory).",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Standard form (three parts)",
       "anchor": {
@@ -330,7 +346,7 @@
     },
     {
       "kind": "proposition",
-      "label": "Linearity implies local optima are global",
+      "label": "Linearity implies local minima are global",
       "anchor": {
         "section": "Existence of optimal solutions",
         "snippet": "A linear function is a convex function , which implies that every local minimum is a global minimum"
@@ -342,8 +358,24 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib proves a local minimum of a convex function is a global minimum, which generalizes the linear case.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "bb5dd9d1ed1d"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linearity implies local maxima are global",
+      "anchor": {
+        "section": "Existence of optimal solutions",
+        "snippet": "similarly, a linear function is a concave function , which implies that every local maximum is a global maximum"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsMaxOn.of_isLocalMax_of_convex_univ",
+        "module": "Mathlib.Analysis.Convex.Extrema",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves a local maximum of a concave function is a global maximum, generalizing the linear case.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -718,6 +750,22 @@
       "note": "0–1 integer programming is not defined in Mathlib.",
       "provenance": "ai",
       "id": "51b146e8814e"
+    },
+    {
+      "kind": "proposition",
+      "label": "0–1 IP among Karp's 21 NP-complete problems",
+      "anchor": {
+        "section": "Integer unknowns",
+        "snippet": "the decision version was one of Karp's 21 NP-complete problems"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no complexity-class theory; NP-completeness reductions like Karp's are not formalized.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",

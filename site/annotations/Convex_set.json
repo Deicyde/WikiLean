@@ -92,6 +92,22 @@
     },
     {
       "kind": "definition",
+      "label": "Epigraph of a function",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "its epigraph (the set of points on or above the graph of the function)"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ConvexOn.convex_epigraph",
+        "module": "Mathlib.Analysis.Convex.Function",
+        "match_kind": null
+      },
+      "note": "Mathlib uses the epigraph set `{p | p.1 ∈ s ∧ f p.1 ≤ p.2}` inline (e.g. `ConvexOn.convex_epigraph`, `convexOn_iff_convex_epigraph`) but has no top-level `epigraph` definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Convex set (formal)",
       "anchor": {
         "section": "Definitions",
@@ -507,6 +523,22 @@
       "note": "Geometric Hahn–Banach gives separation of a closed convex set from an exterior point, but the supporting-hyperplane-at-a-boundary-point statement is not directly proved.",
       "provenance": "ai",
       "id": "09fbd040743d"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hahn–Banach theorem",
+      "anchor": {
+        "section": "Closed convex sets",
+        "snippet": "The supporting hyperplane theorem is a special case of the Hahn–Banach theorem of functional analysis"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_extension_norm_eq",
+        "module": "Mathlib.Analysis.Normed.Module.HahnBanach",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib formalizes the Hahn–Banach extension theorem (norm-preserving) in `Mathlib.Analysis.Normed.Module.HahnBanach`.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -1300,14 +1332,14 @@
         "section": "Convex spaces",
         "snippet": "a space is convex if it is possible to take convex combinations of points"
       },
-      "status": "formalized",
+      "status": "not_formalized",
       "mathlib": {
-        "decl": "Convexity.ConvexSpace",
-        "module": "Mathlib.Geometry.Convex.ConvexSpace.Defs",
-        "match_kind": "exact"
+        "decl": null,
+        "module": null,
+        "match_kind": null
       },
-      "note": "`Convexity.ConvexSpace` axiomatizes spaces supporting (finite) convex combinations of points.",
-      "provenance": "ai",
+      "note": "Abstract convex spaces (the algebraic structure of taking convex combinations) are not axiomatized in Mathlib; the prior `Convexity.ConvexSpace` mapping does not exist.",
+      "provenance": "ai-moderated",
       "id": "e2addff85df2"
     }
   ]
