@@ -158,6 +158,52 @@ def fig4():
     plt.close(fig)
 
 
-for f in (fig1, fig2, fig3, fig4):
+# ---------------------------------------------------------------- Figure 5 --
+def fig5():
+    T = D["tooluse"]
+    wiki = ["decl_exists", "brain_bridge", "brain_search", "brain_cell",
+            "brain_transfer", "brain_neighborhood", "brain_snippets", "brain_filter"]
+    formal = ["loogle", "decl_grep", "decl_read"]
+    # two colorblind-safe hue families anchored on the report's BLUE/ORANGE
+    wiki_c = ["#123c74", "#2a78d6", "#5b96e0", "#87b4ea",
+              "#a9c9f1", "#c3d9f6", "#d9e7fa", "#ecf4fd"]
+    formal_c = ["#a63d10", "#eb6834", "#f5a878"]
+    other_c = "#b3b2ae"
+    rows = [("retrieval", "W"), ("retrieval", "F"), ("retrieval", "WF"),
+            ("sorrydb", "F"), ("sorrydb", "WF")]
+    ys = [4.55, 3.55, 2.55, 1.0, 0.0]
+    fig, ax = plt.subplots(figsize=(6.3, 3.5))
+    for tool, color in (list(zip(wiki, wiki_c)) + list(zip(formal, formal_c))
+                        + [("other", other_c)]):
+        lefts = [sum(T[fam][arm].get(t, 0)
+                     for t in (wiki + formal + ["other"])[: (wiki + formal + ["other"]).index(tool)])
+                 for fam, arm in rows]
+        vals = [T[fam][arm].get(tool, 0) for fam, arm in rows]
+        label = tool if tool != "other" else "other (built-ins)"
+        ax.barh(ys, vals, left=lefts, height=0.62, color=color, zorder=3,
+                edgecolor="white", linewidth=0.4, label=label)
+    totals = [sum(T[fam][arm].values()) for fam, arm in rows]
+    for y, tot in zip(ys, totals):
+        ax.annotate(f"{tot:,}", (tot + 30, y), va="center", fontsize=8, color=INK)
+    ax.set_yticks(ys, [f"{arm} ({T['runs'][f'{fam}/{arm}']} runs)" for fam, arm in rows])
+    ax.spines[["top", "right", "left"]].set_visible(False)
+    ax.tick_params(axis="y", length=0)
+    ax.set_xlim(0, 4150)
+    ax.grid(axis="x", color=GRID, linewidth=0.6, zorder=0)
+    ax.set_axisbelow(True)
+    ax.set_xlabel("total tool calls (summed over run rows)")
+    ax.annotate("retrieval: MathlibQR-810 + MPR", (0, 5.28), fontsize=8.5,
+                color=MUTED, style="italic", annotation_clip=False)
+    ax.annotate("SorryDB", (0, 1.73), fontsize=8.5, color=MUTED,
+                style="italic", annotation_clip=False)
+    ax.legend(frameon=False, ncols=3, loc="upper center",
+              bbox_to_anchor=(0.5, -0.28), columnspacing=1.1,
+              handlelength=1.2, handletextpad=0.5)
+    fig.tight_layout()
+    fig.savefig(FIG / "fig5_tooluse.pdf", bbox_inches="tight")
+    plt.close(fig)
+
+
+for f in (fig1, fig2, fig3, fig4, fig5):
     f()
 print("wrote", *sorted(p.name for p in FIG.glob("fig*.pdf")))

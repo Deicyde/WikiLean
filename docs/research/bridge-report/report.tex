@@ -72,6 +72,46 @@ the join does not help premise selection (0.272 vs.\ 0.453 for formal
 search); this is the concept$\neq$premise boundary we preregistered, now
 quantified as an 18pp API target.
 
+\section{The system under test: the WikiLean Brain}\label{sec:system}
+
+The artifact everything below measures is the WikiLean ``Brain'': a curated
+knowledge graph over mathematics that joins Wikipedia/Wikidata concepts,
+Mathlib4 declarations, and the external mathematical databases (nLab,
+LMFDB, the Stacks project, ProofWiki, and others) into one map. Its atom is
+a \emph{cell}: when a Lean declaration, a Wikidata concept, an encyclopedia
+article, and a database page all denote the same mathematical object, they
+are \emph{organs} of one cell rather than separate nodes --- Mathlib's
+\code{Module}, Wikidata's ``module'' \emph{and} its ``vector space'' are a
+single atom, because Mathlib has no \code{VectorSpace}; \code{Module}
+generalizes it. Mathlib's folder hierarchy supplies the containment
+altitude, and everything known about a cell (Lean source, descriptions,
+licensed database snippets) is embedded on the cell itself. About 12{,}000
+of Mathlib's declarations are concept-joined this way; the Brain is a map
+of Mathlib, not the territory.
+
+Agents reach it through an MCP server (\code{POST /mcp} on the live site)
+exposing eight tools. \code{brain\_bridge} is the informal$\to$formal entry
+point: free text in, existence-verified declarations out, each with its
+signature, import line, and bond quality. \code{brain\_search} resolves
+labels and aliases to atoms; \code{brain\_cell} returns the full atom card;
+\code{brain\_transfer} makes the one-atom informal$\leftrightarrow$formal
+jump; \code{brain\_neighborhood} walks the synapse graph;
+\code{brain\_snippets} and \code{brain\_filter} serve stored content and
+facet queries. The eighth, \code{decl\_exists}, is different in kind: a
+batch existence check against the full declaration index --- all of
+Mathlib, not just the joined subset --- built to be called on every name an
+agent is about to cite.
+
+Why build such a thing? The working hypothesis behind WikiLean is that
+informal mathematics (what things are called and mean) and formal
+mathematics (what typechecks) are two corpora whose \emph{join} is the
+scarce artifact: a language model already holds both corpora loosely, and
+the informal$\leftrightarrow$formal boundary is precisely where its
+hallucinations live. If that is right, then curating the join --- names
+verified, concepts merged, bonds carrying provenance --- should move
+performance on end tasks, not just on lookup. Whether it actually does is
+the question this report answers.
+
 \section{Hypothesis and preregistered design}\label{sec:design}
 
 \paragraph{Hypothesis (operationalized).} Since ``necessary'' is unprovable,
@@ -384,7 +424,13 @@ dual-toolkit mix (\code{decl\_grep} ${\sim}1.5$k, \code{decl\_exists}
 ${\sim}0.9$k, \code{brain\_bridge} ${\sim}0.7$k, \code{decl\_read}
 ${\sim}0.5$k, \code{loogle} ${\sim}0.4$k). The \code{brain\_cell} misuse
 pattern, a 63\% failure rate in the Tier-1 traces, disappears under the
-manual.
+manual. Figure~\ref{fig:tooluse} draws the whole census, SorryDB included.
+Two compositional facts stand out: \code{decl\_exists} is the single
+most-called tool wherever the Brain is present (1{,}473 calls in W ---
+verify-then-cite made mechanical), and the manual does not so much add
+tools as prune them --- WF keeps \code{brain\_bridge} as its informal entry
+(687 calls) while \code{brain\_cell} falls from 482 calls in W to exactly
+one.
 
 \subsection{MathlibMPR --- premise retrieval (69 post-cutoff PR theorems,
 expert premise groups)}\label{sec:mpr}
@@ -514,6 +560,22 @@ the run rows.}
 \label{fig:sorrydb}
 \end{figure}
 
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{figures/fig5_tooluse}
+\caption{Tool composition by arm: total calls summed over run rows
+(retrieval pools QR-810 and MPR, 879 runs/arm; SorryDB ${\sim}$170
+runs/arm). Blues are Brain tools, oranges formal-search tools, gray the
+CLI's built-ins. \code{decl\_exists} dominates every Brain-bearing arm;
+under the manual (WF) the Brain toolkit contracts to
+\code{brain\_bridge}\,+\,\code{decl\_exists} (\code{brain\_cell}: 482 calls
+in W, one in WF); and on SorryDB the WF agent routes 94\% of its calls to
+formal search --- the concept $\neq$ premise boundary, visible in the
+agents' own routing. Data: \code{transcript\_stats.tool\_calls\_by\_name}
+summed over \code{bench/v2/runs/}.}
+\label{fig:tooluse}
+\end{figure}
+
 Three notes complete the record. (i)~8 candidate proofs --- all from
 curve25519-dalek-lean-verify, whose verification pass covered only 2 of its
 10 candidates --- carry no kernel verdict in \code{verify.jsonl}; they are
@@ -554,7 +616,9 @@ signal than concept identity: W trails F by 18pp on MathlibMPR, exactly as
 preregistered from TheoremGraph's negative transfer. And the API's
 single-shot free-text entry is a label resolver (0.036 R@10 in system
 mode); everything the agent arms recover, they recover by reformulating
-against it.
+against it. The agents vote the same way with their calls: given both
+toolkits on SorryDB, WF routes 94\% of its tool calls to formal search
+(Figure~\ref{fig:tooluse}).
 
 \paragraph{The composition result.} The toolkits are complementary, and a
 briefed agent composes them into the best rows we know of on both
@@ -683,6 +747,201 @@ LeanDojo~\cite{leandojo} $\cdot$ LeanAgent~\cite{leanagent} $\cdot$
 Numina-Lean-Agent~\cite{numina} $\cdot$ miniF2F-v2~\cite{minif2fv2} $\cdot$
 ProofNet\#/ProofNetVerif~\cite{proofnetsharp} $\cdot$ benchmark-faults
 survey~\cite{benchfaults}.
+
+\appendix
+
+\section{The agent tool manual}\label{app:manual}
+
+{\itshape What follows is \code{bench/v2/AGENT\_MANUAL.md}, the briefing
+prepended verbatim to every WF-arm prompt --- it is part of the measured
+condition (Section~\ref{sec:retrieval}) and is reproduced here unchanged
+as a study artifact.}
+
+\subsection*{Tool manual: searching Mathlib with the Brain + formal search}
+
+You have two complementary toolkits. Every claim in this manual is measured
+from ${\sim}5{,}500$ logged tool calls across 3{,}500 benchmark runs
+(Tier-1 + Bridge v2); numbers in brackets are those measurements.
+
+\subsection{The mental model}
+
+\begin{itemize}
+\item \textbf{The Brain (wikibrain, 8 tools)} is a \emph{curated knowledge
+  graph} joining informal mathematics (Wikipedia/Wikidata concepts,
+  external databases) to Mathlib declarations. It knows what things
+  \emph{mean} and how concepts relate --- but it only ``atomizes''
+  declarations that some concept, annotation, or tag claims (${\sim}$12k of
+  Mathlib's declarations). It is a map, not the territory.
+\item \textbf{Formal search (3 tools)} operates on \emph{all} of Mathlib
+  directly: type-pattern search (loogle), source grep, source reading. It
+  knows everything that exists but nothing about what it means informally.
+\end{itemize}
+
+Rule of thumb: \textbf{route by what you're holding.} Holding a concept
+described in words $\to$ start with the Brain. Holding a type shape or name
+fragment $\to$ start with formal search. Always finish with
+\code{decl\_exists} on every name you intend to output.
+
+\subsection{Formal search tools}
+
+\subsubsection{\code{loogle}}
+Type-pattern and constant search (the public \code{loogle.lean-lang.org}
+service).
+\begin{itemize}
+\item USE for: ``a lemma whose statement looks like
+  \code{\_ * \_ ${\leq}$ \_ * \_}'', searches by involved constants
+  (\code{Real.sqrt}, \code{tsum}), name substrings.
+\item Strengths: covers ALL of Mathlib; ${\sim}$0\% call errors [578 calls,
+  0 errors]; the best premise-finding tool --- the loogle+grep toolkit
+  matched a specialist premise retriever [group-recall@10 0.453 vs 0.461
+  SOTA].
+\item Weaknesses: needs Lean syntax fluency; a wrong pattern silently
+  returns unrelated hits; small result payloads mean you often need
+  decl\_read next.
+\end{itemize}
+
+\subsubsection{\code{decl\_grep}}
+Regex search over the Mathlib source checkout (ripgrep).
+\begin{itemize}
+\item USE for: name fragments (``cantor''), notation, docstring phrases,
+  finding the file a declaration lives in.
+\item Strengths: the workhorse [1{,}206 calls, 0\% errors]; catches things
+  loogle's type index can't (comments, docstrings, naming conventions).
+\item Weaknesses: lexical only --- if the concept's name doesn't appear in
+  source, grep cannot find it (descriptive queries like ``special case of
+  X'' score worst for grep-based agents [nDCG 0.384 vs the Brain's 0.523]).
+\end{itemize}
+
+\subsubsection{\code{decl\_read}}
+Read declaration source (with surrounding context) from the checkout.
+\begin{itemize}
+\item USE for: verifying a candidate actually says what you think BEFORE
+  citing it; getting exact signatures and hypotheses.
+\item Strengths: ground truth for any decl in Mathlib [397 calls, 0\%
+  errors].
+\item Weaknesses: you need the file/name first --- it is a confirmation
+  tool, not a discovery tool.
+\end{itemize}
+
+\subsection{Brain tools}
+
+\subsubsection{\code{brain\_bridge} --- THE ENTRY POINT for
+informal$\to$formal}
+Free text in, existence-verified declarations + owning atoms out, with
+signatures, import lines, and one-hop dependency context.
+\begin{itemize}
+\item USE for: ``the concept described as $\langle$words$\rangle$'' ---
+  especially nicknames and special-case descriptions, where the Brain's
+  curated bonds beat grep [special\_case nDCG 0.523 vs 0.384; nickname
+  0.779 vs 0.757].
+\item CRITICAL LIMITATION (measured): its free-text matching is
+  label/alias anchored, NOT semantic. A single call with a descriptive
+  paraphrase usually misses [single-shot benchmark: 3.6\% R@10 vs 82\% for
+  an agent that reformulates]. \textbf{Never accept one miss as the answer:
+  reformulate 2--4 times} --- try the concept's canonical name, a synonym,
+  the head noun alone. 8.9\% of calls return \code{match:"none"} [727
+  calls]; that response includes nearest-candidate suggestions --- read
+  them.
+\item The \code{hits} list is existence-verified; bond quality matters:
+  \code{exact} means the decl IS the concept; \code{formalizes}/weaker
+  bonds are nearby.
+\end{itemize}
+
+\subsubsection{\code{brain\_search}}
+Fuzzy label + alias search returning atoms (cells).
+\begin{itemize}
+\item USE for: resolving a name you half-know into an atom id; browsing
+  what the Brain calls something [400 calls, 0\% errors --- the reliable
+  fallback when brain\_bridge misses].
+\item Weaknesses: returns atoms, not ranked decls --- follow with
+  brain\_cell on the winning atom.
+\end{itemize}
+
+\subsubsection{\code{brain\_cell}}
+The full atom card: Lean code, Wikidata description, DB snippets, organs.
+\begin{itemize}
+\item USE for: everything known about ONE object after bridge/search
+  resolved it.
+\item \textbf{THE \#1 MISUSE [63\% of 482 calls failed]: calling it with a
+  bare \code{decl:Mathlib:Name} for an arbitrary declaration.} The Brain
+  only has atoms for concept-joined decls; ``unresolvable key'' means
+  \emph{no atom owns this decl}, NOT that the decl doesn't exist. For
+  arbitrary decls use decl\_exists (works for all of Mathlib) and
+  decl\_read for source. Call brain\_cell only with ids that came OUT of a
+  Brain tool.
+\end{itemize}
+
+\subsubsection{\code{decl\_exists} --- THE DISCIPLINE TOOL}
+Batch existence check for declaration names (backed by the full oracle ---
+covers ALL of Mathlib, unlike brain\_cell).
+\begin{itemize}
+\item \textbf{USE ALWAYS, on every name you are about to output.} This is
+  the measured difference between grounded and hallucinated citations:
+  agents that verified before citing cut hallucinated-but-cited-anyway to
+  13\% vs 33\% for agents relying on fuzzy search results alone. It is
+  cheap [1{,}473 calls, 0.1\% errors] and batched --- check 10 names in one
+  call.
+\item Also returns verified-rename suggestions for stale names.
+\end{itemize}
+
+\subsubsection{\code{brain\_neighborhood}}
+The synapse graph around an atom (depends/links/relates, cursored).
+\begin{itemize}
+\item USE for: ``what connects to X'' --- finding the connecting lemma
+  between two concepts, walking dependencies.
+\item Weaknesses: needs a valid atom id [24.8\% of calls errored --- same
+  unresolvable-key trap as brain\_cell; resolve the atom first].
+\end{itemize}
+
+\subsubsection{\code{brain\_transfer} / \code{brain\_snippets} /
+\code{brain\_filter}}
+Narrower tools: label$\leftrightarrow$decl jumps for KNOWN labels
+(transfer), stored source snippets (snippets), facet enumeration (filter).
+High misuse rates when fed non-atom ids [40\%/57\% errors]. Prefer
+brain\_bridge/brain\_search entry; reach for these only on ids the Brain
+already returned.
+
+\subsection{Routing playbook}
+
+\begin{center}
+\small
+\begin{tabular}{@{}p{0.30\textwidth}p{0.62\textwidth}@{}}
+\toprule
+You are holding & Do this \\
+\midrule
+A concept in words & brain\_bridge $\to$ (miss?) reformulate $\to$
+  brain\_search $\to$ brain\_cell \\
+A special case / nickname & brain\_bridge (the Brain's best terrain) \\
+A type shape & loogle \\
+A name fragment & decl\_grep \\
+Premises for a proof & loogle + decl\_grep FIRST [0.453 vs 0.272], Brain
+  for concept grounding \\
+A candidate name to cite & decl\_exists (batch, always) $\to$ decl\_read
+  if the statement matters \\
+An atom id from any Brain tool & brain\_cell / brain\_neighborhood freely \\
+A bare decl name needing info & decl\_exists + decl\_read --- NOT
+  brain\_cell \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Anti-patterns (each one measured in prior runs)}
+
+\begin{enumerate}
+\item \textbf{Citing unverified names.} 33\% of hallucinated citations came
+  from agents that had search evidence in front of them and cited a wrong
+  name anyway. decl\_exists is binary and kills this.
+\item \textbf{One query, then giving up.} The single-call miss rate on
+  descriptive queries is ${\sim}$96\%; agents that reformulate reach
+  ${\sim}$82\%. Iteration IS the algorithm.
+\item \textbf{brain\_cell as a generic decl inspector.} 63\% failure rate.
+  Brain atoms $\neq$ all of Mathlib.
+\item \textbf{Answering outside the requested format.} 143/810 no-tool runs
+  were scored 0 for exactly this. Re-read the output contract before
+  replying.
+\item \textbf{Inventing tool names} (e.g.\ \code{logue}, \code{lookie}).
+  Use the names above.
+\end{enumerate}
 
 \begin{thebibliography}{13}
 \itemsep2pt

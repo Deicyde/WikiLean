@@ -207,6 +207,94 @@ for arm, wants in [("N", dict(rows=168, noout=70, gaveup=40, cand=58, proved=2,
                             proved_per_171=round(100.0 * proved / 171, 1),
                             mean_wall_s=round(mean_wall))
 
+# ------------------------------------------------- Tool use (figure 5) -----
+print("== Tool use: transcript_stats.tool_calls_by_name sums ==")
+WIKI_TOOLS = ["decl_exists", "brain_bridge", "brain_search", "brain_cell",
+              "brain_transfer", "brain_neighborhood", "brain_snippets",
+              "brain_filter"]
+FORMAL_TOOLS = ["loogle", "decl_grep", "decl_read"]
+
+
+def tool_sums(paths):
+    """Sum tool_calls_by_name over run rows. Returns (raw, canon, n_runs).
+
+    canon folds the mcp__<server>__ prefix onto the base tool name (this
+    also folds the 6 wrong-prefix calls, e.g. mcp__wikibrain__loogle, onto
+    the tool the agent meant); everything that is not one of the 11 bench
+    tools (CLI built-ins: Bash, AskUserQuestion, ...) becomes "other".
+    """
+    raw, canon = defaultdict(int), defaultdict(int)
+    n = 0
+    for f in paths:
+        row = json.loads(f.read_text())
+        n += 1
+        calls = (row.get("transcript_stats") or {}).get("tool_calls_by_name") or {}
+        for name, k in calls.items():
+            raw[name] += k
+            base = name.split("__")[-1]
+            canon[base if base in WIKI_TOOLS + FORMAL_TOOLS else "other"] += k
+    return dict(raw), dict(canon), n
+
+
+v2runs = BENCH / "v2" / "runs"
+tooluse = {"retrieval": {}, "sorrydb": {}, "runs": {}}
+per_bench = {}
+for bench in ("qr810", "mpr"):
+    for arm in ("W", "F", "WF"):
+        per_bench[(bench, arm)] = tool_sums(
+            sorted((v2runs / "agent" / bench / arm / "claude-sonnet-5").glob("*.json")))
+for arm in ("W", "F", "WF"):
+    raw = defaultdict(int)
+    canon = defaultdict(int)
+    n = 0
+    for bench in ("qr810", "mpr"):
+        r, c, m = per_bench[(bench, arm)]
+        n += m
+        for k, v in r.items():
+            raw[k] += v
+        for k, v in c.items():
+            canon[k] += v
+    tooluse["retrieval"][arm] = dict(canon)
+    tooluse["runs"][f"retrieval/{arm}"] = n
+    per_bench[("pooled", arm)] = (dict(raw), dict(canon), n)
+for arm in ("F", "WF"):
+    raw, canon, n = tool_sums(
+        sorted((v2runs / "sorrydb" / arm / "claude-sonnet-5").glob("*.json")))
+    tooluse["sorrydb"][arm] = canon
+    tooluse["runs"][f"sorrydb/{arm}"] = n
+    per_bench[("sorrydb", arm)] = (raw, canon, n)
+
+# The AGENT_MANUAL's bracketed measurements = the W/F retrieval pools
+w_raw = per_bench[("pooled", "W")][0]
+f_raw = per_bench[("pooled", "F")][0]
+for name, want in [("decl_exists", 1473), ("brain_bridge", 727),
+                   ("brain_cell", 482), ("brain_search", 400)]:
+    check(f"tooluse W pool {name} (AGENT_MANUAL)",
+          w_raw[f"mcp__wikibrain__{name}"], want)
+for name, want in [("decl_grep", 1206), ("loogle", 578), ("decl_read", 397)]:
+    check(f"tooluse F pool {name} (AGENT_MANUAL)",
+          f_raw[f"mcp__formal__{name}"], want)
+# The md §4.1 census sentence: per-run means + the WF dual-toolkit mix
+check("tooluse F qr810 calls/run",
+      round(sum(per_bench[("qr810", "F")][1].values()) / 810, 1), 2.2)
+check("tooluse W qr810 calls/run",
+      round(sum(per_bench[("qr810", "W")][1].values()) / 810, 1), 3.5)
+check("tooluse WF pooled calls/run",
+      round(sum(per_bench[("pooled", "WF")][1].values()) /
+            per_bench[("pooled", "WF")][2], 1), 4.6)
+wf_canon = tooluse["retrieval"]["WF"]
+for name, want_approx in [("decl_grep", 1500), ("decl_exists", 900),
+                          ("brain_bridge", 700), ("decl_read", 500),
+                          ("loogle", 400)]:
+    check(f"tooluse WF pool {name} (~{want_approx})",
+          round(wf_canon[name], -2), want_approx)
+# brain_cell misuse gone under the manual: 482 calls in W, exactly 1 in WF
+check("tooluse WF pool brain_cell", wf_canon["brain_cell"], 1)
+# SorryDB WF: 94% of calls are formal search (the premise boundary)
+sdb_wf = tooluse["sorrydb"]["WF"]
+formal_share = 100.0 * sum(sdb_wf.get(t, 0) for t in FORMAL_TOOLS) / sum(sdb_wf.values())
+check("tooluse sorrydb WF formal share %", round(formal_share), 94)
+
 # ------------------------------------------------------------- output ------
 fig = {
     "tier1": {"success": succ, "halluc": halluc, "runs_w_halluc": runs_w_halluc,
@@ -220,6 +308,7 @@ fig = {
                     "mpr_lsv2": 0.461, "mpr_diver": 0.380, "mpr_tg": 0.165},
     },
     "sorrydb": sorry_stats,
+    "tooluse": tooluse,
 }
 OUT.write_text(json.dumps(fig, indent=1))
 print(f"\nwrote {OUT}")
