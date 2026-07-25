@@ -154,7 +154,7 @@
         "module": "Mathlib.NumberTheory.Real.Irrational",
         "match_kind": "exact"
       },
-      "note": "`Irrational x` is defined as `x ∉ Set.range ((↑) : ℚ → ℝ)` with companion `irrational_iff_ne_rational`.",
+      "note": "`Irrational x` is defined at line 37 of `Mathlib/NumberTheory/Real/Irrational.lean` as `x ∉ Set.range ((↑) : ℚ → ℝ)`.",
       "provenance": "ai",
       "id": "d676bde8feb0"
     },
@@ -987,7 +987,7 @@
         "module": "Mathlib.Analysis.SpecificLimits.Basic",
         "match_kind": "invocation"
       },
-      "note": "Geometric series sums (`tsum_geometric_of_lt_one`, etc.) are formalized but not specialised to summing a repeating digit block to a fraction.",
+      "note": "Geometric series sums (`tsum_geometric_of_lt_one`) are formalized but not specialised to summing a repeating digit block to a fraction.",
       "provenance": "ai",
       "id": "82cd26a5c00b"
     },
@@ -1262,6 +1262,86 @@
       "note": "Not formalized.",
       "provenance": "ai",
       "id": "e35247b7ce57"
+    },
+    {
+      "kind": "proposition",
+      "label": "0.999... = 1",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Two examples of this are 1.000... = 0.999..."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.ofDigits_const_last_eq_one",
+        "module": "Mathlib.Analysis.Real.OfDigits",
+        "match_kind": "special_case"
+      },
+      "note": "The classic identity that a repeating-9 tail sums to unity; formalized in the base-b prototype `Real.ofDigits_const_last_eq_one`, not as `0.999... = 1` per se.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fermat's little theorem for base 10 mod p",
+      "anchor": {
+        "section": "Fractions with prime denominators",
+        "snippet": "This result can be deduced from Fermat's little theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.pow_card_sub_one_eq_one",
+        "module": "Mathlib.FieldTheory.Finite.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Fermat's little theorem is formalized as `ZMod.pow_card_sub_one_eq_one` (and `Nat.ModEq` variants); the article's `10^(p-1) ≡ 1 (mod p)` is the instance at a = 10.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cyclic permutation of digits (rotation)",
+      "anchor": {
+        "section": "Cyclic numbers",
+        "snippet": "is a rotation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formal notion of cyclic rotation of a decimal digit string as an operation on integers.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multiplicative order of b modulo q",
+      "anchor": {
+        "section": "Extension to other bases",
+        "snippet": "It is the multiplicative order"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "orderOf",
+        "module": "Mathlib.GroupTheory.OrderOfElement",
+        "match_kind": "exact"
+      },
+      "note": "The multiplicative order of `b` modulo `q` is `orderOf (b : ZMod q)`; there is no distinct `ZMod.orderOf` — the general `orderOf` at line 180 of `Mathlib/GroupTheory/OrderOfElement.lean` is used.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Carmichael's theorem (λ(n) bounds order)",
+      "anchor": {
+        "section": "Reciprocals of composite integers coprime to 10",
+        "snippet": "This follows from Carmichael's theorem which states that if n is a positive integer then"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ArithmeticFunction.pow_carmichael",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Carmichael",
+        "match_kind": "exact"
+      },
+      "note": "`pow_carmichael : a ^ carmichael n = 1` for `a : (ZMod n)ˣ` (line 71 of Carmichael.lean) is Carmichael's theorem; the function itself is `ArithmeticFunction.carmichael`.",
+      "provenance": "ai"
     }
   ]
 }

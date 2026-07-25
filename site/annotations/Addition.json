@@ -267,13 +267,13 @@
         "section": "Extending a length",
         "snippet": "applying the unary operation"
       },
-      "status": "partial",
+      "status": "not_formalized",
       "mathlib": {
-        "decl": "AddLeftCancelMonoid",
-        "module": "Mathlib.Algebra.Group.Defs",
-        "match_kind": "generalization"
+        "decl": null,
+        "module": null,
+        "match_kind": null
       },
-      "note": "Mathlib uses the binary `Add` class; one-sided addition corresponds to left/right add-cancel classes but is not separately defined.",
+      "note": "Mathlib exposes addition only as a binary operation; the one-sided \"add a fixed amount\" unary view is not a separate Mathlib construct.",
       "provenance": "ai-moderated",
       "id": "ec446a811e58"
     },
@@ -337,12 +337,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "AddMonoid.nsmul_succ",
-        "module": "Mathlib.Algebra.Group.Defs",
+        "decl": "Nat.add_succ",
+        "module": "Init.Data.Nat.Basic",
         "match_kind": "exact"
       },
-      "note": "`AddMonoid.nsmul_succ : nsmul (n+1) x = nsmul n x + x` formalizes iterated addition/successor.",
-      "provenance": "ai",
+      "note": "`Nat.add_succ : n + (m + 1) = (n + m) + 1` encodes addition as iterated succession on ℕ.",
+      "provenance": "ai-moderated",
       "id": "3a275b15180d"
     },
     {
@@ -546,7 +546,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not model IEEE floating-point arithmetic; non-associativity is not stated as a lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ee0d55635d9d"
     },
     {
       "kind": "definition",
@@ -766,7 +767,8 @@
         "match_kind": "exact"
       },
       "note": "Additive inverses on ℝ are provided by the `Real.instNeg` instance through the `AddGroup` structure.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5a6b06b8a8ff"
     },
     {
       "kind": "definition",
@@ -1209,6 +1211,54 @@
       "note": "`IndepFun` defines independence; the law of `X+Y` as convolution of laws exists via `Measure` pushforwards but not as a single named convolution-of-distributions lemma here.",
       "provenance": "ai",
       "id": "26fa627b4879"
+    },
+    {
+      "kind": "proposition",
+      "label": "Order-of-operations priority of addition",
+      "anchor": {
+        "section": "Associativity",
+        "snippet": "addition is a lower priority than exponentiation , nth roots , multiplication and division, but is given equal priority to subtraction"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Operator precedence for `+` is a Lean parser convention, not a mathematical theorem in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Additive group as set closed under subtraction",
+      "anchor": {
+        "section": "Arithmetic",
+        "snippet": "an additive group can be described as a set that is closed under subtraction"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AddGroup",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`AddGroup` bundles addition with a subtraction/inverse operation; the characterization by closure under subtraction is captured by the `SubtractionMonoid` hierarchy.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Distributivity forces addition commutativity",
+      "anchor": {
+        "section": "Arithmetic",
+        "snippet": "by expanding the product"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Eckmann-Hilton-style derivation of `add_comm` from unital two-sided distributivity is not a named Mathlib lemma; `Semiring` axiomatizes `AddCommMonoid` directly.",
+      "provenance": "ai"
     }
   ]
 }

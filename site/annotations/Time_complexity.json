@@ -15,12 +15,22 @@
       "status": "partial",
       "mathlib": {
         "decl": "Turing.TM2ComputableInTime",
-        "module": "Mathlib.Computability.TuringMachine.Computable",
+        "module": "Mathlib.Computability.TMComputable",
         "match_kind": null
       },
       "note": "Mathlib bundles a Turing machine with a time function (ℕ→ℕ counting steps) and a proof it runs within that bound, but defines no standalone 'time complexity' quantity.",
-      "provenance": "ai",
-      "id": "29f4c0ca5bd2"
+      "provenance": "ai-moderated",
+      "id": "29f4c0ca5bd2",
+      "moderation_proposal": {
+        "fields": {
+          "mathlib": {
+            "decl": "Turing.TM2ComputableInTime",
+            "module": "Mathlib.Computability.TuringMachine.Computable",
+            "match_kind": "invocation"
+          }
+        },
+        "reason": "Verified decl exists but lives in Mathlib.Computability.TuringMachine.Computable, not the cited TMComputable module."
+      }
     },
     {
       "kind": "definition",
@@ -32,12 +42,22 @@
       "status": "partial",
       "mathlib": {
         "decl": "Turing.TM2ComputableInTime",
-        "module": "Mathlib.Computability.TuringMachine.Computable",
+        "module": "Mathlib.Computability.TMComputable",
         "match_kind": null
       },
       "note": "TM2ComputableInTime requires its time bound to hold for all inputs of a given length (a uniform worst-case upper bound), but the worst-case maximum is not defined as a quantity.",
-      "provenance": "ai",
-      "id": "09c469bd44ed"
+      "provenance": "ai-moderated",
+      "id": "09c469bd44ed",
+      "moderation_proposal": {
+        "fields": {
+          "mathlib": {
+            "decl": "Turing.TM2ComputableInTime",
+            "module": "Mathlib.Computability.TuringMachine.Computable",
+            "match_kind": "invocation"
+          }
+        },
+        "reason": "Verified decl module is Mathlib.Computability.TuringMachine.Computable, not TMComputable."
+      }
     },
     {
       "kind": "definition",
@@ -66,12 +86,22 @@
       "status": "partial",
       "mathlib": {
         "decl": "Turing.TM2ComputableInPolyTime",
-        "module": "Mathlib.Computability.TuringMachine.Computable",
+        "module": "Mathlib.Computability.TMComputable",
         "match_kind": null
       },
       "note": "Polynomial-time computability is formalized via TM2ComputableInPolyTime, but linear time has no separate named definition.",
-      "provenance": "ai",
-      "id": "d4fae719597d"
+      "provenance": "ai-moderated",
+      "id": "d4fae719597d",
+      "moderation_proposal": {
+        "fields": {
+          "mathlib": {
+            "decl": "Turing.TM2ComputableInPolyTime",
+            "module": "Mathlib.Computability.TuringMachine.Computable",
+            "match_kind": "invocation"
+          }
+        },
+        "reason": "Verified decl module is Mathlib.Computability.TuringMachine.Computable, not TMComputable."
+      }
     },
     {
       "kind": "definition",
@@ -338,12 +368,22 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Turing.TM2ComputableInPolyTime",
-        "module": "Mathlib.Computability.TuringMachine.Computable",
+        "module": "Mathlib.Computability.TMComputable",
         "match_kind": "exact"
       },
       "note": "TM2ComputableInPolyTime bundles a Turing machine with a `Polynomial ℕ` time function and a proof it outputs the result within `time.eval (input.length)` steps, directly formalizing polynomial-time computation.",
-      "provenance": "ai",
-      "id": "53f05619a6b8"
+      "provenance": "ai-moderated",
+      "id": "53f05619a6b8",
+      "moderation_proposal": {
+        "fields": {
+          "mathlib": {
+            "decl": "Turing.TM2ComputableInPolyTime",
+            "module": "Mathlib.Computability.TuringMachine.Computable",
+            "match_kind": "exact"
+          }
+        },
+        "reason": "Verified decl module is Mathlib.Computability.TuringMachine.Computable, not the cited TMComputable."
+      }
     },
     {
       "kind": "definition",
@@ -359,7 +399,8 @@
         "match_kind": null
       },
       "note": "Cobham's thesis is a philosophical/empirical claim about tractability and is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6a7f8d35ad41"
     },
     {
       "kind": "example",
@@ -388,12 +429,22 @@
       "status": "partial",
       "mathlib": {
         "decl": "Turing.TM2ComputableInPolyTime",
-        "module": "Mathlib.Computability.TuringMachine.Computable",
+        "module": "Mathlib.Computability.TMComputable",
         "match_kind": null
       },
       "note": "Polynomial-time deterministic computation is formalized, but the complexity class P (a set of decision problems) is not defined.",
-      "provenance": "ai",
-      "id": "ccdacc80793f"
+      "provenance": "ai-moderated",
+      "id": "ccdacc80793f",
+      "moderation_proposal": {
+        "fields": {
+          "mathlib": {
+            "decl": "Turing.TM2ComputableInPolyTime",
+            "module": "Mathlib.Computability.TuringMachine.Computable",
+            "match_kind": "invocation"
+          }
+        },
+        "reason": "Verified decl module is Mathlib.Computability.TuringMachine.Computable, not TMComputable."
+      }
     },
     {
       "kind": "definition",
@@ -766,7 +817,8 @@
         "match_kind": null
       },
       "note": "The complexity class EXP is not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1c501b5ea5fe"
     },
     {
       "kind": "definition",
@@ -816,7 +868,8 @@
         "match_kind": null
       },
       "note": "The inclusion of factorial-time problems in EXP is not formalized in Mathlib (neither class is defined).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2684dcbfe5f9"
     },
     {
       "kind": "example",
@@ -866,7 +919,8 @@
         "match_kind": null
       },
       "note": "The complexity class 2-EXPTIME is not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2045f6d454ec"
     },
     {
       "kind": "example",
@@ -884,6 +938,54 @@
       "note": "Double-exponential-time algorithm examples are not formalized in Mathlib.",
       "provenance": "ai",
       "id": "ffb344d65d61"
+    },
+    {
+      "kind": "example",
+      "label": "Stirling's approximation for log(n!)",
+      "anchor": {
+        "section": "Quasilinear time",
+        "snippet": "by Stirling's approximation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Stirling.tendsto_stirlingSeq_sqrt_pi",
+        "module": "Mathlib.Analysis.SpecialFunctions.Stirling",
+        "match_kind": "invocation"
+      },
+      "note": "Stirling's approximation is formalized as Stirling.tendsto_stirlingSeq_sqrt_pi, giving n! ~ √(2πn)(n/e)^n and hence log(n!) = Θ(n log n); the comparison-sort lower-bound derivation itself is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Presburger arithmetic decision procedure",
+      "anchor": {
+        "section": "Double exponential time",
+        "snippet": "Decision procedures for Presburger arithmetic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize Presburger arithmetic or its double-exponential decision procedure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Gröbner basis computation",
+      "anchor": {
+        "section": "Double exponential time",
+        "snippet": "Computing a Gröbner basis (in the worst case"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define Gröbner bases or bound the complexity of their computation.",
+      "provenance": "ai"
     }
   ]
 }

@@ -325,7 +325,8 @@
         "match_kind": "generalization"
       },
       "note": "Left/right limits are `Tendsto f (𝓝[<] c) (𝓝 L)` / `Tendsto f (𝓝[>] c) (𝓝 L)` using the `nhdsWithin` neighborhood-within filters.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "70b761951cac"
     },
     {
       "kind": "example",
@@ -581,6 +582,22 @@
       "note": "`ContinuousAt f x` is defined as `Tendsto f (𝓝 x) (𝓝 (f x))`.",
       "provenance": "ai",
       "id": "bcb5115732de"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sequential characterization of continuity at a point",
+      "anchor": {
+        "section": "Continuity of a function at a point",
+        "snippet": "Equivalently, the function is continuous at"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tendsto_nhds_iff_seq_tendsto",
+        "module": "Mathlib.Topology.Sequences",
+        "match_kind": "exact"
+      },
+      "note": "For Fréchet–Urysohn spaces, continuity at a point is equivalent to sequential continuity via `tendsto_nhds_iff_seq_tendsto` (Heine's criterion).",
+      "provenance": "ai"
     },
     {
       "kind": "example",
@@ -885,7 +902,8 @@
         "match_kind": "exact"
       },
       "note": "The squeeze (sandwich) theorem is `tendsto_of_tendsto_of_tendsto_of_le_of_le` for filter limits in an order-topology setting.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b94ff1ed46ef"
     },
     {
       "kind": "theorem",
@@ -901,7 +919,8 @@
         "match_kind": "exact"
       },
       "note": "The ratio test for absolutely convergent series is `summable_of_ratio_test_tendsto_lt_one` (in `Mathlib.Analysis.SpecificLimits.Normed`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2ee78d9aa0ef"
     }
   ]
 }

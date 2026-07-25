@@ -69,7 +69,7 @@
         "module": "Mathlib.Combinatorics.SimpleGraph.Trails",
         "match_kind": "generalization"
       },
-      "note": "`IsTrail.even_countP_edges_iff` states the count of edges at vertex x in a trail is even iff x is not an endpoint, formalizing the entering=leaving property.",
+      "note": "`IsTrail.even_countP_edges_iff` (verified in `Trails.lean` line 54) states the count of edges at vertex x in a trail is even iff x is not a unique endpoint, formalizing the entering=leaving property.",
       "provenance": "ai",
       "id": "39a499394d62"
     },
@@ -86,7 +86,7 @@
         "module": "Mathlib.Combinatorics.SimpleGraph.Trails",
         "match_kind": "exact"
       },
-      "note": "`IsEulerian.even_degree_iff` states Even (G.degree x) ↔ (the walk's endpoints differ → x is neither endpoint), capturing the even-degree condition at non-endpoint vertices.",
+      "note": "`IsEulerian.even_degree_iff` (verified in `Trails.lean` line 127) states Even (G.degree x) ↔ (u ≠ v → x ≠ u ∧ x ≠ v), capturing the even-degree condition at non-endpoint vertices.",
       "provenance": "ai",
       "id": "f3026f7a246c"
     },
@@ -103,7 +103,7 @@
         "module": "Mathlib.Combinatorics.SimpleGraph.Finite",
         "match_kind": "exact"
       },
-      "note": "`SimpleGraph.degree` is defined as the cardinality of the neighbor finset.",
+      "note": "`SimpleGraph.degree` (verified in `Finite.lean` line 201) is defined as the cardinality of the neighbor finset.",
       "provenance": "ai",
       "id": "e16ade5a3770"
     },
@@ -120,7 +120,7 @@
         "module": "Mathlib.Combinatorics.SimpleGraph.Trails",
         "match_kind": "special_case"
       },
-      "note": "Only the necessary direction is in Mathlib (`IsEulerian.card_odd_degree` shows 0 or 2 odd-degree vertices); the existence (sufficient) direction is an explicit TODO in `Trails.lean`.",
+      "note": "Only the necessary direction is in Mathlib (`IsEulerian.card_odd_degree` at line 151 shows 0 or 2 odd-degree vertices); the existence (sufficient) direction is an explicit TODO in `Trails.lean`.",
       "provenance": "ai",
       "id": "7e86a7191cb8"
     },
@@ -137,7 +137,7 @@
         "module": "Mathlib.Combinatorics.SimpleGraph.Trails",
         "match_kind": "exact"
       },
-      "note": "`SimpleGraph.Walk.IsEulerian` is defined as a walk visiting every edge exactly once.",
+      "note": "`SimpleGraph.Walk.IsEulerian` (verified in `Trails.lean` line 79) is defined as a walk visiting every edge exactly once.",
       "provenance": "ai",
       "id": "1025a76643b8"
     },
@@ -188,7 +188,7 @@
         "module": "Mathlib.Combinatorics.SimpleGraph.Trails",
         "match_kind": "generalization"
       },
-      "note": "Mathlib has `IsEulerian` and `IsCircuit` separately; an Eulerian circuit is their conjunction (as noted in the `IsEulerian` docstring) but no dedicated `IsEulerianCircuit` predicate is defined.",
+      "note": "Mathlib has `IsEulerian` and `IsCircuit` separately; an Eulerian circuit is their conjunction but no dedicated `IsEulerianCircuit` predicate is defined.",
       "provenance": "ai",
       "id": "5eab888de08e"
     },
@@ -259,6 +259,38 @@
       "note": "The Bristol Bridges configuration is not formalized in Mathlib4.",
       "provenance": "ai",
       "id": "4877d6747059"
+    },
+    {
+      "kind": "definition",
+      "label": "Graph (as vertices and edges)",
+      "anchor": {
+        "section": "Euler's analysis",
+        "snippet": "The resulting mathematical structure is a graph ."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `SimpleGraph` (verified in `Basic.lean` line 93) formalizes the general abstract graph structure (vertices plus symmetric adjacency); the Königsberg setting is a multigraph, which Mathlib does not directly capture.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Graph equality depends only on incidence",
+      "anchor": {
+        "section": "Euler's analysis",
+        "snippet": "Only the number of edges (possibly zero) between each pair of nodes is significant."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.ext",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`SimpleGraph.ext` (auto-generated from the `@[ext]` on the `SimpleGraph` structure in `Basic.lean` line 92) shows a simple graph is determined by its adjacency relation.",
+      "provenance": "ai"
     }
   ]
 }

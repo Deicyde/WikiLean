@@ -71,7 +71,11 @@ DISALLOWED_TOOLS = ["Bash", "Read", "Glob", "Grep", "Edit", "Write",
                     # (arm A's --tools "" can't reach it — asymmetric); ToolSearch
                     # is unnecessary (arm MCP tools resolve directly); Agent is the
                     # current name of the subagent spawner ("Task" is the old one).
-                    "Skill", "ToolSearch", "Agent"]
+                    "Skill", "ToolSearch", "Agent",
+                    # v2 trace census: agents burned turns on these no-ops
+                    # (AskUserQuestion 38 calls / 100% error in -p mode)
+                    "AskUserQuestion", "EnterPlanMode", "ExitPlanMode",
+                    "EnterWorktree", "ExitWorktree"]
 
 
 def resolve_mcp_config() -> Path:

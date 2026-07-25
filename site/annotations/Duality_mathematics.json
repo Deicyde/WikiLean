@@ -3,6 +3,7 @@
   "wikipedia_title": "Duality (mathematics)",
   "display_title": "Duality (mathematics)",
   "schema_version": 3,
+  "annotation_style": "theorem_article",
   "annotations": [
     {
       "kind": "definition",
@@ -12,7 +13,46 @@
         "snippet": "a duality translates concepts, theorems or mathematical structures into other concepts"
       },
       "provenance": "ai-agent1",
-      "id": "f127aea95e08"
+      "id": "f127aea95e08",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Informal umbrella description of duality; no single Mathlib declaration captures it."
+    },
+    {
+      "kind": "definition",
+      "label": "Fixed point of a duality involution (self-dual object)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Such involutions sometimes have fixed points , so that the dual of A is A itself"
+      },
+      "provenance": "ai",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Function.Involutive",
+        "module": "Mathlib.Logic.Function.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The general notion of an involution is `Function.Involutive`, but 'self-dual object' as a named concept has no dedicated Mathlib declaration."
+    },
+    {
+      "kind": "definition",
+      "label": "Pairing (bilinear function realizing a duality)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Many mathematical dualities between objects of two types correspond to pairings , bilinear functions"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.BilinMap",
+        "module": "Mathlib.LinearAlgebra.BilinearMap",
+        "match_kind": "generalization"
+      },
+      "note": "Bilinear pairings between two modules are formalized as `LinearMap.BilinMap` (or `LinearMap.BilinForm`)."
     },
     {
       "kind": "example",
@@ -22,7 +62,30 @@
         "snippet": "Desargues' theorem is self-dual in this sense under the standard duality in projective geometry"
       },
       "provenance": "ai-agent1",
-      "id": "a2696776d52d"
+      "id": "a2696776d52d",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Desargues' theorem and its self-duality under projective duality are not formalized in Mathlib."
+    },
+    {
+      "kind": "definition",
+      "label": "Dual functor on vector spaces",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "This functor assigns to each space its dual space, and the pullback construction assigns to each arrow"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Dual",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Module.Dual` is the dual-space assignment and `Module.Dual.transpose` gives the pullback of arrows."
     },
     {
       "kind": "definition",
@@ -32,7 +95,14 @@
         "snippet": "the complement"
       },
       "provenance": "ai-agent1",
-      "id": "e6dfd9adb9ee"
+      "id": "e6dfd9adb9ee",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.compl",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The set-theoretic complement is `Set.compl`, with notation `sᶜ` via `HasCompl`."
     },
     {
       "kind": "proposition",
@@ -42,7 +112,14 @@
         "snippet": "Applying it twice gives back the original set"
       },
       "provenance": "ai-agent1",
-      "id": "5a90bbbec388"
+      "id": "5a90bbbec388",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "compl_compl",
+        "module": "Mathlib.Order.BooleanAlgebra.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`compl_compl` proves `xᶜᶜ = x` in any Boolean algebra, in particular for sets."
     },
     {
       "kind": "proposition",
@@ -52,17 +129,31 @@
         "snippet": "An inclusion of sets"
       },
       "provenance": "ai-agent1",
-      "id": "fd2a280d8089"
+      "id": "fd2a280d8089",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.compl_subset_compl",
+        "module": "Mathlib.Order.BooleanAlgebra.Set",
+        "match_kind": "exact"
+      },
+      "note": "`Set.compl_subset_compl` states `sᶜ ⊆ tᶜ ↔ t ⊆ s`."
     },
     {
       "kind": "proposition",
       "label": "Contrapositive containment via complement",
       "anchor": {
         "section": "Complement of a subset",
-        "snippet": "is contained in"
+        "snippet": "Given two subsets A and B of S"
       },
-      "provenance": "ai-agent1",
-      "id": "1da0099551fc"
+      "provenance": "ai-moderated",
+      "id": "1da0099551fc",
+      "note": "Anchor tightened: original 'is contained in' matched multiple positions in the sentence.",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.compl_subset_compl",
+        "module": "Mathlib.Order.BooleanAlgebra.Set",
+        "match_kind": "exact"
+      }
     },
     {
       "kind": "proposition",
@@ -72,7 +163,14 @@
         "snippet": "a subset U of X is closed if and only if its complement in X is open"
       },
       "provenance": "ai-agent1",
-      "id": "d6615e7deefd"
+      "id": "d6615e7deefd",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isClosed_compl_iff",
+        "module": "Mathlib.Topology.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`isClosed_compl_iff` gives `IsClosed sᶜ ↔ IsOpen s`."
     },
     {
       "kind": "proposition",
@@ -82,7 +180,30 @@
         "snippet": "the complement of the interior of any set"
       },
       "provenance": "ai-agent1",
-      "id": "31a185736037"
+      "id": "31a185736037",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "closure_compl",
+        "module": "Mathlib.Topology.Closure",
+        "match_kind": "exact"
+      },
+      "note": "`closure_compl` and `interior_compl` capture the interior/closure duality via complement."
+    },
+    {
+      "kind": "proposition",
+      "label": "Union of opens / intersection of closeds",
+      "anchor": {
+        "section": "Complement of a subset",
+        "snippet": "any union of open sets is open, so dually, any intersection of closed sets is closed"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isOpen_iUnion",
+        "module": "Mathlib.Topology.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`isOpen_iUnion` and dually `isClosed_iInter` give the two closure properties."
     },
     {
       "kind": "definition",
@@ -92,7 +213,14 @@
         "snippet": "the dual cone is defined as the set"
       },
       "provenance": "ai-agent1",
-      "id": "8a92e53a5a1c"
+      "id": "8a92e53a5a1c",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PointedCone.dual",
+        "module": "Mathlib.Geometry.Convex.Cone.Dual",
+        "match_kind": "exact"
+      },
+      "note": "`PointedCone.dual` defines the dual cone with respect to a bilinear pairing."
     },
     {
       "kind": "proposition",
@@ -102,7 +230,14 @@
         "snippet": "Applying the operation twice gives back a possibly bigger set"
       },
       "provenance": "ai-agent1",
-      "id": "7b505b2e26b7"
+      "id": "7b505b2e26b7",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PointedCone.subset_dual_dual",
+        "module": "Mathlib.Geometry.Convex.Cone.Dual",
+        "match_kind": "exact"
+      },
+      "note": "`PointedCone.subset_dual_dual` proves `s ⊆ dual (dual s)`."
     },
     {
       "kind": "proposition",
@@ -112,7 +247,14 @@
         "snippet": "It is still true that an inclusion"
       },
       "provenance": "ai-agent1",
-      "id": "d6a0b77a6b98"
+      "id": "d6a0b77a6b98",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PointedCone.dual_antitone",
+        "module": "Mathlib.Geometry.Convex.Cone.Dual",
+        "match_kind": "exact"
+      },
+      "note": "`PointedCone.dual_antitone` states the dual operation is antitone under inclusion."
     },
     {
       "kind": "definition",
@@ -122,7 +264,14 @@
         "snippet": "associating to any vector space"
       },
       "provenance": "ai-agent1",
-      "id": "138d1b7763c0"
+      "id": "138d1b7763c0",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Dual",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Module.Dual R M` is the space of linear functionals `M →ₗ[R] R`."
     },
     {
       "kind": "proposition",
@@ -132,7 +281,14 @@
         "snippet": "namely precisely the finite-dimensional vector spaces , this map is an isomorphism"
       },
       "provenance": "ai-agent1",
-      "id": "1e338c2c450c"
+      "id": "1e338c2c450c",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.evalEquiv",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Module.evalEquiv` gives `V ≃ₗ[R] Dual R (Dual R V)` under `Module.IsReflexive`, which holds for finite-dimensional spaces."
     },
     {
       "kind": "proposition",
@@ -142,7 +298,14 @@
         "snippet": "the maps from"
       },
       "provenance": "ai-agent1",
-      "id": "f8c3823a93af"
+      "id": "f8c3823a93af",
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.BilinMap",
+        "module": "Mathlib.LinearAlgebra.BilinearMap",
+        "match_kind": "generalization"
+      },
+      "note": "`Hom(V,W*) ≃ Hom(V ⊗ W, K)` type currying exists for bilinear maps via `LinearMap.BilinMap` / `TensorProduct.lift`, but no single decl matches this exact statement."
     },
     {
       "kind": "proposition",
@@ -152,7 +315,14 @@
         "snippet": "if V is a Hilbert space , via the Riesz representation theorem"
       },
       "provenance": "ai-agent1",
-      "id": "22ce3e3bf5cd"
+      "id": "22ce3e3bf5cd",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDual",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "exact"
+      },
+      "note": "`InnerProductSpace.toDual` is the Riesz isometric isomorphism `E ≃ₗᵢ⋆[𝕜] StrongDual 𝕜 E` for Hilbert spaces."
     },
     {
       "kind": "definition",
@@ -162,7 +332,14 @@
         "snippet": "one may associate the Galois group"
       },
       "provenance": "ai-agent1",
-      "id": "a258ebb90a9d"
+      "id": "a258ebb90a9d",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IntermediateField.fixingSubgroup",
+        "module": "Mathlib.FieldTheory.Galois.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IntermediateField.fixingSubgroup` is the subgroup of automorphisms fixing an intermediate field."
     },
     {
       "kind": "definition",
@@ -172,7 +349,14 @@
         "snippet": "there is the fixed field"
       },
       "provenance": "ai-agent1",
-      "id": "ae69379a70a6"
+      "id": "ae69379a70a6",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FixedPoints.intermediateField",
+        "module": "Mathlib.FieldTheory.Galois.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`FixedPoints.intermediateField` gives the intermediate field fixed by a subgroup."
     },
     {
       "kind": "theorem",
@@ -182,7 +366,14 @@
         "snippet": "This is the content of the fundamental theorem of Galois theory"
       },
       "provenance": "ai-agent1",
-      "id": "a6915ce35307"
+      "id": "a6915ce35307",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsGalois.intermediateFieldEquivSubgroup",
+        "module": "Mathlib.FieldTheory.Galois.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsGalois.intermediateFieldEquivSubgroup` states the order-reversing bijection between intermediate fields and subgroups."
     },
     {
       "kind": "definition",
@@ -192,7 +383,14 @@
         "snippet": "the dual poset"
       },
       "provenance": "ai-agent1",
-      "id": "c353a7308bd7"
+      "id": "c353a7308bd7",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "OrderDual",
+        "module": "Mathlib.Order.OrderDual",
+        "match_kind": "exact"
+      },
+      "note": "`OrderDual α` is the type synonym with reversed order, i.e. the dual poset."
     },
     {
       "kind": "example",
@@ -202,7 +400,14 @@
         "snippet": "the subset and superset relations"
       },
       "provenance": "ai-agent1",
-      "id": "820af226fa8b"
+      "id": "820af226fa8b",
+      "status": "partial",
+      "mathlib": {
+        "decl": "OrderDual",
+        "module": "Mathlib.Order.OrderDual",
+        "match_kind": "invocation"
+      },
+      "note": "The general phenomenon is captured by `OrderDual` on the powerset, though no dedicated lemma names this example."
     },
     {
       "kind": "example",
@@ -212,7 +417,14 @@
         "snippet": "the divides and multiple-of relations on the integers"
       },
       "provenance": "ai-agent1",
-      "id": "9d60285426f1"
+      "id": "9d60285426f1",
+      "status": "partial",
+      "mathlib": {
+        "decl": "OrderDual",
+        "module": "Mathlib.Order.OrderDual",
+        "match_kind": "invocation"
+      },
+      "note": "The divides order (`Dvd.dvd`) exists but its explicit identification as the dual is not named."
     },
     {
       "kind": "example",
@@ -222,7 +434,14 @@
         "snippet": "the descendant-of and ancestor-of relations on the set of humans"
       },
       "provenance": "ai-agent1",
-      "id": "ab55d4f80005"
+      "id": "ab55d4f80005",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Informal biological example not present in Mathlib."
     },
     {
       "kind": "definition",
@@ -232,7 +451,14 @@
         "snippet": "A duality transform is an involutive antiautomorphism"
       },
       "provenance": "ai-agent1",
-      "id": "23d9a3e26120"
+      "id": "23d9a3e26120",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The concept of an involutive order antiautomorphism is not packaged in Mathlib as a named structure."
     },
     {
       "kind": "proposition",
@@ -242,7 +468,14 @@
         "snippet": "if f 1 , f 2 are two duality transforms then their composition is an order automorphism"
       },
       "provenance": "ai-agent1",
-      "id": "c8d6360358c2"
+      "id": "c8d6360358c2",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib decl formalizes composition of order antiautomorphisms as an automorphism at this named level."
     },
     {
       "kind": "proposition",
@@ -252,7 +485,14 @@
         "snippet": "a minimal element of P will be a maximal element"
       },
       "provenance": "ai-agent1",
-      "id": "c21fa35044b1"
+      "id": "c21fa35044b1",
+      "status": "partial",
+      "mathlib": {
+        "decl": "OrderDual",
+        "module": "Mathlib.Order.OrderDual",
+        "match_kind": "generalization"
+      },
+      "note": "Minimal/maximal, sup/inf, etc. are systematically dualized through `OrderDual` type synonyms in Mathlib."
     },
     {
       "kind": "definition",
@@ -262,7 +502,14 @@
         "snippet": "the family of sets complementary to the independent sets of a given matroid themselves form another matroid, called the dual matroid"
       },
       "provenance": "ai-agent1",
-      "id": "7a2d62efad1f"
+      "id": "7a2d62efad1f",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matroid.dual",
+        "module": "Mathlib.Combinatorics.Matroid.Dual",
+        "match_kind": "exact"
+      },
+      "note": "`Matroid.dual` (postfix `✶`) defines the dual matroid."
     },
     {
       "kind": "example",
@@ -272,7 +519,14 @@
         "snippet": "the duality of the Platonic solids"
       },
       "provenance": "ai-agent1",
-      "id": "5b8a46c3fd5f"
+      "id": "5b8a46c3fd5f",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Platonic solids and their duality are not formalized in Mathlib."
     },
     {
       "kind": "definition",
@@ -282,7 +536,14 @@
         "snippet": "The dual polyhedron of any of these polyhedra may be formed as the convex hull of the center points of each face"
       },
       "provenance": "ai-agent1",
-      "id": "7ce498dde660"
+      "id": "7ce498dde660",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no theory of polyhedra with faces or dualization via face centers."
     },
     {
       "kind": "definition",
@@ -292,7 +553,14 @@
         "snippet": "using the concept of polar reciprocation"
       },
       "provenance": "ai-agent1",
-      "id": "126d21529364"
+      "id": "126d21529364",
+      "status": "partial",
+      "mathlib": {
+        "decl": "polar",
+        "module": "Mathlib.Analysis.LocallyConvex.Polar",
+        "match_kind": "generalization"
+      },
+      "note": "The polar set of a subset (`polar`) is defined in Mathlib but not specialised to polytopes."
     },
     {
       "kind": "proposition",
@@ -302,7 +570,14 @@
         "snippet": "Duality of polytopes and order-theoretic duality are both involutions"
       },
       "provenance": "ai-agent1",
-      "id": "f2742356c8e7"
+      "id": "f2742356c8e7",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Polytope duality and its involution property are not formalized in Mathlib."
     },
     {
       "kind": "definition",
@@ -312,7 +587,14 @@
         "snippet": "The dual polyhedron has a dual graph"
       },
       "provenance": "ai-agent1",
-      "id": "c74183e332ac"
+      "id": "c74183e332ac",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither polyhedra nor their dual graphs are formalized in Mathlib."
     },
     {
       "kind": "definition",
@@ -322,7 +604,14 @@
         "snippet": "The same concept of planar graph duality may be generalized to graphs that are drawn in the plane"
       },
       "provenance": "ai-agent1",
-      "id": "314575539527"
+      "id": "314575539527",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no theory of planar graph embeddings or their duality."
     },
     {
       "kind": "example",
@@ -332,7 +621,14 @@
         "snippet": "the duality for any finite set"
       },
       "provenance": "ai-agent1",
-      "id": "8b4b7c16a197"
+      "id": "8b4b7c16a197",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Delaunay triangulations and Voronoi diagrams are not formalized in Mathlib."
     },
     {
       "kind": "proposition",
@@ -342,7 +638,14 @@
         "snippet": "Matroid duality is an algebraic extension of planar graph duality"
       },
       "provenance": "ai-agent1",
-      "id": "67920e5b634c"
+      "id": "67920e5b634c",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "While `Matroid.dual` exists, the identification with planar graph duality is not in Mathlib."
     },
     {
       "kind": "definition",
@@ -352,7 +655,14 @@
         "snippet": "Every linear program has a dual problem with the same optimal solution"
       },
       "provenance": "ai-agent1",
-      "id": "52f38b11b2f3"
+      "id": "52f38b11b2f3",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Linear programming and LP duality are not formalized in Mathlib."
     },
     {
       "kind": "definition",
@@ -362,7 +672,14 @@
         "snippet": "functions or relations"
       },
       "provenance": "ai-agent1",
-      "id": "d31466d30390"
+      "id": "d31466d30390",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The informal notion of `logical duality' has no dedicated Mathlib decl."
     },
     {
       "kind": "proposition",
@@ -372,7 +689,14 @@
         "snippet": "the duality of the"
       },
       "provenance": "ai-agent1",
-      "id": "4955fa5d9ae4"
+      "id": "4955fa5d9ae4",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "not_exists",
+        "module": "Init.PropLemmas",
+        "match_kind": "exact"
+      },
+      "note": "`not_exists` gives `¬(∃ x, p x) ↔ ∀ x, ¬p x`, and `Classical.not_forall` gives the dual, expressing quantifier duality."
     },
     {
       "kind": "proposition",
@@ -382,17 +706,31 @@
         "snippet": "Satisfiability and validity are dual"
       },
       "provenance": "ai-agent1",
-      "id": "7fa5213c43f3"
+      "id": "7fa5213c43f3",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Satisfiability/validity as first-order logical notions are not treated in Mathlib."
     },
     {
       "kind": "proposition",
       "label": "Duality of conjunction and disjunction",
       "anchor": {
         "section": "Duality in logic and set theory",
-        "snippet": "the"
+        "snippet": "operators are dual in this sense"
       },
-      "provenance": "ai-agent1",
-      "id": "393c49d2ed08"
+      "provenance": "ai-moderated",
+      "id": "393c49d2ed08",
+      "note": "Anchor tightened from bare 'the' to the unique phrase pointing at ∧/∨ duality.",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "compl_sup",
+        "module": "Mathlib.Order.Heyting.Basic",
+        "match_kind": "exact"
+      }
     },
     {
       "kind": "proposition",
@@ -402,7 +740,14 @@
         "snippet": "De Morgan's laws are examples"
       },
       "provenance": "ai-agent1",
-      "id": "5d06f93c846d"
+      "id": "5d06f93c846d",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "compl_inf",
+        "module": "Mathlib.Order.BooleanAlgebra.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`compl_inf` (and `compl_sup`, `Set.compl_union`, `Set.compl_inter`) formalize De Morgan's laws in Boolean algebras."
     },
     {
       "kind": "proposition",
@@ -412,7 +757,14 @@
         "snippet": "Most interpretations of modal logic assign dual meanings to these two operators"
       },
       "provenance": "ai-agent1",
-      "id": "fd5b2b9581fb"
+      "id": "fd5b2b9581fb",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Modal logic and its box/diamond duality are not in Mathlib."
     },
     {
       "kind": "proposition",
@@ -422,7 +774,14 @@
         "snippet": "Set-theoretic union and intersection are dual under the set complement operator"
       },
       "provenance": "ai-agent1",
-      "id": "891da940c465"
+      "id": "891da940c465",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.compl_union",
+        "module": "Mathlib.Order.BooleanAlgebra.Set",
+        "match_kind": "exact"
+      },
+      "note": "`Set.compl_union` (and `Set.compl_inter`, `Set.compl_iUnion`) express set De Morgan / union–intersection duality."
     },
     {
       "kind": "definition",
@@ -432,7 +791,14 @@
         "snippet": "The dual of the dual, called the bidual or double dual"
       },
       "provenance": "ai-agent1",
-      "id": "66de5daeebdf"
+      "id": "66de5daeebdf",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Dual",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "The bidual is `Module.Dual R (Module.Dual R M)`, a double application of `Module.Dual`."
     },
     {
       "kind": "example",
@@ -442,7 +808,14 @@
         "snippet": "the dual poset of a dual poset is exactly the original poset"
       },
       "provenance": "ai-agent1",
-      "id": "3583863d81df"
+      "id": "3583863d81df",
+      "status": "partial",
+      "mathlib": {
+        "decl": "OrderDual",
+        "module": "Mathlib.Order.OrderDual",
+        "match_kind": "invocation"
+      },
+      "note": "`OrderDual (OrderDual α)` is definitionally α; the fact is implicit rather than a named lemma."
     },
     {
       "kind": "example",
@@ -452,7 +825,14 @@
         "snippet": "the dual cone of the dual cone of a set contains the primal set"
       },
       "provenance": "ai-agent1",
-      "id": "c939287f4698"
+      "id": "c939287f4698",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PointedCone.subset_dual_dual",
+        "module": "Mathlib.Geometry.Convex.Cone.Dual",
+        "match_kind": "exact"
+      },
+      "note": "`PointedCone.subset_dual_dual` proves the primal is contained in the double dual cone."
     },
     {
       "kind": "definition",
@@ -462,7 +842,14 @@
         "snippet": "known as the \"canonical evaluation map\""
       },
       "provenance": "ai-agent1",
-      "id": "e0e4d23911f3"
+      "id": "e0e4d23911f3",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Dual.eval",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Module.Dual.eval` is the canonical `M →ₗ[R] Dual R (Dual R M)`."
     },
     {
       "kind": "proposition",
@@ -472,7 +859,14 @@
         "snippet": "For vector spaces (considered algebraically), this is always an injection"
       },
       "provenance": "ai-agent1",
-      "id": "84569cb4d387"
+      "id": "84569cb4d387",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.eval_ker",
+        "module": "Mathlib.LinearAlgebra.Dual.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "`Module.eval_ker` shows the evaluation map has trivial kernel over a field, so it is injective (`Basis.eval_injective` for the basis version)."
     },
     {
       "kind": "definition",
@@ -482,7 +876,14 @@
         "snippet": "if it is, this is known as a torsionless module"
       },
       "provenance": "ai-agent1",
-      "id": "c99aa5ba0ce4"
+      "id": "c99aa5ba0ce4",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.IsReflexive",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Module.IsReflexive` is the property that `Module.Dual.eval` is bijective; torsionless is not separately named."
     },
     {
       "kind": "definition",
@@ -492,7 +893,14 @@
         "snippet": "there is a separate notion of a topological dual"
       },
       "provenance": "ai-agent1",
-      "id": "82427e3d0742"
+      "id": "82427e3d0742",
+      "status": "partial",
+      "mathlib": {
+        "decl": "StrongDual",
+        "module": "Mathlib.Analysis.Normed.Module.Dual",
+        "match_kind": "generalization"
+      },
+      "note": "The topological dual is `StrongDual`; a general 'reflexive normed space' class exists in Mathlib but is not named as such at this abstraction."
     },
     {
       "kind": "theorem",
@@ -502,7 +910,14 @@
         "snippet": "a locally compact abelian group is naturally isomorphic to its bidual"
       },
       "provenance": "ai-agent1",
-      "id": "9dd1609e3375"
+      "id": "9dd1609e3375",
+      "status": "partial",
+      "mathlib": {
+        "decl": "PontryaginDual",
+        "module": "Mathlib.Topology.Algebra.PontryaginDual",
+        "match_kind": "generalization"
+      },
+      "note": "`PontryaginDual` is defined for locally compact abelian groups, and `doubleDualEquiv` for finite abelian groups exists, but the full LCA bidual isomorphism is not yet in Mathlib."
     },
     {
       "kind": "definition",
@@ -512,7 +927,14 @@
         "snippet": "This is sometimes called internal Hom"
       },
       "provenance": "ai-agent1",
-      "id": "5423f90d6d5b"
+      "id": "5423f90d6d5b",
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.MonoidalClosed",
+        "module": "Mathlib.CategoryTheory.Monoidal.Closed.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`MonoidalClosed` gives the internal Hom in a monoidal category; the categorical notion of dualizable object exists in Mathlib in the rigid monoidal framework."
     },
     {
       "kind": "definition",
@@ -522,7 +944,14 @@
         "snippet": "There is always a map from"
       },
       "provenance": "ai-agent1",
-      "id": "f768f6b0a2a1"
+      "id": "f768f6b0a2a1",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.Dual.eval",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "The vector-space version `Module.Dual.eval` is formalized; a purely category-theoretic 'map to bidual' is not stated at that abstraction."
     },
     {
       "kind": "proposition",
@@ -532,7 +961,14 @@
         "snippet": "The map"
       },
       "provenance": "ai-agent1",
-      "id": "37081f7de789"
+      "id": "37081f7de789",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Dual",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The dual-space contravariant assignment is `Module.Dual` with `Module.Dual.transpose` for maps."
     },
     {
       "kind": "proposition",
@@ -542,7 +978,14 @@
         "snippet": "This fact characterizes finite-dimensional vector spaces without referring to a basis"
       },
       "provenance": "ai-agent1",
-      "id": "449373c0224e"
+      "id": "449373c0224e",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Basis.linearEquiv_dual_iff_finiteDimensional",
+        "module": "Mathlib.LinearAlgebra.Dual.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "`Basis.linearEquiv_dual_iff_finiteDimensional` characterizes finite-dimensionality via V ≃ₗ V*."
     },
     {
       "kind": "theorem",
@@ -552,7 +995,14 @@
         "snippet": "A vector space V is isomorphic to V ∗ precisely if V is finite-dimensional"
       },
       "provenance": "ai-agent1",
-      "id": "0d47cda3cf96"
+      "id": "0d47cda3cf96",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Basis.linearEquiv_dual_iff_finiteDimensional",
+        "module": "Mathlib.LinearAlgebra.Dual.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "Same lemma establishes V ≃ₗ Dual K V ↔ FiniteDimensional K V."
     },
     {
       "kind": "definition",
@@ -562,7 +1012,14 @@
         "snippet": "In this case V is called an inner product space"
       },
       "provenance": "ai-agent1",
-      "id": "8c3c843a5813"
+      "id": "8c3c843a5813",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`InnerProductSpace` is the standard Mathlib class."
     },
     {
       "kind": "definition",
@@ -572,7 +1029,14 @@
         "snippet": "such positive bilinear forms are called Riemannian metrics"
       },
       "provenance": "ai-agent1",
-      "id": "b7997d068819"
+      "id": "b7997d068819",
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsContMDiffRiemannianBundle",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.Riemannian",
+        "match_kind": "generalization"
+      },
+      "note": "Smooth Riemannian metrics on vector bundles / manifolds are formalized via `IsContMDiffRiemannianBundle` and `PseudoEMetricSpace.ofRiemannianMetric`."
     },
     {
       "kind": "definition",
@@ -582,7 +1046,14 @@
         "snippet": "the Hodge star operator maps"
       },
       "provenance": "ai-agent1",
-      "id": "f6edb20a307c"
+      "id": "f6edb20a307c",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Hodge star operator is not formalized in Mathlib."
     },
     {
       "kind": "theorem",
@@ -592,7 +1063,14 @@
         "snippet": "there arises a general principle of duality in projective planes"
       },
       "provenance": "ai-agent1",
-      "id": "e038c499ab0d"
+      "id": "e038c499ab0d",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no formal treatment of the projective plane duality principle."
     },
     {
       "kind": "example",
@@ -602,7 +1080,14 @@
         "snippet": "two points determine a unique line"
       },
       "provenance": "ai-agent1",
-      "id": "00701969d125"
+      "id": "00701969d125",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Axioms of projective planes and their dual pair are not formalized."
     },
     {
       "kind": "proposition",
@@ -612,7 +1097,14 @@
         "snippet": "the points in the projective plane"
       },
       "provenance": "ai-agent1",
-      "id": "f51784d5cd92"
+      "id": "f51784d5cd92",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Projectivization",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has `Projectivization` giving 1-dimensional subspaces as points, but no development identifying lines with 2-dim subspaces at the duality level."
     },
     {
       "kind": "proposition",
@@ -622,7 +1114,14 @@
         "snippet": "yields an identification of this projective plane"
       },
       "provenance": "ai-agent1",
-      "id": "117128ee9e3b"
+      "id": "117128ee9e3b",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The identification of a projective plane with the dual projective plane via a bilinear form is not formalized."
     },
     {
       "kind": "definition",
@@ -632,7 +1131,14 @@
         "snippet": "is called a reflexive space"
       },
       "provenance": "ai-agent1",
-      "id": "cde64d9c3ef9"
+      "id": "cde64d9c3ef9",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not yet have a general 'reflexive normed/TVS' class capturing V ≃ V**."
     },
     {
       "kind": "theorem",
@@ -642,7 +1148,14 @@
         "snippet": "which is a bijection due to the Riesz representation theorem"
       },
       "provenance": "ai-agent1",
-      "id": "bb08b742d86a"
+      "id": "bb08b742d86a",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDual",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "exact"
+      },
+      "note": "`InnerProductSpace.toDual` is the Riesz surjective isometry from a Hilbert space to its dual."
     },
     {
       "kind": "proposition",
@@ -652,7 +1165,14 @@
         "snippet": "every Hilbert space is a reflexive Banach space"
       },
       "provenance": "ai-agent1",
-      "id": "fd8c88560ce5"
+      "id": "fd8c88560ce5",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Banach 'reflexive space' concept and the resulting statement are not formalized in Mathlib."
     },
     {
       "kind": "theorem",
@@ -662,7 +1182,14 @@
         "snippet": "The dual normed space of an"
       },
       "provenance": "ai-agent1",
-      "id": "542b8b430bdd"
+      "id": "542b8b430bdd",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The duality (Lp)* ≃ Lq for 1 ≤ p < ∞ is not stated as a named theorem in Mathlib."
     },
     {
       "kind": "proposition",
@@ -672,7 +1199,14 @@
         "snippet": "is not reflexive"
       },
       "provenance": "ai-agent1",
-      "id": "2687056e403f"
+      "id": "2687056e403f",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized in Mathlib, as 'reflexive Banach space' itself is not."
     },
     {
       "kind": "definition",
@@ -682,7 +1216,14 @@
         "snippet": "Distributions are linear functionals on appropriate spaces of functions"
       },
       "provenance": "ai-agent1",
-      "id": "19bdf3c28642"
+      "id": "19bdf3c28642",
+      "status": "partial",
+      "mathlib": {
+        "decl": "SchwartzMap",
+        "module": "Mathlib.Analysis.Distribution.SchwartzSpace.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The Schwartz space is formalized (`SchwartzMap`); tempered distributions are treated as its continuous dual, but no explicit `Distribution` type is defined."
     },
     {
       "kind": "proposition",
@@ -692,7 +1233,14 @@
         "snippet": "All the standard spaces of distributions"
       },
       "provenance": "ai-agent1",
-      "id": "0a856b72de5d"
+      "id": "0a856b72de5d",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Reflexivity of standard distribution spaces is not formalized."
     },
     {
       "kind": "definition",
@@ -702,7 +1250,14 @@
         "snippet": "The dual lattice of a lattice"
       },
       "provenance": "ai-agent1",
-      "id": "e88c7cb7e596"
+      "id": "e88c7cb7e596",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Z-dual lattice construction is not present as a named Mathlib decl."
     },
     {
       "kind": "definition",
@@ -712,7 +1267,14 @@
         "snippet": "The Pontryagin dual of locally compact topological groups"
       },
       "provenance": "ai-agent1",
-      "id": "d4393cb8e2ea"
+      "id": "d4393cb8e2ea",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PontryaginDual",
+        "module": "Mathlib.Topology.Algebra.PontryaginDual",
+        "match_kind": "exact"
+      },
+      "note": "`PontryaginDual A` is defined as continuous homomorphisms `A →* Circle`."
     },
     {
       "kind": "definition",
@@ -722,7 +1284,14 @@
         "snippet": "this amounts to a contravariant functor between two categories"
       },
       "provenance": "ai-agent1",
-      "id": "510316f102fd"
+      "id": "510316f102fd",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Category.opposite",
+        "module": "Mathlib.CategoryTheory.Opposites",
+        "match_kind": "exact"
+      },
+      "note": "Contravariant functors are functors out of the opposite category (`Opposite`, `Category.opposite`)."
     },
     {
       "kind": "definition",
@@ -732,7 +1301,14 @@
         "snippet": "A category that is equivalent to its dual is called self-dual"
       },
       "provenance": "ai-agent1",
-      "id": "5cfe24c08d2d"
+      "id": "5cfe24c08d2d",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated `SelfDualCategory` predicate/class exists in Mathlib."
     },
     {
       "kind": "example",
@@ -742,7 +1318,14 @@
         "snippet": "An example of self-dual category is the category of Hilbert spaces"
       },
       "provenance": "ai-agent1",
-      "id": "18549dc5e0bd"
+      "id": "18549dc5e0bd",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Self-duality of the category of Hilbert spaces is not formalized in Mathlib."
     },
     {
       "kind": "proposition",
@@ -752,7 +1335,14 @@
         "snippet": "Cartesian products"
       },
       "provenance": "ai-agent1",
-      "id": "989581ea61fd"
+      "id": "989581ea61fd",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Limits.HasProducts",
+        "module": "Mathlib.CategoryTheory.Limits.Shapes.Products",
+        "match_kind": "exact"
+      },
+      "note": "`HasProducts`/`HasCoproducts` are dual under `Opposite`; their opposite-category correspondence is set up in `Limits/Shapes/Opposites/Products.lean`."
     },
     {
       "kind": "proposition",
@@ -762,7 +1352,14 @@
         "snippet": "limits in a category"
       },
       "provenance": "ai-agent1",
-      "id": "eb22b8ff4488"
+      "id": "eb22b8ff4488",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Limits.limit",
+        "module": "Mathlib.CategoryTheory.Limits.HasLimits",
+        "match_kind": "exact"
+      },
+      "note": "`Limits.limit` and `Limits.colimit` are dualized via the opposite-category API."
     },
     {
       "kind": "definition",
@@ -772,7 +1369,14 @@
         "snippet": "Two functors"
       },
       "provenance": "ai-agent1",
-      "id": "e1c901081235"
+      "id": "e1c901081235",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Adjunction",
+        "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`CategoryTheory.Adjunction F G` is the standard adjunction structure."
     },
     {
       "kind": "example",
@@ -782,7 +1386,14 @@
         "snippet": "between the colimit functor that assigns to any diagram"
       },
       "provenance": "ai-agent1",
-      "id": "a601e2e40cbe"
+      "id": "a601e2e40cbe",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Limits.colimConstAdj",
+        "module": "Mathlib.CategoryTheory.Limits.HasLimits",
+        "match_kind": "exact"
+      },
+      "note": "`colimConstAdj` gives the adjunction between the colimit functor and the constant (diagonal) diagram functor."
     },
     {
       "kind": "theorem",
@@ -792,7 +1403,14 @@
         "snippet": "Gelfand duality is a duality between commutative C*-algebras"
       },
       "provenance": "ai-agent1",
-      "id": "46e0ecee1991"
+      "id": "46e0ecee1991",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "gelfandStarTransform",
+        "module": "Mathlib.Analysis.CStarAlgebra.GelfandDuality",
+        "match_kind": "exact"
+      },
+      "note": "`gelfandStarTransform` realizes the Gelfand duality star-isomorphism."
     },
     {
       "kind": "theorem",
@@ -802,7 +1420,14 @@
         "snippet": "there is a duality in algebraic geometry between commutative rings and affine schemes"
       },
       "provenance": "ai-agent1",
-      "id": "3948b9cd228c"
+      "id": "3948b9cd228c",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.AffineScheme.equivCommRingCat",
+        "module": "Mathlib.AlgebraicGeometry.AffineScheme",
+        "match_kind": "exact"
+      },
+      "note": "`AffineScheme.equivCommRingCat` is the equivalence between affine schemes and (opposite of) commutative rings."
     },
     {
       "kind": "definition",
@@ -812,7 +1437,14 @@
         "snippet": "Tannaka–Krein duality is a non-commutative analogue of Pontryagin duality"
       },
       "provenance": "ai-agent1",
-      "id": "792f32cd2f0d"
+      "id": "792f32cd2f0d",
+      "status": "partial",
+      "mathlib": {
+        "decl": "ModuleCat.tannakaDuality",
+        "module": "Mathlib.Algebra.Category.ModuleCat.Tannaka",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has a Tannaka-style reconstruction for module categories (`ModuleCat.Tannaka`); full Tannaka–Krein duality for compact groups is not present."
     },
     {
       "kind": "definition",
@@ -822,7 +1454,14 @@
         "snippet": "A duality that respects the orderings in question is known as a Galois connection"
       },
       "provenance": "ai-agent1",
-      "id": "0acc28e3b5fe"
+      "id": "0acc28e3b5fe",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GaloisConnection",
+        "module": "Mathlib.Order.GaloisConnection.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`GaloisConnection l u` is defined as the standard adjunction on preorders."
     },
     {
       "kind": "proposition",
@@ -832,7 +1471,14 @@
         "snippet": "The collection of all open subsets of a topological space"
       },
       "provenance": "ai-agent1",
-      "id": "4045140dfa97"
+      "id": "4045140dfa97",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopologicalSpace.Opens.instFrame",
+        "module": "Mathlib.Topology.Sets.Opens",
+        "match_kind": "exact"
+      },
+      "note": "`Opens.instFrame` gives the frame (complete Heyting algebra) structure on the lattice of open sets."
     },
     {
       "kind": "theorem",
@@ -842,7 +1488,14 @@
         "snippet": "There is a duality, known as Stone duality , connecting sober spaces and spatial locales"
       },
       "provenance": "ai-agent1",
-      "id": "7a44fd571ec0"
+      "id": "7a44fd571ec0",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Full Stone duality between sober spaces and spatial frames/locales is not formalized in Mathlib."
     },
     {
       "kind": "theorem",
@@ -852,7 +1505,14 @@
         "snippet": "Birkhoff's representation theorem relating distributive lattices and partial orders"
       },
       "provenance": "ai-agent1",
-      "id": "661746560d5b"
+      "id": "661746560d5b",
+      "status": "partial",
+      "mathlib": {
+        "decl": "OrderIso.lowerSetSupIrred",
+        "module": "Mathlib.Order.Birkhoff",
+        "match_kind": "generalization"
+      },
+      "note": "`Mathlib.Order.Birkhoff` develops Birkhoff's representation for finite distributive lattices."
     },
     {
       "kind": "definition",
@@ -862,7 +1522,14 @@
         "snippet": "the character group"
       },
       "provenance": "ai-agent1",
-      "id": "9c8db6a518d9"
+      "id": "9c8db6a518d9",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PontryaginDual",
+        "module": "Mathlib.Topology.Algebra.PontryaginDual",
+        "match_kind": "exact"
+      },
+      "note": "`PontryaginDual A` is the group of continuous characters `A →* Circle`."
     },
     {
       "kind": "theorem",
@@ -872,7 +1539,14 @@
         "snippet": "Pontryagin duality states that the character group is again locally compact abelian"
       },
       "provenance": "ai-agent1",
-      "id": "27df9079cfeb"
+      "id": "27df9079cfeb",
+      "status": "partial",
+      "mathlib": {
+        "decl": "PontryaginDual",
+        "module": "Mathlib.Topology.Algebra.PontryaginDual",
+        "match_kind": "generalization"
+      },
+      "note": "The `PontryaginDual` inherits `LocallyCompactSpace`, but the full duality (double-dual isomorphism) is only formalized in the finite abelian case (`doubleDualEquiv`)."
     },
     {
       "kind": "proposition",
@@ -882,7 +1556,14 @@
         "snippet": "discrete groups correspond to compact abelian groups"
       },
       "provenance": "ai-agent1",
-      "id": "014f75832cd7"
+      "id": "014f75832cd7",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PontryaginDual.instDiscreteTopology",
+        "module": "Mathlib.Topology.Algebra.PontryaginDual",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib has instances making `PontryaginDual` discrete when the source is compact (and vice versa)."
     },
     {
       "kind": "definition",
@@ -892,7 +1573,14 @@
         "snippet": "Fourier transform switches between functions on a vector space and its dual"
       },
       "provenance": "ai-agent1",
-      "id": "593ca2502238"
+      "id": "593ca2502238",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "VectorFourier.fourierIntegral",
+        "module": "Mathlib.Analysis.Fourier.FourierTransform",
+        "match_kind": "exact"
+      },
+      "note": "`VectorFourier.fourierIntegral` defines the Fourier transform between a vector space and its dual using an additive character."
     },
     {
       "kind": "proposition",
@@ -902,7 +1590,14 @@
         "snippet": "If f is an L 2 -function on"
       },
       "provenance": "ai-agent1",
-      "id": "02feaaee6454"
+      "id": "02feaaee6454",
+      "status": "partial",
+      "mathlib": {
+        "decl": "VectorFourier.fourierIntegral",
+        "module": "Mathlib.Analysis.Fourier.FourierTransform",
+        "match_kind": "generalization"
+      },
+      "note": "Fourier transform is defined and Fourier inversion is proved, but Plancherel/L² isometry on ℝⁿ is only partial in Mathlib."
     },
     {
       "kind": "proposition",
@@ -912,7 +1607,14 @@
         "snippet": "the transform interchanges operations of multiplication and convolution"
       },
       "provenance": "ai-agent1",
-      "id": "12ba62efe718"
+      "id": "12ba62efe718",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.fourier_bilin_convolution_eq",
+        "module": "Mathlib.Analysis.Fourier.Convolution",
+        "match_kind": "exact"
+      },
+      "note": "`Real.fourier_bilin_convolution_eq` shows the Fourier transform sends convolution to (pointwise) product."
     },
     {
       "kind": "definition",
@@ -922,7 +1624,14 @@
         "snippet": "Laplace transform is similar to Fourier transform"
       },
       "provenance": "ai-agent1",
-      "id": "966498445ae9"
+      "id": "966498445ae9",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Laplace transform is not formalized in Mathlib."
     },
     {
       "kind": "definition",
@@ -932,7 +1641,14 @@
         "snippet": "Legendre transformation is an important analytic duality"
       },
       "provenance": "ai-agent1",
-      "id": "bb362aa69032"
+      "id": "bb362aa69032",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Legendre / Legendre–Fenchel transform is not formalized in Mathlib."
     },
     {
       "kind": "proposition",
@@ -942,7 +1658,14 @@
         "snippet": "For perfect pairings , there is, therefore, an isomorphism"
       },
       "provenance": "ai-agent1",
-      "id": "3b5f32aa423f"
+      "id": "3b5f32aa423f",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.IsPerfPair",
+        "module": "Mathlib.LinearAlgebra.PerfectPairing.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.IsPerfPair` (and `Module.IsReflexive.of_isPerfPair`) express that a perfect pairing induces an isomorphism to the dual."
     },
     {
       "kind": "theorem",
@@ -952,7 +1675,14 @@
         "snippet": "Poincaré duality of a smooth compact complex manifold"
       },
       "provenance": "ai-agent1",
-      "id": "e843d7a3ef9c"
+      "id": "e843d7a3ef9c",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Poincaré duality is not formalized in Mathlib."
     },
     {
       "kind": "theorem",
@@ -962,7 +1692,14 @@
         "snippet": "Poincaré duality can also be expressed as a relation of singular homology and de Rham cohomology"
       },
       "provenance": "ai-agent1",
-      "id": "2782d313e429"
+      "id": "2782d313e429",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The de Rham version of Poincaré duality is not formalized."
     },
     {
       "kind": "proposition",
@@ -972,7 +1709,14 @@
         "snippet": "Poincaré duality also reverses dimensions"
       },
       "provenance": "ai-agent1",
-      "id": "a662e3d5bb86"
+      "id": "a662e3d5bb86",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Dimension-reversal statement of Poincaré duality is not in Mathlib."
     },
     {
       "kind": "theorem",
@@ -982,7 +1726,14 @@
         "snippet": "The same duality pattern holds for a smooth projective variety over a separably closed field"
       },
       "provenance": "ai-agent1",
-      "id": "3e4f50212fd4"
+      "id": "3e4f50212fd4",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "ℓ-adic Poincaré duality is not formalized in Mathlib."
     },
     {
       "kind": "theorem",
@@ -992,7 +1743,14 @@
         "snippet": "a duality called Verdier duality"
       },
       "provenance": "ai-agent1",
-      "id": "b0d45b080f13"
+      "id": "b0d45b080f13",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Verdier duality is not formalized in Mathlib."
     },
     {
       "kind": "theorem",
@@ -1002,7 +1760,14 @@
         "snippet": "Serre duality or coherent duality are similar to the statements above"
       },
       "provenance": "ai-agent1",
-      "id": "2d3c14ac6c9a"
+      "id": "2d3c14ac6c9a",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Serre / coherent duality is not formalized in Mathlib."
     },
     {
       "kind": "theorem",
@@ -1012,7 +1777,14 @@
         "snippet": "the perfect pairing"
       },
       "provenance": "ai-agent1",
-      "id": "62044eb34cc0"
+      "id": "62044eb34cc0",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Étale-cohomology Galois pairings over finite fields are not formalized in Mathlib."
     },
     {
       "kind": "theorem",
@@ -1022,7 +1794,14 @@
         "snippet": "For local and global fields, similar statements exist"
       },
       "provenance": "ai-agent1",
-      "id": "3cef7a797322"
+      "id": "3cef7a797322",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Local Tate duality and Poitou–Tate duality are not formalized in Mathlib."
     }
   ]
 }

@@ -154,7 +154,7 @@
         "module": "Mathlib.Probability.Independence.Basic",
         "match_kind": "generalization"
       },
-      "note": "General mutual independence of random variables exists, but the specific Kalman noise-independence assumption is not formalized.",
+      "note": "General mutual independence of random variables (`iIndepFun`) exists in Mathlib, but the specific Kalman noise-independence assumption is not formalized.",
       "provenance": "ai",
       "id": "ab9b8dd83205"
     },
@@ -206,7 +206,8 @@
         "match_kind": null
       },
       "note": "The innovation/pre-fit residual is not formalized in Mathlib4.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "77d7185ed6b9"
     },
     {
       "kind": "definition",
@@ -527,7 +528,7 @@
         "module": "Mathlib.Probability.Independence.Conditional",
         "match_kind": "generalization"
       },
-      "note": "Generic conditional independence exists, but the specific Markov-chain conditional independence is not formalized.",
+      "note": "Generic conditional independence (`CondIndepFun`) exists, but the specific Markov-chain conditional independence is not formalized.",
       "provenance": "ai",
       "id": "935837fb3080"
     },
@@ -544,7 +545,7 @@
         "module": "Mathlib.Probability.Independence.Conditional",
         "match_kind": "generalization"
       },
-      "note": "General conditional independence machinery exists; the specific Kalman measurement independence is not formalized.",
+      "note": "General conditional independence machinery (`CondIndepFun`) exists; the specific Kalman measurement independence is not formalized.",
       "provenance": "ai",
       "id": "40e1908d36a7"
     },
@@ -817,7 +818,8 @@
         "match_kind": null
       },
       "note": "The unscented transformation is not formalized in Mathlib4.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f4a881991790"
     },
     {
       "kind": "definition",
@@ -850,7 +852,8 @@
         "match_kind": null
       },
       "note": "Square-root UKF variant not in Mathlib4.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3f72b24fa81e"
     },
     {
       "kind": "definition",
@@ -1035,7 +1038,7 @@
         "module": "Mathlib.Probability.Distributions.Gaussian.IsGaussianProcess.Def",
         "match_kind": "generalization"
       },
-      "note": "Gaussian processes are defined in Mathlib, but the Kalman-as-GP-regression viewpoint is not formalized.",
+      "note": "Gaussian processes (`IsGaussianProcess`) are defined in Mathlib, but the Kalman-as-GP-regression viewpoint is not formalized.",
       "provenance": "ai",
       "id": "fb29059015c9"
     },
@@ -1053,6 +1056,87 @@
         "match_kind": null
       },
       "note": "Kalman gain (the weighting matrix between prediction and measurement) is not formalized in Mathlib4.",
+      "provenance": "ai",
+      "id": "30b6ef4372ce"
+    },
+    {
+      "kind": "definition",
+      "label": "Continuous-state hidden Markov model analogy",
+      "anchor": {
+        "section": "Underlying dynamic system model",
+        "snippet": "The Kalman filter may be regarded as analogous to the hidden Markov model, with the difference that the hidden state variables have values in a continuous space as opposed to a discrete state space as for the hidden Markov model"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The continuous-state HMM interpretation of the Kalman filter is not formalized in Mathlib4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Process noise as zero-mean multivariate Gaussian",
+      "anchor": {
+        "section": "Underlying dynamic system model",
+        "snippet": "is the process noise, which is assumed to be drawn from a zero mean multivariate normal distribution"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.multivariateGaussian",
+        "module": "Mathlib.Probability.Distributions.Gaussian.Multivariate",
+        "match_kind": "generalization"
+      },
+      "note": "Multivariate Gaussian distributions (`multivariateGaussian`) exist in Mathlib, but the specific Kalman process-noise modelling assumption is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Observation noise as zero-mean Gaussian white noise",
+      "anchor": {
+        "section": "Underlying dynamic system model",
+        "snippet": "is the observation noise, which is assumed to be zero mean Gaussian white noise with covariance"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.multivariateGaussian",
+        "module": "Mathlib.Probability.Distributions.Gaussian.Multivariate",
+        "match_kind": "generalization"
+      },
+      "note": "Multivariate Gaussians (`multivariateGaussian`) exist in Mathlib, but the Kalman observation-noise assumption is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Marginal likelihood as product of Gaussian densities",
+      "anchor": {
+        "section": "Marginal likelihood",
+        "snippet": "a product of Gaussian densities, each corresponding to the density of one observation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Product-of-Gaussians factorization of Kalman marginal likelihood is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Weighted-average state update",
+      "anchor": {
+        "section": "Overview of the calculation",
+        "snippet": "The Kalman filter produces an estimate of the state of the system as an average of the system's predicted state and of the new measurement using a weighted average"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Weighted-average combination of prediction and measurement in the Kalman filter is not formalized in Mathlib4.",
       "provenance": "ai"
     }
   ]

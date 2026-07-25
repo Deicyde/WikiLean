@@ -20,16 +20,6 @@
       },
       "note": "ArithmeticFunction.moebius is defined exactly as (-1)^cardFactors n for squarefree n and 0 otherwise.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definition",
-          "snippet": "The Möbius function is defined by"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\mu (n)={\\begin{cases}1&amp;{\\text{if }}n=1\\\\(-1)^{k}&amp;{\\text{if }}n{\\text{ is the product of }}k{\\text{ distinct primes}}\\\\0&amp;{\\text{if }}n{\\text{ is divisible by a square}}&gt;1.\\end{cases}}}"
-        }
-      ],
       "id": "9ffbbbda7215"
     },
     {
@@ -203,6 +193,22 @@
       "id": "2dd8a974ab0f"
     },
     {
+      "kind": "theorem",
+      "label": "Möbius inversion formula",
+      "anchor": {
+        "section": "Algebraic number theory",
+        "snippet": "The Möbius function is used in the Möbius inversion formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ArithmeticFunction.sum_eq_iff_sum_smul_moebius_eq",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Moebius",
+        "match_kind": "exact"
+      },
+      "note": "The Möbius inversion formula is formalized in Mathlib as sum_eq_iff_sum_smul_moebius_eq and companion lemmas (e.g. sum_eq_iff_sum_mul_moebius_eq).",
+      "provenance": "ai"
+    },
+    {
       "kind": "proposition",
       "label": "Möbius function is multiplicative",
       "anchor": {
@@ -269,6 +275,22 @@
       "note": "Möbius inversion and identities like ∏(1−f p)=∑μ(d)f(d) are formalized, but the specific list of further identities is only partially covered.",
       "provenance": "ai",
       "id": "b8c1ae0c93f2"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum-over-divisors as Dirichlet convolution μ*ζ = 1",
+      "anchor": {
+        "section": "Proof of the formula for the sum of μ {\\displaystyle \\mu } over divisors",
+        "snippet": "can be written using Dirichlet convolution as"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ArithmeticFunction.moebius_mul_coe_zeta",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Moebius",
+        "match_kind": "exact"
+      },
+      "note": "moebius_mul_coe_zeta states μ * ζ = 1 in the Dirichlet convolution ring of arithmetic functions, precisely the identity displayed here.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -455,16 +477,6 @@
       },
       "note": "The incidence/arithmetic-function convolution ring structure exists, but no statement about iterated Dirichlet convolutions of μ specifically is formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Incidence algebras",
-          "snippet": "so is its (iterated) Dirichlet convolution"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\mu _{k}\\left(p^{a}\\right)=(-1)^{a}{\\binom {k}{a}}}"
-        }
-      ],
       "id": "6227ac9b7ef9"
     }
   ]

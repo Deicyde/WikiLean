@@ -240,7 +240,7 @@
         "match_kind": "special_case"
       },
       "note": "The forward direction of `tendstoLocallyUniformlyOn_iff_tendstoUniformlyOn_of_compact` (and `tendstoLocallyUniformly_iff_forall_isCompact` on locally compact spaces) gives uniform convergence on each compact set.",
-      "provenance": "ai-agent1",
+      "provenance": "ai",
       "id": "08e7ea54aff3"
     },
     {
@@ -274,7 +274,7 @@
         "match_kind": "exact"
       },
       "note": "Together with `TendstoUniformlyOn.uniformCauchySeqOn`, this gives the uniform-Cauchy ⇔ uniformly-convergent equivalence.",
-      "provenance": "ai-agent1",
+      "provenance": "ai",
       "id": "862cbd50d50b"
     },
     {
@@ -389,7 +389,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "HasSumUniformlyOn",
-        "module": "Mathlib.Topology.Algebra.InfiniteSum.TsumUniformlyOn",
+        "module": "Mathlib.Topology.Algebra.InfiniteSum.UniformOn",
         "match_kind": "generalization"
       },
       "note": "Mathlib defines `Summable`/`HasSum` for pointwise and `HasSumUniformlyOn` for uniform series convergence, but bundles them via filters rather than the article's three-way pointwise/uniform/absolute definition.",
@@ -581,7 +581,7 @@
       },
       "note": "`BoundedContinuousFunction` carries the sup-norm/uniform metric, and `UniformFun`/`UniformOnFun` provide the metric on general bounded function spaces.",
       "provenance": "ai",
-      "id": null
+      "id": "b6022e7cb326"
     },
     {
       "kind": "proposition",
@@ -598,7 +598,71 @@
       },
       "note": "`ContinuousMap.compactOpen` defines the compact-open topology on `C(X, Y)`; under σ-compact locally compact Hausdorff X this is the Fréchet seminorm topology, though the σ-compact-Fréchet packaging itself is not a separate named decl.",
       "provenance": "ai",
-      "id": null
+      "id": "13e366117959"
+    },
+    {
+      "kind": "definition",
+      "label": "Uniformly Cauchy sequence",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "is uniformly convergent if and only if it is uniformly Cauchy"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "UniformCauchySeqOn",
+        "module": "Mathlib.Topology.UniformSpace.UniformConvergence",
+        "match_kind": "exact"
+      },
+      "note": "`UniformCauchySeqOn F p s` formalizes a uniformly Cauchy sequence of functions on a set, the notion whose equivalence with uniform convergence is asserted here.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Supremum norm on continuous functions",
+      "anchor": {
+        "section": "Function spaces",
+        "snippet": "With the supremum norm"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BoundedContinuousFunction.norm_def",
+        "module": "Mathlib.Topology.ContinuousMap.Bounded.Normed",
+        "match_kind": "generalization"
+      },
+      "note": "The sup norm on the space of bounded continuous functions is the norm underlying `BoundedContinuousFunction`; this is Mathlib's model of the article's `‖·‖_∞` on C(X).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Compact convergence (uniform on compact subsets)",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Every locally uniformly convergent sequence is compactly convergent"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "UniformOnFun",
+        "module": "Mathlib.Topology.UniformSpace.UniformConvergenceTopology",
+        "match_kind": "generalization"
+      },
+      "note": "Uniform convergence on all compact subsets (`compact convergence`) is the `UniformOnFun` topology with the compact-subsets family; on continuous maps this coincides with the compact-open topology.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniform limit of uniformly continuous functions is uniformly continuous",
+      "anchor": {
+        "section": "To continuity",
+        "snippet": "this theorem states that the uniform limit of uniformly continuous functions is uniformly continuous"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TendstoUniformly.uniformContinuous",
+        "module": "Mathlib.Topology.UniformSpace.UniformApproximation",
+        "match_kind": "exact"
+      },
+      "note": "A uniform limit of uniformly continuous functions is uniformly continuous, formalized by (uniform-convergence + `UniformContinuous` hypotheses) yielding `UniformContinuous` on the limit.",
+      "provenance": "ai"
     }
   ]
 }

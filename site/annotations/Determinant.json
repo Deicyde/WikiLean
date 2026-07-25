@@ -879,13 +879,13 @@
         "section": "Linear independence",
         "snippet": "the Wronskian is defined to be"
       },
-      "status": "not_formalized",
+      "status": "partial",
       "mathlib": {
-        "decl": null,
-        "module": null,
-        "match_kind": null
+        "decl": "Polynomial.wronskian",
+        "module": "Mathlib.RingTheory.Polynomial.Wronskian",
+        "match_kind": "special_case"
       },
-      "note": "No Wronskian definition was located in Mathlib.",
+      "note": "`Polynomial.wronskian a b = a·b' − a'·b` is the two-polynomial Wronskian; the general n-function Wronskian determinant is not formalized.",
       "provenance": "ai",
       "id": "295dbae7d8ea"
     },
@@ -1311,7 +1311,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.trace_eq_sum_roots_charpoly` (alg. closed) gives `trace A = ∑ eigenvalues`; `IsHermitian.sum_eigenvalues_eq_trace` is the Hermitian version.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "98ae323daf2e"
     },
     {
       "kind": "proposition",
@@ -1327,7 +1328,8 @@
         "match_kind": null
       },
       "note": "`LinearMap.hasEigenvalue_zero_tfae` lists `LinearMap.det φ = 0 ↔ HasEigenvalue φ 0` for endomorphisms; the direct matrix-singularity-iff-0-eigenvalue is not stated as a single named lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "02ede8094dec"
     },
     {
       "kind": "proposition",
@@ -1343,6 +1345,103 @@
         "match_kind": null
       },
       "note": "`Matrix.GeneralLinearGroup.det` is surjective with kernel `SpecialLinearGroup`; the first-isomorphism-theorem identification `GLₙ / SLₙ ≃* Rˣ` is derivable but not packaged as a single named lemma.",
+      "provenance": "ai",
+      "id": "3acbad56df50"
+    },
+    {
+      "kind": "proposition",
+      "label": "Singular matrix has no inverse",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the matrix is referred to as singular, meaning it does not have an inverse"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.nonsing_inv_apply",
+        "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib works with `Invertible`/`IsUnit`; a non-unit determinant means no two-sided inverse exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Volume scale factor of a linear map",
+      "anchor": {
+        "section": "Volume and Jacobian determinant",
+        "snippet": "the volume of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.addHaar_image_linearMap",
+        "module": "Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar",
+        "match_kind": "exact"
+      },
+      "note": "`addHaar_image_linearMap` shows the Haar measure of `f '' s` equals `|det f| • μ s`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Row echelon form",
+      "anchor": {
+        "section": "Gaussian elimination",
+        "snippet": "Gaussian elimination consists of left multiplying a matrix by elementary matrices for getting a matrix in a row echelon form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Row echelon form of a matrix is not defined as a first-class notion in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "LU decomposition",
+      "anchor": {
+        "section": "Decomposition methods",
+        "snippet": "the LU decomposition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An LU decomposition of an arbitrary matrix is not formalized in Mathlib as of writing.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "QR decomposition",
+      "anchor": {
+        "section": "Decomposition methods",
+        "snippet": "the QR decomposition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No QR decomposition of matrices was located in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cholesky decomposition",
+      "anchor": {
+        "section": "Decomposition methods",
+        "snippet": "the Cholesky decomposition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Cholesky decomposition of positive definite matrices was located in Mathlib.",
       "provenance": "ai"
     }
   ]

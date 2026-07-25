@@ -1005,7 +1005,8 @@
         "match_kind": "generalization"
       },
       "note": "The trichotomy follows from the sign of the discriminant via `quadratic_eq_zero_iff` over ℝ and `Complex.conj`-symmetry of roots of real polynomials, but no single named lemma packages this trichotomy.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9d6e7ca78402"
     },
     {
       "kind": "proposition",
@@ -1021,7 +1022,8 @@
         "match_kind": "generalization"
       },
       "note": "The general fact that complex roots of a real polynomial come in conjugate pairs specializes to the quadratic case.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c6639c90668e"
     },
     {
       "kind": "proposition",
@@ -1037,7 +1039,8 @@
         "match_kind": null
       },
       "note": "Vertex y-coordinate formula `y_V = c - b²/(4a)` is not a named Mathlib lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9740d33da26a"
     },
     {
       "kind": "proposition",
@@ -1053,6 +1056,71 @@
         "match_kind": null
       },
       "note": "Mathlib does not yet have an Artin–Schreier theory development covering this case.",
+      "provenance": "ai",
+      "id": "faa9e7cda7aa"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linear equation when leading coefficient is zero",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "If a = 0 and b ≠ 0 then the equation is linear , not quadratic."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Boundary-case remark distinguishing quadratic from linear equations; not a named Mathlib result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "At most two solutions",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A quadratic equation has at most two solutions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.card_roots",
+        "module": "Mathlib.Algebra.Polynomial.Roots",
+        "match_kind": "generalization"
+      },
+      "note": "Follows from the general bound `Polynomial.card_roots : #roots ≤ degree` specialized to degree 2 (the previously cited `card_roots_le_degree` does not exist).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Alternative parameterizations of the quadratic equation",
+      "anchor": {
+        "section": "Quadratic formula and its derivation",
+        "snippet": "Some sources, particularly older ones, use alternative parameterizations of the quadratic equation such as ax 2 + 2 bx + c = 0 or ax 2 − 2 bx + c = 0"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Historical alternate normalization; not separately stated in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rational roots when discriminant is a perfect square",
+      "anchor": {
+        "section": "Discriminant",
+        "snippet": "For quadratic equations with rational coefficients, if the discriminant is a square number , then the roots are rational—in other cases they may be quadratic irrationals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The rational-root characterization via square discriminant is not a single named Mathlib lemma.",
       "provenance": "ai"
     }
   ]

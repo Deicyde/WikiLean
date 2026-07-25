@@ -486,7 +486,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The Koch curve is not defined in Mathlib.",
+      "note": "The Koch curve is not defined in Mathlib (only the general Metric.Snowflaking construction is present, mentioning Koch in a docstring).",
       "provenance": "ai",
       "id": "0a834851ff9a"
     },
@@ -557,6 +557,38 @@
       "note": "Mathlib has no Lorentzian/pseudo-Riemannian geometry, so proper time along world lines is not formalized.",
       "provenance": "ai",
       "id": "ba85f5707e46"
+    },
+    {
+      "kind": "definition",
+      "label": "Polygonal chain approximation",
+      "anchor": {
+        "section": "As a limit",
+        "snippet": "using (straight) line segments to create a polygonal chain"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "eVariationOn",
+        "module": "Mathlib.Topology.EMetricSpace.BoundedVariation",
+        "match_kind": null
+      },
+      "note": "The polygonal chain approximation used to define arc length as a limit is captured implicitly by the partition-based sum in eVariationOn; Mathlib has no standalone 'polygonal chain' object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Full circle circumference equals 2πr",
+      "anchor": {
+        "section": "Arcs of circles",
+        "snippet": "is its circumference"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The equation C = 2πr as an arc-length computation on a circle is not directly formalized in Mathlib (Real.pi is defined analytically, not via circumference).",
+      "provenance": "ai"
     }
   ]
 }

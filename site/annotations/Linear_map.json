@@ -23,6 +23,23 @@
       "id": "ba4a80802572"
     },
     {
+      "kind": "proposition",
+      "label": "Linear maps send subspaces to subspaces",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "linear subspaces of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.map",
+        "module": "Mathlib.Algebra.Module.Submodule.Map",
+        "match_kind": "exact"
+      },
+      "note": "`Submodule.map f` sends a submodule of the domain to a submodule of the codomain under a linear map.",
+      "provenance": "ai",
+      "id": "8f89d2d1820a"
+    },
+    {
       "kind": "definition",
       "label": "Linear map (formal definition)",
       "anchor": {
@@ -38,6 +55,38 @@
       "note": "`IsLinearMap` packages the two axioms `map_add` and `map_smul` exactly as in the Wikipedia formal definition.",
       "provenance": "ai",
       "id": "ab41b403f3da"
+    },
+    {
+      "kind": "definition",
+      "label": "Additivity axiom",
+      "anchor": {
+        "section": "Definition and first consequences",
+        "snippet": "Additivity / operation of addition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.map_add",
+        "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The additivity axiom `f(u+v) = f(u) + f(v)` is captured by `LinearMap.map_add` (via `AddHomClass`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homogeneity axiom",
+      "anchor": {
+        "section": "Definition and first consequences",
+        "snippet": "Homogeneity of degree 1 / operation of scalar multiplication"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.map_smul",
+        "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The homogeneity-of-degree-1 axiom `f(c·v) = c·f(v)` is captured by `LinearMap.map_smul`.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -89,6 +138,22 @@
       "note": "`Module.Dual R M = M →ₗ[R] R` is exactly the space of linear functionals.",
       "provenance": "ai",
       "id": "165c1bcc69b2"
+    },
+    {
+      "kind": "remark",
+      "label": "Generalization to modules",
+      "anchor": {
+        "section": "Definition and first consequences",
+        "snippet": "These statements generalize to any left-module"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap",
+        "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `LinearMap` is defined for modules over (semi)rings; `M →ₗ[R] N` is exactly the generalization to left-modules described here.",
+      "provenance": "ai"
     },
     {
       "kind": "example",
@@ -526,10 +591,10 @@
       "mathlib": {
         "decl": "Matrix.planeConformalMatrix",
         "module": "Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Basic",
-        "match_kind": "special_case"
+        "match_kind": "generalization"
       },
-      "note": "Mathlib has 2D rotation matrices via `Matrix.planeConformalMatrix`, but no dedicated `rotation_by_90` example.",
-      "provenance": "ai",
+      "note": "Mathlib has 2D rotation matrices as a special case of `Matrix.planeConformalMatrix` (rotation + scaling), but no dedicated `rotation_by_90` example.",
+      "provenance": "ai-moderated",
       "id": "8ebedc52c522"
     },
     {
@@ -721,6 +786,23 @@
     },
     {
       "kind": "proposition",
+      "label": "Category of vector spaces / modules",
+      "anchor": {
+        "section": "Vector space of linear maps",
+        "snippet": "together with K -linear maps as morphisms , forms a category"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ModuleCat",
+        "module": "Mathlib.Algebra.Category.ModuleCat.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ModuleCat R` is the category of `R`-modules with `R`-linear maps as morphisms; for fields this gives the category of vector spaces.",
+      "provenance": "ai",
+      "id": "54e820e514d2"
+    },
+    {
+      "kind": "proposition",
       "label": "Inverse of a linear map is linear",
       "anchor": {
         "section": "Vector space of linear maps",
@@ -823,6 +905,23 @@
     },
     {
       "kind": "proposition",
+      "label": "Automorphism group as units of endomorphism ring",
+      "anchor": {
+        "section": "Endomorphisms and automorphisms",
+        "snippet": "is the group of units in the ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.GeneralLinearGroup.generalLinearEquiv",
+        "module": "Mathlib.LinearAlgebra.GeneralLinearGroup.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib identifies the automorphism group `GL(R, M)` with the units of `Module.End R M` via `LinearMap.GeneralLinearGroup`.",
+      "provenance": "ai",
+      "id": "ccc4bdf6776a"
+    },
+    {
+      "kind": "proposition",
       "label": "Endomorphism algebra isomorphic to matrices",
       "anchor": {
         "section": "Endomorphisms and automorphisms",
@@ -837,6 +936,23 @@
       "note": "`LinearMap.toMatrixAlgEquiv` is the algebra isomorphism between `End M` and the matrix algebra given a basis.",
       "provenance": "ai",
       "id": "c9c0ef9fca4b"
+    },
+    {
+      "kind": "proposition",
+      "label": "Automorphism group isomorphic to GLₙ",
+      "anchor": {
+        "section": "Endomorphisms and automorphisms",
+        "snippet": "is isomorphic to the general linear group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.GeneralLinearGroup",
+        "module": "Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.GeneralLinearGroup n R` is the group of invertible n×n matrices; via `LinearMap.toMatrix` it is isomorphic to the automorphism group of a finite-dimensional V.",
+      "provenance": "ai",
+      "id": "07f5bdf6d168"
     },
     {
       "kind": "definition",
@@ -1027,6 +1143,38 @@
     },
     {
       "kind": "definition",
+      "label": "Fredholm operator",
+      "anchor": {
+        "section": "Index",
+        "snippet": "the index of Fredholm operators is an object of study"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not currently have a general theory of Fredholm operators or their index.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Atiyah–Singer index theorem",
+      "anchor": {
+        "section": "Index",
+        "snippet": "a major result being the Atiyah–Singer index theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Atiyah–Singer index theorem is not yet formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Monomorphism (injective linear map)",
       "anchor": {
         "section": "Monomorphism",
@@ -1128,6 +1276,22 @@
       "id": "4b9208569bd2"
     },
     {
+      "kind": "definition",
+      "label": "Continuous linear operator",
+      "anchor": {
+        "section": "Continuity",
+        "snippet": "it will then be a continuous linear operator"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap",
+        "module": "Mathlib.Topology.Algebra.Module.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ContinuousLinearMap` (`M →L[R] N`) bundles a linear map together with a continuity proof; the endomorphism case is exactly the continuous linear operator.",
+      "provenance": "ai"
+    },
+    {
       "kind": "proposition",
       "label": "Continuity equals boundedness",
       "anchor": {
@@ -1160,70 +1324,6 @@
       "note": "No explicit Mathlib example showing differentiation as an unbounded/discontinuous linear operator on a function space.",
       "provenance": "ai",
       "id": "4be4ce930b06"
-    },
-    {
-      "kind": "proposition",
-      "label": "Linear maps send subspaces to subspaces",
-      "anchor": {
-        "section": "(Lead)",
-        "snippet": "linear subspaces of"
-      },
-      "status": "formalized",
-      "mathlib": {
-        "decl": "Submodule.map",
-        "module": "Mathlib.Algebra.Module.Submodule.Map",
-        "match_kind": "exact"
-      },
-      "note": "`Submodule.map f` sends a submodule of the domain to a submodule of the codomain under a linear map.",
-      "provenance": "ai"
-    },
-    {
-      "kind": "proposition",
-      "label": "Category of vector spaces / modules",
-      "anchor": {
-        "section": "Vector space of linear maps",
-        "snippet": "together with K -linear maps as morphisms , forms a category"
-      },
-      "status": "formalized",
-      "mathlib": {
-        "decl": "ModuleCat",
-        "module": "Mathlib.Algebra.Category.ModuleCat.Basic",
-        "match_kind": "exact"
-      },
-      "note": "`ModuleCat R` is the category of `R`-modules with `R`-linear maps as morphisms; for fields this gives the category of vector spaces.",
-      "provenance": "ai"
-    },
-    {
-      "kind": "proposition",
-      "label": "Automorphism group as units of endomorphism ring",
-      "anchor": {
-        "section": "Endomorphisms and automorphisms",
-        "snippet": "is the group of units in the ring"
-      },
-      "status": "formalized",
-      "mathlib": {
-        "decl": "LinearMap.GeneralLinearGroup.generalLinearEquiv",
-        "module": "Mathlib.LinearAlgebra.GeneralLinearGroup.Basic",
-        "match_kind": "exact"
-      },
-      "note": "Mathlib identifies the automorphism group `GL(R, M)` with the units of `Module.End R M` via `LinearMap.GeneralLinearGroup`.",
-      "provenance": "ai"
-    },
-    {
-      "kind": "proposition",
-      "label": "Automorphism group isomorphic to GLₙ",
-      "anchor": {
-        "section": "Endomorphisms and automorphisms",
-        "snippet": "is isomorphic to the general linear group"
-      },
-      "status": "formalized",
-      "mathlib": {
-        "decl": "Matrix.GeneralLinearGroup",
-        "module": "Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs",
-        "match_kind": "exact"
-      },
-      "note": "`Matrix.GeneralLinearGroup n R` is the group of invertible n×n matrices; via `LinearMap.toMatrix` it is isomorphic to the automorphism group of a finite-dimensional V.",
-      "provenance": "ai"
     }
   ]
 }

@@ -3,6 +3,7 @@
   "wikipedia_title": "Imaginary unit",
   "display_title": "Imaginary unit",
   "schema_version": 3,
+  "annotation_style": "theorem_article",
   "annotations": [
     {
       "kind": "definition",
@@ -12,7 +13,14 @@
         "snippet": "usually denoted by i , is a mathematical constant that is a solution to the quadratic equation"
       },
       "provenance": "ai-agent1",
-      "id": "d3719bd4fd8a"
+      "id": "d3719bd4fd8a",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.I",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Complex.I is the definition of the imaginary unit as a solution of x² = -1."
     },
     {
       "kind": "definition",
@@ -22,7 +30,14 @@
         "snippet": "Any real-number multiple of the imaginary unit is called an imaginary number"
       },
       "provenance": "ai-agent1",
-      "id": "835f2837c342"
+      "id": "835f2837c342",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no dedicated `ImaginaryNumber` predicate or subset in Mathlib; imaginary numbers are represented pointwise as `x * I` with `x : ℝ`."
     },
     {
       "kind": "definition",
@@ -32,7 +47,14 @@
         "snippet": "a new number system known as the complex numbers is formed"
       },
       "provenance": "ai-agent1",
-      "id": "143d1d67093e"
+      "id": "143d1d67093e",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The `Complex` structure defines the complex numbers as pairs of reals with the usual field operations."
     },
     {
       "kind": "proposition",
@@ -42,7 +64,14 @@
         "snippet": "There are two complex square roots of −1"
       },
       "provenance": "ai-agent1",
-      "id": "a2e2b19ba45f"
+      "id": "a2e2b19ba45f",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.I_sq",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`Complex.I_sq : I^2 = -1` (and by negation `(-I)^2 = -1`) shows both roots, but no packaged 'exactly two roots' statement targets `-1` specifically."
     },
     {
       "kind": "proposition",
@@ -52,7 +81,14 @@
         "snippet": "every nonzero complex number has two distinct complex-valued square roots"
       },
       "provenance": "ai-agent1",
-      "id": "229aa290e356"
+      "id": "229aa290e356",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.sqrt",
+        "module": "Mathlib.Analysis.RCLike.Sqrt",
+        "match_kind": "invocation"
+      },
+      "note": "`Complex.sqrt` gives one root and (with negation) the other; algebraic closure via `Complex.exists_root` covers existence, but the two-distinct-roots-for-nonzero packaging is not a stand-alone lemma."
     },
     {
       "kind": "definition",
@@ -62,7 +98,14 @@
         "snippet": "The imaginary unit i is defined solely by the property that its square is −1"
       },
       "provenance": "ai-agent1",
-      "id": "84a4b0f6df1c"
+      "id": "84a4b0f6df1c",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.I_sq",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.I_sq` states `I ^ 2 = -1`."
     },
     {
       "kind": "proposition",
@@ -72,7 +115,14 @@
         "snippet": "it follows directly from algebra that i and − i are both square roots of −1"
       },
       "provenance": "ai-agent1",
-      "id": "75eb3e887675"
+      "id": "75eb3e887675",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.I_sq",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`Complex.I_sq` gives `I^2 = -1`; the analogous `(-I)^2 = -1` is a trivial corollary but not separately named."
     },
     {
       "kind": "proposition",
@@ -82,7 +132,14 @@
         "snippet": "cycling through the four values"
       },
       "provenance": "ai-agent1",
-      "id": "931757066099"
+      "id": "931757066099",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.I_sq",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Ingredients `Complex.I_sq` and `Complex.I_mul_I` are available, but no lemma packages the length-4 cycle of `I^n` explicitly."
     },
     {
       "kind": "definition",
@@ -92,7 +149,14 @@
         "snippet": "i can be represented in rectangular form as 0 + 1 i"
       },
       "provenance": "ai-agent1",
-      "id": "b762e7e2d416"
+      "id": "b762e7e2d416",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.I_re",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.I_re = 0`, `Complex.I_im = 1`, `Complex.norm_I = 1`, and `Complex.arg_I = π/2` give both rectangular and polar coordinates of `I`."
     },
     {
       "kind": "proposition",
@@ -102,7 +166,14 @@
         "snippet": "the defining equation x 2 = −1 has two distinct solutions"
       },
       "provenance": "ai-agent1",
-      "id": "9ee0c363e4c5"
+      "id": "9ee0c363e4c5",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.I_sq",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`Complex.I_sq` and `Complex.I_ne_zero` show both `I` and `-I` are distinct roots, but no combined 'exactly two solutions of x^2=-1' lemma exists."
     },
     {
       "kind": "proposition",
@@ -112,7 +183,14 @@
         "snippet": "there are two field automorphisms of the complex numbers"
       },
       "provenance": "ai-agent1",
-      "id": "ca2d767ef12f"
+      "id": "ca2d767ef12f",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.uniformContinuous_ringHom_eq_id_or_conj",
+        "module": "Mathlib.Topology.Instances.Complex",
+        "match_kind": "generalization"
+      },
+      "note": "This shows any uniformly continuous ring hom on a subfield extends to the identity or conjugation; the pure algebraic 'exactly two ℝ-fixing automorphisms' statement is not separately packaged."
     },
     {
       "kind": "definition",
@@ -122,7 +200,14 @@
         "snippet": "The real unit 1 and imaginary unit i can be represented by any pair of matrices I and J satisfying"
       },
       "provenance": "ai-agent1",
-      "id": "c1b62ecbf0a8"
+      "id": "c1b62ecbf0a8",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general `Complex → Matrix` ring embedding with the described defining relations is packaged in Mathlib."
     },
     {
       "kind": "example",
@@ -132,7 +217,14 @@
         "snippet": "The most common choice is to represent 1 and i by the 2 × 2 identity matrix"
       },
       "provenance": "ai-agent1",
-      "id": "12bd506581e2"
+      "id": "12bd506581e2",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The canonical `[[0,-1],[1,0]]` representation of `I` is not defined as a Mathlib construction."
     },
     {
       "kind": "proposition",
@@ -142,7 +234,14 @@
         "snippet": "any real-valued 2 × 2 matrix with a trace of zero and a determinant of one squares to"
       },
       "provenance": "ai-agent1",
-      "id": "4ac9e047b9cc"
+      "id": "4ac9e047b9cc",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The 2×2 Cayley-Hamilton corollary that trace 0, det 1 forces `J^2 = -I` is not packaged as a named lemma."
     },
     {
       "kind": "definition",
@@ -152,7 +251,14 @@
         "snippet": "Polynomials whose coefficients are real numbers form a ring"
       },
       "provenance": "ai-agent1",
-      "id": "62224856ea7e"
+      "id": "62224856ea7e",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial",
+        "module": "Mathlib.Algebra.Polynomial.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`Polynomial ℝ` is a special case of the general `Polynomial R` construction."
     },
     {
       "kind": "proposition",
@@ -162,7 +268,14 @@
         "snippet": "This quotient ring is isomorphic to the complex numbers"
       },
       "provenance": "ai-agent1",
-      "id": "958426258e46"
+      "id": "958426258e46",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit `ℝ[X]/(X²+1) ≃ ℂ` isomorphism is packaged in Mathlib (searches for `AdjoinRoot`/`Polynomial.quotient` mapping to `Complex` returned no matches)."
     },
     {
       "kind": "definition",
@@ -172,7 +285,14 @@
         "snippet": "the vertical axis of a Cartesian plane called the complex plane"
       },
       "provenance": "ai-agent1",
-      "id": "37a97f5d3625"
+      "id": "37a97f5d3625",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.equivRealProd",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.equivRealProd` is the identification of `ℂ` with `ℝ × ℝ` underlying the complex plane."
     },
     {
       "kind": "proposition",
@@ -182,7 +302,14 @@
         "snippet": "multiplication by a unit-magnitude complex number corresponds to rotation about the origin"
       },
       "provenance": "ai-agent1",
-      "id": "546a5bf61b91"
+      "id": "546a5bf61b91",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.rotation",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Oriented.Rotation",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.rotation` identifies multiplication by `exp(θ·I)` with the oriented rotation by θ."
     },
     {
       "kind": "proposition",
@@ -192,7 +319,14 @@
         "snippet": "Every similarity transformation of the plane can be represented by a complex-linear function"
       },
       "provenance": "ai-agent1",
-      "id": "9e556b25c9ce"
+      "id": "9e556b25c9ce",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No packaged identification of planar similarities with complex-affine maps `z ↦ az+b` was found."
     },
     {
       "kind": "proposition",
@@ -202,7 +336,14 @@
         "snippet": "The square of any vector is a positive scalar"
       },
       "provenance": "ai-agent1",
-      "id": "27d7200a890e"
+      "id": "27d7200a890e",
+      "status": "partial",
+      "mathlib": {
+        "decl": "CliffordAlgebra.ι_sq_scalar",
+        "module": "Mathlib.LinearAlgebra.CliffordAlgebra.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "General clifford algebra provides `ι(v)^2 = Q(v)`; the specific 'positive for vectors, negative for bivectors' packaging is not named."
     },
     {
       "kind": "definition",
@@ -212,7 +353,14 @@
         "snippet": "is a unit bivector which squares to −1 , and can thus be taken as a representative of the imaginary unit"
       },
       "provenance": "ai-agent1",
-      "id": "f69128acb259"
+      "id": "f69128acb259",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CliffordAlgebraComplex.ofComplex",
+        "module": "Mathlib.LinearAlgebra.CliffordAlgebra.Equivs",
+        "match_kind": "exact"
+      },
+      "note": "`CliffordAlgebraComplex.equiv` realizes `ℂ` as the Clifford algebra of the negative-definite one-dim real form, sending `I` to the unit bivector."
     },
     {
       "kind": "proposition",
@@ -222,7 +370,14 @@
         "snippet": "the algebra of such sums is isomorphic to the algebra of complex numbers"
       },
       "provenance": "ai-agent1",
-      "id": "1657d1b8cad2"
+      "id": "1657d1b8cad2",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CliffordAlgebraComplex.equiv",
+        "module": "Mathlib.LinearAlgebra.CliffordAlgebra.Equivs",
+        "match_kind": "exact"
+      },
+      "note": "`CliffordAlgebraComplex.equiv` gives the ℝ-algebra equivalence between this Clifford algebra and `ℂ`."
     },
     {
       "kind": "proposition",
@@ -232,7 +387,14 @@
         "snippet": "a unit bivector of any arbitrary planar orientation squares to −1"
       },
       "provenance": "ai-agent1",
-      "id": "c21eef96d23a"
+      "id": "c21eef96d23a",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma about unit bivectors of arbitrary planar orientation squaring to -1 in higher-dim Clifford algebras is packaged."
     },
     {
       "kind": "proposition",
@@ -242,7 +404,14 @@
         "snippet": "are guaranteed to be valid only when x and y are both positive real numbers"
       },
       "provenance": "ai-agent1",
-      "id": "23b6e9099ade"
+      "id": "23b6e9099ade",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.sqrt_mul",
+        "module": "Mathlib.Analysis.SpecialFunctions.Pow.NNReal",
+        "match_kind": "special_case"
+      },
+      "note": "`Real.sqrt_mul` gives the multiplicativity of `√` under a nonnegativity hypothesis; the failure/caveat statement itself isn't packaged."
     },
     {
       "kind": "definition",
@@ -252,7 +421,14 @@
         "snippet": "the result is some integer times the imaginary unit, an imaginary integer"
       },
       "provenance": "ai-agent1",
-      "id": "50179ec013cf"
+      "id": "50179ec013cf",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated `ImaginaryInt` definition exists; such numbers appear only as terms `n * I`."
     },
     {
       "kind": "proposition",
@@ -262,7 +438,14 @@
         "snippet": "the imaginary unit is the generator of a group under addition, specifically an infinite cyclic group"
       },
       "provenance": "ai-agent1",
-      "id": "ea5d32b5c819"
+      "id": "ea5d32b5c819",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma states that the additive subgroup `ℤ · I ≤ ℂ` is an infinite cyclic group generated by `I`."
     },
     {
       "kind": "definition",
@@ -272,7 +455,14 @@
         "snippet": "These numbers can be pictured on a number line , the imaginary axis"
       },
       "provenance": "ai-agent1",
-      "id": "e9a5c5448380"
+      "id": "e9a5c5448380",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The imaginary axis is not defined as a Mathlib object; only its element-wise predicate `re = 0` is available."
     },
     {
       "kind": "definition",
@@ -282,7 +472,14 @@
         "snippet": "Integer sums of the real unit 1 and the imaginary unit i form a square lattice in the complex plane called the Gaussian integers"
       },
       "provenance": "ai-agent1",
-      "id": "75b925dad490"
+      "id": "75b925dad490",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GaussianInt",
+        "module": "Mathlib.NumberTheory.Zsqrtd.GaussianInt",
+        "match_kind": "exact"
+      },
+      "note": "`GaussianInt` is defined as `Zsqrtd (-1)`, i.e., `ℤ[i]`."
     },
     {
       "kind": "proposition",
@@ -292,7 +489,14 @@
         "snippet": "The sum, difference, or product of Gaussian integers is also a Gaussian integer"
       },
       "provenance": "ai-agent1",
-      "id": "698ce4b48298"
+      "id": "698ce4b48298",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GaussianInt.instCommRing",
+        "module": "Mathlib.NumberTheory.Zsqrtd.GaussianInt",
+        "match_kind": "exact"
+      },
+      "note": "The `CommRing` instance on `GaussianInt` encodes closure under sum, difference, and product."
     },
     {
       "kind": "proposition",
@@ -302,7 +506,14 @@
         "snippet": "any arbitrary complex number in the complex plane is rotated by a quarter turn"
       },
       "provenance": "ai-agent1",
-      "id": "b490aa9a7206"
+      "id": "b490aa9a7206",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.rotation",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Oriented.Rotation",
+        "match_kind": "special_case"
+      },
+      "note": "The generic `Complex.rotation` covers multiplication by `exp(iθ)` as an oriented rotation; the specific θ = π/2 quarter-turn instance is not named."
     },
     {
       "kind": "proposition",
@@ -312,7 +523,14 @@
         "snippet": "i is a generator of a cyclic group of order 4"
       },
       "provenance": "ai-agent1",
-      "id": "509d541b859d"
+      "id": "509d541b859d",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `orderOf Complex.I = 4` lemma or explicit `⟨I⟩` cyclic-subgroup statement is packaged."
     },
     {
       "kind": "proposition",
@@ -322,7 +540,14 @@
         "snippet": "Written as a special case of Euler's formula for an integer n"
       },
       "provenance": "ai-agent1",
-      "id": "f2aa32b8a24e"
+      "id": "f2aa32b8a24e",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp_mul_I",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "generalization"
+      },
+      "note": "`Complex.exp_mul_I` gives `exp(x·I) = cos x + sin x · I`, which specializes to `I^n = exp(n·π/2·I)`."
     },
     {
       "kind": "proposition",
@@ -332,7 +557,30 @@
         "snippet": "has two distinct square roots which are additive inverses"
       },
       "provenance": "ai-agent1",
-      "id": "53fe2e742c6e"
+      "id": "53fe2e742c6e",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.sqrt_I",
+        "module": "Mathlib.Analysis.RCLike.Sqrt",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.sqrt_I : sqrt I = √2⁻¹ * (1 + I)` gives one root explicitly; the additive-inverse root follows from `sqrt` conventions."
+    },
+    {
+      "kind": "proposition",
+      "label": "Cube roots of i",
+      "anchor": {
+        "section": "Roots",
+        "snippet": "The three cube roots of i are"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The three explicit cube roots of `I` are not packaged as a lemma."
     },
     {
       "kind": "proposition",
@@ -342,7 +590,14 @@
         "snippet": "For a general positive integer n , the n -th roots of i are"
       },
       "provenance": "ai-agent1",
-      "id": "e7ba0a46dde4"
+      "id": "e7ba0a46dde4",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.isPrimitiveRoot_exp",
+        "module": "Mathlib.RingTheory.RootsOfUnity.Complex",
+        "match_kind": "generalization"
+      },
+      "note": "General roots-of-unity theory is available, but no lemma enumerates the `n`-th roots of `I` specifically."
     },
     {
       "kind": "proposition",
@@ -352,7 +607,14 @@
         "snippet": "These are the vertices of a regular polygon inscribed within the complex unit circle"
       },
       "provenance": "ai-agent1",
-      "id": "7603670133d7"
+      "id": "7603670133d7",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma stating that `n`-th roots of `I` form a regular polygon on the unit circle."
     },
     {
       "kind": "proposition",
@@ -362,7 +624,30 @@
         "snippet": "The complex exponential is thus a periodic function in the imaginary direction"
       },
       "provenance": "ai-agent1",
-      "id": "95e7ea846474"
+      "id": "95e7ea846474",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp_periodic",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.exp_periodic : Function.Periodic exp (2 * π * I)`."
+    },
+    {
+      "kind": "proposition",
+      "label": "Exponential decomposes into cosh and sinh",
+      "anchor": {
+        "section": "Exponential and logarithm",
+        "snippet": "The complex exponential can be broken into even and odd components, the hyperbolic functions cosh and sinh or the trigonometric functions cos and sin"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.cosh_add_sinh",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.cosh_add_sinh : cosh x + sinh x = exp x` gives the even/odd decomposition."
     },
     {
       "kind": "proposition",
@@ -372,7 +657,14 @@
         "snippet": "Euler's formula decomposes the exponential of an imaginary number representing a rotation"
       },
       "provenance": "ai-agent1",
-      "id": "bfef19f4d008"
+      "id": "bfef19f4d008",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp_mul_I",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.exp_mul_I : exp (x * I) = cos x + sin x * I` is Euler's formula."
     },
     {
       "kind": "example",
@@ -382,7 +674,14 @@
         "snippet": "the apparently counterintuitive result that"
       },
       "provenance": "ai-agent1",
-      "id": "13a2e732f0e0"
+      "id": "13a2e732f0e0",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma computes `I ^ I = exp(-π/2)` (or its multi-valued form) in Mathlib."
     },
     {
       "kind": "proposition",
@@ -392,7 +691,14 @@
         "snippet": "can be represented as an infinite partial fraction decomposition as the sum of reciprocal functions translated by imaginary integers"
       },
       "provenance": "ai-agent1",
-      "id": "767b9c2d2100"
+      "id": "767b9c2d2100",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Mittag-Leffler partial-fraction expansion of `coth` (or `π cot πz`) is not packaged in Mathlib."
     },
     {
       "kind": "proposition",
@@ -402,7 +708,14 @@
         "snippet": "its inverse the complex logarithm is a multi-valued function"
       },
       "provenance": "ai-agent1",
-      "id": "8ef2c8afb22a"
+      "id": "8ef2c8afb22a",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.log",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Log",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib's `Complex.log` is a specific principal branch; the multi-valuedness (as `log z + 2πik`) is implicit via `Complex.exp_periodic` but not packaged as such."
     },
     {
       "kind": "definition",
@@ -412,7 +725,14 @@
         "snippet": "The factorial of the imaginary unit i is most often given in terms of the gamma function evaluated at"
       },
       "provenance": "ai-agent1",
-      "id": "fe8e7f892a4d"
+      "id": "fe8e7f892a4d",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.Gamma",
+        "module": "Mathlib.Analysis.SpecialFunctions.Gamma.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "`Complex.Gamma` is available, so `Gamma (1 + I)` is a well-formed term, but the specific value/expression for `i!` is not stated."
     }
   ]
 }
