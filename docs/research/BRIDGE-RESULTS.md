@@ -78,6 +78,22 @@ MathlibMPR (premise retrieval, group-recall@10):
   The pre-registered concept≠premise boundary, now measured on our tools —
   brain_premises (BRIDGE-ISSUES #7) has a quantified 18pp target.
 
+WF — the union arm (W∪F tools + the evidence-based AGENT_MANUAL.md,
+2026-07-25; the manual is part of the condition, ablatable):
+- **QR-810: 0.885 R@10 / 0.839 nDCG@10** — beats F (paired 71-27 discordant,
+  p<1e-4) and W (83-27, p<1e-4); +10.5pp R@10 over the best published
+  retriever row. Style spread narrows: every style ≥0.55, five of six ≥0.81.
+- **MPR: 0.557 group-recall@10** — beats F (+10pp) AND the specialist SOTA
+  (LSv2 0.461) on their own benchmark.
+- Tool mix (mean 4.6 calls/run): decl_grep 1465 · decl_exists 925 ·
+  brain_bridge 684 · decl_read 512 · loogle 398 — genuine dual-toolkit use:
+  Brain for informal entry + verification, formal search for discovery.
+  brain_cell misuse: gone (manual adherence).
+- Reading: the toolkits are COMPLEMENTARY, and a briefed agent composes
+  them into a new best row on both third-party benchmarks. The join plus
+  the territory beats either alone — the Bridge thesis, restated in
+  retrieval form on gold labels we didn't write.
+
 ## What remains before headline claims
 
 1. Judge/BEq+ leg: `judge_bridge.py --arm A..E` then `--calibration 50` →
