@@ -25,6 +25,14 @@ filter + catalog/data/articles.jsonl's cached P31 claims, and writes:
     as pool's live P31 filter (which we can't call offline). Reports the
     wikilink-rank delta and how many field QIDs were excluded.
 
+  manage/data/halo_worklist.json   (only when manage/data/halo.json exists)
+    mathlib_halo — the ring-1 Mathlib frontier from halo.py (external-DB
+    concepts with no decl organ, ranked by neighbor-formalization), re-packed
+    into the standard capped worklist shape. INFORMATIONAL like coverage_gaps:
+    "what should Mathlib formalize/tag next", not a drainable queue. halo.py is
+    not part of refresh.py's pass (its cross-check hits the network), so this
+    just re-packs the latest build if present.
+
 Pure Python, deterministic, offline.
 """
 from __future__ import annotations
@@ -154,6 +162,27 @@ def pipeline_worklist(centrality: dict, p31: dict) -> dict:
     return {"total": len(kept), "shown": len(items), "excluded_fields": excluded_fields, "items": items}
 
 
+def halo_worklist() -> dict | None:
+    """mathlib_halo — re-pack halo.py's ranked ring-1 frontier, if built.
+
+    Rows keep their halo.json rank (the list is already sorted there:
+    depends-frac desc with all-frac fallback, centrality tiebreak); verdicts
+    exist only for the cross-checked top rows and stay None beyond them."""
+    p = DATA / "halo.json"
+    if not p.exists():
+        return None
+    halo = json.loads(p.read_text())
+    keep = ("rank", "cell", "qid", "label", "dbs", "depends_frac", "depends_n",
+            "all_frac", "all_n", "frac_source", "isolated", "centrality_pct",
+            "verdict", "existing_decl")
+    items = [{k: r.get(k) for k in keep} for r in halo["items"][:CAP]]
+    return {"total": halo["totals"]["ring1"], "shown": len(items),
+            "brain_build": halo.get("brain_build"),
+            "halo_generated_at": halo.get("generated_at_iso"),
+            "crosscheck_verdicts": halo.get("crosscheck", {}).get("verdicts", {}),
+            "items": items}
+
+
 def main() -> None:
     centrality = _load("centrality.json")
     coverage = _load("coverage.json")
@@ -161,9 +190,12 @@ def main() -> None:
 
     mod = moderation_worklist(centrality, coverage, p31)
     pipe = pipeline_worklist(centrality, p31)
+    halo = halo_worklist()
 
     (DATA / "moderation_worklist.json").write_text(json.dumps(mod, ensure_ascii=False, indent=2))
     (DATA / "pipeline_worklist.json").write_text(json.dumps(pipe, ensure_ascii=False, indent=2))
+    if halo is not None:
+        (DATA / "halo_worklist.json").write_text(json.dumps(halo, ensure_ascii=False, indent=2))
 
     def head(q, n=6):
         return q["items"][:n]
@@ -182,6 +214,19 @@ def main() -> None:
     print(f"  coverage_gaps (informational map, not a queue): {g['total']} moderated articles")
     for r in head(g, 4):
         print(f"    score={r['score']:.3f}  cov={r['coverage']:.2f}  {r['qid']:<11} {r['label']}")
+
+    if halo is not None:
+        v = halo["crosscheck_verdicts"]
+        print(f"  mathlib_halo (informational frontier, brain {halo['brain_build']}): "
+              f"{halo['total']} ring-1 cells "
+              f"({v.get('confirmed_gap', 0)} confirmed_gap in checked top)")
+        for r in halo["items"][:4]:
+            fr = (f"df={r['depends_frac']:.2f}" if r["depends_frac"] is not None
+                  else f"af={r['all_frac']:.2f}" if r["all_frac"] is not None else "isol")
+            print(f"    #{r['rank']:<3} {fr:<8} {r['qid'] or '-':<11} {r['label']:<28} "
+                  f"[{r['verdict'] or 'unchecked'}]")
+    else:
+        print("  mathlib_halo: manage/data/halo.json absent — run manage/halo.py to build it")
 
     print(f"\npipeline worklist -> manage/data/pipeline_worklist.json")
     print(f"  {pipe['total']} candidates ({pipe['excluded_fields']} field/theory QIDs excluded), showing 8:")

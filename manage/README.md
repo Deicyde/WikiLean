@@ -44,6 +44,8 @@ python3 manage/formalize_backlog.py       # verify the formalize worklist vs liv
 | `coverage.json` | per-article status counts, coverage fraction, and `state` (see below) |
 | `moderation_worklist.json` | `review` (mirrored, low-coverage, central) + `add` (central, not mirrored) |
 | `pipeline_worklist.json` | pool candidates re-ranked by centrality, with the wikilink-rank delta |
+| `halo.json` | full ranked ring-1 Mathlib frontier + per-DB stats + top-50 verdicts (`halo.py`) |
+| `halo_worklist.json` | `mathlib_halo` — the halo re-packed into the standard capped worklist shape |
 | `digest.json` | the rollup `/wl-status` reads and the scheduled agent posts |
 
 ## How the signal is built
@@ -93,6 +95,25 @@ is invisible to the runner. The fix, wired into the nightly job:
    `WIKILEAN_FORMALIZE_BUDGET` (token cap, default 600k). A one-off env override
    still wins (`WIKILEAN_FORMALIZE_LIMIT=25 bash site/ops/run-now.sh`). Nightly
    agent spend ≈ FORMALIZE_BUDGET + BUDGET_TOKENS.
+
+## Mathlib halo (the ring-1 frontier)
+
+`python3 manage/halo.py` extracts the **ring-1 halo** from the Brain — cells at
+least one external database (MathWorld, nLab, ProofWiki, EoM, PlanetMath, OEIS,
+LMFDB) writes about but that carry no Mathlib decl organ — and ranks it by how
+formalized each cell's synapse neighborhood is (depends-bonds first, all-bonds
+fallback, centrality tiebreak), so the top of the list is the "next brick"
+frontier rather than recreational trivia. The top 50 are cross-checked against
+the decl-existence union oracle plus a LeanSearch query (the one **network**
+step in `manage/` — which is why refresh.py does not run it) and labeled
+`confirmed_gap` / `possibly_tagged_gap` / `false_positive(decl)`, separating
+genuine Mathlib gaps from already-formalized-but-untagged concepts. Outputs:
+`data/halo.json` (full list), `docs/research/HALO.md` (dated report — read its
+*structural limitations* first: Stacks/Kerodon/Erdős anchor via decl attributes
+and are ring-1-invisible by construction, and "no decl organ ≠ not in
+Mathlib"), and `data/halo_worklist.json` (`mathlib_halo`, re-packed by
+`worklists.py` when `halo.json` exists). Informational like `coverage_gaps` —
+it feeds formalize/tag prioritization, it is not a drainable queue.
 
 ## Brain nightly (axis 4 — separate job, shared conventions)
 
