@@ -50,6 +50,34 @@ The contamination-proof cut. Memorization stripped, the field reorders:
   **D 13%** — binary `decl_exists` verification disciplines the model where
   fuzzy search (loogle/grep neighborhoods) lets it fool itself.
 
+## Bridge v2 — third-party retrieval benchmarks (scored 2026-07-25)
+
+Model claude-sonnet-5; arms N (no tools) / F (loogle+decl_grep+decl_read) /
+W (wikibrain MCP); mechanical scoring only; full stream-json transcripts
+retained per run (bench/v2/runs/). Data: frenzymath/LeanSearch-v2@94f4888.
+
+MathlibQR fair-810 (concept retrieval, R@10 / nDCG@10):
+- system-mode (one brain_bridge call, no LLM): **0.036 / 0.031** — the API's
+  free-text entry is a label resolver, not a semantic retriever (nickname
+  queries score 6x the descriptive styles). The headline API gap.
+- agent N: 0.633 / 0.598 (143/810 rows = format non-compliance, scored 0)
+- agent F: 0.831 / 0.790 · agent W: 0.816 / 0.781 — **statistically tied**
+  (paired 66 vs 78 discordant, exact p=0.36); both nominally above the
+  published retriever rows (TheoremGraph .775, LSv2+rerank .780) with the
+  apples-to-oranges caveat (agents reason + verify; retrievers embed once).
+- Style texture: W wins special_case 0.523 vs 0.384 (the Brain's
+  special_case bonds are the signal there); F wins lean-style queries.
+- Tool census: F mean 2.2 calls (grep-heavy); W mean 3.5 (decl_exists 1251,
+  brain_bridge 608 — the verify-then-cite habit again).
+
+MathlibMPR (premise retrieval, group-recall@10):
+- system-mode wikibrain: 0.000 · agent N: 0.203 · agent W: 0.272 ·
+  agent **F: 0.453** — vs published LSv2 0.461 / DIVER 0.380.
+- A generic Sonnet agent with grep matches the specialist premise retriever;
+  wikibrain helps over memory (+7pp) but trails formal search by 18pp.
+  The pre-registered concept≠premise boundary, now measured on our tools —
+  brain_premises (BRIDGE-ISSUES #7) has a quantified 18pp target.
+
 ## What remains before headline claims
 
 1. Judge/BEq+ leg: `judge_bridge.py --arm A..E` then `--calibration 50` →

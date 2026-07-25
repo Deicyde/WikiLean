@@ -68,7 +68,7 @@ def mpr_rows() -> list[dict]:
 
 def load_ranked(d: Path) -> dict[str, list[str]]:
     out = {}
-    for f in sorted(d.glob("*.json")):
+    for f in sorted(d.rglob("*.json")):  # rglob: agent dirs are model-keyed
         try:
             row = json.loads(f.read_text())
         except (OSError, json.JSONDecodeError):
