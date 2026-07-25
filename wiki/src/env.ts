@@ -21,6 +21,12 @@ export interface Env {
   MCP_LIMITER?: {
     limit: (opts: { key: string }) => Promise<{ success: boolean }>;
   };
+  // Per-user repo-registration write limiter (/api/repos), keyed
+  // repos:<user.id>. Optional so deploys predating the binding fall back to
+  // EDIT_LIMITER (repos.ts).
+  REPO_LIMITER?: {
+    limit: (opts: { key: string }) => Promise<{ success: boolean }>;
+  };
 
   AUTH_MODE: string; // "dev" (cookie stub) | "oauth" (better-auth)
 

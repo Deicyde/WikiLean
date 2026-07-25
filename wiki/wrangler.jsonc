@@ -57,6 +57,14 @@
         "type": "ratelimit",
         "namespace_id": "1004",
         "simple": { "limit": 120, "period": 60 }
+      },
+      // Per-user repo-registration writes (/api/repos): 20 per minute, keyed
+      // repos:<user.id> (bulk endpoint — a page save is one call).
+      {
+        "name": "REPO_LIMITER",
+        "type": "ratelimit",
+        "namespace_id": "1005",
+        "simple": { "limit": 20, "period": 60 }
       }
     ]
   },

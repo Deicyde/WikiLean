@@ -286,6 +286,29 @@ export const watchlist = sqliteTable(
   ],
 );
 
+// Per-user GitHub repo registration (migration 0012; the /repos page): which
+// of a user's public Lean repos the ops nightly should index, plus the Lean
+// library name to build. `enabled` toggles without deleting the row; the
+// nightly reads the distinct enabled set via GET /api/repos/enabled.
+export const userRepos = sqliteTable(
+  "user_repos",
+  {
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id),
+    owner: text("owner").notNull(),
+    repo: text("repo").notNull(),
+    lib: text("lib").notNull(),
+    enabled: integer("enabled").notNull().default(1),
+    createdAt: integer("created_at").notNull(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.userId, t.owner, t.repo] }),
+    index("idx_user_repos_user").on(t.userId),
+  ],
+);
+export type UserRepoRow = typeof userRepos.$inferSelect;
+
 export type ArticleRow = typeof articles.$inferSelect;
 export type RevisionRow = typeof revisions.$inferSelect;
 export type ModerationStateRow = typeof moderationState.$inferSelect;
