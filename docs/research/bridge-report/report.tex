@@ -1,0 +1,735 @@
+% The Bridge Experiment — final report, LaTeX edition.
+% Source of truth: docs/research/BRIDGE-REPORT.md (converted 2026-07-25).
+% Figures: figures/fig*.pdf, generated from benchmark data by
+% recompute_figdata.py + generate_figures.py (every plotted value asserted
+% against the markdown report).
+% Build: latexmk -pdf report.tex
+\documentclass[10pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\urlstyle{tt}
+
+\setlist{itemsep=2pt,topsep=3pt,parsep=0pt}
+\setlength{\emergencystretch}{2.5em}
+\tolerance=2000
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\best}[1]{\textbf{#1}}
+
+\title{\textbf{The Bridge Experiment: Does an Informal$\leftrightarrow$Formal
+Join Move End-Task Lean Performance?}}
+\author{Jack McCarthy\\
+\normalsize WikiLean \,$\cdot$\, \url{https://wikilean.jackmccarthy.org}\\
+\normalsize with experiments executed by Claude Code agents under direction}
+\date{Final report --- July 25, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\begin{minipage}{0.92\textwidth}
+\small
+Preregistration: \code{docs/research/BRIDGE-EXPERIMENT.md},\\
+commit \code{0d36f2664ab2ebb2c7b80b350d3c9bd820414335} (2026-07-16).\\[2pt]
+Results log: \code{docs/research/BRIDGE-RESULTS.md}. All data, code, and run
+transcripts are preserved in the private repository
+\code{Deicyde/wikilean-bridge-experiment} (file map in
+Section~\ref{sec:data}). Every number below is recomputable from a file in
+that repository; the file is named where each table appears.
+\end{minipage}
+\end{center}
+
+\section{Abstract}\label{sec:abstract}
+
+We test the hypothesis that easy informal$\leftrightarrow$formal
+\emph{joining} --- a curated dictionary between mathematical concepts and
+Mathlib declarations (the WikiLean ``Brain''), not merely access to both
+corpora --- improves language-model performance on formalization tasks. Five
+preregistered arms isolate the join: no tools (A), informal search (B),
+formal search (C), the joined bridge (D), and both corpora unjoined (E).
+Grading is mechanical throughout; typecheck alone is never success. Three
+headline results. (1)~On 100 contamination-proof tasks built from Mathlib
+theorems newer than every index, the bridge arm folds 42\% success versus
+16\% for the unjoined-tools control (McNemar 32 vs.\ 6 discordant, exact
+$p < 0.0001$), while the no-tool arm collapses from 59.6\% to 20\% ---
+quantifying ProofNet memorization; the bridge cuts hallucinated-decl
+citations to 6.8\% versus 17.7--26.3\% in all other arms. (2)~On third-party
+retrieval gold (MathlibQR-810, MathlibMPR), a Sonnet agent with the union of
+bridge + formal-search tools plus a measured-behavior manual sets the best
+rows we know of on both benchmarks (R@10 0.885; group-recall@10 0.557 vs.\
+the specialist SOTA 0.461). (3)~The join does not help premise selection
+(0.272 vs.\ 0.453 for formal search) --- the preregistered
+concept$\neq$premise boundary, now quantified as an 18pp API target.
+
+\section{Hypothesis and preregistered design}\label{sec:design}
+
+\paragraph{Hypothesis (operationalized).} ``Necessary'' being unprovable, the
+preregistration commits to three predictions: P1 --- an agent with the
+\emph{joined} dictionary beats an agent given informal and formal search
+\emph{separately} (D $>$ E $\Rightarrow$ the join, not corpus access, carries
+the effect); P2 --- the bridge solves at lower cost; P3 --- the bridge lifts
+grounding (fewer hallucinated declaration citations), not just compile rate.
+
+\paragraph{The five arms.} Identical model, prompt, and budgets per phase;
+the tool manifest is the only difference (\code{bench/run\_bridge.py},
+manifests in \code{bench/arms/}); see Table~\ref{tab:arms}.
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{@{}lp{0.42\textwidth}p{0.27\textwidth}@{}}
+\toprule
+Arm & Tools & Isolates \\
+\midrule
+A \code{no\_tools} & none (\code{--tools ""}) & floor / memorization \\
+B \code{informal} & Wikipedia + nLab search/fetch, no Lean mapping & informal reasoning alone \\
+C \code{formal} & loogle + ripgrep + source read over pinned Mathlib & the LeanSearch-class status quo \\
+D \code{wikibrain} & the Brain MCP (\code{brain\_bridge}\slash\code{search}\slash\code{cell}\slash\code{transfer}\slash\code{neighborhood}\slash\code{snippets}\slash\code{filter} + batch \code{decl\_exists}) & the join \\
+E \code{B+C unjoined} & B's tools AND C's tools, no join & the decisive control \\
+\bottomrule
+\end{tabular}
+\caption{The five preregistered arms. Identical model, prompt, and budgets;
+only the tool manifest differs.}
+\label{tab:arms}
+\end{table}
+
+{\sloppy
+\paragraph{Models per phase.} Tier 1 (statement autoformalization):
+\code{claude-haiku-4-5} (model id \code{claude-haiku-4-5-20251001}) in all
+five arms. Bridge v2 (retrieval and proving): \code{claude-sonnet-5} in all
+agent arms, per an explicit pre-execution decision
+(\code{docs/research/BRIDGE-V2-BENCHMARKS.md}, 2026-07-25).\par}
+
+\paragraph{Grading rules.} Typecheck is never success by itself
+(TheoremGraph~\cite{theoremgraph}: 22/24 typechecked, 5/24 correct). Tier-1
+success = produced a declaration $\wedge$ zero hallucinated citations
+$\wedge$ typechecks on the pinned toolchain. The preregistered LLM-judge
+faithfulness leg was quarantined behind a human-calibration gate and
+ultimately dropped in favor of graders that existed before the arms did
+(third-party gold labels and the Lean kernel) --- see
+Section~\ref{sec:limitations} for why. Hallucinated-decl rate is graded
+against a union oracle (doc-gen4 declaration data $\cup$ verified renames;
+extractor documented in \code{bench/score\_bridge.py}).
+
+\paragraph{Task sets.} Tier 1a: ProofNet\# --- 371 problems (341 eval + 30
+prompt-freezing dev, all scored), pinned to \code{PAug/ProofNetSharp}
+@\code{a8da405fbd1e348a87445c2e562c747b7e26dc8f}
+(MIT;~\cite{proofnetsharp}); graded on Lean v4.32.0-rc1 / Mathlib
+\code{a33a5ccd}. Tier 1b: 100 fresh tasks built from theorems merged into
+Mathlib master 2026-07-03$\to$07-16, provably absent from every arm's index
+including the Brain's decl universe
+(\code{bench/data/fresh\_tasks.stats.json} records the held-out guarantee);
+graded on Lean v4.33.0-rc1 / Mathlib \code{9944fe29}. A second independent
+determinacy annotation (agreement 79\%, $\kappa \approx 0.20$ --- the
+annotators apply complementary strictness) defines a 74-task
+both-determinate primary subset.
+
+\paragraph{Budgets.} 30 turns stated in the prompt, 10-minute wall-clock
+enforced, identical across arms; agents had no in-loop typechecker and were
+instructed to verify cited names through their tools.
+
+\paragraph{Protocol deviations} (recorded in the preregistration before any
+result existed; numbering as in that document):
+
+\begin{enumerate}
+\item Turn budget prompt-stated, wall-clock-enforced (the CLI lacks
+  \code{--max-turns}); turns recorded per row.
+\item Arm D talks to the production Worker code served locally over the
+  shipped shard bytes (\code{bench/arms/local\_worker.mts}); snapshot pins
+  echoed per response.
+\item Grading uses a persistent REPL (Mathlib loaded once) rather than
+  single-shot elaboration; same pins.
+\item No in-loop typechecking for agents this campaign --- making
+  hallucinated-decl rate a pure grounding measure.
+\item Judge grades excluded from all claims pending human calibration
+  (subsequently superseded by the v2 judge-free design).
+\item \textbf{Skill-leak seal (deviation 6).} The dev smoke showed tool arms
+  B--E calling the CLI's built-in \code{Skill}/\code{ToolSearch} (32--56
+  calls/arm), loading e.g.\ Mathlib-conventions text that arm A structurally
+  could not reach --- an asymmetric contamination. \code{Skill},
+  \code{ToolSearch}, \code{Agent} were added to the disallowed-tools list
+  \emph{before any eval run}; the 120 contaminated B--E dev runs were
+  quarantined unscored to \code{bench/data/runs\_devleak\_2026-07-18/} and
+  re-run clean.
+\item \textbf{Trace telemetry (deviation 7).} Per-call tool traces
+  (truncated input, result head, error flag) were retained from eval arm C
+  onward, observation-only --- nothing any agent sees changed. Consequence:
+  eval arms C/D/E and all fresh runs carry traces; eval A/B carry
+  name-counts only.
+\end{enumerate}
+
+\section{Tier 1: statement autoformalization (claude-haiku-4-5)}\label{sec:tier1}
+
+\subsection{Tier 1a --- ProofNet\# ($n=371$/arm)}\label{sec:tier1a}
+
+Source: \code{docs/research/BRIDGE-RESULTS.md}; recomputable from
+\code{bench/data/bridge\_summary.json} + \code{bench/data/runs/}. Success =
+produced $\wedge$ no hallucinated citation $\wedge$ typecheck. Results in
+Table~\ref{tab:tier1a}.
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+metric & A none & B wiki & C formal & D wikibrain & E B+C unjoined \\
+\midrule
+success (folded) & 59.6\% & 57.1\% & 62.3\% & \best{64.2\%}$^{a}$ & 60.9\% \\
+success\_proxy (no-halluc) & 76.8\% & 72.8\% & 72.2\% & \best{84.6\%} & 71.2\% \\
+typecheck ok & 66.6\% & 63.6\% & 81.9\% & 74.7\% & \best{83.3\%} \\
+halluc-decl rate & 10.1\% & 11.0\% & 10.6\%$^{a}$ & \best{5.9\%} & 11.3\% \\
+runs w/ hallucination & 86 & 101 & 103 & \best{57} & 107 \\
+\bottomrule
+\multicolumn{6}{@{}p{0.94\textwidth}@{}}{\footnotesize $^{a}$\,Corrected for
+display rounding relative to the markdown report and results log, which
+printed D success 64.1\% and C halluc-decl rate 10.7\%: the exact recomputed
+values are $238/371 = 64.15\%$ and $140/1315 = 10.65\%$. No claim is
+affected.} \\
+\end{tabular}
+\caption{Tier 1a --- ProofNet\# ($n=371$/arm). Bold marks the best column
+per row.}
+\label{tab:tier1a}
+\end{table}
+
+McNemar D-vs-E (the preregistered test): 63 vs.\ 51 discordant, exact
+$p = 0.30$. Direction favors D; underpowered at this effect size. Two
+readings matter: arm A at 59.6\% with zero tools is substantial ProofNet
+memorization (the motivation for Tier 1b), and the typecheck row
+\emph{anti-correlates} with grounding --- E leads typecheck (83.3\%) while
+trailing on hallucinations, reproducing TheoremGraph's
+typecheck-is-not-a-signal finding at $15\times$ their $n$.
+
+\subsection{Tier 1b --- the fresh set ($n=100$/arm, contamination-proof)}\label{sec:tier1b}
+
+Same files. Memorization stripped, the field reorders
+(Table~\ref{tab:tier1b}, Figures~\ref{fig:success} and~\ref{fig:halluc}):
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+metric & A none & B wiki & C formal & D wikibrain & E B+C unjoined \\
+\midrule
+success (folded) & 20\% & 22\% & 25\% & \best{42\%} & 16\% \\
+halluc-decl rate & 21.2\% & 17.7\% & 20.9\% & \best{6.8\%} & 26.3\% \\
+runs w/ hallucination & 54 & 48 & 49 & \best{23} & 36 \\
+\bottomrule
+\end{tabular}
+\caption{Tier 1b --- the fresh set ($n=100$/arm), built from Mathlib
+theorems newer than every arm's index.}
+\label{tab:tier1b}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{figures/fig1_tier1_success}
+\caption{Tier-1 folded success by arm, ProofNet\# eval versus the
+contamination-proof fresh set. Off-distribution, the no-tool arm collapses
+$59.6\% \to 20\%$ while the bridge arm (D) holds 42\% against 16\% for the
+unjoined-tools control (E). Data:
+\code{bench/data/bridge\_summary.json} (paired matrix, split by task id).}
+\label{fig:success}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{figures/fig2_halluc}
+\caption{Hallucinated-declaration citation rate by arm (share of cited
+declaration names absent from the union oracle). D's grounding advantage
+\emph{widens} off-distribution: 6.8\% on the fresh set versus
+17.7--26.3\% for every other arm. Data: recount over
+\code{bench/data/runs/} with the \code{bench/score\_bridge.py} extractor
+and oracle.}
+\label{fig:halluc}
+\end{figure}
+
+\begin{itemize}
+\item \textbf{McNemar D-vs-E: 32 vs.\ 6 discordant, exact
+  $p = 2.4\times10^{-5}$.} Also D-vs-C 28 vs.\ 11, $p = 0.0095$; D-vs-A 29
+  vs.\ 7, $p = 0.0003$. The preregistered hypothesis test is decisive on the
+  held-out set: the \emph{join} carries the effect, not tool volume.
+\item On the 74-task both-determinate primary subset (recomputed from
+  \code{bench/data/fresh\_tasks.jsonl} det fields $\times$ the paired
+  matrix): D 31/74 (41.9\%) vs.\ E 14/74 (18.9\%), McNemar 22 vs.\ 5, exact
+  $p = 0.0015$ --- the effect is not an artifact of underdetermined prompts.
+\item Arm A collapses $59.6\% \to 20\%$ off-distribution (memorization
+  quantified).
+\item D's hallucination advantage \emph{widens} off-distribution (6.8\%
+  vs.\ 17.7--26.3\%).
+\item Arm E is worst at 16\% and produced no declaration at all in 31/100
+  fresh runs --- unjoined tool volume can be actively harmful.
+\item Cost (recomputed from run rows; mean per task, folded over all 471
+  runs/arm): A \$0.034 $\cdot$ B \$0.048 $\cdot$ C \$0.140 $\cdot$
+  \best{D \$0.121} $\cdot$ E \$0.128; mean wall-clock C 116\,s $\cdot$
+  D 89\,s $\cdot$ E 106\,s. The bridge arm outscores the cheaper-per-task C
+  and E while costing less than either --- P2 holds directionally.
+\end{itemize}
+
+\subsection{Trace attribution (deviation-7 telemetry, eval C/D/E)}\label{sec:trace}
+
+From \code{bench/trace\_analysis.py} over \code{bench/data/runs/} (eval
+split):
+
+\begin{itemize}
+\item 98--100\% of traced tool-arm runs cite at least one declaration that
+  visibly surfaced in a tool result; only 10--17\% of citations never
+  touched the tools.
+\item \textbf{35\% of arm-D runs (116/329) cite a declaration that came out
+  of a \code{brain\_bridge} / \code{brain\_transfer} result} --- English in,
+  formal name out. This is an undercount: result heads truncate at 200
+  chars.
+\item Among \emph{hallucinated} citations, the checked-and-cited-anyway rate
+  is C 35\%, E 30\%, \best{D 13\%} --- binary \code{decl\_exists}
+  verification disciplines the model where fuzzy search neighborhoods
+  (loogle/grep) let it fool itself. This is the mechanism behind the halluc
+  rows above.
+\end{itemize}
+
+\section{Third-party retrieval: MathlibQR-810 and MathlibMPR
+(claude-sonnet-5)}\label{sec:retrieval}
+
+Motivation: Tier-1's remaining faithfulness leg depended on an LLM judge
+whose error could correlate with arm. Bridge v2 replaces judge-dependent
+grading with graders that predate the arms: third-party expert gold labels
+here, the Lean kernel in Section~\ref{sec:sorrydb}. Data:
+\code{frenzymath/LeanSearch-v2} @\code{94f4888cbaf9}, CC BY 4.0
+(LeanSearch-v2~\cite{leansearchv2}), copied under \code{bench/v2/data/}.
+Arms: N (no tools), F (\code{loogle} + \code{decl\_grep} +
+\code{decl\_read}), W (the Brain MCP), WF (W $\cup$ F \textbf{plus}
+\code{bench/v2/AGENT\_MANUAL.md} prepended to the prompt --- the manual is
+deliberately part of the condition; see the confound note below). Scoring:
+\code{bench/v2/score\_retrieval.py} (exact full-name match only); run rows
+with full gzipped stream-json transcripts in \code{bench/v2/runs/agent/}.
+
+\subsection{MathlibQR fair-810 --- concept retrieval (810 expert query rows,
+6 styles)}\label{sec:qr}
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{@{}lcc@{}}
+\toprule
+system & R@10 & nDCG@10 \\
+\midrule
+published: TheoremGraph & 0.775 & 0.548 \\
+published: LSv2 retriever+reranker & 0.780 & 0.623 \\
+system-mode wikibrain (one \code{brain\_bridge} call, no LLM) & 0.036 & 0.031 \\
+agent N & 0.633 & 0.598 \\
+agent F & 0.831 & 0.790 \\
+agent W & 0.816 & 0.781 \\
+\best{agent WF} & \best{0.885} & \best{0.839} \\
+\bottomrule
+\end{tabular}
+\caption{MathlibQR fair-810 concept retrieval. Exact full-name match; gold
+is one declaration per query row.}
+\label{tab:qr}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{figures/fig3_retrieval}
+\caption{Retrieval by system, with published anchors as dashed reference
+lines. Left: MathlibQR fair-810 R@10 (anchors: TheoremGraph 0.775,
+LeanSearch-v2 retriever+reranker 0.780). Right: MathlibMPR
+group-recall@10 (anchors: LeanSearch-v2 reasoning 0.461, DIVER 0.380).
+System-mode is a single \code{brain\_bridge} call with no LLM; N/W/F/WF are
+Sonnet agent arms. Data: rerun of \code{bench/v2/score\_retrieval.py}.}
+\label{fig:retrieval}
+\end{figure}
+
+\begin{itemize}
+\item \textbf{The label-resolver finding.} System-mode scores 0.036 --- the
+  API's free-text entry is a label/alias resolver, not a semantic retriever.
+  Nickname queries reach nDCG 0.196 while the descriptive styles (LaTeX,
+  natural-language, special-case) score 0.000. Yet an agent \emph{iterating}
+  over the same API reaches 0.816 --- the content is in the graph; the
+  single-shot entry point is the gap. This is the headline API deficiency.
+\item \textbf{F vs.\ W: statistically tied} (paired discordants 78 F-only
+  vs.\ 66 W-only, exact $p = 0.36$); both nominally above the published
+  retriever rows, with the apples-to-oranges caveat that agents reason and
+  verify while retrievers embed once
+  (Section~\ref{sec:limitations}).
+\item \textbf{Style texture:} W wins the special\_case style (nDCG 0.523
+  vs.\ F's 0.384 --- the Brain's curated special\_case bonds are the
+  signal); F wins Lean-syntax styles. Grep cannot find what source text
+  never names.
+\item \textbf{WF is decisive:} beats F (71 vs.\ 27 discordant, exact
+  $p = 1.0\times10^{-5}$) and W (83 vs.\ 27, $p = 8.3\times10^{-8}$);
+  +10.5pp R@10 over the best published retriever row. The style spread
+  narrows: every style $\geq 0.55$ nDCG, five of six $\geq 0.81$.
+\item Agent N's 0.633 includes 143/810 rows scored 0 for format
+  non-compliance (no JSON array in the final message) --- an agent-mode
+  failure mode the manual explicitly addresses.
+\item Tool census: F mean 2.2 calls/run; W 3.5 (\code{decl\_exists} 1{,}251
+  + \code{brain\_bridge} 608 --- verify-then-cite); WF mean 4.6 calls pooled
+  across both benchmarks, a genuine dual-toolkit mix (\code{decl\_grep}
+  ${\sim}1.5$k, \code{decl\_exists} ${\sim}0.9$k, \code{brain\_bridge}
+  ${\sim}0.7$k, \code{decl\_read} ${\sim}0.5$k, \code{loogle}
+  ${\sim}0.4$k). The \code{brain\_cell} misuse pattern (63\% failure rate in
+  Tier-1 traces) disappears under the manual.
+\end{itemize}
+
+\subsection{MathlibMPR --- premise retrieval (69 post-cutoff PR theorems,
+expert premise groups)}\label{sec:mpr}
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{@{}lc@{}}
+\toprule
+system & group-recall@10 \\
+\midrule
+published: LeanSearch-v2 reasoning & 0.461 \\
+published: DIVER & 0.380 \\
+published: TheoremGraph concept-tuned & 0.165 \\
+system-mode wikibrain & 0.000 \\
+agent N & 0.203 \\
+agent W & 0.272 \\
+agent F & 0.453 \\
+\best{agent WF} & \best{0.557} \\
+\bottomrule
+\end{tabular}
+\caption{MathlibMPR premise retrieval: a group is covered when any of its
+interchangeable members appears in the top 10.}
+\label{tab:mpr}
+\end{table}
+
+\begin{itemize}
+\item A generic Sonnet agent with grep + loogle \textbf{matches the
+  specialist premise retriever} (0.453 vs.\ 0.461) --- a notable baseline
+  result on its own.
+\item The Brain helps over memory (+7pp) but trails formal search by 18pp:
+  the preregistered concept $\neq$ premise boundary (TheoremGraph's negative
+  transfer), now measured on our own tools. \code{brain\_premises}
+  (BRIDGE-ISSUES \#7) has a quantified 18pp target.
+\item WF beats both the best single arm (+10pp over F) and the published
+  SOTA on its own benchmark (0.557 vs.\ 0.461).
+\end{itemize}
+
+\paragraph{The WF confound, stated plainly.} WF = union tools + the
+evidence-based manual. The two are not separated in this campaign; a
+bare-union ablation is one flag away (\code{MANUAL\_ARMS} in
+\code{bench/v2/run\_agent.py}) and was not run. WF results should be read as
+``a maximally equipped, briefed agent'', not as a clean marginal effect of
+tool union.
+
+\section{SorryDB: kernel-graded proving in live repositories
+(claude-sonnet-5)}\label{sec:sorrydb}
+
+SorryDB~\cite{sorrydb} serves unsolved \code{sorry}s from real Lean
+repositories; success is defined by the repo \emph{building} with your
+proof. No judge exists anywhere in the loop and no solutions exist to
+memorize. Snapshot: the SorryDB-2601 1{,}000-task evaluation split
+(\code{bench/v2/data/sorrydb/SorryDB\_2601\_1000\_evaluation\_split.json}).
+
+\paragraph{Subset construction and the snapshot-rot finding.} Disk permitted
+one repo build at a time, so repos were sampled rather than tasks (every
+task of a chosen repo included; verification amortizes per repo). The
+original freeze --- 8 repos, 164 tasks, chosen for toolchain availability,
+build weight, domain diversity, plus one pedagogical floor --- lost
+\textbf{74/164 tasks (45\%) to upstream garbage collection} in the
+${\sim}$6 months since the snapshot: the pinned commits of GlimpseOfLean,
+LeanCourse25, and most Foundation and SemicircleLaw tasks are unfetchable by
+any method (git fetch by SHA, tarball GET, authenticated API --- GitHub's
+tarball endpoint returns HTTP 200 with wrong content for dead refs, so a
+naive tarball fetch silently builds the wrong tree). Recorded as a
+methodological finding: \emph{live-repo benchmarks rot at the pin level, and
+the rot is silent unless you verify by SHA fetch.} The refreeze
+(\code{bench/v2/sorrydb\_prep.py}, commit \code{db679e8d}) yields
+\textbf{171 live-pin tasks across 10 repos} (PrimeNumberTheoremAnd 21,
+curve25519-dalek-lean-verify 21, category-theory-in-context 21,
+PersistentDecomp 20, brownian-motion 20, graphiti 20, LeanAPAP 20, MiscYD
+20, SemicircleLaw 7, Foundation 1).
+
+\paragraph{Protocol.} Agent phase is build-free and one-shot: the row
+carries the goal state plus a $\pm$60-line file window at the pinned commit;
+the agent (600\,s timeout, arms N / F / WF as in
+Section~\ref{sec:retrieval}) outputs one replacement for the \code{sorry},
+with an explicit honest-abstention rule (output literal \code{sorry}).
+Verification (\code{bench/v2/verify\_sorrydb.py}) clones each repo at its
+pin, establishes a pristine baseline build, splices each candidate over the
+span (asserted to literally read \code{sorry}), and rebuilds the module ---
+success iff exit 0 with no \code{sorry}/axiom warning.
+
+\paragraph{Results} --- recomputed for this report from
+\code{bench/v2/runs/sorrydb/verify.jsonl} + the run rows (script logic in
+Section~\ref{sec:data}; $n = 171$ tasks/arm) --- in Table~\ref{tab:sorrydb}
+and Figure~\ref{fig:sorrydb}.
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+ & N no tools & F formal & WF union+manual \\
+\midrule
+run rows present & 168 & 169 & 171 \\
+no output (timeout / no lean block) & 70 & 15 & 11 \\
+honest give-up (literal \code{sorry}) & 40 & 83 & 86 \\
+candidate proofs submitted & 58 & 71 & 74 \\
+\best{proved (kernel)} & \best{2} & \best{9} & \best{10} \\
+failed & 48 & 54 & 56 \\
+unspliceable & 5 & 6 & 5 \\
+no verdict (see note) & 3 & 2 & 3 \\
+\midrule
+\best{proved / 171 tasks} & \best{1.2\%} & \best{5.3\%} & \best{5.8\%} \\
+proved / candidates & 3.4\% & 12.7\% & 13.5\% \\
+total cost (USD) & \$58.97 & \$102.76 & \$108.87 \\
+\best{cost per proved} & \best{\$29.48} & \best{\$11.42} & \best{\$10.89} \\
+mean wall-clock / task & 120\,s & 198\,s & 183\,s \\
+\bottomrule
+\end{tabular}
+\caption{SorryDB kernel-graded proving, one-shot with no compiler in the
+loop ($n=171$ live-pin tasks/arm).}
+\label{tab:sorrydb}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{figures/fig4_sorrydb}
+\caption{SorryDB, one-shot drafting with no compiler in the loop. Left:
+kernel-verified proofs out of 171 live-pin tasks. Right: cost per proved
+theorem --- tools raise total spend but \emph{cut} the cost of each success
+by $2.7\times$. Data: \code{bench/v2/runs/sorrydb/verify.jsonl} $\times$
+the run rows.}
+\label{fig:sorrydb}
+\end{figure}
+
+Notes, in the interest of a complete record: (i)~8 candidate proofs --- all
+from curve25519-dalek-lean-verify, whose verification pass covered only 2 of
+its 10 candidates --- carry no kernel verdict in \code{verify.jsonl}; they
+are conservatively counted as not-proved above. (ii)~3 (N) and 2 (F) tasks
+have no run row at all (runner losses). (iii)~2 stale verdicts against
+dead-pin rows from the first verification pass are excluded. Distinct
+sorries proved across all arms: 13; N's proofs are a strict subset of both
+F's and WF's; WF vs.\ F overlap 6, WF-only 4, F-only 3 --- no significance
+claim at this $n$.
+
+\paragraph{Reading.} Tools triple-to-quintuple the kernel-verified prove
+rate and nearly triple the honest-abstention rate (N instead burns its
+budget: 70/168 rows produced nothing, mostly 600\,s timeouts).
+Cost-per-proved-theorem \emph{falls} by $2.7\times$ as tool cost rises ---
+verification effort is cheaper than blind search. \textbf{Comparison
+caveat:} the published SorryDB agentic best (${\approx}30\%$, union 35.7\%)
+is not comparable --- different task subset (ours is weighted toward
+research-frontier repos: PNT+, a cryptographic verification codebase,
+LeanAPAP) and a materially different protocol (published agents iterate
+against the build; ours drafted one-shot with no compiler in the loop).
+
+\section{Synthesis}\label{sec:synthesis}
+
+\paragraph{What the join adds.} Two things, both now measured twice.
+\emph{Grounding}: binary existence verification at the informal$\to$formal
+boundary collapses hallucinated citations (5.9\%/6.8\% vs.\ 10--26\%;
+checked-and-cited-anyway 13\% vs.\ 30--35\%) --- and the effect grows
+off-distribution, where memory fails. \emph{Concept entry}: when the query
+is a description rather than a name --- the fresh set, the special\_case
+query style --- the curated join finds what lexical and type-pattern search
+cannot (42\% vs.\ 16--25\%; nDCG 0.523 vs.\ 0.384). The fresh-set McNemar
+($p < 0.0001$) says the join itself, not corpus access, carries this.
+
+\paragraph{Where it does not.} Premise selection ranks by a different signal
+than concept identity: W trails F by 18pp on MathlibMPR, exactly as
+preregistered from TheoremGraph's negative transfer. And the API's
+single-shot free-text entry is a label resolver (0.036 R@10 system-mode) ---
+everything the agent arms recover, they recover by reformulating against it.
+
+\paragraph{The composition result.} The toolkits are complementary, and a
+briefed agent composes them into the best rows we know of on both
+third-party benchmarks (QR 0.885, MPR 0.557) --- on gold labels we did not
+write. The Bridge thesis restated in retrieval form: the join \emph{plus}
+the territory beats either alone.
+
+\paragraph{API roadmap, derived.} (1)~A semantic statement-level index
+behind \code{brain\_bridge} --- the $0.036 \to 0.816$ single-shot/agent gap
+is an entry-point problem, not a content problem.
+(2)~\code{brain\_premises(goal\_state)} --- a premise-level ranking mode
+with a measured 18pp target (BRIDGE-ISSUES \#7). (3)~The eight pre-campaign
+API requirements (batch \code{decl\_exists}, signatures + imports per hit,
+generalization surfacing, honest abstention, cursored neighborhoods,
+snapshot echo, the composite \code{brain\_bridge}, teaching tool
+descriptions) were implemented before the campaign and are what the arms
+exercised. (4)~The \code{AGENT\_MANUAL.md} pattern itself: measured tool
+behavior (${\sim}5{,}500$ logged calls) distilled into a briefing eliminated
+the dominant misuse mode (\code{brain\_cell} $63\% \to {\sim}0$) and is the
+cheapest intervention in the whole study.
+
+\paragraph{Cost economics.} Tier-1: the bridge arm is cheaper \emph{and}
+better than its tool-bearing competitors (\$0.121/task vs.\ C \$0.140, E
+\$0.128, at +2--26pp success). Retrieval: \$0.08--0.21/query (QR),
+\$0.18--0.44/query (MPR). Proving: tool arms cut cost-per-proved-theorem
+from \$29 to \$11 while raising the prove rate $5\times$. Across all three
+phases, adding the join never made the task more expensive per success.
+
+\section{Limitations and threats to validity}\label{sec:limitations}
+
+\begin{enumerate}
+\item \textbf{One model per phase.} Tier-1 is Haiku-only (per-model run dirs
+  were not keyed --- fixed in v2, where dirs are (benchmark, arm,
+  model)-keyed); v2 is Sonnet-only. A bridge that only helps some capability
+  band would not be distinguished. The preregistered two-model grid remains
+  undone.
+\item \textbf{Agent-vs-retriever comparability.} Our QR/MPR agent rows spend
+  multi-call reasoning and verification per query; published retriever rows
+  embed once. ``Above the published rows'' is a statement about achievable
+  quality at agent cost, not a same-budget comparison. System-mode is the
+  same-budget comparison, and it loses badly.
+\item \textbf{The WF manual confound.} WF bundles tool union with the
+  briefing; the ablation exists in the harness but was not run.
+\item \textbf{Power on secondary contrasts.} F-vs-W on QR is a null at
+  $n=810$ ($p=0.36$); MPR has $n=69$; SorryDB proved counts are single
+  digits per arm --- overlap patterns there are descriptive only.
+\item \textbf{The judge leg was dropped, not repaired.} Preregistered
+  faithful@budget (BEq+ equivalence) was never graded: the judge required
+  human calibration (deviation 5), Jack's arm-correlated-bias critique
+  stood, and the field precedent (TheoremGraph rejecting its own judge as
+  over-generous) argued against resting headline claims on one. The v2
+  replacement --- graders that predate the arms --- is stronger, but it
+  means Tier-1 ``success'' can still reward a well-formed wrong statement;
+  the Tier-1 fresh-set numbers are best read jointly with the hallucination
+  and trace evidence.
+\item \textbf{Tier-1a is contaminated by construction} (arm A: 59.6\%); it
+  is reported for the paired deltas and as the memorization control against
+  Tier-1b, never alone.
+\item \textbf{SorryDB caveats.} One-shot drafting without a compiler
+  under-represents every arm relative to published loops; the subset is
+  repo-sampled, not difficulty-matched; 8 candidates lack verdicts; and
+  45\% snapshot rot means the \emph{original} frozen subset is already
+  partly unreproducible upstream --- the preserved
+  \code{tasks\_frozen.jsonl} (goal states + context windows) is the durable
+  record.
+\item \textbf{Mechanical extractors.} Cited-declaration extraction is a
+  documented regex heuristic; hallucination rates are comparable across
+  arms (same extractor) but not exact.
+\end{enumerate}
+
+\section{Data availability}\label{sec:data}
+
+{\sloppy
+Everything needed to recompute this report lives in the private preservation
+repository \textbf{\code{Deicyde/wikilean-bridge-experiment}} (report at the
+root as \code{README.md} and under \code{report/}). Provenance commits refer
+to the WikiLean working repository. See Table~\ref{tab:files}.\par}
+
+\begin{table}[htbp]
+\centering
+\footnotesize
+\begin{tabular}{@{}p{0.34\textwidth}p{0.40\textwidth}p{0.18\textwidth}@{}}
+\toprule
+Path (preservation repo) & Contents & Key provenance commits (WikiLean) \\
+\midrule
+\code{docs/research/BRIDGE-EXPERIMENT.md} & preregistration incl.\ deviations 1--7 & \code{0d36f266} (2026-07-16) \\
+\code{docs/research/BRIDGE-RESULTS.md} & Tier-1 + retrieval results log & \code{53f5cb31}, \code{daac6107} \\
+\code{docs/research/BRIDGE-V2-BENCHMARKS.md} & v2 design + verified sources & --- \\
+\code{docs/research/BRIDGE-ISSUES.md} & issue queue / history & \code{cdc2d743} \\
+\code{bench/*.py}, \code{bench/README.md}, \code{bench/arms/} & Tier-1 harness: runner, scorer, REPL typecheck rig, trace analysis, arm manifests & \code{068abe34}, \code{e554902e}, \code{6c2ca704}, \code{31b95caa}, \code{79ac3dfe} \\
+\code{bench/data/bridge\_tasks.jsonl} (+\code{.stats}) & 371 ProofNet\# tasks; source pin + MIT licence in stats & \code{e554902e}, \code{ec2a9e11} \\
+\code{bench/data/fresh\_tasks.jsonl} (+\code{.stats}) & 100 fresh tasks + determinacy annotations + held-out guarantee & \code{df5dbf92}, \code{a0d45103} \\
+\code{bench/data/gold\_census.json}, \code{fresh\_census.json} & which golds elaborate on which pin; fresh pin = Lean v4.33.0-rc1 / Mathlib \code{9944fe29} (Tier-1a pin = v4.32.0-rc1 / \code{a33a5ccd}, recorded in \code{bench/README.md}) & \code{01e8612b}, \code{185377cc} \\
+\code{bench/data/bridge\_summary.json} & Tier-1 scored summary: per-arm aggregates, paired matrix, McNemar tables & \code{53f5cb31} \\
+\code{bench/data/runs/} & all 2{,}355 Tier-1 run rows (5 arms $\times$ 471) & --- \\
+\code{bench/data/runs\_devleak\_2026-07-18/} & the 120 quarantined skill-leak dev runs (deviation 6 evidence) & \code{f89e7a41} \\
+\code{bench/v2/} & v2 harness + \code{AGENT\_MANUAL.md} & \code{c7629584}, \code{21032c06} \\
+\code{bench/v2/data/} & MathlibQR/MPR (LeanSearch-v2 @\code{94f4888cbaf9}, CC BY 4.0), SorryDB-2601 split, \code{tasks\_frozen.jsonl} & \code{c7629584}, \code{87638cfc}, \code{db679e8d} \\
+\code{bench/v2/runs/} & every v2 run row \textbf{with full gzipped stream-json transcripts} (QR 810$\times$4, MPR 69$\times$4, SorryDB 508 rows) + \code{verify.jsonl} (197 kernel verdicts) & \code{3664aa3d}, \code{daac6107}, \code{382e51bf}, \code{1fe21cca} \\
+\bottomrule
+\end{tabular}
+\caption{File map of the preservation repository.}
+\label{tab:files}
+\end{table}
+
+Recomputation entry points: \code{bench/score\_bridge.py} (Tier-1),
+\code{bench/trace\_analysis.py} (Section~\ref{sec:trace}),
+\code{bench/v2/score\_retrieval.py} (Section~\ref{sec:retrieval} ---
+reprints every table), \code{bench/v2/verify\_sorrydb.py}
+(Section~\ref{sec:sorrydb} verdicts; the Table~\ref{tab:sorrydb} rows are a
+straight aggregation of \code{verify.jsonl} $\times$ the run rows, filtered
+to \code{tasks\_frozen.jsonl} ids, counting \code{gave\_up}, \code{error},
+verdicts, and \code{transcript\_stats.cost\_usd}). The figures in this
+document are generated from those same files by
+\code{report/bridge-report/recompute\_figdata.py} (which asserts every
+plotted value against the markdown report) and
+\code{generate\_figures.py}.
+
+External sources cited (all fetched and verified during the v2 design
+sweep): TheoremGraph~\cite{theoremgraph} $\cdot$
+LeanSearch~\cite{leansearch} $\cdot$ LeanSearch-v2~\cite{leansearchv2}
+$\cdot$ LeanExplore~\cite{leanexplore} $\cdot$ SorryDB~\cite{sorrydb}
+$\cdot$ FATE~\cite{fate} $\cdot$ miniCTX~\cite{minictx} $\cdot$
+LeanDojo~\cite{leandojo} $\cdot$ LeanAgent~\cite{leanagent} $\cdot$
+Numina-Lean-Agent~\cite{numina} $\cdot$ miniF2F-v2~\cite{minif2fv2} $\cdot$
+ProofNet\#/ProofNetVerif~\cite{proofnetsharp} $\cdot$ benchmark-faults
+survey~\cite{benchfaults}.
+
+\begin{thebibliography}{13}
+\itemsep2pt
+
+\bibitem{theoremgraph}
+TheoremGraph. arXiv:2606.25363.
+\url{https://arxiv.org/abs/2606.25363}
+
+\bibitem{leansearch}
+LeanSearch. arXiv:2403.13310.
+\url{https://arxiv.org/abs/2403.13310}
+
+\bibitem{leansearchv2}
+LeanSearch-v2. arXiv:2605.13137. Data: pinned
+\code{frenzymath/LeanSearch-v2} @\code{94f4888cbaf9}, CC BY 4.0.
+\url{https://arxiv.org/abs/2605.13137};
+\url{https://github.com/frenzymath/LeanSearch-v2}
+
+\bibitem{leanexplore}
+LeanExplore. arXiv:2506.11085.
+\url{https://arxiv.org/abs/2506.11085}
+
+\bibitem{sorrydb}
+SorryDB. arXiv:2603.02668.
+\url{https://arxiv.org/abs/2603.02668};
+\url{https://sorrydb.org}
+
+\bibitem{fate}
+FATE. arXiv:2511.02872.
+\url{https://arxiv.org/abs/2511.02872}
+
+\bibitem{minictx}
+miniCTX. arXiv:2408.03350.
+\url{https://arxiv.org/abs/2408.03350}
+
+\bibitem{leandojo}
+LeanDojo. arXiv:2306.15626.
+\url{https://arxiv.org/abs/2306.15626}
+
+\bibitem{leanagent}
+LeanAgent. arXiv:2410.06209.
+\url{https://arxiv.org/abs/2410.06209}
+
+\bibitem{numina}
+Numina-Lean-Agent. arXiv:2601.14027.
+\url{https://arxiv.org/abs/2601.14027}
+
+\bibitem{minif2fv2}
+miniF2F-v2. arXiv:2511.03108.
+\url{https://arxiv.org/abs/2511.03108}
+
+\bibitem{proofnetsharp}
+ProofNet\#/ProofNetVerif. arXiv:2406.07222. Tasks pinned to
+\code{PAug/ProofNetSharp} @\code{a8da405f} (MIT).
+\url{https://arxiv.org/abs/2406.07222}
+
+\bibitem{benchfaults}
+Benchmark-faults survey. arXiv:2606.29493.
+\url{https://arxiv.org/abs/2606.29493}
+
+\end{thebibliography}
+
+\end{document}
