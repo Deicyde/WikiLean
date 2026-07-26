@@ -95,6 +95,7 @@ const RESERVED = new Set([
   "article-graph-data.json",
   "review",
   "queue",
+  "quickstatements",
   "u",
   "decl",
   "proposals",
