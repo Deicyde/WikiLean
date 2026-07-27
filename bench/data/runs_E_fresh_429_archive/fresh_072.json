@@ -1,0 +1,86 @@
+{
+  "task_id": "fresh_072",
+  "arm": "E",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T05:17:21Z",
+  "wall_s": 17.2,
+  "output_lean": null,
+  "transcript_stats": {
+    "turns": 9,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 7,
+      "mcp__formal__decl_grep": 1
+    },
+    "tokens_in": 26,
+    "tokens_out": 843,
+    "cost_usd": 0.015202400000000001
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"WellFoundedLT\"}",
+      "ok": true,
+      "result_chars": 1100,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 634 declarations mentioning WellFoundedLT.\\n- instWellFoundedLTNat   [Mathlib.Order.RelClasses]\\n- WellFoundedLT   [Mathlib.Order.RelClasses]\\n    A class for a well-f"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Finite LinearOrder\"}",
+      "ok": true,
+      "result_chars": 243,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Finite LinearOrder': Application type mismatch: The argument\\n  LinearOrder\\nhas type\\n  Type ?u.2 → Type ?u.2\\nbut is expected to have type\\n  Type ?u.2\\n"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"(· < ·) WellFounded\"}",
+      "ok": true,
+      "result_chars": 86,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for '(· < ·) WellFounded'.\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"finite wellFounded\"}",
+      "ok": true,
+      "result_chars": 96,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'finite wellFounded': Unknown identifier `finite`\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"IsWellOrder finite\"}",
+      "ok": true,
+      "result_chars": 96,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IsWellOrder finite': Unknown identifier `finite`\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(theorem|lemma).*finite.*well.*order\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 361,
+      "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for '(theorem|lemma).*finite.*well.*order' (via ripgrep):\\n- Mathlib/Order/WellFoundedSet.lean:386\\n    /-- A version of **Dickson's lemma** on finite product of"
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"LinearOrder ?α → Finite ?α\"}",
+      "ok": true,
+      "result_chars": 394,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 61 declarations mentioning LinearOrder and Finite.\\n- Finite.of_forall_not_lt_lt   [Mathlib.Data.Set.Finite.Basic]\\n    If a linear order does not contain any triple o"
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"WellFoundedLT ?α → WellFoundedGT ?α\"}",
+      "ok": true,
+      "result_chars": 102,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for 'WellFoundedLT ?α → WellFoundedGT ?α'.\"}]"
+    }
+  ],
+  "error": "CLI error (subtype=success api_status=429): You've hit your session limit · resets 4:50am (America/New_York)"
+}
