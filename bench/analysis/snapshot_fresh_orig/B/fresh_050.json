@@ -1,0 +1,69 @@
+{
+  "task_id": "fresh_050",
+  "arm": "B",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T02:20:51Z",
+  "wall_s": 41.7,
+  "output_lean": "theorem measurable_of_countable_discontinuities {α β : Type*} [TopologicalSpace α] [MeasurableSpace α] \n    [TopologicalSpace β] [MeasurableSpace β] {f : α → β} \n    (h : Countable {x : α | ¬ContinuousAt f x}) : Measurable f := sorry",
+  "transcript_stats": {
+    "turns": 7,
+    "tool_calls_by_name": {
+      "mcp__wiki__wiki_search": 4,
+      "mcp__wiki__wiki_get": 2
+    },
+    "tokens_in": 50,
+    "tokens_out": 2797,
+    "cost_usd": 0.0398521
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"measurable functions countable discontinuities\"}",
+      "ok": true,
+      "result_chars": 2244,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'measurable functions countable discontinuities':\\n- Measure (mathematics)  (slug: Measure_(mathematics))\\n    https://en.wikipedia.org/wiki/Measure_(mathema"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"discontinuity points measurability\"}",
+      "ok": true,
+      "result_chars": 2264,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'discontinuity points measurability':\\n- Area formula (geometric measure theory)  (slug: Area_formula_(geometric_measure_theory))\\n    https://en.wikipedia.o"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"Lebesgue measurable functions real analysis\"}",
+      "ok": true,
+      "result_chars": 2206,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'Lebesgue measurable functions real analysis':\\n- Real analysis  (slug: Real_analysis)\\n    https://en.wikipedia.org/wiki/Real_analysis\\n    theory, Lebesgue"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wiki__wiki_get",
+      "input": "{\"title\": \"Measurable function\"}",
+      "ok": true,
+      "result_chars": 4419,
+      "result_head": "[{\"type\": \"text\", \"text\": \"# Measurable function\\nIn mathematics, and in particular measure theory, a measurable function is a function between the underlying sets of two measurable spaces that preser"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"bounded variation discontinuities measurable\"}",
+      "ok": true,
+      "result_chars": 2185,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'bounded variation discontinuities measurable':\\n- Bounded variation  (slug: Bounded_variation)\\n    https://en.wikipedia.org/wiki/Bounded_variation\\n    ana"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wiki__wiki_get",
+      "input": "{\"title\": \"Bounded variation\"}",
+      "ok": true,
+      "result_chars": 4092,
+      "result_head": "[{\"type\": \"text\", \"text\": \"# Bounded variation\\nIn mathematical analysis, a function of bounded variation, also known as BV function, is a real-valued function whose total variation is bounded (finite"
+    }
+  ]
+}

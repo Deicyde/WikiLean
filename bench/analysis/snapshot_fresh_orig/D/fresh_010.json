@@ -1,0 +1,488 @@
+{
+  "task_id": "fresh_010",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:31:32Z",
+  "wall_s": 131.1,
+  "output_lean": "theorem linear_isometry_equiv_norm_det_eq_one\n    {E F : Type*} [InnerProductSpace ℂ E] [InnerProductSpace ℂ F]\n    [FiniteDimensional ℂ E] [FiniteDimensional ℂ F]\n    (f : E ≃ₗᵢ F) :\n    ∃ (basis_E : Basis (Fin (FiniteDimensional.finrank ℂ E)) ℂ E)\n      (basis_F : Basis (Fin (FiniteDimensional.finrank ℂ F)) ℂ F),\n      abs (Matrix.det (LinearMap.toMatrix basis_F (f : E →L[ℂ] F))) = 1 := sorry",
+  "transcript_stats": {
+    "turns": 59,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_search": 40,
+      "mcp__wikibrain__brain_cell": 8,
+      "decl_exists": 1,
+      "mcp__wikibrain__decl_exists": 8,
+      "mcp__wikibrain__brain_neighborhood": 1
+    },
+    "tokens_in": 188,
+    "tokens_out": 10224,
+    "cost_usd": 0.19609379999999993
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"linear isometry inner product space\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 192,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"linear isometry inner product space\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"determinant matrix norm\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 180,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"determinant matrix norm\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"isometry determinant one\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 181,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"isometry determinant one\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"linear isometry\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 172,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"linear isometry\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"inner product space\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1194,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"inner product space\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q214159\\\",\\\"label\\\":\\\"Inner product space\\\",\\\"aka\\\":[\\\"Definition:Hilbert Space\\\",\\\"Hilbert Space\\\",\\\"Hil"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"determinant\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 2642,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"determinant\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q178546\\\",\\\"label\\\":\\\"Determinant\\\",\\\"aka\\\":[\\\"Matrix.det\\\",\\\"determinant\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearA"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q214159\"}",
+      "ok": true,
+      "result_chars": 5971,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q214159\\\",\\\"id\\\":\\\"cell:Q214159\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Inner product space\\\",\\\"f\\\":40153,\\\"cell\\\":{\\\"id\\\":\\\"c"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q178546\"}",
+      "ok": true,
+      "result_chars": 3337,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q178546\\\",\\\"id\\\":\\\"cell:Q178546\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Determinant\\\",\\\"f\\\":36057,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q178"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"isometry\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 3341,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"isometry\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q740207\\\",\\\"label\\\":\\\"Isometry\\\",\\\"aka\\\":[\\\"isometry\\\",\\\"No Metric to Rule Them All: Toward Principled Evaluations o"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"LinearIsometry\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 2199,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"LinearIsometry\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:LinearIsometry\\\",\\\"label\\\":\\\"LinearIsometry\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Normed/Operat"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"LinearIsometryEquiv\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 1475,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"LinearIsometryEquiv\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:LinearIsometryEquiv\\\",\\\"label\\\":\\\"LinearIsometryEquiv\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysi"
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"determinant norm absolute value one\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 192,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"determinant norm absolute value one\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:LinearIsometry\"}",
+      "ok": true,
+      "result_chars": 1485,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:LinearIsometry\\\",\\\"id\\\":\\\"cell:decl:Mathlib:LinearIsometry\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"LinearIsometry\\\",\\"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:LinearIsometryEquiv\"}",
+      "ok": true,
+      "result_chars": 1662,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:LinearIsometryEquiv\\\",\\\"id\\\":\\\"cell:decl:Mathlib:LinearIsometryEquiv\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"LinearIs"
+    },
+    {
+      "i": 14,
+      "name": "decl_exists",
+      "input": "{\"names\": \"[\\\"LinearIsometry\\\", \\\"LinearIsometryEquiv\\\", \\\"Matrix.det\\\", \\\"InnerProductSpace\\\"]\"}",
+      "ok": false,
+      "result_chars": 75,
+      "result_head": "<tool_use_error>Error: No such tool available: decl_exists</tool_use_error>"
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"LinearIsometry\", \"LinearIsometryEquiv\", \"Matrix.det\", \"InnerProductSpace\"]}",
+      "ok": true,
+      "result_chars": 1579,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"LinearIsometry\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.Normed.Operator.LinearIsometry\\\",\\\"import_line\\\""
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"finite dimensional vector space\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 188,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finite dimensional vector space\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"FiniteDimensional\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 2263,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"FiniteDimensional\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:FiniteDimensional\\\",\\\"label\\\":\\\"FiniteDimensional\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra"
+    },
+    {
+      "i": 18,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"orthonormal basis\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 174,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"orthonormal basis\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 19,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:LinearIsometryEquiv.toMatrix_mem_unitaryGroup\"}",
+      "ok": true,
+      "result_chars": 1791,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:LinearIsometryEquiv.toMatrix_mem_unitaryGroup\\\",\\\"id\\\":\\\"cell:decl:Mathlib:LinearIsometryEquiv.toMatrix_mem_u"
+    },
+    {
+      "i": 20,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"toMatrix LinearIsometry\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 180,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"toMatrix LinearIsometry\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 21,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"unitary matrix determinant\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 183,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"unitary matrix determinant\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 22,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"unitary group\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 675,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"unitary group\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q684363\\\",\\\"label\\\":\\\"Special unitary group\\\",\\\"aka\\\":[\\\"Definition:Special Unitary Group\\\",\\\"Matrix.specialUni"
+    },
+    {
+      "i": 23,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"abs det one\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 168,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"abs det one\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 24,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Matrix.UnitaryGroup\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 718,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Matrix.UnitaryGroup\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q727103\\\",\\\"label\\\":\\\"Unitary matrix\\\",\\\"aka\\\":[\\\"Matrix.unitaryGroup\\\",\\\"Unitary Matrix\\\",\\\"unitary matr"
+    },
+    {
+      "i": 25,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q727103\"}",
+      "ok": true,
+      "result_chars": 3423,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q727103\\\",\\\"id\\\":\\\"cell:Q727103\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Unitary matrix\\\",\\\"f\\\":36056,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q"
+    },
+    {
+      "i": 26,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"det_isUnit unitary\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 175,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"det_isUnit unitary\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 27,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"norm_det\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 165,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"norm_det\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 28,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"cell:Q727103\", \"limit\": 30, \"kinds\": \"depends,mentions\"}",
+      "ok": true,
+      "result_chars": 17851,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q727103\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\",\\\"mentions\\\"],\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q684363\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\""
+    },
+    {
+      "i": 29,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"IsometryEquiv det\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 174,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"IsometryEquiv det\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 30,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Matrix.det_of_mem_unitary\", \"Matrix.mem_unitaryGroup_iff\"]}",
+      "ok": true,
+      "result_chars": 876,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Matrix.det_of_mem_unitary\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.UnitaryGroup\\\",\\\"import_line\\\":\\"
+    },
+    {
+      "i": 31,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"det_of_mem_unitary\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 385,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"det_of_mem_unitary\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Matrix.det_of_mem_unitary\\\",\\\"label\\\":\\\"Matrix.det_of_mem_unitary\\\",\\\"aka\\\":[\\\"Elements of Li"
+    },
+    {
+      "i": 32,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:Matrix.det_of_mem_unitary\"}",
+      "ok": true,
+      "result_chars": 1644,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:Matrix.det_of_mem_unitary\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Matrix.det_of_mem_unitary\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\"
+    },
+    {
+      "i": 33,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"LinearIsometryEquiv toMatrix\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 185,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"LinearIsometryEquiv toMatrix\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 34,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"isometry determinant absolute value\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 192,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"isometry determinant absolute value\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 35,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"norm complex number absolute value\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 191,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"norm complex number absolute value\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 36,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"unitary α determinant\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 178,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"unitary α determinant\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 37,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Complex.abs norm\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 173,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Complex.abs norm\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 38,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"unitary\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 3736,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"unitary\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:unitary\\\",\\\"label\\\":\\\"unitary\\\",\\\"supercell\\\":\\\"path:Mathlib/Algebra/Star/Unitary\\\",\\\"matched\\\":\\\"decl\\\""
+    },
+    {
+      "i": 39,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Unitary\", \"Complex.abs\", \"Matrix.det\", \"norm\"]}",
+      "ok": true,
+      "result_chars": 1243,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Unitary\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module"
+    },
+    {
+      "i": 40,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:unitary\"}",
+      "ok": true,
+      "result_chars": 1325,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:unitary\\\",\\\"id\\\":\\\"cell:decl:Mathlib:unitary\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"unitary\\\",\\\"cell\\\":{\\\"id\\\":\\\"cel"
+    },
+    {
+      "i": 41,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"unitary\", \"StarModule.unitary\", \"Complex.norm\"]}",
+      "ok": true,
+      "result_chars": 1060,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"unitary\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Star.Unitary\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra."
+    },
+    {
+      "i": 42,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"StarModule.unitary\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 175,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"StarModule.unitary\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 43,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"norm unitary one\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 173,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"norm unitary one\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 44,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"abs mem unitary\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 172,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"abs mem unitary\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 45,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"abs\", \"nnabs\"]}",
+      "ok": true,
+      "result_chars": 749,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"abs\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Order.Group.Unbundled.Abs\\\",\\\"import_line\\\":\\\"import Mathlib"
+    },
+    {
+      "i": 46,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"FiniteDimensional\", \"Module.Dual.pi\"]}",
+      "ok": true,
+      "result_chars": 795,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"FiniteDimensional\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.FiniteDimensional.Defs\\\",\\\"import_line\\\""
+    },
+    {
+      "i": 47,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"toMatrix LinearIsometryEquiv\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 185,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"toMatrix LinearIsometryEquiv\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 48,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"LinearMap.toMatrix basis\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 181,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"LinearMap.toMatrix basis\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 49,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"LinearMap.toMatrix\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1149,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"LinearMap.toMatrix\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:LinearMap.toMatrix\\\",\\\"label\\\":\\\"LinearMap.toMatrix\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlge"
+    },
+    {
+      "i": 50,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"LinearMap.toMatrix\", \"LinearEquiv.toMatrix\"]}",
+      "ok": true,
+      "result_chars": 773,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"LinearMap.toMatrix\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Matrix.ToLin\\\",\\\"import_line\\\":\\\"import"
+    },
+    {
+      "i": 51,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Basis orthonormal\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 174,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Basis orthonormal\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 52,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"LinearIsometryEquiv determinant\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 188,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"LinearIsometryEquiv determinant\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 53,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"adjoint unitary determinant\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 184,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"adjoint unitary determinant\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 54,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"LinearIsometryEquiv.toMatrix_mem_unitaryGroup\", \"Matrix.specialUnitaryGroup\"]}",
+      "ok": true,
+      "result_chars": 929,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"LinearIsometryEquiv.toMatrix_mem_unitaryGroup\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.InnerProductSpace"
+    },
+    {
+      "i": 55,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"mem unitary abs equals one\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 183,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"mem unitary abs equals one\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 56,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Submonoid.Unitary.norm\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 179,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Submonoid.Unitary.norm\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 57,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Complex norm one\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 173,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Complex norm one\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    }
+  ]
+}

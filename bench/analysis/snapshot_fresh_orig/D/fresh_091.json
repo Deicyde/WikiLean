@@ -1,0 +1,282 @@
+{
+  "task_id": "fresh_091",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:52:50Z",
+  "wall_s": 122.7,
+  "output_lean": "theorem eVariationOn_two_points {α : Type*} [LinearOrder α] {E : Type*} [EMetricSpace E]\n    (f : α → E) (a b : α) (hab : a < b) :\n    eVariationOn f {a, b} = edist (f b) (f a) := sorry",
+  "transcript_stats": {
+    "turns": 33,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 2,
+      "mcp__wikibrain__brain_search": 12,
+      "mcp__wikibrain__brain_cell": 2,
+      "mcp__wikibrain__decl_exists": 12,
+      "mcp__wikibrain__brain_neighborhood": 1,
+      "mcp__wikibrain__brain_snippets": 2,
+      "mcp__wikibrain__brain_filter": 1
+    },
+    "tokens_in": 248,
+    "tokens_out": 7734,
+    "cost_usd": 0.18458815000000003
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"total variation of a function\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2755,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"total variation of a function\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label m"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"bounded variation distance\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 5308,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"bounded variation distance\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label mat"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"total variation\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 172,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"total variation\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q829653\"}",
+      "ok": true,
+      "result_chars": 2525,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q829653\\\",\\\"id\\\":\\\"cell:Q829653\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Bounded variation\\\",\\\"f\\\":2072,\\\"cell\\\":{\\\"id\\\":\\\"cell"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"BoundedVariationOn\", \"totalVariationOn\", \"TotalVariationOn\", \"Variation\"]}",
+      "ok": true,
+      "result_chars": 1278,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"BoundedVariationOn\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.EMetricSpace.BoundedVariation\\\",\\\"import_lin"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"cell:Q829653\", \"kinds\": \"depends\", \"traces\": true, \"limit\": 30}",
+      "ok": true,
+      "result_chars": 5266,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q829653\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\"],\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q28474\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":2,\\\"mentions\\\":1},\\\"trace"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"eVariationOn\", \"variationOn\", \"Function.eVariationOn\"]}",
+      "ok": true,
+      "result_chars": 1190,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"eVariationOn\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.EMetricSpace.BoundedVariation\\\",\\\"import_line\\\":\\\""
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_snippets",
+      "input": "{\"id\": \"decl:Mathlib:eVariationOn\"}",
+      "ok": true,
+      "result_chars": 2106,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q28474\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"wikidata\\\",\\\"id\\\":\\\"Q28474\\\",\\\"label\\\":\\\"Perimeter\\\",\\\"snippet\\\":\\\"arc length of the path th"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Set.insert\", \"edist\", \"EMetric.edist\", \"dist\"]}",
+      "ok": true,
+      "result_chars": 1297,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Set.insert\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Set.Def"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"edist_comm\", \"Edist.edist\", \"Prod.edist_eq\", \"nnnorm\"]}",
+      "ok": true,
+      "result_chars": 1218,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"edist_comm\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Mod"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"eVariationOn two points\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 180,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"eVariationOn two points\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"BoundedVariationOn.mono\", \"eVariationOn.mono_on\", \"eVariationOn_singleton\"]}",
+      "ok": true,
+      "result_chars": 1065,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"BoundedVariationOn.mono\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.EMetricSpace.BoundedVariation\\\",\\\"impor"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"eVariationOn insert singleton\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 186,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"eVariationOn insert singleton\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"WithTop\", \"ENNReal\", \"PUnit\"]}",
+      "ok": true,
+      "result_chars": 963,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"WithTop\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.TypeTags\\\",\\\"import_line\\\":\\\"import Mathlib.Order.TypeTags"
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"extended metric distance edist\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 187,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"extended metric distance edist\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"EMetricSpace distance function\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 187,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"EMetricSpace distance function\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"EMetricSpace\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 585,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"EMetricSpace\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:EMetricSpace\\\",\\\"label\\\":\\\"EMetricSpace\\\",\\\"supercell\\\":\\\"path:Mathlib/Topology/EMetricSpace/Defs\\\""
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:decl:Mathlib:EMetricSpace\"}",
+      "ok": true,
+      "result_chars": 1301,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:EMetricSpace\\\",\\\"id\\\":\\\"cell:decl:Mathlib:EMetricSpace\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"EMetricSpace\\\",\\\"c"
+    },
+    {
+      "i": 18,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"EMetric.edist_le_coe\", \"edist_dist\", \"EMetric.dist_edist\"]}",
+      "ok": true,
+      "result_chars": 1017,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"EMetric.edist_le_coe\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. B"
+    },
+    {
+      "i": 19,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"PseudoEMetricSpace edist\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 181,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"PseudoEMetricSpace edist\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 20,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"edist_comm\", \"edist_symm\", \"Prod.edist_eq\"]}",
+      "ok": true,
+      "result_chars": 987,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"edist_comm\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Mod"
+    },
+    {
+      "i": 21,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"edist commutative symmetric\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 184,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"edist commutative symmetric\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 22,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"eVariationOn finite set\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 180,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"eVariationOn finite set\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 23,
+      "name": "mcp__wikibrain__brain_filter",
+      "input": "{\"f\": 0, \"under\": \"path:Mathlib/Topology/EMetricSpace/BoundedVariation\", \"limit\": 50}",
+      "ok": true,
+      "result_chars": 1532,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"f\\\":0,\\\"type\\\":\\\"cell\\\",\\\"under\\\":\\\"path:Mathlib/Topology/EMetricSpace/BoundedVariation\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q28474\\\",\\\"label\\\":\\\"Perimeter\\\",\\\"f\\\":2296"
+    },
+    {
+      "i": 24,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"eVariationOn.add_point\", \"variationOnFromTo\", \"eVariationOn.comp_eq_of_monotoneOn\"]}",
+      "ok": true,
+      "result_chars": 1305,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"eVariationOn.add_point\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.EMetricSpace.BoundedVariation\\\",\\\"import"
+    },
+    {
+      "i": 25,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"eVariationOn_pair\", \"eVariationOn_Icc\", \"variationOnFromTo_eq_edist\"]}",
+      "ok": true,
+      "result_chars": 945,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"eVariationOn_pair\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basi"
+    },
+    {
+      "i": 26,
+      "name": "mcp__wikibrain__brain_snippets",
+      "input": "{\"id\": \"decl:Mathlib:variationOnFromTo\"}",
+      "ok": true,
+      "result_chars": 892,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:variationOnFromTo\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:variationOnFromTo\\\",\\\"label\\\":\\\"vari"
+    },
+    {
+      "i": 27,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"LinearOrder\", \"EMetricSpace\", \"Set.insert\"]}",
+      "ok": true,
+      "result_chars": 1066,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"LinearOrder\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Defs.LinearOrder\\\",\\\"import_line\\\":\\\"import Mathlib.Or"
+    },
+    {
+      "i": 28,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"edist metric distance\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 178,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"edist metric distance\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 29,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"PseudoEMetricSpace\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 175,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"PseudoEMetricSpace\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 30,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Dist\", \"Edist\", \"dist\"]}",
+      "ok": true,
+      "result_chars": 1105,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Dist\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.MetricSpace.Pseudo.Defs\\\",\\\"import_line\\\":\\\"import Mathlib"
+    },
+    {
+      "i": 31,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Dist class typeclass\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 177,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Dist class typeclass\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    }
+  ]
+}

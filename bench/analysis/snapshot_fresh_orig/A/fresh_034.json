@@ -1,0 +1,17 @@
+{
+  "task_id": "fresh_034",
+  "arm": "A",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T01:56:36Z",
+  "wall_s": 54.1,
+  "output_lean": "theorem smooth_iff_continuous_and_comp_immersion\n    {𝕜 : Type*} [NontriviallyNormedField 𝕜]\n    {E E' : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]\n    [NormedAddCommGroup E'] [NormedSpace 𝕜 E']\n    {M N : Type*} [TopologicalSpace M] [TopologicalSpace N]\n    [ChartedSpace E M] [ChartedSpace E' N]\n    (f : M → N) :\n    Smooth (𝓘(𝕜, E)) (𝓘(𝕜, E')) f ↔ \n    Continuous f ∧ \n    ∀ {M' : Type*} [TopologicalSpace M'] [ChartedSpace E M']\n      (e : M' → M),\n      Smooth (𝓘(𝕜, E)) (𝓘(𝕜, E)) e →\n      (∀ x, LinearMap.ker (mfderiv (𝓘(𝕜, E)) (𝓘(𝕜, E)) e x) = ⊥) →\n      Smooth (𝓘(𝕜, E)) (𝓘(𝕜, E')) (f ∘ e) := sorry",
+  "transcript_stats": {
+    "turns": 1,
+    "tool_calls_by_name": {},
+    "tokens_in": 10,
+    "tokens_out": 6134,
+    "cost_usd": 0.032083749999999994
+  },
+  "tool_trace": []
+}

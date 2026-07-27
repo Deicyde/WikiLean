@@ -1,0 +1,174 @@
+{
+  "task_id": "fresh_006",
+  "arm": "C",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T03:58:49Z",
+  "wall_s": 52.7,
+  "output_lean": "theorem Monotone.const_smul [PosSMulMono α β] {γ : Type*} [Preorder γ] {f : γ → β}\n    (hf : Monotone f) (ha : 0 ≤ a) : Monotone fun x ↦ a • f x := sorry",
+  "transcript_stats": {
+    "turns": 20,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 7,
+      "mcp__formal__decl_grep": 8,
+      "mcp__formal__decl_read": 4
+    },
+    "tokens_in": 118,
+    "tokens_out": 3660,
+    "cost_usd": 0.07039485000000001
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Monotone\"}",
+      "ok": true,
+      "result_chars": 755,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 1298 declarations mentioning Monotone.\\n- Monotone   [Mathlib.Order.Monotone.Defs]\\n    A function `f` is monotone if `a ≤ b` implies `f a ≤ f b`.\\n- monotone_id   [Ma"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"(?a → ?b) → (?a → ?a) → Prop\"}",
+      "ok": true,
+      "result_chars": 143,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(?a → ?b) → (?a → ?a) → Prop': Cannot search: No constants or name fragments in search pattern.\"}]"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def Monotone\"}",
+      "ok": true,
+      "result_chars": 369,
+      "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for 'def Monotone' (via ripgrep):\\n- Mathlib/Order/Monotone/Defs.lean:62\\n    def Monotone (f : α → β) : Prop :=\\n- Mathlib/Order/Monotone/Defs.lean:74\\n    def "
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Monotone smul scalar\"}",
+      "ok": true,
+      "result_chars": 96,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Monotone smul scalar': Unknown identifier `smul`\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Order/Monotone/Defs.lean\", \"line\": 62, \"n\": 15}",
+      "ok": true,
+      "result_chars": 713,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/Monotone/Defs.lean  (lines 62–76 of 583):\\n    62  def Monotone (f : α → β) : Prop :=\\n    63    ∀ ⦃a b⦄, a ≤ b → f a ≤ f b\\n    64  \\n    65  to_dual_insert_c"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Monotone map\"}",
+      "ok": true,
+      "result_chars": 87,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Monotone map': Unknown identifier `map`\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"monotone smul nonneg\"}",
+      "ok": true,
+      "result_chars": 100,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'monotone smul nonneg': Unknown identifier `monotone`\"}]"
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*[Mm]onotone.*smul\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 221,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'theorem.*[Mm]onotone.*smul' (via ripgrep):\\n- Mathlib/Algebra/Order/AddTorsor.lean:87\\n    theorem Monotone.smul {γ : Type*} [Preorder G] [Preorder P] [Preo"
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*scalar.*[Mm]onotone\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 99,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*scalar.*[Mm]onotone' under Mathlib/.\"}]"
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Order/AddTorsor.lean\", \"line\": 87, \"n\": 20}",
+      "ok": true,
+      "result_chars": 1379,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Order/AddTorsor.lean  (lines 87–106 of 148):\\n    87  theorem Monotone.smul {γ : Type*} [Preorder G] [Preorder P] [Preorder γ] [SMul G P]\\n    88      [IsOrd"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*[Mm]onotone.*nonneg\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 1185,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 match(es) for 'theorem.*[Mm]onotone.*nonneg' (via ripgrep):\\n- Mathlib/Order/Monotone/Odd.lean:44\\n    theorem monotone_of_odd_of_monotoneOn_nonneg {f : G → H} (h₁ : ∀ x, "
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Monotone const smul\"}",
+      "ok": true,
+      "result_chars": 96,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Monotone const smul': Unknown identifier `const`\"}]"
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*smul_mono\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 1263,
+      "result_head": "[{\"type\": \"text\", \"text\": \"9 match(es) for 'theorem.*smul_mono' (via ripgrep):\\n- Mathlib/Algebra/Algebra/Operations.lean:146\\n    theorem smul_mono (hij : I ≤ J) (hnp : N ≤ P) : I • N ≤ J • P :=\\n- M"
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"0 ≤ ?a → Monotone (?a • ·)\"}",
+      "ok": true,
+      "result_chars": 237,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 12 declarations mentioning Monotone, LE.le, HSMul.hSMul, and OfNat.ofNat.\\n- zsmul_mono_right   [Mathlib.Algebra.Order.Group.Basic]\\n- monotone_smul_left_of_nonneg   ["
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem monotone_smul_left_of_nonneg\"}",
+      "ok": true,
+      "result_chars": 107,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem monotone_smul_left_of_nonneg' under Mathlib/.\"}]"
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"monotone_smul_left_of_nonneg\"}",
+      "ok": true,
+      "result_chars": 1420,
+      "result_head": "[{\"type\": \"text\", \"text\": \"11 match(es) for 'monotone_smul_left_of_nonneg' (via ripgrep):\\n- Mathlib/Algebra/Order/Module/Defs.lean:318\\n    lemma monotone_smul_left_of_nonneg [PosSMulMono α β] (ha : "
+    },
+    {
+      "i": 16,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Order/Module/Defs.lean\", \"line\": 318, \"n\": 20}",
+      "ok": true,
+      "result_chars": 1397,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Order/Module/Defs.lean  (lines 318–337 of 1365):\\n   318  lemma monotone_smul_left_of_nonneg [PosSMulMono α β] (ha : 0 ≤ a) : Monotone ((a • ·) : β → β) :=\\n"
+    },
+    {
+      "i": 17,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"class PosSMulMono\"}",
+      "ok": true,
+      "result_chars": 162,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'class PosSMulMono' (via ripgrep):\\n- Mathlib/Algebra/Order/Module/Defs.lean:144\\n    class PosSMulMono : Prop where\"}]"
+    },
+    {
+      "i": 18,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Order/Module/Defs.lean\", \"line\": 144, \"n\": 10}",
+      "ok": true,
+      "result_chars": 658,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Order/Module/Defs.lean  (lines 144–153 of 1365):\\n   144  class PosSMulMono : Prop where\\n   145    /-- Do not use this. Use `smul_le_smul_of_nonneg_left` in"
+    }
+  ]
+}

@@ -1,0 +1,290 @@
+{
+  "task_id": "fresh_086",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:51:22Z",
+  "wall_s": 99.4,
+  "output_lean": "theorem pathConnected_prod {α β : Type*} [TopologicalSpace α] [TopologicalSpace β]\n    [PathConnectedSpace α] [PathConnectedSpace β] : PathConnectedSpace (α × β) := sorry",
+  "transcript_stats": {
+    "turns": 34,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 4,
+      "mcp__wikibrain__brain_search": 12,
+      "mcp__wikibrain__brain_cell": 3,
+      "mcp__wikibrain__brain_neighborhood": 1,
+      "mcp__wikibrain__brain_snippets": 1,
+      "mcp__wikibrain__decl_exists": 11,
+      "mcp__wikibrain__brain_transfer": 1
+    },
+    "tokens_in": 280,
+    "tokens_out": 5836,
+    "cost_usd": 0.18019780000000002
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"path-connected topological space\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3845,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"path-connected topological space\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/lab"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"PathConnectedSpace\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 4741,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"PathConnectedSpace\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, reso"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"product of path connected spaces\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2926,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"product of path connected spaces\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/labe"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"Pi type product topology Lean\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2913,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Pi type product topology Lean\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label "
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"PathConnectedSpace product\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 183,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"PathConnectedSpace product\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"pathConnectedSpace prod\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 180,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"pathConnectedSpace prod\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Prod topology\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 170,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Prod topology\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:decl:Mathlib:PathConnectedSpace\"}",
+      "ok": true,
+      "result_chars": 1739,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:PathConnectedSpace\\\",\\\"id\\\":\\\"cell:decl:Mathlib:PathConnectedSpace\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"PathCo"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"cell:decl:Mathlib:PathConnectedSpace\", \"limit\": 50}",
+      "ok": true,
+      "result_chars": 1329,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:PathConnectedSpace\\\",\\\"kind\\\":\\\"cell\\\",\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q1491995\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1},\\\"trace"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"instPathConnectedSpace\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 561,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"instPathConnectedSpace\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Real.instPathConnectedSpace\\\",\\\"label\\\":\\\"Real.instPathConnectedSpace\\\",\\\"supercell\\\":\\\"p"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"pathConnectedSpace_prod\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 180,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"pathConnectedSpace_prod\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Prod.instPathConnectedSpace\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 184,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Prod.instPathConnectedSpace\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__brain_snippets",
+      "input": "{\"id\": \"cell:decl:Mathlib:PathConnectedSpace\"}",
+      "ok": true,
+      "result_chars": 777,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:PathConnectedSpace\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:PathConnectedSpace\\\",\\\"label\\\":\\\"Pa"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Prod.instPathConnectedSpace\", \"Pi.instPathConnectedSpace\", \"pathConnectedSpace_prod_mk\", \"PathConnectedSpace.prod_pathConnectedSpace\"]}",
+      "ok": true,
+      "result_chars": 1230,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Prod.instPathConnectedSpace\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common "
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"prod_pathConnectedSpace\", \"pathConnectedSpace_prod\", \"Prod.pathConnectedSpace\", \"pathConnected_prod\"]}",
+      "ok": true,
+      "result_chars": 1383,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"prod_pathConnectedSpace\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g"
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"connected product spaces\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 181,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"connected product spaces\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Prod topological\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 173,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Prod topological\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"pathConnected instance\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 179,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"pathConnected instance\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 18,
+      "name": "mcp__wikibrain__brain_transfer",
+      "input": "{\"q\": \"Prod\", \"direction\": \"formal_to_informal\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1248,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"Prod\\\",\\\"decl\\\":\\\"Prod\\\",\\\"id\\\":\\\"cell:decl:Init:Prod\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Prod\\\",\\\"hits\\\":[],\\\"note\\\":\\"
+    },
+    {
+      "i": 19,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Prod.instPathConnectedSpace\", \"Pi.instPathConnectedSpace\", \"instPathConnectedSpaceProd\", \"instPathConnectedSpacePi\"]}",
+      "ok": true,
+      "result_chars": 1212,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Prod.instPathConnectedSpace\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common "
+    },
+    {
+      "i": 20,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"pathConnectedSpace_iff_connectedSpace\", \"Path\", \"IsPath\", \"nonempty_pathComponent\"]}",
+      "ok": true,
+      "result_chars": 1476,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"pathConnectedSpace_iff_connectedSpace\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Connected.LocPathConnecte"
+    },
+    {
+      "i": 21,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"ConnectedSpace\", \"IsConnected\", \"instTopologicalSpaceProd\", \"Prod.topologicalSpace\"]}",
+      "ok": true,
+      "result_chars": 1394,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"ConnectedSpace\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Connected.Basic\\\",\\\"import_line\\\":\\\"import Mathl"
+    },
+    {
+      "i": 22,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"connectedSpace_prod_mk\", \"isConnected_prod\", \"ConnectedSpace.prod\"]}",
+      "ok": true,
+      "result_chars": 943,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"connectedSpace_prod_mk\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g."
+    },
+    {
+      "i": 23,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"instConnectedSpaceProd\", \"Prod.instConnectedSpace\", \"Pi.instConnectedSpace\", \"Nonempty\"]}",
+      "ok": true,
+      "result_chars": 1542,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"instConnectedSpaceProd\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Connected.Basic\\\",\\\"import_line\\\":\\\"impo"
+    },
+    {
+      "i": 24,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:instConnectedSpaceProd\"}",
+      "ok": false,
+      "result_chars": 392,
+      "result_head": "{\"ok\":false,\"error\":\"unresolvable key\",\"key\":\"decl:Mathlib:instConnectedSpaceProd\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl nam"
+    },
+    {
+      "i": 25,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"instConnectedSpaceProd\"}",
+      "ok": false,
+      "result_chars": 379,
+      "result_head": "{\"ok\":false,\"error\":\"unresolvable key\",\"key\":\"instConnectedSpaceProd\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | article s"
+    },
+    {
+      "i": 26,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"pathConnectedSpace_of\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 178,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"pathConnectedSpace_of\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 27,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Path.prod\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 166,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Path.prod\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 28,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"pathComponent_prod_eq\", \"Path.prod_mk\", \"Prod.Path\", \"pathConnectedSpace_prod\"]}",
+      "ok": true,
+      "result_chars": 1175,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"pathComponent_prod_eq\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. "
+    },
+    {
+      "i": 29,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"pathComponent_eq_iff_mem\", \"mem_pathComponent\", \"PathConnectedSpace.toNonempty\"]}",
+      "ok": true,
+      "result_chars": 956,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"pathComponent_eq_iff_mem\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e."
+    },
+    {
+      "i": 30,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"PathConnectedSpace theorem\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 183,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"PathConnectedSpace theorem\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 31,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"PathConnectedSpace.prod\", \"instPathConnectedSpaceForall\", \"instPathConnectedSpacePiEmpty\"]}",
+      "ok": true,
+      "result_chars": 966,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"PathConnectedSpace.prod\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g"
+    },
+    {
+      "i": 32,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"TopologicalSpace\", \"Prod\"]}",
+      "ok": true,
+      "result_chars": 725,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"TopologicalSpace\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Defs.Basic\\\",\\\"import_line\\\":\\\"import Mathlib."
+    }
+  ]
+}

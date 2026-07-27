@@ -1,0 +1,118 @@
+{
+  "task_id": "fresh_032",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:36:57Z",
+  "wall_s": 60.9,
+  "output_lean": "theorem findIdx_of_agree {α : Type*} (p q : α → Bool) (l : List α)\n    (h : ∀ x ∈ l, p x = q x) :\n    List.findIdx p l = List.findIdx q l := sorry",
+  "transcript_stats": {
+    "turns": 13,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__decl_exists": 9,
+      "mcp__wikibrain__brain_search": 1,
+      "mcp__wikibrain__brain_cell": 2
+    },
+    "tokens_in": 108,
+    "tokens_out": 4226,
+    "cost_usd": 0.07234555
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"List.find\", \"List.findIdx\", \"List.eq_of_forall_eq\"]}",
+      "ok": true,
+      "result_chars": 952,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"List.find\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Modu"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"List find element predicate\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 184,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"List find element predicate\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"List.filter\", \"List.forall\", \"List.all\"]}",
+      "ok": true,
+      "result_chars": 961,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"List.filter\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Data.List.Basic\\\",\\\"import_line\\\":\\\"import Init.Data.List.Basic"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Init.Data.List.Basic:List.findIdx\"}",
+      "ok": false,
+      "result_chars": 395,
+      "result_head": "{\"ok\":false,\"error\":\"unresolvable key\",\"key\":\"decl:Init.Data.List.Basic:List.findIdx\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl "
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"List.findIdx\"}",
+      "ok": false,
+      "result_chars": 369,
+      "result_head": "{\"ok\":false,\"error\":\"unresolvable key\",\"key\":\"List.findIdx\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | article slug | xref"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"List.findIdx_of_forall\", \"List.ext\", \"Decidable\"]}",
+      "ok": true,
+      "result_chars": 923,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"List.findIdx_of_forall\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g."
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"List.findIdx_map\", \"fun_ext\", \"beq_eq\"]}",
+      "ok": true,
+      "result_chars": 941,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"List.findIdx_map\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Data.List.Find\\\",\\\"import_line\\\":\\\"import Init.Data.List.F"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"List.findIdx_le\", \"List.findIdx_cons\", \"congr_fun\"]}",
+      "ok": true,
+      "result_chars": 961,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"List.findIdx_le\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis "
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"List.mem\", \"List.findIdx_pos\", \"decide\"]}",
+      "ok": true,
+      "result_chars": 916,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"List.mem\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Modul"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Decidable.em\", \"List.Sublist\", \"BEq.eq_of_beq\"]}",
+      "ok": true,
+      "result_chars": 940,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Decidable.em\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Core\\\",\\\"import_line\\\":\\\"import Init.Core\\\",\\\"docs_url\\\":\\\"htt"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"List.any\", \"List.drop\", \"ext_iff\"]}",
+      "ok": true,
+      "result_chars": 953,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"List.any\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Data.List.Basic\\\",\\\"import_line\\\":\\\"import Init.Data.List.Basic\\\","
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Membership\", \"instMembership\", \"Membership.mem\"]}",
+      "ok": true,
+      "result_chars": 926,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Membership\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\\":\\"
+    }
+  ]
+}

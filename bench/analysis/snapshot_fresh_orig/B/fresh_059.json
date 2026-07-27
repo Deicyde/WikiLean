@@ -1,0 +1,53 @@
+{
+  "task_id": "fresh_059",
+  "arm": "B",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T02:22:40Z",
+  "wall_s": 71.0,
+  "output_lean": "theorem signed_measure_total_variation_eq_of_hahn_jordan_decomposition\n    {α : Type*} [MeasurableSpace α] (μ : SignedMeasure α) :\n    μ.totalVariation = μ.posPart + μ.negPart := sorry",
+  "transcript_stats": {
+    "turns": 5,
+    "tool_calls_by_name": {
+      "mcp__wiki__wiki_search": 3,
+      "mcp__wiki__wiki_get": 1
+    },
+    "tokens_in": 34,
+    "tokens_out": 6334,
+    "cost_usd": 0.0495915
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"signed measure Hahn Jordan decomposition total variation\"}",
+      "ok": true,
+      "result_chars": 2238,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'signed measure Hahn Jordan decomposition total variation':\\n- Total variation  (slug: Total_variation)\\n    https://en.wikipedia.org/wiki/Total_variation\\n "
+    },
+    {
+      "i": 1,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"total variation signed measure partition\"}",
+      "ok": true,
+      "result_chars": 2294,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'total variation signed measure partition':\\n- Total variation  (slug: Total_variation)\\n    https://en.wikipedia.org/wiki/Total_variation\\n    total variati"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wiki__wiki_get",
+      "input": "{\"title\": \"Signed_measure\"}",
+      "ok": true,
+      "result_chars": 4366,
+      "result_head": "[{\"type\": \"text\", \"text\": \"# Signed measure\\nIn mathematics, a signed measure is a generalization of the concept of (positive) measure by allowing the set function to take negative values, i.e., to ac"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"Lean Mathlib SignedMeasure posPart negPart totalVar\"}",
+      "ok": true,
+      "result_chars": 117,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No English Wikipedia results for 'Lean Mathlib SignedMeasure posPart negPart totalVar'.\"}]"
+    }
+  ]
+}

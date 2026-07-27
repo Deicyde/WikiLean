@@ -1,0 +1,17 @@
+{
+  "task_id": "fresh_012",
+  "arm": "A",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T01:52:11Z",
+  "wall_s": 101.6,
+  "output_lean": "theorem gram_matrix_det_eq_det_sq {V : Type*} [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]\n  (f : V →ₗ[ℝ] V) (b : Basis (Fin (FiniteDimensional.finrank ℝ V)) ℝ V) (h : Orthonormal ℝ b) :\n  let n := FiniteDimensional.finrank ℝ V\n  let G : Matrix (Fin n) (Fin n) ℝ := fun i j => inner (f (b i)) (f (b j))\n  G.det = ((LinearMap.toMatrix b b f).det) ^ 2 := sorry",
+  "transcript_stats": {
+    "turns": 1,
+    "tool_calls_by_name": {},
+    "tokens_in": 10,
+    "tokens_out": 11088,
+    "cost_usd": 0.0568475
+  },
+  "tool_trace": []
+}

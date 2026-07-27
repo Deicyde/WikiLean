@@ -1,0 +1,274 @@
+{
+  "task_id": "fresh_088",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:52:01Z",
+  "wall_s": 73.0,
+  "output_lean": "theorem MonotoneOn.eVariationOn_Icc (f : ℝ → ℝ) {a b : ℝ} (hab : a ≤ b) \n    (hf : MonotoneOn f (Set.Icc a b)) :\n    eVariationOn f (Set.Icc a b) = ENNReal.ofReal (f b - f a) := sorry",
+  "transcript_stats": {
+    "turns": 32,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_search": 17,
+      "mcp__wikibrain__brain_brain_bridge": 1,
+      "mcp__wikibrain__brain_bridge": 1,
+      "mcp__wikibrain__brain_cell": 5,
+      "mcp__wikibrain__brain_neighborhood": 2,
+      "mcp__wikibrain__decl_exists": 4,
+      "mcp__wikibrain__brain_filter": 1
+    },
+    "tokens_in": 152,
+    "tokens_out": 5264,
+    "cost_usd": 0.11961335000000002
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"total variation function\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 181,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"total variation function\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"monotone non-decreasing function\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 189,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"monotone non-decreasing function\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"BddVariationOn\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 171,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"BddVariationOn\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"monotone function variation\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 184,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"monotone function variation\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Monotone\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 2452,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Monotone\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Monotone\\\",\\\"label\\\":\\\"Monotone\\\",\\\"aka\\\":[\\\"On Exact Learning of $d$-Monotone Functions\\\"],\\\"supercell"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"variation bounded\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 174,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"variation bounded\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_brain_bridge",
+      "input": "{\"q\": \"total variation of a monotone function equals f(b) - f(a)\", \"confidence_floor\": \"0.5\"}",
+      "ok": false,
+      "result_chars": 98,
+      "result_head": "<tool_use_error>Error: No such tool available: mcp__wikibrain__brain_brain_bridge</tool_use_error>"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"total variation of a monotone function equals f(b) - f(a)\", \"confidence_floor\": \"0.3\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 3583,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"total variation of a monotone function equals f(b) - f(a)\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by I"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"variation\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 3628,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"variation\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:variationOnFromTo\\\",\\\"label\\\":\\\"variationOnFromTo\\\",\\\"aka\\\":[\\\"A mixing tree-valued process arising un"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q829653\"}",
+      "ok": true,
+      "result_chars": 2525,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q829653\\\",\\\"id\\\":\\\"cell:Q829653\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Bounded variation\\\",\\\"f\\\":2072,\\\"cell\\\":{\\\"id\\\":\\\"cell"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:decl:Mathlib:variationOnFromTo\"}",
+      "ok": true,
+      "result_chars": 1890,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:variationOnFromTo\\\",\\\"id\\\":\\\"cell:decl:Mathlib:variationOnFromTo\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"variatio"
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"cell:Q829653\", \"kinds\": \"depends\", \"limit\": 30}",
+      "ok": true,
+      "result_chars": 5266,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q829653\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\"],\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q28474\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":2,\\\"mentions\\\":1},\\\"trace"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"monotone variation theorem\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 183,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"monotone variation theorem\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:Monotone\"}",
+      "ok": true,
+      "result_chars": 1581,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:Monotone\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Monotone\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Monotone\\\",\\\"f\\\":128,\\\"cell\\\":"
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"eVariationOn\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 818,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"eVariationOn\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q28474\\\",\\\"label\\\":\\\"Perimeter\\\",\\\"aka\\\":[\\\"Arc Length\\\",\\\"Arc length\\\",\\\"Curve Length\\\",\\\"eVariationOn\\\",\\\"Brow"
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:decl:Mathlib:eVariationOn.comp_eq_of_monotoneOn\"}",
+      "ok": true,
+      "result_chars": 1890,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:eVariationOn.comp_eq_of_monotoneOn\\\",\\\"id\\\":\\\"cell:decl:Mathlib:eVariationOn.comp_eq_of_monotoneOn\\\",\\\"ki"
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q28474\"}",
+      "ok": true,
+      "result_chars": 4151,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q28474\\\",\\\"id\\\":\\\"cell:Q28474\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Perimeter\\\",\\\"f\\\":2296,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q28474\\\","
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Icc monotone\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 169,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Icc monotone\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 18,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"MonotoneOn variation\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 177,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"MonotoneOn variation\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 19,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"cell:decl:Mathlib:variationOnFromTo\", \"limit\": 30, \"traces\": true}",
+      "ok": true,
+      "result_chars": 1544,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:variationOnFromTo\\\",\\\"kind\\\":\\\"cell\\\",\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q126017\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1},\\\"traces\\"
+    },
+    {
+      "i": 20,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"variationOnFromTo monotone\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 183,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"variationOnFromTo monotone\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 21,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Monotone.variationOn\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 177,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Monotone.variationOn\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 22,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"edist monotone increasing\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 182,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"edist monotone increasing\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 23,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"eVariationOn\", \"Monotone\", \"Icc\", \"variationOnFromTo\", \"MonotoneOn\", \"edist\"]}",
+      "ok": true,
+      "result_chars": 1910,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"eVariationOn\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.EMetricSpace.BoundedVariation\\\",\\\"import_line\\\":\\\""
+    },
+    {
+      "i": 24,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Set.Icc\", \"EMetric.edist\", \"dist\", \"Real.sub\"]}",
+      "ok": true,
+      "result_chars": 1324,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Set.Icc\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Interval.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order"
+    },
+    {
+      "i": 25,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"edist EMetric extended distance\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 188,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"edist EMetric extended distance\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 26,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"edist_le_edist_of_le\"]}",
+      "ok": true,
+      "result_chars": 458,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"edist_le_edist_of_le\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. B"
+    },
+    {
+      "i": 27,
+      "name": "mcp__wikibrain__brain_filter",
+      "input": "{\"f\": 0, \"under\": \"path:Mathlib/Topology/EMetricSpace/BoundedVariation\", \"limit\": 100}",
+      "ok": true,
+      "result_chars": 1532,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"f\\\":0,\\\"type\\\":\\\"cell\\\",\\\"under\\\":\\\"path:Mathlib/Topology/EMetricSpace/BoundedVariation\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q28474\\\",\\\"label\\\":\\\"Perimeter\\\",\\\"f\\\":2296"
+    },
+    {
+      "i": 28,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"increasing decreasing function\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 187,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"increasing decreasing function\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 29,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"MonotoneOn eVariationOn\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 180,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"MonotoneOn eVariationOn\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 30,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"ENNReal\", \"ENNReal.ofReal\", \"Set.mem_Icc\", \"Antitone\"]}",
+      "ok": true,
+      "result_chars": 1332,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"ENNReal\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.ENNReal.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Data.ENNRe"
+    }
+  ]
+}

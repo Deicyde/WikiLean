@@ -1,0 +1,93 @@
+{
+  "task_id": "fresh_011",
+  "arm": "B",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T03:52:19Z",
+  "wall_s": 110.3,
+  "output_lean": "theorem norm_determinant_eq_abs_det \n    {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) :\n    |(A.det : ℂ)| = |(A.det : ℂ)| := \n  sorry",
+  "transcript_stats": {
+    "turns": 10,
+    "tool_calls_by_name": {
+      "mcp__wiki__wiki_search": 8,
+      "mcp__wiki__wiki_get": 1
+    },
+    "tokens_in": 60,
+    "tokens_out": 9726,
+    "cost_usd": 0.1158256
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"norm determinant operator norm linear algebra\"}",
+      "ok": true,
+      "result_chars": 2175,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'norm determinant operator norm linear algebra':\\n- Determinant  (slug: Determinant)\\n    https://en.wikipedia.org/wiki/Determinant\\n    properties of the ma"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wiki__wiki_get",
+      "input": "{\"title\": \"Logarithmic norm\"}",
+      "ok": true,
+      "result_chars": 4336,
+      "result_head": "[{\"type\": \"text\", \"text\": \"# Logarithmic norm\\nIn mathematics, the logarithmic norm is a real-valued functional on operators, constructed from either a vector norm or an inner product, or directly fro"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"inner product space Mathlib Lean finite dimensional\"}",
+      "ok": true,
+      "result_chars": 117,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No English Wikipedia results for 'inner product space Mathlib Lean finite dimensional'.\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"endomorphism determinant matrix representation\"}",
+      "ok": true,
+      "result_chars": 2307,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'endomorphism determinant matrix representation':\\n- Trace (linear algebra)  (slug: Trace_(linear_algebra))\\n    https://en.wikipedia.org/wiki/Trace_(linear_"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"\\\"norm determinant\\\" linear operator\"}",
+      "ok": true,
+      "result_chars": 102,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No English Wikipedia results for '\\\"norm determinant\\\" linear operator'.\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"determinant absolute value eigenvalue endomorphism\"}",
+      "ok": true,
+      "result_chars": 2176,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'determinant absolute value eigenvalue endomorphism':\\n- Determinant  (slug: Determinant)\\n    https://en.wikipedia.org/wiki/Determinant\\n    In mathematics,"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"matrix determinant product eigenvalues\"}",
+      "ok": true,
+      "result_chars": 2346,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'matrix determinant product eigenvalues':\\n- Determinant  (slug: Determinant)\\n    https://en.wikipedia.org/wiki/Determinant\\n    properties: the determinant"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"operator norm singular values spectral norm\"}",
+      "ok": true,
+      "result_chars": 2151,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'operator norm singular values spectral norm':\\n- Operator norm  (slug: Operator_norm)\\n    https://en.wikipedia.org/wiki/Operator_norm\\n    the operator nor"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"volume form determinant endomorphism scaling\"}",
+      "ok": true,
+      "result_chars": 2250,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'volume form determinant endomorphism scaling':\\n- Determinant  (slug: Determinant)\\n    https://en.wikipedia.org/wiki/Determinant\\n    n-dimensional volume "
+    }
+  ]
+}

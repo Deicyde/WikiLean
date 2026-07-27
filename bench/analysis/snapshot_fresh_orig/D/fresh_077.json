@@ -1,0 +1,385 @@
+{
+  "task_id": "fresh_077",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:48:42Z",
+  "wall_s": 93.5,
+  "output_lean": "theorem exists_regular_sequence_of_vanishing_ext_and_support_condition\n  {R : Type u} [CommRing R] [IsNoetherianRing R]\n  (I : Ideal R) (M N : Type v) [Module R M] [Module R N]\n  [Module.Finite R M] [Module.Finite R N]\n  (hIM_proper : ¬(I.span_le.submodule.span_eq_top : Submodule R M))\n  (h_support : ∀ (p : Ideal R), Ideal.IsPrime p →\n    ((∃ n : N, (I : Set R) ⊆ (Submodule.annihilator R n : Set R)) ↔\n     (∃ n : N, n ≠ 0 ∧ (I : Set R) ⊆ (Submodule.annihilator R n : Set R))))\n  (n : ℕ)\n  (h_ext : ∀ i < n, Nonempty (CategoryTheory.Abelian.Ext N M i) → False) :\n  ∃ (seq : Fin n → R), (∀ i, seq i ∈ I) ∧\n    ∀ j : Fin n, (∀ i : Fin j, ¬((seq i : R) ∈ Submodule.annihilator R\n      ((Submodule.map (LinearMap.lsmul R M (seq j)) (⊤ : Submodule R M) : Submodule R M)))) :=\n  sorry",
+  "transcript_stats": {
+    "turns": 46,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 3,
+      "mcp__wikibrain__brain_search": 22,
+      "mcp__wikibrain__brain_cell": 2,
+      "decl_exists": 1,
+      "mcp__wikibrain__decl_exists": 8,
+      "mcp__wikibrain__brain_transfer": 9
+    },
+    "tokens_in": 144,
+    "tokens_out": 7179,
+    "cost_usd": 0.12825309999999998
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"Ext groups in Mathlib homological algebra\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2939,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Ext groups in Mathlib homological algebra\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exa"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"regular sequence finitely generated module\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3914,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"regular sequence finitely generated module\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an ex"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"support of module vanishing set\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2955,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"support of module vanishing set\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/labe"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Ext homology groups\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 176,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Ext homology groups\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"regular sequence depth\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 179,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"regular sequence depth\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"module support prime ideal\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 183,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"module support prime ideal\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"finitely generated module\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 481,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finitely generated module\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q7888360\\\",\\\"label\\\":\\\"Structure theorem for finitely generated modules over a principal ideal doma"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Noetherian ring\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 482,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Noetherian ring\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q582271\\\",\\\"label\\\":\\\"noetherian ring\\\",\\\"aka\\\":[\\\"IsNoetherianRing\\\",\\\"Uniform $\\\\\\\\mathcal{C}^k$ Approximat"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"commutative ring ideal\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 179,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"commutative ring ideal\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q582271\"}",
+      "ok": true,
+      "result_chars": 2088,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q582271\\\",\\\"id\\\":\\\"cell:Q582271\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"noetherian ring\\\",\\\"f\\\":161,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q5"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"ideal quotient submodule\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 181,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"ideal quotient submodule\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"module dimension grade depth\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 185,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"module dimension grade depth\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 12,
+      "name": "decl_exists",
+      "input": "{\"names\": \"[\\\"CommRing\\\", \\\"Ideal\\\", \\\"Submodule\\\", \\\"Module.End\\\", \\\"IsNoetherianRing\\\"]\"}",
+      "ok": false,
+      "result_chars": 75,
+      "result_head": "<tool_use_error>Error: No such tool available: decl_exists</tool_use_error>"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"grade sequence algebra\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 179,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"grade sequence algebra\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"tensor Tor Ext derived functor\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 187,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"tensor Tor Ext derived functor\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"CommRing\", \"Ideal\", \"Submodule\", \"Module\", \"IsNoetherianRing\"]}",
+      "ok": true,
+      "result_chars": 1643,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"CommRing\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Ring.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Ri"
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"finitely generated torsion free\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 188,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finitely generated torsion free\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"submodule multiplication ideal\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 187,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"submodule multiplication ideal\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 18,
+      "name": "mcp__wikibrain__brain_transfer",
+      "input": "{\"q\": \"Ext functor\", \"direction\": \"informal_to_formal\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1984,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"informal_to_formal\\\",\\\"q\\\":\\\"Ext functor\\\",\\\"resolved_from\\\":\\\"label\\\",\\\"id\\\":\\\"cell:Q1384902\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Ext functor\\\",\\\"co"
+    },
+    {
+      "i": 19,
+      "name": "mcp__wikibrain__brain_transfer",
+      "input": "{\"q\": \"regular sequence\", \"direction\": \"informal_to_formal\", \"limit\": 10}",
+      "ok": false,
+      "result_chars": 212,
+      "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"regular sequence\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup\",\"snapshot\":{\"generated_at\":\"2026-07-16T09:25:11+00:00\",\"pin\":\"bf32661"
+    },
+    {
+      "i": 20,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q1384902\"}",
+      "ok": true,
+      "result_chars": 3844,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q1384902\\\",\\\"id\\\":\\\"cell:Q1384902\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Ext functor\\\",\\\"f\\\":33944,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q1"
+    },
+    {
+      "i": 21,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"support associated primes\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 182,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"support associated primes\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 22,
+      "name": "mcp__wikibrain__brain_transfer",
+      "input": "{\"q\": \"depth module\", \"direction\": \"informal_to_formal\", \"limit\": 10}",
+      "ok": false,
+      "result_chars": 208,
+      "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"depth module\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup\",\"snapshot\":{\"generated_at\":\"2026-07-16T09:25:11+00:00\",\"pin\":\"bf3266149cd"
+    },
+    {
+      "i": 23,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"proper ideal prime ideal\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 181,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"proper ideal prime ideal\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 24,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"zero locus roots polynomial\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 184,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"zero locus roots polynomial\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 25,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"annihilator module support\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 183,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"annihilator module support\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 26,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Submodule.IsFG\", \"Module.rank\", \"Submodule.span\", \"Ideal.span\", \"Nat.Prime\"]}",
+      "ok": true,
+      "result_chars": 1620,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Submodule.IsFG\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis →"
+    },
+    {
+      "i": 27,
+      "name": "mcp__wikibrain__brain_transfer",
+      "input": "{\"q\": \"vanishing set variety\", \"direction\": \"informal_to_formal\", \"limit\": 10}",
+      "ok": false,
+      "result_chars": 217,
+      "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"vanishing set variety\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup\",\"snapshot\":{\"generated_at\":\"2026-07-16T09:25:11+00:00\",\"pin\":\"bf"
+    },
+    {
+      "i": 28,
+      "name": "mcp__wikibrain__brain_transfer",
+      "input": "{\"q\": \"Associated primes\", \"direction\": \"informal_to_formal\", \"limit\": 10}",
+      "ok": false,
+      "result_chars": 213,
+      "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"Associated primes\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup\",\"snapshot\":{\"generated_at\":\"2026-07-16T09:25:11+00:00\",\"pin\":\"bf3266"
+    },
+    {
+      "i": 29,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Module.Finite\", \"Submodule.map\", \"Ideal.mul\", \"Module.End\", \"Ideal.Quotient\"]}",
+      "ok": true,
+      "result_chars": 1745,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Module.Finite\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.Finiteness.Defs\\\",\\\"import_line\\\":\\\"import Math"
+    },
+    {
+      "i": 30,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"finitely generated module finite\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 189,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finitely generated module finite\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 31,
+      "name": "mcp__wikibrain__brain_transfer",
+      "input": "{\"q\": \"regular element\", \"direction\": \"informal_to_formal\", \"limit\": 10}",
+      "ok": false,
+      "result_chars": 211,
+      "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"regular element\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup\",\"snapshot\":{\"generated_at\":\"2026-07-16T09:25:11+00:00\",\"pin\":\"bf326614"
+    },
+    {
+      "i": 32,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Submodule.Quotient\", \"LinearMap.ker\", \"LinearMap.range\", \"CommRing.IsNoetherian\", \"Ideal.IsPrime\"]}",
+      "ok": true,
+      "result_chars": 1885,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Submodule.Quotient\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"Submodule.hasQuotient\\\",\\\"suggestion_basis\\\":\\\"verified-rename\\\",\\\"module\\\":\\\"Ma"
+    },
+    {
+      "i": 33,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"homological algebra derived functor\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 192,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"homological algebra derived functor\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 34,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Submodule.span_le\", \"Submodule.mul_mem_mul\", \"LinearMap.injective\", \"LinearMap.surjective\", \"Basis\"]}",
+      "ok": true,
+      "result_chars": 1774,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Submodule.span_le\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Span.Defs\\\",\\\"import_line\\\":\\\"import Mat"
+    },
+    {
+      "i": 35,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"homological algebra chain complex\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 190,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"homological algebra chain complex\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 36,
+      "name": "mcp__wikibrain__brain_transfer",
+      "input": "{\"q\": \"Tor Ext groups modules\", \"direction\": \"informal_to_formal\", \"limit\": 10}",
+      "ok": false,
+      "result_chars": 218,
+      "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"Tor Ext groups modules\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup\",\"snapshot\":{\"generated_at\":\"2026-07-16T09:25:11+00:00\",\"pin\":\"b"
+    },
+    {
+      "i": 37,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"prime spectrum schemes algebraic geometry\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 198,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"prime spectrum schemes algebraic geometry\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 38,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Submodule.Quotient.mk\", \"Ideal.subset_span\", \"Module.End.natCast\", \"RingHom\", \"Submodule.eq_top_iff_one\"]}",
+      "ok": true,
+      "result_chars": 1604,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Submodule.Quotient.mk\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Quotient.Defs\\\",\\\"import_line\\\":\\\"im"
+    },
+    {
+      "i": 39,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"prime ideal ring localization\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 186,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"prime ideal ring localization\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 40,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Submodule.mul_bot\", \"Submodule.smul_mem\", \"Submodule.restrictScalars\", \"Module.Torsion\", \"Submodule.le_def\"]}",
+      "ok": true,
+      "result_chars": 1700,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Submodule.mul_bot\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Algebra.Operations\\\",\\\"import_line\\\":\\\"import "
+    },
+    {
+      "i": 41,
+      "name": "mcp__wikibrain__brain_transfer",
+      "input": "{\"q\": \"support of a module\", \"direction\": \"informal_to_formal\", \"limit\": 10}",
+      "ok": false,
+      "result_chars": 215,
+      "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"support of a module\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup\",\"snapshot\":{\"generated_at\":\"2026-07-16T09:25:11+00:00\",\"pin\":\"bf32"
+    },
+    {
+      "i": 42,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"algebra module homomorphism\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 184,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"algebra module homomorphism\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 43,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Submodule.span_eq_top\", \"Submodule.mem_span_singleton\", \"Module.isTorsion\", \"LinearMap.comp\", \"Submodule.Quotient.eq_zero_iff_mem\"]}",
+      "ok": true,
+      "result_chars": 1599,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Submodule.span_eq_top\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. "
+    },
+    {
+      "i": 44,
+      "name": "mcp__wikibrain__brain_transfer",
+      "input": "{\"q\": \"zero divisor regular element\", \"direction\": \"informal_to_formal\", \"limit\": 10}",
+      "ok": false,
+      "result_chars": 224,
+      "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"zero divisor regular element\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup\",\"snapshot\":{\"generated_at\":\"2026-07-16T09:25:11+00:00\",\"p"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "task_id": "fresh_004",
+  "arm": "B",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T02:09:19Z",
+  "wall_s": 106.6,
+  "output_lean": "theorem mem_span_of_support {k : Type*} [CommSemiring k] {G : Type*} [Group G]\n    (x : MonoidAlgebra k G) :\n    x ∈ Submodule.span k ({Finsupp.single g 1 | g ∈ x.support} : Set (MonoidAlgebra k G)) := sorry",
+  "transcript_stats": {
+    "turns": 2,
+    "tool_calls_by_name": {
+      "mcp__wiki__wiki_search": 1
+    },
+    "tokens_in": 20,
+    "tokens_out": 10795,
+    "cost_usd": 0.0896304
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"group algebra Mathlib\"}",
+      "ok": true,
+      "result_chars": 785,
+      "result_head": "[{\"type\": \"text\", \"text\": \"2 result(s) for 'group algebra Mathlib':\\n- Topological module  (slug: Topological_module)\\n    https://en.wikipedia.org/wiki/Topological_module\\n    nearness https://leanpr"
+    }
+  ]
+}

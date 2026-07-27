@@ -1,0 +1,126 @@
+{
+  "task_id": "fresh_014",
+  "arm": "E",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:59:06Z",
+  "wall_s": 50.9,
+  "output_lean": "theorem meromorphic_nonneg_order_iff_analytic_extension\n    {𝕜 : Type*} [NontriviallyNormedField 𝕜]\n    {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]\n    {f : 𝕜 → E} {x : 𝕜}\n    (hf : MeromorphicAt f x) :\n    0 ≤ meromorphicOrderAt f x ↔ ∃ g : 𝕜 → E, AnalyticAt 𝕜 g x ∧ f =ᶠ[𝓝[≠] x] g := sorry",
+  "transcript_stats": {
+    "turns": 14,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 2,
+      "mcp__formal__decl_grep": 6,
+      "mcp__formal__decl_read": 5
+    },
+    "tokens_in": 76,
+    "tokens_out": 3867,
+    "cost_usd": 0.07053925
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"meromorphic\"}",
+      "ok": true,
+      "result_chars": 94,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'meromorphic': unknown identifier 'meromorphic'\"}]"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"analytic\"}",
+      "ok": true,
+      "result_chars": 88,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'analytic': unknown identifier 'analytic'\"}]"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"meromorphic\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2905,
+      "result_head": "[{\"type\": \"text\", \"text\": \"350 match(es) for 'meromorphic' (via ripgrep):\\n- Mathlib/Geometry/Manifold/Complex.lean:38\\n    holomorphic and meromorphic functions on a complex manifold and proving alge"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/Analytic/Order.lean\", \"line\": 1, \"n\": 100}",
+      "ok": true,
+      "result_chars": 5323,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Analytic/Order.lean  (lines 1–100 of 695):\\n     1  /-\\n     2  Copyright (c) 2022 Vincent Beffara. All rights reserved.\\n     3  Released under Apache 2.0 "
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"MeromorphicNFAt\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2484,
+      "result_head": "[{\"type\": \"text\", \"text\": \"26 match(es) for 'MeromorphicNFAt' (via ripgrep):\\n- Mathlib/Analysis/Analytic/Order.lean:110\\n    See `MeromorphicNFAt.order_eq_zero_iff` for an analogous statement about m"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(class|structure) Meromorphic\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 100,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(class|structure) Meromorphic' under Mathlib/.\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/Meromorphic/NormalForm.lean\", \"line\": 1, \"n\": 200}",
+      "ok": true,
+      "result_chars": 5501,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Meromorphic/NormalForm.lean  (lines 1–120 of 807):\\n     1  /-\\n     2  Copyright (c) 2025 Stefan Kebekus. All rights reserved.\\n     3  Released under Apac"
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/Meromorphic/NormalForm.lean\", \"line\": 115, \"n\": 80}",
+      "ok": true,
+      "result_chars": 3953,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Meromorphic/NormalForm.lean  (lines 115–194 of 807):\\n   115  theorem MeromorphicNFAt.meromorphicOrderAt_nonneg_iff_analyticAt (hf : MeromorphicNFAt f x) :\\"
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"meromorphicOrderAt.*nonneg|meromorphicOrderAt.*analytic\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2602,
+      "result_head": "[{\"type\": \"text\", \"text\": \"26 match(es) for 'meromorphicOrderAt.*nonneg|meromorphicOrderAt.*analytic' (via ripgrep):\\n- Mathlib/Analysis/Meromorphic/Divisor.lean:181\\n    · simp [hf.meromorphicOn, hx,"
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/Meromorphic/Order.lean\", \"line\": 200, \"n\": 120}",
+      "ok": true,
+      "result_chars": 6161,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Meromorphic/Order.lean  (lines 200–319 of 950):\\n   200      apply this.continuousWithinAt.tendsto.congr'\\n   201      filter_upwards [hg] with y hy using b"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/Meromorphic/Order.lean\", \"line\": 299, \"n\": 30}",
+      "ok": true,
+      "result_chars": 2142,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Meromorphic/Order.lean  (lines 299–328 of 950):\\n   299  /-- A meromorphic function has non-negative order iff there exists an analytic extension. -/\\n   30"
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(class|def) MeromorphicAt\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 180,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '(class|def) MeromorphicAt' (via ripgrep):\\n- Mathlib/Analysis/Meromorphic/Basic.lean:37\\n    def MeromorphicAt (f : 𝕜 → E) (x : 𝕜) :=\"}]"
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(def|notation) meromorphicOrderAt\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 219,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '(def|notation) meromorphicOrderAt' (via ripgrep):\\n- Mathlib/Analysis/Meromorphic/Order.lean:50\\n    noncomputable def meromorphicOrderAt (f : 𝕜 → E) (x : 𝕜"
+    }
+  ]
+}

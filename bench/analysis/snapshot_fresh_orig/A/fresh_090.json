@@ -1,0 +1,17 @@
+{
+  "task_id": "fresh_090",
+  "arm": "A",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T02:06:58Z",
+  "wall_s": 99.3,
+  "output_lean": "theorem monotone_sequence_total_variation\n  (f : ℝ → ℝ) (x : Fin (n + 1) → ℝ) (n : ℕ)\n  (h_mono : ∀ i : Fin n, x i ≤ x (i.castSucc)) :\n  ∑ i : Fin n, |f (x (i.castSucc)) - f (x i)| = \n  ∑ i : Fin n, dist (f (x i)) (f (x (i.castSucc))) := sorry",
+  "transcript_stats": {
+    "turns": 1,
+    "tool_calls_by_name": {},
+    "tokens_in": 10,
+    "tokens_out": 10776,
+    "cost_usd": 0.055288750000000005
+  },
+  "tool_trace": []
+}

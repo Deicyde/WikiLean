@@ -1,0 +1,230 @@
+{
+  "task_id": "fresh_008",
+  "arm": "C",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T03:59:33Z",
+  "wall_s": 86.8,
+  "output_lean": "theorem support_coeff_toLaurent {R : Type*} [Semiring R] (f : R[X]) :\n    f.toLaurent.coeff.support = f.support.map Nat.castEmbedding := sorry",
+  "transcript_stats": {
+    "turns": 27,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 11,
+      "mcp__formal__decl_grep": 9,
+      "mcp__formal__decl_read": 6
+    },
+    "tokens_in": 160,
+    "tokens_out": 5685,
+    "cost_usd": 0.1126255
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Polynomial.support\"}",
+      "ok": true,
+      "result_chars": 939,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 116 declarations mentioning Polynomial.support.\\n- Polynomial.support   [Mathlib.Algebra.Polynomial.Basic]\\n    The set of all `n` such that `X^n` has a non-zero coeff"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"LaurentPolynomial support\"}",
+      "ok": true,
+      "result_chars": 104,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'LaurentPolynomial support': Unknown identifier `support`\"}]"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(theorem|lemma).*support.*LaurentPolynomial\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 114,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma).*support.*LaurentPolynomial' under Mathlib/.\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"LaurentPolynomial\"}",
+      "ok": true,
+      "result_chars": 1733,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 115 declarations mentioning LaurentPolynomial.\\n- LaurentPolynomial   [Mathlib.Algebra.Polynomial.Laurent]\\n    The semiring of Laurent polynomials with coefficients i"
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"LaurentPolynomial\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2351,
+      "result_head": "[{\"type\": \"text\", \"text\": \"29 match(es) for 'LaurentPolynomial' (via ripgrep):\\n- Mathlib/Algebra/MonoidAlgebra/Division.lean:17\\n    In order to apply in maximal generality (such as for `LaurentPolyn"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"AddMonoidAlgebra support\"}",
+      "ok": true,
+      "result_chars": 103,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'AddMonoidAlgebra support': Unknown identifier `support`\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"AddMonoidAlgebra.*support\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2622,
+      "result_head": "[{\"type\": \"text\", \"text\": \"23 match(es) for 'AddMonoidAlgebra.*support' (via ripgrep):\\n- Mathlib/Algebra/Polynomial/Coeff.lean:64\\n    grw [AddMonoidAlgebra.support_coeff_mul_subset]\\n- Mathlib/Algeb"
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Finsupp.support\"}",
+      "ok": true,
+      "result_chars": 963,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 431 declarations mentioning Finsupp.support.\\n- Finsupp.support   [Mathlib.Data.Finsupp.Defs]\\n    The support of a finitely supported function (aka `Finsupp`).\\n- Fin"
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def support.*Finsupp|lemma support.*Finsupp\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 897,
+      "result_head": "[{\"type\": \"text\", \"text\": \"6 match(es) for 'def support.*Finsupp|lemma support.*Finsupp' (via ripgrep):\\n- Mathlib/Algebra/MonoidAlgebra/Module.lean:141\\n    def supported : Submodule R S[M] := (Finsu"
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"file\": \"Mathlib/Algebra/Polynomial/Laurent.lean\", \"line\": \"1\", \"n\": \"100\"}",
+      "ok": false,
+      "result_chars": 28,
+      "result_head": "error: 'pattern' is required"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*toLaurent\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2663,
+      "result_head": "[{\"type\": \"text\", \"text\": \"20 match(es) for 'theorem.*toLaurent' (via ripgrep):\\n- Mathlib/Algebra/Polynomial/Laurent.lean:103\\n    theorem Polynomial.toLaurent_apply [Semiring R] (p : R[X]) :\\n- Math"
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Polynomial.toLaurent support\"}",
+      "ok": true,
+      "result_chars": 107,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Polynomial.toLaurent support': Unknown identifier `support`\"}]"
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Polynomial/Laurent.lean\", \"line\": 392, \"n\": 10}",
+      "ok": true,
+      "result_chars": 518,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Polynomial/Laurent.lean  (lines 392–401 of 674):\\n   392  theorem support_coeff_toLaurent (f : R[X]) :\\n   393      f.toLaurent.coeff.support = f.support.map"
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"LaurentPolynomial.coeff\"}",
+      "ok": true,
+      "result_chars": 118,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'LaurentPolynomial.coeff': unknown identifier 'LaurentPolynomial.coeff'\"}]"
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"LaurentPolynomial.support\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 96,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'LaurentPolynomial.support' under Mathlib/.\"}]"
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"AddMonoidAlgebra.coeff\"}",
+      "ok": true,
+      "result_chars": 1145,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 196 declarations mentioning AddMonoidAlgebra.coeff.\\n- AddMonoidAlgebra.coeff   [Mathlib.Algebra.MonoidAlgebra.Defs]\\n    The coefficients `M →₀ R` of an element of th"
+    },
+    {
+      "i": 16,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def coeff.*AddMonoidAlgebra\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 98,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'def coeff.*AddMonoidAlgebra' under Mathlib/.\"}]"
+    },
+    {
+      "i": 17,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Nat.castEmbedding\"}",
+      "ok": true,
+      "result_chars": 1235,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 16 declarations mentioning Nat.castEmbedding.\\n- Nat.castEmbedding   [Mathlib.Algebra.Ring.CharZero]\\n    `Nat.cast` as an embedding into monoids of characteristic `0`"
+    },
+    {
+      "i": 18,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Nat.castEmbedding\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 684,
+      "result_head": "[{\"type\": \"text\", \"text\": \"14 match(es) for 'Nat.castEmbedding' (via ripgrep):\\n- Mathlib/Algebra/Ring/CharZero.lean:31\\n    def Nat.castEmbedding : ℕ ↪ R := ⟨Nat.cast, cast_injective⟩\\n- Mathlib/Alge"
+    },
+    {
+      "i": 19,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Polynomial/Laurent.lean\", \"line\": 380, \"n\": 20}",
+      "ok": true,
+      "result_chars": 1033,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Polynomial/Laurent.lean  (lines 380–399 of 674):\\n   380    rw [← single_eq_C_mul_T]\\n   381    exact support_single _ a0\\n   382  \\n   383  @[deprecated (si"
+    },
+    {
+      "i": 20,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Polynomial/Laurent.lean\", \"line\": 350, \"n\": 35}",
+      "ok": true,
+      "result_chars": 1828,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Polynomial/Laurent.lean  (lines 350–384 of 674):\\n   350  \\n   351  /-- This is a version of `exists_T_pow` stated as an induction principle. -/\\n   352  @[e"
+    },
+    {
+      "i": 21,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Polynomial/Laurent.lean\", \"line\": 80, \"n\": 50}",
+      "ok": true,
+      "result_chars": 2315,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Polynomial/Laurent.lean  (lines 80–129 of 674):\\n    80  \\n    81  /-- The semiring of Laurent polynomials with coefficients in the semiring `R`.\\n    82  We"
+    },
+    {
+      "i": 22,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Polynomial/Laurent.lean\", \"line\": 1, \"n\": 30}",
+      "ok": true,
+      "result_chars": 1485,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Polynomial/Laurent.lean  (lines 1–30 of 674):\\n     1  /-\\n     2  Copyright (c) 2022 Damiano Testa. All rights reserved.\\n     3  Released under Apache 2.0 "
+    },
+    {
+      "i": 23,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Polynomial/Laurent.lean\", \"line\": 370, \"n\": 25}",
+      "ok": true,
+      "result_chars": 1266,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Polynomial/Laurent.lean  (lines 370–394 of 674):\\n   370    | succ n hn => convert QT _ _; simpa\\n   371  \\n   372  section Support\\n   373  \\n   374  theore"
+    },
+    {
+      "i": 24,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"theorem support_coeff_toLaurent\"}",
+      "ok": true,
+      "result_chars": 116,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'theorem support_coeff_toLaurent': <input>:1:0: expected end of input\"}]"
+    },
+    {
+      "i": 25,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"support_coeff_toLaurent\"}",
+      "ok": true,
+      "result_chars": 118,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'support_coeff_toLaurent': unknown identifier 'support_coeff_toLaurent'\"}]"
+    }
+  ]
+}

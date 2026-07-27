@@ -1,0 +1,374 @@
+{
+  "task_id": "fresh_052",
+  "arm": "E",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T05:11:01Z",
+  "wall_s": 175.0,
+  "output_lean": "theorem integral_change_of_variables_exp (g : ℝ → ℝ) (a : ℝ)\n    (hg_cont : ContinuousOn g (Ioi (Real.exp a)))\n    (hg_int_range : IntegrableOn g (Ici (Real.exp a)))\n    (hg_int_comp : IntegrableOn (fun x => g (Real.exp x) * Real.exp x) (Ici a)) :\n    ∫ x in Ioi a, g (Real.exp x) * Real.exp x = ∫ u in Ioi (Real.exp a), g u := by\n  have hf_cont : ContinuousOn Real.exp (Ici a) := Real.continuousOn_exp\n  have hf_tendsto : Tendsto Real.exp atTop atTop := Real.tendsto_exp_atTop\n  have hf_deriv : ∀ x ∈ Ioi a, HasDerivWithinAt Real.exp (Real.exp x) (Ioi x) x := fun x _ =>\n    (Real.hasDerivAt_exp x).hasDerivWithinAt\n  exact integral_comp_mul_deriv_Ioi hf_cont hf_tendsto hf_deriv hg_cont hg_int_range hg_int_comp",
+  "transcript_stats": {
+    "turns": 45,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 11,
+      "mcp__formal__decl_grep": 24,
+      "mcp__formal__decl_read": 9
+    },
+    "tokens_in": 258,
+    "tokens_out": 10900,
+    "cost_usd": 0.21299975
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"change of variables integral\"}",
+      "ok": true,
+      "result_chars": 114,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'change of variables integral': <input>:1:10: expected end of input\"}]"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"intervalIntegral substitution\"}",
+      "ok": true,
+      "result_chars": 113,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'intervalIntegral substitution': Unknown identifier `substitution`\"}]"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"intervalIntegral.*integral\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1287,
+      "result_head": "[{\"type\": \"text\", \"text\": \"292 match(es) for 'intervalIntegral.*integral' (via ripgrep):\\n- Mathlib/Probability/StrongLaw.lean:139\\n    rw [← integral_map (f := fun z => _ ^ n) hf.aemeasurable, interv"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"(?a → ?b) → (ℝ → ?a) → ℝ\"}",
+      "ok": true,
+      "result_chars": 91,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for '(?a → ?b) → (ℝ → ?a) → ℝ'.\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*integral.*comp\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1516,
+      "result_head": "[{\"type\": \"text\", \"text\": \"137 match(es) for 'theorem.*integral.*comp' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/Bochner/Set.lean:152\\n    theorem integral_add_compl₀ (hs : NullMeasurableSet s "
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/Integral/Bochner/Basic.lean\", \"line\": 1077, \"n\": 20}",
+      "ok": true,
+      "result_chars": 1286,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Integral/Bochner/Basic.lean  (lines 1077–1096 of 1379):\\n  1077  theorem MeasurePreserving.integral_comp {β} {_ : MeasurableSpace β} {f : α → β} {ν}\\n "
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"intervalIntegral.*exp\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1085,
+      "result_head": "[{\"type\": \"text\", \"text\": \"7 match(es) for 'intervalIntegral.*exp' (via ripgrep):\\n- Mathlib/Analysis/SumIntegralExpDecay.lean:23\\n    lemma intervalIntegral_pow_mul_exp_neg_le {k : ℕ} {M c : ℝ} (hM :"
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"integral.*Ioi\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 2147,
+      "result_head": "[{\"type\": \"text\", \"text\": \"102 match(es) for 'integral.*Ioi' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/Bochner/Set.lean:700\\n    theorem integral_Ici_eq_integral_Ioi' (hx : μ {x} = 0) :\\n- Math"
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Real.exp\"}",
+      "ok": true,
+      "result_chars": 895,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 626 declarations mentioning Real.exp.\\n- Real.exp   [Mathlib.Analysis.Complex.Exponential]\\n    The real exponential function, defined as the real part of the complex "
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*integral.*exp\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 2181,
+      "result_head": "[{\"type\": \"text\", \"text\": \"39 match(es) for 'theorem.*integral.*exp' (via ripgrep):\\n- Mathlib/Probability/Distributions/Fernique.lean:487\\n    theorem lintegral_exp_mul_sq_norm_le_of_map_rotation_eq_"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"integral.*exp.*deriv\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 206,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'integral.*exp.*deriv' (via ripgrep):\\n- Mathlib/Probability/Moments/MGFAnalytic.lean:236\\n    convert! (hasDerivAt_integral_pow_mul_exp_real h 1).deriv usin"
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"intervalIntegral.*Deriv\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1678,
+      "result_head": "[{\"type\": \"text\", \"text\": \"20 match(es) for 'intervalIntegral.*Deriv' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/DivergenceTheorem.lean:369\\n    * `intervalIntegral.integral_eq_sub_of_hasDeriv_r"
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"integral.*substitution\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 245,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'integral.*substitution' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/IntegrationByParts.lean:17\\n    * `intervalIntegral.integral_comp_"
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"integral_comp_mul_deriv\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1734,
+      "result_head": "[{\"type\": \"text\", \"text\": \"15 match(es) for 'integral_comp_mul_deriv' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/IntegrationByParts.lean:17\\n    * `intervalIntegral.integral_com"
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean\", \"line\": 1121, \"n\": 40}",
+      "ok": true,
+      "result_chars": 2707,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean  (lines 1121–1160 of 1392):\\n  1121  theorem integral_comp_mul_deriv_Ioi {f f' : ℝ → ℝ} {g : ℝ → ℝ} {a : ℝ}\\n  1122   "
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Ioi ℝ\"}",
+      "ok": true,
+      "result_chars": 80,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Ioi ℝ': Unknown identifier `Ioi`\"}]"
+    },
+    {
+      "i": 16,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"HasDerivWithinAt\"}",
+      "ok": true,
+      "result_chars": 1339,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 309 declarations mentioning HasDerivWithinAt.\\n- HasDerivWithinAt   [Mathlib.Analysis.Calculus.Deriv.Basic]\\n    `f` has the derivative `f'` at the point `x` within th"
+    },
+    {
+      "i": 17,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"ContinuousOn\"}",
+      "ok": true,
+      "result_chars": 881,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 1242 declarations mentioning ContinuousOn.\\n- ContinuousOn   [Mathlib.Topology.Defs.Filter]\\n    A function between topological spaces is continuous on a subset `s` wh"
+    },
+    {
+      "i": 18,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"hasDerivAt Real.exp\"}",
+      "ok": true,
+      "result_chars": 101,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'hasDerivAt Real.exp': Unknown identifier `hasDerivAt`\"}]"
+    },
+    {
+      "i": 19,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"integral_comp_mul_deriv_Ioi\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 403,
+      "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'integral_comp_mul_deriv_Ioi' (via ripgrep):\\n- Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/IntegralRepresentation.lean:292\\n    rwa "
+    },
+    {
+      "i": 20,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"hasDerivAt.*exp\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1430,
+      "result_head": "[{\"type\": \"text\", \"text\": \"54 match(es) for 'hasDerivAt.*exp' (via ripgrep):\\n- Mathlib/NumberTheory/NumberField/CanonicalEmbedding/NormLeOne.lean:227\\n    The derivative of `expMap_single`, see `hasD"
+    },
+    {
+      "i": 21,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"HasDerivAt exp\"}",
+      "ok": true,
+      "result_chars": 89,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'HasDerivAt exp': Unknown identifier `exp`\"}]"
+    },
+    {
+      "i": 22,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*hasDerivAt.*exp.*real\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 101,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*hasDerivAt.*exp.*real' under Mathlib/.\"}]"
+    },
+    {
+      "i": 23,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Real.hasDerivAt_exp\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 693,
+      "result_head": "[{\"type\": \"text\", \"text\": \"6 match(es) for 'Real.hasDerivAt_exp' (via ripgrep):\\n- Mathlib/NumberTheory/NumberField/CanonicalEmbedding/NormLeOne.lean:235\\n    (HasDerivAt.comp x (Real.hasDerivAt_exp _"
+    },
+    {
+      "i": 24,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem Real\\\\.hasDerivAt_exp\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 102,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem Real\\\\\\\\.hasDerivAt_exp' under Mathlib/.\"}]"
+    },
+    {
+      "i": 25,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SpecialFunctions/ExpDeriv.lean\", \"line\": 1, \"n\": 50}",
+      "ok": true,
+      "result_chars": 1860,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecialFunctions/ExpDeriv.lean  (lines 1–50 of 393):\\n     1  /-\\n     2  Copyright (c) 2018 Chris Hughes. All rights reserved.\\n     3  Released under Apac"
+    },
+    {
+      "i": 26,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"hasDerivAt_exp.*Real\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 91,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'hasDerivAt_exp.*Real' under Mathlib/.\"}]"
+    },
+    {
+      "i": 27,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SpecialFunctions/ExpDeriv.lean\", \"line\": 300, \"n\": 30}",
+      "ok": true,
+      "result_chars": 1555,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecialFunctions/ExpDeriv.lean  (lines 300–329 of 393):\\n   300  theorem HasStrictDerivAt.exp (hf : HasStrictDerivAt f f' x) :\\n   301      HasStrictDerivAt"
+    },
+    {
+      "i": 28,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Real\\\\.hasDerivAt_exp\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 807,
+      "result_head": "[{\"type\": \"text\", \"text\": \"6 match(es) for 'Real\\\\\\\\.hasDerivAt_exp' (via ripgrep):\\n- Mathlib/NumberTheory/NumberField/CanonicalEmbedding/NormLeOne.lean:235\\n    (HasDerivAt.comp x (Real.hasDerivAt_e"
+    },
+    {
+      "i": 29,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"hasDerivAt.*exp.*\\\\(x\\\\)\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 99,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'hasDerivAt.*exp.*\\\\\\\\(x\\\\\\\\)' under Mathlib/.\"}]"
+    },
+    {
+      "i": 30,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*hasDerivAt_exp\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1375,
+      "result_head": "[{\"type\": \"text\", \"text\": \"12 match(es) for 'theorem.*hasDerivAt_exp' (via ripgrep):\\n- Mathlib/NumberTheory/NumberField/CanonicalEmbedding/NormLeOne.lean:232\\n    theorem hasDerivAt_expMap_single (w "
+    },
+    {
+      "i": 31,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SpecialFunctions/ExpDeriv.lean\", \"line\": 250, \"n\": 30}",
+      "ok": true,
+      "result_chars": 1320,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecialFunctions/ExpDeriv.lean  (lines 250–279 of 393):\\n   250    analyticAt_rexp.comp_analyticWithinAt fa\\n   251  \\n   252  /-- `exp ∘ f` is analytic -/\\"
+    },
+    {
+      "i": 32,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Tendsto atTop atTop\"}",
+      "ok": true,
+      "result_chars": 98,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Tendsto atTop atTop': Unknown identifier `Tendsto`\"}]"
+    },
+    {
+      "i": 33,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*Continuous.*exp\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1339,
+      "result_head": "[{\"type\": \"text\", \"text\": \"13 match(es) for 'theorem.*Continuous.*exp' (via ripgrep):\\n- Mathlib/Analysis/Normed/Algebra/Exponential.lean:507\\n    theorem exp_continuous : Continuous (exp : 𝔸 → 𝔸) := "
+    },
+    {
+      "i": 34,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Tendsto.*exp.*atTop\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1510,
+      "result_head": "[{\"type\": \"text\", \"text\": \"26 match(es) for 'Tendsto.*exp.*atTop' (via ripgrep):\\n- Mathlib/Probability/Moments/SubGaussian.lean:367\\n    have hl : Filter.Tendsto (fun t ↦ rexp (-(t * ε))) Filter.atTo"
+    },
+    {
+      "i": 35,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem tendsto_exp_atTop\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 201,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'theorem tendsto_exp_atTop' (via ripgrep):\\n- Mathlib/Analysis/SpecialFunctions/Exp.lean:208\\n    theorem tendsto_exp_atTop : Tendsto exp atTop atTop := by\"}"
+    },
+    {
+      "i": 36,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SpecialFunctions/Exp.lean\", \"line\": 200, \"n\": 20}",
+      "ok": true,
+      "result_chars": 1192,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecialFunctions/Exp.lean  (lines 200–219 of 530):\\n   200  namespace Real\\n   201  \\n   202  variable {α : Type*} {x y z : ℝ} {l : Filter α}\\n   203  \\n   "
+    },
+    {
+      "i": 37,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"ContinuousOn exp\"}",
+      "ok": true,
+      "result_chars": 91,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'ContinuousOn exp': Unknown identifier `exp`\"}]"
+    },
+    {
+      "i": 38,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"integral.*Set\\\\.Ioi\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 240,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'integral.*Set\\\\\\\\.Ioi' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/Layercake.lean:528\\n    · have aux := @integral_eq_lintegral_of_nonneg_ae _ _ ((volu"
+    },
+    {
+      "i": 39,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"continuous_exp.*Real\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 91,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'continuous_exp.*Real' under Mathlib/.\"}]"
+    },
+    {
+      "i": 40,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem continuous_exp\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 502,
+      "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for 'theorem continuous_exp' (via ripgrep):\\n- Mathlib/NumberTheory/NumberField/CanonicalEmbedding/NormLeOne.lean:263\\n    theorem continuous_expMap :\\n- Mathlib"
+    },
+    {
+      "i": 41,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SpecialFunctions/Exp.lean\", \"line\": 60, \"n\": 20}",
+      "ok": true,
+      "result_chars": 1240,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecialFunctions/Exp.lean  (lines 60–79 of 530):\\n    60      ‖exp y - exp x‖ = ‖exp (x + (y - x)) - exp x‖ := by nth_rw 1 [hy_eq]\\n    61      _ ≤ ‖y - x‖ "
+    },
+    {
+      "i": 42,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SpecialFunctions/Exp.lean\", \"line\": 145, \"n\": 15}",
+      "ok": true,
+      "result_chars": 656,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecialFunctions/Exp.lean  (lines 145–159 of 530):\\n   145    simp [field]\\n   146  \\n   147  end ComplexContinuousExpComp\\n   148  \\n   149  namespace Real"
+    },
+    {
+      "i": 43,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean\", \"line\": 1115, \"n\": 15}",
+      "ok": true,
+      "result_chars": 1124,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean  (lines 1115–1129 of 1392):\\n  1115    exact tendsto_nhds_unique (Tendsto.congr' (eventuallyEq_of_mem (Ioi_mem_atTop a"
+    }
+  ]
+}

@@ -1,0 +1,184 @@
+{
+  "task_id": "fresh_031",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:36:52Z",
+  "wall_s": 131.6,
+  "output_lean": "def g : ℤ → ℤ := fun k => k * (3 * k - 1) / 2\n\ntheorem pentagonal_number_theorem :\n  ∃ (f : PowerSeries ℤ),\n    ∀ (n : ℕ),\n      let bound := Int.sqrt (2 * (n : ℤ)) + 2\n      let S := (Finset.Icc (-bound) bound).filter (fun k => g k = n)\n      f.coeff n = S.sum Int.negOnePow\n  := sorry",
+  "transcript_stats": {
+    "turns": 21,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 8,
+      "mcp__wikibrain__brain_cell": 2,
+      "mcp__wikibrain__brain_search": 3,
+      "decl_exists": 1,
+      "mcp__wikibrain__decl_exists": 6
+    },
+    "tokens_in": 118,
+    "tokens_out": 11075,
+    "cost_usd": 0.13995159999999998
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"formal power series in one variable\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 4821,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"formal power series in one variable\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"pentagonal numbers generalized\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 1468,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"pentagonal numbers generalized\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label "
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q206925\"}",
+      "ok": true,
+      "result_chars": 5891,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q206925\\\",\\\"id\\\":\\\"cell:Q206925\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Power series\\\",\\\"f\\\":36057,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q20"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"infinite product Euler\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3053,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"infinite product Euler\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, r"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"finite sum over integers\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 1972,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finite sum over integers\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match,"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"support finsupp finitely supported functions\", \"limit\": 8}",
+      "ok": false,
+      "result_chars": 277,
+      "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"support finsupp finitely supported functions\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"sna"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"finset sum notation\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 1967,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finset sum notation\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, reso"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"finsupp\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 1129,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finsupp\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q27628\\\",\\\"label\\\":\\\"Linear combination\\\",\\\"aka\\\":[\\\"Finsupp.linearCombination\\\",\\\"Linear Combination\\\",\\\"linear comb"
+    },
+    {
+      "i": 8,
+      "name": "decl_exists",
+      "input": "{\"names\": \"[\\\"PowerSeries\\\", \\\"Int\\\", \\\"Nat\\\", \\\"Even\\\", \\\"Odd\\\"]\"}",
+      "ok": false,
+      "result_chars": 75,
+      "result_head": "<tool_use_error>Error: No such tool available: decl_exists</tool_use_error>"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"power of minus one negative one\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2276,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"power of minus one negative one\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"PowerSeries\", \"Int\", \"Nat\"]}",
+      "ok": true,
+      "result_chars": 980,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"PowerSeries\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.PowerSeries.Basic\\\",\\\"import_line\\\":\\\"import Math"
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"Finset filter membership condition sum\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2766,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Finset filter membership condition sum\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact i"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Finset.sum\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 1367,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Finset.sum\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q218005\\\",\\\"label\\\":\\\"Summation\\\",\\\"aka\\\":[\\\"Finset.sum\\\",\\\"Sum\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/BigOperato"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:PowerSeries\"}",
+      "ok": true,
+      "result_chars": 5904,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:PowerSeries\\\",\\\"id\\\":\\\"cell:Q206925\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Power series\\\",\\\"f\\\":36057,\\\"cell\\\":{\\\"id"
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"PowerSeries.coeff\", \"PowerSeries.mk\", \"Finset.filter\", \"Finset.sum\"]}",
+      "ok": true,
+      "result_chars": 1462,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"PowerSeries.coeff\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.PowerSeries.Basic\\\",\\\"import_line\\\":\\\"impor"
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Finset.Icc\", \"Int.even\", \"Even\"]}",
+      "ok": true,
+      "result_chars": 1169,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Finset.Icc\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Interval.Finset.Defs\\\",\\\"import_line\\\":\\\"import Mathlib"
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Int.negOnePow\", \"zpow\", \"Nat.pow\", \"zpow_ofNat\"]}",
+      "ok": true,
+      "result_chars": 1344,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Int.negOnePow\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Ring.NegOnePow\\\",\\\"import_line\\\":\\\"import Mathlib."
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"PowerSeries monomial X\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 179,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"PowerSeries monomial X\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 18,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"PowerSeries.X\", \"PowerSeries.monomial\", \"PowerSeries.smul\"]}",
+      "ok": true,
+      "result_chars": 1090,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"PowerSeries.X\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.PowerSeries.Basic\\\",\\\"import_line\\\":\\\"import Ma"
+    },
+    {
+      "i": 19,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Int.sqrt\", \"Finset.Icc\", \"Int.natAbs\", \"Int.emod\"]}",
+      "ok": true,
+      "result_chars": 1294,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Int.sqrt\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Int.Sqrt\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Int.Sqrt\\"
+    }
+  ]
+}

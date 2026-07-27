@@ -1,0 +1,70 @@
+{
+  "task_id": "fresh_040",
+  "arm": "E",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T05:07:11Z",
+  "wall_s": 26.7,
+  "output_lean": "theorem UniqueFactorizationMonoid.of_isLocalization {R : Type*} [CommRing R] [UniqueFactorizationMonoid R] [IsDomain R]\n    (M : Submonoid R) (S : Type*) [CommRing S] [Algebra R S] [IsLocalization M S] :\n    UniqueFactorizationMonoid S := sorry",
+  "transcript_stats": {
+    "turns": 7,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 3,
+      "mcp__formal__decl_grep": 2,
+      "mcp__formal__decl_read": 1
+    },
+    "tokens_in": 34,
+    "tokens_out": 1777,
+    "cost_usd": 0.02559055
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"UniqueFactorizationMonoid\"}",
+      "ok": true,
+      "result_chars": 1515,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 305 declarations mentioning UniqueFactorizationMonoid.\\n- UniqueFactorizationMonoid   [Mathlib.RingTheory.UniqueFactorizationDomain.Defs]\\n    Unique factorization mon"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"class UniqueFactorizationMonoid\"}",
+      "ok": true,
+      "result_chars": 235,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'class UniqueFactorizationMonoid' (via ripgrep):\\n- Mathlib/RingTheory/UniqueFactorizationDomain/Defs.lean:132\\n    class UniqueFactorizationMonoid (α : Type"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Localization\"}",
+      "ok": true,
+      "result_chars": 1676,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 312 declarations mentioning Localization.\\n- Localization   [Mathlib.GroupTheory.MonoidLocalization.Basic]\\n    The localization of a `CommMonoid` at one of its submon"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Localization UniqueFactorizationMonoid\"}",
+      "ok": true,
+      "result_chars": 1614,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 312 declarations mentioning Localization.\\n- Submonoid.LocalizationMap.instSubsingletonLocalization   [Mathlib.GroupTheory.MonoidLocalization.Basic]\\n- Submonoid.Local"
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Localization.*UniqueFactorization\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 397,
+      "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'Localization.*UniqueFactorization' (via ripgrep):\\n- Mathlib/RingTheory/Polynomial/RationalRoot.lean:64\\n    open IsFractionRing IsLocalization Polynomial U"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/RingTheory/UniqueFactorizationDomain/Localization.lean\", \"line\": 1, \"n\": 80}",
+      "ok": true,
+      "result_chars": 2488,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RingTheory/UniqueFactorizationDomain/Localization.lean  (lines 1–50 of 50):\\n     1  /-\\n     2  Copyright (c) 2026 Yongle Hu. All rights reserved.\\n     3  Released"
+    }
+  ]
+}

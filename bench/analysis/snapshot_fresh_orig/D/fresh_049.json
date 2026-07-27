@@ -1,0 +1,144 @@
+{
+  "task_id": "fresh_049",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:41:13Z",
+  "wall_s": 72.9,
+  "output_lean": "theorem measurable_of_continuousOn_countable_compl\n  {α β : Type*} [TopologicalSpace α] [TopologicalSpace β]\n  [MeasurableSpace β] [OpensMeasurableSpace β]\n  (f : α → β) {s : Set α} (hs : Set.Countable s)\n  (hc : ContinuousOn f sᶜ) : Measurable f := sorry",
+  "transcript_stats": {
+    "turns": 16,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 1,
+      "mcp__wikibrain__decl_exists": 9,
+      "mcp__wikibrain__brain_search": 3,
+      "mcp__wikibrain__brain_cell": 1,
+      "mcp__wikibrain__brain_neighborhood": 1
+    },
+    "tokens_in": 126,
+    "tokens_out": 5391,
+    "cost_usd": 0.10894064999999999
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"a function continuous outside a countable set is measurable\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 4173,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"a function continuous outside a countable set is measurable\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved b"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Measurable\", \"ContinuousOn\", \"Countable\"]}",
+      "ok": true,
+      "result_chars": 1098,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Measurable\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.MeasureTheory.MeasurableSpace.Defs\\\",\\\"import_line\\\":\\\"import"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"continuous countable complement measurable\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 199,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"continuous countable complement measurable\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"measurable continuous outside countable\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 196,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"measurable continuous outside countable\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"measurable of continuous on compl countable\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 200,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"measurable of continuous on compl countable\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"AEMeasurable\", \"Measurable.of_continuous\", \"ae_measurable\", \"measurableSet_compl\"]}",
+      "ok": true,
+      "result_chars": 1278,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"AEMeasurable\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.MeasureTheory.Measure.MeasureSpaceDef\\\",\\\"import_line\\\":\\\"i"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Continuous\", \"OpensMeasurableSpace\", \"MeasurableSpace\", \"measurable_of_continuous_on_compl\", \"Measurable.of_continuous_on\"]}",
+      "ok": true,
+      "result_chars": 1706,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Continuous\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Defs.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Topolo"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Set.Countable\", \"compl_eq_univ_diff\", \"AEMeasurable.of_continuous_on\", \"ae_measurable_of_continuous_on\"]}",
+      "ok": true,
+      "result_chars": 1244,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Set.Countable\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Set.Countable\\\",\\\"import_line\\\":\\\"import Mathlib.Data"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"Measurable\"}",
+      "ok": true,
+      "result_chars": 5916,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"decl\\\",\\\"key\\\":\\\"Measurable\\\",\\\"id\\\":\\\"cell:Q176623\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Random variable\\\",\\\"f\\\":40153,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q1"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Continuous.measurable\", \"measurable_iff_continuous\", \"Measurable.of_continuous\", \"measurable_of_continuous\"]}",
+      "ok": true,
+      "result_chars": 1334,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Continuous.measurable\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.MeasureTheory.Constructions.BorelSpace.Basic\\\",\\\"i"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"cell:Q176623\", \"kinds\": \"depends\", \"limit\": 30}",
+      "ok": true,
+      "result_chars": 26476,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q176623\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\"],\\\"synapses\\\":[{\\\"id\\\":\\\"path:Mathlib/Probability\\\",\\\"w\\\":13,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\""
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"TopologicalSpace\", \"MeasurableSpace\", \"Set.compl\", \"AEStronglyMeasurable\", \"aestronglyMeasurable_of_continuousOn\"]}",
+      "ok": true,
+      "result_chars": 1599,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"TopologicalSpace\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Defs.Basic\\\",\\\"import_line\\\":\\\"import Mathlib."
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Measurable.of_continuousOn\", \"measurable_of_continuousOn\", \"Continuous.of_continuousOn_compl\", \"measurable_iff_continuous_almost_everywhere\"]}",
+      "ok": true,
+      "result_chars": 1237,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Measurable.of_continuousOn\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common ("
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"instCompl\", \"Set.instCompl\", \"compl\"]}",
+      "ok": true,
+      "result_chars": 960,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"instCompl\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Modu"
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Type\", \"Prop\", \"fun\"]}",
+      "ok": true,
+      "result_chars": 897,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Type\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Ba"
+    }
+  ]
+}

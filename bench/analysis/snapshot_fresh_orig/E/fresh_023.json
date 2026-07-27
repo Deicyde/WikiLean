@@ -1,0 +1,150 @@
+{
+  "task_id": "fresh_023",
+  "arm": "E",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T05:01:28Z",
+  "wall_s": 58.4,
+  "output_lean": "theorem antitone_nonneg_integrable_sum_le_integral {N : ℕ} {f : ℝ → ℝ}\n    (h_antitone : AntitoneOn f (Icc 0 (N : ℝ)))\n    (h_integrable : IntegrableOn f (Ioi 0))\n    (h_nonneg : ∀ t ∈ Ioi 0, 0 ≤ f t) :\n    ∑ n ∈ Finset.range N, f (n + 1) ≤ ∫ x in Ioi 0, f x := sorry",
+  "transcript_stats": {
+    "turns": 17,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 6,
+      "mcp__formal__decl_grep": 6,
+      "mcp__formal__decl_read": 4
+    },
+    "tokens_in": 84,
+    "tokens_out": 5207,
+    "cost_usd": 0.07416009999999999
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Antitone ?f\"}",
+      "ok": true,
+      "result_chars": 739,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 541 declarations mentioning Antitone.\\n- antitone_const   [Mathlib.Order.Monotone.Defs]\\n- Subsingleton.antitone   [Mathlib.Order.Monotone.Defs]\\n- Subsingleton.antito"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"integrable ?f\"}",
+      "ok": true,
+      "result_chars": 95,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'integrable ?f': Unknown identifier `integrable`\"}]"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Integrable ?f\"}",
+      "ok": true,
+      "result_chars": 95,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Integrable ?f': Unknown identifier `Integrable`\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"∫ ?x, ?f ?x\"}",
+      "ok": true,
+      "result_chars": 95,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '∫ ?x, ?f ?x': <input>:1:2: expected ',' or 'in'\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*integrable\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1498,
+      "result_head": "[{\"type\": \"text\", \"text\": \"266 match(es) for 'theorem.*integrable' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/Bochner/VitaliCaratheodory.lean:13\\n    Vitali-Carathéodory theorem asserts the foll"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(integral|sum).*decreasing\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1033,
+      "result_head": "[{\"type\": \"text\", \"text\": \"7 match(es) for '(integral|sum).*decreasing' (via ripgrep):\\n- Mathlib/MeasureTheory/Measure/HasOuterApproxClosed.lean:195\\n    /-- The measure of a closed set is at most th"
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/Integral/Bochner/Basic.lean\", \"line\": 234, \"n\": 5}",
+      "ok": true,
+      "result_chars": 424,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Integral/Bochner/Basic.lean  (lines 234–238 of 1379):\\n   234  theorem integrable_of_integral_eq_one {f : α → ℝ} (h : ∫ x, f x ∂μ = 1) : Integrable f μ"
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Integrable ?f ?μ\"}",
+      "ok": true,
+      "result_chars": 98,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Integrable ?f ?μ': Unknown identifier `Integrable`\"}]"
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"antitone.*integrable|sum.*antitone\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 2273,
+      "result_head": "[{\"type\": \"text\", \"text\": \"30 match(es) for 'antitone.*integrable|sum.*antitone' (via ripgrep):\\n- Mathlib/Algebra/Order/Monoid/Unbundled/Basic.lean:1210\\n    @[to_additive add /-- The sum of two anti"
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Finset.sum.*integral|integral.*Finset.sum\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1464,
+      "result_head": "[{\"type\": \"text\", \"text\": \"17 match(es) for 'Finset.sum.*integral|integral.*Finset.sum' (via ripgrep):\\n- Mathlib/Probability/Martingale/Upcrossing.lean:409\\n    simp only [Finset.range_zero, Finset.s"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem|lemma\", \"limit\": 30}",
+      "ok": true,
+      "result_chars": 3432,
+      "result_head": "[{\"type\": \"text\", \"text\": \"117996 match(es) for 'theorem|lemma' (via ripgrep):\\n- Mathlib/Algebra/FreeAlgebra.lean:32\\n    3. `hom_ext` is a variant of `lift_unique` in the form of an extensionality t"
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SumIntegralComparisons.lean\", \"line\": 1, \"n\": 80}",
+      "ok": true,
+      "result_chars": 4666,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SumIntegralComparisons.lean  (lines 1–80 of 309):\\n     1  /-\\n     2  Copyright (c) 2022 Kevin H. Wilson. All rights reserved.\\n     3  Released under Apac"
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SumIntegralComparisons.lean\", \"line\": 150, \"n\": 60}",
+      "ok": true,
+      "result_chars": 3573,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SumIntegralComparisons.lean  (lines 150–209 of 309):\\n   150      simp only [Nat.cast_add, Nat.cast_one, mem_Ico, ← Nat.add_one_le_iff] at hx hi\\n   151    "
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(def|structure) IntegrableOn\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 235,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '(def|structure) IntegrableOn' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/IntegrableOn.lean:92\\n    def IntegrableOn (f : α → ε) (s : Set α) (μ : Measu"
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"IntegrableOn ?f ?s\"}",
+      "ok": true,
+      "result_chars": 102,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IntegrableOn ?f ?s': Unknown identifier `IntegrableOn`\"}]"
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SumIntegralComparisons.lean\", \"line\": 196, \"n\": 10}",
+      "ok": true,
+      "result_chars": 780,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SumIntegralComparisons.lean  (lines 196–205 of 309):\\n   196  lemma AntitoneOn.sum_range_le_integral {N : ℕ} (anti : AntitoneOn f (Icc 0 (N : ℝ)))\\n   197  "
+    }
+  ]
+}

@@ -1,0 +1,206 @@
+{
+  "task_id": "fresh_016",
+  "arm": "C",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:01:44Z",
+  "wall_s": 105.8,
+  "output_lean": "theorem integral_one_over_t_log_sq (a b : ℝ) (ha : 1 < a) (hb : 1 < b) :\n    ∫ t in a..b, 1 / (t * (log t) ^ 2) = 1 / log a - 1 / log b := sorry",
+  "transcript_stats": {
+    "turns": 24,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 7,
+      "mcp__formal__decl_grep": 12,
+      "mcp__formal__decl_read": 4
+    },
+    "tokens_in": 174,
+    "tokens_out": 5478,
+    "cost_usd": 0.11994355
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"∫ _ in _ .. _, _ → ℝ\"}",
+      "ok": true,
+      "result_chars": 86,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '∫ _ in _ .. _, _ → ℝ': unexpected '..'\"}]"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Real.log ℝ → ℝ\"}",
+      "ok": true,
+      "result_chars": 228,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Real.log ℝ → ℝ': Application type mismatch: The argument\\n  ℝ\\nhas type\\n  Type\\nof sort `Type 1` but is expected to have type\\n  ℝ\\nof sort `Type` in the "
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"log\"}",
+      "ok": true,
+      "result_chars": 78,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'log': unknown identifier 'log'\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"integral\"}",
+      "ok": true,
+      "result_chars": 88,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'integral': unknown identifier 'integral'\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"ℝ → ℝ\"}",
+      "ok": true,
+      "result_chars": 1866,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 26993 declarations mentioning Real.\\n- Real.iInf_Ioi_eq_iInf_rat_gt   [Mathlib.Algebra.Order.Archimedean.Real.Basic]\\n- Metric.glueDist   [Mathlib.Topology.MetricSpace"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(def|theorem|lemma).*log\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2548,
+      "result_head": "[{\"type\": \"text\", \"text\": \"4856 match(es) for '(def|theorem|lemma).*log' (via ripgrep):\\n- Mathlib/Algebra/ContinuedFractions/Computation/ApproximationCorollaries.lean:118\\n    theorem of_convergence "
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"^[[:space:]]*(def|theorem|lemma) Real\\\\.log\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 652,
+      "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for '^[[:space:]]*(def|theorem|lemma) Real\\\\\\\\.log' (via ripgrep):\\n- Mathlib/Analysis/SpecialFunctions/Trigonometric/Deriv.lean:731\\n    theorem Real.logDeriv_s"
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"^[[:space:]]*(def|noncomputable def) log[^D]\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 1670,
+      "result_head": "[{\"type\": \"text\", \"text\": \"36 match(es) for '^[[:space:]]*(def|noncomputable def) log[^D]' (via ripgrep):\\n- Mathlib/SetTheory/Ordinal/Exponential.lean:283\\n    def log (b x : Ordinal) : Ordinal :=\\n-"
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/Complex/Exponential.lean\", \"line\": 1, \"n\": 100}",
+      "ok": true,
+      "result_chars": 3782,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Complex/Exponential.lean  (lines 1–100 of 712):\\n     1  /-\\n     2  Copyright (c) 2018 Chris Hughes. All rights reserved.\\n     3  Released under Apache 2."
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"noncomputable def log \\\\(x : ℝ\\\\)\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 197,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'noncomputable def log \\\\\\\\(x : ℝ\\\\\\\\)' (via ripgrep):\\n- Mathlib/Analysis/SpecialFunctions/Log/Basic.lean:44\\n    noncomputable def log (x : ℝ) : ℝ :=\"}]"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SpecialFunctions/Log/Basic.lean\", \"line\": 44, \"n\": 30}",
+      "ok": true,
+      "result_chars": 1303,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecialFunctions/Log/Basic.lean  (lines 44–73 of 712):\\n    44  noncomputable def log (x : ℝ) : ℝ :=\\n    45    if hx : x = 0 then 0 else expOrderIso.symm ⟨"
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"^[[:space:]]*(def|noncomputable) integral\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1131,
+      "result_head": "[{\"type\": \"text\", \"text\": \"9 match(es) for '^[[:space:]]*(def|noncomputable) integral' (via ripgrep):\\n- Mathlib/Analysis/Distribution/SchwartzSpace/Basic.lean:1137\\n    def integralCLM : 𝓢(D, V) →L[𝕜"
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"?α → ℝ\"}",
+      "ok": true,
+      "result_chars": 1373,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 26993 declarations mentioning Real.\\n- IsPowMul   [Mathlib.Data.Real.Basic]\\n    A function `f : R → ℝ` is power-multiplicative if for all `r ∈ R` and all positive `n "
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"IntervalIntegral\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1477,
+      "result_head": "[{\"type\": \"text\", \"text\": \"45 match(es) for 'IntervalIntegral' (via ripgrep):\\n- Mathlib/Dynamics/Ergodic/AddCircleAdd.lean:10\\n    public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Period"
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"^[[:space:]]*(noncomputable )?def integral\\\\b\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 635,
+      "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for '^[[:space:]]*(noncomputable )?def integral\\\\\\\\b' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/Bochner/L1.lean:194\\n    def integral {_ : MeasurableSpace"
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"notation.*∫\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1521,
+      "result_head": "[{\"type\": \"text\", \"text\": \"26 match(es) for 'notation.*∫' (via ripgrep):\\n- Mathlib/Probability/Notation.lean:57\\n    scoped[ProbabilityTheory] notation \\\"𝔼[\\\" X \\\"]\\\" => ∫ a, (X : _ → _) a\\n- Mathlib"
+    },
+    {
+      "i": 16,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"notation.*\\\\.\\\\..*∫\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 94,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'notation.*\\\\\\\\.\\\\\\\\..*∫' under Mathlib/.\"}]"
+    },
+    {
+      "i": 17,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean\", \"line\": 1, \"n\": 150}",
+      "ok": true,
+      "result_chars": 6177,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean  (lines 1–120 of 1467):\\n     1  /-\\n     2  Copyright (c) 2020 Yury Kudryashov. All rights reserved.\\n     3  Rel"
+    },
+    {
+      "i": 18,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"notation.*in.*\\\\\\\\.\\\\\\\\.\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 103,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'notation.*in.*\\\\\\\\\\\\\\\\.\\\\\\\\\\\\\\\\.' under Mathlib/.\"}]"
+    },
+    {
+      "i": 19,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"^[[:space:]]*(def|noncomputable def) intervalIntegral\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 253,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '^[[:space:]]*(def|noncomputable def) intervalIntegral' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean:656\\n    def intervalInt"
+    },
+    {
+      "i": 20,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean\", \"line\": 656, \"n\": 50}",
+      "ok": true,
+      "result_chars": 2624,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean  (lines 656–705 of 1467):\\n   656  def intervalIntegral (f : ℝ → E) (a b : ℝ) (μ : Measure ℝ) : E :=\\n   657    (∫"
+    },
+    {
+      "i": 21,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"^[[:space:]]*noncomputable def log\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 691,
+      "result_head": "[{\"type\": \"text\", \"text\": \"13 match(es) for '^[[:space:]]*noncomputable def log' (via ripgrep):\\n- Mathlib/Analysis/Polynomial/MahlerMeasure.lean:54\\n    noncomputable def logMahlerMeasure : ℝ := circ"
+    },
+    {
+      "i": 22,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"ℝ → ℕ → ℝ\"}",
+      "ok": true,
+      "result_chars": 2696,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 6938 declarations mentioning Real and Nat.\\n- Real.expNear   [Mathlib.Analysis.Complex.Exponential]\\n    A finite initial segment of the exponential series, followed b"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "task_id": "fresh_054",
+  "arm": "B",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T02:21:33Z",
+  "wall_s": 79.6,
+  "output_lean": "theorem semiring_of_sets_diff_decomposition\n  {α : Type*}\n  (C : Set (Set α))\n  (h_empty : ∅ ∈ C)\n  (h_inter : ∀ a b ∈ C, a ∩ b ∈ C)\n  (h_diff : ∀ a b ∈ C, ∃ (D : Finset (Set α)), \n    (∀ d ∈ D, d ∈ C) ∧ \n    (∀ d₁ d₂ ∈ D, d₁ ≠ d₂ → Disjoint d₁ d₂) ∧\n    a \\ b = ⋃ d ∈ D, d)\n  (s : Set α) (hs : s ∈ C)\n  (I : Finset (Set α)) (hI : ∀ i ∈ I, i ∈ C) :\n  ∃ (J : Finset (Set α)), \n    (∀ j ∈ J, j ∈ C) ∧\n    (∀ j₁ j₂ ∈ J, j₁ ≠ j₂ → Disjoint j₁ j₂) ∧\n    s \\ ⋃ i ∈ I, i = ⋃ j ∈ J, j :=\n  sorry",
+  "transcript_stats": {
+    "turns": 1,
+    "tool_calls_by_name": {},
+    "tokens_in": 10,
+    "tokens_out": 8612,
+    "cost_usd": 0.04688235
+  },
+  "tool_trace": []
+}

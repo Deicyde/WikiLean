@@ -1,0 +1,419 @@
+{
+  "task_id": "fresh_081",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:49:46Z",
+  "wall_s": 96.9,
+  "output_lean": "theorem MvPolynomial.pderiv_pow (σ : Type*) (R : Type*) [CommSemiring R]\n    (i : σ) (g : MvPolynomial σ R) (n : ℕ) :\n    pderiv i (g ^ n) = (n : R) * g ^ (n - 1) * pderiv i g := sorry",
+  "transcript_stats": {
+    "turns": 50,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 16,
+      "mcp__wikibrain__brain_cell": 4,
+      "mcp__wikibrain__brain_search": 19,
+      "mcp__wikibrain__brain_neighborhood": 4,
+      "decl_exists": 1,
+      "mcp__wikibrain__decl_exists": 3,
+      "mcp__wikibrain__brain_transfer": 1,
+      "mcp__wikibrain__brain_snippets": 1
+    },
+    "tokens_in": 226,
+    "tokens_out": 6559,
+    "cost_usd": 0.22764585
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"multivariate power series\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 4725,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"multivariate power series\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label matc"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"partial derivative formal power series\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 6908,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"partial derivative formal power series\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact "
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"power rule for derivatives composition\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2514,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"power rule for derivatives composition\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact "
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"MvPowerSeries multivariate polynomial\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3408,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"MvPowerSeries multivariate polynomial\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact i"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"power rule derivative n times\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2916,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"power rule derivative n times\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label "
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:decl:Mathlib:MvPowerSeries\"}",
+      "ok": true,
+      "result_chars": 1299,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:MvPowerSeries\\\",\\\"id\\\":\\\"cell:decl:Mathlib:MvPowerSeries\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"MvPowerSeries\\\","
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"derivative of polynomial power n*f^{n-1}\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 4102,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"derivative of polynomial power n*f^{n-1}\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exac"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"formal power series derivative variable\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 4817,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"formal power series derivative variable\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"PowerSeries derivative\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 179,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"PowerSeries derivative\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"chain rule derivative composition\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 4740,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"chain rule derivative composition\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/la"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"mul_pow derivative ring\", \"limit\": 12}",
+      "ok": true,
+      "result_chars": 180,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"mul_pow derivative ring\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"deriv pow power\", \"limit\": 12}",
+      "ok": true,
+      "result_chars": 172,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"deriv pow power\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"linear derivative\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2904,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"linear derivative\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resol"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"MvPowerSeries variable partial derivative\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 6225,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"MvPowerSeries variable partial derivative\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exa"
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"variable MvPowerSeries\", \"limit\": 12}",
+      "ok": true,
+      "result_chars": 179,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"variable MvPowerSeries\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"cell:decl:Mathlib:MvPowerSeries\", \"kinds\": \"depends\", \"limit\": 50}",
+      "ok": true,
+      "result_chars": 344,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:MvPowerSeries\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\"],\\\"synapses\\\":[],\\\"returned\\\":0,\\\"matched\\\":0,\\\"counts\\\":{\\\"syn\\\":1,\\\"organs"
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Polynomial.derivative\", \"limit\": 12}",
+      "ok": true,
+      "result_chars": 708,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Polynomial.derivative\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q1955819\\\",\\\"label\\\":\\\"formal derivative\\\",\\\"aka\\\":[\\\"Polynomial.derivative\\\",\\\"A Concise Course in Gal"
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"Polynomial.natDegree power\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3066,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Polynomial.natDegree power\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label mat"
+    },
+    {
+      "i": 18,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q1955819\"}",
+      "ok": true,
+      "result_chars": 2024,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q1955819\\\",\\\"id\\\":\\\"cell:Q1955819\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"formal derivative\\\",\\\"f\\\":160,\\\"cell\\\":{\\\"id\\\":\\\"cel"
+    },
+    {
+      "i": 19,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"pow_derivative\", \"limit\": 12}",
+      "ok": true,
+      "result_chars": 171,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"pow_derivative\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 20,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"derivative_pow\", \"limit\": 12}",
+      "ok": true,
+      "result_chars": 171,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"derivative_pow\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 21,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"MvPowerSeries vars\", \"limit\": 12}",
+      "ok": true,
+      "result_chars": 175,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"MvPowerSeries vars\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 22,
+      "name": "decl_exists",
+      "input": "{\"names\": \"[\\\"Polynomial.derivative\\\", \\\"MvPolynomial.derivative\\\", \\\"MvPowerSeries\\\", \\\"deriv\\\"]\"}",
+      "ok": false,
+      "result_chars": 75,
+      "result_head": "<tool_use_error>Error: No such tool available: decl_exists</tool_use_error>"
+    },
+    {
+      "i": 23,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Polynomial.derivative\", \"MvPolynomial.derivative\", \"MvPowerSeries\", \"deriv\"]}",
+      "ok": true,
+      "result_chars": 1554,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Polynomial.derivative\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Polynomial.Derivative\\\",\\\"import_line\\\":\\\""
+    },
+    {
+      "i": 24,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"MvPowerSeries.coeff constant_coeff\", \"limit\": 12}",
+      "ok": true,
+      "result_chars": 191,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"MvPowerSeries.coeff constant_coeff\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 25,
+      "name": "mcp__wikibrain__brain_transfer",
+      "input": "{\"q\": \"deriv\", \"direction\": \"formal_to_informal\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 573,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"deriv\\\",\\\"decl\\\":\\\"deriv\\\",\\\"id\\\":\\\"cell:Q29175\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Derivative\\\",\\\"hits\\\":[{\\\"qid\\\":\\\"Q"
+    },
+    {
+      "i": 26,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:Polynomial.derivative\"}",
+      "ok": true,
+      "result_chars": 2046,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:Polynomial.derivative\\\",\\\"id\\\":\\\"cell:Q1955819\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"formal derivative\\\",\\\"f\\\":160,"
+    },
+    {
+      "i": 27,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"cell:Q1955819\", \"limit\": 30}",
+      "ok": true,
+      "result_chars": 2665,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q1955819\\\",\\\"kind\\\":\\\"cell\\\",\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q207643\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"cites\\\""
+    },
+    {
+      "i": 28,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Polynomial pow natDegree\", \"limit\": 12}",
+      "ok": true,
+      "result_chars": 181,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Polynomial pow natDegree\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 29,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"product rule chain rule derivative composition\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 4847,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"product rule chain rule derivative composition\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (a"
+    },
+    {
+      "i": 30,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"deriv_pow_const\", \"limit\": 12}",
+      "ok": true,
+      "result_chars": 172,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"deriv_pow_const\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 31,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"lineDeriv pow\", \"limit\": 12}",
+      "ok": true,
+      "result_chars": 170,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"lineDeriv pow\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 32,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"cell:Q29175\", \"kinds\": \"depends,mentions\", \"limit\": 50}",
+      "ok": true,
+      "result_chars": 28785,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q29175\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\",\\\"mentions\\\"],\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q919459\\\",\\\"w\\\":8,\\\"kinds\\\":{\\\"depends\\\":3,\\\"links\\\":"
+    },
+    {
+      "i": 33,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MvPolynomial.pderiv\", \"MvPowerSeries.pderiv\"]}",
+      "ok": true,
+      "result_chars": 916,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MvPolynomial.pderiv\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.MvPolynomial.PDeriv\\\",\\\"import_line\\\":\\\"impo"
+    },
+    {
+      "i": 34,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"MvPolynomial partial derivative power\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 6192,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"MvPolynomial partial derivative power\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact i"
+    },
+    {
+      "i": 35,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"pderiv pow mul\", \"limit\": 12}",
+      "ok": true,
+      "result_chars": 171,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"pderiv pow mul\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 36,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"pderiv_pow\", \"limit\": 12}",
+      "ok": true,
+      "result_chars": 167,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"pderiv_pow\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 37,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"MvPolynomial.pderiv\", \"limit\": 12}",
+      "ok": true,
+      "result_chars": 340,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"MvPolynomial.pderiv\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:MvPolynomial.pderiv\\\",\\\"label\\\":\\\"MvPolynomial.pderiv\\\",\\\"supercell\\\":\\\"path:Mathlib/Algebra"
+    },
+    {
+      "i": 38,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"Finsupp support polynomial coefficient\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3078,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Finsupp support polynomial coefficient\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact "
+    },
+    {
+      "i": 39,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:decl:Mathlib:MvPolynomial.pderiv\"}",
+      "ok": true,
+      "result_chars": 1364,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:MvPolynomial.pderiv\\\",\\\"id\\\":\\\"cell:decl:Mathlib:MvPolynomial.pderiv\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"MvPo"
+    },
+    {
+      "i": 40,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"cell:decl:Mathlib:MvPolynomial.pderiv\", \"limit\": 40}",
+      "ok": true,
+      "result_chars": 783,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:MvPolynomial.pderiv\\\",\\\"kind\\\":\\\"cell\\\",\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q919459\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"special_case\\\":1},\\\"traces\\\":[{\\\""
+    },
+    {
+      "i": 41,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"pderiv_mul\", \"limit\": 12}",
+      "ok": true,
+      "result_chars": 167,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"pderiv_mul\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 42,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Derivation mul pow\", \"limit\": 12}",
+      "ok": true,
+      "result_chars": 175,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Derivation mul pow\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 43,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"power series ring algebra variable\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 4857,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"power series ring algebra variable\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/l"
+    },
+    {
+      "i": 44,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"coeff_pow MvPowerSeries\", \"limit\": 12}",
+      "ok": true,
+      "result_chars": 180,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"coeff_pow MvPowerSeries\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 45,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"pow natDeriv polynomial\", \"limit\": 12}",
+      "ok": true,
+      "result_chars": 180,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"pow natDeriv polynomial\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 46,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Polynomial.natDeriv\", \"natDeriv\", \"Derivation.map\"]}",
+      "ok": true,
+      "result_chars": 927,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Polynomial.natDeriv\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Ba"
+    },
+    {
+      "i": 47,
+      "name": "mcp__wikibrain__brain_snippets",
+      "input": "{\"id\": \"decl:Mathlib:MvPolynomial.pderiv\"}",
+      "ok": true,
+      "result_chars": 574,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:MvPolynomial.pderiv\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:MvPolynomial.pderiv\\\",\\\"label\\\":\\\""
+    },
+    {
+      "i": 48,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"Nat.cast Nat to algebra\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2921,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Nat.cast Nat to algebra\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match,"
+    }
+  ]
+}

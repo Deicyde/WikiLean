@@ -1,0 +1,46 @@
+{
+  "task_id": "fresh_098",
+  "arm": "B",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T03:56:24Z",
+  "wall_s": 61.9,
+  "output_lean": "theorem continuous_interval_fixed_point (a b : ℝ) (hab : a ≤ b)\n    (f : ℝ → ℝ) (hf : Continuous f)\n    (hm : ∀ x ∈ Set.Icc a b, f x ∈ Set.Icc a b) :\n    ∃ x ∈ Set.Icc a b, f x = x := sorry",
+  "transcript_stats": {
+    "turns": 4,
+    "tool_calls_by_name": {
+      "mcp__wiki__wiki_search": 1,
+      "mcp__wiki__wiki_get": 1,
+      "mcp__wiki__nlab_search": 1
+    },
+    "tokens_in": 34,
+    "tokens_out": 5236,
+    "cost_usd": 0.04292665
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"Brouwer fixed point theorem continuous map interval\"}",
+      "ok": true,
+      "result_chars": 2374,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'Brouwer fixed point theorem continuous map interval':\\n- Brouwer fixed-point theorem  (slug: Brouwer_fixed-point_theorem)\\n    https://en.wikipedia.org/wiki"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wiki__wiki_get",
+      "input": "{\"title\": \"Brouwer_fixed-point_theorem\"}",
+      "ok": true,
+      "result_chars": 4178,
+      "result_head": "[{\"type\": \"text\", \"text\": \"# Brouwer fixed-point theorem\\nBrouwer's fixed-point theorem is a fixed-point theorem in topology, named after L. E. J. (Bertus) Brouwer. It states that for any continuous f"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wiki__nlab_search",
+      "input": "{\"q\": \"fixed point continuous interval Icc closed\"}",
+      "ok": true,
+      "result_chars": 121,
+      "result_head": "[{\"type\": \"text\", \"text\": \"nLab search for 'fixed point continuous interval Icc closed' — candidate pages:\\n- HomePage\"}]"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "task_id": "fresh_078",
+  "arm": "A",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T02:04:52Z",
+  "wall_s": 26.4,
+  "output_lean": "theorem ext_vanishing_equivalence\n  (R : Type*) [CommRing R] [IsNoetherian R R]\n  (I : Ideal R)\n  (M : Type*) [AddCommMonoid M] [Module R M] [IsNoetherian R M]\n  (hM_nontrivial : Nontrivial M)\n  (hIM_proper : I • M < ⊤ : Submodule R M)\n  (n : ℕ) :\n  (∀ (N : Type*) [AddCommMonoid N] [Module R N] [IsNoetherian R N],\n    Nontrivial N →\n    (∀ p : Ideal R, Ideal.IsPrime p → p ∈ Ideal.vanishingLocus I → p ∈ Submodule.annihilator N) →\n    ∀ i < n, Module.Ext R i N M = 0) ↔\n  (∀ i < n, Module.Ext R i (R ⧸ I) M = 0) ↔\n  (∃ (N : Type*) [AddCommMonoid N] [Module R N] [IsNoetherian R N],\n    Nontrivial N ∧\n    (∀ p : Ideal R, Ideal.IsPrime p →\n      (p ∈ Submodule.annihilator N ↔ p ∈ Ideal.vanishingLocus I)) ∧\n    ∀ i < n, Module.Ext R i N M = 0) ↔\n  ∃ (s : List R), s.length = n ∧\n    (∀ a ∈ s, a ∈ I) ∧\n    ∀ i < s.length, IsRegular M (s.get ⟨i, by omega⟩) := sorry",
+  "transcript_stats": {
+    "turns": 1,
+    "tool_calls_by_name": {},
+    "tokens_in": 10,
+    "tokens_out": 2410,
+    "cost_usd": 0.013652499999999998
+  },
+  "tool_trace": []
+}

@@ -1,0 +1,17 @@
+{
+  "task_id": "fresh_019",
+  "arm": "A",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T01:53:37Z",
+  "wall_s": 91.0,
+  "output_lean": "theorem tail_remainder_integral_bound (f : ℕ → ℝ) (N : ℕ) (hN : 0 < N)\n    (hnonneg : ∀ n, 0 ≤ f n)\n    (hantitone : Antitone f)\n    (h_integrable : IntervalIntegrable (fun x : ℝ ↦ f (Nat.floor x)) MeasureTheory.volume (N - 1 : ℝ) ⊤) :\n    |tsum f - ∑ n in Finset.range N, f n| ≤ ∫ x in (N - 1 : ℝ)..⊤, f (Nat.floor x) := by\n  sorry",
+  "transcript_stats": {
+    "turns": 1,
+    "tool_calls_by_name": {},
+    "tokens_in": 10,
+    "tokens_out": 10020,
+    "cost_usd": 0.051565
+  },
+  "tool_trace": []
+}

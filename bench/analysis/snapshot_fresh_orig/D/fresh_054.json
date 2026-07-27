@@ -1,0 +1,195 @@
+{
+  "task_id": "fresh_054",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:42:34Z",
+  "wall_s": 95.0,
+  "output_lean": "theorem SetSemiring.diff_union_decomposition (α : Type*) (S : SetSemiring α) \n    (s : Set α) (I : Finset (Set α)) :\n  ∃ (J : Finset (Set α)), \n    s \\ ⋃ i ∈ I, i = ⋃ j ∈ J, j ∧ \n    Set.PairwiseDisjoint ((J : Set (Set α))) id := sorry",
+  "transcript_stats": {
+    "turns": 22,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 1,
+      "mcp__wikibrain__brain_search": 7,
+      "mcp__wikibrain__brain_cell": 1,
+      "mcp__wikibrain__brain_neighborhood": 1,
+      "mcp__wikibrain__brain_snippets": 1,
+      "mcp__wikibrain__decl_exists": 8,
+      "mcp__wikibrain__brain_transfer": 1,
+      "mcp__wikibrain__brain_filter": 1
+    },
+    "tokens_in": 182,
+    "tokens_out": 7081,
+    "cost_usd": 0.12469129999999999
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"semiring of sets\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 1450,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"semiring of sets\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolve"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"SetSemiring\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 407,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"SetSemiring\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:SetSemiring\\\",\\\"label\\\":\\\"SetSemiring\\\",\\\"supercell\\\":\\\"path:Mathlib/Data/Set/Semiring\\\",\\\"matched\\\""
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:decl:Mathlib:SetSemiring\"}",
+      "ok": true,
+      "result_chars": 1192,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:SetSemiring\\\",\\\"id\\\":\\\"cell:decl:Mathlib:SetSemiring\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"SetSemiring\\\",\\\"cell"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"cell:decl:Mathlib:SetSemiring\", \"limit\": 20, \"kinds\": \"depends,links,mentions\"}",
+      "ok": true,
+      "result_chars": 802,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:SetSemiring\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\",\\\"links\\\",\\\"mentions\\\"],\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q208237\\\",\\\"w\\\":1,\\\"kinds"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_snippets",
+      "input": "{\"id\": \"cell:decl:Mathlib:SetSemiring\"}",
+      "ok": true,
+      "result_chars": 497,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:SetSemiring\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:SetSemiring\\\",\\\"label\\\":\\\"SetSemiring\\\",\\\""
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"pairwise disjoint\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 174,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"pairwise disjoint\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Set.diff union family\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 178,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Set.diff union family\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"finite family union set\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 180,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finite family union set\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Set.diff\", \"Set.iUnion\", \"Finset.toSet\", \"Pairwise.disjoint\", \"Set.PairwiseDisjoint\"]}",
+      "ok": true,
+      "result_chars": 1529,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Set.diff\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Set.Defs\\"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"SetSemiring membership element\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 187,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"SetSemiring membership element\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"SetSemiring.set\", \"SetSemiring.sMul\", \"SetSemiring.sAdd\", \"Finset\", \"Set.biUnion\"]}",
+      "ok": true,
+      "result_chars": 1592,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"SetSemiring.set\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"TopologicalSpace.NoetherianSpace.set\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\""
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Set.iSup\", \"Finset.biUnion\", \"Set.Finite\", \"Disjoint\", \"Set.PairwiseDisjoint\"]}",
+      "ok": true,
+      "result_chars": 1745,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Set.iSup\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"Measurable.iSup\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\\"Mathlib.Measur"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__brain_transfer",
+      "input": "{\"q\": \"SetSemiring\", \"direction\": \"formal_to_informal\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 562,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"SetSemiring\\\",\\\"decl\\\":\\\"SetSemiring\\\",\\\"id\\\":\\\"cell:decl:Mathlib:SetSemiring\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"SetSe"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__brain_filter",
+      "input": "{\"f\": 0, \"under\": \"path:Mathlib/Data/Set/Semiring\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 375,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"f\\\":0,\\\"type\\\":\\\"cell\\\",\\\"under\\\":\\\"path:Mathlib/Data/Set/Semiring\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:SetSemiring\\\",\\\"label\\\":\\\"SetSemiring\\\",\\\"p\\\":\\\"pat"
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"exists decompose finite disjoint\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 189,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"exists decompose finite disjoint\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"semiring properties closure\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 184,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"semiring properties closure\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"SetSemiring.sets\", \"SetSemiring.mem\", \"Finset.coe\"]}",
+      "ok": true,
+      "result_chars": 927,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"SetSemiring.sets\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis"
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Membership\", \"Set.union\", \"Set.iUnion\", \"Finset.toFinset\"]}",
+      "ok": true,
+      "result_chars": 1216,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Membership\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\\":\\"
+    },
+    {
+      "i": 18,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Set.Finite.exists_finset_coe\", \"Finset.biUnion\", \"exists\"]}",
+      "ok": true,
+      "result_chars": 1044,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Set.Finite.exists_finset_coe\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Set.Finite.Basic\\\",\\\"import_line\\\":\\\"i"
+    },
+    {
+      "i": 19,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Set.finite_disjoint_union\", \"Subtype\", \"Finset.image\"]}",
+      "ok": true,
+      "result_chars": 966,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Set.finite_disjoint_union\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e"
+    },
+    {
+      "i": 20,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"iUnion\", \"Set.sUnion\", \"Finset.sup\"]}",
+      "ok": true,
+      "result_chars": 1009,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"iUnion\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module."
+    }
+  ]
+}

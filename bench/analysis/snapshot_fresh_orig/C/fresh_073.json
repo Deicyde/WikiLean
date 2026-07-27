@@ -1,0 +1,214 @@
+{
+  "task_id": "fresh_073",
+  "arm": "C",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:18:30Z",
+  "wall_s": 75.2,
+  "output_lean": "theorem infinite_linear_order_contains_monotone_sequence {α : Type*} [LinearOrder α] \n    (h : Infinite α) : \n  ∃ f : ℕ → α, StrictMono f ∨ StrictAnti f := sorry",
+  "transcript_stats": {
+    "turns": 25,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 12,
+      "mcp__formal__decl_grep": 9,
+      "mcp__formal__decl_read": 3
+    },
+    "tokens_in": 174,
+    "tokens_out": 3874,
+    "cost_usd": 0.11626605000000001
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Infinite (α : Type*) [LinearOrder α]\"}",
+      "ok": true,
+      "result_chars": 109,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Infinite (α : Type*) [LinearOrder α]': Unknown identifier `α`\"}]"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"monotone_sequence infinite linear order\"}",
+      "ok": true,
+      "result_chars": 128,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'monotone_sequence infinite linear order': Unknown identifier `monotone_sequence`\"}]"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Infinite\"}",
+      "ok": true,
+      "result_chars": 1013,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 335 declarations mentioning Infinite.\\n- Infinite   [Mathlib.Data.Finite.Defs]\\n    A type is said to be infinite if it is not finite. Note that `Infinite α` is equiva"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"LinearOrder\"}",
+      "ok": true,
+      "result_chars": 1244,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 9475 declarations mentioning LinearOrder.\\n- LinearOrder   [Mathlib.Order.Defs.LinearOrder]\\n    A linear order is reflexive, transitive, antisymmetric and total relat"
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"StrictMono\"}",
+      "ok": true,
+      "result_chars": 822,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 643 declarations mentioning StrictMono.\\n- StrictMono   [Mathlib.Order.Monotone.Defs]\\n    A function `f` is strictly monotone if `a < b` implies `f a < f b`.\\n- stric"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"StrictAnti\"}",
+      "ok": true,
+      "result_chars": 853,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 174 declarations mentioning StrictAnti.\\n- StrictAnti   [Mathlib.Order.Monotone.Defs]\\n    A function `f` is strictly antitone if `a < b` implies `f b < f a`.\\n- Subsi"
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"infinite sequence nat\"}",
+      "ok": true,
+      "result_chars": 101,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'infinite sequence nat': Unknown identifier `infinite`\"}]"
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"(StrictMono ?f) ∨ (StrictAnti ?f)\"}",
+      "ok": true,
+      "result_chars": 622,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 3 declarations mentioning StrictMono, StrictAnti, and Or.\\n- Infinite.exists_strictMono_or_strictAnti   [Mathlib.Order.OrderIsoNat]\\n    Every infinite linear order co"
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem Infinite.exists_strictMono_or_strictAnti\"}",
+      "ok": true,
+      "result_chars": 119,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem Infinite.exists_strictMono_or_strictAnti' under Mathlib/.\"}]"
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"exists_strictMono_or_strictAnti\"}",
+      "ok": true,
+      "result_chars": 102,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'exists_strictMono_or_strictAnti' under Mathlib/.\"}]"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"OrderIsoNat\", \"limit\": 30}",
+      "ok": true,
+      "result_chars": 738,
+      "result_head": "[{\"type\": \"text\", \"text\": \"7 match(es) for 'OrderIsoNat' (via ripgrep):\\n- Mathlib/CategoryTheory/Subobject/NoetherianObject.lean:12\\n    public import Mathlib.Order.OrderIsoNat\\n- Mathlib/CategoryThe"
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Order/OrderIsoNat.lean\", \"line\": 1, \"n\": 120}",
+      "ok": true,
+      "result_chars": 5503,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/OrderIsoNat.lean  (lines 1–120 of 287):\\n     1  /-\\n     2  Copyright (c) 2017 Mario Carneiro. All rights reserved.\\n     3  Released under Apache 2.0 license"
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Order/OrderIsoNat.lean\", \"line\": 120, \"n\": 120}",
+      "ok": true,
+      "result_chars": 6164,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/OrderIsoNat.lean  (lines 120–239 of 287):\\n   120  @[simp]\\n   121  theorem Subtype.orderIsoOfNat_apply [dP : DecidablePred (· ∈ s)] {n : ℕ} :\\n   122      Sub"
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Order/OrderIsoNat.lean\", \"line\": 240, \"n\": 50}",
+      "ok": true,
+      "result_chars": 3173,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/OrderIsoNat.lean  (lines 240–287 of 287):\\n   240  /-- The constant value of an eventually-constant monotone sequence `a₀ ≤ a₁ ≤ a₂ ≤ ...` in a\\n   241  partia"
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Infinite\", \"limit\": \"50\"}",
+      "ok": true,
+      "result_chars": 1013,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 335 declarations mentioning Infinite.\\n- Infinite   [Mathlib.Data.Finite.Defs]\\n    A type is said to be infinite if it is not finite. Note that `Infinite α` is equiva"
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"(StrictMono ?f ∨ StrictAnti ?f)\"}",
+      "ok": true,
+      "result_chars": 622,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 3 declarations mentioning StrictMono, StrictAnti, and Or.\\n- Infinite.exists_strictMono_or_strictAnti   [Mathlib.Order.OrderIsoNat]\\n    Every infinite linear order co"
+    },
+    {
+      "i": 16,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Infinite.*exists\", \"limit\": 30}",
+      "ok": true,
+      "result_chars": 3753,
+      "result_head": "[{\"type\": \"text\", \"text\": \"42 match(es) for 'Infinite.*exists' (via ripgrep):\\n- Mathlib/Algebra/Module/ZLattice/Basic.lean:594\\n    obtain ⟨n, -, m, -, h_ne, h_eq⟩ := Set.Infinite.exists_ne_map_eq_of"
+    },
+    {
+      "i": 17,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"strictMono_or\"}",
+      "ok": true,
+      "result_chars": 1019,
+      "result_head": "[{\"type\": \"text\", \"text\": \"6 match(es) for 'strictMono_or' (via ripgrep):\\n- Mathlib/AlgebraicTopology/SimplicialSet/ProdStdSimplex.lean:109\\n    lemma strictMono_orderHomOfSimplex_iff {n : ℕ} (x : (Δ"
+    },
+    {
+      "i": 18,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"exists_strictMono_or_strictAnti\"}",
+      "ok": true,
+      "result_chars": 102,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'exists_strictMono_or_strictAnti' under Mathlib/.\"}]"
+    },
+    {
+      "i": 19,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Infinite LinearOrder\"}",
+      "ok": true,
+      "result_chars": 247,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Infinite LinearOrder': Application type mismatch: The argument\\n  LinearOrder\\nhas type\\n  Type ?u.2 → Type ?u.2\\nbut is expected to have type\\n  Type ?u.2"
+    },
+    {
+      "i": 20,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"?f : ℕ → ?α\"}",
+      "ok": true,
+      "result_chars": 96,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '?f : ℕ → ?α': <input>:1:3: expected end of input\"}]"
+    },
+    {
+      "i": 21,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Infinite\\\\.exists\", \"limit\": 50}",
+      "ok": true,
+      "result_chars": 4443,
+      "result_head": "[{\"type\": \"text\", \"text\": \"35 match(es) for 'Infinite\\\\\\\\.exists' (via ripgrep):\\n- Mathlib/Algebra/Module/ZLattice/Basic.lean:594\\n    obtain ⟨n, -, m, -, h_ne, h_eq⟩ := Set.Infinite.exists_ne_map_eq"
+    },
+    {
+      "i": 22,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(StrictMono|StrictAnti)\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2442,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1412 match(es) for '(StrictMono|StrictAnti)' (via ripgrep):\\n- Mathlib/Computability/Ackermann.lean:124\\n    theorem ack_strictMono_right : ∀ m, StrictMono (ack m)\\n- Mathli"
+    },
+    {
+      "i": 23,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"^(theorem|lemma|def) .*\\\\(.*LinearOrder\\\\|.*infinite\", \"limit\": 40}",
+      "ok": true,
+      "result_chars": 127,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '^(theorem|lemma|def) .*\\\\\\\\(.*LinearOrder\\\\\\\\|.*infinite' under Mathlib/.\"}]"
+    }
+  ]
+}

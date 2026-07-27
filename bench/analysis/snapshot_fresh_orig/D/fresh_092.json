@@ -1,0 +1,257 @@
+{
+  "task_id": "fresh_092",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:52:51Z",
+  "wall_s": 64.3,
+  "output_lean": "theorem eVariationOn_union_of_greatest_least\n  {α E : Type*} [LinearOrder α] [PseudoEMetricSpace E]\n  (f : α → E) (s t : Set α) (x y : α)\n  (hx : IsGreatest s x)\n  (hy : IsLeast t y)\n  (hxy : x ≤ y) :\n  eVariationOn f (s ∪ t) = eVariationOn f s + ENNReal.ofReal (dist (f x) (f y)) + eVariationOn f t := sorry",
+  "transcript_stats": {
+    "turns": 30,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 3,
+      "mcp__wikibrain__brain_search": 11,
+      "mcp__wikibrain__decl_exists": 9,
+      "mcp__wikibrain__brain_cell": 3,
+      "mcp__wikibrain__brain_neighborhood": 2,
+      "mcp__wikibrain__brain_snippets": 1
+    },
+    "tokens_in": 128,
+    "tokens_out": 5672,
+    "cost_usd": 0.10951955000000002
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"total variation of a function\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2755,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"total variation of a function\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label m"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"greatest element of a set\", \"limit\": 8}",
+      "ok": false,
+      "result_chars": 258,
+      "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"greatest element of a set\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":{\"generated_"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"least element of a set\", \"limit\": 8}",
+      "ok": false,
+      "result_chars": 255,
+      "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"least element of a set\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":{\"generated_at\""
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"variation bounded\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 174,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"variation bounded\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"supremum maximum\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 173,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"supremum maximum\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"infimum minimum\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 172,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"infimum minimum\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"bounded variation\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 378,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"bounded variation\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q829653\\\",\\\"label\\\":\\\"Bounded variation\\\",\\\"aka\\\":[\\\"Bounded Variation\\\",\\\"BoundedVariationOn\\\"],\\\"supercel"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"BddVariationOn\", \"sSup\", \"sInf\", \"IsGreatest\", \"IsLeast\", \"DistLETotalBddVariation\"]}",
+      "ok": true,
+      "result_chars": 1693,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"BddVariationOn\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis →"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q829653\"}",
+      "ok": true,
+      "result_chars": 2525,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q829653\\\",\\\"id\\\":\\\"cell:Q829653\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Bounded variation\\\",\\\"f\\\":2072,\\\"cell\\\":{\\\"id\\\":\\\"cell"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"total variation\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 172,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"total variation\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"BoundedVariationOn\", \"totalVariationOn\", \"evariation\", \"dist\", \"Real.dist\", \"edist\"]}",
+      "ok": true,
+      "result_chars": 1858,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"BoundedVariationOn\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.EMetricSpace.BoundedVariation\\\",\\\"import_lin"
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"cell:Q829653\", \"kinds\": \"depends\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 5266,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q829653\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\"],\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q28474\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":2,\\\"mentions\\\":1},\\\"trace"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q28474\"}",
+      "ok": true,
+      "result_chars": 4151,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q28474\\\",\\\"id\\\":\\\"cell:Q28474\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Perimeter\\\",\\\"f\\\":2296,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q28474\\\","
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"eVariationOn\", \"eVariation\", \"Dist.dist\"]}",
+      "ok": true,
+      "result_chars": 1102,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"eVariationOn\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.EMetricSpace.BoundedVariation\\\",\\\"import_line\\\":\\\""
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__brain_snippets",
+      "input": "{\"id\": \"decl:Mathlib:eVariationOn\"}",
+      "ok": true,
+      "result_chars": 2106,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q28474\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"wikidata\\\",\\\"id\\\":\\\"Q28474\\\",\\\"label\\\":\\\"Perimeter\\\",\\\"snippet\\\":\\\"arc length of the path th"
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"union variation additivity\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 183,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"union variation additivity\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"disjoint union sets\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 176,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"disjoint union sets\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"decl:Mathlib:eVariationOn\", \"limit\": 30, \"traces\": false}",
+      "ok": true,
+      "result_chars": 2670,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q28474\\\",\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:eVariationOn\\\",\\\"kind\\\":\\\"cell\\\",\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q1591095\\\",\\\"w\\\":6,\\\"kin"
+    },
+    {
+      "i": 18,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Set.disjoint\", \"Disjoint\", \"Set.union_eq_self_of_subset_left\", \"ENNReal\", \"WithTop\"]}",
+      "ok": true,
+      "result_chars": 1542,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Set.disjoint\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → M"
+    },
+    {
+      "i": 19,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Set.IsGreatest\", \"Set.IsLeast\", \"Set.bddAbove\", \"Set.bddBelow\", \"eVariationOn_union\"]}",
+      "ok": true,
+      "result_chars": 1575,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Set.IsGreatest\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"IsGreatest\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\\"Mathlib.Order"
+    },
+    {
+      "i": 20,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"distance metric space\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 178,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"distance metric space\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 21,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"BddAbove\", \"BddBelow\", \"edist\", \"PseudoEMetricSpace\", \"PseudoMetricSpace\"]}",
+      "ok": true,
+      "result_chars": 1625,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"BddAbove\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Bounds.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Boun"
+    },
+    {
+      "i": 22,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"supremum sSup\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 170,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"supremum sSup\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 23,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"ENNReal.ofReal\", \"edist_dist\", \"EMetric.edist\", \"EMetric.dist\"]}",
+      "ok": true,
+      "result_chars": 1287,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"ENNReal.ofReal\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.ENNReal.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Dat"
+    },
+    {
+      "i": 24,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"convert real to ENNReal\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 180,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"convert real to ENNReal\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 25,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Set.disjoint_left\", \"Set.disjoint_iff\", \"Disjoint.inf_sup\", \"dist_nonneg\"]}",
+      "ok": true,
+      "result_chars": 1343,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Set.disjoint_left\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Set.Disjoint\\\",\\\"import_line\\\":\\\"import Mathlib.D"
+    },
+    {
+      "i": 26,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"disjoint sets\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 170,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"disjoint sets\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 27,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:eVariationOn\"}",
+      "ok": true,
+      "result_chars": 4166,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:eVariationOn\\\",\\\"id\\\":\\\"cell:Q28474\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Perimeter\\\",\\\"f\\\":2296,\\\"cell\\\":{\\\"id\\\":\\"
+    },
+    {
+      "i": 28,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"LinearOrder\", \"PseudoEMetricSpace\", \"Set.union\", \"mem_union\"]}",
+      "ok": true,
+      "result_chars": 1309,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"LinearOrder\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Defs.LinearOrder\\\",\\\"import_line\\\":\\\"import Mathlib.Or"
+    }
+  ]
+}

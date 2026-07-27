@@ -1,0 +1,17 @@
+{
+  "task_id": "fresh_054",
+  "arm": "A",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T02:00:18Z",
+  "wall_s": 91.1,
+  "output_lean": "theorem semiring_set_difference (α : Type*) (R : Set (Set α))\n    (h_empty : ∅ ∈ R)\n    (h_union : ∀ A B ∈ R, A ∪ B ∈ R)\n    (h_inter : ∀ A B ∈ R, A ∩ B ∈ R)\n    (s : Set α) (hs : s ∈ R)\n    (I : Finset (Set α)) (hI : ∀ i ∈ I, i ∈ R) :\n    ∃ J : Finset (Set α), \n    (∀ j ∈ J, j ∈ R) ∧ \n    (∀ i j ∈ J, i ≠ j → i ∩ j = ∅) ∧\n    s \\ ⋃ i ∈ I, i = ⋃ j ∈ J, j := sorry",
+  "transcript_stats": {
+    "turns": 1,
+    "tool_calls_by_name": {},
+    "tokens_in": 10,
+    "tokens_out": 9810,
+    "cost_usd": 0.050475
+  },
+  "tool_trace": []
+}

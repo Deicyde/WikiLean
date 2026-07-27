@@ -1,0 +1,240 @@
+{
+  "task_id": "fresh_042",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:39:39Z",
+  "wall_s": 80.2,
+  "output_lean": "theorem rank_eq_in_fraction_ring\n  {R : Type*} [CommRing R] [IsDomain R]\n  {M : Type*} [AddCommMonoid M]\n  [Module (FractionRing R) M]\n  [Module R M]\n  [IsScalarTower R (FractionRing R) M] :\n  Module.rank (FractionRing R) M = Module.rank R M :=\nsorry",
+  "transcript_stats": {
+    "turns": 28,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 5,
+      "mcp__wikibrain__brain_cell": 3,
+      "mcp__wikibrain__brain_search": 7,
+      "mcp__wikibrain__decl_exists": 11,
+      "mcp__wikibrain__brain_neighborhood": 1
+    },
+    "tokens_in": 126,
+    "tokens_out": 5922,
+    "cost_usd": 0.11307085000000001
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"rank of a module over a ring\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 3983,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"rank of a module over a ring\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label m"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"fraction field of an integral domain\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3911,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"fraction field of an integral domain\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"scalar restriction of modules\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2316,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"scalar restriction of modules\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label m"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"Module.rank rank of a vector space dimension\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 4178,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Module.rank rank of a vector space dimension\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an "
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"FractionField localization away from prime\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2932,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"FractionField localization away from prime\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exa"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:Module.rank\"}",
+      "ok": true,
+      "result_chars": 1843,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:Module.rank\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Module.rank\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Module.rank\\\",\\\"f\\\":4097"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"FractionField\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 300,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"FractionField\\\",\\\"hits\\\":[{\\\"id\\\":\\\"path:Mathlib/RingTheory/WittVector/FrobeniusFractionField\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"FrobeniusFractionFiel"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Localization away elements\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 183,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Localization away elements\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"fraction field integral domain\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 187,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"fraction field integral domain\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Module.rank\", \"Localization.Away\", \"Field.ofFractionField\"]}",
+      "ok": true,
+      "result_chars": 1109,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Module.rank\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Dimension.Basic\\\",\\\"import_line\\\":\\\"import Mat"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Localization.atBot\", \"FractionRing\", \"Field.Ratfunc\", \"Module.Rank\", \"LinearMap.range_rank\"]}",
+      "ok": true,
+      "result_chars": 1626,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Localization.atBot\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"Filter.atBot\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\\"Mathlib"
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"rank scalar extension\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 178,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"rank scalar extension\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:FractionRing\"}",
+      "ok": true,
+      "result_chars": 1294,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:FractionRing\\\",\\\"id\\\":\\\"cell:decl:Mathlib:FractionRing\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"FractionRing\\\",\\\"cell\\"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Submodule.map_injective_of_injective\", \"LinearMap.rank\", \"Module.rank_lt_aleph0\", \"restrictScalars\"]}",
+      "ok": true,
+      "result_chars": 1510,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Submodule.map_injective_of_injective\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Module.Submodule.Map\\\",\\\"im"
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Module.restrictScalars\", \"Module.ExtendScalars\", \"Algebra.ofSubmodule\", \"IsDomain\", \"NoZeroSMulDivisors\"]}",
+      "ok": true,
+      "result_chars": 1637,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Module.restrictScalars\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Algebra.RestrictScalars\\\",\\\"import_line\\\""
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"rank preserved localization\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 184,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"rank preserved localization\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"rank restrictScalars tensor product\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 192,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"rank restrictScalars tensor product\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Module.rank_eq_card_of_linearIndependent\", \"Module.rank_mul_eq\", \"Localization.Field.toModule\", \"Localization.isField\"]}",
+      "ok": true,
+      "result_chars": 1215,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Module.rank_eq_card_of_linearIndependent\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; rename"
+    },
+    {
+      "i": 18,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Localization.coe_submodule\", \"IsFractionRing\", \"NoZeroSMulDivisors.mk0\", \"LinearIndependent\", \"Module.free_def\"]}",
+      "ok": true,
+      "result_chars": 1711,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Localization.coe_submodule\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common ("
+    },
+    {
+      "i": 19,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Localization fraction ring field\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 189,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Localization fraction ring field\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 20,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"decl:Mathlib:Module.restrictScalars\", \"limit\": 10}",
+      "ok": false,
+      "result_chars": 390,
+      "result_head": "{\"ok\":false,\"error\":\"unknown atom id\",\"id\":\"decl:Mathlib:Module.restrictScalars\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name "
+    },
+    {
+      "i": 21,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Algebra\", \"RingHom\", \"Subtype.val\", \"Equiv.ofBijective\"]}",
+      "ok": true,
+      "result_chars": 1285,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Algebra\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Algebra.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra."
+    },
+    {
+      "i": 22,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:Module.rank\"}",
+      "ok": true,
+      "result_chars": 1843,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:Module.rank\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Module.rank\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Module.rank\\\",\\\"f\\\":4097"
+    },
+    {
+      "i": 23,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"FiniteDimensional.rank\", \"rank_add_rank_eq\", \"vectorSpaceIndex\", \"LinearMap.rank_le_rank\"]}",
+      "ok": true,
+      "result_chars": 1186,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"FiniteDimensional.rank\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g."
+    },
+    {
+      "i": 24,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"IsScalarTower\", \"Localization.atBot\", \"Submonoid.Localization\", \"Localization.map_toLocalizationMap\"]}",
+      "ok": true,
+      "result_chars": 1383,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"IsScalarTower\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Group.Action.Defs\\\",\\\"import_line\\\":\\\"import Mathl"
+    },
+    {
+      "i": 25,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"CommRing\", \"IsDomain\", \"NoZeroDivisors\", \"DomainField\", \"Localization.IsLocalization\"]}",
+      "ok": true,
+      "result_chars": 1674,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"CommRing\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Ring.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Ri"
+    },
+    {
+      "i": 26,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"AddCommMonoid\", \"Type\", \"Module.rank\", \"FractionRing\", \"CommRing\", \"IsDomain\", \"IsScalarTower\"]}",
+      "ok": true,
+      "result_chars": 2204,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"AddCommMonoid\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Group.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Alge"
+    }
+  ]
+}

@@ -1,0 +1,494 @@
+{
+  "task_id": "fresh_075",
+  "arm": "C",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:19:43Z",
+  "wall_s": 152.7,
+  "output_lean": "theorem strictly_monotone_endo_eq_id {α : Type*} [LinearOrder α] [Fintype α] \n    (f : α → α) (hf : StrictMono f) : f = id := sorry",
+  "transcript_stats": {
+    "turns": 60,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 28,
+      "mcp__formal__decl_grep": 24,
+      "mcp__formal__decl_read": 7
+    },
+    "tokens_in": 334,
+    "tokens_out": 8557,
+    "cost_usd": 0.25281045
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"StrictMono\"}",
+      "ok": true,
+      "result_chars": 822,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 643 declarations mentioning StrictMono.\\n- StrictMono   [Mathlib.Order.Monotone.Defs]\\n    A function `f` is strictly monotone if `a < b` implies `f a < f b`.\\n- stric"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Fintype\"}",
+      "ok": true,
+      "result_chars": 1035,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 8481 declarations mentioning Fintype.\\n- Fintype   [Mathlib.Data.Fintype.Defs]\\n    `Fintype α` means that `α` is finite, i.e. there are only finitely many distinct el"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"LinearOrder\"}",
+      "ok": true,
+      "result_chars": 1244,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 9475 declarations mentioning LinearOrder.\\n- LinearOrder   [Mathlib.Order.Defs.LinearOrder]\\n    A linear order is reflexive, transitive, antisymmetric and total relat"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"?f a = ?f b → a = b\"}",
+      "ok": true,
+      "result_chars": 92,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '?f a = ?f b → a = b': Unknown identifier `a`\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"StrictMono ?f → Function.Injective ?f\"}",
+      "ok": true,
+      "result_chars": 154,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 15 declarations mentioning StrictMono and Function.Injective.\\n- StrictMono.injective   [Mathlib.Order.Monotone.Basic]\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Fintype bijective injective\"}",
+      "ok": true,
+      "result_chars": 108,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Fintype bijective injective': Unknown identifier `bijective`\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"strict monotone bijection identity\"}",
+      "ok": true,
+      "result_chars": 112,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'strict monotone bijection identity': Unknown identifier `strict`\"}]"
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Function.Bijective\"}",
+      "ok": true,
+      "result_chars": 969,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 806 declarations mentioning Function.Bijective.\\n- Function.Bijective   [Mathlib.Logic.Function.Defs]\\n    A function is called bijective if it is both injective and s"
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"?f = id\"}",
+      "ok": true,
+      "result_chars": 719,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 1061 declarations mentioning id and Eq.\\n- Except.map_id   [Init.Control.Except]\\n- Option.map_id   [Init.Data.Option.Basic]\\n- eq_true_eq_id   [Init.PropLemmas]\\n- Pr"
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Fintype card injective surjective\"}",
+      "ok": true,
+      "result_chars": 109,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Fintype card injective surjective': Unknown identifier `card`\"}]"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*monotone.*identity\"}",
+      "ok": true,
+      "result_chars": 98,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*monotone.*identity' under Mathlib/.\"}]"
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Equiv endomorphism\"}",
+      "ok": true,
+      "result_chars": 102,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Equiv endomorphism': Unknown identifier `endomorphism`\"}]"
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Fintype Injective Surjective\"}",
+      "ok": true,
+      "result_chars": 109,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Fintype Injective Surjective': Unknown identifier `Injective`\"}]"
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Function.Injective Function.Surjective\"}",
+      "ok": true,
+      "result_chars": 105,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for 'Function.Injective Function.Surjective'.\"}]"
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"injective.*surjective\"}",
+      "ok": true,
+      "result_chars": 2670,
+      "result_head": "[{\"type\": \"text\", \"text\": \"317 match(es) for 'injective.*surjective' (via ripgrep):\\n- Mathlib/Algebra/WithConv.lean:57\\n    lemma ofConv_bijective : Function.Bijective (@ofConv A) := ⟨ofConv_injectiv"
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Fintype.bijective_iff\"}",
+      "ok": true,
+      "result_chars": 2154,
+      "result_head": "[{\"type\": \"text\", \"text\": \"17 match(es) for 'Fintype.bijective_iff' (via ripgrep):\\n- Mathlib/CategoryTheory/CofilteredSystem.lean:330\\n    fun i f => ((Fintype.bijective_iff_surjective_and_card _).2\\"
+    },
+    {
+      "i": 16,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"order_iso refl\"}",
+      "ok": true,
+      "result_chars": 95,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'order_iso refl': Unknown identifier `order_iso`\"}]"
+    },
+    {
+      "i": 17,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"monotone.*bijection.*identity\"}",
+      "ok": true,
+      "result_chars": 100,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'monotone.*bijection.*identity' under Mathlib/.\"}]"
+    },
+    {
+      "i": 18,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"OrderIso.refl\"}",
+      "ok": true,
+      "result_chars": 751,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 18 declarations mentioning OrderIso.refl.\\n- OrderIso.refl   [Mathlib.Order.Hom.Basic]\\n    Identity order isomorphism.\\n- OrderIso.symm_refl   [Mathlib.Order.Hom.Basi"
+    },
+    {
+      "i": 19,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*identity.*monotone\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 98,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*identity.*monotone' under Mathlib/.\"}]"
+    },
+    {
+      "i": 20,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Fintype.*order\", \"limit\": 30}",
+      "ok": true,
+      "result_chars": 3571,
+      "result_head": "[{\"type\": \"text\", \"text\": \"27 match(es) for 'Fintype.*order' (via ripgrep):\\n- Mathlib/NumberTheory/LucasLehmer.lean:569\\n    _ ≤ Fintype.card (X (q (p' + 2)))ˣ := orderOf_le_card_univ\\n- Mathlib/Numb"
+    },
+    {
+      "i": 21,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Data/Finset/Sort.lean\", \"line\": 343, \"n\": 20}",
+      "ok": true,
+      "result_chars": 1279,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Data/Finset/Sort.lean  (lines 343–362 of 393):\\n   343  def Fintype.orderIsoFinOfCardEq\\n   344      (α : Type*) [LinearOrder α] [Fintype α] {k : ℕ} (h : Fintype.car"
+    },
+    {
+      "i": 22,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Monotone Fintype minimal\"}",
+      "ok": true,
+      "result_chars": 238,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Monotone Fintype minimal': Function expected at\\n  Monotone Fintype\\nbut this term has type\\n  Prop\\n\\nNote: Expected a function because this term is being"
+    },
+    {
+      "i": 23,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"(?a ≤ ?a) → ?a = ?a\"}",
+      "ok": true,
+      "result_chars": 86,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for '(?a ≤ ?a) → ?a = ?a'.\"}]"
+    },
+    {
+      "i": 24,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Perm.*order.*identity\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 92,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'Perm.*order.*identity' under Mathlib/.\"}]"
+    },
+    {
+      "i": 25,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"OrderEmbedding\"}",
+      "ok": true,
+      "result_chars": 1426,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 723 declarations mentioning OrderEmbedding.\\n- OrderEmbedding   [Mathlib.Order.Hom.Basic]\\n    An order embedding is an embedding `f : α ↪ β` such that `a ≤ b ↔ (f a) "
+    },
+    {
+      "i": 26,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*Fintype.*Monotone\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 97,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*Fintype.*Monotone' under Mathlib/.\"}]"
+    },
+    {
+      "i": 27,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Equiv.*order\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2670,
+      "result_head": "[{\"type\": \"text\", \"text\": \"75 match(es) for 'Equiv.*order' (via ripgrep):\\n- Mathlib/Logic/Equiv/Set.lean:249\\n    lemma _root_.Equiv.strictMono_setCongr {α : Type*} [Preorder α] {S T : Set α} (h : S "
+    },
+    {
+      "i": 28,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Fintype order preserving\"}",
+      "ok": true,
+      "result_chars": 101,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Fintype order preserving': Unknown identifier `order`\"}]"
+    },
+    {
+      "i": 29,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"OrderEmbedding.*Fintype\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 202,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'OrderEmbedding.*Fintype' (via ripgrep):\\n- Mathlib/Order/Birkhoff.lean:226\\n    -- `OrderIso.coe_toOrderEmbedding` and `Fintype.coe_finsetOrderIsoSet_symm`\""
+    },
+    {
+      "i": 30,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Fintype orderEmbedding\"}",
+      "ok": true,
+      "result_chars": 108,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Fintype orderEmbedding': Unknown identifier `orderEmbedding`\"}]"
+    },
+    {
+      "i": 31,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*finite.*monotone|theorem.*Fintype.*inject\", \"limit\": 25}",
+      "ok": true,
+      "result_chars": 534,
+      "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for 'theorem.*finite.*monotone|theorem.*Fintype.*inject' (via ripgrep):\\n- Mathlib/Combinatorics/Hall/Basic.lean:174\\n    theorem Fintype.all_card_le_rel_image_c"
+    },
+    {
+      "i": 32,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"?f : ?a → ?a\"}",
+      "ok": true,
+      "result_chars": 97,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '?f : ?a → ?a': <input>:1:3: expected end of input\"}]"
+    },
+    {
+      "i": 33,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"strict.*endo|endo.*strict\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 1832,
+      "result_head": "[{\"type\": \"text\", \"text\": \"12 match(es) for 'strict.*endo|endo.*strict' (via ripgrep):\\n- Mathlib/Algebra/Lie/SkewAdjoint.lean:140\\n    /-- An equivalence of matrix algebras commuting with the transpo"
+    },
+    {
+      "i": 34,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"FixedPoint StrictMono\"}",
+      "ok": true,
+      "result_chars": 103,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'FixedPoint StrictMono': Unknown identifier `FixedPoint`\"}]"
+    },
+    {
+      "i": 35,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"StrictMono ?f → ?f ?a = ?a\"}",
+      "ok": true,
+      "result_chars": 216,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 97 declarations mentioning StrictMono and Eq.\\n- StrictMono.apply_eq   [Mathlib.Order.Preorder.Finite]\\n    A strictly monotone self-map of a finite linear order fixes"
+    },
+    {
+      "i": 36,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"fixed.*point|point.*fixed\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2404,
+      "result_head": "[{\"type\": \"text\", \"text\": \"322 match(es) for 'fixed.*point|point.*fixed' (via ripgrep):\\n- Mathlib/Algebra/Algebra/Subalgebra/Operations.lean:89\\n    /-- The set of fixed points under a group action, "
+    },
+    {
+      "i": 37,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"StrictMono.apply_eq\"}",
+      "ok": true,
+      "result_chars": 494,
+      "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for 'StrictMono.apply_eq' (via ripgrep):\\n- Mathlib/Analysis/LocallyConvex/Basic.lean:285\\n    V = ⊤ := (StrictMono.apply_eq_top_iff (α := Submodule 𝕜 E) (β := S"
+    },
+    {
+      "i": 38,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"finite.*linear.*strict|Preorder.Finite\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 882,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 match(es) for 'finite.*linear.*strict|Preorder.Finite' (via ripgrep):\\n- Mathlib/Order/Interval/Finset/Basic.lean:10\\n    public import Mathlib.Order.Preorder.Finite\\n- Ma"
+    },
+    {
+      "i": 39,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Order/Preorder/Finite.lean\", \"line\": 1, \"n\": 100}",
+      "ok": true,
+      "result_chars": 4463,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/Preorder/Finite.lean  (lines 1–100 of 147):\\n     1  /-\\n     2  Copyright (c) 2025 Yaël Dillies. All rights reserved.\\n     3  Released under Apache 2.0 licen"
+    },
+    {
+      "i": 40,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Order/Preorder/Finite.lean\", \"line\": 100, \"n\": 50}",
+      "ok": true,
+      "result_chars": 2034,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/Preorder/Finite.lean  (lines 100–147 of 147):\\n   100  \\n   101  end Preorder\\n   102  \\n   103  section PartialOrder\\n   104  variable (α) [PartialOrder α]\\n "
+    },
+    {
+      "i": 41,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem StrictMono.*apply_eq|lemma StrictMono.*apply_eq\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 380,
+      "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'theorem StrictMono.*apply_eq|lemma StrictMono.*apply_eq' (via ripgrep):\\n- Mathlib/Order/BoundedOrder/Monotone.lean:32\\n    theorem StrictMono.apply_eq_top_"
+    },
+    {
+      "i": 42,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"fixes every point|self-map.*finite\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 477,
+      "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for 'fixes every point|self-map.*finite' (via ripgrep):\\n- Mathlib/Logic/Function/Defs.lean:190\\n    /-- A function fixes every point iff it is the identity. -/\\"
+    },
+    {
+      "i": 43,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"apply_eq.*strict|strict.*apply_eq\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2344,
+      "result_head": "[{\"type\": \"text\", \"text\": \"16 match(es) for 'apply_eq.*strict|strict.*apply_eq' (via ripgrep):\\n- Mathlib/FieldTheory/IntermediateField/Adjoin/Basic.lean:325\\n    simpa [← toSubalgebra_strictMono.appl"
+    },
+    {
+      "i": 44,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"StrictMono Fintype id\"}",
+      "ok": true,
+      "result_chars": 232,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'StrictMono Fintype id': Function expected at\\n  StrictMono Fintype\\nbut this term has type\\n  Prop\\n\\nNote: Expected a function because this term is being "
+    },
+    {
+      "i": 45,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Fintype LinearOrder endomorphism\"}",
+      "ok": true,
+      "result_chars": 258,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Fintype LinearOrder endomorphism': Application type mismatch: The argument\\n  LinearOrder\\nhas type\\n  Type ?u.1 → Type ?u.1\\nbut is expected to have type\\"
+    },
+    {
+      "i": 46,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"StrictMono.*Finite|Finite.*StrictMono\", \"limit\": 30}",
+      "ok": true,
+      "result_chars": 2033,
+      "result_head": "[{\"type\": \"text\", \"text\": \"15 match(es) for 'StrictMono.*Finite|Finite.*StrictMono' (via ripgrep):\\n- Mathlib/Data/Set/Card.lean:282\\n    theorem encard_strictMono [Finite α] : StrictMono (encard : Se"
+    },
+    {
+      "i": 47,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"\\\\bf a = a|f \\\\(a\\\\) = a\", \"limit\": 25}",
+      "ok": true,
+      "result_chars": 2034,
+      "result_head": "[{\"type\": \"text\", \"text\": \"17 match(es) for '\\\\\\\\bf a = a|f \\\\\\\\(a\\\\\\\\) = a' (via ripgrep):\\n- Mathlib/SetTheory/Ordinal/FixedPoint.lean:113\\n    theorem nfpFamily_eq_self [Small.{u} ι] {a} (h : ∀ i, "
+    },
+    {
+      "i": 48,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*monotone.*linorder|theorem.*linorder.*monotone\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 126,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*monotone.*linorder|theorem.*linorder.*monotone' under Mathlib/.\"}]"
+    },
+    {
+      "i": 49,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"LinearOrder.*Finite|Finite.*LinearOrder\", \"limit\": 30}",
+      "ok": true,
+      "result_chars": 4101,
+      "result_head": "[{\"type\": \"text\", \"text\": \"65 match(es) for 'LinearOrder.*Finite|Finite.*LinearOrder' (via ripgrep):\\n- Mathlib/Algebra/FiniteSupport/Basic.lean:103\\n    lemma HasFiniteMulSupport.max [LinearOrder M] "
+    },
+    {
+      "i": 50,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Data/Finset/Sort.lean\", \"line\": 389, \"n\": 10}",
+      "ok": true,
+      "result_chars": 385,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Data/Finset/Sort.lean  (lines 389–393 of 393):\\n   389  lemma OrderHom.eq_id_of_injective {α : Type*} [LinearOrder α] [Finite α] (f : α →o α)\\n   390      (hf : Func"
+    },
+    {
+      "i": 51,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"StrictMono ?f → Function.Injective ?f\"}",
+      "ok": true,
+      "result_chars": 154,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 15 declarations mentioning StrictMono and Function.Injective.\\n- StrictMono.injective   [Mathlib.Order.Monotone.Basic]\"}]"
+    },
+    {
+      "i": 52,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Data/Finset/Sort.lean\", \"line\": 364, \"n\": 25}",
+      "ok": true,
+      "result_chars": 1421,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Data/Finset/Sort.lean  (lines 364–388 of 393):\\n   364      {α β : Type*} [LinearOrder α] [PartialOrder β] [Finite α]\\n   365      {f g : α ↪o β} :\\n   366      Set."
+    },
+    {
+      "i": 53,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"OrderHom.mk\"}",
+      "ok": true,
+      "result_chars": 1435,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 16 declarations mentioning OrderHom.mk.\\n- OrderHom.mk   [Mathlib.Order.Hom.Basic]\\n- OrderHom.coe_mk   [Mathlib.Order.Hom.Basic]\\n- OrderHom.mk_le_mk   [Mathlib.Order"
+    },
+    {
+      "i": 54,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"OrderHom.*mk|ofStrictMono\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2960,
+      "result_head": "[{\"type\": \"text\", \"text\": \"88 match(es) for 'OrderHom.*mk|ofStrictMono' (via ripgrep):\\n- Mathlib/Data/EReal/Inv.lean:92\\n    simp only [sign, OrderHom.coe_mk, EReal.coe_pos, EReal.coe_neg']\\n- Mathli"
+    },
+    {
+      "i": 55,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Fintype StrictMono eq_id\"}",
+      "ok": true,
+      "result_chars": 237,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Fintype StrictMono eq_id': Function expected at\\n  Fintype ?m.5\\nbut this term has type\\n  Type ?u.1\\n\\nNote: Expected a function because this term is bein"
+    },
+    {
+      "i": 56,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Order/Hom/Basic.lean\", \"line\": 1, \"n\": 100}",
+      "ok": true,
+      "result_chars": 5459,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/Hom/Basic.lean  (lines 1–100 of 1340):\\n     1  /-\\n     2  Copyright (c) 2020 Johan Commelin. All rights reserved.\\n     3  Released under Apache 2.0 license "
+    },
+    {
+      "i": 57,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Order/Hom/Basic.lean\", \"line\": 120, \"n\": 50}",
+      "ok": true,
+      "result_chars": 2398,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/Hom/Basic.lean  (lines 120–169 of 1340):\\n   120  \\n   121  /-- `OrderHomClass F α b` asserts that `F` is a type of `≤`-preserving morphisms. -/\\n   122  abbre"
+    },
+    {
+      "i": 58,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"namespace OrderHom\"}",
+      "ok": true,
+      "result_chars": 734,
+      "result_head": "[{\"type\": \"text\", \"text\": \"10 match(es) for 'namespace OrderHom' (via ripgrep):\\n- Mathlib/Algebra/Order/Group/End.lean:102\\n    namespace OrderHom\\n- Mathlib/Order/FixedPoints.lean:42\\n    namespace "
+    }
+  ]
+}

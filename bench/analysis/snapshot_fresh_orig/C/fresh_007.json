@@ -1,0 +1,134 @@
+{
+  "task_id": "fresh_007",
+  "arm": "C",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T03:58:50Z",
+  "wall_s": 102.7,
+  "output_lean": "theorem scalar_mult_left_preserves_strict_mono [PosSMulStrictMono α β] {γ : Type*} [Preorder γ] {f : γ → β} {a : α}\n    (hf : StrictMono f) (ha : 0 < a) : StrictMono fun x ↦ a • f x := sorry",
+  "transcript_stats": {
+    "turns": 15,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 6,
+      "mcp__formal__decl_grep": 3,
+      "mcp__formal__decl_read": 5
+    },
+    "tokens_in": 102,
+    "tokens_out": 8441,
+    "cost_usd": 0.09819725
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"StrictMono\"}",
+      "ok": true,
+      "result_chars": 822,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 643 declarations mentioning StrictMono.\\n- StrictMono   [Mathlib.Order.Monotone.Defs]\\n    A function `f` is strictly monotone if `a < b` implies `f a < f b`.\\n- stric"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"?a → ?b, StrictMono\"}",
+      "ok": true,
+      "result_chars": 822,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 643 declarations mentioning StrictMono.\\n- StrictMono   [Mathlib.Order.Monotone.Defs]\\n    A function `f` is strictly monotone if `a < b` implies `f a < f b`.\\n- stric"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"smul StrictMono\"}",
+      "ok": true,
+      "result_chars": 91,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'smul StrictMono': Unknown identifier `smul`\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"pos ?a → StrictMono (?f) → StrictMono (fun x => ?a • ?f x)\"}",
+      "ok": true,
+      "result_chars": 133,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'pos ?a → StrictMono (?f) → StrictMono (fun x => ?a • ?f x)': Unknown identifier `pos`\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"StrictMono (?f) → StrictMono (fun x => ?a • ?f x)\"}",
+      "ok": true,
+      "result_chars": 318,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 23 declarations mentioning StrictMono and HSMul.hSMul.\\n- StrictMono.const_nsmul   [Mathlib.Algebra.Order.Monoid.Unbundled.Pow]\\n- StrictMono.const_smul   [Mathlib.Alg"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"smul_left_mono\"}",
+      "ok": true,
+      "result_chars": 100,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'smul_left_mono': unknown identifier 'smul_left_mono'\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"const_smul\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 665,
+      "result_head": "[{\"type\": \"text\", \"text\": \"429 match(es) for 'const_smul' (via ripgrep):\\n- Mathlib/Probability/Process/Stopping.lean:810\\n    @[simp] lemma stoppedValue_const_smul {𝕜 : Type*} [SMul 𝕜 β] (c : 𝕜) :\\n-"
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*const_smul\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1562,
+      "result_head": "[{\"type\": \"text\", \"text\": \"142 match(es) for 'theorem.*const_smul' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/CircleIntegral.lean:233\\n    theorem const_smul {f : ℂ → A} (h : CircleIntegrable f "
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"StrictMono\\\\.const_smul|def const_smul.*StrictMono\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 255,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'StrictMono\\\\\\\\.const_smul|def const_smul.*StrictMono' (via ripgrep):\\n- Mathlib/Algebra/Order/Module/Defs.lean:341\\n    lemma StrictMono.const_smul [PosSMul"
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Order/Module/Defs.lean\", \"line\": 341, \"n\": 20}",
+      "ok": true,
+      "result_chars": 1316,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Order/Module/Defs.lean  (lines 341–360 of 1365):\\n   341  lemma StrictMono.const_smul [PosSMulStrictMono α β] {γ : Type*} [Preorder γ] {f : γ → β}\\n   342   "
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Order/Module/Defs.lean\", \"line\": 330, \"n\": 20}",
+      "ok": true,
+      "result_chars": 1450,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Order/Module/Defs.lean  (lines 330–349 of 1365):\\n   330  /-- Scalar multiplication on the left by a nonnegative element preserves monotonicity. -/\\n   331  "
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Order/Module/Defs.lean\", \"line\": 1, \"n\": 50}",
+      "ok": true,
+      "result_chars": 3056,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Order/Module/Defs.lean  (lines 1–50 of 1365):\\n     1  /-\\n     2  Copyright (c) 2023 Yaël Dillies. All rights reserved.\\n     3  Released under Apache 2.0 l"
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Order/Module/Defs.lean\", \"line\": 50, \"n\": 100}",
+      "ok": true,
+      "result_chars": 5713,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Order/Module/Defs.lean  (lines 50–149 of 1365):\\n    50  equivalent (they are both the same as `∀ r ≥ 0, ∀ m ≥ 0, 0 ≤ r • m`),\\n    51  and similarly for `Po"
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Order/Module/Defs.lean\", \"line\": 300, \"n\": 50}",
+      "ok": true,
+      "result_chars": 2812,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Order/Module/Defs.lean  (lines 300–349 of 1365):\\n   300  \\n   301  instance {G : Type*} [PartialOrder G] [AddCommGroup G] [IsOrderedAddMonoid G] :\\n   302  "
+    }
+  ]
+}

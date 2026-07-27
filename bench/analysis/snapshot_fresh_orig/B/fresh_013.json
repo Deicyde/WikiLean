@@ -1,0 +1,28 @@
+{
+  "task_id": "fresh_013",
+  "arm": "B",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T02:11:49Z",
+  "wall_s": 84.0,
+  "output_lean": "theorem orthogonal_in_span_of_orthogonal_to_same_vector\n  {V : Type*} [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]\n  (h_dim : FiniteDimensional.finrank ℝ V = 2)\n  (w u v : V)\n  (hw : w ≠ 0)\n  (hv : v ≠ 0)\n  (hw_orth : inner w v = 0)\n  (hu_orth : inner u v = 0)\n  : u ∈ Submodule.span ℝ ({w} : Set V) := sorry",
+  "transcript_stats": {
+    "turns": 2,
+    "tool_calls_by_name": {
+      "mcp__wiki__wiki_search": 1
+    },
+    "tokens_in": 18,
+    "tokens_out": 8100,
+    "cost_usd": 0.0566919
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"inner product space orthogonal\"}",
+      "ok": true,
+      "result_chars": 2300,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'inner product space orthogonal':\\n- Inner product space  (slug: Inner_product_space)\\n    https://en.wikipedia.org/wiki/Inner_product_space\\n    orthogonali"
+    }
+  ]
+}

@@ -1,0 +1,240 @@
+{
+  "task_id": "fresh_000",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:29:36Z",
+  "wall_s": 140.1,
+  "output_lean": "theorem lift_from_localization_finitely_presented\n  {R : Type*} [CommRing R]\n  {S : Submonoid R}\n  {M N : Type*} [Module R M] [Module R N]\n  (hM : Module.Finite R M)\n  (f : LocalizedModule S M → LocalizedModule S N)\n  (hf : Function.Surjective f) :\n  ∃ (g : M →ₗ[R] N),\n    ∃ (g_localized : LocalizedModule S M → LocalizedModule S N),\n      Function.Surjective g_localized := sorry",
+  "transcript_stats": {
+    "turns": 28,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 6,
+      "mcp__wikibrain__decl_exists": 12,
+      "mcp__wikibrain__brain_cell": 3,
+      "mcp__wikibrain__brain_search": 5,
+      "mcp__wikibrain__brain_neighborhood": 1
+    },
+    "tokens_in": 182,
+    "tokens_out": 11145,
+    "cost_usd": 0.21257014999999999
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"finitely presented module\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2949,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finitely presented module\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label matc"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"localization of module at multiplicative set\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3374,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"localization of module at multiplicative set\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an "
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"lifting surjective homomorphism localization\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 6004,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"lifting surjective homomorphism localization\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an "
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"module homomorphism surjective\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 5870,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"module homomorphism surjective\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"localization away at multiplicative subset\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3223,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"localization away at multiplicative subset\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an ex"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"finitely presented module ring theory\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3992,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finitely presented module ring theory\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact i"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Module.FinitelyPresented\", \"IsLocalization\", \"Submodule.Localization\", \"LocalizedModule\", \"Module.Surjective\"]}",
+      "ok": true,
+      "result_chars": 1688,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Module.FinitelyPresented\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e."
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Module.Finite\", \"FinitelyPresented\", \"ModuleHom\", \"Module.End\", \"LocalModule\"]}",
+      "ok": true,
+      "result_chars": 1533,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Module.Finite\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.Finiteness.Defs\\\",\\\"import_line\\\":\\\"import Math"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"LinearMap\", \"Submodule.Quotient\", \"Module.Presentation\", \"LocalModule.localize\", \"Module.IsFinitelyPresented\"]}",
+      "ok": true,
+      "result_chars": 1903,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"LinearMap\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Module.LinearMap.Defs\\\",\\\"import_line\\\":\\\"import Mathl"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Module.localizedModule\", \"Localization.atBot\", \"Submodule.Localization.localize\", \"LocalModule\", \"Localization.localize\"]}",
+      "ok": true,
+      "result_chars": 1558,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Module.localizedModule\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g."
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"LocalizedModule\"}",
+      "ok": true,
+      "result_chars": 1300,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"decl\\\",\\\"key\\\":\\\"LocalizedModule\\\",\\\"id\\\":\\\"cell:decl:Mathlib:LocalizedModule\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"LocalizedModule\\\",\\\"cell\\\":{\\\""
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"finitely presented\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 175,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finitely presented\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"lift homomorphism localization\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 187,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"lift homomorphism localization\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Submonoid\", \"Submonoid.LocalizationMap\", \"IsLocalization.atAlgEquiv\", \"Module.localize_map\", \"Submodule.Localization.away\"]}",
+      "ok": true,
+      "result_chars": 1619,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Submonoid\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Group.Submonoid.Defs\\\",\\\"import_line\\\":\\\"import Mathli"
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Module.Fintype\", \"Module.finitelyGenerated\", \"Module.presentation\", \"Submodule.Fg\", \"Submodule.Fintype\"]}",
+      "ok": true,
+      "result_chars": 1420,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Module.Fintype\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis →"
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"Module.Presentation\"}",
+      "ok": false,
+      "result_chars": 376,
+      "result_head": "{\"ok\":false,\"error\":\"unresolvable key\",\"key\":\"Module.Presentation\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | article slug"
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:Module.Presentation\"}",
+      "ok": false,
+      "result_chars": 389,
+      "result_head": "{\"ok\":false,\"error\":\"unresolvable key\",\"key\":\"decl:Mathlib:Module.Presentation\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name |"
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"finitely generated module\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 481,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finitely generated module\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q7888360\\\",\\\"label\\\":\\\"Structure theorem for finitely generated modules over a principal ideal doma"
+    },
+    {
+      "i": 18,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Submodule.fg\", \"Module.fg\", \"Ideal.Fg\", \"IsNoetherian\", \"Module.quotient_fg_iff_surjective\"]}",
+      "ok": true,
+      "result_chars": 1475,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Submodule.fg\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → M"
+    },
+    {
+      "i": 19,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Submodule.Fintype\", \"Module.presentationMap\", \"IsLocalization.atPrime\", \"LocalizedModule.of\", \"Module.Finite.fg\"]}",
+      "ok": true,
+      "result_chars": 1610,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Submodule.Fintype\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basi"
+    },
+    {
+      "i": 20,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"CommRing\", \"Submonoid\", \"CommSemiring\", \"LocalModule.Ideal\", \"TensorProduct.map\"]}",
+      "ok": true,
+      "result_chars": 1630,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"CommRing\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Ring.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Ri"
+    },
+    {
+      "i": 21,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"LocalizedModule\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 740,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:LocalizedModule\\\",\\\"resolved_from\\\":\\\"decl\\\",\\\"key\\\":\\\"LocalizedModule\\\",\\\"kind\\\":\\\"cell\\\",\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q161172\\\",\\\"w"
+    },
+    {
+      "i": 22,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"LocalizedModule map\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 176,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"LocalizedModule map\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 23,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"localization lift surjective\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 185,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"localization lift surjective\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 24,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Algebra.TensorProduct.Localization\", \"RestrictScalars\", \"Module.restrictScalars\", \"ScalarRestriction\", \"LocalModule.map\"]}",
+      "ok": true,
+      "result_chars": 1614,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Algebra.TensorProduct.Localization\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are "
+    },
+    {
+      "i": 25,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Localization.Away\", \"IsLocalization.map\", \"Module.Localization\", \"Submodule.map\", \"LinearMap.lrange\"]}",
+      "ok": true,
+      "result_chars": 1669,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Localization.Away\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.GroupTheory.MonoidLocalization.Away\\\",\\\"import_line\\\":"
+    },
+    {
+      "i": 26,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Module.Finite\", \"LinearMap\", \"LocalizedModule\", \"Submonoid\", \"CommRing\", \"Function.Surjective\"]}",
+      "ok": true,
+      "result_chars": 2004,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Module.Finite\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.Finiteness.Defs\\\",\\\"import_line\\\":\\\"import Math"
+    }
+  ]
+}

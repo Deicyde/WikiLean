@@ -1,0 +1,329 @@
+{
+  "task_id": "fresh_013",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:32:31Z",
+  "wall_s": 87.9,
+  "output_lean": "theorem orthogonal_in_two_dim_span (𝕜 : Type*) [RCLike 𝕜] (E : Type*) \n    [SeminormedAddCommGroup E] [InnerProductSpace 𝕜 E] [FiniteDimensional 𝕜 E]\n    (h_dim : FiniteDimensional.finrank 𝕜 E = 2)\n    {v w u : E} (hv : v ≠ 0) (hw : w ≠ 0)\n    (h_wv : ⟪w, v⟫ = 0) (h_uv : ⟪u, v⟫ = 0) :\n    u ∈ Submodule.span 𝕜 {w} := sorry",
+  "transcript_stats": {
+    "turns": 39,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 10,
+      "mcp__wikibrain__brain_cell": 4,
+      "mcp__wikibrain__brain_search": 21,
+      "decl_exists": 1,
+      "mcp__wikibrain__brain_neighborhood": 1,
+      "mcp__wikibrain__brain_transfer": 1
+    },
+    "tokens_in": 168,
+    "tokens_out": 6849,
+    "cost_usd": 0.15258185000000005
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"inner product space\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 5669,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"inner product space\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, res"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"orthogonal vectors in inner product space\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 5264,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"orthogonal vectors in inner product space\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exa"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"span of vectors\", \"limit\": 5}",
+      "ok": false,
+      "result_chars": 248,
+      "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"span of vectors\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":{\"generated_at\":\"2026-"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"linear span submodule\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 2025,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"linear span submodule\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, re"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"orthogonal complement\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 3013,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"orthogonal complement\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, r"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q215067\"}",
+      "ok": true,
+      "result_chars": 3012,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q215067\\\",\\\"id\\\":\\\"cell:Q215067\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Orthogonality\\\",\\\"f\\\":2264,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q21"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Submodule.span\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 321,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Submodule.span\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Submodule.span\\\",\\\"label\\\":\\\"Submodule.span\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Span/Def"
+    },
+    {
+      "i": 7,
+      "name": "decl_exists",
+      "input": "{\"names\": \"[\\\"Submodule.span\\\", \\\"Submodule.orthogonal\\\", \\\"inner_eq_zero\\\", \\\"FiniteDimensional.finrank\\\"]\"}",
+      "ok": false,
+      "result_chars": 75,
+      "result_head": "<tool_use_error>Error: No such tool available: decl_exists</tool_use_error>"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"finite dimensional vector space dimension\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 4014,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finite dimensional vector space dimension\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exa"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"inner product orthogonal notation\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 4119,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"inner product orthogonal notation\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/la"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"orthogonal relation perpendicular\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 190,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"orthogonal relation perpendicular\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Submodule.mem_orthogonal_iff\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 185,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Submodule.mem_orthogonal_iff\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"two dimensional finrank equals 2\", \"limit\": 5}",
+      "ok": false,
+      "result_chars": 265,
+      "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"two dimensional finrank equals 2\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":{\"gen"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"cell:Q215067\", \"kinds\": \"depends\", \"limit\": 30}",
+      "ok": true,
+      "result_chars": 11412,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q215067\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\"],\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q214159\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":3,\\\"mentions\\\":2},\\\"trac"
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Submodule.mem_orthogonal_singleton_iff_inner_right\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 443,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Submodule.mem_orthogonal_singleton_iff_inner_right\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Submodule.mem_orthogonal_singleton_iff_inner_right\\\",\\\"label\\"
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Submodule.mem_span_singleton\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 185,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Submodule.mem_span_singleton\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Submodule.span_singleton\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 181,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Submodule.span_singleton\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"LinearMap.span_eq_top finrank\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 186,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"LinearMap.span_eq_top finrank\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 18,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:Submodule.mem_orthogonal_singleton_iff_inner_right\"}",
+      "ok": true,
+      "result_chars": 1778,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:Submodule.mem_orthogonal_singleton_iff_inner_right\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Submodule.mem_orthogonal_sing"
+    },
+    {
+      "i": 19,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Submodule.finrank orthogonal complement\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 196,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Submodule.finrank orthogonal complement\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 20,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"finrank dimension vector space\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 3189,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finrank dimension vector space\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label"
+    },
+    {
+      "i": 21,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"FiniteDimensional finrank_eq_two\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 189,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"FiniteDimensional finrank_eq_two\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 22,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Submodule.mem_span\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 175,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Submodule.mem_span\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 23,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Submodule.span_eq span_singleton\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 189,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Submodule.span_eq span_singleton\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 24,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Submodule.isCompl_orthogonal\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 526,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Submodule.isCompl_orthogonal\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Submodule.isCompl_orthogonal_of_hasOrthogonalProjection\\\",\\\"label\\\":\\\"Submodule.isC"
+    },
+    {
+      "i": 25,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"direct sum complementary subspaces\", \"limit\": 5}",
+      "ok": false,
+      "result_chars": 267,
+      "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"direct sum complementary subspaces\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":{\"g"
+    },
+    {
+      "i": 26,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:Submodule.isCompl_orthogonal_of_hasOrthogonalProjection\"}",
+      "ok": true,
+      "result_chars": 2073,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:Submodule.isCompl_orthogonal_of_hasOrthogonalProjection\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Submodule.isCompl_orthog"
+    },
+    {
+      "i": 27,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"span singleton smul notation ∙\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 187,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"span singleton smul notation ∙\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 28,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"LinearMap.span_singleton_eq_bot\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 188,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"LinearMap.span_singleton_eq_bot\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 29,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Submodule span set image\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 181,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Submodule span set image\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 30,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Submodule.orthogonal_orthogonal_eq_closure\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 419,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Submodule.orthogonal_orthogonal_eq_closure\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Submodule.orthogonal_orthogonal_eq_closure\\\",\\\"label\\\":\\\"Submodule.or"
+    },
+    {
+      "i": 31,
+      "name": "mcp__wikibrain__brain_transfer",
+      "input": "{\"q\": \"Submodule.span\", \"direction\": \"formal_to_informal\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 1474,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"Submodule.span\\\",\\\"decl\\\":\\\"Submodule.span\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Submodule.span\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\"
+    },
+    {
+      "i": 32,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Submodule orthogonal_orthogonal_eq\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 191,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Submodule orthogonal_orthogonal_eq\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 33,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"finrank_add_finrank_orthogonal\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 187,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finrank_add_finrank_orthogonal\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 34,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:Submodule.orthogonal_orthogonal_eq_closure\"}",
+      "ok": true,
+      "result_chars": 1639,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:Submodule.orthogonal_orthogonal_eq_closure\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Submodule.orthogonal_orthogonal_eq_cl"
+    },
+    {
+      "i": 35,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"mem_span_iff_linear_combination\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 188,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"mem_span_iff_linear_combination\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 36,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"FiniteDimensional finrank\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 182,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"FiniteDimensional finrank\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 37,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"RCLike inner product\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 177,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"RCLike inner product\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    }
+  ]
+}

@@ -1,0 +1,185 @@
+{
+  "task_id": "fresh_094",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:53:14Z",
+  "wall_s": 81.2,
+  "output_lean": "theorem eVariationOn_id_Icc (a b : ℝ) (hab : a ≤ b) : \n  eVariationOn id (Set.Icc a b) = ENNReal.ofReal (b - a) := sorry",
+  "transcript_stats": {
+    "turns": 21,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 1,
+      "mcp__wikibrain__brain_search": 10,
+      "mcp__wikibrain__brain_cell": 3,
+      "mcp__wikibrain__decl_exists": 4,
+      "mcp__wikibrain__brain_neighborhood": 1,
+      "mcp__wikibrain__brain_snippets": 1
+    },
+    "tokens_in": 174,
+    "tokens_out": 5196,
+    "cost_usd": 0.1266321
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"total variation of a function on an interval\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3481,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"total variation of a function on an interval\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an "
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"total variation\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 172,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"total variation\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"bounded variation function\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 183,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"bounded variation function\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Variation\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 2516,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Variation\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:variationOnFromTo\\\",\\\"label\\\":\\\"variationOnFromTo\\\",\\\"aka\\\":[\\\"A mixing tree-valued process arising un"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q829653\"}",
+      "ok": true,
+      "result_chars": 2525,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q829653\\\",\\\"id\\\":\\\"cell:Q829653\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Bounded variation\\\",\\\"f\\\":2072,\\\"cell\\\":{\\\"id\\\":\\\"cell"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:variationOnFromTo\"}",
+      "ok": true,
+      "result_chars": 1886,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:variationOnFromTo\\\",\\\"id\\\":\\\"cell:decl:Mathlib:variationOnFromTo\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"variationOnF"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"eVariationOn\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 818,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"eVariationOn\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q28474\\\",\\\"label\\\":\\\"Perimeter\\\",\\\"aka\\\":[\\\"Arc Length\\\",\\\"Arc length\\\",\\\"Curve Length\\\",\\\"eVariationOn\\\",\\\"Brow"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q28474\"}",
+      "ok": true,
+      "result_chars": 4151,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q28474\\\",\\\"id\\\":\\\"cell:Q28474\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Perimeter\\\",\\\"f\\\":2296,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q28474\\\","
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"eVariationOn\", \"Set.Icc\", \"id\"]}",
+      "ok": true,
+      "result_chars": 1054,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"eVariationOn\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.EMetricSpace.BoundedVariation\\\",\\\"import_line\\\":\\\""
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"identity function total variation\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 190,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"identity function total variation\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"decl:Mathlib:eVariationOn\", \"kinds\": \"depends\", \"limit\": 30}",
+      "ok": true,
+      "result_chars": 14949,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q28474\\\",\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:eVariationOn\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\"],\\\"synapses\\\":[{\\\"id\\\":\\\"cell:"
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"eVariationOn linear monotone\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 185,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"eVariationOn linear monotone\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__brain_snippets",
+      "input": "{\"id\": \"decl:Mathlib:eVariationOn\"}",
+      "ok": true,
+      "result_chars": 2106,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q28474\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"wikidata\\\",\\\"id\\\":\\\"Q28474\\\",\\\"label\\\":\\\"Perimeter\\\",\\\"snippet\\\":\\\"arc length of the path th"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"eVariationOn Icc\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 173,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"eVariationOn Icc\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"MonotoneOn eVariationOn\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 180,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"MonotoneOn eVariationOn\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"eVariationOn_id\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 172,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"eVariationOn_id\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Lipschitz eVariationOn\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 179,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Lipschitz eVariationOn\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"ENNReal.ofReal\", \"Set.Icc\", \"Monotone\", \"edist\", \"Real\"]}",
+      "ok": true,
+      "result_chars": 1538,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"ENNReal.ofReal\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.ENNReal.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Dat"
+    },
+    {
+      "i": 18,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"id\", \"Function.id\", \"ENNReal\", \"ℝ\"]}",
+      "ok": true,
+      "result_chars": 1160,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"id\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\\":\\\"https:/"
+    },
+    {
+      "i": 19,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"eVariationOn\", \"Set.Icc\", \"id\", \"ENNReal.ofReal\"]}",
+      "ok": true,
+      "result_chars": 1337,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"eVariationOn\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.EMetricSpace.BoundedVariation\\\",\\\"import_line\\\":\\\""
+    }
+  ]
+}

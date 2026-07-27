@@ -1,0 +1,254 @@
+{
+  "task_id": "fresh_074",
+  "arm": "C",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:18:47Z",
+  "wall_s": 111.2,
+  "output_lean": "theorem strict_mono_self_map_fixed_point {α : Type*} [LinearOrder α] [Fintype α]\n    (f : α → α) (hf : StrictMono f) : ∀ x, f x = x := sorry",
+  "transcript_stats": {
+    "turns": 30,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 11,
+      "mcp__formal__decl_grep": 15,
+      "mcp__formal__decl_read": 3
+    },
+    "tokens_in": 248,
+    "tokens_out": 6851,
+    "cost_usd": 0.15982255
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"StrictMono ?a → ?b\"}",
+      "ok": true,
+      "result_chars": 768,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 643 declarations mentioning StrictMono.\\n- StrictMono.iterate   [Mathlib.Order.Monotone.Defs]\\n- StrictMono.strictMonoOn   [Mathlib.Order.Monotone.Defs]\\n- StrictMono."
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Fintype ?a → Injective ?f → Surjective ?f\"}",
+      "ok": true,
+      "result_chars": 122,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Fintype ?a → Injective ?f → Surjective ?f': Unknown identifier `Injective`\"}]"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Fintype ?α Function.Injective\"}",
+      "ok": true,
+      "result_chars": 253,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Fintype ?α Function.Injective': Function expected at\\n  Fintype ?α\\nbut this term has type\\n  Type ?u.1\\n\\nNote: Expected a function because this term is b"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Surjective Injective Fintype\"}",
+      "ok": true,
+      "result_chars": 110,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Surjective Injective Fintype': Unknown identifier `Surjective`\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"(α → α) → StrictMono\"}",
+      "ok": true,
+      "result_chars": 93,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(α → α) → StrictMono': Unknown identifier `α`\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"injective_iff_surjective Fintype\"}",
+      "ok": true,
+      "result_chars": 128,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'injective_iff_surjective Fintype': Unknown identifier `injective_iff_surjective`\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Function.FixedPoint StrictMono\"}",
+      "ok": true,
+      "result_chars": 121,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Function.FixedPoint StrictMono': Unknown identifier `Function.FixedPoint`\"}]"
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"LinearOrder Fintype\"}",
+      "ok": true,
+      "result_chars": 241,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'LinearOrder Fintype': Application type mismatch: The argument\\n  Fintype\\nhas type\\n  Type ?u.1 → Type ?u.1\\nbut is expected to have type\\n  Type ?u.1\\nin "
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"strictly.*mono.*endo|fixed.*point.*strict|strict.*identity\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 3189,
+      "result_head": "[{\"type\": \"text\", \"text\": \"23 match(es) for 'strictly.*mono.*endo|fixed.*point.*strict|strict.*identity' (via ripgrep):\\n- Mathlib/Algebra/Category/ModuleCat/ChangeOfRings.lean:197\\n    /-- For an `R`"
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Fintype.*endomorphism|Fintype.*injective|finite.*surjective\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2845,
+      "result_head": "[{\"type\": \"text\", \"text\": \"179 match(es) for 'Fintype.*endomorphism|Fintype.*injective|finite.*surjective' (via ripgrep):\\n- Mathlib/Combinatorics/Hall/Basic.lean:40\\n    * `Fintype.all_card_le_rel_im"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"(?f : ?a → ?a) → (∀ x y, ?f x = ?f y → x = y)\"}",
+      "ok": true,
+      "result_chars": 132,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(?f : ?a → ?a) → (∀ x y, ?f x = ?f y → x = y)': type expected, got\\n  (?f : ?a → ?a)\"}]"
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"bijective.*endo|injective.*surjective\", \"limit\": 30}",
+      "ok": true,
+      "result_chars": 3956,
+      "result_head": "[{\"type\": \"text\", \"text\": \"321 match(es) for 'bijective.*endo|injective.*surjective' (via ripgrep):\\n- Mathlib/Algebra/WithConv.lean:57\\n    lemma ofConv_bijective : Function.Bijective (@ofConv A) := "
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*injective_iff_surjective\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 638,
+      "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for 'theorem.*injective_iff_surjective' (via ripgrep):\\n- Mathlib/Data/Fintype/Card.lean:335\\n    theorem injective_iff_surjective {f : α → α} : Injective f ↔ Su"
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Data/Fintype/Card.lean\", \"line\": 335, \"n\": 20}",
+      "ok": true,
+      "result_chars": 1296,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Data/Fintype/Card.lean  (lines 335–354 of 532):\\n   335  theorem injective_iff_surjective {f : α → α} : Injective f ↔ Surjective f :=\\n   336    ⟨surjective_of_injec"
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*StrictMono.*injective\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 205,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'theorem.*StrictMono.*injective' (via ripgrep):\\n- Mathlib/Order/Monotone/Basic.lean:402\\n    theorem StrictMono.injective (hf : StrictMono f) : Injective f "
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Bijective ?f → id\"}",
+      "ok": true,
+      "result_chars": 98,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Bijective ?f → id': Unknown identifier `Bijective`\"}]"
+    },
+    {
+      "i": 16,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"order.*auto.*id|order.*perm.*id|strictMono.*bijec.*id\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 278,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'order.*auto.*id|order.*perm.*id|strictMono.*bijec.*id' (via ripgrep):\\n- Mathlib/CategoryTheory/Monoidal/Cartesian/InfSemilattice.lean:16\\n    A symmetric m"
+    },
+    {
+      "i": 17,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"OrderIso|OrderEmbedding.*auto|mono.*endo.*order\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2482,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1027 match(es) for 'OrderIso|OrderEmbedding.*auto|mono.*endo.*order' (via ripgrep):\\n- Mathlib/Data/EReal/Operations.lean:290\\n    def negOrderIso : EReal ≃o ERealᵒᵈ :=\\n- M"
+    },
+    {
+      "i": 18,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"fixed.*point|Function.FixedEq\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2322,
+      "result_head": "[{\"type\": \"text\", \"text\": \"297 match(es) for 'fixed.*point|Function.FixedEq' (via ripgrep):\\n- Mathlib/Algebra/Torsor/Basic.lean:246\\n    /-- `x` is the only fixed point of `pointReflection x`. This l"
+    },
+    {
+      "i": 19,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*Function.Injective|lemma.*Function.Injective\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2698,
+      "result_head": "[{\"type\": \"text\", \"text\": \"997 match(es) for 'theorem.*Function.Injective|lemma.*Function.Injective' (via ripgrep):\\n- Mathlib/Algebra/FreeAlgebra.lean:498\\n    theorem ι_injective [Nontrivial R] : Fu"
+    },
+    {
+      "i": 20,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"mono.*fixpoint|strict.*mono.*identity\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 108,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'mono.*fixpoint|strict.*mono.*identity' under Mathlib/.\"}]"
+    },
+    {
+      "i": 21,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"le_of_lt|lt_of_le.*not\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 1882,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1972 match(es) for 'le_of_lt|lt_of_le.*not' (via ripgrep):\\n- Mathlib/Algebra/ContinuedFractions/Computation/ApproximationCorollaries.lean:93\\n    suffices 1 / (B * nB) < ε "
+    },
+    {
+      "i": 22,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*eq_id|eq_id_iff\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 1921,
+      "result_head": "[{\"type\": \"text\", \"text\": \"81 match(es) for 'theorem.*eq_id|eq_id_iff' (via ripgrep):\\n- Mathlib/CategoryTheory/FintypeCat.lean:108\\n    lemma homMk_eq_id_iff {X : FintypeCat} (f : X → X) :\\n- Mathlib"
+    },
+    {
+      "i": 23,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/CategoryTheory/FintypeCat.lean\", \"line\": 108, \"n\": 10}",
+      "ok": true,
+      "result_chars": 380,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/CategoryTheory/FintypeCat.lean  (lines 108–117 of 320):\\n   108  lemma homMk_eq_id_iff {X : FintypeCat} (f : X → X) :\\n   109      homMk f = 𝟙 X ↔ f = id := by\\n   1"
+    },
+    {
+      "i": 24,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"trichotomy|lt_or_gt_or_eq|ne_iff_lt_or_gt\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 1632,
+      "result_head": "[{\"type\": \"text\", \"text\": \"296 match(es) for 'trichotomy|lt_or_gt_or_eq|ne_iff_lt_or_gt' (via ripgrep):\\n- Mathlib/Algebra/QuadraticDiscriminant.lean:126\\n    obtain ha | rfl | ha : a < 0 ∨ a = 0 ∨ 0 "
+    },
+    {
+      "i": 25,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Fintype ?a → WF ?r\"}",
+      "ok": true,
+      "result_chars": 92,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Fintype ?a → WF ?r': Unknown identifier `WF`\"}]"
+    },
+    {
+      "i": 26,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Fintype.*well.*found|finite.*well.*found\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 245,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'Fintype.*well.*found|finite.*well.*found' (via ripgrep):\\n- Mathlib/Data/DFinsupp/WellFounded.lean:23\\n    `ι` is finite and equipped with a linear order an"
+    },
+    {
+      "i": 27,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"wellFounded_lt|wellFounded.*order\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2446,
+      "result_head": "[{\"type\": \"text\", \"text\": \"82 match(es) for 'wellFounded_lt|wellFounded.*order' (via ripgrep):\\n- Mathlib/Algebra/Lie/Submodule.lean:529\\n    isAtomic_of_orderBot_wellFounded_lt <| (wellFoundedLT_of_i"
+    },
+    {
+      "i": 28,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Data/Fintype/Card.lean\", \"line\": 455, \"n\": 15}",
+      "ok": true,
+      "result_chars": 965,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Data/Fintype/Card.lean  (lines 455–469 of 532):\\n   455  instance (priority := 100) to_wellFoundedLT [Preorder α] : WellFoundedLT α :=\\n   456    ⟨wellFounded_of_tra"
+    }
+  ]
+}

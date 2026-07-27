@@ -1,0 +1,166 @@
+{
+  "task_id": "fresh_028",
+  "arm": "C",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:04:47Z",
+  "wall_s": 72.5,
+  "output_lean": "theorem commutative_cube_of_five_faces_and_epi_edge {C : Type*} [Category C]\n    {M000 M001 M010 M011 M100 M101 M110 M111 : C}\n    (f00x : M000 ⟶ M001) (f01x : M010 ⟶ M011) (f10x : M100 ⟶ M101) (f11x : M110 ⟶ M111)\n    (f0x0 : M000 ⟶ M010) (f0x1 : M001 ⟶ M011) (f1x0 : M100 ⟶ M110) (f1x1 : M101 ⟶ M111)\n    (fx00 : M000 ⟶ M100) (fx01 : M001 ⟶ M101) (fx10 : M010 ⟶ M110) (fx11 : M011 ⟶ M111)\n    (h0xx : CommSq f0x0 f00x f01x f0x1)\n    (h1xx : CommSq f1x0 f10x f11x f1x1)\n    (hx0x : CommSq fx00 f00x f10x fx01)\n    (hx1x : CommSq fx10 f01x f11x fx11)\n    (hxx0 : CommSq f0x0 fx00 fx10 f1x0)\n    [Epi f00x] :\n    CommSq f0x1 fx01 fx11 f1x1 := sorry",
+  "transcript_stats": {
+    "turns": 19,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 6,
+      "mcp__formal__decl_grep": 7,
+      "mcp__formal__decl_read": 5
+    },
+    "tokens_in": 94,
+    "tokens_out": 5375,
+    "cost_usd": 0.07637745
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Epi\"}",
+      "ok": true,
+      "result_chars": 78,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Epi': unknown identifier 'Epi'\"}]"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"CommSq\"}",
+      "ok": true,
+      "result_chars": 84,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'CommSq': unknown identifier 'CommSq'\"}]"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(def|structure|class).*CommSq\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1341,
+      "result_head": "[{\"type\": \"text\", \"text\": \"36 match(es) for '(def|structure|class).*CommSq' (via ripgrep):\\n- Mathlib/Algebra/Homology/CommSq.lean:53\\n    noncomputable def CommSq.shortComplex (sq : CommSq f g inl in"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/CategoryTheory/CommSq.lean\", \"line\": 49, \"n\": 20}",
+      "ok": true,
+      "result_chars": 874,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/CategoryTheory/CommSq.lean  (lines 49–68 of 292):\\n    49  structure CommSq {W X Y Z : C} (f : W ⟶ X) (g : W ⟶ Y) (h : X ⟶ Z) (i : Y ⟶ Z) : Prop where\\n    50    /--"
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"?f is epimorphism\"}",
+      "ok": true,
+      "result_chars": 132,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '?f is epimorphism': Cannot search: No constants or name fragments in search pattern.\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Surjective\"}",
+      "ok": true,
+      "result_chars": 92,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Surjective': unknown identifier 'Surjective'\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(def|class).*Epi\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1259,
+      "result_head": "[{\"type\": \"text\", \"text\": \"162 match(es) for '(def|class).*Epi' (via ripgrep):\\n- Mathlib/Algebra/Algebra/Epi.lean:29\\n    protected class IsEpi : Prop where\\n- Mathlib/CategoryTheory/EpiMono.lean:14\\"
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(def|class).*[Ee]pi\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2837,
+      "result_head": "[{\"type\": \"text\", \"text\": \"201 match(es) for '(def|class).*[Ee]pi' (via ripgrep):\\n- Mathlib/Algebra/Algebra/Epi.lean:29\\n    protected class IsEpi : Prop where\\n- Mathlib/Algebra/Homology/Factorizati"
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/CategoryTheory/EpiMono.lean\", \"line\": 1, \"n\": 30}",
+      "ok": true,
+      "result_chars": 1119,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/CategoryTheory/EpiMono.lean  (lines 1–30 of 278):\\n     1  /-\\n     2  Copyright (c) 2019 Reid Barton. All rights reserved.\\n     3  Released under Apache 2.0 licens"
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"class Epi\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 162,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'class Epi' (via ripgrep):\\n- Mathlib/CategoryTheory/Category/Basic.lean:321\\n    class Epi (f : X ⟶ Y) : Prop where\"}]"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Epi ?f\"}",
+      "ok": true,
+      "result_chars": 81,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Epi ?f': Unknown identifier `Epi`\"}]"
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/CategoryTheory/Category/Basic.lean\", \"line\": 321, \"n\": 10}",
+      "ok": true,
+      "result_chars": 719,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/CategoryTheory/Category/Basic.lean  (lines 321–330 of 412):\\n   321  class Epi (f : X ⟶ Y) : Prop where\\n   322    /-- A morphism `f` is an epimorphism if it can be "
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(def|structure).*[Cc]ube\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1350,
+      "result_head": "[{\"type\": \"text\", \"text\": \"10 match(es) for '(def|structure).*[Cc]ube' (via ripgrep):\\n- Mathlib/Topology/Homotopy/HomotopyGroup.lean:333\\n    def homotopyTo (i : N) {p q : Ω^ N X x} (H : p.1.Homotopy"
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"commutative cube\"}",
+      "ok": true,
+      "result_chars": 99,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'commutative cube': Unknown identifier `commutative`\"}]"
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"lemma.*commut.*cube\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 90,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'lemma.*commut.*cube' under Mathlib/.\"}]"
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*five.*commut\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 366,
+      "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'theorem.*five.*commut' (via ripgrep):\\n- Mathlib/CategoryTheory/EpiMono.lean:246\\n    /-- This is a theorem saying if five faces of a cube commute and one e"
+    },
+    {
+      "i": 16,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/CategoryTheory/EpiMono.lean\", \"line\": 246, \"n\": 30}",
+      "ok": true,
+      "result_chars": 2032,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/CategoryTheory/EpiMono.lean  (lines 246–275 of 278):\\n   246  /-- This is a theorem saying if five faces of a cube commute and one edge is an epimorphism,\\n   247   "
+    },
+    {
+      "i": 17,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/CategoryTheory/EpiMono.lean\", \"line\": 220, \"n\": 60}",
+      "ok": true,
+      "result_chars": 3072,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/CategoryTheory/EpiMono.lean  (lines 220–278 of 278):\\n   220  end\\n   221  \\n   222  section Opposite\\n   223  \\n   224  variable {X Y : C} {f : X ⟶ Y}\\n   225  \\n  "
+    }
+  ]
+}

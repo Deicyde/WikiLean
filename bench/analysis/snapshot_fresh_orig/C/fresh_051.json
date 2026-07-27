@@ -1,0 +1,182 @@
+{
+  "task_id": "fresh_051",
+  "arm": "C",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:11:33Z",
+  "wall_s": 68.7,
+  "output_lean": "theorem continuous_outside_countable_imp_strongly_measurable\n    [MeasurableSpace α] [TopologicalSpace α] [OpensMeasurableSpace α] [MeasurableSingletonClass α]\n    [TopologicalSpace β] [PseudoMetrizableSpace β] [SecondCountableTopologyEither α β]\n    {f : α → β} {s : Set α} (hf : ContinuousOn f s) (hs : (sᶜ).Countable) :\n    StronglyMeasurable f := sorry",
+  "transcript_stats": {
+    "turns": 21,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 11,
+      "mcp__formal__decl_grep": 6,
+      "mcp__formal__decl_read": 3
+    },
+    "tokens_in": 110,
+    "tokens_out": 4854,
+    "cost_usd": 0.07760075
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"StronglyMeasurable\"}",
+      "ok": true,
+      "result_chars": 108,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'StronglyMeasurable': unknown identifier 'StronglyMeasurable'\"}]"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"PseudoMetricSpace\"}",
+      "ok": true,
+      "result_chars": 1361,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 1762 declarations mentioning PseudoMetricSpace.\\n- PseudoMetricSpace   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n    A pseudometric space is a type endowed with a `ℝ"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"ContinuousOn\"}",
+      "ok": true,
+      "result_chars": 881,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 1242 declarations mentioning ContinuousOn.\\n- ContinuousOn   [Mathlib.Topology.Defs.Filter]\\n    A function between topological spaces is continuous on a subset `s` wh"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Countable\"}",
+      "ok": true,
+      "result_chars": 772,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 722 declarations mentioning Countable.\\n- Countable   [Mathlib.Data.Countable.Defs]\\n    A type `α` is countable if there exists an injective map `α → ℕ`.\\n- instCount"
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Measurable\"}",
+      "ok": true,
+      "result_chars": 1137,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 1410 declarations mentioning Measurable.\\n- Measurable   [Mathlib.MeasureTheory.MeasurableSpace.Defs]\\n    A function `f` between measurable spaces is measurable if th"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"AEStronglyMeasurable\"}",
+      "ok": true,
+      "result_chars": 112,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'AEStronglyMeasurable': unknown identifier 'AEStronglyMeasurable'\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"strongly measurable\"}",
+      "ok": true,
+      "result_chars": 99,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'strongly measurable': Unknown identifier `strongly`\"}]"
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"?α → ?β → Prop\"}",
+      "ok": true,
+      "result_chars": 129,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '?α → ?β → Prop': Cannot search: No constants or name fragments in search pattern.\"}]"
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"MeasureTheory\"}",
+      "ok": true,
+      "result_chars": 98,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'MeasureTheory': unknown identifier 'MeasureTheory'\"}]"
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"StronglyMeasurable|AEStronglyMeasurable\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2857,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1100 match(es) for 'StronglyMeasurable|AEStronglyMeasurable' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/Bochner/Set.lean:345\\n    by_cases hf : AEStronglyMeasurable f "
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/Integral/Bochner/Set.lean\", \"line\": 372, \"n\": 5}",
+      "ok": true,
+      "result_chars": 451,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Integral/Bochner/Set.lean  (lines 372–376 of 1225):\\n   372      (haux : StronglyMeasurable f) (H : IntegrableOn f (s ∪ t) μ) :\\n   373      ∫ x in s ∪"
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"^theorem StronglyMeasurable|^def StronglyMeasurable|^class StronglyMeasurable\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 956,
+      "result_head": "[{\"type\": \"text\", \"text\": \"16 match(es) for '^theorem StronglyMeasurable|^def StronglyMeasurable|^class StronglyMeasurable' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/SetToL1.lean:1402\\n    theo"
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"class StronglyMeasurable|structure StronglyMeasurable\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 124,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'class StronglyMeasurable|structure StronglyMeasurable' under Mathlib/.\"}]"
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"abbrev StronglyMeasurable|^def StronglyMeasurable\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 403,
+      "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'abbrev StronglyMeasurable|^def StronglyMeasurable' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/IntegrableOn.lean:41\\n    def StronglyMeasurableAtFilter"
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean\", \"line\": 64, \"n\": 20}",
+      "ok": true,
+      "result_chars": 1162,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean  (lines 64–83 of 1325):\\n    64  def StronglyMeasurable [MeasurableSpace α] (f : α → β) : Prop :=\\n    65    ∃ f"
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"ContinuousOn Countable StronglyMeasurable\"}",
+      "ok": true,
+      "result_chars": 131,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'ContinuousOn Countable StronglyMeasurable': Unknown identifier `StronglyMeasurable`\"}]"
+    },
+    {
+      "i": 16,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"continuous.*countable|countable.*continuous.*strongly\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1688,
+      "result_head": "[{\"type\": \"text\", \"text\": \"12 match(es) for 'continuous.*countable|countable.*continuous.*strongly' (via ripgrep):\\n- Mathlib/Topology/Algebra/ProperAction/CompactlyGenerated.lean:17\\n    discontinuou"
+    },
+    {
+      "i": 17,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean\", \"line\": 829, \"n\": 30}",
+      "ok": true,
+      "result_chars": 2115,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean  (lines 829–858 of 1325):\\n   829  /-- If a function is continuous outside of a countable set, then it is strong"
+    },
+    {
+      "i": 18,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"SecondCountableTopologyEither\", \"limit\": 3}",
+      "ok": true,
+      "result_chars": 511,
+      "result_head": "[{\"type\": \"text\", \"text\": \"45 match(es) for 'SecondCountableTopologyEither' (via ripgrep):\\n- Mathlib/Probability/Distributions/Gaussian/Basic.lean:249\\n    instance [SecondCountableTopologyEither E F"
+    },
+    {
+      "i": 19,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Set.Countable\"}",
+      "ok": true,
+      "result_chars": 1152,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 429 declarations mentioning Set.Countable.\\n- Set.Countable   [Mathlib.Data.Set.Countable]\\n    A set `s` is countable if the corresponding subtype is countable, i.e.,"
+    }
+  ]
+}

@@ -1,0 +1,199 @@
+{
+  "task_id": "fresh_012",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:32:30Z",
+  "wall_s": 95.2,
+  "output_lean": "theorem norm_sq_det_eq_det_gram_matrix\n  {𝕜 : Type*} [RCLike 𝕜] {n : ℕ} \n  (f : (Fin n → 𝕜) →L[𝕜] (Fin n → 𝕜))\n  (b : Fin n → (Fin n → 𝕜))\n  (hb : Orthonormal 𝕜 b)\n  (hb_basis : LinearIndependent 𝕜 b ∧ Submodule.span 𝕜 (Set.range b) = ⊤) :\n  ‖(f.toLinearMap.det : 𝕜)‖ ^ 2 = \n  Matrix.det (Matrix.of_fun fun i j => ⟨f (b i), b j⟩_𝕜) := sorry",
+  "transcript_stats": {
+    "turns": 23,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 4,
+      "mcp__wikibrain__brain_search": 10,
+      "mcp__wikibrain__brain_cell": 2,
+      "mcp__wikibrain__decl_exists": 6
+    },
+    "tokens_in": 190,
+    "tokens_out": 6587,
+    "cost_usd": 0.1465393
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"norm-determinant of a linear map\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 5295,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"norm-determinant of a linear map\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/lab"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"Gram matrix\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2959,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Gram matrix\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_fr"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"orthonormal basis inner product space\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 5275,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"orthonormal basis inner product space\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact i"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Gram matrix determinant\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 180,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Gram matrix determinant\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"determinant linear map\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 179,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"determinant linear map\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"basis of a vector space\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 4945,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"basis of a vector space\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match,"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q214159\"}",
+      "ok": true,
+      "result_chars": 5971,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q214159\\\",\\\"id\\\":\\\"cell:Q214159\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Inner product space\\\",\\\"f\\\":40153,\\\"cell\\\":{\\\"id\\\":\\\"c"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Gram operator\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 170,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Gram operator\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"operator norm linear map\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 181,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"operator norm linear map\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"LinearMap\", \"Matrix.det\", \"Norm\", \"InnerProductSpace\", \"Orthonormal\", \"Module.Basis\", \"inner\"]}",
+      "ok": true,
+      "result_chars": 2333,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"LinearMap\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Module.LinearMap.Defs\\\",\\\"import_line\\\":\\\"import Mathl"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"inner product notation angle bracket\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 193,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"inner product notation angle bracket\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Inner product\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 2045,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Inner product\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q181365\\\",\\\"label\\\":\\\"Dot product\\\",\\\"aka\\\":[\\\"Dot Product\\\",\\\"Inner product\\\",\\\"dot product\\\",\\\"dotProduct\\\"],"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q181365\"}",
+      "ok": true,
+      "result_chars": 3602,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q181365\\\",\\\"id\\\":\\\"cell:Q181365\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Dot product\\\",\\\"f\\\":35032,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q181"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"matrix representation basis change coordinates\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 203,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"matrix representation basis change coordinates\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}"
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"adjoint of linear map inner product\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 192,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"adjoint of linear map inner product\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"square matrix invertible\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 181,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"square matrix invertible\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Matrix.toLin'\", \"Matrix.map\", \"LinearMap.toMatrix\", \"Matrix.trace\", \"Matrix.mul\"]}",
+      "ok": true,
+      "result_chars": 1815,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Matrix.toLin'\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Matrix.ToLin\\\",\\\"import_line\\\":\\\"import Math"
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"basis matrix representation linear map\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 195,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"basis matrix representation linear map\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 18,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"LinearMap.det\", \"LinearEquiv.det\", \"ContinuousLinearMap.norm\", \"Fintype\"]}",
+      "ok": true,
+      "result_chars": 1336,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"LinearMap.det\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Determinant\\\",\\\"import_line\\\":\\\"import Mathl"
+    },
+    {
+      "i": 19,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"norm_sq_eq_inner\", \"inner_self_eq_norm_sq\", \"Matrix.inner_mul_le_Lp\", \"Matrix.conjTranspose\"]}",
+      "ok": true,
+      "result_chars": 1382,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"norm_sq_eq_inner\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis"
+    },
+    {
+      "i": 20,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"sq_abs\", \"Complex.norm_sq_eq_abs\", \"Fin\", \"Matrix.of_apply\"]}",
+      "ok": true,
+      "result_chars": 1264,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"sq_abs\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Order.Ring.Abs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra"
+    },
+    {
+      "i": 21,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"LinearMap.toMatrix\", \"Matrix.toLin\", \"PiLp\", \"Basis.toMatrix\", \"EuclideanSpace\"]}",
+      "ok": true,
+      "result_chars": 1670,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"LinearMap.toMatrix\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Matrix.ToLin\\\",\\\"import_line\\\":\\\"import"
+    }
+  ]
+}

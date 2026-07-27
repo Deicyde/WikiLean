@@ -1,0 +1,54 @@
+{
+  "task_id": "fresh_099",
+  "arm": "B",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T03:56:31Z",
+  "wall_s": 96.9,
+  "output_lean": "theorem monotone_continuous_is_left_order_continuous\n  {α β : Type*} [SemilatticeSup α] [SemilatticeSup β] [TopologicalSpace β]\n  {f : α → β} (hf_mono : Monotone f) (hf_cont : Continuous f) :\n  ∀ s : Set α, f (sSup s) = sSup (f '' s) := sorry",
+  "transcript_stats": {
+    "turns": 5,
+    "tool_calls_by_name": {
+      "mcp__wiki__wiki_search": 1,
+      "mcp__wiki__nlab_search": 2,
+      "mcp__wiki__wiki_get": 1
+    },
+    "tokens_in": 42,
+    "tokens_out": 7915,
+    "cost_usd": 0.059750849999999994
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"order-continuous function supremum\"}",
+      "ok": true,
+      "result_chars": 2231,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'order-continuous function supremum':\\n- Infimum and supremum  (slug: Infimum_and_supremum)\\n    https://en.wikipedia.org/wiki/Infimum_and_supremum\\n    exis"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wiki__nlab_search",
+      "input": "{\"q\": \"order-continuous monotone function\"}",
+      "ok": true,
+      "result_chars": 113,
+      "result_head": "[{\"type\": \"text\", \"text\": \"nLab search for 'order-continuous monotone function' — candidate pages:\\n- HomePage\"}]"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wiki__nlab_search",
+      "input": "{\"q\": \"Scott continuous supremum preserving\"}",
+      "ok": true,
+      "result_chars": 115,
+      "result_head": "[{\"type\": \"text\", \"text\": \"nLab search for 'Scott continuous supremum preserving' — candidate pages:\\n- HomePage\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wiki__wiki_get",
+      "input": "{\"title\": \"Scott continuity\"}",
+      "ok": true,
+      "result_chars": 3310,
+      "result_head": "[{\"type\": \"text\", \"text\": \"# Scott continuity\\nIn mathematics, given two partially ordered sets P and Q, a function f: P → Q between them is Scott-continuous (named after the mathematician Dana Scott)"
+    }
+  ]
+}

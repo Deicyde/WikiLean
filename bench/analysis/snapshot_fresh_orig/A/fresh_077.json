@@ -1,0 +1,17 @@
+{
+  "task_id": "fresh_077",
+  "arm": "A",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T02:04:39Z",
+  "wall_s": 108.1,
+  "output_lean": "theorem exists_regular_sequence_in_ideal_of_ext_vanishing\n    (R : Type*) [CommRing R] [NoetherianRing R]\n    (I : Ideal R) (M N : Type*) [AddCommGroup M] [Module R M] [AddCommGroup N] [Module R N]\n    (hM_fg : Module.FinitelyGenerated R M)\n    (hIM_proper : Submodule.span R {x : M | ∃ (i : I) (m : M), x = i.val • m} < ⊤)\n    (hN_fg : Module.FinitelyGenerated R N)\n    (hN_support : Module.support R N = {p : Ideal R | p.IsPrime ∧ I ≤ p})\n    (n : ℕ)\n    (hExt : ∀ i < n, Ext R i N M = 0) :\n    ∃ (seq : Fin n → R), (∀ i, seq i ∈ I) ∧ IsRegularSequence M seq := sorry",
+  "transcript_stats": {
+    "turns": 1,
+    "tool_calls_by_name": {},
+    "tokens_in": 10,
+    "tokens_out": 11022,
+    "cost_usd": 0.05675500000000001
+  },
+  "tool_trace": []
+}

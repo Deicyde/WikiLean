@@ -1,0 +1,17 @@
+{
+  "task_id": "fresh_079",
+  "arm": "A",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T02:04:57Z",
+  "wall_s": 117.9,
+  "output_lean": "theorem finite_flat_rank_constant_free {R : Type*} [CommRing R] \n    {M : Type*} [AddCommMonoid M] [Module R M] \n    (p : Ideal R) (hp : Ideal.Prime p)\n    (hfinite : Module.Finite R M)\n    (hflat : Flat R M)\n    (rank : Ideal R → ℕ)\n    (hrank : ∀ q : Ideal R, Ideal.Prime q → rank q = rank p) :\n    ∃ (a : R) (ha : a ∉ p),\n      Module.Free (Localization (Submonoid.powers a)) \n        (M ⊗[R] Localization (Submonoid.powers a)) := sorry",
+  "transcript_stats": {
+    "turns": 1,
+    "tool_calls_by_name": {},
+    "tokens_in": 10,
+    "tokens_out": 12827,
+    "cost_usd": 0.065565
+  },
+  "tool_trace": []
+}

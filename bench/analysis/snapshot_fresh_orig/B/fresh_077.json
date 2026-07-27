@@ -1,0 +1,78 @@
+{
+  "task_id": "fresh_077",
+  "arm": "B",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T02:27:10Z",
+  "wall_s": 203.7,
+  "output_lean": "theorem exists_m_regular_sequence_of_ext_vanishes\n    {R : Type*} [CommRing R] [IsNoetherian R R]\n    {I : Ideal R}\n    {M : Type*} [AddCommGroup M] [Module R M] [Module.Finite R M]\n    {N : Type*} [AddCommGroup N] [Module R N] [Module.Finite R N]\n    (hM_proper : I • M ≠ (⊤ : Submodule R M))\n    (hN_support : Module.support N = Ideal.vanishingLocus I)\n    {n : ℕ}\n    (hExt : ∀ i < n, Ext R i N M = 0)\n    : ∃ (seq : Fin n → R), (∀ i, seq i ∈ I) ∧ IsRegularSequence M seq\n    := sorry",
+  "transcript_stats": {
+    "turns": 8,
+    "tool_calls_by_name": {
+      "mcp__wiki__wiki_search": 3,
+      "mcp__wiki__wiki_get": 2,
+      "mcp__wiki__nlab_search": 2
+    },
+    "tokens_in": 34,
+    "tokens_out": 13496,
+    "cost_usd": 0.09191785000000001
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"Ext functor homological algebra\"}",
+      "ok": true,
+      "result_chars": 2148,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'Ext functor homological algebra':\\n- Ext functor  (slug: Ext_functor)\\n    https://en.wikipedia.org/wiki/Ext_functor\\n    the Ext functors are the derived f"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"regular sequence commutative algebra\"}",
+      "ok": true,
+      "result_chars": 2265,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'regular sequence commutative algebra':\\n- Commutative ring  (slug: Commutative_ring)\\n    https://en.wikipedia.org/wiki/Commutative_ring\\n    a commutative "
+    },
+    {
+      "i": 2,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"support module scheme theory\"}",
+      "ok": true,
+      "result_chars": 2323,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'support module scheme theory':\\n- Lattice-based cryptography  (slug: Lattice-based_cryptography)\\n    https://en.wikipedia.org/wiki/Lattice-based_cryptograp"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wiki__wiki_get",
+      "input": "{\"title\": \"Regular_sequence\"}",
+      "ok": true,
+      "result_chars": 4100,
+      "result_head": "[{\"type\": \"text\", \"text\": \"# Regular sequence\\nIn commutative algebra, a regular sequence is a sequence of elements of a commutative ring which are as independent as possible, in a precise sense. This"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wiki__wiki_get",
+      "input": "{\"title\": \"Support_of_a_module\"}",
+      "ok": true,
+      "result_chars": 4406,
+      "result_head": "[{\"type\": \"text\", \"text\": \"# Support of a module\\nIn commutative algebra, the support of a module M over a commutative ring R is the set of all prime ideals \\n  \\n    \\n      \\n        \\n          \\n "
+    },
+    {
+      "i": 5,
+      "name": "mcp__wiki__nlab_search",
+      "input": "{\"q\": \"Ext functor derived functor\"}",
+      "ok": true,
+      "result_chars": 106,
+      "result_head": "[{\"type\": \"text\", \"text\": \"nLab search for 'Ext functor derived functor' — candidate pages:\\n- HomePage\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wiki__nlab_search",
+      "input": "{\"q\": \"regular sequence depth\"}",
+      "ok": true,
+      "result_chars": 101,
+      "result_head": "[{\"type\": \"text\", \"text\": \"nLab search for 'regular sequence depth' — candidate pages:\\n- HomePage\"}]"
+    }
+  ]
+}

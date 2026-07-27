@@ -1,0 +1,210 @@
+{
+  "task_id": "fresh_043",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:39:57Z",
+  "wall_s": 74.6,
+  "output_lean": "theorem torsion_module_rank_zero {R : Type*} [Ring R] {M : Type*} [Module R M] \n    (h : Module.IsTorsion R M) : Module.rank R M = 0 :=\n  rank_eq_zero_iff_isTorsion.mpr h",
+  "transcript_stats": {
+    "turns": 24,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 2,
+      "mcp__wikibrain__brain_search": 7,
+      "mcp__wikibrain__brain_cell": 6,
+      "mcp__wikibrain__decl_exists": 2,
+      "mcp__wikibrain__brain_snippets": 3,
+      "mcp__wikibrain__brain_transfer": 1,
+      "mcp__wikibrain__brain_neighborhood": 2
+    },
+    "tokens_in": 148,
+    "tokens_out": 5381,
+    "cost_usd": 0.11098015
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"torsion module over a ring\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3981,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"torsion module over a ring\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label mat"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"rank zero module\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3541,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"rank zero module\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolv"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"torsion module\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 171,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"torsion module\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"rank module\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 168,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"rank module\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"IsTorsion\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1297,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"IsTorsion\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Module.IsTorsionFree\\\",\\\"label\\\":\\\"Module.IsTorsionFree\\\",\\\"aka\\\":[\\\"Depth and the Local Cohomology of"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"rank\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 2211,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"rank\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q318737\\\",\\\"label\\\":\\\"Abelian category\\\",\\\"aka\\\":[\\\"Abelian Category\\\",\\\"CategoryTheory.Abelian\\\",\\\"Definition:Abelian C"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:Module.rank_eq_zero_iff_isTorsion\"}",
+      "ok": true,
+      "result_chars": 1564,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:Module.rank_eq_zero_iff_isTorsion\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Module.rank_eq_zero_iff_isTorsion\\\",\\\"kind\\\":\\"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:Module.IsTorsionFree\"}",
+      "ok": true,
+      "result_chars": 1576,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:Module.IsTorsionFree\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Module.IsTorsionFree\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Module"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Module.IsTorsion\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 374,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Module.IsTorsion\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Module.IsTorsionFree\\\",\\\"label\\\":\\\"Module.IsTorsionFree\\\",\\\"aka\\\":[\\\"Depth and the Local Cohomo"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"IsTorsion\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 1297,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"IsTorsion\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Module.IsTorsionFree\\\",\\\"label\\\":\\\"Module.IsTorsionFree\\\",\\\"aka\\\":[\\\"Depth and the Local Cohomology of"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"path:Mathlib/Algebra/Module/Torsion\"}",
+      "ok": true,
+      "result_chars": 783,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/Algebra/Module/Torsion\\\",\\\"id\\\":\\\"path:Mathlib/Algebra/Module/Torsion\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":"
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"path:Mathlib/LinearAlgebra/Dimension/Torsion\"}",
+      "ok": true,
+      "result_chars": 845,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/LinearAlgebra/Dimension/Torsion\\\",\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Dimension/Torsion\\\",\\\"kind\\\":\\\"supe"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Module.rank\", \"Module.IsTorsion\", \"Module.IsTorsionFree\", \"Module.rank_eq_zero_iff_isTorsion\"]}",
+      "ok": true,
+      "result_chars": 1601,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Module.rank\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Dimension.Basic\\\",\\\"import_line\\\":\\\"import Mat"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:Module.IsTorsion\"}",
+      "ok": false,
+      "result_chars": 386,
+      "result_head": "{\"ok\":false,\"error\":\"unresolvable key\",\"key\":\"decl:Mathlib:Module.IsTorsion\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | ar"
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:Module.rank\"}",
+      "ok": true,
+      "result_chars": 1843,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:Module.rank\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Module.rank\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Module.rank\\\",\\\"f\\\":4097"
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__brain_snippets",
+      "input": "{\"id\": \"decl:Mathlib:Module.rank\"}",
+      "ok": true,
+      "result_chars": 865,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:Module.rank\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:Module.rank\\\",\\\"label\\\":\\\"Module.rank\\\",\\\""
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__brain_snippets",
+      "input": "{\"id\": \"decl:Mathlib:Module.IsTorsionFree\"}",
+      "ok": true,
+      "result_chars": 722,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:Module.IsTorsionFree\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:Module.IsTorsionFree\\\",\\\"label\\\":"
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__brain_snippets",
+      "input": "{\"id\": \"Module.IsTorsion\"}",
+      "ok": false,
+      "result_chars": 371,
+      "result_head": "{\"ok\":false,\"error\":\"unknown atom id\",\"id\":\"Module.IsTorsion\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | article slug | xr"
+    },
+    {
+      "i": 18,
+      "name": "mcp__wikibrain__brain_transfer",
+      "input": "{\"q\": \"Module.IsTorsion\", \"direction\": \"formal_to_informal\"}",
+      "ok": true,
+      "result_chars": 1210,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"Module.IsTorsion\\\",\\\"decl\\\":\\\"Module.IsTorsion\\\",\\\"hits\\\":[],\\\"note\\\":\\\"decl is not an organ of any atom — it may s"
+    },
+    {
+      "i": 19,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"name\": \"rank_eq_zero_iff_isTorsion\"}",
+      "ok": true,
+      "result_chars": 499,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"decl\\\":\\\"rank_eq_zero_iff_isTorsion\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Dimension.Torsion.Finite\\\",\\\"import_line\\\":\\\""
+    },
+    {
+      "i": 20,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"decl:Mathlib:Module.rank\", \"limit\": 20, \"kinds\": \"depends\"}",
+      "ok": true,
+      "result_chars": 407,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:Module.rank\\\",\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:Module.rank\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\"],\\\"synapses\\\""
+    },
+    {
+      "i": 21,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"rank_eq_zero_iff_isTorsion\", \"limit\": 30}",
+      "ok": false,
+      "result_chars": 381,
+      "result_head": "{\"ok\":false,\"error\":\"unknown atom id\",\"id\":\"rank_eq_zero_iff_isTorsion\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | article"
+    },
+    {
+      "i": 22,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"isTorsion predicate\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 176,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"isTorsion predicate\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    }
+  ]
+}

@@ -1,0 +1,95 @@
+{
+  "task_id": "fresh_029",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:36:33Z",
+  "wall_s": 71.3,
+  "output_lean": "theorem commutative_cube_five_lemma {C : Type*} [CategoryTheory.Category C]\n  {v1 v2 v3 v4 v5 v6 v7 v8 : C}\n  (b1 : v1 ⟶ v2) (l1 : v1 ⟶ v3) (r2 : v2 ⟶ v4) (l3 : v3 ⟶ v4)\n  (b2 : v5 ⟶ v6) (l2 : v5 ⟶ v7) (r6 : v6 ⟶ v8) (l4 : v7 ⟶ v8)\n  (vert1 : v1 ⟶ v5) (vert2 : v2 ⟶ v6) (vert3 : v3 ⟶ v7) (vert4 : v4 ⟶ v8)\n  (h_bottom : CategoryTheory.CommSq b1 l1 r2 l3)\n  (h_top : CategoryTheory.CommSq b2 l2 r6 l4)\n  (h_front : CategoryTheory.CommSq b1 vert1 b2 vert2)\n  (h_back : CategoryTheory.CommSq l3 vert3 l4 vert4)\n  (h_left : CategoryTheory.CommSq l1 vert1 l2 vert3)\n  (h_mono : CategoryTheory.Mono vert1) :\n  CategoryTheory.CommSq r2 vert2 r6 vert4 :=\nsorry",
+  "transcript_stats": {
+    "turns": 10,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 2,
+      "mcp__wikibrain__brain_cell": 2,
+      "mcp__wikibrain__brain_search": 3,
+      "mcp__wikibrain__decl_exists": 2
+    },
+    "tokens_in": 52,
+    "tokens_out": 6692,
+    "cost_usd": 0.07077794999999999
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"commutative diagram five lemma cube\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 5311,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"commutative diagram five lemma cube\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"monomorphism category theory Lean\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3046,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"monomorphism category theory Lean\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/la"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q621542\"}",
+      "ok": true,
+      "result_chars": 4372,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q621542\\\",\\\"id\\\":\\\"cell:Q621542\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Commutative diagram\\\",\\\"f\\\":40152,\\\"cell\\\":{\\\"id\\\":\\\"c"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"commutative cube diagram morphism\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 190,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"commutative cube diagram morphism\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"CategoryTheory.Mono\", \"CategoryTheory.Epi\", \"CategoryTheory.CommSq\"]}",
+      "ok": true,
+      "result_chars": 1170,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"CategoryTheory.Mono\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.CategoryTheory.Category.Basic\\\",\\\"import_line\\\":\\\"im"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"cube diagram lemma\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 175,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"cube diagram lemma\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:CategoryTheory.CommSq\"}",
+      "ok": true,
+      "result_chars": 4395,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:CategoryTheory.CommSq\\\",\\\"id\\\":\\\"cell:Q621542\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Commutative diagram\\\",\\\"f\\\":401"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"five faces commute morphism\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 184,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"five faces commute morphism\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"CategoryTheory.Category\", \"CategoryTheory.Functor\", \"CategoryTheory.Iso\"]}",
+      "ok": true,
+      "result_chars": 1168,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"CategoryTheory.Category\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.CategoryTheory.Category.Basic\\\",\\\"import_line\\\":"
+    }
+  ]
+}

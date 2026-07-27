@@ -1,0 +1,69 @@
+{
+  "task_id": "fresh_088",
+  "arm": "B",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T03:54:17Z",
+  "wall_s": 92.6,
+  "output_lean": "theorem monotone_totalVariation (f : ℝ → ℝ) (a b : ℝ)\n  (hab : a ≤ b) (h_mono : Monotone f) :\n  totalVariation f (Icc a b) = f b - f a := sorry",
+  "transcript_stats": {
+    "turns": 7,
+    "tool_calls_by_name": {
+      "mcp__wiki__wiki_search": 4,
+      "mcp__wiki__wiki_get": 2
+    },
+    "tokens_in": 60,
+    "tokens_out": 8015,
+    "cost_usd": 0.06960430000000001
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"total variation function\"}",
+      "ok": true,
+      "result_chars": 2340,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'total variation function':\\n- Total variation  (slug: Total_variation)\\n    https://en.wikipedia.org/wiki/Total_variation\\n    mathematics, the total variat"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wiki__wiki_get",
+      "input": "{\"title\": \"Total_variation\", \"section\": \"Functions of a real variable\"}",
+      "ok": true,
+      "result_chars": 4297,
+      "result_head": "[{\"type\": \"text\", \"text\": \"# Total variation\\n[section 'Functions of a real variable' not found; returning article head]\\nIn mathematics, the total variation identifies several slightly different conc"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"monotone function mathematics\"}",
+      "ok": true,
+      "result_chars": 2450,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'monotone function mathematics':\\n- Monotonic function  (slug: Monotonic_function)\\n    https://en.wikipedia.org/wiki/Monotonic_function\\n    In mathematics,"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"bounded variation real analysis\"}",
+      "ok": true,
+      "result_chars": 2189,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'bounded variation real analysis':\\n- Bounded variation  (slug: Bounded_variation)\\n    https://en.wikipedia.org/wiki/Bounded_variation\\n    mathematical ana"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"Jordan decomposition variation theorem\"}",
+      "ok": true,
+      "result_chars": 2201,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'Jordan decomposition variation theorem':\\n- Total variation  (slug: Total_variation)\\n    https://en.wikipedia.org/wiki/Total_variation\\n    upper and lower"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wiki__wiki_get",
+      "input": "{\"title\": \"Bounded_variation\", \"section\": \"Functions of one real variable\"}",
+      "ok": true,
+      "result_chars": 4093,
+      "result_head": "[{\"type\": \"text\", \"text\": \"# Bounded variation\\n[section 'Functions of one real variable' not found; returning article head]\\nIn mathematical analysis, a function of bounded variation, also known as B"
+    }
+  ]
+}

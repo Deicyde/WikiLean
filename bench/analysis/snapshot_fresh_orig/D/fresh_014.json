@@ -1,0 +1,266 @@
+{
+  "task_id": "fresh_014",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:32:41Z",
+  "wall_s": 92.7,
+  "output_lean": "theorem meromorphic_nonneg_order_iff_has_analytic_extension \n    (f : ℂ → ℂ) (z₀ : ℂ) :\n    MeromorphicAt f z₀ ∧ (0 : WithTop ℤ) ≤ meromorphicOrderAt f z₀ ↔ \n    ∃ g : ℂ → ℂ, AnalyticAt ℂ g z₀ ∧ \n      ∀ᶠ z in nhdsWithin z₀ ({z₀}ᶜ), f z = g z := sorry",
+  "transcript_stats": {
+    "turns": 31,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 2,
+      "mcp__wikibrain__brain_search": 20,
+      "mcp__wikibrain__brain_cell": 3,
+      "mcp__wikibrain__brain_neighborhood": 2,
+      "mcp__wikibrain__brain_transfer": 1,
+      "mcp__wikibrain__decl_exists": 1,
+      "mcp__wikibrain__brain_snippets": 1
+    },
+    "tokens_in": 136,
+    "tokens_out": 7388,
+    "cost_usd": 0.1362516
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"meromorphic function order at a point\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3057,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"meromorphic function order at a point\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"analytic function extension pole\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3477,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"analytic function extension pole\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/lab"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"meromorphic function\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 177,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"meromorphic function\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"pole order multiplicity\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 180,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"pole order multiplicity\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"pole singularity\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 173,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"pole singularity\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"removable singularity\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 178,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"removable singularity\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"analytic function\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1942,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"analytic function\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q215084\\\",\\\"label\\\":\\\"Analytic function\\\",\\\"aka\\\":[\\\"Analytic Function\\\",\\\"AnalyticAt\\\",\\\"analytic function"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"complex analysis\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 2776,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"complex analysis\\\",\\\"hits\\\":[{\\\"id\\\":\\\"path:Mathlib/Analysis/Complex\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Complex\\\",\\\"aka\\\":[\\\"Complex analysis\\\",\\\"Comp"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q215084\"}",
+      "ok": true,
+      "result_chars": 3194,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q215084\\\",\\\"id\\\":\\\"cell:Q215084\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Analytic function\\\",\\\"f\\\":36056,\\\"cell\\\":{\\\"id\\\":\\\"cel"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Laurent series\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 171,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Laurent series\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"power series expansion order\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 185,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"power series expansion order\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"analytic continuation\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 178,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"analytic continuation\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"neighborhood punctured\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 179,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"neighborhood punctured\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"cell:Q215084\", \"limit\": 30, \"kinds\": \"depends\"}",
+      "ok": true,
+      "result_chars": 15110,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q215084\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\"],\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q206925\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":2,\\\"mentions"
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"meromorphic\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 2025,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"meromorphic\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q899731\\\",\\\"label\\\":\\\"Zeros and poles\\\",\\\"aka\\\":[\\\"Definition:Isolated Singularity/Pole\\\",\\\"Pole\\\",\\\"Pole (of a f"
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__brain_transfer",
+      "input": "{\"q\": \"MeromorphicAt\", \"direction\": \"formal_to_informal\"}",
+      "ok": true,
+      "result_chars": 1086,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"MeromorphicAt\\\",\\\"decl\\\":\\\"MeromorphicAt\\\",\\\"id\\\":\\\"cell:decl:Mathlib:MeromorphicAt\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\"
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:MeromorphicAt\"}",
+      "ok": true,
+      "result_chars": 1327,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:MeromorphicAt\\\",\\\"id\\\":\\\"cell:decl:Mathlib:MeromorphicAt\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"MeromorphicAt\\\",\\\"ce"
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q899731\"}",
+      "ok": true,
+      "result_chars": 4761,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q899731\\\",\\\"id\\\":\\\"cell:Q899731\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Zeros and poles\\\",\\\"f\\\":39128,\\\"cell\\\":{\\\"id\\\":\\\"cell:"
+    },
+    {
+      "i": 18,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"eventually equal punctured\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 183,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"eventually equal punctured\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 19,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"cell:Q899731\", \"limit\": 30, \"kinds\": \"depends\"}",
+      "ok": true,
+      "result_chars": 12090,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q899731\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\"],\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q825857\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":2,\\\"mentions\\\":1},\\\"trac"
+    },
+    {
+      "i": 20,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeromorphicAt\", \"meromorphicOrderAt\", \"AnalyticAt\"]}",
+      "ok": true,
+      "result_chars": 1124,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeromorphicAt\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.Meromorphic.Basic\\\",\\\"import_line\\\":\\\"import Math"
+    },
+    {
+      "i": 21,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"nonneg order\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 169,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"nonneg order\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 22,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"punctured nhdsWithin\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 177,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"punctured nhdsWithin\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 23,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"AnalyticAt order characterization\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 190,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"AnalyticAt order characterization\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 24,
+      "name": "mcp__wikibrain__brain_snippets",
+      "input": "{\"id\": \"decl:Mathlib:meromorphicOrderAt\"}",
+      "ok": true,
+      "result_chars": 2895,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q899731\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"wikidata\\\",\\\"id\\\":\\\"Q899731\\\",\\\"label\\\":\\\"Zeros and poles\\\",\\\"snippet\\\":\\\"isolated singular"
+    },
+    {
+      "i": 25,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"WithTop Int nonneg\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 175,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"WithTop Int nonneg\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 26,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"meromorphicOrderAt_nonneg\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 182,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"meromorphicOrderAt_nonneg\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 27,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"MeromorphicAt AnalyticAt nhdsWithin\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 192,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"MeromorphicAt AnalyticAt nhdsWithin\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 28,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"removable singularity\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 178,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"removable singularity\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 29,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"analytic extension point\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 181,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"analytic extension point\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    }
+  ]
+}

@@ -1,0 +1,150 @@
+{
+  "task_id": "fresh_037",
+  "arm": "C",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:07:58Z",
+  "wall_s": 114.8,
+  "output_lean": "theorem immersion_is_contMDiff\n    {𝕜 : Type*} [NontriviallyNormedField 𝕜]\n    {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]\n    {E' : Type*} [NormedAddCommGroup E'] [NormedSpace 𝕜 E']\n    {H : Type*} [TopologicalSpace H]\n    {H' : Type*} [TopologicalSpace H']\n    {I : ModelWithCorners 𝕜 E H}\n    {J : ModelWithCorners 𝕜 E' H'}\n    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]\n    {N : Type*} [TopologicalSpace N] [ChartedSpace H' N]\n    {n : ℕ∞}\n    {f : M → N}\n    (h : IsImmersion I J n f) : ContMDiff I J n f :=\n  sorry",
+  "transcript_stats": {
+    "turns": 17,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 5,
+      "mcp__formal__decl_grep": 6,
+      "mcp__formal__decl_read": 5
+    },
+    "tokens_in": 116,
+    "tokens_out": 9371,
+    "cost_usd": 0.1166325
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Immersion\"}",
+      "ok": true,
+      "result_chars": 90,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Immersion': unknown identifier 'Immersion'\"}]"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"ContMDiff\"}",
+      "ok": true,
+      "result_chars": 1092,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 262 declarations mentioning ContMDiff.\\n- ContMDiff   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n    `ContMDiff I I' n f` indicates that the function `f : M → M'` bet"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"immersion injective differential\"}",
+      "ok": true,
+      "result_chars": 113,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'immersion injective differential': Unknown identifier `immersion`\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"IsImmersion\"}",
+      "ok": true,
+      "result_chars": 94,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IsImmersion': unknown identifier 'IsImmersion'\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"immersion|Immersion\"}",
+      "ok": true,
+      "result_chars": 2596,
+      "result_head": "[{\"type\": \"text\", \"text\": \"828 match(es) for 'immersion|Immersion' (via ripgrep):\\n- Mathlib/Geometry/Manifold/Instances/Icc.lean:26\\n    This file can be thoroughly rewritten once mathlib has a good "
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Geometry/Manifold/Immersion.lean\", \"line\": 1, \"n\": 120}",
+      "ok": true,
+      "result_chars": 6144,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Geometry/Manifold/Immersion.lean  (lines 1–120 of 830):\\n     1  /-\\n     2  Copyright (c) 2025 Michael Rothgang. All rights reserved.\\n     3  Released under Apache"
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*IsImmersion.*contMDiff\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 102,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*IsImmersion.*contMDiff' under Mathlib/.\"}]"
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Geometry/Manifold/Immersion.lean\", \"line\": 600, \"n\": 120}",
+      "ok": true,
+      "result_chars": 6167,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Geometry/Manifold/Immersion.lean  (lines 600–719 of 830):\\n   600  \\n   601  /-- Every `ModelWithCorners 𝕜 E H` is an immersion when viewed as a map `H → E`. -/\\n   "
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Geometry/Manifold/Immersion.lean\", \"line\": 750, \"n\": 80}",
+      "ok": true,
+      "result_chars": 4310,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Geometry/Manifold/Immersion.lean  (lines 750–829 of 830):\\n   750  /-- A `C^n` immersion is `C^n`. -/\\n   751  theorem contMDiff\\n   752      (h : IsImmersionOfCompl"
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"ContMDiff I J n f : Prop\"}",
+      "ok": true,
+      "result_chars": 110,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'ContMDiff I J n f : Prop': <input>:1:18: expected end of input\"}]"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def SmoothManifoldWithCorners\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 100,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'def SmoothManifoldWithCorners' under Mathlib/.\"}]"
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"class ChartedSpace\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 228,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'class ChartedSpace' (via ripgrep):\\n- Mathlib/Geometry/Manifold/ChartedSpace.lean:139\\n    class ChartedSpace (H : Type*) [TopologicalSpace H] (M : Type*) ["
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(class|structure) SmoothManifoldWithCorners\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 114,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(class|structure) SmoothManifoldWithCorners' under Mathlib/.\"}]"
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"SmoothManifoldWithCorners\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 96,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'SmoothManifoldWithCorners' under Mathlib/.\"}]"
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Geometry/Manifold/Immersion.lean\", \"line\": 100, \"n\": 60}",
+      "ok": true,
+      "result_chars": 3577,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Geometry/Manifold/Immersion.lean  (lines 100–159 of 830):\\n   100  \\n   101  open scoped Topology ContDiff\\n   102  open Function Set\\n   103  \\n   104  public nonco"
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Geometry/Manifold/Immersion.lean\", \"line\": 638, \"n\": 20}",
+      "ok": true,
+      "result_chars": 1192,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Geometry/Manifold/Immersion.lean  (lines 638–657 of 830):\\n   638  variable (I J n) in\\n   639  /-- `f : M → N` is a `C^n` immersion if around each point `x ∈ M`,\\n "
+    }
+  ]
+}

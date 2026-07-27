@@ -1,0 +1,225 @@
+{
+  "task_id": "fresh_040",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:39:04Z",
+  "wall_s": 67.0,
+  "output_lean": "theorem localization_of_uniqueFactorizationMonoid {M : Type*} [CommMonoidWithZero M] \n    [UniqueFactorizationMonoid M] (S : Submonoid M) : \n    UniqueFactorizationMonoid (Localization S M) := sorry",
+  "transcript_stats": {
+    "turns": 26,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 2,
+      "mcp__wikibrain__brain_search": 13,
+      "mcp__wikibrain__brain_cell": 2,
+      "mcp__wikibrain__brain_neighborhood": 1,
+      "mcp__wikibrain__brain_transfer": 1,
+      "mcp__wikibrain__decl_exists": 6
+    },
+    "tokens_in": 128,
+    "tokens_out": 5124,
+    "cost_usd": 0.09429265
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"unique factorization monoid\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2870,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"unique factorization monoid\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label ma"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"localization of monoid\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3283,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"localization of monoid\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, "
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"unique factorization domain\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 414,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"unique factorization domain\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q1052579\\\",\\\"label\\\":\\\"unique factorization domain\\\",\\\"aka\\\":[\\\"UniqueFactorizationMonoid\\\",\\\"Ari"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"UFM factorization\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 174,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"UFM factorization\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q1052579\"}",
+      "ok": true,
+      "result_chars": 2250,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q1052579\\\",\\\"id\\\":\\\"cell:Q1052579\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"unique factorization domain\\\",\\\"f\\\":161,\\\"cell\\\":{\\\""
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"localization UFM preserves\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 183,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"localization UFM preserves\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"cell:Q1052579\", \"kinds\": \"depends,mentions\", \"limit\": 30}",
+      "ok": true,
+      "result_chars": 1958,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q1052579\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\",\\\"mentions\\\"],\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q670235\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Localization Submonoid\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 179,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Localization Submonoid\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Submonoid Localization instance\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 188,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Submonoid Localization instance\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__brain_transfer",
+      "input": "{\"q\": \"UniqueFactorizationMonoid\", \"direction\": \"formal_to_informal\"}",
+      "ok": true,
+      "result_chars": 722,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"UniqueFactorizationMonoid\\\",\\\"decl\\\":\\\"UniqueFactorizationMonoid\\\",\\\"id\\\":\\\"cell:Q1052579\\\",\\\"kind\\\":\\\"cell\\\",\\\"lab"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"OreLocalization UFM\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 176,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"OreLocalization UFM\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"localization prime elements\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 184,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"localization prime elements\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"UniqueFactorizationMonoid\", \"OreLocalization\", \"Submonoid.Localization\"]}",
+      "ok": true,
+      "result_chars": 1164,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"UniqueFactorizationMonoid\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.UniqueFactorizationDomain.Defs\\\",\\\""
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"UFM instance Localization\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 182,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"UFM instance Localization\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"UniqueFactorizationMonoid localization\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 195,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"UniqueFactorizationMonoid localization\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Submonoid localization type\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 184,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Submonoid localization type\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Localization.Away\", \"Submonoid.LocalizationMap\", \"IsLocalization\"]}",
+      "ok": true,
+      "result_chars": 1226,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Localization.Away\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.GroupTheory.MonoidLocalization.Away\\\",\\\"import_line\\\":"
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"OreLocalization instance class\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 187,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"OreLocalization instance class\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 18,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"OreLocalization.instUniqueFactorizationMonoid\", \"UniqueFactorizationMonoid.localization\"]}",
+      "ok": true,
+      "result_chars": 950,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"OreLocalization.instUniqueFactorizationMonoid\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"Nat.instUniqueFactorizationMonoid\\\",\\\"suggestion_basi"
+    },
+    {
+      "i": 19,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"CommMonoidWithZero\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 175,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"CommMonoidWithZero\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 20,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"CommMonoidWithZero\", \"Monoid.Localization\", \"localizationMap\"]}",
+      "ok": true,
+      "result_chars": 1011,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"CommMonoidWithZero\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.GroupWithZero.Defs\\\",\\\"import_line\\\":\\\"import"
+    },
+    {
+      "i": 21,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Submonoid\", \"Localization\", \"Submonoid.Localization\"]}",
+      "ok": true,
+      "result_chars": 1096,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Submonoid\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Group.Submonoid.Defs\\\",\\\"import_line\\\":\\\"import Mathli"
+    },
+    {
+      "i": 22,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:Localization\"}",
+      "ok": true,
+      "result_chars": 1383,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:Localization\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Localization\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Localization\\\",\\\"cell\\"
+    },
+    {
+      "i": 23,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"normalizationMonoid localization\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 189,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"normalizationMonoid localization\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 24,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"IsCancelMulZero\", \"IsWellFounded\"]}",
+      "ok": true,
+      "result_chars": 798,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"IsCancelMulZero\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.GroupWithZero.Defs\\\",\\\"import_line\\\":\\\"import Ma"
+    }
+  ]
+}

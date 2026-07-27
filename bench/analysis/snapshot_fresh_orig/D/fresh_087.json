@@ -1,0 +1,104 @@
+{
+  "task_id": "fresh_087",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:51:23Z",
+  "wall_s": 53.9,
+  "output_lean": "theorem id_boundedVariationOn (a b : ℝ) : BoundedVariationOn (id : ℝ → ℝ) (Set.Icc a b) := sorry",
+  "transcript_stats": {
+    "turns": 11,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 4,
+      "mcp__wikibrain__brain_cell": 2,
+      "mcp__wikibrain__brain_snippets": 1,
+      "mcp__wikibrain__decl_exists": 2,
+      "mcp__wikibrain__brain_neighborhood": 1
+    },
+    "tokens_in": 92,
+    "tokens_out": 3893,
+    "cost_usd": 0.07102270000000001
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"bounded variation function real interval\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 4162,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"bounded variation function real interval\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exac"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q829653\"}",
+      "ok": true,
+      "result_chars": 2525,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q829653\\\",\\\"id\\\":\\\"cell:Q829653\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Bounded variation\\\",\\\"f\\\":2072,\\\"cell\\\":{\\\"id\\\":\\\"cell"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"identity function real numbers\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 3028,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"identity function real numbers\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:BoundedVariationOn\"}",
+      "ok": true,
+      "result_chars": 2545,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:BoundedVariationOn\\\",\\\"id\\\":\\\"cell:Q829653\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Bounded variation\\\",\\\"f\\\":2072,\\\"c"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_snippets",
+      "input": "{\"id\": \"decl:Mathlib:BoundedVariationOn\"}",
+      "ok": true,
+      "result_chars": 1060,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q829653\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"wikidata\\\",\\\"id\\\":\\\"Q829653\\\",\\\"label\\\":\\\"Bounded variation\\\",\\\"snippet\\\":\\\"real function w"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"BoundedVariationOn\", \"id\", \"Set.Icc\"]}",
+      "ok": true,
+      "result_chars": 1066,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"BoundedVariationOn\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.EMetricSpace.BoundedVariation\\\",\\\"import_lin"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"identity bounded variation theorem\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 3111,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"identity bounded variation theorem\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/l"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"cell:Q829653\", \"kinds\": \"depends\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 3398,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q829653\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\"],\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q28474\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":2,\\\"mentions\\\":1},\\\"trace"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"real numbers ℝ Lean\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 2871,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"real numbers ℝ Lean\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, res"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Real\"]}",
+      "ok": true,
+      "result_chars": 468,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Real\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Real.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Real.Basic\\"
+    }
+  ]
+}

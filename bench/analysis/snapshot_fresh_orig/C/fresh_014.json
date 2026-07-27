@@ -1,0 +1,254 @@
+{
+  "task_id": "fresh_014",
+  "arm": "C",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:00:44Z",
+  "wall_s": 84.8,
+  "output_lean": "theorem meromorphic_nonneg_order_iff_analytic_extension {f : ℂ → ℂ} {x : ℂ} \n    (hf : MeromorphicAt f x) :\n    0 ≤ meromorphicOrderAt f x ↔ ∃ g : ℂ → ℂ, AnalyticAt ℂ g x ∧ f =ᶠ[𝓝[≠] x] g :=\n  sorry",
+  "transcript_stats": {
+    "turns": 30,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 11,
+      "mcp__formal__decl_grep": 13,
+      "mcp__formal__decl_read": 5
+    },
+    "tokens_in": 142,
+    "tokens_out": 5763,
+    "cost_usd": 0.10478115
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"meromorphic\"}",
+      "ok": true,
+      "result_chars": 94,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'meromorphic': unknown identifier 'meromorphic'\"}]"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"order pole zero\"}",
+      "ok": true,
+      "result_chars": 92,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'order pole zero': Unknown identifier `order`\"}]"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"analytic\"}",
+      "ok": true,
+      "result_chars": 88,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'analytic': unknown identifier 'analytic'\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"complex.analytic\"}",
+      "ok": true,
+      "result_chars": 104,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'complex.analytic': unknown identifier 'complex.analytic'\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"removable singularity\"}",
+      "ok": true,
+      "result_chars": 102,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'removable singularity': Unknown identifier `removable`\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"holomorphic\"}",
+      "ok": true,
+      "result_chars": 94,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'holomorphic': unknown identifier 'holomorphic'\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"differentiableOn\"}",
+      "ok": true,
+      "result_chars": 104,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'differentiableOn': unknown identifier 'differentiableOn'\"}]"
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Function.mulSupport\"}",
+      "ok": true,
+      "result_chars": 1072,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 158 declarations mentioning Function.mulSupport.\\n- Function.mulSupport   [Mathlib.Algebra.Notation.Support]\\n    `mulSupport` of a function is the set of points `x` s"
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"ℂ → ℂ\"}",
+      "ok": true,
+      "result_chars": 1384,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 5930 declarations mentioning Complex.\\n- Complex.mulAux   [Mathlib.Data.Complex.Basic]\\n    `mulAux` is an auxiliary definition for defining multiplication and scalar "
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"analytic\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1451,
+      "result_head": "[{\"type\": \"text\", \"text\": \"616 match(es) for 'analytic' (via ripgrep):\\n- Mathlib/Algebra/ContinuedFractions/Basic.lean:17\\n    convergents. We follow the naming conventions from Wikipedia and [wall20"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"differentiableAt\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 2024,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1048 match(es) for 'differentiableAt' (via ripgrep):\\n- Mathlib/Computability/AkraBazzi/AkraBazzi.lean:89\\n    · exact differentiableAt_rpow_const_of_ne _ (by positivity)\\n-"
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"?f → continuousAt ?f ?x\"}",
+      "ok": true,
+      "result_chars": 107,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '?f → continuousAt ?f ?x': Unknown identifier `continuousAt`\"}]"
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"punctured\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1384,
+      "result_head": "[{\"type\": \"text\", \"text\": \"106 match(es) for 'punctured' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/CircleIntegral.lean:351\\n    refine not_intervalIntegrable_of_sub_inv_isBigO_punctured ?_ Real"
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"analyticAt_of_differentiable_on_punctured\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 546,
+      "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for 'analyticAt_of_differentiable_on_punctured' (via ripgrep):\\n- Mathlib/NumberTheory/LSeries/Nonvanishing.lean:169\\n    refine (analyticAt_of_differentiable_on"
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/Complex/RemovableSingularity.lean\", \"line\": 36, \"n\": 30}",
+      "ok": true,
+      "result_chars": 2226,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Complex/RemovableSingularity.lean  (lines 36–65 of 157):\\n    36  theorem analyticAt_of_differentiable_on_punctured_nhds_of_continuousAt {f : ℂ → E} {c : ℂ}"
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Meromorphic\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1369,
+      "result_head": "[{\"type\": \"text\", \"text\": \"200 match(es) for 'Meromorphic' (via ripgrep):\\n- Mathlib/Analysis/Analytic/Order.lean:110\\n    See `MeromorphicNFAt.order_eq_zero_iff` for an analogous statement about mero"
+    },
+    {
+      "i": 16,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Function order\"}",
+      "ok": true,
+      "result_chars": 94,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Function order': Unknown identifier `Function`\"}]"
+    },
+    {
+      "i": 17,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"MeromorphicNFAt.order\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 231,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'MeromorphicNFAt.order' (via ripgrep):\\n- Mathlib/Analysis/Analytic/Order.lean:110\\n    See `MeromorphicNFAt.order_eq_zero_iff` for an analogous statement ab"
+    },
+    {
+      "i": 18,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"MeromorphicAt\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1458,
+      "result_head": "[{\"type\": \"text\", \"text\": \"72 match(es) for 'MeromorphicAt' (via ripgrep):\\n- Mathlib/Analysis/Complex/CanonicalDecomposition.lean:301\\n    (fun _ ↦ MeromorphicAt.zpow (meromorphic_canonicalFactor _ _"
+    },
+    {
+      "i": 19,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def.*meromorphicOrderAt|theorem.*meromorphicOrderAt\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1548,
+      "result_head": "[{\"type\": \"text\", \"text\": \"23 match(es) for 'def.*meromorphicOrderAt|theorem.*meromorphicOrderAt' (via ripgrep):\\n- Mathlib/Analysis/Complex/CanonicalDecomposition.lean:96\\n    theorem meromorphicOrde"
+    },
+    {
+      "i": 20,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/Analytic/Order.lean\", \"line\": 1, \"n\": 50}",
+      "ok": true,
+      "result_chars": 2201,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Analytic/Order.lean  (lines 1–50 of 695):\\n     1  /-\\n     2  Copyright (c) 2022 Vincent Beffara. All rights reserved.\\n     3  Released under Apache 2.0 l"
+    },
+    {
+      "i": 21,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/Meromorphic/Order.lean\", \"line\": 50, \"n\": 40}",
+      "ok": true,
+      "result_chars": 2133,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Meromorphic/Order.lean  (lines 50–89 of 950):\\n    50  noncomputable def meromorphicOrderAt (f : 𝕜 → E) (x : 𝕜) : WithTop ℤ :=\\n    51    if hf : Meromorphi"
+    },
+    {
+      "i": 22,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"meromorphicOrderAt.*nonneg|meromorphicOrderAt.*zero_le\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1391,
+      "result_head": "[{\"type\": \"text\", \"text\": \"20 match(es) for 'meromorphicOrderAt.*nonneg|meromorphicOrderAt.*zero_le' (via ripgrep):\\n- Mathlib/Analysis/Meromorphic/Divisor.lean:181\\n    · simp [hf.meromorphicOn, hx, "
+    },
+    {
+      "i": 23,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"order_nonneg.*analytic|order_nonneg.*extension\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 117,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'order_nonneg.*analytic|order_nonneg.*extension' under Mathlib/.\"}]"
+    },
+    {
+      "i": 24,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/Meromorphic/NormalForm.lean\", \"line\": 115, \"n\": 20}",
+      "ok": true,
+      "result_chars": 1077,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Meromorphic/NormalForm.lean  (lines 115–134 of 807):\\n   115  theorem MeromorphicNFAt.meromorphicOrderAt_nonneg_iff_analyticAt (hf : MeromorphicNFAt f x) :\\"
+    },
+    {
+      "i": 25,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"MeromorphicAt.*meromorphicOrderAt_nonneg_iff|meromorphicOrderAt_nonneg.*iff.*analytic\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1182,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 match(es) for 'MeromorphicAt.*meromorphicOrderAt_nonneg_iff|meromorphicOrderAt_nonneg.*iff.*analytic' (via ripgrep):\\n- Mathlib/Analysis/Meromorphic/NormalForm.lean:115\\n "
+    },
+    {
+      "i": 26,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/Meromorphic/Order.lean\", \"line\": 300, \"n\": 30}",
+      "ok": true,
+      "result_chars": 2122,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Meromorphic/Order.lean  (lines 300–329 of 950):\\n   300  theorem MeromorphicAt.meromorphicOrderAt_nonneg_iff\\n   301      (hf : MeromorphicAt f x) :\\n   302"
+    },
+    {
+      "i": 27,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"𝓝\\\\[≠\\\\]\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 666,
+      "result_head": "[{\"type\": \"text\", \"text\": \"237 match(es) for '𝓝\\\\\\\\[≠\\\\\\\\]' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/CircleIntegral.lean:353\\n    have : ∀ᶠ θ' in 𝓝[≠] θ, f θ' ∈ ball (0 : ℂ) 1 \\\\ {0} := by\\n- "
+    },
+    {
+      "i": 28,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def.*AnalyticAt\", \"limit\": 3}",
+      "ok": true,
+      "result_chars": 313,
+      "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'def.*AnalyticAt' (via ripgrep):\\n- Mathlib/Analysis/Analytic/Basic.lean:38\\n    We also define versions of `HasFPowerSeriesOnBall`, `AnalyticAt`, and `Analy"
+    }
+  ]
+}

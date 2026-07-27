@@ -1,0 +1,330 @@
+{
+  "task_id": "fresh_008",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:31:01Z",
+  "wall_s": 137.8,
+  "output_lean": "theorem polynomial_laurent_support_image_cast (R : Type*) [Semiring R] (p : Polynomial R) :\n  {n : ℤ | (Polynomial.toLaurent p).coeff n ≠ 0} = \n  Set.image (Nat.cast : ℕ → ℤ) {n : ℕ | p.coeff n ≠ 0} := sorry",
+  "transcript_stats": {
+    "turns": 39,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 2,
+      "mcp__wikibrain__brain_cell": 2,
+      "mcp__wikibrain__brain_search": 9,
+      "mcp__wikibrain__decl_exists": 19,
+      "mcp__wikibrain__brain_transfer": 1,
+      "mcp__wikibrain__brain_snippets": 4,
+      "mcp__wikibrain__brain_neighborhood": 1
+    },
+    "tokens_in": 252,
+    "tokens_out": 9156,
+    "cost_usd": 0.19094814999999996
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"Laurent polynomial support\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3346,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Laurent polynomial support\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label mat"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"polynomial support set nonzero coefficients\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3083,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"polynomial support set nonzero coefficients\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an e"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q1701125\"}",
+      "ok": true,
+      "result_chars": 1531,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q1701125\\\",\\\"id\\\":\\\"cell:Q1701125\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Laurent polynomial\\\",\\\"f\\\":32,\\\"cell\\\":{\\\"id\\\":\\\"cel"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Finsupp support\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 172,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Finsupp support\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"support set nonzero\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 176,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"support set nonzero\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"DFinsupp support\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 173,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"DFinsupp support\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Finsupp.support\", \"DFinsupp.support\", \"Polynomial.support\", \"LaurentPolynomial.support\"]}",
+      "ok": true,
+      "result_chars": 1341,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Finsupp.support\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Finsupp.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Dat"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"LaurentPolynomial abbreviation definition\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 198,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"LaurentPolynomial abbreviation definition\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"AddMonoidAlgebra Laurent polynomial integers\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 201,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"AddMonoidAlgebra Laurent polynomial integers\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__brain_transfer",
+      "input": "{\"q\": \"LaurentPolynomial\", \"direction\": \"formal_to_informal\"}",
+      "ok": true,
+      "result_chars": 635,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"LaurentPolynomial\\\",\\\"decl\\\":\\\"LaurentPolynomial\\\",\\\"id\\\":\\\"cell:Q1701125\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Laurent p"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Polynomial.toLaurent\", \"Int.coe_nat_add\", \"Nat.cast_injective\"]}",
+      "ok": true,
+      "result_chars": 1072,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Polynomial.toLaurent\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Polynomial.Laurent\\\",\\\"import_line\\\":\\\"impo"
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Polynomial.natCoe\", \"AddMonoidAlgebra\", \"DFinsupp\", \"Finsupp\"]}",
+      "ok": true,
+      "result_chars": 1303,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Polynomial.natCoe\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basi"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__brain_snippets",
+      "input": "{\"id\": \"decl:Mathlib:Polynomial.support\"}",
+      "ok": false,
+      "result_chars": 386,
+      "result_head": "{\"ok\":false,\"error\":\"unknown atom id\",\"id\":\"decl:Mathlib:Polynomial.support\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | ar"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__brain_snippets",
+      "input": "{\"id\": \"decl:Mathlib:Finsupp.support\"}",
+      "ok": false,
+      "result_chars": 383,
+      "result_head": "{\"ok\":false,\"error\":\"unknown atom id\",\"id\":\"decl:Mathlib:Finsupp.support\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | artic"
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__brain_snippets",
+      "input": "{\"id\": \"Polynomial.support\"}",
+      "ok": false,
+      "result_chars": 373,
+      "result_head": "{\"ok\":false,\"error\":\"unknown atom id\",\"id\":\"Polynomial.support\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | article slug | "
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__brain_snippets",
+      "input": "{\"id\": \"Finsupp.support\"}",
+      "ok": false,
+      "result_chars": 370,
+      "result_head": "{\"ok\":false,\"error\":\"unknown atom id\",\"id\":\"Finsupp.support\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | article slug | xre"
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Laurent polynomial embedding natural integers\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 202,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Laurent polynomial embedding natural integers\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\""
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"cell:Q1701125\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 659,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q1701125\\\",\\\"kind\\\":\\\"cell\\\",\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q43260\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"mentions\\\",\\\"src\\\":\\"
+    },
+    {
+      "i": 18,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Polynomial.support_toLaurent\", \"DFinsupp.support_nat_cast\", \"Finsupp.support_map_subset\"]}",
+      "ok": true,
+      "result_chars": 965,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Polynomial.support_toLaurent\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common"
+    },
+    {
+      "i": 19,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Set.image\", \"Nat.cast\", \"DFinsupp.toAddMonoidAlgebra\", \"AddMonoidAlgebra.support\"]}",
+      "ok": true,
+      "result_chars": 1206,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Set.image\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Set.Defs"
+    },
+    {
+      "i": 20,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"AddMonoidAlgebra\"}",
+      "ok": false,
+      "result_chars": 373,
+      "result_head": "{\"ok\":false,\"error\":\"unresolvable key\",\"key\":\"AddMonoidAlgebra\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | article slug | "
+    },
+    {
+      "i": 21,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"AddMonoidAlgebra support\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 181,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"AddMonoidAlgebra support\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 22,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Polynomial.toLaurent_support\", \"Polynomial.support_image\", \"DFinsupp.support_image\"]}",
+      "ok": true,
+      "result_chars": 960,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Polynomial.toLaurent_support\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common"
+    },
+    {
+      "i": 23,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Polynomial support Finsupp\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 183,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Polynomial support Finsupp\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 24,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Polynomial.coeff\", \"Polynomial.natDegree\", \"Finsupp.mem_support\"]}",
+      "ok": true,
+      "result_chars": 1093,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Polynomial.coeff\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Polynomial.Basic\\\",\\\"import_line\\\":\\\"import Mat"
+    },
+    {
+      "i": 25,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Polynomial.support\", \"Finsupp.support\", \"DFinsupp.support\", \"Polynomial.toLaurent_apply\"]}",
+      "ok": true,
+      "result_chars": 1423,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Polynomial.support\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Polynomial.Basic\\\",\\\"import_line\\\":\\\"import M"
+    },
+    {
+      "i": 26,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Polynomial.support_toFinsupp\", \"Finsupp.coe_support\", \"DFinsupp.coe_support\"]}",
+      "ok": true,
+      "result_chars": 1030,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Polynomial.support_toFinsupp\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Polynomial.Basic\\\",\\\"import_line\\\":"
+    },
+    {
+      "i": 27,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"AddMonoidAlgebra.toAddMonoidHom\", \"Finsupp.embDomain\", \"AddMonoidAlgebra.support\"]}",
+      "ok": true,
+      "result_chars": 1003,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"AddMonoidAlgebra.toAddMonoidHom\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are com"
+    },
+    {
+      "i": 28,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"DFinsupp.mk\", \"AddMonoidAlgebra.mk\", \"Polynomial.toDFinsupp\"]}",
+      "ok": true,
+      "result_chars": 979,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"DFinsupp.mk\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.DFinsupp.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.D"
+    },
+    {
+      "i": 29,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Polynomial.support\", \"Polynomial.toLaurent\", \"DFinsupp.support\", \"Finsupp.support\"]}",
+      "ok": true,
+      "result_chars": 1411,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Polynomial.support\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Polynomial.Basic\\\",\\\"import_line\\\":\\\"import M"
+    },
+    {
+      "i": 30,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"AddMonoidAlgebra.toAddMonoidAlgebra\", \"AddMonoidAlgebra.equivFinsuppTotal\", \"LaurentPolynomial.support\"]}",
+      "ok": true,
+      "result_chars": 980,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"AddMonoidAlgebra.toAddMonoidAlgebra\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are"
+    },
+    {
+      "i": 31,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"AddMonoidAlgebra finsupp coercion embedding\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 200,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"AddMonoidAlgebra finsupp coercion embedding\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 32,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"AddMonoidAlgebra.finsuppTotal\", \"Finsupp.hasSupport\", \"support\"]}",
+      "ok": true,
+      "result_chars": 940,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"AddMonoidAlgebra.finsuppTotal\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are commo"
+    },
+    {
+      "i": 33,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Polynomial.support\", \"Finset\", \"Set\", \"Finsupp.support\"]}",
+      "ok": true,
+      "result_chars": 1312,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Polynomial.support\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Polynomial.Basic\\\",\\\"import_line\\\":\\\"import M"
+    },
+    {
+      "i": 34,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Polynomial.toLaurent_apply\", \"Polynomial.coeff_toLaurent\", \"LaurentPolynomial.coeff\"]}",
+      "ok": true,
+      "result_chars": 1042,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Polynomial.toLaurent_apply\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Polynomial.Laurent\\\",\\\"import_line\\\":"
+    },
+    {
+      "i": 35,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"LaurentPolynomial.coeff\", \"AddMonoidAlgebra.coeff\", \"Polynomial.coeff_support\"]}",
+      "ok": true,
+      "result_chars": 1032,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"LaurentPolynomial.coeff\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g"
+    },
+    {
+      "i": 36,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Polynomial.mem_support\", \"Finsupp.mem_support_iff\", \"support\"]}",
+      "ok": true,
+      "result_chars": 989,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Polynomial.mem_support\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g."
+    },
+    {
+      "i": 37,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Polynomial.coeff\", \"AddMonoidAlgebra.coeff\", \"Polynomial.toLaurent\", \"Set.image\", \"Nat.cast\"]}",
+      "ok": true,
+      "result_chars": 1654,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Polynomial.coeff\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Polynomial.Basic\\\",\\\"import_line\\\":\\\"import Mat"
+    }
+  ]
+}

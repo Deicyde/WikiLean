@@ -1,0 +1,86 @@
+{
+  "task_id": "fresh_023",
+  "arm": "B",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T02:13:39Z",
+  "wall_s": 93.2,
+  "output_lean": "theorem sum_le_integral_of_antitone_integrable\n    (f : ℝ → ℝ)\n    (hf_nonneg : ∀ x, 0 ≤ f x)\n    (hf_antitone : Antitone f)\n    (hf_integrable : Integrable f) :\n    ∀ N : ℕ, ∑ i in Finset.range N, f (i + 1 : ℝ) ≤ ∫ x in Set.Ioi 0, f x := sorry",
+  "transcript_stats": {
+    "turns": 9,
+    "tool_calls_by_name": {
+      "mcp__wiki__wiki_search": 3,
+      "mcp__wiki__nlab_search": 4,
+      "mcp__wiki__wiki_get": 1
+    },
+    "tokens_in": 52,
+    "tokens_out": 7267,
+    "cost_usd": 0.062106999999999996
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"antitone function decreasing Lean\"}",
+      "ok": true,
+      "result_chars": 99,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No English Wikipedia results for 'antitone function decreasing Lean'.\"}]"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"integral test convergence series\"}",
+      "ok": true,
+      "result_chars": 2250,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'integral test convergence series':\\n- Integral test for convergence  (slug: Integral_test_for_convergence)\\n    https://en.wikipedia.org/wiki/Integral_test_"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wiki__nlab_search",
+      "input": "{\"q\": \"antitone\"}",
+      "ok": true,
+      "result_chars": 1280,
+      "result_head": "[{\"type\": \"text\", \"text\": \"nLab page for 'antitone' (https://ncatlab.org/nlab/show/antitone):\\nnLab\\nmonotone function\\nSkip the Navigation Links |\\nHome Page |\\nAll Pages |\\nLatest Revisions |\\nDiscu"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wiki__nlab_search",
+      "input": "{\"q\": \"Lean integrable function\"}",
+      "ok": true,
+      "result_chars": 103,
+      "result_head": "[{\"type\": \"text\", \"text\": \"nLab search for 'Lean integrable function' — candidate pages:\\n- HomePage\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"Cauchy condensation test mathematics\"}",
+      "ok": true,
+      "result_chars": 2278,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'Cauchy condensation test mathematics':\\n- Cauchy condensation test  (slug: Cauchy_condensation_test)\\n    https://en.wikipedia.org/wiki/Cauchy_condensation_"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wiki__wiki_get",
+      "input": "{\"title\": \"Integral_test_for_convergence\"}",
+      "ok": true,
+      "result_chars": 4397,
+      "result_head": "[{\"type\": \"text\", \"text\": \"# Integral test for convergence\\nIn mathematics, the integral test for convergence is a method used to test infinite series of monotonic terms for convergence. It was develo"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wiki__nlab_search",
+      "input": "{\"q\": \"Mathlib Antitone Order\"}",
+      "ok": true,
+      "result_chars": 101,
+      "result_head": "[{\"type\": \"text\", \"text\": \"nLab search for 'Mathlib Antitone Order' — candidate pages:\\n- HomePage\"}]"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wiki__nlab_search",
+      "input": "{\"q\": \"Mathlib Integrable function Real\"}",
+      "ok": true,
+      "result_chars": 111,
+      "result_head": "[{\"type\": \"text\", \"text\": \"nLab search for 'Mathlib Integrable function Real' — candidate pages:\\n- HomePage\"}]"
+    }
+  ]
+}

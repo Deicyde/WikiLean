@@ -1,0 +1,178 @@
+{
+  "task_id": "fresh_003",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:29:36Z",
+  "wall_s": 71.1,
+  "output_lean": "theorem monoid_algebra_mul_coeff {R : Type*} {M : Type*} [Semiring R] [Monoid M]\n    (f g : MonoidAlgebra R M) (a0 b0 : M)\n    (h : ∃! (p : M × M), p.1 ∈ Finsupp.support f ∧ p.2 ∈ Finsupp.support g ∧ p.1 * p.2 = a0 * b0) :\n    MonoidAlgebra.coeff (f * g) (a0 * b0) = MonoidAlgebra.coeff f a0 * MonoidAlgebra.coeff g b0 := sorry",
+  "transcript_stats": {
+    "turns": 20,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 3,
+      "mcp__wikibrain__brain_search": 3,
+      "mcp__wikibrain__brain_transfer": 2,
+      "mcp__wikibrain__brain_cell": 1,
+      "decl_exists": 1,
+      "mcp__wikibrain__decl_exists": 8,
+      "mcp__wikibrain__brain_neighborhood": 1
+    },
+    "tokens_in": 116,
+    "tokens_out": 4504,
+    "cost_usd": 0.1186299
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"monoid algebra over a ring\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 4972,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"monoid algebra over a ring\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label mat"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"support of an element in finsupp or monoid algebra\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3965,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"support of an element in finsupp or monoid algebra\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTIT"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"coefficient of a term in a formal sum\", \"limit\": 8}",
+      "ok": false,
+      "result_chars": 270,
+      "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"coefficient of a term in a formal sum\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"MonoidAlgebra finsupp\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 178,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"MonoidAlgebra finsupp\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Finsupp support\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 172,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Finsupp support\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"finitely supported functions algebra\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 193,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finitely supported functions algebra\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_transfer",
+      "input": "{\"q\": \"MonoidAlgebra\", \"direction\": \"formal_to_informal\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 1167,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"MonoidAlgebra\\\",\\\"decl\\\":\\\"MonoidAlgebra\\\",\\\"hits\\\":[],\\\"note\\\":\\\"decl is not an organ of any atom — it may still e"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:MonoidAlgebra\"}",
+      "ok": false,
+      "result_chars": 218,
+      "result_head": "{\"ok\":false,\"error\":\"resolved atom is not in the brain shards\",\"key\":\"decl:Mathlib:MonoidAlgebra\",\"id\":\"cell:decl:Mathlib:MonoidAlgebra\",\"snapshot\":{\"generated_at\":\"2026-07-16T09:25:11+00:00\",\"pin\":\"b"
+    },
+    {
+      "i": 8,
+      "name": "decl_exists",
+      "input": "{\"names\": \"[\\\"MonoidAlgebra\\\", \\\"Finsupp.support\\\", \\\"DFinsupp.support\\\"]\"}",
+      "ok": false,
+      "result_chars": 75,
+      "result_head": "<tool_use_error>Error: No such tool available: decl_exists</tool_use_error>"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MonoidAlgebra\", \"Finsupp.support\", \"DFinsupp.support\"]}",
+      "ok": true,
+      "result_chars": 1088,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MonoidAlgebra\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.MonoidAlgebra.Defs\\\",\\\"import_line\\\":\\\"import Math"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__brain_transfer",
+      "input": "{\"q\": \"MonoidAlgebra\", \"direction\": \"formal_to_informal\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1167,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"MonoidAlgebra\\\",\\\"decl\\\":\\\"MonoidAlgebra\\\",\\\"hits\\\":[],\\\"note\\\":\\\"decl is not an organ of any atom — it may still e"
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MonoidAlgebra.coeff\", \"Finsupp.coeff\", \"Finsupp\", \"Pi.mul_apply\"]}",
+      "ok": true,
+      "result_chars": 1331,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MonoidAlgebra.coeff\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.MonoidAlgebra.Defs\\\",\\\"import_line\\\":\\\"impor"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"cell:decl:Mathlib:MonoidAlgebra\", \"kinds\": \"depends,mentions\", \"limit\": 30}",
+      "ok": false,
+      "result_chars": 386,
+      "result_head": "{\"ok\":false,\"error\":\"unknown atom id\",\"id\":\"cell:decl:Mathlib:MonoidAlgebra\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | ar"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MonoidAlgebra.mul\", \"MonoidAlgebra.mul_apply\", \"MonoidAlgebra.mul_coeff\", \"DFinsupp.mul\", \"Finsupp.mul\"]}",
+      "ok": true,
+      "result_chars": 1498,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MonoidAlgebra.mul\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basi"
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Finsupp.support\", \"Finsupp.mem_support_iff\", \"Set.card\", \"Finset.card\", \"Nat.card\"]}",
+      "ok": true,
+      "result_chars": 1589,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Finsupp.support\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Finsupp.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Dat"
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Finset.card_eq_one\", \"Set.ncard\", \"Fintype.card\", \"Nat.card_eq_one\", \"Set.encard\"]}",
+      "ok": true,
+      "result_chars": 1532,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Finset.card_eq_one\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Finset.Card\\\",\\\"import_line\\\":\\\"import Mathlib.D"
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MonoidAlgebra.mem_support\", \"MonoidAlgebra.coeff_eq_zero_iff\", \"Prod.fst\", \"Prod.snd\", \"Exists.unique\"]}",
+      "ok": true,
+      "result_chars": 1514,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MonoidAlgebra.mem_support\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e"
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"ExistsUnique\", \"Set.equivSingleton\", \"Finset.card_eq_one_iff\", \"Finset.eq_singleton_iff_unique\"]}",
+      "ok": true,
+      "result_chars": 1235,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"ExistsUnique\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Logic.ExistsUnique\\\",\\\"import_line\\\":\\\"import Mathlib.Logic"
+    },
+    {
+      "i": 18,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"ExistsUnique.exists1\", \"Finsupp.coeff\", \"MonoidAlgebra.toFinsupp\", \"MonoidAlgebra.ofFinsupp\"]}",
+      "ok": true,
+      "result_chars": 1189,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"ExistsUnique.exists1\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. B"
+    }
+  ]
+}

@@ -1,0 +1,190 @@
+{
+  "task_id": "fresh_036",
+  "arm": "C",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:07:29Z",
+  "wall_s": 142.6,
+  "output_lean": "theorem contMDiff_iff_continuous_and_comp_immersion {𝕜 : Type*} [NontriviallyNormedField 𝕜]\n    {E E' : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]\n    [NormedAddCommGroup E'] [NormedSpace 𝕜 E'] {H H' : Type*} [TopologicalSpace H]\n    [TopologicalSpace H'] {I : ModelWithCorners 𝕜 E H} {I' : ModelWithCorners 𝕜 E' H'}\n    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]\n    {M' : Type*} [TopologicalSpace M'] [ChartedSpace H' M'] {n : ℕ∞}\n    [IsManifold I n M] [IsManifold I' n M'] {f : M → M'} :\n    ContMDiff I I' n f ↔\n      Continuous f ∧\n      ∀ {E'' : Type*} [NormedAddCommGroup E''] [NormedSpace 𝕜 E'']\n        {H'' : Type*} [TopologicalSpace H'']\n        (I'' : ModelWithCorners 𝕜 E'' H'')\n        {M'' : Type*} [TopologicalSpace M''] [ChartedSpace H'' M'']\n        [IsManifold I'' n M''] {g : M' → M''},\n        IsImmersion I' I'' n g → ContMDiff I I'' n (g ∘ f) := sorry",
+  "transcript_stats": {
+    "turns": 22,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 7,
+      "mcp__formal__decl_grep": 8,
+      "mcp__formal__decl_read": 6
+    },
+    "tokens_in": 150,
+    "tokens_out": 10319,
+    "cost_usd": 0.1434556
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"ContMDiff\"}",
+      "ok": true,
+      "result_chars": 1092,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 262 declarations mentioning ContMDiff.\\n- ContMDiff   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n    `ContMDiff I I' n f` indicates that the function `f : M → M'` bet"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Continuous ∧ ?a → ?b\"}",
+      "ok": true,
+      "result_chars": 1084,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 13185 declarations mentioning And.\\n- And.left   [Init.Prelude]\\n    Extract the left conjunct from a conjunction. `h : a ∧ b` then `h.left`, also notated as `h.1`, is"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Immersion\"}",
+      "ok": true,
+      "result_chars": 90,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Immersion': unknown identifier 'Immersion'\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"MDiffWithinAt injective\"}",
+      "ok": true,
+      "result_chars": 108,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'MDiffWithinAt injective': Unknown identifier `MDiffWithinAt`\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"immersion manifold smooth\"}",
+      "ok": true,
+      "result_chars": 106,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'immersion manifold smooth': Unknown identifier `immersion`\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(theorem|lemma|def) .*immersion\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 1121,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 match(es) for '(theorem|lemma|def) .*immersion' (via ripgrep):\\n- Mathlib/Geometry/Manifold/Immersion.lean:141\\n    lemma isLocalSourceTargetProperty_immersionAtProp :\\n- "
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Geometry/Manifold/Immersion.lean\", \"line\": 1, \"n\": 100}",
+      "ok": true,
+      "result_chars": 6144,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Geometry/Manifold/Immersion.lean  (lines 1–100 of 830):\\n     1  /-\\n     2  Copyright (c) 2025 Michael Rothgang. All rights reserved.\\n     3  Released under Apache"
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Geometry/Manifold/Immersion.lean\", \"line\": 100, \"n\": 100}",
+      "ok": true,
+      "result_chars": 6001,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Geometry/Manifold/Immersion.lean  (lines 100–199 of 830):\\n   100  \\n   101  open scoped Topology ContDiff\\n   102  open Function Set\\n   103  \\n   104  public nonco"
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"ContMDiff ∀ IsImmersion\"}",
+      "ok": true,
+      "result_chars": 109,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'ContMDiff ∀ IsImmersion': <input>:1:10: expected end of input\"}]"
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*contMDiff.*immersion\", \"limit\": 30}",
+      "ok": true,
+      "result_chars": 100,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*contMDiff.*immersion' under Mathlib/.\"}]"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(theorem|lemma) .*contMDiff_iff\", \"limit\": 30}",
+      "ok": true,
+      "result_chars": 647,
+      "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for '(theorem|lemma) .*contMDiff_iff' (via ripgrep):\\n- Mathlib/Geometry/Manifold/ContMDiff/NormedSpace.lean:66\\n    theorem contMDiff_iff_contDiff {f : E → E'} "
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Geometry/Manifold/ContMDiff/Defs.lean\", \"line\": 568, \"n\": 30}",
+      "ok": true,
+      "result_chars": 1539,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Geometry/Manifold/ContMDiff/Defs.lean  (lines 568–597 of 925):\\n   568  theorem contMDiff_iff [IsManifold I n M] [IsManifold I' n M'] :\\n   569      ContMDiff I I' n"
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*IsImmersion.*contMDiff\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 102,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*IsImmersion.*contMDiff' under Mathlib/.\"}]"
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Geometry/Manifold/Immersion.lean\", \"line\": 400, \"n\": 100}",
+      "ok": true,
+      "result_chars": 6157,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Geometry/Manifold/Immersion.lean  (lines 400–499 of 830):\\n   400      (IsManifold.subset_maximalAtlas (by simp)) (IsManifold.subset_maximalAtlas (by simp))\\n   401 "
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"ContMDiff composition\"}",
+      "ok": true,
+      "result_chars": 104,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'ContMDiff composition': Unknown identifier `composition`\"}]"
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*ContMDiff.*comp\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 3005,
+      "result_head": "[{\"type\": \"text\", \"text\": \"28 match(es) for 'theorem.*ContMDiff.*comp' (via ripgrep):\\n- Mathlib/Geometry/Manifold/ContMDiff/NormedSpace.lean:115\\n    theorem ContMDiffWithinAt.clm_precomp {f : M → F₁"
+    },
+    {
+      "i": 16,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem ContMDiff\\\\.comp [^_]\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 247,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'theorem ContMDiff\\\\\\\\.comp [^_]' (via ripgrep):\\n- Mathlib/Geometry/Manifold/ContMDiff/Basic.lean:103\\n    theorem ContMDiff.comp {g : M' → M''} (hg : ContM"
+    },
+    {
+      "i": 17,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Geometry/Manifold/ContMDiff/Basic.lean\", \"line\": 103, \"n\": 20}",
+      "ok": true,
+      "result_chars": 1272,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Geometry/Manifold/ContMDiff/Basic.lean  (lines 103–122 of 479):\\n   103  theorem ContMDiff.comp {g : M' → M''} (hg : ContMDiff I' I'' n g) (hf : ContMDiff I I' n f) "
+    },
+    {
+      "i": 18,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*∀.*Type.*\\\\[TopologicalSpace\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 110,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*∀.*Type.*\\\\\\\\[TopologicalSpace' under Mathlib/.\"}]"
+    },
+    {
+      "i": 19,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*contMDiff_iff_continuous\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 104,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*contMDiff_iff_continuous' under Mathlib/.\"}]"
+    },
+    {
+      "i": 20,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Geometry/Manifold/ContMDiff/Basic.lean\", \"line\": 1, \"n\": 60}",
+      "ok": true,
+      "result_chars": 3064,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Geometry/Manifold/ContMDiff/Basic.lean  (lines 1–60 of 479):\\n     1  /-\\n     2  Copyright (c) 2020 Sébastien Gouëzel. All rights reserved.\\n     3  Released under "
+    }
+  ]
+}

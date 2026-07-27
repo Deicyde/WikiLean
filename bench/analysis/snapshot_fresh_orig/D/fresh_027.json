@@ -1,0 +1,330 @@
+{
+  "task_id": "fresh_027",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:36:01Z",
+  "wall_s": 137.3,
+  "output_lean": "theorem integral_test_series {f : ℝ → ℝ} \n    (hnoneg : ∀ x, 0 ≤ f x) \n    (hant : Antitone f) \n    (hint : MeasureTheory.Integrable f) :\n    tsum (fun n => f n) ≤ f 0 + ∫ x in Set.Ioi 0, f x := sorry",
+  "transcript_stats": {
+    "turns": 39,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 3,
+      "mcp__wikibrain__brain_cell": 6,
+      "mcp__wikibrain__brain_search": 16,
+      "decl_exists": 1,
+      "mcp__wikibrain__decl_exists": 10,
+      "mcp__wikibrain__brain_transfer": 1,
+      "mcp__wikibrain__brain_neighborhood": 1
+    },
+    "tokens_in": 160,
+    "tokens_out": 12404,
+    "cost_usd": 0.1767921
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"antitone decreasing function\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3554,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"antitone decreasing function\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label ma"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"integrable function Lebesgue\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2754,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"integrable function Lebesgue\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label ma"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"series summation infinite sum\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 4856,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"series summation infinite sum\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label "
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:decl:Mathlib:Antitone\"}",
+      "ok": true,
+      "result_chars": 1182,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:Antitone\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Antitone\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Antitone\\\",\\\"cell\\\":{\\\"id\\"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q80091\"}",
+      "ok": true,
+      "result_chars": 5091,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q80091\\\",\\\"id\\\":\\\"cell:Q80091\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Integral\\\",\\\"f\\\":36088,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q80091\\\","
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"integrable\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 2337,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"integrable\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q1957758\\\",\\\"label\\\":\\\"Integrable system\\\",\\\"aka\\\":[\\\"integrable system\\\"]},{\\\"id\\\":\\\"cell:decl:Mathlib:integrable"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:decl:Mathlib:MeasureTheory.Integrable\"}",
+      "ok": true,
+      "result_chars": 1879,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:MeasureTheory.Integrable\\\",\\\"id\\\":\\\"cell:decl:Mathlib:MeasureTheory.Integrable\\\",\\\"kind\\\":\\\"cell\\\",\\\"labe"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"integral test series\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 177,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"integral test series\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"sum upper bound integral\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 181,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"sum upper bound integral\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"antitone decreasing monotone\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 185,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"antitone decreasing monotone\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"tsum infinite sum convergence\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 186,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"tsum infinite sum convergence\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 11,
+      "name": "decl_exists",
+      "input": "{\"names\": \"[\\\"Antitone\\\", \\\"MeasureTheory.Integrable\\\", \\\"HasSum\\\", \\\"tsum\\\"]\"}",
+      "ok": false,
+      "result_chars": 75,
+      "result_head": "<tool_use_error>Error: No such tool available: decl_exists</tool_use_error>"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Antitone\", \"MeasureTheory.Integrable\", \"HasSum\", \"tsum\"]}",
+      "ok": true,
+      "result_chars": 1480,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Antitone\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Monotone.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Mo"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__brain_transfer",
+      "input": "{\"q\": \"Antitone\", \"direction\": \"formal_to_informal\"}",
+      "ok": true,
+      "result_chars": 1604,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"Antitone\\\",\\\"decl\\\":\\\"Antitone\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Antitone\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Antitone\\\",\\\"h"
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:decl:Mathlib:AntitoneOn.integral_le_sum_Ico\"}",
+      "ok": true,
+      "result_chars": 1771,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:AntitoneOn.integral_le_sum_Ico\\\",\\\"id\\\":\\\"cell:decl:Mathlib:AntitoneOn.integral_le_sum_Ico\\\",\\\"kind\\\":\\\"c"
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:decl:Mathlib:AntitoneOn.sum_le_integral\"}",
+      "ok": true,
+      "result_chars": 1598,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:AntitoneOn.sum_le_integral\\\",\\\"id\\\":\\\"cell:decl:Mathlib:AntitoneOn.sum_le_integral\\\",\\\"kind\\\":\\\"cell\\\",\\\""
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"nonneg non-negative function\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 185,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"nonneg non-negative function\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Ioi Ici interval notation\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 182,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Ioi Ici interval notation\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 18,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Set.Ioi\", \"Set.Iic\", \"Set.Ici\", \"MeasureTheory.integral\", \"NNReal.nnabs\"]}",
+      "ok": true,
+      "result_chars": 1655,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Set.Ioi\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Interval.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order"
+    },
+    {
+      "i": 19,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"measure integral unbounded interval infinity\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 201,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"measure integral unbounded interval infinity\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}"
+    },
+    {
+      "i": 20,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Set.EqOn\", \"Function.support\", \"le_of_forall\"]}",
+      "ok": true,
+      "result_chars": 1029,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Set.EqOn\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Set.Operations\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Set"
+    },
+    {
+      "i": 21,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"0 le function nonnegative predicate\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 192,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"0 le function nonnegative predicate\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 22,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"sum natural numbers range\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 182,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"sum natural numbers range\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 23,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Finset range sum integral\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 182,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Finset range sum integral\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 24,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"SumIntegralComparisons\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 310,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"SumIntegralComparisons\\\",\\\"hits\\\":[{\\\"id\\\":\\\"path:Mathlib/Analysis/SumIntegralComparisons\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"SumIntegralComparisons\\\","
+    },
+    {
+      "i": 25,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"path:Mathlib/Analysis/SumIntegralComparisons\"}",
+      "ok": true,
+      "result_chars": 818,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/Analysis/SumIntegralComparisons\\\",\\\"id\\\":\\\"path:Mathlib/Analysis/SumIntegralComparisons\\\",\\\"kind\\\":\\\"supe"
+    },
+    {
+      "i": 26,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"cell:decl:Mathlib:AntitoneOn.sum_le_integral\", \"kinds\": \"depends,links\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 367,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:AntitoneOn.sum_le_integral\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\",\\\"links\\\"],\\\"synapses\\\":[],\\\"returned\\\":0,\\\"matched\\\":0,\\\"count"
+    },
+    {
+      "i": 27,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"integral_Ioi_eq_integral_Ioi\", \"Finset.sum\", \"intervalIntegral.integral_Ioi\"]}",
+      "ok": true,
+      "result_chars": 1054,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"integral_Ioi_eq_integral_Ioi\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common"
+    },
+    {
+      "i": 28,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"intervalIntegral.integral\", \"integral_Ioc\", \"integral_Ici\", \"MeasureTheory.nnintegral\"]}",
+      "ok": true,
+      "result_chars": 1183,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"intervalIntegral.integral\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e"
+    },
+    {
+      "i": 29,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Summable tsum convergent series\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 188,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Summable tsum convergent series\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 30,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Summable\", \"summable_nat_add_iff\"]}",
+      "ok": true,
+      "result_chars": 876,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Summable\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Algebra.InfiniteSum.Defs\\\",\\\"import_line\\\":\\\"import Ma"
+    },
+    {
+      "i": 31,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Summable\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 2008,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Summable\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q1211057\\\",\\\"label\\\":\\\"Convergent series\\\",\\\"aka\\\":[\\\"Convergent Series\\\",\\\"Summable\\\",\\\"convergent series\\\"],\\\"supe"
+    },
+    {
+      "i": 32,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"nonneg\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 2618,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"nonneg\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:nonneg_iff_isSelfAdjoint_and_quasispectrumRestricts\\\",\\\"label\\\":\\\"nonneg_iff_isSelfAdjoint_and_quasispect"
+    },
+    {
+      "i": 33,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"le_integral\", \"integral_le_of_le\", \"integrable_on\"]}",
+      "ok": true,
+      "result_chars": 927,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"le_integral\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Mo"
+    },
+    {
+      "i": 34,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"integrable_on\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 170,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"integrable_on\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 35,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.IntegrableOn\", \"integral_pos\", \"intervalIntegral\"]}",
+      "ok": true,
+      "result_chars": 1176,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.IntegrableOn\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.MeasureTheory.Integral.IntegrableOn\\\",\\\"impor"
+    },
+    {
+      "i": 36,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"le_integral_of_le\", \"integral_mono\", \"add_le_add\"]}",
+      "ok": true,
+      "result_chars": 1021,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"le_integral_of_le\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basi"
+    },
+    {
+      "i": 37,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Set.Ioi\", \"tsum\", \"Summable\", \"Antitone\", \"MeasureTheory.Integrable\", \"MeasureTheory.IntegrableOn\"]}",
+      "ok": true,
+      "result_chars": 2126,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Set.Ioi\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Interval.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order"
+    }
+  ]
+}

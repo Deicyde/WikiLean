@@ -1,0 +1,54 @@
+{
+  "task_id": "fresh_003",
+  "arm": "B",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T02:09:19Z",
+  "wall_s": 78.2,
+  "output_lean": "theorem monoid_algebra_mul_coeff (R : Type*) [Ring R] (M : Type*) [Monoid M]\n    (f g : MonoidAlgebra R M) (a0 b0 : M)\n    (ha0 : a0 ∈ f.support)\n    (hb0 : b0 ∈ g.support)\n    (hunique : ∀ x ∈ f.support, ∀ y ∈ g.support, x * y = a0 * b0 → x = a0 ∧ y = b0) :\n    (f * g) (a0 * b0) = f a0 * g b0 := sorry",
+  "transcript_stats": {
+    "turns": 5,
+    "tool_calls_by_name": {
+      "mcp__wiki__nlab_search": 1,
+      "mcp__wiki__wiki_search": 2,
+      "mcp__wiki__wiki_get": 1
+    },
+    "tokens_in": 34,
+    "tokens_out": 6905,
+    "cost_usd": 0.08333645
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wiki__nlab_search",
+      "input": "{\"q\": \"monoid algebra\"}",
+      "ok": true,
+      "result_chars": 130,
+      "result_head": "[{\"type\": \"text\", \"text\": \"nLab search for 'monoid algebra' — candidate pages:\\n- HomePage\\n- hypermonoid\\n- universality class\"}]"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"monoid algebra coefficient\"}",
+      "ok": true,
+      "result_chars": 2040,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'monoid algebra coefficient':\\n- Graded ring  (slug: Graded_ring)\\n    https://en.wikipedia.org/wiki/Graded_ring\\n    a graded monoid. Then K ⟨ ⟨ R ⟩ ⟩ {\\\\di"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wiki__wiki_get",
+      "input": "{\"title\": \"Monoid ring\"}",
+      "ok": true,
+      "result_chars": 4262,
+      "result_head": "[{\"type\": \"text\", \"text\": \"# Monoid ring\\nIn abstract algebra, a monoid ring is a ring constructed from a ring and a monoid, just as a group ring is constructed from a ring and a group.\\n\\n\\n== Defini"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"finitely supported functions support\"}",
+      "ok": true,
+      "result_chars": 2167,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'finitely supported functions support':\\n- Support (mathematics)  (slug: Support_(mathematics))\\n    https://en.wikipedia.org/wiki/Support_(mathematics)\\n   "
+    }
+  ]
+}

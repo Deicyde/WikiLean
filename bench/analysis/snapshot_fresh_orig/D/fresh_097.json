@@ -1,0 +1,143 @@
+{
+  "task_id": "fresh_097",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:53:55Z",
+  "wall_s": 65.6,
+  "output_lean": "theorem exists_mem_Icc_isFixedPt_of_subset_image {α : Type*} [LinearOrder α] [TopologicalSpace α]\n    {a b : α} (h_le : a ≤ b) {f : α → α} (hf : ContinuousOn f (Set.Icc a b))\n    (h_subset : Set.Icc a b ⊆ Set.image f (Set.Icc a b)) :\n    ∃ x ∈ Set.Icc a b, Function.IsFixedPt f x := sorry",
+  "transcript_stats": {
+    "turns": 16,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 10,
+      "mcp__wikibrain__brain_cell": 2,
+      "mcp__wikibrain__decl_exists": 2,
+      "mcp__wikibrain__brain_neighborhood": 1
+    },
+    "tokens_in": 84,
+    "tokens_out": 4908,
+    "cost_usd": 0.08334655
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"closed interval in an ordered space\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3027,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"closed interval in an ordered space\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"continuous fixed point theorem\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2118,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"continuous fixed point theorem\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"continuous function on a set\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2180,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"continuous function on a set\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label ma"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"image of a set under a function\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3403,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"image of a set under a function\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/labe"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"ContinuousOn function continuous on set\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2601,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"ContinuousOn function continuous on set\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact "
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"Brouwer fixed point theorem compact convex\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 4134,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Brouwer fixed point theorem compact convex\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an ex"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:decl:Mathlib:ContinuousOn\"}",
+      "ok": true,
+      "result_chars": 1566,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:ContinuousOn\\\",\\\"id\\\":\\\"cell:decl:Mathlib:ContinuousOn\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"ContinuousOn\\\",\\\"f"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"IsFixedPt fixed point predicate\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2041,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"IsFixedPt fixed point predicate\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/labe"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q217608\"}",
+      "ok": true,
+      "result_chars": 1259,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q217608\\\",\\\"id\\\":\\\"cell:Q217608\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"fixed point\\\",\\\"f\\\":32,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q217608"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"LinearOrder ordered type Lean\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3864,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"LinearOrder ordered type Lean\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label "
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Set.Icc\", \"Set.image\", \"ContinuousOn\", \"Function.fixedPoints\", \"LinearOrder\", \"IsFixedPt\"]}",
+      "ok": true,
+      "result_chars": 1991,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Set.Icc\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Interval.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order"
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"image of interval contained in interval fixed point\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3091,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"image of interval contained in interval fixed point\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTI"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"cell:Q1144897\", \"kinds\": \"depends,relates\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 5123,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q1144897\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\",\\\"relates\\\"],\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q1422068\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":1,\\\"relate"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Function.IsFixedPt\", \"TopologicalSpace\", \"OrderTopology\"]}",
+      "ok": true,
+      "result_chars": 1085,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Function.IsFixedPt\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Logic.Function.Defs\\\",\\\"import_line\\\":\\\"import Mathli"
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"self-map interval continuous implies fixed point\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3069,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"self-map interval continuous implies fixed point\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY "
+    }
+  ]
+}

@@ -1,0 +1,446 @@
+{
+  "task_id": "fresh_000",
+  "arm": "E",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:56:33Z",
+  "wall_s": 135.4,
+  "output_lean": "theorem Module.FinitePresentation.exists_lift_surjective\n    (R : Type*) [CommRing R] (M N : Type*) [AddCommGroup M] [Module R M]\n    [AddCommGroup N] [Module R N] [Module.FinitePresentation R M]\n    (S : Submonoid R) \n    (φ : LocalizedModule S M →ₗ[Localization S] LocalizedModule S N)\n    (hφ : Function.Surjective φ) :\n    ∃ (h : M →ₗ[R] N), Function.Surjective (LocalizedModule.map S h) := sorry",
+  "transcript_stats": {
+    "turns": 54,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 24,
+      "mcp__formal__decl_grep": 14,
+      "mcp__formal__decl_read": 15
+    },
+    "tokens_in": 260,
+    "tokens_out": 7044,
+    "cost_usd": 0.26839084999999996
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"FinitelyPresented\"}",
+      "ok": true,
+      "result_chars": 106,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'FinitelyPresented': unknown identifier 'FinitelyPresented'\"}]"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Localization Module\"}",
+      "ok": true,
+      "result_chars": 1614,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 312 declarations mentioning Localization.\\n- Submonoid.LocalizationMap.instSubsingletonLocalization   [Mathlib.GroupTheory.MonoidLocalization.Basic]\\n- Submonoid.Local"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"IsLocalization surjective\"}",
+      "ok": true,
+      "result_chars": 107,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IsLocalization surjective': Unknown identifier `surjective`\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Module.Finite\"}",
+      "ok": true,
+      "result_chars": 1189,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 1119 declarations mentioning Module.Finite.\\n- Module.Finite   [Mathlib.RingTheory.Finiteness.Defs]\\n    A module over a semiring is `Module.Finite` if it is finitely "
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Module.localizationMap\"}",
+      "ok": true,
+      "result_chars": 116,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Module.localizationMap': unknown identifier 'Module.localizationMap'\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Function.Surjective\"}",
+      "ok": true,
+      "result_chars": 906,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 2213 declarations mentioning Function.Surjective.\\n- Function.Surjective   [Init.Data.Function]\\n    A function `f : α → β` is called surjective if every `b : β` is eq"
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"IsLocalization\"}",
+      "ok": true,
+      "result_chars": 1867,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 640 declarations mentioning IsLocalization.\\n- IsLocalization   [Mathlib.RingTheory.Localization.Defs]\\n    The typeclass `IsLocalization (M : Submonoid R) S` where `S"
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"localization_map Module\"}",
+      "ok": true,
+      "result_chars": 111,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'localization_map Module': Unknown identifier `localization_map`\"}]"
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Module.localize\"}",
+      "ok": true,
+      "result_chars": 102,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Module.localize': unknown identifier 'Module.localize'\"}]"
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Submodule Localization\"}",
+      "ok": true,
+      "result_chars": 1283,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 7719 declarations mentioning Submodule.\\n- Submodule.decidableEq   [Mathlib.Algebra.Module.Submodule.Defs]\\n    `Submodule R M` almost never has decidable equality. Gi"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"map_localization_map\"}",
+      "ok": true,
+      "result_chars": 112,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'map_localization_map': unknown identifier 'map_localization_map'\"}]"
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"LocalizationMap\"}",
+      "ok": true,
+      "result_chars": 102,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'LocalizationMap': unknown identifier 'LocalizationMap'\"}]"
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"tensor_localizedModule\"}",
+      "ok": true,
+      "result_chars": 116,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'tensor_localizedModule': unknown identifier 'tensor_localizedModule'\"}]"
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Algebra.localizationMap\"}",
+      "ok": true,
+      "result_chars": 118,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Algebra.localizationMap': unknown identifier 'Algebra.localizationMap'\"}]"
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"localized.*module\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2730,
+      "result_head": "[{\"type\": \"text\", \"text\": \"43 match(es) for 'localized.*module' (via ripgrep):\\n- Mathlib/Algebra/Category/ModuleCat/Localization.lean:55\\n    exhibits `M.localizedModule S` as a localized module of `"
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"(?a : Module ?R) → (?b : Module ?R) → ?a → ?b\"}",
+      "ok": true,
+      "result_chars": 206,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(?a : Module ?R) → (?b : Module ?R) → ?a → ?b': type expected, got\\n  (Module ?R : (M : Type ?u.3) → [Semiring ?R] → [AddCommMonoid M] → Type (max ?u.4 ?u."
+    },
+    {
+      "i": 16,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Module/LocalizedModule/Basic.lean\", \"line\": 1, \"n\": 100}",
+      "ok": true,
+      "result_chars": 4751,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Module/LocalizedModule/Basic.lean  (lines 1–100 of 1472):\\n     1  /-\\n     2  Copyright (c) 2022 Jujian Zhang. All rights reserved.\\n     3  Released under "
+    },
+    {
+      "i": 17,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Module.Presentation\"}",
+      "ok": true,
+      "result_chars": 1596,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 59 declarations mentioning Module.Presentation.\\n- Module.Presentation   [Mathlib.Algebra.Module.Presentation.Basic]\\n    Given an `A`-module `M`, a term in this type "
+    },
+    {
+      "i": 18,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"FinitelyPresented\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2520,
+      "result_head": "[{\"type\": \"text\", \"text\": \"20 match(es) for 'FinitelyPresented' (via ripgrep):\\n- Mathlib/GroupTheory/FinitelyPresentedGroup.lean:26\\n    * `IsFinitelyPresented`: defines when a group is finitely pres"
+    },
+    {
+      "i": 19,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Module.finitePresentation\"}",
+      "ok": true,
+      "result_chars": 122,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Module.finitePresentation': unknown identifier 'Module.finitePresentation'\"}]"
+    },
+    {
+      "i": 20,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"IsModulePresentation|finitePresentation\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2812,
+      "result_head": "[{\"type\": \"text\", \"text\": \"149 match(es) for 'IsModulePresentation|finitePresentation' (via ripgrep):\\n- Mathlib/Algebra/Module/Presentation/Finite.lean:35\\n    lemma finitePresentation [Finite pres.G"
+    },
+    {
+      "i": 21,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Module/FinitePresentation.lean\", \"line\": 1, \"n\": 120}",
+      "ok": true,
+      "result_chars": 5685,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Module/FinitePresentation.lean  (lines 1–120 of 655):\\n     1  /-\\n     2  Copyright (c) 2024 Andrew Yang. All rights reserved.\\n     3  Released under Apach"
+    },
+    {
+      "i": 22,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"map_localizationMap\"}",
+      "ok": true,
+      "result_chars": 110,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'map_localizationMap': unknown identifier 'map_localizationMap'\"}]"
+    },
+    {
+      "i": 23,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"LocalizedModule.map\"}",
+      "ok": true,
+      "result_chars": 1223,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 24 declarations mentioning LocalizedModule.map.\\n- LocalizedModule.map   [Mathlib.RingTheory.Localization.Module]\\n    A linear map `M →ₗ[R] N` gives a map between loc"
+    },
+    {
+      "i": 24,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"LocalizedModule.map\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1450,
+      "result_head": "[{\"type\": \"text\", \"text\": \"103 match(es) for 'LocalizedModule.map' (via ripgrep):\\n- Mathlib/RingTheory/QuasiFinite/Basic.lean:444\\n    ⟨IsLocalizedModule.map_units (Algebra.linearMap S (Localization."
+    },
+    {
+      "i": 25,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"^def LocalizedModule.map\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 169,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '^def LocalizedModule.map' (via ripgrep):\\n- Mathlib/RingTheory/Localization/Module.lean:299\\n    def LocalizedModule.map :\"}]"
+    },
+    {
+      "i": 26,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"IsLocalizedModule\"}",
+      "ok": true,
+      "result_chars": 1680,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 252 declarations mentioning IsLocalizedModule.\\n- IsLocalizedModule   [Mathlib.Algebra.Module.LocalizedModule.Basic]\\n    The characteristic predicate for localized mo"
+    },
+    {
+      "i": 27,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/RingTheory/Localization/Module.lean\", \"line\": 299, \"n\": 30}",
+      "ok": true,
+      "result_chars": 1825,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RingTheory/Localization/Module.lean  (lines 299–328 of 369):\\n   299  def LocalizedModule.map :\\n   300      (M →ₗ[R] N) →ₗ[R] (LocalizedModule S M →ₗ[Localization S"
+    },
+    {
+      "i": 28,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"finitePresentation lift surjective\"}",
+      "ok": true,
+      "result_chars": 124,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'finitePresentation lift surjective': Unknown identifier `finitePresentation`\"}]"
+    },
+    {
+      "i": 29,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"lift.*LocalizedModule\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1464,
+      "result_head": "[{\"type\": \"text\", \"text\": \"33 match(es) for 'lift.*LocalizedModule' (via ripgrep):\\n- Mathlib/Algebra/Module/FinitePresentation.lean:361\\n    lemma Module.FinitePresentation.exists_lift_of_isLocalized"
+    },
+    {
+      "i": 30,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Module/FinitePresentation.lean\", \"line\": 361, \"n\": 80}",
+      "ok": true,
+      "result_chars": 4707,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Module/FinitePresentation.lean  (lines 361–440 of 655):\\n   361  lemma Module.FinitePresentation.exists_lift_of_isLocalizedModule\\n   362      [h : Module.Fi"
+    },
+    {
+      "i": 31,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"isLocalizedModule_map_linearCombination\"}",
+      "ok": true,
+      "result_chars": 150,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'isLocalizedModule_map_linearCombination': unknown identifier 'isLocalizedModule_map_linearCombination'\"}]"
+    },
+    {
+      "i": 32,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"LocalizedModule.map.*surjective\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 469,
+      "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for 'LocalizedModule.map.*surjective' (via ripgrep):\\n- Mathlib/RingTheory/Localization/Module.lean:319\\n    lemma LocalizedModule.map_surjective (l : M →ₗ[R] N)"
+    },
+    {
+      "i": 33,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Module.FinitePresentation.*map.*surjective\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 113,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'Module.FinitePresentation.*map.*surjective' under Mathlib/.\"}]"
+    },
+    {
+      "i": 34,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Module/FinitePresentation.lean\", \"line\": 495, \"n\": 70}",
+      "ok": true,
+      "result_chars": 4525,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Module/FinitePresentation.lean  (lines 495–564 of 655):\\n   495    obtain ⟨g, hg, h⟩ := exists_bijective_map_powers p.primeCompl fM fN f hf\\n   496    exact "
+    },
+    {
+      "i": 35,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"FinitePresentation isLocalizedModule_map surjective\"}",
+      "ok": true,
+      "result_chars": 141,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'FinitePresentation isLocalizedModule_map surjective': Unknown identifier `FinitePresentation`\"}]"
+    },
+    {
+      "i": 36,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"isLocalizedModule_map.*FinitePresentation\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 254,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'isLocalizedModule_map.*FinitePresentation' (via ripgrep):\\n- Mathlib/Algebra/Module/FinitePresentation.lean:546\\n    instance Module.FinitePresentation.isLo"
+    },
+    {
+      "i": 37,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Module/FinitePresentation.lean\", \"line\": 546, \"n\": 40}",
+      "ok": true,
+      "result_chars": 2410,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Module/FinitePresentation.lean  (lines 546–585 of 655):\\n   546  instance Module.FinitePresentation.isLocalizedModule_map [Module.FinitePresentation R M] :\\n"
+    },
+    {
+      "i": 38,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"^class IsLocalizedModule\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 95,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '^class IsLocalizedModule' under Mathlib/.\"}]"
+    },
+    {
+      "i": 39,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Module/LocalizedModule/Basic.lean\", \"line\": 1, \"n\": 100}",
+      "ok": true,
+      "result_chars": 4751,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Module/LocalizedModule/Basic.lean  (lines 1–100 of 1472):\\n     1  /-\\n     2  Copyright (c) 2022 Jujian Zhang. All rights reserved.\\n     3  Released under "
+    },
+    {
+      "i": 40,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"structure IsLocalizedModule\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 98,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'structure IsLocalizedModule' under Mathlib/.\"}]"
+    },
+    {
+      "i": 41,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"IsLocalizedModule structure\"}",
+      "ok": true,
+      "result_chars": 113,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IsLocalizedModule structure': <input>:1:18: expected end of input\"}]"
+    },
+    {
+      "i": 42,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Module/LocalizedModule/Basic.lean\", \"line\": 1000, \"n\": 150}",
+      "ok": true,
+      "result_chars": 6090,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Module/LocalizedModule/Basic.lean  (lines 1000–1119 of 1472):\\n  1000  @[simp]\\n  1001  lemma linearEquiv_symm_apply [IsLocalizedModule S g] (x : M) :\\n  100"
+    },
+    {
+      "i": 43,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"^class IsLocalizedModule\", \"limit\": 1}",
+      "ok": true,
+      "result_chars": 95,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '^class IsLocalizedModule' under Mathlib/.\"}]"
+    },
+    {
+      "i": 44,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"IsLocalizedModule\", \"limit\": 1}",
+      "ok": true,
+      "result_chars": 240,
+      "result_head": "[{\"type\": \"text\", \"text\": \"47 match(es) for 'IsLocalizedModule' (via ripgrep):\\n- Mathlib/Algebra/Module/FinitePresentation.lean:314\\n    variable [AddCommGroup N'] [Module R N'] (S : Submonoid R) (f "
+    },
+    {
+      "i": 45,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/RingTheory/Localization/Module.lean\", \"line\": 1, \"n\": 150}",
+      "ok": true,
+      "result_chars": 6176,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RingTheory/Localization/Module.lean  (lines 1–120 of 369):\\n     1  /-\\n     2  Copyright (c) 2022 Anne Baanen. All rights reserved.\\n     3  Released under Apache 2"
+    },
+    {
+      "i": 46,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Module/LocalizedModule/IsLocalization.lean\", \"line\": 1, \"n\": 150}",
+      "ok": true,
+      "result_chars": 3796,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Module/LocalizedModule/IsLocalization.lean  (lines 1–67 of 67):\\n     1  /-\\n     2  Copyright (c) 2022 Jujian Zhang. All rights reserved.\\n     3  Released "
+    },
+    {
+      "i": 47,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"^def isLocalizedModule_iff\", \"limit\": 1}",
+      "ok": true,
+      "result_chars": 97,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '^def isLocalizedModule_iff' under Mathlib/.\"}]"
+    },
+    {
+      "i": 48,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Module/LocalizedModule/Basic.lean\", \"line\": 700, \"n\": 200}",
+      "ok": true,
+      "result_chars": 6165,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Module/LocalizedModule/Basic.lean  (lines 700–819 of 1472):\\n   700  -/\\n   701  theorem lift_comp (g : M →ₗ[R] M'') (h : ∀ x : S, IsUnit ((algebraMap R (Mod"
+    },
+    {
+      "i": 49,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Module/LocalizedModule/Basic.lean\", \"line\": 200, \"n\": 300}",
+      "ok": true,
+      "result_chars": 6166,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Module/LocalizedModule/Basic.lean  (lines 200–319 of 1472):\\n   200      mk a₁ s₁ * mk a₂ s₂ = mk (a₁ * a₂) (s₁ * s₂) := by rw [mk_mul_mk', mul_comm s₁ s₂]\\n"
+    },
+    {
+      "i": 50,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Module/LocalizedModule/Basic.lean\", \"line\": 800, \"n\": 200}",
+      "ok": true,
+      "result_chars": 6177,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Module/LocalizedModule/Basic.lean  (lines 800–919 of 1472):\\n   800    exists_of_eq {x₁ x₂} e := by\\n   801      obtain ⟨c, hc⟩ := IsLocalizedModule.exists_o"
+    },
+    {
+      "i": 51,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Module/LocalizedModule/Basic.lean\", \"line\": 900, \"n\": 150}",
+      "ok": true,
+      "result_chars": 5967,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Module/LocalizedModule/Basic.lean  (lines 900–1019 of 1472):\\n   900    apply_fun iso S f using LinearEquiv.injective (iso S f)\\n   901    rw [LinearEquiv.ap"
+    },
+    {
+      "i": 52,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Module/LocalizedModule/Basic.lean\", \"line\": 400, \"n\": 200}",
+      "ok": true,
+      "result_chars": 6047,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Module/LocalizedModule/Basic.lean  (lines 400–519 of 1472):\\n   400    induction x using induction_on with\\n   401    | h m s =>\\n   402      induction y usi"
+    }
+  ]
+}

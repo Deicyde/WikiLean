@@ -1,0 +1,62 @@
+{
+  "task_id": "fresh_071",
+  "arm": "B",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T02:25:51Z",
+  "wall_s": 101.4,
+  "output_lean": "theorem sit_moves_equiv_finest {α : Type*} [Lattice α]\n    (moves : α × α → α × α → Prop) :\n    ∃ (eqv : α × α → α × α → Prop),\n      Equivalence eqv ∧\n      (∀ x y, moves x y → eqv x y) ∧\n      (∀ (eqv' : α × α → α × α → Prop),\n        Equivalence eqv' →\n        (∀ x y, moves x y → eqv' x y) →\n        (∀ x y, eqv x y → eqv' x y)) := sorry",
+  "transcript_stats": {
+    "turns": 6,
+    "tool_calls_by_name": {
+      "mcp__wiki__wiki_search": 2,
+      "mcp__wiki__nlab_search": 1,
+      "mcp__wiki__wiki_get": 2
+    },
+    "tokens_in": 34,
+    "tokens_out": 9654,
+    "cost_usd": 0.06894145
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"second isomorphism theorem lattice\"}",
+      "ok": true,
+      "result_chars": 2325,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'second isomorphism theorem lattice':\\n- Isomorphism theorems  (slug: Isomorphism_theorems)\\n    https://en.wikipedia.org/wiki/Isomorphism_theorems\\n    spec"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wiki__nlab_search",
+      "input": "{\"q\": \"second isomorphism theorem lattice intervals\"}",
+      "ok": true,
+      "result_chars": 123,
+      "result_head": "[{\"type\": \"text\", \"text\": \"nLab search for 'second isomorphism theorem lattice intervals' — candidate pages:\\n- HomePage\"}]"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wiki__wiki_get",
+      "input": "{\"title\": \"Modular_lattice\", \"section\": \"Second isomorphism theorem\"}",
+      "ok": true,
+      "result_chars": 4143,
+      "result_head": "[{\"type\": \"text\", \"text\": \"# Modular lattice\\n[section 'Second isomorphism theorem' not found; returning article head]\\nIn the branch of mathematics called order theory, a modular lattice is a lattice"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wiki__wiki_get",
+      "input": "{\"title\": \"Isomorphism_theorems\", \"section\": \"Lattice theory\"}",
+      "ok": true,
+      "result_chars": 4408,
+      "result_head": "[{\"type\": \"text\", \"text\": \"# Isomorphism theorems\\n[section 'Lattice theory' not found; returning article head]\\nIn mathematics, specifically abstract algebra, the isomorphism theorems (also known as "
+    },
+    {
+      "i": 4,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"Lean 4 Mathlib equivalence relation generation eqvGen\"}",
+      "ok": true,
+      "result_chars": 119,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No English Wikipedia results for 'Lean 4 Mathlib equivalence relation generation eqvGen'.\"}]"
+    }
+  ]
+}

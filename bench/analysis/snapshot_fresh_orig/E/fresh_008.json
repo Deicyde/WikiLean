@@ -1,0 +1,446 @@
+{
+  "task_id": "fresh_008",
+  "arm": "E",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:57:43Z",
+  "wall_s": 222.3,
+  "output_lean": "theorem support_coeff_toLaurent (f : R[X]) :\n    f.toLaurent.coeff.support = f.support.map Nat.castEmbedding := sorry",
+  "transcript_stats": {
+    "turns": 54,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 19,
+      "mcp__formal__decl_grep": 18,
+      "mcp__formal__decl_read": 16
+    },
+    "tokens_in": 428,
+    "tokens_out": 14354,
+    "cost_usd": 0.3208948500000001
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"LaurentPolynomial\"}",
+      "ok": true,
+      "result_chars": 1733,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 115 declarations mentioning LaurentPolynomial.\\n- LaurentPolynomial   [Mathlib.Algebra.Polynomial.Laurent]\\n    The semiring of Laurent polynomials with coefficients i"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Polynomial.support\"}",
+      "ok": true,
+      "result_chars": 939,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 116 declarations mentioning Polynomial.support.\\n- Polynomial.support   [Mathlib.Algebra.Polynomial.Basic]\\n    The set of all `n` such that `X^n` has a non-zero coeff"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Polynomial.natDegree\"}",
+      "ok": true,
+      "result_chars": 1054,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 797 declarations mentioning Polynomial.natDegree.\\n- Polynomial.natDegree   [Mathlib.Algebra.Polynomial.Degree.Defs]\\n    `natDegree p` forces `degree p` to ℕ, by defi"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"LaurentPolynomial.support\"}",
+      "ok": true,
+      "result_chars": 122,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'LaurentPolynomial.support': unknown identifier 'LaurentPolynomial.support'\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(theorem|def|lemma) .*toLaurent\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2641,
+      "result_head": "[{\"type\": \"text\", \"text\": \"20 match(es) for '(theorem|def|lemma) .*toLaurent' (via ripgrep):\\n- Mathlib/Algebra/Polynomial/Laurent.lean:98\\n    def Polynomial.toLaurent [Semiring R] : R[X] →+* R[T;T⁻¹"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Polynomial/Laurent.lean\", \"line\": 98, \"n\": 40}",
+      "ok": true,
+      "result_chars": 1823,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Polynomial/Laurent.lean  (lines 98–137 of 674):\\n    98  def Polynomial.toLaurent [Semiring R] : R[X] →+* R[T;T⁻¹] :=\\n    99    (mapDomainRingHom R Int.ofNa"
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(def|structure) LaurentPolynomial\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 104,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(def|structure) LaurentPolynomial' under Mathlib/.\"}]"
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Polynomial/Laurent.lean\", \"line\": 1, \"n\": 50}",
+      "ok": true,
+      "result_chars": 2713,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Polynomial/Laurent.lean  (lines 1–50 of 674):\\n     1  /-\\n     2  Copyright (c) 2022 Damiano Testa. All rights reserved.\\n     3  Released under Apache 2.0 "
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"AddMonoidAlgebra.support\"}",
+      "ok": true,
+      "result_chars": 120,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'AddMonoidAlgebra.support': unknown identifier 'AddMonoidAlgebra.support'\"}]"
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Finsupp.support\"}",
+      "ok": true,
+      "result_chars": 963,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 431 declarations mentioning Finsupp.support.\\n- Finsupp.support   [Mathlib.Data.Finsupp.Defs]\\n    The support of a finitely supported function (aka `Finsupp`).\\n- Fin"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Finsupp.support_mapDomain\"}",
+      "ok": true,
+      "result_chars": 122,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Finsupp.support_mapDomain': unknown identifier 'Finsupp.support_mapDomain'\"}]"
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"mapDomain support\"}",
+      "ok": true,
+      "result_chars": 98,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'mapDomain support': Unknown identifier `mapDomain`\"}]"
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(theorem|lemma) .*mapDomain.*support\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 1637,
+      "result_head": "[{\"type\": \"text\", \"text\": \"12 match(es) for '(theorem|lemma) .*mapDomain.*support' (via ripgrep):\\n- Mathlib/Algebra/MonoidAlgebra/MapDomain.lean:158\\n    lemma mapDomain_comapDomain {f : M → N} {x : "
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Data/Finsupp/Basic.lean\", \"line\": 366, \"n\": 15}",
+      "ok": true,
+      "result_chars": 921,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Data/Finsupp/Basic.lean  (lines 366–380 of 1435):\\n   366  theorem mapDomain_support [DecidableEq β] {f : α → β} {s : α →₀ M} :\\n   367      (s.mapDomain f).support "
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Data/Finsupp/Basic.lean\", \"line\": 386, \"n\": 20}",
+      "ok": true,
+      "result_chars": 1193,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Data/Finsupp/Basic.lean  (lines 386–405 of 1435):\\n   386  theorem mapDomain_support_of_injOn [DecidableEq β] {f : α → β} (s : α →₀ M)\\n   387      (hf : Set.InjOn f"
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Int.ofNatHom injective\"}",
+      "ok": true,
+      "result_chars": 103,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Int.ofNatHom injective': Unknown identifier `injective`\"}]"
+    },
+    {
+      "i": 16,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Int.ofNat Function.Injective\"}",
+      "ok": true,
+      "result_chars": 820,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 27 declarations mentioning Int.ofNat.\\n- Int.NonNeg.mk   [Init.Data.Int.Basic]\\n    For all natural numbers `n`, `Int.ofNat n` is non-negative.\\n- Int.ofNat_eq_coe   ["
+    },
+    {
+      "i": 17,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Nat.cast_injective Int\"}",
+      "ok": true,
+      "result_chars": 258,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Nat.cast_injective Int': Application type mismatch: The argument\\n  ℤ\\nhas type\\n  Type\\nof sort `Type 1` but is expected to have type\\n  ↑?m.4 = ↑?m.5\\nof"
+    },
+    {
+      "i": 18,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(theorem|lemma) .*Nat.*injective.*Int|Int.*Nat.*injective\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 327,
+      "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for '(theorem|lemma) .*Nat.*injective.*Int|Int.*Nat.*injective' (via ripgrep):\\n- Mathlib/Testing/Plausible/Functions.lean:377\\n    Int.ofNat.inj (add_right_inje"
+    },
+    {
+      "i": 19,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Polynomial.support_toFinsupp\"}",
+      "ok": true,
+      "result_chars": 161,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning Polynomial.support_toFinsupp.\\n- Polynomial.support_toFinsupp   [Mathlib.Algebra.Polynomial.Basic]\"}]"
+    },
+    {
+      "i": 20,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(theorem|lemma) Polynomial.support_toFinsupp\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 115,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma) Polynomial.support_toFinsupp' under Mathlib/.\"}]"
+    },
+    {
+      "i": 21,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"support_toFinsupp\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 899,
+      "result_head": "[{\"type\": \"text\", \"text\": \"6 match(es) for 'support_toFinsupp' (via ripgrep):\\n- Mathlib/Algebra/SkewMonoidAlgebra/Basic.lean:191\\n    @[deprecated (since := \\\"2026-07-04\\\")] alias support_toFinsupp :"
+    },
+    {
+      "i": 22,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Polynomial/Basic.lean\", \"line\": 363, \"n\": 5}",
+      "ok": true,
+      "result_chars": 300,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Polynomial/Basic.lean  (lines 363–367 of 1243):\\n   363  theorem support_toFinsupp (p : R[X]) : p.toFinsupp.coeff.support = p.support := by rw [support]\\n   "
+    },
+    {
+      "i": 23,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Polynomial.toFinsupp\"}",
+      "ok": true,
+      "result_chars": 928,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 40 declarations mentioning Polynomial.toFinsupp.\\n- Polynomial.toFinsupp   [Mathlib.Algebra.Polynomial.Basic]\\n    The coefficients `ℕ →₀ R` of a polynomial in `R[X]`."
+    },
+    {
+      "i": 24,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(def|theorem|lemma) Polynomial.support[^_]\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 113,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(def|theorem|lemma) Polynomial.support[^_]' under Mathlib/.\"}]"
+    },
+    {
+      "i": 25,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"^def Polynomial.support\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 94,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '^def Polynomial.support' under Mathlib/.\"}]"
+    },
+    {
+      "i": 26,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Polynomial/Basic.lean\", \"line\": 350, \"n\": 20}",
+      "ok": true,
+      "result_chars": 872,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Polynomial/Basic.lean  (lines 350–369 of 1243):\\n   350    map_sum (toFinsuppIso R).symm f s\\n   351  \\n   352  theorem toFinsupp_sum {ι : Type*} (s : Finset"
+    },
+    {
+      "i": 27,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"^structure Polynomial\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 672,
+      "result_head": "[{\"type\": \"text\", \"text\": \"5 match(es) for '^structure Polynomial' (via ripgrep):\\n- Mathlib/Algebra/Polynomial/Basic.lean:74\\n    structure Polynomial (R : Type*) [Semiring R] where ofFinsupp ::\\n- M"
+    },
+    {
+      "i": 28,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Polynomial/Basic.lean\", \"line\": 74, \"n\": 20}",
+      "ok": true,
+      "result_chars": 735,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Polynomial/Basic.lean  (lines 74–93 of 1243):\\n    74  structure Polynomial (R : Type*) [Semiring R] where ofFinsupp ::\\n    75    /-- The coefficients `ℕ →₀"
+    },
+    {
+      "i": 29,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"AddMonoidAlgebra.coeff\"}",
+      "ok": true,
+      "result_chars": 1145,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 196 declarations mentioning AddMonoidAlgebra.coeff.\\n- AddMonoidAlgebra.coeff   [Mathlib.Algebra.MonoidAlgebra.Defs]\\n    The coefficients `M →₀ R` of an element of th"
+    },
+    {
+      "i": 30,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Polynomial/Laurent.lean\", \"line\": 50, \"n\": 30}",
+      "ok": true,
+      "result_chars": 1421,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Polynomial/Laurent.lean  (lines 50–79 of 674):\\n    50  \\n    51  ## Future work\\n    52  Lots is missing!\\n    53  -- (Riccardo) add inclusion into Laurent "
+    },
+    {
+      "i": 31,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"LaurentPolynomial.*:=.*AddMonoidAlgebra|type.*LaurentPolynomial\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 134,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'LaurentPolynomial.*:=.*AddMonoidAlgebra|type.*LaurentPolynomial' under Mathlib/.\"}]"
+    },
+    {
+      "i": 32,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Polynomial/Laurent.lean\", \"line\": 79, \"n\": 30}",
+      "ok": true,
+      "result_chars": 1515,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Polynomial/Laurent.lean  (lines 79–108 of 674):\\n    79  variable {R S : Type*}\\n    80  \\n    81  /-- The semiring of Laurent polynomials with coefficients "
+    },
+    {
+      "i": 33,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"mapDomainRingHom AddMonoidAlgebra\"}",
+      "ok": true,
+      "result_chars": 121,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'mapDomainRingHom AddMonoidAlgebra': Unknown identifier `mapDomainRingHom`\"}]"
+    },
+    {
+      "i": 34,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def mapDomainRingHom\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 324,
+      "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'def mapDomainRingHom' (via ripgrep):\\n- Mathlib/Algebra/MonoidAlgebra/MapDomain.lean:285\\n    def mapDomainRingHom (f : M →* N) : R[M] →+* R[N] where\\n- Mat"
+    },
+    {
+      "i": 35,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/MonoidAlgebra/MapDomain.lean\", \"line\": 285, \"n\": 15}",
+      "ok": true,
+      "result_chars": 817,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/MonoidAlgebra/MapDomain.lean  (lines 285–299 of 505):\\n   285  def mapDomainRingHom (f : M →* N) : R[M] →+* R[N] where\\n   286    toFun := mapDomain f\\n   28"
+    },
+    {
+      "i": 36,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"AddMonoidAlgebra.mapDomain\"}",
+      "ok": true,
+      "result_chars": 1224,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 16 declarations mentioning AddMonoidAlgebra.mapDomain.\\n- AddMonoidAlgebra.mapDomain   [Mathlib.Algebra.MonoidAlgebra.MapDomain]\\n    Given a function `f : M → N` betw"
+    },
+    {
+      "i": 37,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"mapDomain.*support|support.*mapDomain\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1336,
+      "result_head": "[{\"type\": \"text\", \"text\": \"43 match(es) for 'mapDomain.*support|support.*mapDomain' (via ripgrep):\\n- Mathlib/Algebra/MonoidAlgebra/MapDomain.lean:158\\n    lemma mapDomain_comapDomain {f : M → N} {x :"
+    },
+    {
+      "i": 38,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(theorem|lemma) AddMonoidAlgebra.mapDomain_support\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 121,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma) AddMonoidAlgebra.mapDomain_support' under Mathlib/.\"}]"
+    },
+    {
+      "i": 39,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"AddMonoidAlgebra.coeff_mapDomain\"}",
+      "ok": true,
+      "result_chars": 176,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning AddMonoidAlgebra.coeff_mapDomain.\\n- AddMonoidAlgebra.coeff_mapDomain   [Mathlib.Algebra.MonoidAlgebra.MapDomain]\"}]"
+    },
+    {
+      "i": 40,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem AddMonoidAlgebra.coeff_mapDomain\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 111,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem AddMonoidAlgebra.coeff_mapDomain' under Mathlib/.\"}]"
+    },
+    {
+      "i": 41,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"coeff_mapDomain\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1336,
+      "result_head": "[{\"type\": \"text\", \"text\": \"11 match(es) for 'coeff_mapDomain' (via ripgrep):\\n- Mathlib/Algebra/SkewMonoidAlgebra/Lift.lean:121\\n    simp_rw [coeff_equivMapDomain, Finsupp.equivMapDomain_apply, coeff_"
+    },
+    {
+      "i": 42,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/MonoidAlgebra/MapDomain.lean\", \"line\": 206, \"n\": 10}",
+      "ok": true,
+      "result_chars": 653,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/MonoidAlgebra/MapDomain.lean  (lines 206–215 of 505):\\n   206  lemma coeff_mapDomainAddEquiv (e : M ≃ N) (x : R[M]) :\\n   207      (mapDomainAddEquiv R e x)."
+    },
+    {
+      "i": 43,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/MonoidAlgebra/Module.lean\", \"line\": 84, \"n\": 10}",
+      "ok": true,
+      "result_chars": 677,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/MonoidAlgebra/Module.lean  (lines 84–93 of 359):\\n    84  lemma coeff_mapDomainLinearMap (f : M → N) (x : S[M]) :\\n    85      (mapDomainLinearMap R S f x).c"
+    },
+    {
+      "i": 44,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"^def AddMonoidAlgebra.mapDomain\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 102,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '^def AddMonoidAlgebra.mapDomain' under Mathlib/.\"}]"
+    },
+    {
+      "i": 45,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"AddMonoidAlgebra.mapDomain\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1387,
+      "result_head": "[{\"type\": \"text\", \"text\": \"13 match(es) for 'AddMonoidAlgebra.mapDomain' (via ripgrep):\\n- Mathlib/Algebra/MonoidAlgebra/Basic.lean:178\\n    then `AddMonoidAlgebra.mapDomain f` is a non-unital algebra"
+    },
+    {
+      "i": 46,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/MonoidAlgebra/MapDomain.lean\", \"line\": 170, \"n\": 40}",
+      "ok": true,
+      "result_chars": 2250,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/MonoidAlgebra/MapDomain.lean  (lines 170–209 of 505):\\n   170  /-- If `f : G → H` is a multiplicative homomorphism between two monoids, then\\n   171  `Monoid"
+    },
+    {
+      "i": 47,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/MonoidAlgebra/MapDomain.lean\", \"line\": 1, \"n\": 60}",
+      "ok": true,
+      "result_chars": 2712,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/MonoidAlgebra/MapDomain.lean  (lines 1–60 of 505):\\n     1  /-\\n     2  Copyright (c) 2017 Johannes Hölzl. All rights reserved.\\n     3  Released under Apach"
+    },
+    {
+      "i": 48,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Laurent polynomial support coeff\"}",
+      "ok": true,
+      "result_chars": 111,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Laurent polynomial support coeff': Unknown identifier `Laurent`\"}]"
+    },
+    {
+      "i": 49,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"toLaurent.*support|support.*toLaurent\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 773,
+      "result_head": "[{\"type\": \"text\", \"text\": \"5 match(es) for 'toLaurent.*support|support.*toLaurent' (via ripgrep):\\n- Mathlib/Algebra/Polynomial/Laurent.lean:389\\n    /-- The support of a polynomial `f` is a finset in"
+    },
+    {
+      "i": 50,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Polynomial/Laurent.lean\", \"line\": 389, \"n\": 10}",
+      "ok": true,
+      "result_chars": 640,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Polynomial/Laurent.lean  (lines 389–398 of 674):\\n   389  /-- The support of a polynomial `f` is a finset in `ℕ`.  The lemma `toLaurent_support f`\\n   390  s"
+    },
+    {
+      "i": 51,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Nat.castEmbedding\"}",
+      "ok": true,
+      "result_chars": 1235,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 16 declarations mentioning Nat.castEmbedding.\\n- Nat.castEmbedding   [Mathlib.Algebra.Ring.CharZero]\\n    `Nat.cast` as an embedding into monoids of characteristic `0`"
+    },
+    {
+      "i": 52,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Polynomial/Laurent.lean\", \"line\": 385, \"n\": 15}",
+      "ok": true,
+      "result_chars": 823,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Polynomial/Laurent.lean  (lines 385–399 of 674):\\n   385  \\n   386  @[simp] lemma coeff_toLaurent (f : R[X]) :\\n   387      f.toLaurent.coeff = f.toFinsupp.c"
+    }
+  ]
+}

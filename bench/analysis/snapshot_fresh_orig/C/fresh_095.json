@@ -1,0 +1,214 @@
+{
+  "task_id": "fresh_095",
+  "arm": "C",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:26:11Z",
+  "wall_s": 89.8,
+  "output_lean": "theorem jordan_decomposition_locally_bounded_variation {α : Type*} [LinearOrder α] \n    [TopologicalSpace α] [OrderTopology α] {f : α → ℝ} {s : Set α} \n    (h : LocallyBoundedVariationOn f s) :\n    ∃ p q : α → ℝ, MonotoneOn p s ∧ MonotoneOn q s ∧ f = p - q ∧\n    (∀ x ∈ s, ∀ y ∈ s, (p y - p x) + (q y - q x) = variationOnFromTo f s x y) := by\n  exact h.exists_monotoneOn_sub_monotoneOn'",
+  "transcript_stats": {
+    "turns": 25,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 12,
+      "mcp__formal__decl_grep": 7,
+      "mcp__formal__decl_read": 5
+    },
+    "tokens_in": 126,
+    "tokens_out": 5692,
+    "cost_usd": 0.09952130000000001
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"BddVarOn\"}",
+      "ok": true,
+      "result_chars": 88,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'BddVarOn': unknown identifier 'BddVarOn'\"}]"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"MonotoneOn\"}",
+      "ok": true,
+      "result_chars": 823,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 299 declarations mentioning MonotoneOn.\\n- MonotoneOn   [Mathlib.Order.Monotone.Defs]\\n    A function `f` is monotone on `s` if, for all `a, b ∈ s`, `a ≤ b` implies `f"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"eVariationOn\"}",
+      "ok": true,
+      "result_chars": 1384,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 71 declarations mentioning eVariationOn.\\n- eVariationOn   [Mathlib.Topology.EMetricSpace.BoundedVariation]\\n    The (extended-real-valued) variation of a function `f`"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Jordan decomposition\"}",
+      "ok": true,
+      "result_chars": 98,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Jordan decomposition': Unknown identifier `Jordan`\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"locally bounded variation\"}",
+      "ok": true,
+      "result_chars": 104,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'locally bounded variation': Unknown identifier `locally`\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"bounded variation real function\"}",
+      "ok": true,
+      "result_chars": 110,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'bounded variation real function': Unknown identifier `bounded`\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"variationOn\"}",
+      "ok": true,
+      "result_chars": 94,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'variationOn': unknown identifier 'variationOn'\"}]"
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"?f = ?g - ?h\"}",
+      "ok": true,
+      "result_chars": 605,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 7771 declarations mentioning HSub.hSub and Eq.\\n- Nat.succ_sub_succ_eq_sub   [Init.Prelude]\\n- Nat.sub_eq   [Init.Data.Nat.Basic]\\n- Nat.pred_eq_sub_one   [Init.Data.N"
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Jordan\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2405,
+      "result_head": "[{\"type\": \"text\", \"text\": \"151 match(es) for 'Jordan' (via ripgrep):\\n- Mathlib/Algebra/Symmetrized.lean:8\\n    public import Mathlib.Algebra.Jordan.Basic\\n- Mathlib/Algebra/Symmetrized.lean:33\\n    *"
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"variation\", \"limit\": 30}",
+      "ok": true,
+      "result_chars": 4467,
+      "result_head": "[{\"type\": \"text\", \"text\": \"368 match(es) for 'variation' (via ripgrep):\\n- Mathlib/Computability/StateTransition.lean:60\\n    /-- A variation on `Reaches`. `Reaches₀ f a b` holds if whenever `Reaches₁"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"BoundedVariationOn\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2976,
+      "result_head": "[{\"type\": \"text\", \"text\": \"92 match(es) for 'BoundedVariationOn' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean:20\\n    * `BoundedVariationOn.intervalIntegrable"
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"locallyBoundedVariationOn\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2778,
+      "result_head": "[{\"type\": \"text\", \"text\": \"23 match(es) for 'locallyBoundedVariationOn' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean:146\\n    obtain ⟨p, q, hp, hq, rfl⟩ := hf"
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"exists_monotoneOn_sub_monotoneOn\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 951,
+      "result_head": "[{\"type\": \"text\", \"text\": \"6 match(es) for 'exists_monotoneOn_sub_monotoneOn' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean:146\\n    obtain ⟨p, q, hp, hq, rfl⟩"
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"LocallyBoundedVariationOn\"}",
+      "ok": true,
+      "result_chars": 1737,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 42 declarations mentioning LocallyBoundedVariationOn.\\n- LocallyBoundedVariationOn   [Mathlib.Topology.EMetricSpace.BoundedVariation]\\n    A function has locally bound"
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Topology/EMetricSpace/VariationOnFromTo.lean\", \"line\": 316, \"n\": 10}",
+      "ok": true,
+      "result_chars": 457,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/EMetricSpace/VariationOnFromTo.lean  (lines 316–320 of 320):\\n   316  theorem LocallyBoundedVariationOn.exists_monotoneOn_sub_monotoneOn {f : α → ℝ} {s : Se"
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Topology/EMetricSpace/VariationOnFromTo.lean\", \"line\": 290, \"n\": 20}",
+      "ok": true,
+      "result_chars": 1147,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/EMetricSpace/VariationOnFromTo.lean  (lines 290–309 of 320):\\n   290  theorem LocallyBoundedVariationOn.exists_monotoneOn_sub_monotoneOn' {f : α → ℝ} {s : S"
+    },
+    {
+      "i": 16,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def LocallyBoundedVariationOn\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 212,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'def LocallyBoundedVariationOn' (via ripgrep):\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:69\\n    def LocallyBoundedVariationOn (f : α → E) (s : "
+    },
+    {
+      "i": 17,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"variationOnFromTo ?a ?b ?c ?d\"}",
+      "ok": true,
+      "result_chars": 1094,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 33 declarations mentioning variationOnFromTo.\\n- variationOnFromTo.self   [Mathlib.Topology.EMetricSpace.VariationOnFromTo]\\n- variationOnFromTo.eq_neg_swap   [Mathlib"
+    },
+    {
+      "i": 18,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Topology/EMetricSpace/BoundedVariation.lean\", \"line\": 69, \"n\": 15}",
+      "ok": true,
+      "result_chars": 805,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/EMetricSpace/BoundedVariation.lean  (lines 69–83 of 1178):\\n    69  def LocallyBoundedVariationOn (f : α → E) (s : Set α) :=\\n    70    ∀ a b, a ∈ s → b ∈ s"
+    },
+    {
+      "i": 19,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def variationOnFromTo\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 225,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'def variationOnFromTo' (via ripgrep):\\n- Mathlib/Topology/EMetricSpace/VariationOnFromTo.lean:30\\n    noncomputable def variationOnFromTo (f : α → E) (s : S"
+    },
+    {
+      "i": 20,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Topology/EMetricSpace/VariationOnFromTo.lean\", \"line\": 30, \"n\": 15}",
+      "ok": true,
+      "result_chars": 866,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/EMetricSpace/VariationOnFromTo.lean  (lines 30–44 of 320):\\n    30  noncomputable def variationOnFromTo (f : α → E) (s : Set α) (a b : α) : ℝ :=\\n    31    "
+    },
+    {
+      "i": 21,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"exists_monotoneOn_sub_monotoneOn\"}",
+      "ok": true,
+      "result_chars": 136,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'exists_monotoneOn_sub_monotoneOn': unknown identifier 'exists_monotoneOn_sub_monotoneOn'\"}]"
+    },
+    {
+      "i": 22,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"MonotoneOn ?p ∧ MonotoneOn ?q ∧ ?f = ?p - ?q\"}",
+      "ok": true,
+      "result_chars": 317,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 275 declarations mentioning HSub.hSub, And, and Eq.\\n- LocallyBoundedVariationOn.exists_monotoneOn_sub_monotoneOn   [Mathlib.Topology.EMetricSpace.VariationOnFromTo]\\n"
+    },
+    {
+      "i": 23,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Topology/EMetricSpace/VariationOnFromTo.lean\", \"line\": 1, \"n\": 50}",
+      "ok": true,
+      "result_chars": 2457,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/EMetricSpace/VariationOnFromTo.lean  (lines 1–50 of 320):\\n     1  /-\\n     2  Copyright (c) 2022 Sébastien Gouëzel. All rights reserved.\\n     3  Released "
+    }
+  ]
+}

@@ -1,0 +1,297 @@
+{
+  "task_id": "fresh_007",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:30:58Z",
+  "wall_s": 92.0,
+  "output_lean": "theorem strictMono_smul_of_pos_left {α β R : Type*} [Preorder α] [Preorder β] [Zero R]\n    [PosSMulStrictMono R β] {a : R} (ha : 0 < a) {f : α → β} \n    (hf : StrictMono f) : StrictMono (fun x => a • f x) := sorry",
+  "transcript_stats": {
+    "turns": 35,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_search": 17,
+      "mcp__wikibrain__brain_bridge": 1,
+      "mcp__wikibrain__brain_cell": 3,
+      "mcp__wikibrain__brain_snippets": 2,
+      "mcp__wikibrain__brain_neighborhood": 1,
+      "mcp__wikibrain__decl_exists": 10
+    },
+    "tokens_in": 208,
+    "tokens_out": 5842,
+    "cost_usd": 0.14019045
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"strictly monotone\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 174,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"strictly monotone\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"strict monotonicity scalar multiplication\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 198,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"strict monotonicity scalar multiplication\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"strictly monotone function\", \"confidence_floor\": \"0.5\"}",
+      "ok": true,
+      "result_chars": 3552,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"strictly monotone function\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label matc"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:decl:Mathlib:Monotone\"}",
+      "ok": true,
+      "result_chars": 1585,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:Monotone\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Monotone\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Monotone\\\",\\\"f\\\":128,\\\"cel"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"StrictMono\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 935,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"StrictMono\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:StrictMono\\\",\\\"label\\\":\\\"StrictMono\\\",\\\"aka\\\":[\\\"Dynamic Tangled Derivative Logic of Metric Spaces\\\"]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"scalar multiplication order preserving\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 195,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"scalar multiplication order preserving\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:decl:Mathlib:StrictMono\"}",
+      "ok": true,
+      "result_chars": 1600,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:StrictMono\\\",\\\"id\\\":\\\"cell:decl:Mathlib:StrictMono\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"StrictMono\\\",\\\"f\\\":128"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:decl:Mathlib:PosSMulStrictMono\"}",
+      "ok": true,
+      "result_chars": 1269,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:PosSMulStrictMono\\\",\\\"id\\\":\\\"cell:decl:Mathlib:PosSMulStrictMono\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"PosSMulS"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__brain_snippets",
+      "input": "{\"id\": \"cell:decl:Mathlib:StrictMono\"}",
+      "ok": true,
+      "result_chars": 680,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:StrictMono\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:StrictMono\\\",\\\"label\\\":\\\"StrictMono\\\",\\\"cod"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__brain_snippets",
+      "input": "{\"id\": \"cell:decl:Mathlib:PosSMulStrictMono\"}",
+      "ok": true,
+      "result_chars": 526,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:PosSMulStrictMono\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:PosSMulStrictMono\\\",\\\"label\\\":\\\"PosS"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"cell:decl:Mathlib:PosSMulStrictMono\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 684,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:PosSMulStrictMono\\\",\\\"kind\\\":\\\"cell\\\",\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q18848\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":"
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"smul strictmono positive\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 181,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"smul strictmono positive\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"StrictMono.smul\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 172,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"StrictMono.smul\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"nsmul strictmono\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 173,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"nsmul strictmono\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"mul_strictMono\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 171,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"mul_strictMono\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"smul compose function\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 178,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"smul compose function\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"PosSMulStrictMono smul_lt_smul\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 187,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"PosSMulStrictMono smul_lt_smul\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"ordered module scalar multiplication\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 193,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"ordered module scalar multiplication\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 18,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"OrderedModule strictmono\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 181,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"OrderedModule strictmono\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 19,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"smul_lt_smul_of_pos_left StrictMono\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 192,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"smul_lt_smul_of_pos_left StrictMono\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 20,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"StrictMono\", \"PosSMulStrictMono\", \"StrictMono.comp\", \"StrictMono.const_smul\"]}",
+      "ok": true,
+      "result_chars": 1477,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"StrictMono\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Monotone.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order."
+    },
+    {
+      "i": 21,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"StrictMono.smul\", \"StrictMono.nsmul\", \"pos_smul_strictMono\", \"smul_strictMono_of_pos\"]}",
+      "ok": true,
+      "result_chars": 1182,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"StrictMono.smul\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis "
+    },
+    {
+      "i": 22,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"strictMono_smul\", \"StrictMono.of_smul\", \"Nat.cast_strictMono\", \"Int.cast_strictMono\"]}",
+      "ok": true,
+      "result_chars": 1246,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"strictMono_smul\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis "
+    },
+    {
+      "i": 23,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Monotone.smul\", \"OrderedSMul.smul_strictMono\", \"OrderedModule.smul_strictMono\", \"smul_mono_of_pos_left\"]}",
+      "ok": true,
+      "result_chars": 1259,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Monotone.smul\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Order.AddTorsor\\\",\\\"import_line\\\":\\\"import Mathlib"
+    },
+    {
+      "i": 24,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"StrictMono.mul_left\", \"StrictMono.mul_right\", \"mul_strictMono_of_pos\", \"mul_strictMono\"]}",
+      "ok": true,
+      "result_chars": 1184,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"StrictMono.mul_left\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Ba"
+    },
+    {
+      "i": 25,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"const_smul monotone\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 176,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"const_smul monotone\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 26,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"smul_mono left positive\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 180,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"smul_mono left positive\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 27,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"smul_left_mono\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 171,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"smul_left_mono\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 28,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"smulMonotone\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 169,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"smulMonotone\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 29,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"mul_lt_mul_left\", \"mul_lt_mul_of_pos_left\", \"smul_lt_smul_of_pos_left\", \"smul_le_smul_of_nonneg_left\"]}",
+      "ok": true,
+      "result_chars": 1548,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"mul_lt_mul_left\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Order.Monoid.Unbundled.Basic\\\",\\\"import_line\\\":\\"
+    },
+    {
+      "i": 30,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Preorder\", \"StrictMono\", \"PosSMulStrictMono\", \"smul_lt_smul_of_pos_left\", \"OrderedSemiring\"]}",
+      "ok": true,
+      "result_chars": 1651,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Preorder\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Defs.PartialOrder\\\",\\\"import_line\\\":\\\"import Mathlib.Orde"
+    },
+    {
+      "i": 31,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Semiring\", \"OrderedRing\", \"PosSMulReflectLT\", \"LinearOrderedRing\", \"Module\"]}",
+      "ok": true,
+      "result_chars": 1536,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Semiring\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Ring.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Ri"
+    },
+    {
+      "i": 32,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"SMul\", \"HSMul\", \"OfPos\", \"Zero\"]}",
+      "ok": true,
+      "result_chars": 1108,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"SMul\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\\":\\\"https"
+    },
+    {
+      "i": 33,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Preorder\", \"Zero\", \"PosSMulStrictMono\", \"StrictMono\"]}",
+      "ok": true,
+      "result_chars": 1309,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Preorder\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Defs.PartialOrder\\\",\\\"import_line\\\":\\\"import Mathlib.Orde"
+    }
+  ]
+}

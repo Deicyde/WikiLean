@@ -1,0 +1,462 @@
+{
+  "task_id": "fresh_025",
+  "arm": "C",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:03:45Z",
+  "wall_s": 167.9,
+  "output_lean": "theorem integralTest (f : ℝ → ℝ) \n    (hnonneg : ∀ x ≥ 0, 0 ≤ f x)\n    (hantitone : AntitoneOn f (Set.Ici 0))\n    (hintegrable : IntegrableOn f (Set.Ici 0)) :\n    Summable (fun n : ℕ => f n) :=\n  sorry",
+  "transcript_stats": {
+    "turns": 56,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 23,
+      "mcp__formal__decl_grep": 23,
+      "mcp__formal__decl_read": 9
+    },
+    "tokens_in": 324,
+    "tokens_out": 9254,
+    "cost_usd": 0.2277607
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Antitone\"}",
+      "ok": true,
+      "result_chars": 798,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 541 declarations mentioning Antitone.\\n- Antitone   [Mathlib.Order.Monotone.Defs]\\n    A function `f` is antitone if `a ≤ b` implies `f b ≤ f a`.\\n- antitone_const   ["
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Summable\"}",
+      "ok": true,
+      "result_chars": 1165,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 670 declarations mentioning Summable.\\n- Summable   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n    `Summable f` means that `f` has some (infinite) sum with respect t"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Integrable\"}",
+      "ok": true,
+      "result_chars": 92,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Integrable': unknown identifier 'Integrable'\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"integral convergent\"}",
+      "ok": true,
+      "result_chars": 99,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'integral convergent': Unknown identifier `integral`\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"intervalIntegral\"}",
+      "ok": true,
+      "result_chars": 1503,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 435 declarations mentioning intervalIntegral.\\n- intervalIntegral   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n    The interval integral `∫ x in a..b, f "
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def integral\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1210,
+      "result_head": "[{\"type\": \"text\", \"text\": \"23 match(es) for 'def integral' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/Bochner/L1.lean:194\\n    def integral {_ : MeasurableSpace α} (μ : Measure α) (f : α →ₛ F) :"
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"?a → ℝ\"}",
+      "ok": true,
+      "result_chars": 1373,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 26993 declarations mentioning Real.\\n- IsPowMul   [Mathlib.Data.Real.Basic]\\n    A function `f : R → ℝ` is power-multiplicative if for all `r ∈ R` and all positive `n "
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"integrable\"}",
+      "ok": true,
+      "result_chars": 92,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'integrable': unknown identifier 'integrable'\"}]"
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*integral.*test\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 94,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*integral.*test' under Mathlib/.\"}]"
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Integrable f\"}",
+      "ok": true,
+      "result_chars": 94,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Integrable f': Unknown identifier `Integrable`\"}]"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"class Integrable\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 87,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'class Integrable' under Mathlib/.\"}]"
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def integrable\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 305,
+      "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'def integrable' (via ripgrep):\\n- Mathlib/Analysis/Distribution/TemperateGrowth.lean:430\\n    def integrablePower (μ : Measure E) : ℕ :=\\n- Mathlib/Probabil"
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"intervalIntegrable\"}",
+      "ok": true,
+      "result_chars": 108,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'intervalIntegrable': unknown identifier 'intervalIntegrable'\"}]"
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"HasFiniteIntegral\"}",
+      "ok": true,
+      "result_chars": 106,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'HasFiniteIntegral': unknown identifier 'HasFiniteIntegral'\"}]"
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*summable.*integral\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 232,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'theorem.*summable.*integral' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/Bochner/Set.lean:911\\n    theorem integrableOn_iUnion_of_summable_integral_nor"
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"ℒ¹\"}",
+      "ok": true,
+      "result_chars": 87,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'ℒ¹': <input>:1:1: expected end of input\"}]"
+    },
+    {
+      "i": 16,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"snorm\"}",
+      "ok": true,
+      "result_chars": 82,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'snorm': unknown identifier 'snorm'\"}]"
+    },
+    {
+      "i": 17,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*antitone.*summable\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 98,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*antitone.*summable' under Mathlib/.\"}]"
+    },
+    {
+      "i": 18,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Monotone decreasing series\"}",
+      "ok": true,
+      "result_chars": 108,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Monotone decreasing series': Unknown identifier `decreasing`\"}]"
+    },
+    {
+      "i": 19,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*integral.*summable\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 98,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*integral.*summable' under Mathlib/.\"}]"
+    },
+    {
+      "i": 20,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Summable sum\"}",
+      "ok": true,
+      "result_chars": 87,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Summable sum': Unknown identifier `sum`\"}]"
+    },
+    {
+      "i": 21,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"NNReal.summable\"}",
+      "ok": true,
+      "result_chars": 102,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'NNReal.summable': unknown identifier 'NNReal.summable'\"}]"
+    },
+    {
+      "i": 22,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*Antitone\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 1974,
+      "result_head": "[{\"type\": \"text\", \"text\": \"333 match(es) for 'theorem.*Antitone' (via ripgrep):\\n- Mathlib/Algebra/Order/Ring/Unbundled/Basic.lean:168\\n    theorem Antitone.const_mul_of_nonpos [ExistsAddOfLE R] [PosM"
+    },
+    {
+      "i": 23,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def.*Integral\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2964,
+      "result_head": "[{\"type\": \"text\", \"text\": \"106 match(es) for 'def.*Integral' (via ripgrep):\\n- Mathlib/AlgebraicGeometry/Birational/RationalMap.lean:456\\n    def RationalMap.ofFunctionField [IsIntegral X] [LocallyOfF"
+    },
+    {
+      "i": 24,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"(ℕ → ℝ) → Prop\"}",
+      "ok": true,
+      "result_chars": 474,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 6938 declarations mentioning Real and Nat.\\n- Subadditive   [Mathlib.Analysis.Subadditive]\\n    A real-valued sequence is subadditive if it satisfies the inequality `u"
+    },
+    {
+      "i": 25,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"HasFiniteIntegral f\"}",
+      "ok": true,
+      "result_chars": 108,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'HasFiniteIntegral f': Unknown identifier `HasFiniteIntegral`\"}]"
+    },
+    {
+      "i": 26,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"class HasFiniteIntegral\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 94,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'class HasFiniteIntegral' under Mathlib/.\"}]"
+    },
+    {
+      "i": 27,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/Integral/Bochner/Basic.lean\", \"line\": 156, \"n\": 30}",
+      "ok": true,
+      "result_chars": 1475,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Integral/Bochner/Basic.lean  (lines 156–185 of 1379):\\n   156  irreducible_def integral {_ : MeasurableSpace α} (μ : Measure α) (f : α → G) : G :=\\n   "
+    },
+    {
+      "i": 28,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def Integrable\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 736,
+      "result_head": "[{\"type\": \"text\", \"text\": \"5 match(es) for 'def Integrable' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/IntegrableOn.lean:92\\n    def IntegrableOn (f : α → ε) (s : Set α) (μ : Measure α := by vol"
+    },
+    {
+      "i": 29,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/Function/L1Space/Integrable.lean\", \"line\": 58, \"n\": 15}",
+      "ok": true,
+      "result_chars": 844,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Function/L1Space/Integrable.lean  (lines 58–72 of 1258):\\n    58  def Integrable {α} {_ : MeasurableSpace α} (f : α → ε)\\n    59      (μ : Measure α :="
+    },
+    {
+      "i": 30,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def HasFiniteIntegral\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 215,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'def HasFiniteIntegral' (via ripgrep):\\n- Mathlib/MeasureTheory/Function/L1Space/HasFiniteIntegral.lean:80\\n    def HasFiniteIntegral {_ : MeasurableSpace α}"
+    },
+    {
+      "i": 31,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/Function/L1Space/HasFiniteIntegral.lean\", \"line\": 80, \"n\": 10}",
+      "ok": true,
+      "result_chars": 614,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Function/L1Space/HasFiniteIntegral.lean  (lines 80–89 of 529):\\n    80  def HasFiniteIntegral {_ : MeasurableSpace α} (f : α → ε)\\n    81      (μ : Mea"
+    },
+    {
+      "i": 32,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"summable_of\"}",
+      "ok": true,
+      "result_chars": 94,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'summable_of': unknown identifier 'summable_of'\"}]"
+    },
+    {
+      "i": 33,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*integral_test\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 93,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*integral_test' under Mathlib/.\"}]"
+    },
+    {
+      "i": 34,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"IntegrableOn\"}",
+      "ok": true,
+      "result_chars": 96,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IntegrableOn': unknown identifier 'IntegrableOn'\"}]"
+    },
+    {
+      "i": 35,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/Integral/IntegrableOn.lean\", \"line\": 92, \"n\": 15}",
+      "ok": true,
+      "result_chars": 716,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Integral/IntegrableOn.lean  (lines 92–106 of 942):\\n    92  def IntegrableOn (f : α → ε) (s : Set α) (μ : Measure α := by volume_tac) : Prop :=\\n    93"
+    },
+    {
+      "i": 36,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*condensation\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 92,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*condensation' under Mathlib/.\"}]"
+    },
+    {
+      "i": 37,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"summable comparison\"}",
+      "ok": true,
+      "result_chars": 99,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'summable comparison': Unknown identifier `summable`\"}]"
+    },
+    {
+      "i": 38,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"NNReal → Prop\"}",
+      "ok": true,
+      "result_chars": 2408,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 4171 declarations mentioning NNReal.\\n- NNReal.forall   [Mathlib.Data.NNReal.Defs]\\n- NNReal.exists   [Mathlib.Data.NNReal.Defs]\\n- LipschitzWith   [Mathlib.Topology.E"
+    },
+    {
+      "i": 39,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*NNReal.*summable\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 232,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'theorem.*NNReal.*summable' (via ripgrep):\\n- Mathlib/Analysis/SpecificLimits/Basic.lean:390\\n    theorem NNReal.summable_geometric {r : ℝ≥0} (hr : r < 1) : "
+    },
+    {
+      "i": 40,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def Summable\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 83,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'def Summable' under Mathlib/.\"}]"
+    },
+    {
+      "i": 41,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Summable.*:=\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 550,
+      "result_head": "[{\"type\": \"text\", \"text\": \"313 match(es) for 'Summable.*:=' (via ripgrep):\\n- Mathlib/Algebra/Module/ZLattice/Summable.lean:227\\n    Summable fun z : L ↦ ‖z‖ ^ r :=\\n- Mathlib/Algebra/Module/ZLattice/"
+    },
+    {
+      "i": 42,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"class Summable|structure Summable\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 235,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'class Summable|structure Summable' (via ripgrep):\\n- Mathlib/RingTheory/HahnSeries/Summable.lean:67\\n    structure SummableFamily (Γ R) [PartialOrder Γ] [Ad"
+    },
+    {
+      "i": 43,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Summable.*Prop\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 303,
+      "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'Summable.*Prop' (via ripgrep):\\n- Mathlib/NumberTheory/LSeries/Basic.lean:173\\n    def LSeriesSummable (f : ℕ → ℂ) (s : ℂ) : Prop :=\\n- Mathlib/Analysis/Spe"
+    },
+    {
+      "i": 44,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Topology/Algebra/InfiniteSum/Defs.lean\", \"line\": 1, \"n\": 100}",
+      "ok": true,
+      "result_chars": 5855,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/Algebra/InfiniteSum/Defs.lean  (lines 1–100 of 349):\\n     1  /-\\n     2  Copyright (c) 2017 Johannes Hölzl. All rights reserved.\\n     3  Released under Ap"
+    },
+    {
+      "i": 45,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Topology/Algebra/InfiniteSum/Defs.lean\", \"line\": 130, \"n\": 30}",
+      "ok": true,
+      "result_chars": 1765,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/Algebra/InfiniteSum/Defs.lean  (lines 130–159 of 349):\\n   130  to use the product over the multiplicative support. Otherwise, we choose arbitrarily an `a`\\"
+    },
+    {
+      "i": 46,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Topology/Algebra/InfiniteSum/Defs.lean\", \"line\": 160, \"n\": 40}",
+      "ok": true,
+      "result_chars": 2135,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/Algebra/InfiniteSum/Defs.lean  (lines 160–199 of 349):\\n   160  notation3 \\\"∑' \\\"(...)\\\", \\\"r:67:(scoped f => tsum f (unconditional _)) => r\\n   161  \\n   1"
+    },
+    {
+      "i": 47,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Topology/Algebra/InfiniteSum/Defs.lean\", \"line\": 220, \"n\": 40}",
+      "ok": true,
+      "result_chars": 2287,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/Algebra/InfiniteSum/Defs.lean  (lines 220–259 of 349):\\n   220  @[to_additive]\\n   221  theorem Function.Injective.hasProd_comap_iff {g : γ → β} (hg : Injec"
+    },
+    {
+      "i": 48,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"^def Summable|^structure Summable\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 235,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '^def Summable|^structure Summable' (via ripgrep):\\n- Mathlib/RingTheory/HahnSeries/Summable.lean:67\\n    structure SummableFamily (Γ R) [PartialOrder Γ] [Ad"
+    },
+    {
+      "i": 49,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Multipliable\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1441,
+      "result_head": "[{\"type\": \"text\", \"text\": \"131 match(es) for 'Multipliable' (via ripgrep):\\n- Mathlib/Topology/ContinuousMap/Algebra.lean:372\\n    {L : SummationFilter γ} (hf : Multipliable f L) (x : α) : Multipliabl"
+    },
+    {
+      "i": 50,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Topology/Algebra/InfiniteSum/Defs.lean\", \"line\": 260, \"n\": 50}",
+      "ok": true,
+      "result_chars": 3016,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/Algebra/InfiniteSum/Defs.lean  (lines 260–309 of 349):\\n   260  @[to_additive]\\n   261  theorem hasProd_fintype [Fintype β] (f : β → α) (L := unconditional "
+    },
+    {
+      "i": 51,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"@\\\\[to_additive.*\\\\].*\\\\n.*def Multipliable|@\\\\[to_additive.*\\\\].*\\\\n.*structure Multipliable\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 176,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '@\\\\\\\\[to_additive.*\\\\\\\\].*\\\\\\\\n.*def Multipliable|@\\\\\\\\[to_additive.*\\\\\\\\].*\\\\\\\\n.*structure Multipliable' under Mathlib/.\"}]"
+    },
+    {
+      "i": 52,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Multipliable f\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 588,
+      "result_head": "[{\"type\": \"text\", \"text\": \"58 match(es) for 'Multipliable f' (via ripgrep):\\n- Mathlib/Analysis/SpecialFunctions/Log/Summable.lean:33\\n    Multipliable f := by\\n- Mathlib/Analysis/SpecialFunctions/Log"
+    },
+    {
+      "i": 53,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Set.Ici\"}",
+      "ok": true,
+      "result_chars": 847,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 831 declarations mentioning Set.Ici.\\n- Set.Ici   [Mathlib.Order.Interval.Set.Defs]\\n    `Ici a` is the left-closed right-infinite interval $[a, ∞)$.\\n- Set.Ici_def   "
+    },
+    {
+      "i": 54,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"AntitoneOn\"}",
+      "ok": true,
+      "result_chars": 884,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 261 declarations mentioning AntitoneOn.\\n- AntitoneOn   [Mathlib.Order.Monotone.Defs]\\n    A function `f` is antitone on `s` if, for all `a, b ∈ s`, `a ≤ b` implies `f"
+    }
+  ]
+}

@@ -1,0 +1,358 @@
+{
+  "task_id": "fresh_072",
+  "arm": "C",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:18:20Z",
+  "wall_s": 92.5,
+  "output_lean": "theorem finite_of_wellFounded_lt_and_gt {α : Type*} [LinearOrder α] [WellFoundedLT α] [WellFoundedGT α] : Finite α := sorry",
+  "transcript_stats": {
+    "turns": 43,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 21,
+      "mcp__formal__decl_grep": 16,
+      "mcp__formal__decl_read": 5
+    },
+    "tokens_in": 202,
+    "tokens_out": 5120,
+    "cost_usd": 0.13746724999999999
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"WellFounded\"}",
+      "ok": true,
+      "result_chars": 1095,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 171 declarations mentioning WellFounded.\\n- WellFounded   [Init.WF]\\n    A relation `r` is `WellFounded` if all elements of `α` are accessible within `r`. If a relatio"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"LinearOrder\"}",
+      "ok": true,
+      "result_chars": 1244,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 9475 declarations mentioning LinearOrder.\\n- LinearOrder   [Mathlib.Order.Defs.LinearOrder]\\n    A linear order is reflexive, transitive, antisymmetric and total relat"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Finite\"}",
+      "ok": true,
+      "result_chars": 996,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 3630 declarations mentioning Finite.\\n- Finite   [Mathlib.Data.Finite.Defs]\\n    A type is `Finite` if it is in bijective correspondence to some `Fin n`.  This is simi"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"(· ≤ ·) → Finite\"}",
+      "ok": true,
+      "result_chars": 132,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(· ≤ ·) → Finite': type expected, got\\n  (fun x1 x2 => x1 ≤ x2 : ?m.5 → ?m.5 → Prop)\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"WellFounded (· ≤ ·)\"}",
+      "ok": true,
+      "result_chars": 86,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for 'WellFounded (· ≤ ·)'.\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"finite_of_wellFounded\"}",
+      "ok": true,
+      "result_chars": 114,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'finite_of_wellFounded': unknown identifier 'finite_of_wellFounded'\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"WellFounded lt Finite\"}",
+      "ok": true,
+      "result_chars": 95,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'WellFounded lt Finite': Unknown identifier `lt`\"}]"
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"wellFounded_iff_finite\"}",
+      "ok": true,
+      "result_chars": 116,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'wellFounded_iff_finite': unknown identifier 'wellFounded_iff_finite'\"}]"
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(theorem|lemma).*wellFounded.*finite\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 606,
+      "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for '(theorem|lemma).*wellFounded.*finite' (via ripgrep):\\n- Mathlib/Data/DFinsupp/WellFounded.lean:209\\n    theorem DFinsupp.Lex.wellFounded_of_finite [IsStrict"
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(theorem|lemma).*finite.*wellFounded\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 107,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma).*finite.*wellFounded' under Mathlib/.\"}]"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Finite WellFounded\"}",
+      "ok": true,
+      "result_chars": 835,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 3630 declarations mentioning Finite.\\n- Bool.instFinite   [Mathlib.Data.Finite.Defs]\\n- Prop.instFinite   [Mathlib.Data.Finite.Defs]\\n- finite_or_infinite   [Mathlib.D"
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(theorem|lemma).*wellFounded.*order\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 1692,
+      "result_head": "[{\"type\": \"text\", \"text\": \"13 match(es) for '(theorem|lemma).*wellFounded.*order' (via ripgrep):\\n- Mathlib/Order/ModularLattice.lean:204\\n    theorem wellFounded_lt_exact_sequence {β γ : Type*} [Preo"
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Order.Lex\"}",
+      "ok": true,
+      "result_chars": 90,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Order.Lex': unknown identifier 'Order.Lex'\"}]"
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Order/WellFounded.lean\", \"line\": 1, \"n\": 50}",
+      "ok": true,
+      "result_chars": 2560,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/WellFounded.lean  (lines 1–50 of 386):\\n     1  /-\\n     2  Copyright (c) 2020 Jeremy Avigad. All rights reserved.\\n     3  Released under Apache 2.0 license a"
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(theorem|lemma).*WellFoundedLT.*WellFoundedGT.*Finite\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 124,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma).*WellFoundedLT.*WellFoundedGT.*Finite' under Mathlib/.\"}]"
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(theorem|lemma).*wellFoundedLT.*wellFoundedGT\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 358,
+      "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for '(theorem|lemma).*wellFoundedLT.*wellFoundedGT' (via ripgrep):\\n- Mathlib/Order/OrderIsoNat.lean:261\\n    theorem exists_covBy_seq_of_wellFoundedLT_wellFound"
+    },
+    {
+      "i": 16,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Order/OrderIsoNat.lean\", \"line\": 260, \"n\": 30}",
+      "ok": true,
+      "result_chars": 1936,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/OrderIsoNat.lean  (lines 260–287 of 287):\\n   260  \\n   261  theorem exists_covBy_seq_of_wellFoundedLT_wellFoundedGT (α) [Preorder α]\\n   262      [Nonempty α]"
+    },
+    {
+      "i": 17,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"finite_coe_iff_Finite\"}",
+      "ok": true,
+      "result_chars": 114,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'finite_coe_iff_Finite': unknown identifier 'finite_coe_iff_Finite'\"}]"
+    },
+    {
+      "i": 18,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(theorem|lemma).*finite.*of.*wellFoundedLT\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 113,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma).*finite.*of.*wellFoundedLT' under Mathlib/.\"}]"
+    },
+    {
+      "i": 19,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"wellFoundedLT wellFoundedGT\"}",
+      "ok": true,
+      "result_chars": 112,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'wellFoundedLT wellFoundedGT': Unknown identifier `wellFoundedLT`\"}]"
+    },
+    {
+      "i": 20,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"class WellFoundedLT\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 90,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'class WellFoundedLT' under Mathlib/.\"}]"
+    },
+    {
+      "i": 21,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"class WellFoundedGT\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 90,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'class WellFoundedGT' under Mathlib/.\"}]"
+    },
+    {
+      "i": 22,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"WellFoundedLT\"}",
+      "ok": true,
+      "result_chars": 1100,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 634 declarations mentioning WellFoundedLT.\\n- instWellFoundedLTNat   [Mathlib.Order.RelClasses]\\n- WellFoundedLT   [Mathlib.Order.RelClasses]\\n    A class for a well-f"
+    },
+    {
+      "i": 23,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"WellFoundedGT\"}",
+      "ok": true,
+      "result_chars": 1099,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 155 declarations mentioning WellFoundedGT.\\n- WellFoundedGT   [Mathlib.Order.RelClasses]\\n    A class for a well-founded relation `>`.\\n- WellFoundedGT.toWellFoundedRe"
+    },
+    {
+      "i": 24,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Order/RelClasses.lean\", \"line\": 1, \"n\": 100}",
+      "ok": true,
+      "result_chars": 4583,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/RelClasses.lean  (lines 1–100 of 659):\\n     1  /-\\n     2  Copyright (c) 2020 Jeremy Avigad. All rights reserved.\\n     3  Released under Apache 2.0 license a"
+    },
+    {
+      "i": 25,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"class WellFounded\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 88,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'class WellFounded' under Mathlib/.\"}]"
+    },
+    {
+      "i": 26,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Order/RelClasses.lean\", \"line\": 100, \"n\": 100}",
+      "ok": true,
+      "result_chars": 5430,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/RelClasses.lean  (lines 100–199 of 659):\\n   100  /-- Construct a linear order from an `IsStrictTotalOrder` relation.\\n   101  \\n   102  See note [reducible no"
+    },
+    {
+      "i": 27,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Order/RelClasses.lean\", \"line\": 200, \"n\": 100}",
+      "ok": true,
+      "result_chars": 4521,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/RelClasses.lean  (lines 200–299 of 659):\\n   200  theorem WellFounded.psigma_skipLeft (α : Type u) {β : Type v} {s : β → β → Prop}\\n   201      (hb : WellFound"
+    },
+    {
+      "i": 28,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(theorem|lemma).*wellFoundedLT.*wellFoundedGT.*finite\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 124,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma).*wellFoundedLT.*wellFoundedGT.*finite' under Mathlib/.\"}]"
+    },
+    {
+      "i": 29,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"wellFoundedLT wellFoundedGT Finite LinearOrder\"}",
+      "ok": true,
+      "result_chars": 131,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'wellFoundedLT wellFoundedGT Finite LinearOrder': Unknown identifier `wellFoundedLT`\"}]"
+    },
+    {
+      "i": 30,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(theorem|lemma).*Finite.*LinearOrder\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1375,
+      "result_head": "[{\"type\": \"text\", \"text\": \"9 match(es) for '(theorem|lemma).*Finite.*LinearOrder' (via ripgrep):\\n- Mathlib/Algebra/FiniteSupport/Basic.lean:103\\n    lemma HasFiniteMulSupport.max [LinearOrder M] {f g"
+    },
+    {
+      "i": 31,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Finite α LinearOrder\"}",
+      "ok": true,
+      "result_chars": 93,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Finite α LinearOrder': Unknown identifier `α`\"}]"
+    },
+    {
+      "i": 32,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(theorem|lemma).*wellFounded.*finite\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 606,
+      "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for '(theorem|lemma).*wellFounded.*finite' (via ripgrep):\\n- Mathlib/Data/Finsupp/WellFounded.lean:67\\n    theorem Lex.wellFounded_of_finite [IsStrictTotalOrder "
+    },
+    {
+      "i": 33,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(theorem|lemma).*LinearOrder.*wellFounded\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 946,
+      "result_head": "[{\"type\": \"text\", \"text\": \"6 match(es) for '(theorem|lemma).*LinearOrder.*wellFounded' (via ripgrep):\\n- Mathlib/GroupTheory/ArchimedeanDensely.lean:335\\n    lemma LinearOrderedAddCommGroup.wellFounde"
+    },
+    {
+      "i": 34,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"antichains finite\"}",
+      "ok": true,
+      "result_chars": 99,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'antichains finite': Unknown identifier `antichains`\"}]"
+    },
+    {
+      "i": 35,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Fintype LinearOrder\"}",
+      "ok": true,
+      "result_chars": 245,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Fintype LinearOrder': Application type mismatch: The argument\\n  LinearOrder\\nhas type\\n  Type ?u.1 → Type ?u.1\\nbut is expected to have type\\n  Type ?u.1\\"
+    },
+    {
+      "i": 36,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"infinite descending chain\"}",
+      "ok": true,
+      "result_chars": 105,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'infinite descending chain': Unknown identifier `infinite`\"}]"
+    },
+    {
+      "i": 37,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(theorem|lemma).*Infinite.*order\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 236,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '(theorem|lemma).*Infinite.*order' (via ripgrep):\\n- Mathlib/GroupTheory/SpecificGroups/Cyclic/Basic.lean:228\\n    theorem Infinite.orderOf_eq_zero_of_forall"
+    },
+    {
+      "i": 38,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(theorem|lemma).*IsWellOrder.*finite\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 107,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma).*IsWellOrder.*finite' under Mathlib/.\"}]"
+    },
+    {
+      "i": 39,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"IsWellOrder\"}",
+      "ok": true,
+      "result_chars": 973,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 186 declarations mentioning IsWellOrder.\\n- IsWellOrder   [Mathlib.Order.RelClasses]\\n    A well order is a well-founded linear order.\\n- instIsWellOrderEmptyRelationO"
+    },
+    {
+      "i": 40,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(theorem|lemma).*finite_of\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 2216,
+      "result_head": "[{\"type\": \"text\", \"text\": \"170 match(es) for '(theorem|lemma).*finite_of' (via ripgrep):\\n- Mathlib/Algebra/Polynomial/Roots.lean:162\\n    lemma tendstoCofinite_of_natDegree_ne_zero {R : Type} [CommRi"
+    },
+    {
+      "i": 41,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"finite_coe_iff\"}",
+      "ok": true,
+      "result_chars": 100,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'finite_coe_iff': unknown identifier 'finite_coe_iff'\"}]"
+    }
+  ]
+}

@@ -1,0 +1,238 @@
+{
+  "task_id": "fresh_035",
+  "arm": "E",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T05:05:01Z",
+  "wall_s": 178.2,
+  "output_lean": "theorem contMDiffAt_iff_continuous_and_comp_immersion\n    {n : ℕ∞}\n    {E'' : Type*} [NormedAddCommGroup E''] [NormedSpace 𝕜 E'']\n    {H'' : Type*} [TopologicalSpace H'']\n    {I'' : ModelWithCorners 𝕜 E'' H''}\n    {N : Type*} [TopologicalSpace N] [ChartedSpace H'' N]\n    {g : N → M} {y : N}\n    {f : M → M'} {x : M}\n    (hg : IsImmersionAt g y)\n    (hxy : g y = x) :\n    ContMDiffAt I I' n f x ↔\n    (ContinuousAt f x ∧ ContMDiffAt I'' I' n (f ∘ g) y) := sorry",
+  "transcript_stats": {
+    "turns": 28,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 8,
+      "mcp__formal__decl_grep": 13,
+      "mcp__formal__decl_read": 6
+    },
+    "tokens_in": 152,
+    "tokens_out": 15101,
+    "cost_usd": 0.1682786
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"ContMDiffAt\"}",
+      "ok": true,
+      "result_chars": 1110,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 180 declarations mentioning ContMDiffAt.\\n- ContMDiffAt   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n    `ContMDiffAt I I' n f x` indicates that the function `f : M →"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"IsLocalDiffeo\"}",
+      "ok": true,
+      "result_chars": 98,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IsLocalDiffeo': unknown identifier 'IsLocalDiffeo'\"}]"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Immersion\"}",
+      "ok": true,
+      "result_chars": 90,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Immersion': unknown identifier 'Immersion'\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def.*Immersion\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1381,
+      "result_head": "[{\"type\": \"text\", \"text\": \"26 match(es) for 'def.*Immersion' (via ripgrep):\\n- Mathlib/Geometry/Manifold/Immersion.lean:37\\n    In most cases, prefer this definition over `IsImmersionAtOfComplement`.\\"
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"injective surjective tangentSpace\"}",
+      "ok": true,
+      "result_chars": 114,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'injective surjective tangentSpace': Unknown identifier `injective`\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Geometry/Manifold/ContMDiff.lean\", \"line\": 1, \"n\": 50}",
+      "ok": false,
+      "result_chars": 82,
+      "result_head": "error: no such file under the checkout: 'Mathlib/Geometry/Manifold/ContMDiff.lean'"
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*ContMDiffAt.*iff\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 2171,
+      "result_head": "[{\"type\": \"text\", \"text\": \"26 match(es) for 'theorem.*ContMDiffAt.*iff' (via ripgrep):\\n- Mathlib/Geometry/Manifold/Algebra/LieGroup.lean:145\\n    theorem ContMDiffAt.inv {f : M → G} {x₀ : M} (hf : CM"
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Geometry/Manifold/ContMDiff/Defs.lean\", \"line\": 1, \"n\": 100}",
+      "ok": true,
+      "result_chars": 5775,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Geometry/Manifold/ContMDiff/Defs.lean  (lines 1–100 of 925):\\n     1  /-\\n     2  Copyright (c) 2020 Sébastien Gouëzel. All rights reserved.\\n     3  Released under "
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Geometry/Manifold/ContMDiff/Defs.lean\", \"line\": 100, \"n\": 150}",
+      "ok": true,
+      "result_chars": 6158,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Geometry/Manifold/ContMDiff/Defs.lean  (lines 100–219 of 925):\\n   100  it lifts nicely to manifolds. -/\\n   101  theorem contDiffWithinAt_localInvariantProp_of_le ("
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"IsImmersionAt ContMDiffAt\"}",
+      "ok": true,
+      "result_chars": 110,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IsImmersionAt ContMDiffAt': Unknown identifier `IsImmersionAt`\"}]"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*IsImmersionAt.*ContMDiff\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 104,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*IsImmersionAt.*ContMDiff' under Mathlib/.\"}]"
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Geometry/Manifold/Immersion.lean\", \"line\": 180, \"n\": 50}",
+      "ok": true,
+      "result_chars": 3318,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Geometry/Manifold/Immersion.lean  (lines 180–229 of 830):\\n   180  If you need stronger control over the complement `F`, use `IsImmersionAtOfComplement` instead.\\n  "
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*iff.*smooth\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 654,
+      "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for 'theorem.*iff.*smooth' (via ripgrep):\\n- Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean:165\\n    nonrec theorem zero_iff_nonpos : smoothTransition x"
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"ContMDiffAt ContinuousAt iff\"}",
+      "ok": true,
+      "result_chars": 103,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'ContMDiffAt ContinuousAt iff': Unknown identifier `iff`\"}]"
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*composition.*smooth\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 99,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*composition.*smooth' under Mathlib/.\"}]"
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*comp.*Immersion\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 527,
+      "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for 'theorem.*comp.*Immersion' (via ripgrep):\\n- Mathlib/AlgebraicGeometry/Morphisms/RingHomProperties.lean:299\\n    theorem comp_of_isOpenImmersion [IsOpenImmer"
+    },
+    {
+      "i": 16,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*Immersion.*comp\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 390,
+      "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'theorem.*Immersion.*comp' (via ripgrep):\\n- Mathlib/RingTheory/RingHom/OpenImmersion.lean:130\\n    theorem stableUnderComposition : StableUnderComposition.{"
+    },
+    {
+      "i": 17,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*IsImmersion\", \"file\": \"Mathlib/Geometry/Manifold/Immersion.lean\", \"limit\": 30}",
+      "ok": true,
+      "result_chars": 1656,
+      "result_head": "[{\"type\": \"text\", \"text\": \"12 match(es) for 'theorem.*IsImmersion' (via ripgrep):\\n- Mathlib/AlgebraicGeometry/Artinian.lean:113\\n    theorem IsLocallyArtinian.of_isImmersion [IsImmersion f] [IsLocall"
+    },
+    {
+      "i": 18,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*comp.*ContMDiff\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 1472,
+      "result_head": "[{\"type\": \"text\", \"text\": \"9 match(es) for 'theorem.*comp.*ContMDiff' (via ripgrep):\\n- Mathlib/Geometry/Manifold/Algebra/SmoothFunctions.lean:47\\n    theorem mul_comp {G : Type*} [Mul G] [Topological"
+    },
+    {
+      "i": 19,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*test.*smooth\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 92,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*test.*smooth' under Mathlib/.\"}]"
+    },
+    {
+      "i": 20,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"?f : ?M → ?M', ContinuousAt ?f ?x → ContMDiffAt\"}",
+      "ok": true,
+      "result_chars": 134,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for \\\"?f : ?M → ?M', ContinuousAt ?f ?x → ContMDiffAt\\\": <input>:1:3: expected end of input\"}]"
+    },
+    {
+      "i": 21,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Geometry/Manifold/Immersion.lean\", \"line\": 415, \"n\": 30}",
+      "ok": true,
+      "result_chars": 1799,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Geometry/Manifold/Immersion.lean  (lines 415–444 of 830):\\n   415  theorem continuousAt (h : IsImmersionAtOfComplement F I J n f x) : ContinuousAt f x :=\\n   416    "
+    },
+    {
+      "i": 22,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*Submersion\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 851,
+      "result_head": "[{\"type\": \"text\", \"text\": \"6 match(es) for 'theorem.*Submersion' (via ripgrep):\\n- Mathlib/Geometry/Manifold/Submersion.lean:366\\n    theorem contMDiffOn (h : IsSubmersionAtOfComplement F I J n f x) :"
+    },
+    {
+      "i": 23,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Submersion\"}",
+      "ok": true,
+      "result_chars": 92,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Submersion': unknown identifier 'Submersion'\"}]"
+    },
+    {
+      "i": 24,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*contMDiffAt.*iff.*Continuous\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 108,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*contMDiffAt.*iff.*Continuous' under Mathlib/.\"}]"
+    },
+    {
+      "i": 25,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*ContMDiffAt.*Continuous\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 238,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'theorem.*ContMDiffAt.*Continuous' (via ripgrep):\\n- Mathlib/Geometry/Manifold/ContMDiff/Defs.lean:616\\n    theorem ContMDiffAt.continuousAt (hf : ContMDiffA"
+    },
+    {
+      "i": 26,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Geometry/Manifold/ContMDiff/Basic.lean\", \"line\": 1, \"n\": 60}",
+      "ok": true,
+      "result_chars": 3064,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Geometry/Manifold/ContMDiff/Basic.lean  (lines 1–60 of 479):\\n     1  /-\\n     2  Copyright (c) 2020 Sébastien Gouëzel. All rights reserved.\\n     3  Released under "
+    }
+  ]
+}

@@ -1,0 +1,214 @@
+{
+  "task_id": "fresh_016",
+  "arm": "E",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:59:53Z",
+  "wall_s": 94.9,
+  "output_lean": "theorem integral_one_div_t_log_sq (a b : ℝ) (ha : 1 < a) (hb : 1 < b) :\n    ∫ t in a..b, 1 / (t * (Real.log t)^2) = 1 / Real.log a - 1 / Real.log b := sorry",
+  "transcript_stats": {
+    "turns": 25,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 12,
+      "mcp__formal__decl_grep": 5,
+      "mcp__formal__decl_read": 7
+    },
+    "tokens_in": 142,
+    "tokens_out": 6236,
+    "cost_usd": 0.11419610000000001
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Real.log\"}",
+      "ok": true,
+      "result_chars": 1132,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 637 declarations mentioning Real.log.\\n- Real.log   [Mathlib.Analysis.SpecialFunctions.Log.Basic]\\n    The real logarithm function, equal to the inverse of the exponen"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"integral (a b : ℝ) (f : ℝ → ℝ)\"}",
+      "ok": true,
+      "result_chars": 110,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'integral (a b : ℝ) (f : ℝ → ℝ)': Unknown identifier `integral`\"}]"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"∫ ... ∂ at intervalIntegral\"}",
+      "ok": true,
+      "result_chars": 111,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '∫ ... ∂ at intervalIntegral': <input>:1:2: expected ',' or 'in'\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"intervalIntegral\"}",
+      "ok": true,
+      "result_chars": 1503,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 435 declarations mentioning intervalIntegral.\\n- intervalIntegral   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n    The interval integral `∫ x in a..b, f "
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"(f : ℝ → ℝ) a b → ℝ\"}",
+      "ok": true,
+      "result_chars": 92,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(f : ℝ → ℝ) a b → ℝ': Unknown identifier `f`\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"intervalIntegral\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 797,
+      "result_head": "[{\"type\": \"text\", \"text\": \"275 match(es) for 'intervalIntegral' (via ripgrep):\\n- Mathlib/Probability/StrongLaw.lean:135\\n    theorem moment_truncation_eq_intervalIntegral (hf : AEStronglyMeasurable f"
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"volume measure ℝ\"}",
+      "ok": true,
+      "result_chars": 94,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'volume measure ℝ': Unknown identifier `volume`\"}]"
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean\", \"line\": 1, \"n\": 50}",
+      "ok": true,
+      "result_chars": 2544,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean  (lines 1–50 of 1467):\\n     1  /-\\n     2  Copyright (c) 2020 Yury Kudryashov. All rights reserved.\\n     3  Rele"
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"theorem integral log reciprocal\"}",
+      "ok": true,
+      "result_chars": 116,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'theorem integral log reciprocal': <input>:1:0: expected end of input\"}]"
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"∫ 1 / log\"}",
+      "ok": true,
+      "result_chars": 93,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '∫ 1 / log': <input>:1:2: expected ',' or 'in'\"}]"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean\", \"line\": 50, \"n\": 100}",
+      "ok": true,
+      "result_chars": 5613,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean  (lines 50–149 of 1467):\\n    50  \\n    51  @[expose] public section\\n    52  \\n    53  \\n    54  noncomputable se"
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean\", \"line\": 200, \"n\": 80}",
+      "ok": true,
+      "result_chars": 4342,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean  (lines 200–279 of 1467):\\n   200  theorem symm_iff : IntervalIntegrable f μ a b ↔ IntervalIntegrable f μ b a := ⟨"
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"notation.*integral.*in.*\\\\.\\\\..*∂\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 108,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'notation.*integral.*in.*\\\\\\\\.\\\\\\\\..*∂' under Mathlib/.\"}]"
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean\", \"line\": 350, \"n\": 100}",
+      "ok": true,
+      "result_chars": 5746,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean  (lines 350–449 of 1467):\\n   350  theorem mul_continuousOn {f g : ℝ → A} (hf : IntervalIntegrable f μ a b)\\n   35"
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"^def integral_Ioc_sub_Ioc\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 96,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '^def integral_Ioc_sub_Ioc' under Mathlib/.\"}]"
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean\", \"line\": 500, \"n\": 80}",
+      "ok": true,
+      "result_chars": 4018,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean  (lines 500–579 of 1467):\\n   500  variable {μ : Measure ℝ} [IsLocallyFiniteMeasure μ]\\n   501  \\n   502  theorem "
+    },
+    {
+      "i": 16,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"^noncomputable def.*integral.*∫\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 102,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '^noncomputable def.*integral.*∫' under Mathlib/.\"}]"
+    },
+    {
+      "i": 17,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean\", \"line\": 620, \"n\": 80}",
+      "ok": true,
+      "result_chars": 4607,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean  (lines 620–699 of 1467):\\n   620  `TendstoIxxClass Ioc ?m_1 l'`. -/\\n   621  theorem Filter.Tendsto.eventually_in"
+    },
+    {
+      "i": 18,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Real.log : ℝ → ℝ\"}",
+      "ok": true,
+      "result_chars": 101,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Real.log : ℝ → ℝ': <input>:1:9: expected end of input\"}]"
+    },
+    {
+      "i": 19,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Div.div (a b : ℝ) → ℝ\"}",
+      "ok": true,
+      "result_chars": 94,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Div.div (a b : ℝ) → ℝ': Unknown identifier `a`\"}]"
+    },
+    {
+      "i": 20,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Pow.pow (a : ℝ) (n : ℕ) → ℝ\"}",
+      "ok": true,
+      "result_chars": 100,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Pow.pow (a : ℝ) (n : ℕ) → ℝ': Unknown identifier `a`\"}]"
+    },
+    {
+      "i": 21,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Real.log\"}",
+      "ok": true,
+      "result_chars": 1132,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 637 declarations mentioning Real.log.\\n- Real.log   [Mathlib.Analysis.SpecialFunctions.Log.Basic]\\n    The real logarithm function, equal to the inverse of the exponen"
+    },
+    {
+      "i": 22,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def Real.log\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 83,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'def Real.log' under Mathlib/.\"}]"
+    },
+    {
+      "i": 23,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SpecialFunctions/Log/Basic.lean\", \"line\": 1, \"n\": 60}",
+      "ok": true,
+      "result_chars": 2479,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecialFunctions/Log/Basic.lean  (lines 1–60 of 712):\\n     1  /-\\n     2  Copyright (c) 2018 Chris Hughes. All rights reserved.\\n     3  Released under Apa"
+    }
+  ]
+}

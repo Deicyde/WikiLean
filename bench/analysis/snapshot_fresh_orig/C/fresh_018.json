@@ -1,0 +1,238 @@
+{
+  "task_id": "fresh_018",
+  "arm": "C",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:02:09Z",
+  "wall_s": 72.4,
+  "output_lean": "theorem sin_sub_cubic_div_six_le (x : ℝ) (hx : 0 ≤ x) : x - x ^ 3 / 6 ≤ Real.sin x := sorry",
+  "transcript_stats": {
+    "turns": 28,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 18,
+      "mcp__formal__decl_grep": 8,
+      "mcp__formal__decl_read": 1
+    },
+    "tokens_in": 158,
+    "tokens_out": 3717,
+    "cost_usd": 0.08621894999999999
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Real.sin\"}",
+      "ok": true,
+      "result_chars": 923,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 322 declarations mentioning Real.sin.\\n- Real.sin   [Mathlib.Analysis.Complex.Trigonometric]\\n    The real sine function, defined as the real part of the complex sine\\"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"sin\"}",
+      "ok": true,
+      "result_chars": 78,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'sin': unknown identifier 'sin'\"}]"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"(?a : ℝ) → ?a - ?a ^ 3 / 6 ≤ Real.sin ?a\"}",
+      "ok": true,
+      "result_chars": 121,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(?a : ℝ) → ?a - ?a ^ 3 / 6 ≤ Real.sin ?a': type expected, got\\n  (?a : ℝ)\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Real.sin_nonneg\"}",
+      "ok": true,
+      "result_chars": 102,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Real.sin_nonneg': unknown identifier 'Real.sin_nonneg'\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Real.sin ?x ≥ ?x\"}",
+      "ok": true,
+      "result_chars": 83,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for 'Real.sin ?x ≥ ?x'.\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"(x : ℝ) → Real.sin x\"}",
+      "ok": true,
+      "result_chars": 109,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(x : ℝ) → Real.sin x': type expected, got\\n  (Real.sin x : ℝ)\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"sin_le\"}",
+      "ok": true,
+      "result_chars": 84,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'sin_le': unknown identifier 'sin_le'\"}]"
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Real.sin_le\"}",
+      "ok": true,
+      "result_chars": 149,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning Real.sin_le.\\n- Real.sin_le   [Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds]\"}]"
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(theorem|lemma) Real.sin_le\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 98,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma) Real.sin_le' under Mathlib/.\"}]"
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Real.sin.*Bounds\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 87,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'Real.sin.*Bounds' under Mathlib/.\"}]"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*sin.*sub\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1334,
+      "result_head": "[{\"type\": \"text\", \"text\": \"107 match(es) for 'theorem.*sin.*sub' (via ripgrep):\\n- Mathlib/Algebra/Algebra/Spectrum/Basic.lean:309\\n    theorem singleton_sub_eq (a : A) (r : R) : {r} - σ a = σ (↑ₐ r -"
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Real.sin_le_sub_sq_div\"}",
+      "ok": true,
+      "result_chars": 116,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Real.sin_le_sub_sq_div': unknown identifier 'Real.sin_le_sub_sq_div'\"}]"
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Real.sin_nonneg_of_nonneg\"}",
+      "ok": true,
+      "result_chars": 122,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Real.sin_nonneg_of_nonneg': unknown identifier 'Real.sin_nonneg_of_nonneg'\"}]"
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Real.deriv_sin\"}",
+      "ok": true,
+      "result_chars": 154,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning Real.deriv_sin.\\n- Real.deriv_sin   [Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv]\"}]"
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"deriv_sin\"}",
+      "ok": true,
+      "result_chars": 144,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning deriv_sin.\\n- deriv_sin   [Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv]\"}]"
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Real.sin_pos\"}",
+      "ok": true,
+      "result_chars": 96,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Real.sin_pos': unknown identifier 'Real.sin_pos'\"}]"
+    },
+    {
+      "i": 16,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Real.two_pi\"}",
+      "ok": true,
+      "result_chars": 94,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Real.two_pi': unknown identifier 'Real.two_pi'\"}]"
+    },
+    {
+      "i": 17,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"^(theorem|def|lemma) Real\\\\.sin\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 349,
+      "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for '^(theorem|def|lemma) Real\\\\\\\\.sin' (via ripgrep):\\n- Mathlib/Topology/MetricSpace/Pseudo/Lemmas.lean:27\\n    lemma Real.singleton_eq_inter_Icc (b : ℝ) : {b}"
+    },
+    {
+      "i": 18,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"^def Real\\\\.sin\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 88,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '^def Real\\\\\\\\.sin' under Mathlib/.\"}]"
+    },
+    {
+      "i": 19,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/Complex/Trigonometric.lean\", \"line\": 1, \"n\": 100}",
+      "ok": true,
+      "result_chars": 3390,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Complex/Trigonometric.lean  (lines 1–100 of 990):\\n     1  /-\\n     2  Copyright (c) 2018 Chris Hughes. All rights reserved.\\n     3  Released under Apache "
+    },
+    {
+      "i": 20,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"sub_div\"}",
+      "ok": true,
+      "result_chars": 114,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning sub_div.\\n- sub_div   [Mathlib.Algebra.Field.Basic]\"}]"
+    },
+    {
+      "i": 21,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Taylor\"}",
+      "ok": true,
+      "result_chars": 84,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Taylor': unknown identifier 'Taylor'\"}]"
+    },
+    {
+      "i": 22,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*sin.*≤\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2752,
+      "result_head": "[{\"type\": \"text\", \"text\": \"142 match(es) for 'theorem.*sin.*≤' (via ripgrep):\\n- Mathlib/Algebra/Algebra/Subalgebra/Lattice.lean:550\\n    theorem adjoin_singleton_le {S : Subalgebra R A} {a : A} (H : "
+    },
+    {
+      "i": 23,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 125,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds' under Mathlib/.\"}]"
+    },
+    {
+      "i": 24,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"sin.*bound\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1402,
+      "result_head": "[{\"type\": \"text\", \"text\": \"141 match(es) for 'sin.*bound' (via ripgrep):\\n- Mathlib/Algebra/Module/ZLattice/Basic.lean:460\\n    -- so there are finitely many since `fundamentalDomain b` is bounded.\\n-"
+    },
+    {
+      "i": 25,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"sin_le_one\"}",
+      "ok": true,
+      "result_chars": 92,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'sin_le_one': unknown identifier 'sin_le_one'\"}]"
+    },
+    {
+      "i": 26,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Real.sin_le_one\"}",
+      "ok": true,
+      "result_chars": 141,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning Real.sin_le_one.\\n- Real.sin_le_one   [Mathlib.Analysis.Complex.Trigonometric]\"}]"
+    }
+  ]
+}
