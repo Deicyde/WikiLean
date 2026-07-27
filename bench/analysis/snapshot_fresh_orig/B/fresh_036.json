@@ -1,0 +1,46 @@
+{
+  "task_id": "fresh_036",
+  "arm": "B",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T02:17:29Z",
+  "wall_s": 129.4,
+  "output_lean": "theorem contMDiff_iff_continuous_and_immersion_composition {𝕜 : Type*} [NontriviallyNormedField 𝕜]\n  {E F : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]\n  {M N : Type*} [ChartedSpace E M] [ChartedSpace F N]\n  [SmoothManifoldWithCorners 𝕜 E M] [SmoothManifoldWithCorners 𝕜 F N]\n  (I : ModelWithCorners 𝕜 E M) (J : ModelWithCorners 𝕜 F N)\n  {n : ℕ∞} (f : M → N) :\n  ContMDiff I J n f ↔\n  Continuous f ∧\n  ∀ {G : Type*} [NormedAddCommGroup G] [NormedSpace 𝕜 G]\n    {P : Type*} [ChartedSpace G P] [SmoothManifoldWithCorners 𝕜 G P]\n    (K : ModelWithCorners 𝕜 G P) (i : N → P),\n    ContMDiff J K n i → IsImmersion J K i →\n    ContMDiff I K n (i ∘ f) := by\n  sorry",
+  "transcript_stats": {
+    "turns": 4,
+    "tool_calls_by_name": {
+      "mcp__wiki__wiki_search": 1,
+      "mcp__wiki__nlab_search": 1,
+      "mcp__wiki__wiki_get": 1
+    },
+    "tokens_in": 34,
+    "tokens_out": 12402,
+    "cost_usd": 0.08160205000000001
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"immersion differential geometry smooth manifolds\"}",
+      "ok": true,
+      "result_chars": 2240,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'immersion differential geometry smooth manifolds':\\n- Symplectic manifold  (slug: Symplectic_manifold)\\n    https://en.wikipedia.org/wiki/Symplectic_manifol"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wiki__nlab_search",
+      "input": "{\"q\": \"smooth manifold\"}",
+      "ok": true,
+      "result_chars": 1503,
+      "result_head": "[{\"type\": \"text\", \"text\": \"nLab page for 'smooth manifold' (https://ncatlab.org/nlab/show/smooth+manifold):\\nnLab\\nsmooth manifold\\nSkip the Navigation Links |\\nHome Page |\\nAll Pages |\\nLatest Revisi"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wiki__wiki_get",
+      "input": "{\"title\": \"Immersion (mathematics)\"}",
+      "ok": true,
+      "result_chars": 4223,
+      "result_head": "[{\"type\": \"text\", \"text\": \"# Immersion (mathematics)\\nIn mathematics, an immersion is a differentiable function between differentiable manifolds whose differential pushforward is everywhere injective."
+    }
+  ]
+}

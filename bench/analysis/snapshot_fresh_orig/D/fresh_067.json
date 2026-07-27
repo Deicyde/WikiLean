@@ -1,0 +1,539 @@
+{
+  "task_id": "fresh_067",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:46:08Z",
+  "wall_s": 120.5,
+  "output_lean": "theorem exists_prime_ramified (K : Type*) [Field K] [NumberField K] \n    (h : 1 < Module.finrank ℚ K) :\n    ∃ (p : ℕ), Nat.Prime p ∧ \n      ∃ (P : Ideal (NumberField.RingOfIntegers K)), \n        Ideal.IsMaximal P ∧ \n        ¬ Algebra.IsUnramifiedAt ℤ P := sorry",
+  "transcript_stats": {
+    "turns": 65,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 15,
+      "mcp__wikibrain__brain_cell": 5,
+      "mcp__wikibrain__brain_search": 25,
+      "decl_exists": 1,
+      "mcp__wikibrain__decl_exists": 10,
+      "mcp__wikibrain__brain_neighborhood": 3,
+      "mcp__wikibrain__brain_transfer": 2,
+      "mcp__wikibrain__brain_filter": 3
+    },
+    "tokens_in": 214,
+    "tokens_out": 8837,
+    "cost_usd": 0.2334735
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"number field\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 5740,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"number field\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_f"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"ramified prime in number field\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 4169,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"ramified prime in number field\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"ring of integers\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3234,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"ring of integers\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolv"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q616608\"}",
+      "ok": true,
+      "result_chars": 3805,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q616608\\\",\\\"id\\\":\\\"cell:Q616608\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Algebraic number field\\\",\\\"f\\\":47323,\\\"cell\\\":{\\\"id\\\":"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"ramification ideal prime factorization\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 5026,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"ramification ideal prime factorization\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact "
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"integral elements\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3071,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"integral elements\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resol"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"ramified\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 5966,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"ramified\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"ramif\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 3159,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"ramif\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q1420905\\\",\\\"label\\\":\\\"Hilbert's Theorem 90\\\",\\\"aka\\\":[\\\"groupCohomology.exists_div_of_norm_eq_one\\\",\\\"Subfields of non"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"degree of extension field\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3949,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"degree of extension field\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label matc"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:Ideal.ramificationIdx\"}",
+      "ok": true,
+      "result_chars": 1385,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:Ideal.ramificationIdx\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Ideal.ramificationIdx\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Idea"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"integral closure ring of integers\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 4872,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"integral closure ring of integers\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/la"
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"finrank degree extension\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 181,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finrank degree extension\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"integrally closed algebra\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2923,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"integrally closed algebra\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label matc"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"integrally closed\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 174,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"integrally closed\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"finrank finite extension\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 1972,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finrank finite extension\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match,"
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"finrank\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 3812,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finrank\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:finrank_range_add_finrank_ker\\\",\\\"label\\\":\\\"finrank_range_add_finrank_ker\\\",\\\"supercell\\\":\\\"path:Mathlib"
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Module.Finite\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1390,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Module.Finite\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Module.Finite\\\",\\\"label\\\":\\\"Module.Finite\\\",\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Finiteness/Def"
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Rat prime\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 166,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Rat prime\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 18,
+      "name": "decl_exists",
+      "input": "{\"names\": \"[\\\"NumberField\\\", \\\"finrank\\\", \\\"Module.Finite\\\", \\\"Ideal.ramificationIdx\\\", \\\"Nat.Prime\\\"]\"}",
+      "ok": false,
+      "result_chars": 75,
+      "result_head": "<tool_use_error>Error: No such tool available: decl_exists</tool_use_error>"
+    },
+    {
+      "i": 19,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"prime factorization\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 580,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"prime factorization\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q4846249\\\",\\\"label\\\":\\\"Integer factorization\\\",\\\"aka\\\":[\\\"Nat.primeFactorsList\\\",\\\"Prime Factorization\\\"]"
+    },
+    {
+      "i": 20,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"splits completely prime ideal\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 4922,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"splits completely prime ideal\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label "
+    },
+    {
+      "i": 21,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"NumberField\", \"finrank\", \"Module.Finite\", \"Nat.Prime\"]}",
+      "ok": true,
+      "result_chars": 1339,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"NumberField\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.NumberTheory.NumberField.Basic\\\",\\\"import_line\\\":\\\"import Ma"
+    },
+    {
+      "i": 22,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"ring integers algebraic\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 180,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"ring integers algebraic\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 23,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"algebra integers\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2914,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"algebra integers\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolv"
+    },
+    {
+      "i": 24,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"FiniteDimensional.finrank\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 182,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"FiniteDimensional.finrank\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 25,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"ramification index 1\", \"limit\": 8}",
+      "ok": false,
+      "result_chars": 253,
+      "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"ramification index 1\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":{\"generated_at\":\""
+    },
+    {
+      "i": 26,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"exists prime Nat\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 173,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"exists prime Nat\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 27,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"cell:decl:Mathlib:Ideal.ramificationIdx\", \"kinds\": \"depends\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 352,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:Ideal.ramificationIdx\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\"],\\\"synapses\\\":[],\\\"returned\\\":0,\\\"matched\\\":0,\\\"counts\\\":{\\\"syn\\\":1,"
+    },
+    {
+      "i": 28,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Module.finrank\", \"FiniteDimensional.finrank\", \"ℚ\"]}",
+      "ok": true,
+      "result_chars": 1010,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Module.finrank\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Dimension.Finrank\\\",\\\"import_line\\\":\\\"impor"
+    },
+    {
+      "i": 29,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Ideal.factors\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 170,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Ideal.factors\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 30,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Rationals\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 356,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Rationals\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Init:Int.ediv_emod_unique\\\",\\\"label\\\":\\\"Int.ediv_emod_unique\\\",\\\"aka\\\":[\\\"Looking through newly to the amazing"
+    },
+    {
+      "i": 31,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"one is ramified at least\", \"limit\": 8}",
+      "ok": false,
+      "result_chars": 257,
+      "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"one is ramified at least\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":{\"generated_a"
+    },
+    {
+      "i": 32,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"path:Mathlib/NumberTheory/RamificationInertia/Ramification\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 374,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"path:Mathlib/NumberTheory/RamificationInertia/Ramification\\\",\\\"kind\\\":\\\"supercell\\\",\\\"synapses\\\":[],\\\"returned\\\":0,\\\"matched\\\":0,\\\"counts\\\":{\\\"syn\\\":0,"
+    },
+    {
+      "i": 33,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"theorem ramified\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 173,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"theorem ramified\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 34,
+      "name": "mcp__wikibrain__brain_transfer",
+      "input": "{\"q\": \"Module.finrank\", \"direction\": \"formal_to_informal\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 1555,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"Module.finrank\\\",\\\"decl\\\":\\\"Module.finrank\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Module.finrank\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\"
+    },
+    {
+      "i": 35,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Nat.Prime\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 2856,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Nat.Prime\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q49008\\\",\\\"label\\\":\\\"Prime number\\\",\\\"aka\\\":[\\\"Definition:Prime Number\\\",\\\"Nat.Prime\\\",\\\"Prime Number\\\",\\\"The prime"
+    },
+    {
+      "i": 36,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"discriminant ramified\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 178,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"discriminant ramified\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 37,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"discriminant number field\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 4243,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"discriminant number field\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label matc"
+    },
+    {
+      "i": 38,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"separable extension\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 176,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"separable extension\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 39,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"path:Mathlib/NumberTheory/RamificationInertia/Ramification\"}",
+      "ok": true,
+      "result_chars": 906,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/NumberTheory/RamificationInertia/Ramification\\\",\\\"id\\\":\\\"path:Mathlib/NumberTheory/RamificationInertia/Ra"
+    },
+    {
+      "i": 40,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"splits ramif\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 169,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"splits ramif\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 41,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"ramify\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 163,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"ramify\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 42,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Ideal.IsRamified\", \"IsSplitCompletely\", \"Polynomial.SplitsCompletely\"]}",
+      "ok": true,
+      "result_chars": 946,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Ideal.IsRamified\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis"
+    },
+    {
+      "i": 43,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"exists ramified prime\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 178,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"exists ramified prime\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 44,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"integral closure field\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 179,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"integral closure field\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 45,
+      "name": "mcp__wikibrain__brain_transfer",
+      "input": "{\"q\": \"Nat.Prime\", \"direction\": \"formal_to_informal\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 635,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"Nat.Prime\\\",\\\"decl\\\":\\\"Nat.Prime\\\",\\\"id\\\":\\\"cell:Q49008\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Prime number\\\",\\\"hits\\\":[{\\"
+    },
+    {
+      "i": 46,
+      "name": "mcp__wikibrain__brain_filter",
+      "input": "{\"f\": 0, \"under\": \"path:Mathlib/NumberTheory/RamificationInertia\", \"limit\": 50}",
+      "ok": true,
+      "result_chars": 438,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"f\\\":0,\\\"type\\\":\\\"cell\\\",\\\"under\\\":\\\"path:Mathlib/NumberTheory/RamificationInertia\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Ideal.ramificationIdx\\\",\\\"label\\\":\\\""
+    },
+    {
+      "i": 47,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"algebra field norm trace\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 181,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"algebra field norm trace\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 48,
+      "name": "mcp__wikibrain__brain_filter",
+      "input": "{\"f\": 0, \"under\": \"path:Mathlib/NumberTheory/NumberField\", \"limit\": 100}",
+      "ok": true,
+      "result_chars": 5962,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"f\\\":0,\\\"type\\\":\\\"cell\\\",\\\"under\\\":\\\"path:Mathlib/NumberTheory/NumberField\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q616608\\\",\\\"label\\\":\\\"Algebraic number field\\\",\\\"f\\\":4732"
+    },
+    {
+      "i": 49,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Polynomial.splits\", \"Polynomial.SplitsCompletely\", \"Field.Subfield\"]}",
+      "ok": true,
+      "result_chars": 1260,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Polynomial.splits\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"Polynomial.SplittingField.splits\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\"
+    },
+    {
+      "i": 50,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:decl:Mathlib:NumberField.not_dvd_discr_iff_forall_liesOver\"}",
+      "ok": true,
+      "result_chars": 1786,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:NumberField.not_dvd_discr_iff_forall_liesOver\\\",\\\"id\\\":\\\"cell:decl:Mathlib:NumberField.not_dvd_discr_iff_"
+    },
+    {
+      "i": 51,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:decl:Mathlib:NumberField.RingOfIntegers\"}",
+      "ok": true,
+      "result_chars": 1781,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:NumberField.RingOfIntegers\\\",\\\"id\\\":\\\"cell:decl:Mathlib:NumberField.RingOfIntegers\\\",\\\"kind\\\":\\\"cell\\\",\\\""
+    },
+    {
+      "i": 52,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"NumberField.discr\", \"Int.Prime\", \"Nat.cast\"]}",
+      "ok": true,
+      "result_chars": 1043,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"NumberField.discr\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.NumberTheory.NumberField.Discriminant.Defs\\\",\\\"import_"
+    },
+    {
+      "i": 53,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"cell:decl:Mathlib:NumberField.discr\", \"kinds\": \"depends,cites\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 358,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:NumberField.discr\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\",\\\"cites\\\"],\\\"synapses\\\":[],\\\"returned\\\":0,\\\"matched\\\":0,\\\"counts\\\":{\\\"sy"
+    },
+    {
+      "i": 54,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"discriminant nonzero\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 177,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"discriminant nonzero\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 55,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Algebra.IsUnramifiedAt\", \"Prime\"]}",
+      "ok": true,
+      "result_chars": 805,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Algebra.IsUnramifiedAt\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.Unramified.Locus\\\",\\\"import_line\\\":\\\"i"
+    },
+    {
+      "i": 56,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"discriminant degree extension\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 186,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"discriminant degree extension\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 57,
+      "name": "mcp__wikibrain__brain_filter",
+      "input": "{\"f\": 0, \"under\": \"path:Mathlib/NumberTheory/NumberField/Discriminant\", \"limit\": 50}",
+      "ok": true,
+      "result_chars": 625,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"f\\\":0,\\\"type\\\":\\\"cell\\\",\\\"under\\\":\\\"path:Mathlib/NumberTheory/NumberField/Discriminant\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:NumberField.discr\\\",\\\"label\\\":\\"
+    },
+    {
+      "i": 58,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Nat.Prime.dvd_mul\", \"exists_prime_dvd_of_ne_one\"]}",
+      "ok": true,
+      "result_chars": 756,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Nat.Prime.dvd_mul\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Nat.Prime.Defs\\\",\\\"import_line\\\":\\\"import Mathlib"
+    },
+    {
+      "i": 59,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"discr ne zero one\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 174,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"discr ne zero one\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 60,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Int.exists_prime_factor\", \"Int.Prime\", \"Nat.Prime.dvd_iff_dvd\"]}",
+      "ok": true,
+      "result_chars": 939,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Int.exists_prime_factor\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g"
+    },
+    {
+      "i": 61,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"NumberField\", \"Module.finrank\", \"NumberField.RingOfIntegers\", \"Ideal\", \"IsMaximal\", \"Algebra.IsUnramifiedAt\", \"Prime\", \"dvd\"]}",
+      "ok": true,
+      "result_chars": 2562,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"NumberField\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.NumberTheory.NumberField.Basic\\\",\\\"import_line\\\":\\\"import Ma"
+    },
+    {
+      "i": 62,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Ideal.IsMaximal\", \"Ideal.IsIsPrime\", \"Ideal.Prime\"]}",
+      "ok": true,
+      "result_chars": 991,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Ideal.IsMaximal\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.Ideal.Maximal\\\",\\\"import_line\\\":\\\"import Math"
+    },
+    {
+      "i": 63,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Ideal.IsMaximal\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1280,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Ideal.IsMaximal\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q1203540\\\",\\\"label\\\":\\\"Maximal ideal\\\",\\\"aka\\\":[\\\"Definition:Maximal Ideal of Ring\\\",\\\"Ideal.IsMaximal\\\",\\\"Ma"
+    }
+  ]
+}

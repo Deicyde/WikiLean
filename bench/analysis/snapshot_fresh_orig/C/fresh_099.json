@@ -1,0 +1,158 @@
+{
+  "task_id": "fresh_099",
+  "arm": "C",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:27:27Z",
+  "wall_s": 60.6,
+  "output_lean": "theorem monotone_continuous_is_left_ord_continuous\n    [LinearOrder α] [TopologicalSpace α] [OrderTopology α]\n    [LinearOrder β] [TopologicalSpace β] [OrderTopology β]\n    {f : α → β} (cont : Continuous f) (hf : Monotone f) :\n    LeftOrdContinuous f := sorry",
+  "transcript_stats": {
+    "turns": 18,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 8,
+      "mcp__formal__decl_grep": 4,
+      "mcp__formal__decl_read": 5
+    },
+    "tokens_in": 92,
+    "tokens_out": 4104,
+    "cost_usd": 0.06706840000000001
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Monotone\"}",
+      "ok": true,
+      "result_chars": 755,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 1298 declarations mentioning Monotone.\\n- Monotone   [Mathlib.Order.Monotone.Defs]\\n    A function `f` is monotone if `a ≤ b` implies `f a ≤ f b`.\\n- monotone_id   [Ma"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Continuous\"}",
+      "ok": true,
+      "result_chars": 1264,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 2405 declarations mentioning Continuous.\\n- Continuous   [Mathlib.Topology.Defs.Basic]\\n    A function between topological spaces is continuous if the preimage of ever"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"sSup image\"}",
+      "ok": true,
+      "result_chars": 87,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'sSup image': Unknown identifier `image`\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"sSup\"}",
+      "ok": true,
+      "result_chars": 80,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'sSup': unknown identifier 'sSup'\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"left-continuous topological\"}",
+      "ok": true,
+      "result_chars": 103,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'left-continuous topological': Unknown identifier `left`\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"?a → ?b → Prop\"}",
+      "ok": true,
+      "result_chars": 129,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '?a → ?b → Prop': Cannot search: No constants or name fragments in search pattern.\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"sSup\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1323,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1881 match(es) for 'sSup' (via ripgrep):\\n- Mathlib/Algebra/Ring/Subsemiring/Basic.lean:574\\n    (Subsemiring.gi R).gc.l_sSup\\n- Mathlib/Algebra/Ring/Subsemiring/Basic.lean:"
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"continuous.*sup\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1439,
+      "result_head": "[{\"type\": \"text\", \"text\": \"158 match(es) for 'continuous.*sup' (via ripgrep):\\n- Mathlib/Geometry/Manifold/SmoothApprox.lean:28\\n    For example, this shows that continuous functions supported on some"
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"iSup\"}",
+      "ok": true,
+      "result_chars": 738,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 1948 declarations mentioning iSup.\\n- iSup   [Mathlib.Order.SetNotation]\\n    Indexed supremum\\n- Set.iSup_eq_iUnion   [Mathlib.Order.SetNotation]\\n- le_iSup_iff   [Ma"
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*Continuous.*Monotone\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 692,
+      "result_head": "[{\"type\": \"text\", \"text\": \"5 match(es) for 'theorem.*Continuous.*Monotone' (via ripgrep):\\n- Mathlib/Order/ScottContinuity.lean:157\\n    protected theorem ScottContinuous.monotone (h : ScottContinuous"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Topology/Order/Monotone.lean\", \"line\": 179, \"n\": 20}",
+      "ok": true,
+      "result_chars": 1083,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/Order/Monotone.lean  (lines 179–198 of 527):\\n   179  theorem Monotone.leftOrdContinuous (hf : Monotone f)\\n   180      (cont : ∀ x, ContinuousWithinAt f (I"
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Topology/Order/Monotone.lean\", \"line\": 187, \"n\": 20}",
+      "ok": true,
+      "result_chars": 1134,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/Order/Monotone.lean  (lines 187–206 of 527):\\n   187  theorem Continuous.leftOrdContinuous (cont : Continuous f) (hf : Monotone f) :\\n   188      LeftOrdCon"
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def LeftOrdContinuous\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 191,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'def LeftOrdContinuous' (via ripgrep):\\n- Mathlib/Order/OrdContinuous.lean:44\\n    def LeftOrdContinuous [Preorder α] [Preorder β] (f : α → β) :=\"}]"
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Order/OrdContinuous.lean\", \"line\": 44, \"n\": 15}",
+      "ok": true,
+      "result_chars": 611,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/OrdContinuous.lean  (lines 44–58 of 188):\\n    44  def LeftOrdContinuous [Preorder α] [Preorder β] (f : α → β) :=\\n    45    ∀ ⦃s : Set α⦄ ⦃x⦄, s.Nonempty → Is"
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Topology/Order/Monotone.lean\", \"line\": 1, \"n\": 60}",
+      "ok": true,
+      "result_chars": 2920,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/Order/Monotone.lean  (lines 1–60 of 527):\\n     1  /-\\n     2  Copyright (c) 2017 Johannes Hölzl. All rights reserved.\\n     3  Released under Apache 2.0 li"
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Topology/Order/Monotone.lean\", \"line\": 170, \"n\": 30}",
+      "ok": true,
+      "result_chars": 1445,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/Order/Monotone.lean  (lines 170–199 of 527):\\n   170  \\n   171  section OrdContinuous\\n   172  \\n   173  variable [TopologicalSpace β] [OrderTopology β]\\n  "
+    },
+    {
+      "i": 16,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"LeftOrdContinuous\"}",
+      "ok": true,
+      "result_chars": 1156,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 26 declarations mentioning LeftOrdContinuous.\\n- LeftOrdContinuous   [Mathlib.Order.OrdContinuous]\\n    A function `f` between preorders is left order continuous if it"
+    }
+  ]
+}

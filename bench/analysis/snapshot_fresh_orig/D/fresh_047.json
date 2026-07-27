@@ -1,0 +1,264 @@
+{
+  "task_id": "fresh_047",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:41:00Z",
+  "wall_s": 111.3,
+  "output_lean": "theorem matrix_rank_canonical_form {K : Type*} [Field K] {n : ℕ} (M : Matrix (Fin n) (Fin n) K) :\n  ∃ (P Q : Matrix (Fin n) (Fin n) K), IsUnit P ∧ IsUnit Q ∧ \n    P * M * Q = Matrix.diagonal (fun i => if i.val < Matrix.rank M then (1 : K) else 0) := sorry",
+  "transcript_stats": {
+    "turns": 31,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 4,
+      "mcp__wikibrain__brain_search": 17,
+      "mcp__wikibrain__brain_cell": 3,
+      "mcp__wikibrain__brain_neighborhood": 2,
+      "mcp__wikibrain__decl_exists": 4
+    },
+    "tokens_in": 162,
+    "tokens_out": 8269,
+    "cost_usd": 0.167465
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"square matrix over a field equivalent to block diagonal identity rank zero by left right multiplication\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3762,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"square matrix over a field equivalent to block diagonal identity rank zero by left right multiplication\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a h"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"Smith Normal Form matrix\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 4044,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Smith Normal Form matrix\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"rank of matrix linear algebra\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 4040,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"rank of matrix linear algebra\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label "
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Matrix.rank\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 539,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Matrix.rank\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Matrix.rank\\\",\\\"label\\\":\\\"Matrix.rank\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Matrix/Rank\\\",\\\"m"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"block diagonal\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 410,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"block diagonal\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Matrix.IsHermitian\\\",\\\"label\\\":\\\"Matrix.IsHermitian\\\",\\\"aka\\\":[\\\"Simultaneous block diagonalizati"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"matrix row column equivalence\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 186,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"matrix row column equivalence\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"general linear group invertible matrices\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 197,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"general linear group invertible matrices\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"matrix units invertible\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 180,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"matrix units invertible\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q44337\"}",
+      "ok": true,
+      "result_chars": 3759,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q44337\\\",\\\"id\\\":\\\"cell:Q44337\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Matrix (mathematics)\\\",\\\"f\\\":39129,\\\"cell\\\":{\\\"id\\\":\\\"ce"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"cell:Q44337\", \"limit\": 50}",
+      "ok": true,
+      "result_chars": 38625,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q44337\\\",\\\"kind\\\":\\\"cell\\\",\\\"synapses\\\":[{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"w\\\":7,\\\"kinds\\\":{\\\"depends\\\":6,\\\"mentions\\\":1},\\\"traces_total\\\":7,\\\"tr"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:decl:Mathlib:Matrix.rank\"}",
+      "ok": true,
+      "result_chars": 1351,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:Matrix.rank\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Matrix.rank\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Matrix.rank\\\",\\\"cell"
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"matrix diagonal\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 172,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"matrix diagonal\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Unit invertible ring\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 177,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Unit invertible ring\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Matrix.fromBlocks\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 383,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Matrix.fromBlocks\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Matrix.fromBlocks\\\",\\\"label\\\":\\\"Matrix.fromBlocks\\\",\\\"aka\\\":[\\\"Seymour's Decomposition for Reg"
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"IsUnit Group.Units\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 175,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"IsUnit Group.Units\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Matrix equivalence similarity\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 186,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Matrix equivalence similarity\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Matrix.one identity\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 176,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Matrix.one identity\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Matrix.zero\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 168,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Matrix.zero\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 18,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Units Matrix\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 169,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Units Matrix\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 19,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Matrix\", \"Matrix.rank\", \"Matrix.mul\", \"Matrix.fromBlocks\", \"Field\", \"Matrix.one\", \"Matrix.zero\"]}",
+      "ok": true,
+      "result_chars": 2312,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Matrix\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Matrix.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Line"
+    },
+    {
+      "i": 20,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Units\", \"IsUnit\", \"Matrix.mul_apply\", \"Matrix.transpose\", \"Fintype.card\"]}",
+      "ok": true,
+      "result_chars": 1644,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Units\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Group.Units.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebr"
+    },
+    {
+      "i": 21,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"canonical form diagonal matrix left right multiplication invertible\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 4730,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"canonical form diagonal matrix left right multiplication invertible\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom re"
+    },
+    {
+      "i": 22,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Matrix.diagonal\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 455,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Matrix.diagonal\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Matrix.diagonal\\\",\\\"label\\\":\\\"Matrix.diagonal\\\",\\\"supercell\\\":\\\"path:Mathlib/Data/Matrix/Diagona"
+    },
+    {
+      "i": 23,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"LinearEquiv\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1959,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"LinearEquiv\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:LinearEquiv\\\",\\\"label\\\":\\\"LinearEquiv\\\",\\\"supercell\\\":\\\"path:Mathlib/Algebra/Module/Equiv\\\",\\\"matche"
+    },
+    {
+      "i": 24,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Matrix.diagonal\", \"Prod.fst\", \"Prod.snd\", \"Matrix.mul\", \"Equiv.Prod.mk\"]}",
+      "ok": true,
+      "result_chars": 1582,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Matrix.diagonal\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Matrix.Diagonal\\\",\\\"import_line\\\":\\\"import Mathlib."
+    },
+    {
+      "i": 25,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:Matrix.rank\"}",
+      "ok": true,
+      "result_chars": 1347,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:Matrix.rank\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Matrix.rank\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Matrix.rank\\\",\\\"cell\\\":{"
+    },
+    {
+      "i": 26,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Smith normal form\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 174,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Smith normal form\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 27,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"matrix equivalent congruence\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 185,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"matrix equivalent congruence\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 28,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"cell:decl:Mathlib:Matrix.rank\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 667,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:Matrix.rank\\\",\\\"kind\\\":\\\"cell\\\",\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q44337\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"ment"
+    },
+    {
+      "i": 29,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Fin\", \"Matrix.diagonal\", \"Nat.cast\", \"Matrix.one\"]}",
+      "ok": true,
+      "result_chars": 1240,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Fin\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\\":\\\"https:"
+    }
+  ]
+}

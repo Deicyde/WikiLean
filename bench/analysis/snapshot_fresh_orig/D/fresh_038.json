@@ -1,0 +1,241 @@
+{
+  "task_id": "fresh_038",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:38:21Z",
+  "wall_s": 95.9,
+  "output_lean": "theorem torsion_subgroup_finite {G : Type*} [CommGroup G] (h : G → ℝ) \n  (h_finite_sublevel : ∀ B : ℝ, Set.Finite {x : G | h x ≤ B})\n  (h_growth : ∃ n : ℕ, ∃ b c : ℝ, 1 < b ∧ ∀ x : G, h (x ^ n) ≥ b * h x - c) :\n  Set.Finite {x : G | orderOf x ≠ 0} := sorry",
+  "transcript_stats": {
+    "turns": 28,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_search": 15,
+      "mcp__wikibrain__brain_bridge": 3,
+      "mcp__wikibrain__brain_transfer": 1,
+      "mcp__wikibrain__brain_cell": 3,
+      "decl_exists": 1,
+      "mcp__wikibrain__decl_exists": 4
+    },
+    "tokens_in": 156,
+    "tokens_out": 7200,
+    "cost_usd": 0.123708
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"commutative group\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 174,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"commutative group\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"torsion subgroup\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 433,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"torsion subgroup\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:NumberField.RingOfIntegers\\\",\\\"label\\\":\\\"NumberField.RingOfIntegers\\\",\\\"aka\\\":[\\\"Asymptotics of"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"finite set\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 1540,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finite set\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Finite.injective_iff_bijective\\\",\\\"label\\\":\\\"Finite.injective_iff_bijective\\\",\\\"aka\\\":[\\\"Finite Sets "
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"CommGroup\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 1357,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"CommGroup\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q181296\\\",\\\"label\\\":\\\"Abelian group\\\",\\\"aka\\\":[\\\"Abelian Group\\\",\\\"CommGroup\\\",\\\"Definition:Abelian Group\\\",\\\"abeli"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"the torsion subgroup of a group\", \"confidence_floor\": \"0.5\"}",
+      "ok": true,
+      "result_chars": 3928,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"the torsion subgroup of a group\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/labe"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_transfer",
+      "input": "{\"q\": \"torsion\", \"direction\": \"formal_to_informal\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1321,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"torsion\\\",\\\"decl\\\":\\\"torsion\\\",\\\"hits\\\":[],\\\"note\\\":\\\"decl is not an organ of any atom — it may still exist in Math"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q1551033\"}",
+      "ok": true,
+      "result_chars": 1366,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q1551033\\\",\\\"id\\\":\\\"cell:Q1551033\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"torsion group\\\",\\\"f\\\":32,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q15"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"torsion subgroup finite\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 180,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"torsion subgroup finite\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"finite sublevel sets\", \"confidence_floor\": \"0.3\"}",
+      "ok": true,
+      "result_chars": 1968,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finite sublevel sets\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, res"
+    },
+    {
+      "i": 9,
+      "name": "decl_exists",
+      "input": "{\"names\": \"[\\\"Set.Finite\\\", \\\"CommGroup\\\", \\\"Real\\\"]\"}",
+      "ok": false,
+      "result_chars": 75,
+      "result_head": "<tool_use_error>Error: No such tool available: decl_exists</tool_use_error>"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Set.Finite\", \"CommGroup\", \"Real\"]}",
+      "ok": true,
+      "result_chars": 1010,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Set.Finite\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Finite.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Fini"
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"elements of finite order\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 181,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"elements of finite order\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"order of element group\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 179,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"order of element group\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"orderOf\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 1041,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"orderOf\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:orderOf\\\",\\\"label\\\":\\\"orderOf\\\",\\\"aka\\\":[\\\"Accelerated Sampling on Discrete Spaces with Non-Reversible M"
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"orderOf\", \"Fintype\"]}",
+      "ok": true,
+      "result_chars": 773,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"orderOf\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.GroupTheory.OrderOfElement\\\",\\\"import_line\\\":\\\"import Mathlib.Gr"
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:orderOf\"}",
+      "ok": true,
+      "result_chars": 1719,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:orderOf\\\",\\\"id\\\":\\\"cell:decl:Mathlib:orderOf\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"orderOf\\\",\\\"f\\\":128,\\\"cell\\\":{\\\""
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"torsion subgroup elements finite order\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 195,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"torsion subgroup elements finite order\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Subgroup torsion\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 173,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Subgroup torsion\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 18,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"path:Mathlib/GroupTheory/Torsion\"}",
+      "ok": true,
+      "result_chars": 691,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/GroupTheory/Torsion\\\",\\\"id\\\":\\\"path:Mathlib/GroupTheory/Torsion\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Tors"
+    },
+    {
+      "i": 19,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Fintype subgroup\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 173,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Fintype subgroup\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 20,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"finite subgroup\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 404,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finite subgroup\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Group.nilpotencyClass\\\",\\\"label\\\":\\\"Group.nilpotencyClass\\\",\\\"aka\\\":[\\\"Finite subgroups of the b"
+    },
+    {
+      "i": 21,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"zpowers cyclic order element\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 185,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"zpowers cyclic order element\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 22,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"an element of a group has finite order if its zpowers are finite\", \"confidence_floor\": \"0.3\"}",
+      "ok": true,
+      "result_chars": 3044,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"an element of a group has finite order if its zpowers are finite\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resol"
+    },
+    {
+      "i": 23,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"torsion subgroup AddCommGroup Module\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 193,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"torsion subgroup AddCommGroup Module\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 24,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Fintype finite cardinality\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 183,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Fintype finite cardinality\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 25,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Subtype\", \"Fincard\"]}",
+      "ok": true,
+      "result_chars": 672,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Subtype\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\\":\\\"ht"
+    },
+    {
+      "i": 26,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Set\", \"LE.le\", \"LT.lt\", \"Nat\"]}",
+      "ok": true,
+      "result_chars": 1125,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Set\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Set.Defs\\\",\\\"d"
+    }
+  ]
+}

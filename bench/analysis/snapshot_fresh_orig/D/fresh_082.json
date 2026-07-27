@@ -1,0 +1,242 @@
+{
+  "task_id": "fresh_082",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:49:59Z",
+  "wall_s": 126.1,
+  "output_lean": "theorem invertible_module_is_zariski_locally_free_rank_one\n  {R : Type*} [CommSemiring R] {M : Type*} [AddCommMonoid M] [Module R M]\n  (hinv : ∃ N : Type*, ∃ [AddCommMonoid N], ∃ [Module R N],\n    Nonempty (M ⊗[R] N ≃ₗ[R] R))\n  : ∃ (S : Set R), Set.Finite S ∧\n    Submodule.span R S = ⊤ ∧\n    ∀ s ∈ S,\n      ∃ (R_s : Type*), ∃ [CommSemiring R_s], ∃ [Algebra R R_s],\n        ∃ (M_s : Type*), ∃ [AddCommMonoid M_s], ∃ [Module R_s M_s],\n          Module.Free R_s M_s ∧\n          Module.rank R_s M_s = 1 :=\n  sorry",
+  "transcript_stats": {
+    "turns": 28,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 11,
+      "mcp__wikibrain__brain_brain_cell": 1,
+      "mcp__wikibrain__brain_cell": 1,
+      "decl_exists": 1,
+      "mcp__wikibrain__decl_exists": 9,
+      "mcp__wikibrain__brain_search": 3,
+      "mcp__wikibrain__brain_transfer": 1
+    },
+    "tokens_in": 232,
+    "tokens_out": 8505,
+    "cost_usd": 0.1931985
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"invertible module over commutative ring\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 5005,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"invertible module over commutative ring\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"free module rank one\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2944,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"free module rank one\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, re"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"locally free module Zariski\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2951,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"locally free module Zariski\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label ma"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"Module.rank rank one free\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3234,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Module.rank rank one free\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label matc"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"module localization away from element\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3367,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"module localization away from element\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact i"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_brain_cell",
+      "input": "{\"key\": \"cell:decl:Mathlib:Module.rank\"}",
+      "ok": false,
+      "result_chars": 96,
+      "result_head": "<tool_use_error>Error: No such tool available: mcp__wikibrain__brain_brain_cell</tool_use_error>"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:decl:Mathlib:Module.rank\"}",
+      "ok": true,
+      "result_chars": 1847,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:Module.rank\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Module.rank\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Module.rank\\\",\\\"f\\\":"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"free module basis finsupp\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 4822,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"free module basis finsupp\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label matc"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"Submodule.Span linear combination\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 5250,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Submodule.Span linear combination\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/la"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"ideal unit ideal 1\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3745,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"ideal unit ideal 1\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, reso"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"CommSemiring CommRing\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2864,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"CommSemiring CommRing\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, r"
+    },
+    {
+      "i": 11,
+      "name": "decl_exists",
+      "input": "{\"names\": \"[\\\"CommSemiring\\\", \\\"Module.Free\\\", \\\"Module.Rank\\\", \\\"Ideal\\\"]\"}",
+      "ok": false,
+      "result_chars": 75,
+      "result_head": "<tool_use_error>Error: No such tool available: decl_exists</tool_use_error>"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"CommSemiring\", \"Module.Free\", \"Module.Rank\", \"Ideal\", \"Submodule.IsPrincipal\"]}",
+      "ok": true,
+      "result_chars": 1624,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"CommSemiring\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Ring.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebr"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"rank free module dimension\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 183,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"rank free module dimension\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__brain_transfer",
+      "input": "{\"q\": \"rank\", \"direction\": \"informal_to_formal\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1438,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"informal_to_formal\\\",\\\"q\\\":\\\"rank\\\",\\\"resolved_from\\\":\\\"search\\\",\\\"id\\\":\\\"cell:Q318737\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Abelian category\\\",\\\"conf"
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"invertible module\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 174,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"invertible module\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"tensor product modules bilinear\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3233,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"tensor product modules bilinear\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/labe"
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Submonoid.Localization\", \"Localization.atBot\", \"IsLocalization\", \"Module.Free\", \"Set.Finite\", \"Submodule.span\"]}",
+      "ok": true,
+      "result_chars": 2016,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Submonoid.Localization\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g."
+    },
+    {
+      "i": 18,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Submonoid.powers\", \"IsLocalization.atPrime\", \"Localization.atUnits\", \"Module.Free.rank\", \"Prod.snd\"]}",
+      "ok": true,
+      "result_chars": 1508,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Submonoid.powers\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Group.Submonoid.Membership\\\",\\\"import_line\\\":\\\""
+    },
+    {
+      "i": 19,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"LocalizationMap\", \"IsLocalization.atBot\", \"Module.End_isUnit\", \"Submodule.map\", \"FinsetModule\"]}",
+      "ok": true,
+      "result_chars": 1606,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"LocalizationMap\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis "
+    },
+    {
+      "i": 20,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Module.rank\", \"LinearIndependent\", \"basis\", \"linarith\", \"Basis.mk_eq_rank\"]}",
+      "ok": true,
+      "result_chars": 1568,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Module.rank\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Dimension.Basic\\\",\\\"import_line\\\":\\\"import Mat"
+    },
+    {
+      "i": 21,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"localized tensor product module R powers\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 4241,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"localized tensor product module R powers\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exac"
+    },
+    {
+      "i": 22,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Localization.away\", \"IsLocalization.away\", \"Module.IsTorsionFree\", \"Module.rank.eq_one\"]}",
+      "ok": true,
+      "result_chars": 1262,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Localization.away\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basi"
+    },
+    {
+      "i": 23,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"away localization powers element\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 189,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"away localization powers element\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 24,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Localization\", \"Submonoid.Localization\", \"Algebra.TensorProduct.Localization\"]}",
+      "ok": true,
+      "result_chars": 1051,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Localization\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.GroupTheory.MonoidLocalization.Basic\\\",\\\"import_line\\\":\\\"im"
+    },
+    {
+      "i": 25,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Algebra.Localization.Away.map\", \"Localization.atBot\", \"Submonoid.LocalizationMap\"]}",
+      "ok": true,
+      "result_chars": 1189,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Algebra.Localization.Away.map\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are commo"
+    },
+    {
+      "i": 26,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Prod.map\", \"Equiv.refl\", \"LinearEquiv\"]}",
+      "ok": true,
+      "result_chars": 1001,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Prod.map\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Core\\\",\\\"import_line\\\":\\\"import Init.Core\\\",\\\"docs_url\\\":\\\"https:/"
+    }
+  ]
+}

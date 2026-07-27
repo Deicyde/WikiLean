@@ -1,0 +1,216 @@
+{
+  "task_id": "fresh_080",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:49:33Z",
+  "wall_s": 110.1,
+  "output_lean": "theorem MvPowerSeries.eq_of_constantCoeff_and_partialDeriv\n  {σ : Type*} {R : Type*} [Fintype σ] [CommRing R] [CharZero R]\n  (f g : MvPowerSeries σ R) :\n  MvPowerSeries.constantCoeff f = MvPowerSeries.constantCoeff g →\n  (∀ i : σ, ∀ n : σ →₀ ℕ,\n    (n i + 1) • MvPowerSeries.coeff R (n + Finsupp.single i 1) f =\n    (n i + 1) • MvPowerSeries.coeff R (n + Finsupp.single i 1) g) →\n  f = g := sorry",
+  "transcript_stats": {
+    "turns": 25,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 3,
+      "mcp__wikibrain__brain_cell": 2,
+      "mcp__wikibrain__brain_search": 8,
+      "mcp__wikibrain__brain_neighborhood": 2,
+      "mcp__wikibrain__decl_exists": 9
+    },
+    "tokens_in": 174,
+    "tokens_out": 8279,
+    "cost_usd": 0.18851975
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"multivariate power series\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 4725,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"multivariate power series\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label matc"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"partial derivative power series\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 6880,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"partial derivative power series\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/labe"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"no torsion additive group\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2836,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"no torsion additive group\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label matc"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q206925\"}",
+      "ok": true,
+      "result_chars": 5891,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q206925\\\",\\\"id\\\":\\\"cell:Q206925\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Power series\\\",\\\"f\\\":36057,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q20"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"MvPowerSeries multivariate\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 183,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"MvPowerSeries multivariate\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"constant term coefficient\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 182,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"constant term coefficient\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"derivative evaluation power series\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 191,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"derivative evaluation power series\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"additively torsion free\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 180,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"additively torsion free\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"cell:Q206925\", \"limit\": 50, \"traces\": true}",
+      "ok": true,
+      "result_chars": 44902,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q206925\\\",\\\"kind\\\":\\\"cell\\\",\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q2796622\\\",\\\"w\\\":8,\\\"kinds\\\":{\\\"links\\\":8},\\\"traces_total\\\":8,\\\"traces\\\":[{\\\"kind\\\":\\\"lin"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MvPowerSeries\", \"PowerSeries.coeff\", \"PowerSeries.constantCoeff\", \"AdditiveTorsionFree\", \"Function.Injective\"]}",
+      "ok": true,
+      "result_chars": 1695,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MvPowerSeries\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.MvPowerSeries.Basic\\\",\\\"import_line\\\":\\\"import "
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"NoZeroSMulDivisors\", \"CharZero\", \"AddCommGroup.NoTorsion\"]}",
+      "ok": true,
+      "result_chars": 1070,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"NoZeroSMulDivisors\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.NoZeroSMulDivisors.Defs\\\",\\\"import_line\\\":\\\"i"
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MvPowerSeries.constantCoeff\", \"MvPowerSeries.X\", \"fderiv\", \"partialDeriv\"]}",
+      "ok": true,
+      "result_chars": 1416,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MvPowerSeries.constantCoeff\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.MvPowerSeries.Basic\\\",\\\"import_li"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"deriv\", \"derivWithin\", \"Polynomial.partialDerivative\", \"MvPolynomial.pderiv\"]}",
+      "ok": true,
+      "result_chars": 1394,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"deriv\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.Calculus.Deriv.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.A"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"MvPowerSeries\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 596,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"MvPowerSeries\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:MvPowerSeries\\\",\\\"label\\\":\\\"MvPowerSeries\\\",\\\"supercell\\\":\\\"path:Mathlib/RingTheory/MvPowerSeries/"
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:MvPowerSeries\"}",
+      "ok": true,
+      "result_chars": 1295,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:MvPowerSeries\\\",\\\"id\\\":\\\"cell:decl:Mathlib:MvPowerSeries\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"MvPowerSeries\\\",\\\"ce"
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"decl:Mathlib:MvPowerSeries\", \"limit\": 30, \"traces\": false}",
+      "ok": true,
+      "result_chars": 447,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:MvPowerSeries\\\",\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:MvPowerSeries\\\",\\\"kind\\\":\\\"cell\\\",\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q20"
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MvPowerSeries.coeff\", \"MvPowerSeries.map\", \"CommRing\", \"AddMonoidWithOne\"]}",
+      "ok": true,
+      "result_chars": 1423,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MvPowerSeries.coeff\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.MvPowerSeries.Basic\\\",\\\"import_line\\\":\\\"i"
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"power series derivative variable\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 189,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"power series derivative variable\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 18,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"MvPowerSeries evaluation coeff\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 187,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"MvPowerSeries evaluation coeff\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 19,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"PowerSeries.derivative\", \"MvPowerSeries.rightDeriv\", \"AddGroup\", \"AddMonoid\"]}",
+      "ok": true,
+      "result_chars": 1350,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"PowerSeries.derivative\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.PowerSeries.Derivative\\\",\\\"import_line"
+    },
+    {
+      "i": 20,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"MvPowerSeries derivative partial\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 189,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"MvPowerSeries derivative partial\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 21,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"DFinsupp\", \"Finsupp\", \"Nat.Prod.Lex\"]}",
+      "ok": true,
+      "result_chars": 1066,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"DFinsupp\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.DFinsupp.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.DFin"
+    },
+    {
+      "i": 22,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MvPowerSeries.instCommSemiring\", \"MvPowerSeries.instCommRing\", \"Finsupp.prod\"]}",
+      "ok": true,
+      "result_chars": 1235,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MvPowerSeries.instCommSemiring\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.MvPowerSeries.Basic\\\",\\\"import"
+    },
+    {
+      "i": 23,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Finsupp.single\", \"CharZero\", \"Fintype\"]}",
+      "ok": true,
+      "result_chars": 1046,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Finsupp.single\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Finsupp.Single\\\",\\\"import_line\\\":\\\"import Mathlib.Da"
+    }
+  ]
+}

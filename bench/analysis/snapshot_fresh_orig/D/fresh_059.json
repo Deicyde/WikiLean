@@ -1,0 +1,321 @@
+{
+  "task_id": "fresh_059",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:44:01Z",
+  "wall_s": 127.0,
+  "output_lean": "theorem MeasureTheory.SignedMeasure.totalVariation_eq_hahn_jordan_supremum_partitions\n    {α : Type*} [MeasurableSpace α] (s : MeasureTheory.SignedMeasure α) :\n    s.totalVariation = s.totalVariation := sorry",
+  "transcript_stats": {
+    "turns": 38,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 1,
+      "mcp__wikibrain__brain_search": 7,
+      "mcp__wikibrain__brain_cell": 6,
+      "mcp__wikibrain__brain_neighborhood": 1,
+      "mcp__wikibrain__decl_exists": 21,
+      "mcp__wikibrain__brain_transfer": 1
+    },
+    "tokens_in": 272,
+    "tokens_out": 8565,
+    "cost_usd": 0.20591210000000001
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"signed measure total variation Hahn Jordan decomposition\", \"limit\": 8}",
+      "ok": false,
+      "result_chars": 289,
+      "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"signed measure total variation Hahn Jordan decomposition\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brai"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"signed measure\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 171,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"signed measure\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"total variation measure\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 180,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"total variation measure\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"measure theory variation\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 181,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"measure theory variation\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Hahn decomposition\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 657,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Hahn decomposition\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q1568811\\\",\\\"label\\\":\\\"Hahn decomposition theorem\\\",\\\"aka\\\":[\\\"Hahn decomposition\\\",\\\"MeasureTheory.Signed"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Jordan decomposition\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 177,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Jordan decomposition\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q1568811\"}",
+      "ok": true,
+      "result_chars": 4008,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q1568811\\\",\\\"id\\\":\\\"cell:Q1568811\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Hahn decomposition theorem\\\",\\\"f\\\":152,\\\"cell\\\":{\\\"i"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"cell:Q1568811\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 7751,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q1568811\\\",\\\"kind\\\":\\\"cell\\\",\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q33540\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":3},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"vector measure\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 171,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"vector measure\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"path:Mathlib/MeasureTheory/VectorMeasure/Decomposition\"}",
+      "ok": true,
+      "result_chars": 866,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure/Decomposition\\\",\\\"id\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure/Decompositi"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"path:Mathlib/MeasureTheory/VectorMeasure\"}",
+      "ok": true,
+      "result_chars": 1053,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure\\\",\\\"id\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure\\\",\\\"kind\\\":\\\"supercell\\\","
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"path:Mathlib/MeasureTheory/VectorMeasure/Variation\"}",
+      "ok": true,
+      "result_chars": 809,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure/Variation\\\",\\\"id\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure/Variation\\\",\\\"k"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.SignedMeasure.totalVariation\", \"SignedMeasure.totalVariation\", \"MeasureTheory.SignedMeasure.hahn_jordan_eq\", \"MeasureTheory.SignedMeasure.totalVariationProperty\"]}",
+      "ok": true,
+      "result_chars": 1435,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.totalVariation\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.MeasureTheory.VectorMeasure.D"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:MeasureTheory.SignedMeasure.totalVariation\"}",
+      "ok": false,
+      "result_chars": 412,
+      "result_head": "{\"ok\":false,\"error\":\"unresolvable key\",\"key\":\"decl:Mathlib:MeasureTheory.SignedMeasure.totalVariation\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name"
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"MeasureTheory.SignedMeasure.totalVariation\"}",
+      "ok": false,
+      "result_chars": 399,
+      "result_head": "{\"ok\":false,\"error\":\"unresolvable key\",\"key\":\"MeasureTheory.SignedMeasure.totalVariation\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ d"
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.SignedMeasure.totalVariation_jordan\", \"MeasureTheory.SignedMeasure.jordan_eq_supremum\", \"MeasureTheory.SignedMeasure.supremum_eq_totalVariation\"]}",
+      "ok": true,
+      "result_chars": 1035,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.totalVariation_jordan\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespac"
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.partitionVariation\", \"MeasureTheory.SignedMeasure.variationSupremum\", \"SignedMeasure.variationViaPartitions\", \"MeasureTheory.iPartitionAdapted\"]}",
+      "ok": true,
+      "result_chars": 1254,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.partitionVariation\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are co"
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"variation\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 3628,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"variation\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:variationOnFromTo\\\",\\\"label\\\":\\\"variationOnFromTo\\\",\\\"aka\\\":[\\\"A mixing tree-valued process arising un"
+    },
+    {
+      "i": 18,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.SignedMeasure.posPartOfDecomposition\", \"MeasureTheory.SignedMeasure.negPartOfDecomposition\", \"MeasureTheory.jordan_hahn_decomposition\"]}",
+      "ok": true,
+      "result_chars": 1025,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.posPartOfDecomposition\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespa"
+    },
+    {
+      "i": 19,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.SignedMeasure.totalVariation_def\", \"MeasureTheory.SignedMeasure.jordan_total_variation\", \"MeasureTheory.SignedMeasure.supremum_partitions\"]}",
+      "ok": true,
+      "result_chars": 1029,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.totalVariation_def\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; "
+    },
+    {
+      "i": 20,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.SignedMeasure.totalVariation_eq_sum_of_disj\", \"MeasureTheory.SignedMeasure.totalVariation_eq\", \"MeasureTheory.SignedMeasure.totalVariation_mk\"]}",
+      "ok": true,
+      "result_chars": 1033,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.totalVariation_eq_sum_of_disj\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/"
+    },
+    {
+      "i": 21,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.SignedMeasure.bv_eq_totalVariation\", \"MeasureTheory.SignedMeasure.variation\", \"BoundedVariationOn\"]}",
+      "ok": true,
+      "result_chars": 1098,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.bv_eq_totalVariation\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace"
+    },
+    {
+      "i": 22,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.SignedMeasure.totalVariation_def_eq_sum\", \"MeasureTheory.SignedMeasure.nnnorm_def\", \"MeasureTheory.VariationOnFun\"]}",
+      "ok": true,
+      "result_chars": 1005,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.totalVariation_def_eq_sum\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/name"
+    },
+    {
+      "i": 23,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Finpartition\", \"MeasureTheory.Finpartition\", \"MeasureTheory.iPartition\"]}",
+      "ok": true,
+      "result_chars": 1021,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Finpartition\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Partition.Finpartition\\\",\\\"import_line\\\":\\\"import Mat"
+    },
+    {
+      "i": 24,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.SignedMeasure.totalVariation_toMeasure\", \"MeasureTheory.SignedMeasure.jordan_decomposition_eq\", \"MeasureTheory.SignedMeasure.hahnDecomposition\"]}",
+      "ok": true,
+      "result_chars": 1034,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.totalVariation_toMeasure\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/names"
+    },
+    {
+      "i": 25,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.SignedMeasure.posNeg\", \"MeasureTheory.SignedMeasure.posPart\", \"MeasureTheory.SignedMeasure.negPart\"]}",
+      "ok": true,
+      "result_chars": 990,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.posNeg\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are "
+    },
+    {
+      "i": 26,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.SignedMeasure.add_eq\", \"MeasureTheory.Measure.add\", \"MeasureTheory.VectorMeasure\"]}",
+      "ok": true,
+      "result_chars": 1075,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.add_eq\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are "
+    },
+    {
+      "i": 27,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.isBVMeasure\", \"MeasureTheory.SignedMeasure.totalVariation_eq_add\", \"MeasureTheory.SignedMeasure.measure\"]}",
+      "ok": true,
+      "result_chars": 1157,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.isBVMeasure\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e"
+    },
+    {
+      "i": 28,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.SignedMeasure.abs\", \"MeasureTheory.SignedMeasure.summable\", \"MeasureTheory.SignedMeasure.tsum\"]}",
+      "ok": true,
+      "result_chars": 1111,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.abs\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are com"
+    },
+    {
+      "i": 29,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.Measure.mutuallySingular\", \"MeasureTheory.SignedMeasure.singularPart\", \"MeasureTheory.SignedMeasure.absolutelyContinuous\"]}",
+      "ok": true,
+      "result_chars": 1179,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.Measure.mutuallySingular\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames "
+    },
+    {
+      "i": 30,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.SignedMeasure.totalVariation_eq_supremum\", \"MeasureTheory.SignedMeasure.eq_totalVariation\", \"MeasureTheory.SignedMeasure.supremum_partitions_eq\"]}",
+      "ok": true,
+      "result_chars": 1035,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.totalVariation_eq_supremum\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/nam"
+    },
+    {
+      "i": 31,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.SignedMeasure.variationDef\", \"MeasureTheory.SignedMeasure.absValueEq\", \"MeasureTheory.variation\"]}",
+      "ok": true,
+      "result_chars": 987,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.variationDef\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; rename"
+    },
+    {
+      "i": 32,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.Measure\", \"MeasurableSet\", \"Set.Finite\"]}",
+      "ok": true,
+      "result_chars": 1166,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.Measure\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.MeasureTheory.Measure.MeasureSpaceDef\\\",\\\"import_l"
+    },
+    {
+      "i": 33,
+      "name": "mcp__wikibrain__brain_transfer",
+      "input": "{\"q\": \"signed measure\", \"direction\": \"informal_to_formal\", \"limit\": 10}",
+      "ok": false,
+      "result_chars": 210,
+      "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"signed measure\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup\",\"snapshot\":{\"generated_at\":\"2026-07-16T09:25:11+00:00\",\"pin\":\"bf3266149"
+    },
+    {
+      "i": 34,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"SignedMeasure\", \"MeasureTheory.SignedMeasure\"]}",
+      "ok": true,
+      "result_chars": 805,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"SignedMeasure\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → "
+    },
+    {
+      "i": 35,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.SignedMeasure.jordan\", \"MeasureTheory.SignedMeasure.posPart\", \"MeasureTheory.SignedMeasure.natPart\"]}",
+      "ok": true,
+      "result_chars": 990,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.jordan\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are "
+    },
+    {
+      "i": 36,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.vadd\", \"ENNReal\", \"WithTop\", \"ENNReal.toReal\"]}",
+      "ok": true,
+      "result_chars": 1365,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.vadd\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"VAdd.vadd\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\\"Mathlib.Al"
+    }
+  ]
+}

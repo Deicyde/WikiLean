@@ -1,0 +1,174 @@
+{
+  "task_id": "fresh_026",
+  "arm": "C",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:04:09Z",
+  "wall_s": 87.8,
+  "output_lean": "theorem tsum_from_one_le_integral_of_antitone\n    (f : ℝ → ℝ)\n    (antitone : AntitoneOn f (Ici 0))\n    (integrable : IntegrableOn f (Ioi 0))\n    (nonneg : ∀ x ∈ Ioi 0, 0 ≤ f x) :\n    ∑' (n : ℕ), f (n + 1 : ℕ) ≤ ∫ x in Ioi 0, f x := sorry",
+  "transcript_stats": {
+    "turns": 20,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 11,
+      "mcp__formal__decl_grep": 4,
+      "mcp__formal__decl_read": 4
+    },
+    "tokens_in": 94,
+    "tokens_out": 7351,
+    "cost_usd": 0.0818753
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"tsum ∫ antitone\"}",
+      "ok": true,
+      "result_chars": 100,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'tsum ∫ antitone': <input>:1:5: expected end of input\"}]"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"(?f : ℕ → ℝ) → ∑' n, ?f n ≤ ?integral\"}",
+      "ok": true,
+      "result_chars": 124,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for \\\"(?f : ℕ → ℝ) → ∑' n, ?f n ≤ ?integral\\\": type expected, got\\n  (?f : ℕ → ℝ)\"}]"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Antitone integrable sum\"}",
+      "ok": true,
+      "result_chars": 105,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Antitone integrable sum': Unknown identifier `integrable`\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"antitone\"}",
+      "ok": true,
+      "result_chars": 88,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'antitone': unknown identifier 'antitone'\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"tsum\"}",
+      "ok": true,
+      "result_chars": 1354,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 823 declarations mentioning tsum.\\n- tsum   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n    `∑' i, f i` is the unconditional sum of `f` if it exists, or 0 otherwise. "
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"integral\"}",
+      "ok": true,
+      "result_chars": 88,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'integral': unknown identifier 'integral'\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"MonotoneOn\"}",
+      "ok": true,
+      "result_chars": 823,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 299 declarations mentioning MonotoneOn.\\n- MonotoneOn   [Mathlib.Order.Monotone.Defs]\\n    A function `f` is monotone on `s` if, for all `a, b ∈ s`, `a ≤ b` implies `f"
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Antitone\"}",
+      "ok": true,
+      "result_chars": 798,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 541 declarations mentioning Antitone.\\n- Antitone   [Mathlib.Order.Monotone.Defs]\\n    A function `f` is antitone if `a ≤ b` implies `f b ≤ f a`.\\n- antitone_const   ["
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"sum integral bound\"}",
+      "ok": true,
+      "result_chars": 93,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'sum integral bound': Unknown identifier `sum`\"}]"
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(integral|∫|Integrable).*sum|sum.*integral\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 2218,
+      "result_head": "[{\"type\": \"text\", \"text\": \"390 match(es) for '(integral|∫|Integrable).*sum|sum.*integral' (via ripgrep):\\n- Mathlib/NumberTheory/NumberField/CanonicalEmbedding/ConvexBody.lean:408\\n    ← Finset.sum_ne"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"tsum.*≤.*integral|decreasing.*integral\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 254,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'tsum.*≤.*integral|decreasing.*integral' (via ripgrep):\\n- Mathlib/MeasureTheory/Measure/LevyProkhorovMetric.lean:419\\n    /-- A monotone decreasing converge"
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"condensation\"}",
+      "ok": true,
+      "result_chars": 96,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'condensation': unknown identifier 'condensation'\"}]"
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Summable.*Monotone|Monotone.*Summable\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 108,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'Summable.*Monotone|Monotone.*Summable' under Mathlib/.\"}]"
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*Antitone.*sum|theorem.*sum.*Antitone\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2047,
+      "result_head": "[{\"type\": \"text\", \"text\": \"14 match(es) for 'theorem.*Antitone.*sum|theorem.*sum.*Antitone' (via ripgrep):\\n- Mathlib/Analysis/SumIntegralComparisons.lean:84\\n    theorem AntitoneOn.integral_le_sum (h"
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Summable\"}",
+      "ok": true,
+      "result_chars": 1165,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 670 declarations mentioning Summable.\\n- Summable   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n    `Summable f` means that `f` has some (infinite) sum with respect t"
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SumIntegralComparisons.lean\", \"line\": 84, \"n\": 30}",
+      "ok": true,
+      "result_chars": 1962,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SumIntegralComparisons.lean  (lines 84–113 of 309):\\n    84  theorem AntitoneOn.integral_le_sum (hf : AntitoneOn f (Icc x₀ (x₀ + a))) :\\n    85      ∫ x in "
+    },
+    {
+      "i": 16,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SumIntegralComparisons.lean\", \"line\": 242, \"n\": 30}",
+      "ok": true,
+      "result_chars": 2177,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SumIntegralComparisons.lean  (lines 242–271 of 309):\\n   242  theorem AntitoneOn.tsum_le_integral (anti : AntitoneOn f (Ici 0))\\n   243      (integrable : I"
+    },
+    {
+      "i": 17,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SumIntegralComparisons.lean\", \"line\": 235, \"n\": 15}",
+      "ok": true,
+      "result_chars": 1144,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SumIntegralComparisons.lean  (lines 235–249 of 309):\\n   235  theorem AntitoneOn.tsum_add_one_le_integral (anti : AntitoneOn f (Ici 0))\\n   236      (integr"
+    },
+    {
+      "i": 18,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SumIntegralComparisons.lean\", \"line\": 1, \"n\": 20}",
+      "ok": true,
+      "result_chars": 820,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SumIntegralComparisons.lean  (lines 1–20 of 309):\\n     1  /-\\n     2  Copyright (c) 2022 Kevin H. Wilson. All rights reserved.\\n     3  Released under Apac"
+    }
+  ]
+}

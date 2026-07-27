@@ -1,0 +1,45 @@
+{
+  "task_id": "fresh_051",
+  "arm": "B",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T02:20:52Z",
+  "wall_s": 87.1,
+  "output_lean": "theorem strongly_measurable_of_continuous_on_compl_countable\n  {α β : Type*} [TopologicalSpace α] [MeasurableSpace α] [PseudoMetricSpace β]\n  {f : α → β} {s : Set α} (hs : Countable s) (hf : ContinuousOn f (sᶜ)) :\n  StronglyMeasurable f := sorry",
+  "transcript_stats": {
+    "turns": 4,
+    "tool_calls_by_name": {
+      "mcp__wiki__wiki_search": 2,
+      "mcp__wiki__nlab_search": 1
+    },
+    "tokens_in": 26,
+    "tokens_out": 7401,
+    "cost_usd": 0.05034295
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"strongly measurable function pseudo-metric space\"}",
+      "ok": true,
+      "result_chars": 2366,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'strongly measurable function pseudo-metric space':\\n- Riemannian manifold  (slug: Riemannian_manifold)\\n    https://en.wikipedia.org/wiki/Riemannian_manifol"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"measurable functions continuous outside countable set\"}",
+      "ok": true,
+      "result_chars": 2303,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'measurable functions continuous outside countable set':\\n- Probability density function  (slug: Probability_density_function)\\n    https://en.wikipedia.org/"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wiki__nlab_search",
+      "input": "{\"q\": \"strongly measurable\"}",
+      "ok": true,
+      "result_chars": 98,
+      "result_head": "[{\"type\": \"text\", \"text\": \"nLab search for 'strongly measurable' — candidate pages:\\n- HomePage\"}]"
+    }
+  ]
+}

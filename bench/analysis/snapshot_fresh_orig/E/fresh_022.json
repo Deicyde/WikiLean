@@ -1,0 +1,286 @@
+{
+  "task_id": "fresh_022",
+  "arm": "E",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T05:01:26Z",
+  "wall_s": 155.3,
+  "output_lean": "theorem partial_sums_bounded_by_integral_of_antitone_nonneg\n    (f : ℝ → ℝ) (N : ℕ)\n    (hf_anti : AntitoneOn f (Ici 0))\n    (hf_int : IntegrableOn f (Ioi 0))\n    (hf_nonneg : ∀ t ∈ Ioi 0, 0 ≤ f t) :\n    ∑ n ∈ Finset.range N, f n ≤ f 0 + ∫ x in Ioi 0, f x := sorry",
+  "transcript_stats": {
+    "turns": 34,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 14,
+      "mcp__formal__decl_grep": 11,
+      "mcp__formal__decl_read": 8
+    },
+    "tokens_in": 184,
+    "tokens_out": 10395,
+    "cost_usd": 0.1691422
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Antitone\"}",
+      "ok": true,
+      "result_chars": 798,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 541 declarations mentioning Antitone.\\n- Antitone   [Mathlib.Order.Monotone.Defs]\\n    A function `f` is antitone if `a ≤ b` implies `f b ≤ f a`.\\n- antitone_const   ["
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"partial_sum\"}",
+      "ok": true,
+      "result_chars": 94,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'partial_sum': unknown identifier 'partial_sum'\"}]"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"?α → ℝ\"}",
+      "ok": true,
+      "result_chars": 1373,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 26993 declarations mentioning Real.\\n- IsPowMul   [Mathlib.Data.Real.Basic]\\n    A function `f : R → ℝ` is power-multiplicative if for all `r ∈ R` and all positive `n "
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Finset.sum\"}",
+      "ok": true,
+      "result_chars": 1194,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 3709 declarations mentioning Finset.sum.\\n- Finset.sum   [Mathlib.Algebra.BigOperators.Group.Finset.Defs]\\n    `∑ x ∈ s, f x` is the sum of `f x` as `x` ranges over th"
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"integral\"}",
+      "ok": true,
+      "result_chars": 88,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'integral': unknown identifier 'integral'\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"MeasureTheory.integral\"}",
+      "ok": true,
+      "result_chars": 1195,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 1416 declarations mentioning MeasureTheory.integral.\\n- MeasureTheory.integral   [Mathlib.MeasureTheory.Integral.Bochner.Basic]\\n    The Bochner integral\\n- MeasureThe"
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"sum_le_integral\"}",
+      "ok": true,
+      "result_chars": 102,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'sum_le_integral': unknown identifier 'sum_le_integral'\"}]"
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"tsum\"}",
+      "ok": true,
+      "result_chars": 1354,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 823 declarations mentioning tsum.\\n- tsum   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n    `∑' i, f i` is the unconditional sum of `f` if it exists, or 0 otherwise. "
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"(ℕ → ℝ) → ℝ\"}",
+      "ok": true,
+      "result_chars": 1054,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 6938 declarations mentioning Real and Nat.\\n- Polynomial.Chebyshev.sumNodes   [Mathlib.Analysis.SpecialFunctions.Trigonometric.Chebyshev.Extremal]\\n    For a polynomia"
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(theorem|lemma).*antitone.*integral\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 106,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma).*antitone.*integral' under Mathlib/.\"}]"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"bounded monotone decreasing\"}",
+      "ok": true,
+      "result_chars": 106,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'bounded monotone decreasing': Unknown identifier `bounded`\"}]"
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Finset.sum ℕ ℝ\"}",
+      "ok": true,
+      "result_chars": 208,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Finset.sum ℕ ℝ': Application type mismatch: The argument\\n  ℕ\\nhas type\\n  Type\\nbut is expected to have type\\n  Finset ?m.1\\nin the application\\n  Finset."
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*le.*integral\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 2335,
+      "result_head": "[{\"type\": \"text\", \"text\": \"218 match(es) for 'theorem.*le.*integral' (via ripgrep):\\n- Mathlib/FieldTheory/IntermediateField/Adjoin/Algebra.lean:160\\n    theorem adjoin_simple_toSubalgebra_of_integral"
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Finset.sum le Finset.range\"}",
+      "ok": true,
+      "result_chars": 100,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Finset.sum le Finset.range': Unknown identifier `le`\"}]"
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"sum.*monotone|decreasing.*sum\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1358,
+      "result_head": "[{\"type\": \"text\", \"text\": \"43 match(es) for 'sum.*monotone|decreasing.*sum' (via ripgrep):\\n- Mathlib/Analysis/SumOverResidueClass.lean:18\\n    decreasing, then the sum over `f` restricted to any resi"
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*sum.*integral.*antitone|theorem.*integral.*sum.*antitone\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 136,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*sum.*integral.*antitone|theorem.*integral.*sum.*antitone' under Mathlib/.\"}]"
+    },
+    {
+      "i": 16,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SumIntegralExpDecay.lean\", \"line\": 1, \"n\": 100}",
+      "ok": true,
+      "result_chars": 4040,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SumIntegralExpDecay.lean  (lines 1–80 of 80):\\n     1  /-\\n     2  Copyright (c) 2025 Sébastien Gouëzel. All rights reserved.\\n     3  Released under Apache"
+    },
+    {
+      "i": 17,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*sum_mul_Ico_le_integral_of_monotone_antitone|lemma.*sum_mul_Ico_le_integral_of_monotone_antitone\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 276,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'theorem.*sum_mul_Ico_le_integral_of_monotone_antitone|lemma.*sum_mul_Ico_le_integral_of_monotone_antitone' (via ripgrep):\\n- Mathlib/Analysis/SumIntegralCom"
+    },
+    {
+      "i": 18,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SumIntegralComparisons.lean\", \"line\": 144, \"n\": 30}",
+      "ok": true,
+      "result_chars": 1707,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SumIntegralComparisons.lean  (lines 144–173 of 309):\\n   144  lemma sum_mul_Ico_le_integral_of_monotone_antitone\\n   145      (hab : a ≤ b) (hf : MonotoneOn"
+    },
+    {
+      "i": 19,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SumIntegralComparisons.lean\", \"line\": 1, \"n\": 60}",
+      "ok": true,
+      "result_chars": 3449,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SumIntegralComparisons.lean  (lines 1–60 of 309):\\n     1  /-\\n     2  Copyright (c) 2022 Kevin H. Wilson. All rights reserved.\\n     3  Released under Apac"
+    },
+    {
+      "i": 20,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*AntitoneOn.*sum.*integral|theorem.*AntitoneOn.*integral.*sum|lemma.*AntitoneOn.*sum.*integral|lemma.*AntitoneOn.*integral.*sum\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1559,
+      "result_head": "[{\"type\": \"text\", \"text\": \"10 match(es) for 'theorem.*AntitoneOn.*sum.*integral|theorem.*AntitoneOn.*integral.*sum|lemma.*AntitoneOn.*sum.*integral|lemma.*AntitoneOn.*integral.*sum' (via ripgrep):\\n- "
+    },
+    {
+      "i": 21,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SumIntegralComparisons.lean\", \"line\": 104, \"n\": 20}",
+      "ok": true,
+      "result_chars": 1363,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SumIntegralComparisons.lean  (lines 104–123 of 309):\\n   104  theorem AntitoneOn.sum_le_integral (hf : AntitoneOn f (Icc x₀ (x₀ + a))) :\\n   105      ∑ i ∈ "
+    },
+    {
+      "i": 22,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SumIntegralComparisons.lean\", \"line\": 84, \"n\": 20}",
+      "ok": true,
+      "result_chars": 1342,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SumIntegralComparisons.lean  (lines 84–103 of 309):\\n    84  theorem AntitoneOn.integral_le_sum (hf : AntitoneOn f (Icc x₀ (x₀ + a))) :\\n    85      ∫ x in "
+    },
+    {
+      "i": 23,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SumIntegralComparisons.lean\", \"line\": 196, \"n\": 30}",
+      "ok": true,
+      "result_chars": 2182,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SumIntegralComparisons.lean  (lines 196–225 of 309):\\n   196  lemma AntitoneOn.sum_range_le_integral {N : ℕ} (anti : AntitoneOn f (Icc 0 (N : ℝ)))\\n   197  "
+    },
+    {
+      "i": 24,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SumIntegralComparisons.lean\", \"line\": 220, \"n\": 35}",
+      "ok": true,
+      "result_chars": 2587,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SumIntegralComparisons.lean  (lines 220–254 of 309):\\n   220  open Filter Finset in\\n   221  theorem AntitoneOn.tsum_comp_add_le_integral (N : ℕ) (anti : An"
+    },
+    {
+      "i": 25,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"sum_range\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2738,
+      "result_head": "[{\"type\": \"text\", \"text\": \"487 match(es) for 'sum_range' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/TrapezoidalRule.lean:46\\n    rw [neg_mul_eq_neg_mul, neg_div', neg_sub, add_c"
+    },
+    {
+      "i": 26,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Ici Ioi Set\"}",
+      "ok": true,
+      "result_chars": 86,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Ici Ioi Set': Unknown identifier `Ici`\"}]"
+    },
+    {
+      "i": 27,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"IntegrableOn\"}",
+      "ok": true,
+      "result_chars": 96,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IntegrableOn': unknown identifier 'IntegrableOn'\"}]"
+    },
+    {
+      "i": 28,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def Ici|theorem Ici|Ici :\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1374,
+      "result_head": "[{\"type\": \"text\", \"text\": \"143 match(es) for 'def Ici|theorem Ici|Ici :' (via ripgrep):\\n- Mathlib/Algebra/Order/Floor/Ring.lean:832\\n    theorem preimage_Ici : ((↑) : ℤ → R) ⁻¹' Set.Ici a = Set.Ici ⌈"
+    },
+    {
+      "i": 29,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def Ioi|theorem Ioi|Ioi :\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1353,
+      "result_head": "[{\"type\": \"text\", \"text\": \"119 match(es) for 'def Ioi|theorem Ioi|Ioi :' (via ripgrep):\\n- Mathlib/Analysis/SpecialFunctions/Pow/Integral.lean:68\\n    filter_upwards [self_mem_ae_restrict (measurableS"
+    },
+    {
+      "i": 30,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def IntegrableOn\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 223,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'def IntegrableOn' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/IntegrableOn.lean:92\\n    def IntegrableOn (f : α → ε) (s : Set α) (μ : Measure α := by v"
+    },
+    {
+      "i": 31,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SumIntegralComparisons.lean\", \"line\": 240, \"n\": 10}",
+      "ok": true,
+      "result_chars": 775,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SumIntegralComparisons.lean  (lines 240–249 of 309):\\n   240  \\n   241  /-- **Integral test**: bounds the sum of a nonnegative antitone function by an integ"
+    },
+    {
+      "i": 32,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"partial.*sum|sum.*partial\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1640,
+      "result_head": "[{\"type\": \"text\", \"text\": \"114 match(es) for 'partial.*sum|sum.*partial' (via ripgrep):\\n- Mathlib/Algebra/MonoidAlgebra/Basic.lean:210\\n    See note [partially-applied ext lemmas]. Note that the firs"
+    }
+  ]
+}

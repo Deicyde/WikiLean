@@ -1,0 +1,361 @@
+{
+  "task_id": "fresh_052",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:42:05Z",
+  "wall_s": 115.3,
+  "output_lean": "theorem exp_change_of_variables {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]\n    (g : ℝ → E) (a : ℝ) (hg : ∀ x ∈ Set.Ioi (Real.exp a), MeasureTheory.Integrable g) :\n    ∫ x in Set.Ioi a, g (Real.exp x) * Real.exp x = ∫ y in Set.Ioi (Real.exp a), g y := sorry",
+  "transcript_stats": {
+    "turns": 43,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 13,
+      "mcp__wikibrain__brain_search": 17,
+      "mcp__wikibrain__brain_cell": 3,
+      "decl_exists": 1,
+      "mcp__wikibrain__decl_exists": 7,
+      "mcp__wikibrain__brain_neighborhood": 1
+    },
+    "tokens_in": 226,
+    "tokens_out": 7372,
+    "cost_usd": 0.19266919999999998
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"change of variables substitution in interval integral\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 4028,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"change of variables substitution in interval integral\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDEN"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"integral monotone increasing function substitution\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3550,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"integral monotone increasing function substitution\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTIT"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"intervalIntegral substitution measure\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2157,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"intervalIntegral substitution measure\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"interval integral\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 174,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"interval integral\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:decl:Mathlib:intervalIntegral\"}",
+      "ok": true,
+      "result_chars": 1628,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:intervalIntegral\\\",\\\"id\\\":\\\"cell:decl:Mathlib:intervalIntegral\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"intervalIn"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"monotone increasing measure preserving equivalence substitution\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2565,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"monotone increasing measure preserving equivalence substitution\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolve"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"integral composition monotone\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 186,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"integral composition monotone\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"exponential function real numbers\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3479,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"exponential function real numbers\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/la"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"exp Real\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 165,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"exp Real\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"integral transformation linear map volume preserving\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 4228,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"integral transformation linear map volume preserving\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENT"
+    },
+    {
+      "i": 10,
+      "name": "decl_exists",
+      "input": "{\"names\": \"[\\\"intervalIntegral\\\", \\\"Real.exp\\\", \\\"Set.Ioi\\\"]\"}",
+      "ok": false,
+      "result_chars": 75,
+      "result_head": "<tool_use_error>Error: No such tool available: decl_exists</tool_use_error>"
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"intervalIntegral\", \"Real.exp\", \"Set.Ioi\"]}",
+      "ok": true,
+      "result_chars": 1167,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"intervalIntegral\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic\\\",\\\"impor"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"integral_Ioi_comp_mul_left\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 183,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"integral_Ioi_comp_mul_left\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"MeasureTheory intervalIntegral composition\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 199,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"MeasureTheory intervalIntegral composition\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"cell:decl:Mathlib:intervalIntegral\", \"limit\": 20, \"kinds\": \"depends\"}",
+      "ok": true,
+      "result_chars": 347,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:intervalIntegral\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\"],\\\"synapses\\\":[],\\\"returned\\\":0,\\\"matched\\\":0,\\\"counts\\\":{\\\"syn\\\":4,\\\"org"
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q80091\"}",
+      "ok": true,
+      "result_chars": 5091,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q80091\\\",\\\"id\\\":\\\"cell:Q80091\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Integral\\\",\\\"f\\\":36088,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q80091\\\","
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Monotone On increasing\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 179,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Monotone On increasing\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"Lebesgue integral change variables\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 4110,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Lebesgue integral change variables\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/l"
+    },
+    {
+      "i": 18,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"integral comp mul left\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 179,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"integral comp mul left\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 19,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"deriv change variables\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 179,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"deriv change variables\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 20,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"measure preserving map pullback integral\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2964,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"measure preserving map pullback integral\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exac"
+    },
+    {
+      "i": 21,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"integral_Ioi\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 749,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"integral_Ioi\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:integral_Ioi_rpow_of_lt\\\",\\\"label\\\":\\\"integral_Ioi_rpow_of_lt\\\",\\\"supercell\\\":\\\"path:Mathlib/Analys"
+    },
+    {
+      "i": 22,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"intervalIntegral_tendsto_integral_Ioi\", \"integral_Ioi_rpow_of_lt\", \"Set.Ioi\"]}",
+      "ok": true,
+      "result_chars": 1375,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"intervalIntegral_tendsto_integral_Ioi\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"MeasureTheory.intervalIntegral_tendsto_integral_Ioi\\\",\\\"sugge"
+    },
+    {
+      "i": 23,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"integral_comp\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 1548,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"integral_comp\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q1071270\\\",\\\"label\\\":\\\"Integration by substitution\\\",\\\"aka\\\":[\\\"Changeof Variables Theorem\\\",\\\"intervalIntegral"
+    },
+    {
+      "i": 24,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"intervalIntegral.integral_comp_mul_deriv\", \"MeasureTheory.intervalIntegral_tendsto_integral_Ioi\"]}",
+      "ok": true,
+      "result_chars": 1095,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"intervalIntegral.integral_comp_mul_deriv\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.MeasureTheory.Integral.Interval"
+    },
+    {
+      "i": 25,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q1071270\"}",
+      "ok": true,
+      "result_chars": 2755,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q1071270\\\",\\\"id\\\":\\\"cell:Q1071270\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Integration by substitution\\\",\\\"f\\\":2201,\\\"cell\\\":{\\"
+    },
+    {
+      "i": 26,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"integral_comp_mul_deriv Ioi filter\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 191,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"integral_comp_mul_deriv Ioi filter\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 27,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"integral Ioi infinite limit tendsto\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 5067,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"integral Ioi infinite limit tendsto\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/"
+    },
+    {
+      "i": 28,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"MeasureTheory integral Ioi\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 183,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"MeasureTheory integral Ioi\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 29,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"integral over set indicator measure\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2959,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"integral over set indicator measure\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/"
+    },
+    {
+      "i": 30,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Filter.Tendsto interval integral tendsto_atTop\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 203,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Filter.Tendsto interval integral tendsto_atTop\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}"
+    },
+    {
+      "i": 31,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"injective measure preserving change variables differentiable\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2092,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"injective measure preserving change variables differentiable\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved b"
+    },
+    {
+      "i": 32,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"derivative exponential exp real\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3959,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"derivative exponential exp real\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/labe"
+    },
+    {
+      "i": 33,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"HasDerivAt deriv Real.exp\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 182,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"HasDerivAt deriv Real.exp\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 34,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"deriv\", \"HasDerivAt\", \"Real.exp\", \"ContinuousOn\"]}",
+      "ok": true,
+      "result_chars": 1406,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"deriv\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.Calculus.Deriv.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.A"
+    },
+    {
+      "i": 35,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"integral_Ioi Lebesgue measure volume\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 193,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"integral_Ioi Lebesgue measure volume\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 36,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"volume Lebesgue measure real numbers\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3962,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"volume Lebesgue measure real numbers\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id"
+    },
+    {
+      "i": 37,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"volume\", \"Measure.volume\", \"MeasureTheory.volume\"]}",
+      "ok": true,
+      "result_chars": 1514,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"volume\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"MeasureTheory.MeasureSpace.volume\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":"
+    },
+    {
+      "i": 38,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.MeasureSpace.volume\", \"AEStronglyMeasurable\", \"MeasureTheory.integral\"]}",
+      "ok": true,
+      "result_chars": 1189,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.MeasureSpace.volume\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.MeasureTheory.Measure.MeasureSpaceDef\\"
+    },
+    {
+      "i": 39,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Set.Ioi\", \"MeasureTheory.integral\", \"Real.exp\", \"Filter.EventuallyLE\", \"AEStronglyMeasurable\"]}",
+      "ok": true,
+      "result_chars": 1686,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Set.Ioi\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Interval.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order"
+    },
+    {
+      "i": 40,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"AEMeasurable strongly measurable\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 189,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"AEMeasurable strongly measurable\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 41,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"StronglyMeasurable Measurable\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 186,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"StronglyMeasurable Measurable\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    }
+  ]
+}

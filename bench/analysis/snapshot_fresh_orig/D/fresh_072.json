@@ -1,0 +1,295 @@
+{
+  "task_id": "fresh_072",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:47:19Z",
+  "wall_s": 83.2,
+  "output_lean": "theorem linear_order_wellFounded_both_directions_is_finite {α : Type*} \n    [LinearOrder α] [WellFoundedLT α] [WellFoundedGT α] : Finite α := sorry",
+  "transcript_stats": {
+    "turns": 35,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 1,
+      "mcp__wikibrain__brain_search": 22,
+      "mcp__wikibrain__brain_cell": 6,
+      "mcp__wikibrain__decl_exists": 5
+    },
+    "tokens_in": 166,
+    "tokens_out": 5527,
+    "cost_usd": 0.12668199999999996
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"linear order well-founded increasing decreasing direction implies finite\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2020,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"linear order well-founded increasing decreasing direction implies finite\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the ato"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"LinearOrder\"}",
+      "ok": true,
+      "result_chars": 4230,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"LinearOrder\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q369377\\\",\\\"label\\\":\\\"Total order\\\",\\\"aka\\\":[\\\"LinearOrder\\\",\\\"Total Order\\\",\\\"total order\\\"],\\\"supercell\\\":\\\"pat"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"WellFounded\"}",
+      "ok": true,
+      "result_chars": 3293,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"WellFounded\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Init:WellFounded.induction\\\",\\\"label\\\":\\\"WellFounded.induction\\\",\\\"aka\\\":[\\\"Connecting Constructive Notions "
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Fintype\"}",
+      "ok": true,
+      "result_chars": 4814,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Fintype\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.card_fun\\\",\\\"label\\\":\\\"Fintype.card_fun\\\",\\\"aka\\\":[\\\"Some Notes on Finite Sets\\\"],\\\"supercell\\\":"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"WellFoundedLT WellFoundedGT\"}",
+      "ok": true,
+      "result_chars": 184,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"WellFoundedLT WellFoundedGT\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"linear order finite well-founded\"}",
+      "ok": true,
+      "result_chars": 189,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"linear order finite well-founded\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q369377\"}",
+      "ok": true,
+      "result_chars": 3263,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q369377\\\",\\\"id\\\":\\\"cell:Q369377\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Total order\\\",\\\"f\\\":36056,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q369"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"LinearOrder\", \"WellFounded\", \"Fintype\", \"WellFoundedLT\", \"WellFoundedGT\"]}",
+      "ok": true,
+      "result_chars": 1539,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"LinearOrder\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Defs.LinearOrder\\\",\\\"import_line\\\":\\\"import Mathlib.Or"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:WellFoundedLT\"}",
+      "ok": false,
+      "result_chars": 383,
+      "result_head": "{\"ok\":false,\"error\":\"unresolvable key\",\"key\":\"decl:Mathlib:WellFoundedLT\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | artic"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:Fintype\"}",
+      "ok": false,
+      "result_chars": 377,
+      "result_head": "{\"ok\":false,\"error\":\"unresolvable key\",\"key\":\"decl:Mathlib:Fintype\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | article slu"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"WellFoundedLT\"}",
+      "ok": false,
+      "result_chars": 370,
+      "result_head": "{\"ok\":false,\"error\":\"unresolvable key\",\"key\":\"WellFoundedLT\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | article slug | xre"
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"Fintype\"}",
+      "ok": false,
+      "result_chars": 364,
+      "result_head": "{\"ok\":false,\"error\":\"unresolvable key\",\"key\":\"Fintype\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | article slug | xref:<db>"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"OrderIsoNat\"}",
+      "ok": true,
+      "result_chars": 274,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"OrderIsoNat\\\",\\\"hits\\\":[{\\\"id\\\":\\\"path:Mathlib/Order/OrderIsoNat\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"OrderIsoNat\\\",\\\"n_cells\\\":2}],\\\"snapshot\\\":{\\\"gene"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"finite linear order well founded both directions\"}",
+      "ok": true,
+      "result_chars": 205,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finite linear order well founded both directions\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\""
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"path:Mathlib/Order/OrderIsoNat\"}",
+      "ok": true,
+      "result_chars": 768,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/Order/OrderIsoNat\\\",\\\"id\\\":\\\"path:Mathlib/Order/OrderIsoNat\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"OrderIso"
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"emptyMemRelClasses LinearOrder\"}",
+      "ok": true,
+      "result_chars": 187,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"emptyMemRelClasses LinearOrder\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Nat OrderIso\"}",
+      "ok": true,
+      "result_chars": 169,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Nat OrderIso\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Set.Finite\"}",
+      "ok": true,
+      "result_chars": 829,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Set.Finite\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Set.Finite\\\",\\\"label\\\":\\\"Set.Finite\\\",\\\"aka\\\":[\\\"Fluctuation Spectra and Coarse Graining in Stochasti"
+    },
+    {
+      "i": 18,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"LinearOrder Fintype univ\"}",
+      "ok": true,
+      "result_chars": 181,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"LinearOrder Fintype univ\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 19,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"WellFoundedGT.monotone_chain_condition\"}",
+      "ok": true,
+      "result_chars": 387,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"WellFoundedGT.monotone_chain_condition\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:WellFoundedGT.monotone_chain_condition\\\",\\\"label\\\":\\\"WellFoundedGT.monoto"
+    },
+    {
+      "i": 20,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"exists_increasing_or_nonincreasing_subseq\"}",
+      "ok": true,
+      "result_chars": 396,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"exists_increasing_or_nonincreasing_subseq\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:exists_increasing_or_nonincreasing_subseq\\\",\\\"label\\\":\\\"exists_increas"
+    },
+    {
+      "i": 21,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"IsWellFounded\"}",
+      "ok": true,
+      "result_chars": 509,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"IsWellFounded\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:IsWellFounded.fix\\\",\\\"label\\\":\\\"IsWellFounded.fix\\\",\\\"supercell\\\":\\\"path:Mathlib/Order/RelClasses\\"
+    },
+    {
+      "i": 22,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"LinearOrder IsWellFounded\"}",
+      "ok": true,
+      "result_chars": 182,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"LinearOrder IsWellFounded\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 23,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"SuccOrder LinearOrder WellFoundedLT\"}",
+      "ok": true,
+      "result_chars": 192,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"SuccOrder LinearOrder WellFoundedLT\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 24,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Finite\", \"Set.finite\", \"isEmpty\"]}",
+      "ok": true,
+      "result_chars": 1134,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Finite\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Finite.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Finite.D"
+    },
+    {
+      "i": 25,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"IsEmpty\", \"Fintype.ofFinite\", \"SuccOrder.ofLinearWellFoundedLT\"]}",
+      "ok": true,
+      "result_chars": 1102,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"IsEmpty\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Logic.IsEmpty.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Logic.IsEm"
+    },
+    {
+      "i": 26,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"SuccOrder Finite\"}",
+      "ok": true,
+      "result_chars": 173,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"SuccOrder Finite\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 27,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Noetherian IsWellFounded\"}",
+      "ok": true,
+      "result_chars": 181,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Noetherian IsWellFounded\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 28,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"descending chain finite\"}",
+      "ok": true,
+      "result_chars": 180,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"descending chain finite\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 29,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"wellFounded_iff_isEmpty_descending_chain\"}",
+      "ok": true,
+      "result_chars": 448,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"wellFounded_iff_isEmpty_descending_chain\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:wellFounded_iff_isEmpty_descending_chain\\\",\\\"label\\\":\\\"wellFounded_iff_"
+    },
+    {
+      "i": 30,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"wellFounded_iff_isEmpty_descending_chain\", \"Nat.rec\", \"intro\"]}",
+      "ok": true,
+      "result_chars": 1055,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"wellFounded_iff_isEmpty_descending_chain\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.WellFounded\\\",\\\"import_li"
+    },
+    {
+      "i": 31,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"finite LinearOrder WellFounded\"}",
+      "ok": true,
+      "result_chars": 187,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finite LinearOrder WellFounded\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 32,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"NoMaxOrder NoMinOrder\"}",
+      "ok": true,
+      "result_chars": 178,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"NoMaxOrder NoMinOrder\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 33,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"LinearOrder\", \"WellFoundedLT\", \"WellFoundedGT\", \"Finite\"]}",
+      "ok": true,
+      "result_chars": 1314,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"LinearOrder\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Defs.LinearOrder\\\",\\\"import_line\\\":\\\"import Mathlib.Or"
+    }
+  ]
+}

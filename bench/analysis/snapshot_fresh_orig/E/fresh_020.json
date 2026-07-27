@@ -1,0 +1,158 @@
+{
+  "task_id": "fresh_020",
+  "arm": "E",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T05:00:53Z",
+  "wall_s": 81.9,
+  "output_lean": "theorem converse_integral_test (f : ℝ → ℝ) (anti : AntitoneOn f (Ici 0))\n    (summable : Summable (fun (n : ℕ) ↦ f n)) (nonneg : ∀ t ∈ Ioi 0, 0 ≤ f t) :\n    IntegrableOn f (Ioi 0) := sorry",
+  "transcript_stats": {
+    "turns": 18,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 7,
+      "mcp__formal__decl_grep": 7,
+      "mcp__formal__decl_read": 3
+    },
+    "tokens_in": 102,
+    "tokens_out": 5758,
+    "cost_usd": 0.08436829999999998
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Antitone\"}",
+      "ok": true,
+      "result_chars": 798,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 541 declarations mentioning Antitone.\\n- Antitone   [Mathlib.Order.Monotone.Defs]\\n    A function `f` is antitone if `a ≤ b` implies `f b ≤ f a`.\\n- antitone_const   ["
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Summable\"}",
+      "ok": true,
+      "result_chars": 1165,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 670 declarations mentioning Summable.\\n- Summable   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n    `Summable f` means that `f` has some (infinite) sum with respect t"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"IntegrableOn\"}",
+      "ok": true,
+      "result_chars": 96,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IntegrableOn': unknown identifier 'IntegrableOn'\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Integrable\"}",
+      "ok": true,
+      "result_chars": 92,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Integrable': unknown identifier 'Integrable'\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"integral test summable\"}",
+      "ok": true,
+      "result_chars": 102,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'integral test summable': Unknown identifier `integral`\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(lemma|theorem) .*integrable.*ray\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 104,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(lemma|theorem) .*integrable.*ray' under Mathlib/.\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"integral.*test\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 691,
+      "result_head": "[{\"type\": \"text\", \"text\": \"6 match(es) for 'integral.*test' (via ripgrep):\\n- Mathlib/MeasureTheory/Measure/FiniteMeasure.lean:670\\n    tend pointwise to a limit, then their integrals (`MeasureTheory."
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SumIntegralComparisons.lean\", \"line\": 1, \"n\": 100}",
+      "ok": true,
+      "result_chars": 5814,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SumIntegralComparisons.lean  (lines 1–100 of 309):\\n     1  /-\\n     2  Copyright (c) 2022 Kevin H. Wilson. All rights reserved.\\n     3  Released under Apa"
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SumIntegralComparisons.lean\", \"line\": 250, \"n\": 60}",
+      "ok": true,
+      "result_chars": 3991,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SumIntegralComparisons.lean  (lines 250–309 of 309):\\n   250      (anti : AntitoneOn f (Ici (N - 1 : ℝ)))\\n   251      (integrable : IntegrableOn f (Ioi (N "
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(def|structure) IntegrableOn\", \"limit\": 3}",
+      "ok": true,
+      "result_chars": 235,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '(def|structure) IntegrableOn' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/IntegrableOn.lean:92\\n    def IntegrableOn (f : α → ε) (s : Set α) (μ : Measu"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(def|structure) AntitoneOn\", \"limit\": 3}",
+      "ok": true,
+      "result_chars": 182,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '(def|structure) AntitoneOn' (via ripgrep):\\n- Mathlib/Order/Monotone/Defs.lean:80\\n    def AntitoneOn (f : α → β) (s : Set α) : Prop :=\"}]"
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Ici\"}",
+      "ok": true,
+      "result_chars": 78,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Ici': unknown identifier 'Ici'\"}]"
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Ioi\"}",
+      "ok": true,
+      "result_chars": 78,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Ioi': unknown identifier 'Ioi'\"}]"
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def (Ici|Ioi)\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 553,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 match(es) for 'def (Ici|Ioi)' (via ripgrep):\\n- Mathlib/Order/Interval/Set/ProjIcc.lean:154\\n    def IciExtend (f : Ici a → β) : α → β :=\\n- Mathlib/Order/Hom/Set.lean:207"
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Ici.*:=.*Set\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 729,
+      "result_head": "[{\"type\": \"text\", \"text\": \"5 match(es) for 'Ici.*:=.*Set' (via ripgrep):\\n- Mathlib/MeasureTheory/VectorMeasure/BoundedVariation.lean:269\\n    rw [← Iio_union_Ici (a := hα.some), VectorMeasure.of_unio"
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"namespace Set.*\\\\n.*def Ici\", \"limit\": 3}",
+      "ok": true,
+      "result_chars": 100,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'namespace Set.*\\\\\\\\n.*def Ici' under Mathlib/.\"}]"
+    },
+    {
+      "i": 16,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SumIntegralComparisons.lean\", \"line\": 280, \"n\": 6}",
+      "ok": true,
+      "result_chars": 562,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SumIntegralComparisons.lean  (lines 280–285 of 309):\\n   280  /-- Converse to the integral test: a nonnegative, integrable, summable function is integrable."
+    }
+  ]
+}

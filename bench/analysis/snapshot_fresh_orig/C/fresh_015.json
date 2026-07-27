@@ -1,0 +1,182 @@
+{
+  "task_id": "fresh_015",
+  "arm": "C",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:01:00Z",
+  "wall_s": 87.9,
+  "output_lean": "theorem integral_one_div_mul_log (a b : ℝ) (ha : 1 < a) (hb : 1 < b) : \n  ∫ x in a..b, 1 / (x * log x) = log (log b) - log (log a) := sorry",
+  "transcript_stats": {
+    "turns": 21,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 8,
+      "mcp__formal__decl_grep": 6,
+      "mcp__formal__decl_read": 6
+    },
+    "tokens_in": 118,
+    "tokens_out": 6726,
+    "cost_usd": 0.09778069999999998
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"log\"}",
+      "ok": true,
+      "result_chars": 78,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'log': unknown identifier 'log'\"}]"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"∫ ?a in ?b.._root_ ?c\"}",
+      "ok": true,
+      "result_chars": 105,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '∫ ?a in ?b.._root_ ?c': <input>:1:2: expected ',' or 'in'\"}]"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Real.log\"}",
+      "ok": true,
+      "result_chars": 1132,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 637 declarations mentioning Real.log.\\n- Real.log   [Mathlib.Analysis.SpecialFunctions.Log.Basic]\\n    The real logarithm function, equal to the inverse of the exponen"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"intervalIntegral\"}",
+      "ok": true,
+      "result_chars": 1503,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 435 declarations mentioning intervalIntegral.\\n- intervalIntegral   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n    The interval integral `∫ x in a..b, f "
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"log.*integral|integral.*log\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1570,
+      "result_head": "[{\"type\": \"text\", \"text\": \"85 match(es) for 'log.*integral|integral.*log' (via ripgrep):\\n- Mathlib/InformationTheory/KullbackLeibler/ChainRule.lean:39\\n    Then, omitting edge cases, the Kullback-Lei"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Real.log_div\"}",
+      "ok": true,
+      "result_chars": 140,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning Real.log_div.\\n- Real.log_div   [Mathlib.Analysis.SpecialFunctions.Log.Basic]\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def log|theorem log\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 1942,
+      "result_head": "[{\"type\": \"text\", \"text\": \"248 match(es) for 'def log|theorem log' (via ripgrep):\\n- Mathlib/Algebra/Order/GroupWithZero/Canonical.lean:577\\n    @[simps! -isSimp] def logOrderIso : Gᵐ⁰ˣ ≃o G where\\n- "
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SpecialFunctions/Log/Basic.lean\", \"line\": 1, \"n\": 100}",
+      "ok": true,
+      "result_chars": 4194,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecialFunctions/Log/Basic.lean  (lines 1–100 of 712):\\n     1  /-\\n     2  Copyright (c) 2018 Chris Hughes. All rights reserved.\\n     3  Released under Ap"
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"intervalIntegral Real.log\"}",
+      "ok": true,
+      "result_chars": 625,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 19 declarations mentioning InnerProductSpace.toNormedSpace, Real, Real.instRCLike, intervalIntegral, Real.normedAddCommGroup, Real.log, NormedAddCommGroup.toSeminormed"
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"(a b : ℝ) → ∫ x in a..b\"}",
+      "ok": true,
+      "result_chars": 125,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(a b : ℝ) → ∫ x in a..b': <input>:1:23: unexpected end of input; expected ','\"}]"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"integral_log\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 907,
+      "result_head": "[{\"type\": \"text\", \"text\": \"11 match(es) for 'integral_log' (via ripgrep):\\n- Mathlib/Analysis/SpecialFunctions/Integrals/LogTrigonometric.lean:25\\n    Helper lemma for `integral_log_sin_zero_pi_div_tw"
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SpecialFunctions/Integrals/LogTrigonometric.lean\", \"line\": 43, \"n\": 10}",
+      "ok": true,
+      "result_chars": 828,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecialFunctions/Integrals/LogTrigonometric.lean  (lines 43–52 of 85):\\n    43  theorem integral_log_sin_zero_pi_div_two : ∫ x in 0..(π / 2), log (sin x) = "
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"1 / (t * log t)\"}",
+      "ok": true,
+      "result_chars": 88,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '1 / (t * log t)': Unknown identifier `t`\"}]"
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*integral.*=.*log\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 1193,
+      "result_head": "[{\"type\": \"text\", \"text\": \"7 match(es) for 'theorem.*integral.*=.*log' (via ripgrep):\\n- Mathlib/Analysis/SpecialFunctions/Integrals/LogTrigonometric.lean:43\\n    theorem integral_log_sin_zero_pi_div_"
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean\", \"line\": 212, \"n\": 25}",
+      "ok": true,
+      "result_chars": 1499,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean  (lines 212–236 of 656):\\n   212  theorem integral_inv (h : (0 : ℝ) ∉ [[a, b]]) : ∫ x in a..b, x⁻¹ = log (b / a) := by"
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean\", \"line\": 303, \"n\": 10}",
+      "ok": true,
+      "result_chars": 615,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean  (lines 303–312 of 656):\\n   303  theorem integral_log : ∫ s in a..b, log s = b * log b - a * log a - b + a := by\\n   "
+    },
+    {
+      "i": 16,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"integral.*log.*mul|integral.*mul.*log\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1526,
+      "result_head": "[{\"type\": \"text\", \"text\": \"15 match(es) for 'integral.*log.*mul|integral.*mul.*log' (via ripgrep):\\n- Mathlib/Probability/Distributions/Fernique.lean:332\\n    lemma lintegral_closedBall_sdiff_exp_logR"
+    },
+    {
+      "i": 17,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem integral_.*_of_pos\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 685,
+      "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for 'theorem integral_.*_of_pos' (via ripgrep):\\n- Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean:219\\n    theorem integral_inv_of_pos (ha : 0 < a) (hb :"
+    },
+    {
+      "i": 18,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean\", \"line\": 1, \"n\": 50}",
+      "ok": true,
+      "result_chars": 2163,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean  (lines 1–50 of 656):\\n     1  /-\\n     2  Copyright (c) 2021 Benjamin Davidson. All rights reserved.\\n     3  Release"
+    },
+    {
+      "i": 19,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean\", \"line\": 218, \"n\": 5}",
+      "ok": true,
+      "result_chars": 305,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean  (lines 218–222 of 656):\\n   218  @[simp]\\n   219  theorem integral_inv_of_pos (ha : 0 < a) (hb : 0 < b) : ∫ x in a..b"
+    }
+  ]
+}

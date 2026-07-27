@@ -1,0 +1,201 @@
+{
+  "task_id": "fresh_036",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:38:18Z",
+  "wall_s": 112.7,
+  "output_lean": "theorem contMDiff_iff_continuous_and_comp_immersion\n    {H : Type*} [TopologicalSpace H]\n    {M M' : Type*} [ChartedSpace H M] [ChartedSpace H M']\n    (n : ℕ∞) (f : M → M') :\n  ContMDiff n f ↔\n  Continuous f ∧\n  ∀ (N : Type*) [ChartedSpace H N] (g : M' → N),\n    Manifold.IsImmersion g → ContMDiff n g → ContMDiff n (g ∘ f) :=\n  sorry",
+  "transcript_stats": {
+    "turns": 23,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 3,
+      "mcp__wikibrain__brain_cell": 2,
+      "mcp__wikibrain__decl_exists": 6,
+      "mcp__wikibrain__brain_snippets": 2,
+      "mcp__wikibrain__brain_search": 8,
+      "mcp__wikibrain__brain_neighborhood": 1
+    },
+    "tokens_in": 166,
+    "tokens_out": 8790,
+    "cost_usd": 0.1328779
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"C^n manifold smooth map continuous\"}",
+      "ok": true,
+      "result_chars": 2278,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"C^n manifold smooth map continuous\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/l"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"immersion manifold Lean formalization\"}",
+      "ok": true,
+      "result_chars": 4113,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"immersion manifold Lean formalization\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact i"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"ContMDiff smooth function manifold continuous differentiable\"}",
+      "ok": true,
+      "result_chars": 3196,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"ContMDiff smooth function manifold continuous differentiable\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved b"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:decl:Mathlib:ContMDiff\"}",
+      "ok": true,
+      "result_chars": 1374,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:ContMDiff\\\",\\\"id\\\":\\\"cell:decl:Mathlib:ContMDiff\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"ContMDiff\\\",\\\"cell\\\":{\\\""
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q574523\"}",
+      "ok": true,
+      "result_chars": 3197,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q574523\\\",\\\"id\\\":\\\"cell:Q574523\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Immersion (mathematics)\\\",\\\"f\\\":6296,\\\"cell\\\":{\\\"id\\\":"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"ContMDiff\", \"Manifold.IsImmersion\", \"Continuous\"]}",
+      "ok": true,
+      "result_chars": 1129,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"ContMDiff\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Geometry.Manifold.ContMDiff.Defs\\\",\\\"import_line\\\":\\\"import Ma"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_snippets",
+      "input": "{\"id\": \"decl:Mathlib:ContMDiff\"}",
+      "ok": true,
+      "result_chars": 504,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:ContMDiff\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:ContMDiff\\\",\\\"label\\\":\\\"ContMDiff\\\",\\\"code\\\""
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_snippets",
+      "input": "{\"id\": \"decl:Mathlib:Manifold.IsImmersion\"}",
+      "ok": true,
+      "result_chars": 1682,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q574523\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"wikidata\\\",\\\"id\\\":\\\"Q574523\\\",\\\"label\\\":\\\"Immersion (mathematics)\\\",\\\"snippet\\\":\\\"different"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"smooth map characterization immersion composition\"}",
+      "ok": true,
+      "result_chars": 206,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"smooth map characterization immersion composition\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"cell:decl:Mathlib:ContMDiff\", \"kinds\": \"depends\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 340,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:ContMDiff\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\"],\\\"synapses\\\":[],\\\"returned\\\":0,\\\"matched\\\":0,\\\"counts\\\":{\\\"syn\\\":3,\\\"organs\\\":1"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"ContMDiff n composition continuity\"}",
+      "ok": true,
+      "result_chars": 191,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"ContMDiff n composition continuity\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"embedding submersion manifold\"}",
+      "ok": true,
+      "result_chars": 186,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"embedding submersion manifold\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"SmoothManifoldWithCorners\"}",
+      "ok": true,
+      "result_chars": 182,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"SmoothManifoldWithCorners\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"SmoothManifoldWithCorners\", \"ContMDiffOn\", \"Function.Injective\"]}",
+      "ok": true,
+      "result_chars": 1049,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"SmoothManifoldWithCorners\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e"
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"manifold typeclass smooth structure\"}",
+      "ok": true,
+      "result_chars": 192,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"manifold typeclass smooth structure\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"iff continuous manifold smooth\"}",
+      "ok": true,
+      "result_chars": 187,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"iff continuous manifold smooth\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"ContMDiff.comp smooth composition\"}",
+      "ok": true,
+      "result_chars": 190,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"ContMDiff.comp smooth composition\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"ContMDiff.comp\", \"ContMDiff.continuousOn\", \"Smooth\"]}",
+      "ok": true,
+      "result_chars": 1341,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"ContMDiff.comp\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Geometry.Manifold.ContMDiff.Basic\\\",\\\"import_line\\\":\\\"imp"
+    },
+    {
+      "i": 18,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"ContMDiff.continuous\", \"ContMDiff.continuousAt\", \"Continuous.comp\"]}",
+      "ok": true,
+      "result_chars": 1252,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"ContMDiff.continuous\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Geometry.Manifold.ContMDiff.Defs\\\",\\\"import_line\\\":"
+    },
+    {
+      "i": 19,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Function.comp\", \"Manifold.ContMDiffAt\", \"chartAt\"]}",
+      "ok": true,
+      "result_chars": 1002,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Function.comp\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\"
+    },
+    {
+      "i": 20,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"ContMDiffAt\", \"ContMDiffWithinAt\", \"LocalHomeomorph\"]}",
+      "ok": true,
+      "result_chars": 1103,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"ContMDiffAt\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Geometry.Manifold.ContMDiff.Defs\\\",\\\"import_line\\\":\\\"import "
+    },
+    {
+      "i": 21,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"theorem ContMDiff\"}",
+      "ok": true,
+      "result_chars": 174,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"theorem ContMDiff\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    }
+  ]
+}

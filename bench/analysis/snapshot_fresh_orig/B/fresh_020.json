@@ -1,0 +1,70 @@
+{
+  "task_id": "fresh_020",
+  "arm": "B",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T02:13:19Z",
+  "wall_s": 131.8,
+  "output_lean": "theorem integral_test_converse {f : ℕ → ℝ}\n    (hnn : ∀ n, 0 ≤ f n)\n    (hsum : Summable f)\n    (hant : Antitone f) :\n    (∫⁻ x : ℝ in Set.Ici 1, (f (Int.floor x).natAbs)) < ∞ := sorry",
+  "transcript_stats": {
+    "turns": 7,
+    "tool_calls_by_name": {
+      "mcp__wiki__wiki_search": 4,
+      "mcp__wiki__wiki_get": 1,
+      "mcp__wiki__nlab_search": 1
+    },
+    "tokens_in": 52,
+    "tokens_out": 12678,
+    "cost_usd": 0.08896475
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"integral test series convergence\"}",
+      "ok": true,
+      "result_chars": 2250,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'integral test series convergence':\\n- Integral test for convergence  (slug: Integral_test_for_convergence)\\n    https://en.wikipedia.org/wiki/Integral_test_"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wiki__wiki_get",
+      "input": "{\"title\": \"Integral_test_for_convergence\"}",
+      "ok": true,
+      "result_chars": 4397,
+      "result_head": "[{\"type\": \"text\", \"text\": \"# Integral test for convergence\\nIn mathematics, the integral test for convergence is a method used to test infinite series of monotonic terms for convergence. It was develo"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"antitone function Lean Mathlib\"}",
+      "ok": true,
+      "result_chars": 96,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No English Wikipedia results for 'antitone function Lean Mathlib'.\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wiki__nlab_search",
+      "input": "{\"q\": \"integral test convergence\"}",
+      "ok": true,
+      "result_chars": 104,
+      "result_head": "[{\"type\": \"text\", \"text\": \"nLab search for 'integral test convergence' — candidate pages:\\n- HomePage\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"Summable Antitone integral Ray\"}",
+      "ok": true,
+      "result_chars": 96,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No English Wikipedia results for 'Summable Antitone integral Ray'.\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"IntervalIntegrable Mathlib\"}",
+      "ok": true,
+      "result_chars": 92,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No English Wikipedia results for 'IntervalIntegrable Mathlib'.\"}]"
+    }
+  ]
+}

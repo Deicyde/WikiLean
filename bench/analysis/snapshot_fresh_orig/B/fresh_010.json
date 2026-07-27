@@ -1,0 +1,36 @@
+{
+  "task_id": "fresh_010",
+  "arm": "B",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T02:10:43Z",
+  "wall_s": 63.8,
+  "output_lean": "theorem LinearIsometry.normDet_eq_one\n  {E F : Type*} [InnerProductSpace ℝ E] [InnerProductSpace ℝ F]\n  (n : ℕ) (f : E →ₗᵢ[ℝ] F)\n  (b_E : Basis (Fin n) ℝ E) (b_F : Basis (Fin n) ℝ F)\n  (h_E : Orthonormal ℝ b_E) (h_F : Orthonormal ℝ b_F) :\n  |(LinearMap.toMatrix b_F b_E ↑f).det| = 1 := sorry",
+  "transcript_stats": {
+    "turns": 3,
+    "tool_calls_by_name": {
+      "mcp__wiki__wiki_search": 2
+    },
+    "tokens_in": 18,
+    "tokens_out": 6005,
+    "cost_usd": 0.03794205
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"linear isometry Mathlib4\"}",
+      "ok": true,
+      "result_chars": 90,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No English Wikipedia results for 'linear isometry Mathlib4'.\"}]"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"determinant matrix absolute value\"}",
+      "ok": true,
+      "result_chars": 2177,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'determinant matrix absolute value':\\n- Jacobian matrix and determinant  (slug: Jacobian_matrix_and_determinant)\\n    https://en.wikipedia.org/wiki/Jacobian_"
+    }
+  ]
+}

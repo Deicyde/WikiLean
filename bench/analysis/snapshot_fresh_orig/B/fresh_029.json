@@ -1,0 +1,69 @@
+{
+  "task_id": "fresh_029",
+  "arm": "B",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T02:15:31Z",
+  "wall_s": 118.5,
+  "output_lean": "theorem five_out_of_six_cube_lemma\n  {C : Type*} [Category C]\n  -- Eight vertices of the cube\n  {a b c d a' b' c' d' : C}\n  -- Bottom square edges: (a → b → d and a → c → d)\n  {f : a ⟶ b} {g : a ⟶ c} {h : c ⟶ d} {k : b ⟶ d}\n  -- Top square edges: (a' → b' → d' and a' → c' → d')\n  {f' : a' ⟶ b'} {g' : a' ⟶ c'} {h' : c' ⟶ d'} {k' : b' ⟶ d'}\n  -- Vertical edges connecting bottom to top\n  {p : a ⟶ a'} {q : b ⟶ b'} {r : c ⟶ c'} {s : d ⟶ d'}\n  -- Five commutative square faces\n  (hbot : k ∘ f = h ∘ g)\n  (htop : k' ∘ f' = h' ∘ g')\n  (hfront : q ∘ f = f' ∘ p)\n  (hleft : r ∘ g = g' ∘ p)\n  (hright : s ∘ k = k' ∘ q)\n  -- One edge out of the source vertex a is monic\n  (hmono : Mono p)\n  -- Then the sixth (back) face must commute\n  : s ∘ h = h' ∘ r := by\n  sorry",
+  "transcript_stats": {
+    "turns": 7,
+    "tool_calls_by_name": {
+      "mcp__wiki__wiki_search": 2,
+      "mcp__wiki__nlab_search": 4
+    },
+    "tokens_in": 52,
+    "tokens_out": 9843,
+    "cost_usd": 0.07504569999999999
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"five out of six lemma commutative cube category theory\"}",
+      "ok": true,
+      "result_chars": 1200,
+      "result_head": "[{\"type\": \"text\", \"text\": \"4 result(s) for 'five out of six lemma commutative cube category theory':\\n- List of unsolved problems in mathematics  (slug: List_of_unsolved_problems_in_mathematics)\\n    "
+    },
+    {
+      "i": 1,
+      "name": "mcp__wiki__nlab_search",
+      "input": "{\"q\": \"commutative cube five out of six\"}",
+      "ok": true,
+      "result_chars": 111,
+      "result_head": "[{\"type\": \"text\", \"text\": \"nLab search for 'commutative cube five out of six' — candidate pages:\\n- HomePage\"}]"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wiki__nlab_search",
+      "input": "{\"q\": \"commutative square category theory\"}",
+      "ok": true,
+      "result_chars": 113,
+      "result_head": "[{\"type\": \"text\", \"text\": \"nLab search for 'commutative square category theory' — candidate pages:\\n- HomePage\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wiki__nlab_search",
+      "input": "{\"q\": \"commutative cube\"}",
+      "ok": true,
+      "result_chars": 307,
+      "result_head": "[{\"type\": \"text\", \"text\": \"nLab search for 'commutative cube' — candidate pages:\\n- HomePage\\n- Ronnie Brown\\n- adhesive category\\n- cubical T-complex\\n- double category of algebras\\n- higher homotopy"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wiki__nlab_search",
+      "input": "{\"q\": \"pasting law pullbacks\"}",
+      "ok": true,
+      "result_chars": 100,
+      "result_head": "[{\"type\": \"text\", \"text\": \"nLab search for 'pasting law pullbacks' — candidate pages:\\n- HomePage\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"commutative diagram category theory\"}",
+      "ok": true,
+      "result_chars": 2285,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'commutative diagram category theory':\\n- Commutative diagram  (slug: Commutative_diagram)\\n    https://en.wikipedia.org/wiki/Commutative_diagram\\n    mathem"
+    }
+  ]
+}

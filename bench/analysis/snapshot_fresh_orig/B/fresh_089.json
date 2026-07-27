@@ -1,0 +1,61 @@
+{
+  "task_id": "fresh_089",
+  "arm": "B",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T03:54:26Z",
+  "wall_s": 75.5,
+  "output_lean": "theorem bounded_variation_on_finite {α E : Type*} [PseudoMetricSpace E]\n  (f : α → E) (s : Set α) (hs : Set.Finite s) :\n  BddVarOn f s := sorry",
+  "transcript_stats": {
+    "turns": 6,
+    "tool_calls_by_name": {
+      "mcp__wiki__wiki_search": 4,
+      "mcp__wiki__wiki_get": 1
+    },
+    "tokens_in": 52,
+    "tokens_out": 6268,
+    "cost_usd": 0.0583293
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"bounded variation metric space function\"}",
+      "ok": true,
+      "result_chars": 2145,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'bounded variation metric space function':\\n- Total variation  (slug: Total_variation)\\n    https://en.wikipedia.org/wiki/Total_variation\\n    ∈ [a, b]. Func"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"Mathlib4 BddVariation bounded variation\"}",
+      "ok": true,
+      "result_chars": 105,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No English Wikipedia results for 'Mathlib4 BddVariation bounded variation'.\"}]"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"variation function finite interval real analysis\"}",
+      "ok": true,
+      "result_chars": 2218,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'variation function finite interval real analysis':\\n- Real analysis  (slug: Real_analysis)\\n    https://en.wikipedia.org/wiki/Real_analysis\\n    a function "
+    },
+    {
+      "i": 3,
+      "name": "mcp__wiki__wiki_get",
+      "input": "{\"title\": \"Bounded_variation\"}",
+      "ok": true,
+      "result_chars": 4092,
+      "result_head": "[{\"type\": \"text\", \"text\": \"# Bounded variation\\nIn mathematical analysis, a function of bounded variation, also known as BV function, is a real-valued function whose total variation is bounded (finite"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"total variation function partition distance metric\"}",
+      "ok": true,
+      "result_chars": 2296,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'total variation function partition distance metric':\\n- Total variation  (slug: Total_variation)\\n    https://en.wikipedia.org/wiki/Total_variation\\n    mat"
+    }
+  ]
+}

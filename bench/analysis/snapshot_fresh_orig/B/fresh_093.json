@@ -1,0 +1,37 @@
+{
+  "task_id": "fresh_093",
+  "arm": "B",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T03:55:19Z",
+  "wall_s": 64.4,
+  "output_lean": "theorem total_variation_identity (a b : ℝ) (hab : a ≤ b) :\n  variationOn (fun x => x) (Set.Icc a b) = b - a := sorry",
+  "transcript_stats": {
+    "turns": 3,
+    "tool_calls_by_name": {
+      "mcp__wiki__wiki_search": 1,
+      "mcp__wiki__wiki_get": 1
+    },
+    "tokens_in": 26,
+    "tokens_out": 5466,
+    "cost_usd": 0.0441963
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"total variation function real analysis\"}",
+      "ok": true,
+      "result_chars": 2316,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'total variation function real analysis':\\n- Total variation  (slug: Total_variation)\\n    https://en.wikipedia.org/wiki/Total_variation\\n    function or a m"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wiki__wiki_get",
+      "input": "{\"title\": \"Total_variation\"}",
+      "ok": true,
+      "result_chars": 4300,
+      "result_head": "[{\"type\": \"text\", \"text\": \"# Total variation\\nIn mathematics, the total variation identifies several slightly different concepts, related to the (local or global) structure of the codomain of a functi"
+    }
+  ]
+}

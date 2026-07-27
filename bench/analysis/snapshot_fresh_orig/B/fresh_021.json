@@ -1,0 +1,45 @@
+{
+  "task_id": "fresh_021",
+  "arm": "B",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T02:13:23Z",
+  "wall_s": 108.2,
+  "output_lean": "theorem integral_le_tsum_of_antitone\n  (f : ℝ → ℝ)\n  (hf_nonneg : ∀ x, 0 ≤ f x)\n  (hf_antitone : Antitone f)\n  (hf_summable : Summable fun n => f n) :\n  ∫ x in Set.Ioi 0, f x ≤ ∑' n : ℕ, f n := sorry",
+  "transcript_stats": {
+    "turns": 4,
+    "tool_calls_by_name": {
+      "mcp__wiki__wiki_search": 2,
+      "mcp__wiki__wiki_get": 1
+    },
+    "tokens_in": 26,
+    "tokens_out": 10889,
+    "cost_usd": 0.0781937
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"Antitone monotone decreasing function mathematics\"}",
+      "ok": true,
+      "result_chars": 941,
+      "result_head": "[{\"type\": \"text\", \"text\": \"3 result(s) for 'Antitone monotone decreasing function mathematics':\\n- Monotonic function  (slug: Monotonic_function)\\n    https://en.wikipedia.org/wiki/Monotonic_function\\"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"summable series convergence mathematics\"}",
+      "ok": true,
+      "result_chars": 2259,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'summable series convergence mathematics':\\n- Series (mathematics)  (slug: Series_(mathematics))\\n    https://en.wikipedia.org/wiki/Series_(mathematics)\\n   "
+    },
+    {
+      "i": 2,
+      "name": "mcp__wiki__wiki_get",
+      "input": "{\"title\": \"Integral test for convergence\"}",
+      "ok": true,
+      "result_chars": 4397,
+      "result_head": "[{\"type\": \"text\", \"text\": \"# Integral test for convergence\\nIn mathematics, the integral test for convergence is a method used to test infinite series of monotonic terms for convergence. It was develo"
+    }
+  ]
+}

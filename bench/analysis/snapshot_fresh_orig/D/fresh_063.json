@@ -1,0 +1,331 @@
+{
+  "task_id": "fresh_063",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:45:15Z",
+  "wall_s": 124.2,
+  "output_lean": "theorem divisor_sum_series_summable (k : ℤ) (hk : 1 ≤ k) (z : UpperHalfPlane) :\n    Summable fun n : ℕ => (ArithmeticFunction.sigma (k - 1) n : ℂ) * \n      Complex.exp (2 * Real.pi * Complex.I * ↑z) ^ n := sorry",
+  "transcript_stats": {
+    "turns": 39,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 7,
+      "mcp__wikibrain__brain_search": 14,
+      "mcp__wikibrain__brain_cell": 5,
+      "decl_exists": 1,
+      "mcp__wikibrain__decl_exists": 6,
+      "mcp__wikibrain__brain_transfer": 1,
+      "mcp__wikibrain__brain_neighborhood": 2,
+      "mcp__wikibrain__brain_snippets": 2
+    },
+    "tokens_in": 152,
+    "tokens_out": 10211,
+    "cost_usd": 0.16644910000000002
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"upper half-plane complex\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 3978,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"upper half-plane complex\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"divisor sum function σ\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 3002,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"divisor sum function σ\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, r"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"summable series convergence\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 3941,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"summable series convergence\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label ma"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"divisor sum number theory\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 1691,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"divisor sum number theory\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"complex exponential exp 2πi\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 2832,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"complex exponential exp 2πi\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label ma"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"power series q-expansion modular\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 4732,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"power series q-expansion modular\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/lab"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"exponential function complex\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 3474,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"exponential function complex\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label m"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"divisor\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 2598,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"divisor\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q50708\\\",\\\"label\\\":\\\"Divisor\\\",\\\"aka\\\":[\\\"Divisor (of an integer or of a polynomial)\\\",\\\"Nat.divisors\\\",\\\"Regular gra"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"upper half plane\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 173,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"upper half plane\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"arithmetic function\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 924,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"arithmetic function\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q140744\\\",\\\"label\\\":\\\"Arithmetic function\\\",\\\"aka\\\":[\\\"ArithmeticFunction\\\"],\\\"supercell\\\":\\\"path:Mathlib"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"complex exp\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 521,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"complex exp\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q168698\\\",\\\"label\\\":\\\"Exponential function\\\",\\\"aka\\\":[\\\"Exponential Function\\\",\\\"Real.exp\\\",\\\"complex exponential"
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q50708\"}",
+      "ok": false,
+      "result_chars": 368,
+      "result_head": "{\"ok\":false,\"error\":\"unresolvable key\",\"key\":\"cell:Q50708\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | article slug | xref:"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q140744\"}",
+      "ok": true,
+      "result_chars": 3325,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q140744\\\",\\\"id\\\":\\\"cell:Q140744\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Arithmetic function\\\",\\\"f\\\":33496,\\\"cell\\\":{\\\"id\\\":\\\"c"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"sigma divisor\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 170,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"sigma divisor\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q168698\"}",
+      "ok": true,
+      "result_chars": 5073,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q168698\\\",\\\"id\\\":\\\"cell:Q168698\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Exponential function\\\",\\\"f\\\":35033,\\\"cell\\\":{\\\"id\\\":\\\""
+    },
+    {
+      "i": 15,
+      "name": "decl_exists",
+      "input": "{\"names\": \"[\\\"Complex.exp\\\", \\\"Nat.divisorSigma\\\", \\\"ArithmeticFunction.sigma\\\", \\\"Summable\\\"]\"}",
+      "ok": false,
+      "result_chars": 75,
+      "result_head": "<tool_use_error>Error: No such tool available: decl_exists</tool_use_error>"
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Complex.exp\", \"Nat.divisorSigma\", \"ArithmeticFunction.sigma\", \"Summable\"]}",
+      "ok": true,
+      "result_chars": 1434,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Complex.exp\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.Complex.Exponential\\\",\\\"import_line\\\":\\\"import Math"
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"natAbs divisor count sum\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 181,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"natAbs divisor count sum\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 18,
+      "name": "mcp__wikibrain__brain_transfer",
+      "input": "{\"q\": \"σ_k n divisor sum\", \"direction\": \"informal_to_formal\", \"limit\": 5}",
+      "ok": false,
+      "result_chars": 213,
+      "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"σ_k n divisor sum\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup\",\"snapshot\":{\"generated_at\":\"2026-07-16T09:25:11+00:00\",\"pin\":\"bf3266"
+    },
+    {
+      "i": 19,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"cell:Q140744\", \"kinds\": \"depends\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 10519,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q140744\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\"],\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q205243\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":2,\\\"links\\\":"
+    },
+    {
+      "i": 20,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"divisors Nat\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 169,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"divisors Nat\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 21,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"eisenstein\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 947,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"eisenstein\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q1057416\\\",\\\"label\\\":\\\"Eisenstein's criterion\\\",\\\"aka\\\":[\\\"Eisensteins Irreducibility Criterion\\\",\\\"Polynomial.irr"
+    },
+    {
+      "i": 22,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"modular form\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 446,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"modular form\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Algebra.trdeg\\\",\\\"label\\\":\\\"Algebra.trdeg\\\",\\\"aka\\\":[\\\"fields-definition-transcendence-degree\\\",\\\"A"
+    },
+    {
+      "i": 23,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"ArithmeticFunction.sigma\", \"Nat.divisors\", \"Finset.sum\"]}",
+      "ok": true,
+      "result_chars": 1194,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"ArithmeticFunction.sigma\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.NumberTheory.ArithmeticFunction.Misc\\\",\\\"import"
+    },
+    {
+      "i": 24,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q1313257\"}",
+      "ok": true,
+      "result_chars": 2711,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q1313257\\\",\\\"id\\\":\\\"cell:Q1313257\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Eisenstein series\\\",\\\"f\\\":33816,\\\"cell\\\":{\\\"id\\\":\\\"c"
+    },
+    {
+      "i": 25,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"upper half plane Im positive imaginary\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 195,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"upper half plane Im positive imaginary\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 26,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"ℍ upper half plane type\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 180,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"ℍ upper half plane type\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 27,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"eisensteinSeries\", \"ℍ\", \"Complex.I\", \"Real.pi\"]}",
+      "ok": true,
+      "result_chars": 1436,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"eisensteinSeries\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.NumberTheory.ModularForms.EisensteinSeries.Defs\\\",\\\"imp"
+    },
+    {
+      "i": 28,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"UpperHalfPlane\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 1526,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"UpperHalfPlane\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:UpperHalfPlane\\\",\\\"label\\\":\\\"UpperHalfPlane\\\",\\\"aka\\\":[\\\"Structure and bases of modular space seq"
+    },
+    {
+      "i": 29,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"q-expansion\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 168,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"q-expansion\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 30,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"UpperHalfPlane\", \"UpperHalfPlane.val\", \"ArithmeticFunction.sigma\", \"Summable\", \"Complex.exp\", \"Real.pi\"]}",
+      "ok": true,
+      "result_chars": 2126,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"UpperHalfPlane\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.Complex.UpperHalfPlane.Basic\\\",\\\"import_line\\\":\\"
+    },
+    {
+      "i": 31,
+      "name": "mcp__wikibrain__brain_snippets",
+      "input": "{\"id\": \"ArithmeticFunction.sigma\"}",
+      "ok": false,
+      "result_chars": 379,
+      "result_head": "{\"ok\":false,\"error\":\"unknown atom id\",\"id\":\"ArithmeticFunction.sigma\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | article s"
+    },
+    {
+      "i": 32,
+      "name": "mcp__wikibrain__brain_snippets",
+      "input": "{\"id\": \"Summable\"}",
+      "ok": true,
+      "result_chars": 1171,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q1211057\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"wikidata\\\",\\\"id\\\":\\\"Q1211057\\\",\\\"label\\\":\\\"Convergent series\\\",\\\"snippet\\\":\\\"infinite seri"
+    },
+    {
+      "i": 33,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:decl:Mathlib:UpperHalfPlane\"}",
+      "ok": true,
+      "result_chars": 1978,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:UpperHalfPlane\\\",\\\"id\\\":\\\"cell:decl:Mathlib:UpperHalfPlane\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"UpperHalfPlane"
+    },
+    {
+      "i": 34,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"UpperHalfPlane coe coerce complex\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 190,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"UpperHalfPlane coe coerce complex\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 35,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"UpperHalfPlane.coe\", \"Coe\", \"ArithmeticFunction.IsMultiplicative\", \"Nat.cast\"]}",
+      "ok": true,
+      "result_chars": 1383,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"UpperHalfPlane.coe\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.Complex.UpperHalfPlane.Basic\\\",\\\"import_line"
+    },
+    {
+      "i": 36,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"decl:Mathlib:ArithmeticFunction.sigma\", \"kinds\": \"depends\", \"limit\": 10}",
+      "ok": false,
+      "result_chars": 392,
+      "result_head": "{\"ok\":false,\"error\":\"unknown atom id\",\"id\":\"decl:Mathlib:ArithmeticFunction.sigma\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl nam"
+    },
+    {
+      "i": 37,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Nat.cast_injective\", \"Finset.sum\", \"Finset.card\", \"Int.cast\"]}",
+      "ok": true,
+      "result_chars": 1370,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Nat.cast_injective\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.CharZero.Defs\\\",\\\"import_line\\\":\\\"import Math"
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "task_id": "fresh_095",
+  "arm": "B",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T03:55:49Z",
+  "wall_s": 106.9,
+  "output_lean": "theorem jordan_decomposition \n  {f : ℝ → ℝ} {s : Set ℝ}\n  (hbv : ∀ x ∈ s, ∃ δ > 0, ∃ C : ℝ, C > 0 ∧\n    ∀ a b : ℝ, a < b → Set.Ioo (x - δ) (x + δ) ⊇ Set.Icc a b →\n    ∀ p : List ℝ, Sorted (· ≤ ·) p → \n    (∀ i : ℕ, i < p.length → p.get! i ∈ Set.Icc a b) →\n    (Finset.range (p.length - 1)).sum (fun i => \n      abs (f (p.get! (i + 1)) - f (p.get! i))) ≤ C) :\n  ∃ (g h : ℝ → ℝ), \n    Monotone g ∧ \n    Monotone h ∧\n    (∀ x ∈ s, f x = g x - h x) := sorry",
+  "transcript_stats": {
+    "turns": 7,
+    "tool_calls_by_name": {
+      "mcp__wiki__wiki_search": 4,
+      "mcp__wiki__wiki_get": 1,
+      "mcp__wiki__nlab_search": 1
+    },
+    "tokens_in": 42,
+    "tokens_out": 9317,
+    "cost_usd": 0.0684939
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"Jordan decomposition bounded variation\"}",
+      "ok": true,
+      "result_chars": 2235,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'Jordan decomposition bounded variation':\\n- Bounded variation  (slug: Bounded_variation)\\n    https://en.wikipedia.org/wiki/Bounded_variation\\n    analysis,"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"total variation monotone function\"}",
+      "ok": true,
+      "result_chars": 2320,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'total variation monotone function':\\n- Discontinuities of monotone functions  (slug: Discontinuities_of_monotone_functions)\\n    https://en.wikipedia.org/wi"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wiki__wiki_get",
+      "input": "{\"title\": \"Bounded_variation\"}",
+      "ok": true,
+      "result_chars": 4092,
+      "result_head": "[{\"type\": \"text\", \"text\": \"# Bounded variation\\nIn mathematical analysis, a function of bounded variation, also known as BV function, is a real-valued function whose total variation is bounded (finite"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"Mathlib4 bounded variation BddVar\"}",
+      "ok": true,
+      "result_chars": 99,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No English Wikipedia results for 'Mathlib4 bounded variation BddVar'.\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"Mathlib Lean Jordan decomposition monotone\"}",
+      "ok": true,
+      "result_chars": 108,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No English Wikipedia results for 'Mathlib Lean Jordan decomposition monotone'.\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wiki__nlab_search",
+      "input": "{\"q\": \"bounded variation Lean\"}",
+      "ok": true,
+      "result_chars": 101,
+      "result_head": "[{\"type\": \"text\", \"text\": \"nLab search for 'bounded variation Lean' — candidate pages:\\n- HomePage\"}]"
+    }
+  ]
+}

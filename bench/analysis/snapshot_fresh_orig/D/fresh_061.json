@@ -1,0 +1,178 @@
+{
+  "task_id": "fresh_061",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:44:18Z",
+  "wall_s": 102.5,
+  "output_lean": "theorem LSeries_eq_tsum (f : ℕ → ℂ) (h : f 0 = 0) (s : ℂ) :\n  LSeries f s = ∑' n : ℕ, f n / (n : ℂ) ^ s := sorry",
+  "transcript_stats": {
+    "turns": 20,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 1,
+      "mcp__wikibrain__brain_search": 9,
+      "mcp__wikibrain__brain_cell": 2,
+      "mcp__wikibrain__brain_snippets": 1,
+      "mcp__wikibrain__brain_neighborhood": 1,
+      "mcp__wikibrain__decl_exists": 4,
+      "mcp__wikibrain__brain_transfer": 1
+    },
+    "tokens_in": 142,
+    "tokens_out": 8165,
+    "cost_usd": 0.12846219999999997
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"Dirichlet series\"}",
+      "ok": true,
+      "result_chars": 3507,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Dirichlet series\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolv"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Dirichlet\"}",
+      "ok": true,
+      "result_chars": 6578,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Dirichlet\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q550402\\\",\\\"label\\\":\\\"Dirichlet's theorem on arithmetic progressions\\\",\\\"aka\\\":[\\\"Dirichlets Theorem\\\",\\\"Nat.forall"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"formal series sum function\"}",
+      "ok": true,
+      "result_chars": 183,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"formal series sum function\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q1789063\"}",
+      "ok": true,
+      "result_chars": 3113,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q1789063\\\",\\\"id\\\":\\\"cell:Q1789063\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"L-function\\\",\\\"f\\\":33944,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q17"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q2264419\"}",
+      "ok": true,
+      "result_chars": 3506,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q2264419\\\",\\\"id\\\":\\\"cell:Q2264419\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Dirichlet L-function\\\",\\\"f\\\":35864,\\\"cell\\\":{\\\"id\\\":"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_snippets",
+      "input": "{\"id\": \"decl:Mathlib:LSeries\"}",
+      "ok": true,
+      "result_chars": 1576,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q1789063\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"wikidata\\\",\\\"id\\\":\\\"Q1789063\\\",\\\"label\\\":\\\"L-function\\\",\\\"snippet\\\":\\\"meromorphic function"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"decl:Mathlib:LSeries\", \"kinds\": \"depends\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 5904,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q1789063\\\",\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:LSeries\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\"],\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q10"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"LSeries\", \"HasSum\", \"tsum\"]}",
+      "ok": true,
+      "result_chars": 1127,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"LSeries\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.NumberTheory.LSeries.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Nu"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__brain_transfer",
+      "input": "{\"q\": \"LSeries\", \"direction\": \"formal_to_informal\"}",
+      "ok": true,
+      "result_chars": 569,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"LSeries\\\",\\\"decl\\\":\\\"LSeries\\\",\\\"id\\\":\\\"cell:Q1789063\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"L-function\\\",\\\"hits\\\":[{\\\"qid"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"LSeries sum formula\"}",
+      "ok": true,
+      "result_chars": 176,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"LSeries sum formula\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Dirichlet series definition\"}",
+      "ok": true,
+      "result_chars": 184,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Dirichlet series definition\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"ArithmeticFunction series\"}",
+      "ok": true,
+      "result_chars": 182,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"ArithmeticFunction series\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"complex power exponential\"}",
+      "ok": true,
+      "result_chars": 182,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"complex power exponential\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"zpow\", \"cpow\", \"Nat.cast\", \"Complex.exp\"]}",
+      "ok": true,
+      "result_chars": 1319,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"zpow\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"DivInvMonoid.zpow\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\\"Mathlib.Algebra."
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Nat.succ\", \"Complex.ofReal\", \"Finset.sum\"]}",
+      "ok": true,
+      "result_chars": 1061,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Nat.succ\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\\":\\\"h"
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"LSeries_eq\"}",
+      "ok": true,
+      "result_chars": 167,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"LSeries_eq\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Nat.cast power real complex\"}",
+      "ok": true,
+      "result_chars": 184,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Nat.cast power real complex\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"arithmetic function Dirichlet\"}",
+      "ok": true,
+      "result_chars": 186,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"arithmetic function Dirichlet\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 18,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"LSeries\", \"tsum\", \"Complex\"]}",
+      "ok": true,
+      "result_chars": 1084,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"LSeries\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.NumberTheory.LSeries.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Nu"
+    }
+  ]
+}

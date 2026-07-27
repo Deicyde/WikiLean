@@ -1,0 +1,427 @@
+{
+  "task_id": "fresh_056",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:42:51Z",
+  "wall_s": 144.0,
+  "output_lean": "theorem signedMeasure_eq_posPart_sub_negPart {α : Type*} [MeasurableSpace α] \n    (s : MeasureTheory.SignedMeasure α) (E : Set α) (hE : MeasurableSet E) :\n    s E = (s.toJordanDecomposition.posPart E : ℝ) - (s.toJordanDecomposition.negPart E : ℝ) := sorry",
+  "transcript_stats": {
+    "turns": 51,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 3,
+      "mcp__wikibrain__brain_search": 10,
+      "mcp__wikibrain__brain_cell": 7,
+      "mcp__wikibrain__brain_neighborhood": 1,
+      "decl_exists": 1,
+      "mcp__wikibrain__decl_exists": 24,
+      "mcp__wikibrain__brain_filter": 3,
+      "mcp__wikibrain__brain_snippets": 1
+    },
+    "tokens_in": 380,
+    "tokens_out": 8887,
+    "cost_usd": 0.28447744999999997
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"signed measure Jordan decomposition\"}",
+      "ok": false,
+      "result_chars": 268,
+      "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"signed measure Jordan decomposition\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":{\""
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"Jordan decomposition of signed measures positive part negative part\"}",
+      "ok": true,
+      "result_chars": 2312,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Jordan decomposition of signed measures positive part negative part\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom res"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"signed measure\"}",
+      "ok": false,
+      "result_chars": 247,
+      "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"signed measure\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":{\"generated_at\":\"2026-0"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Jordan decomposition\"}",
+      "ok": true,
+      "result_chars": 177,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Jordan decomposition\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"measure theory\"}",
+      "ok": true,
+      "result_chars": 567,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"measure theory\\\",\\\"hits\\\":[{\\\"id\\\":\\\"path:Mathlib/MeasureTheory\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"MeasureTheory\\\",\\\"aka\\\":[\\\"measure theory\\\"],\\\"matc"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"signed measure\"}",
+      "ok": true,
+      "result_chars": 171,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"signed measure\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"vector measure\"}",
+      "ok": true,
+      "result_chars": 171,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"vector measure\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"decomposition measure\"}",
+      "ok": true,
+      "result_chars": 178,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"decomposition measure\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"measure positive negative\"}",
+      "ok": true,
+      "result_chars": 182,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"measure positive negative\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"path:Mathlib/MeasureTheory\"}",
+      "ok": true,
+      "result_chars": 1374,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/MeasureTheory\\\",\\\"id\\\":\\\"path:Mathlib/MeasureTheory\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"MeasureTheory\\\","
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"path:Mathlib/MeasureTheory/VectorMeasure\"}",
+      "ok": true,
+      "result_chars": 1053,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure\\\",\\\"id\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure\\\",\\\"kind\\\":\\\"supercell\\\","
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"path:Mathlib/MeasureTheory/VectorMeasure/Decomposition\"}",
+      "ok": true,
+      "result_chars": 866,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure/Decomposition\\\",\\\"id\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure/Decompositi"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q1568811\"}",
+      "ok": true,
+      "result_chars": 4008,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q1568811\\\",\\\"id\\\":\\\"cell:Q1568811\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Hahn decomposition theorem\\\",\\\"f\\\":152,\\\"cell\\\":{\\\"i"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"cell:Q1568811\", \"kinds\": \"depends\", \"limit\": 50}",
+      "ok": true,
+      "result_chars": 14809,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q1568811\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\"],\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q33540\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":3},\\\"traces\\\":[{\\\"kind\\\""
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Jordan theorem measure\"}",
+      "ok": true,
+      "result_chars": 179,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Jordan theorem measure\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 15,
+      "name": "decl_exists",
+      "input": "{\"names\": \"[\\\"MeasureTheory.SignedMeasure\\\", \\\"MeasureTheory.SignedMeasure.posPart\\\", \\\"MeasureTheory.SignedMeasure.negPart\\\"]\"}",
+      "ok": false,
+      "result_chars": 75,
+      "result_head": "<tool_use_error>Error: No such tool available: decl_exists</tool_use_error>"
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.SignedMeasure\", \"MeasureTheory.SignedMeasure.posPart\", \"MeasureTheory.SignedMeasure.negPart\"]}",
+      "ok": true,
+      "result_chars": 1086,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.MeasureTheory.VectorMeasure.Basic\\\",\\\"import"
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:MeasureTheory.SignedMeasure\"}",
+      "ok": false,
+      "result_chars": 397,
+      "result_head": "{\"ok\":false,\"error\":\"unresolvable key\",\"key\":\"decl:Mathlib:MeasureTheory.SignedMeasure\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ dec"
+    },
+    {
+      "i": 18,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"positive negative part signed measure\"}",
+      "ok": true,
+      "result_chars": 194,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"positive negative part signed measure\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 19,
+      "name": "mcp__wikibrain__brain_filter",
+      "input": "{\"f\": 0, \"under\": \"path:Mathlib/MeasureTheory/VectorMeasure/Decomposition\", \"limit\": 100}",
+      "ok": true,
+      "result_chars": 752,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"f\\\":0,\\\"type\\\":\\\"cell\\\",\\\"under\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure/Decomposition\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q1568811\\\",\\\"label\\\":\\\"Hahn decompositio"
+    },
+    {
+      "i": 20,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.SignedMeasure.apply\", \"MeasureTheory.SignedMeasure.coe_toSignedMeasure\", \"MeasureTheory.SignedMeasure.jordanDecomposition\"]}",
+      "ok": true,
+      "result_chars": 1160,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.apply\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"Matrix.IsSymm.apply\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\"
+    },
+    {
+      "i": 21,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"SignedMeasure.apply\", \"MeasureTheory.SignedMeasure.toMeasure\", \"MeasureTheory.VectorMeasure.toSignedMeasure\"]}",
+      "ok": true,
+      "result_chars": 1132,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"SignedMeasure.apply\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"Matrix.IsSymm.apply\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\"
+    },
+    {
+      "i": 22,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.signedMeasure_eq_sub\", \"MeasureTheory.SignedMeasure.coe_sub_coe\", \"SignedMeasure.eq_posPart_sub_negPart\"]}",
+      "ok": true,
+      "result_chars": 995,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.signedMeasure_eq_sub\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are "
+    },
+    {
+      "i": 23,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"total variation measure\"}",
+      "ok": true,
+      "result_chars": 180,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"total variation measure\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 24,
+      "name": "mcp__wikibrain__brain_filter",
+      "input": "{\"f\": 0, \"under\": \"path:Mathlib/MeasureTheory/VectorMeasure\", \"limit\": 100}",
+      "ok": true,
+      "result_chars": 738,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"f\\\":0,\\\"type\\\":\\\"cell\\\",\\\"under\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q1568811\\\",\\\"label\\\":\\\"Hahn decomposition theorem\\\",\\\""
+    },
+    {
+      "i": 25,
+      "name": "mcp__wikibrain__brain_snippets",
+      "input": "{\"id\": \"cell:Q1568811\"}",
+      "ok": true,
+      "result_chars": 2523,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q1568811\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"wikidata\\\",\\\"id\\\":\\\"Q1568811\\\",\\\"label\\\":\\\"Hahn decomposition theorem\\\",\\\"snippet\\\":\\\"theo"
+    },
+    {
+      "i": 26,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.SignedMeasure.toFunction\", \"MeasureTheory.SignedMeasure.coeToAdditiveFun\", \"MeasureTheory.SignedMeasure.ofMeasures\"]}",
+      "ok": true,
+      "result_chars": 1006,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.toFunction\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames "
+    },
+    {
+      "i": 27,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.SignedMeasure.sub_eq_add\", \"MeasureTheory.SignedMeasure.sub_toMeasure\", \"MeasureTheory.SignedMeasure.coe_apply_eq\"]}",
+      "ok": true,
+      "result_chars": 1005,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.sub_eq_add\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames "
+    },
+    {
+      "i": 28,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"path:Mathlib/MeasureTheory/VectorMeasure/AddContent\"}",
+      "ok": true,
+      "result_chars": 813,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure/AddContent\\\",\\\"id\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure/AddContent\\\",\\"
+    },
+    {
+      "i": 29,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"SignedMeasure\", \"MeasureTheory.real_toSignedMeasure\", \"MeasureTheory.measureToSignedMeasure\"]}",
+      "ok": true,
+      "result_chars": 969,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"SignedMeasure\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → "
+    },
+    {
+      "i": 30,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.SignedMeasure.mk_eq_sub_of_not_isSignedMeasurePos\", \"MeasureTheory.JordanDecomposition\", \"MeasureTheory.JordanDecomposition.posPart\"]}",
+      "ok": true,
+      "result_chars": 1339,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.mk_eq_sub_of_not_isSignedMeasurePos\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spe"
+    },
+    {
+      "i": 31,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.JordanDecomposition.negPart\", \"MeasureTheory.SignedMeasure.jordanDecomposition\", \"MeasureTheory.JordanDecomposition.posPart_neg_apply\"]}",
+      "ok": true,
+      "result_chars": 1187,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.JordanDecomposition.negPart\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.MeasureTheory.VectorMeasure.De"
+    },
+    {
+      "i": 32,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"MeasureTheory.JordanDecomposition\"}",
+      "ok": false,
+      "result_chars": 390,
+      "result_head": "{\"ok\":false,\"error\":\"unresolvable key\",\"key\":\"MeasureTheory.JordanDecomposition\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name "
+    },
+    {
+      "i": 33,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Jordan decomposition\"}",
+      "ok": true,
+      "result_chars": 177,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Jordan decomposition\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 34,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.SignedMeasure.apply_eq_posPart_sub_negPart\", \"MeasureTheory.SignedMeasure.eq_posPart_sub_negPart\", \"MeasureTheory.SignedMeasure.toJordanDecomposition\"]}",
+      "ok": true,
+      "result_chars": 1211,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.apply_eq_posPart_sub_negPart\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/n"
+    },
+    {
+      "i": 35,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.SignedMeasure.apply_eq_sub\", \"MeasureTheory.SignedMeasure.sub_eq_coe\", \"MeasureTheory.SignedMeasure.coe_eq_sub_apply\"]}",
+      "ok": true,
+      "result_chars": 1008,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.apply_eq_sub\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; rename"
+    },
+    {
+      "i": 36,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.SignedMeasure.mk_apply\", \"MeasureTheory.SignedMeasure.apply\", \"MeasureTheory.SignedMeasure.apply_sub\"]}",
+      "ok": true,
+      "result_chars": 1139,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.mk_apply\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames ar"
+    },
+    {
+      "i": 37,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.SignedMeasure.coe\", \"MeasureTheory.SignedMeasure.coe_apply\", \"MeasureTheory.SignedMeasure.apply_eq_posPart_sub\"]}",
+      "ok": true,
+      "result_chars": 1002,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.coe\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are com"
+    },
+    {
+      "i": 38,
+      "name": "mcp__wikibrain__brain_filter",
+      "input": "{\"f\": 0, \"under\": \"path:Mathlib/MeasureTheory/VectorMeasure/Decomposition\", \"limit\": 100, \"type\": \"cell\"}",
+      "ok": true,
+      "result_chars": 752,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"f\\\":0,\\\"type\\\":\\\"cell\\\",\\\"under\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure/Decomposition\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q1568811\\\",\\\"label\\\":\\\"Hahn decompositio"
+    },
+    {
+      "i": 39,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.JordanDecomposition.signedMeasure_apply\", \"MeasureTheory.JordanDecomposition.apply_eq_posPart_sub_negPart\", \"MeasureTheory.signedMeasure_apply_eq_sub\"]}",
+      "ok": true,
+      "result_chars": 1041,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.JordanDecomposition.signedMeasure_apply\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/name"
+    },
+    {
+      "i": 40,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.JordanDecomposition.apply_posPart\", \"MeasureTheory.JordanDecomposition.apply_negPart\", \"MeasureTheory.signedMeasure_eq_posPart_sub_negPart\"]}",
+      "ok": true,
+      "result_chars": 1030,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.JordanDecomposition.apply_posPart\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace;"
+    },
+    {
+      "i": 41,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.signedMeasure_eq_sub\", \"MeasureTheory.SignedMeasure.eq_of_posPart_sub_negPart\", \"MeasureTheory.eq_signedMeasure_iff_eq_apply\"]}",
+      "ok": true,
+      "result_chars": 1016,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.signedMeasure_eq_sub\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are "
+    },
+    {
+      "i": 42,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.JordanDecomposition.signedMeasure_eq_sub\", \"MeasureTheory.JordanDecomposition.eq_sub_of_posPart_negPart\", \"MeasureTheory.SignedMeasure.toJordanDecomposition_apply\"]}",
+      "ok": true,
+      "result_chars": 1054,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.JordanDecomposition.signedMeasure_eq_sub\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/nam"
+    },
+    {
+      "i": 43,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"SignedMeasure.apply_eq_sub\", \"SignedMeasure.apply\", \"SignedMeasure.toReal\"]}",
+      "ok": true,
+      "result_chars": 1098,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"SignedMeasure.apply_eq_sub\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common ("
+    },
+    {
+      "i": 44,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.apply_sub\", \"MeasureTheory.measure_apply_sub\", \"MeasureTheory.real_apply_eq_posPart_sub_negPart\"]}",
+      "ok": true,
+      "result_chars": 987,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.apply_sub\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g"
+    },
+    {
+      "i": 45,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.SignedMeasure.apply_eq_of_posPart_negPart\", \"MeasureTheory.SignedMeasure.eq_sub_apply\", \"MeasureTheory.JordanDecomposition.toSignedMeasure_eq_sub\"]}",
+      "ok": true,
+      "result_chars": 1037,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.apply_eq_of_posPart_negPart\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/na"
+    },
+    {
+      "i": 46,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.SignedMeasure.of_posPart_negPart\", \"MeasureTheory.SignedMeasure.mk_of\", \"MeasureTheory.ofMeasures\"]}",
+      "ok": true,
+      "result_chars": 989,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.of_posPart_negPart\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; "
+    },
+    {
+      "i": 47,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.Real.apply_sub\", \"MeasureTheory.ext_iff_apply_eq\", \"MeasureTheory.SignedMeasure.sub_eq_apply\"]}",
+      "ok": true,
+      "result_chars": 984,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.Real.apply_sub\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common"
+    },
+    {
+      "i": 48,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.SignedMeasure.coe_sub\", \"MeasureTheory.Measure.apply_sub\", \"SignedMeasure.posPart_sub_negPart\"]}",
+      "ok": true,
+      "result_chars": 1191,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.coe_sub\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are"
+    },
+    {
+      "i": 49,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.SignedMeasure.real_apply\", \"MeasureTheory.signedMeasure_apply\", \"MeasureTheory.SignedMeasure.apply_iInf\"]}",
+      "ok": true,
+      "result_chars": 995,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.real_apply\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames "
+    }
+  ]
+}

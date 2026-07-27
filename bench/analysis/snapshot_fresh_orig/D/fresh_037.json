@@ -1,0 +1,186 @@
+{
+  "task_id": "fresh_037",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:38:19Z",
+  "wall_s": 80.7,
+  "output_lean": "theorem immersion_contDiff {n : ℕ∞} {M N : Type*} [ChartedSpace ℝ M] [ChartedSpace ℝ N]\n  {f : M → N} (h : Manifold.IsImmersion f) : ContDiff n f := sorry",
+  "transcript_stats": {
+    "turns": 21,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 3,
+      "mcp__wikibrain__brain_cell": 2,
+      "mcp__wikibrain__brain_search": 7,
+      "mcp__wikibrain__brain_neighborhood": 1,
+      "mcp__wikibrain__brain_transfer": 1,
+      "mcp__wikibrain__decl_exists": 5,
+      "mcp__wikibrain__brain_snippets": 1
+    },
+    "tokens_in": 94,
+    "tokens_out": 6319,
+    "cost_usd": 0.09448035
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"immersion between manifolds\"}",
+      "ok": true,
+      "result_chars": 2960,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"immersion between manifolds\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label ma"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"C^n smooth function manifolds\"}",
+      "ok": true,
+      "result_chars": 2755,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"C^n smooth function manifolds\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label m"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"smooth function manifold contDiff\"}",
+      "ok": true,
+      "result_chars": 4229,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"smooth function manifold contDiff\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/la"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q574523\"}",
+      "ok": true,
+      "result_chars": 3197,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q574523\\\",\\\"id\\\":\\\"cell:Q574523\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Immersion (mathematics)\\\",\\\"f\\\":6296,\\\"cell\\\":{\\\"id\\\":"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Smooth manifold function contDiffOn\"}",
+      "ok": true,
+      "result_chars": 192,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Smooth manifold function contDiffOn\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"cell:Q574523\", \"kinds\": \"depends,links\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 6930,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q574523\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\",\\\"links\\\"],\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q203920\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":4},\\\"traces\\\":"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_transfer",
+      "input": "{\"q\": \"Smooth\", \"direction\": \"formal_to_informal\"}",
+      "ok": true,
+      "result_chars": 1424,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"Smooth\\\",\\\"decl\\\":\\\"Smooth\\\",\\\"hits\\\":[],\\\"note\\\":\\\"decl is not an organ of any atom — it may still exist in Mathli"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Smooth\", \"Manifold.IsImmersion\", \"ContDiff\"]}",
+      "ok": true,
+      "result_chars": 1192,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Smooth\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"Algebra.Smooth\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\\"Mathlib.RingTheor"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"SmoothOn SmoothAt manifold\"}",
+      "ok": true,
+      "result_chars": 183,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"SmoothOn SmoothAt manifold\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"SmoothOn\", \"SmoothAt\", \"ContDiffAt\"]}",
+      "ok": true,
+      "result_chars": 992,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"SmoothOn\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Modul"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"immersion diffeomorphism image submanifold\"}",
+      "ok": true,
+      "result_chars": 199,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"immersion diffeomorphism image submanifold\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"ContDiffOn\", \"ContDiffWithinAt\"]}",
+      "ok": true,
+      "result_chars": 854,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"ContDiffOn\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.Calculus.ContDiff.Defs\\\",\\\"import_line\\\":\\\"import Ma"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"IsImmersion ContDiff theorem property\"}",
+      "ok": true,
+      "result_chars": 194,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"IsImmersion ContDiff theorem property\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:Manifold.IsImmersion\"}",
+      "ok": true,
+      "result_chars": 3219,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:Manifold.IsImmersion\\\",\\\"id\\\":\\\"cell:Q574523\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Immersion (mathematics)\\\",\\\"f\\\":"
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"bundled immersion type structure\"}",
+      "ok": true,
+      "result_chars": 189,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"bundled immersion type structure\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Manifold.LocalHomeomorph\", \"LocalHomeomorph\"]}",
+      "ok": true,
+      "result_chars": 701,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Manifold.LocalHomeomorph\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e."
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__brain_snippets",
+      "input": "{\"id\": \"cell:Q574523\"}",
+      "ok": true,
+      "result_chars": 1682,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q574523\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"wikidata\\\",\\\"id\\\":\\\"Q574523\\\",\\\"label\\\":\\\"Immersion (mathematics)\\\",\\\"snippet\\\":\\\"different"
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"smooth function charted space manifold\"}",
+      "ok": true,
+      "result_chars": 195,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"smooth function charted space manifold\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 18,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"ChartedSpace\", \"SmoothManifoldWithCorners\"]}",
+      "ok": true,
+      "result_chars": 778,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"ChartedSpace\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Geometry.Manifold.ChartedSpace\\\",\\\"import_line\\\":\\\"import M"
+    },
+    {
+      "i": 19,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"ChartedSpace manifold structure\"}",
+      "ok": true,
+      "result_chars": 188,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"ChartedSpace manifold structure\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    }
+  ]
+}

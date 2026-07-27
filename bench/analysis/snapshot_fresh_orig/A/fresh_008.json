@@ -1,0 +1,17 @@
+{
+  "task_id": "fresh_008",
+  "arm": "A",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T01:51:25Z",
+  "wall_s": 54.4,
+  "output_lean": "theorem polynomial_to_laurent_support\n    {R : Type*} [Semiring R] (f : Polynomial R) :\n    let embed : ℕ ↪ ℤ := ⟨Int.ofNat, Int.ofNat_injective⟩\n    (Finsupp.support (Finsupp.embDomain embed f) : Set ℤ) =\n    Set.image Int.ofNat (Finsupp.support f : Set ℕ) :=\n  sorry",
+  "transcript_stats": {
+    "turns": 1,
+    "tool_calls_by_name": {},
+    "tokens_in": 10,
+    "tokens_out": 5360,
+    "cost_usd": 0.028229999999999998
+  },
+  "tool_trace": []
+}

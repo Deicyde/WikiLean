@@ -1,0 +1,54 @@
+{
+  "task_id": "fresh_040",
+  "arm": "B",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T02:18:31Z",
+  "wall_s": 46.4,
+  "output_lean": "theorem localization_of_uniqueFactorizationMonoid {M : Type*} [Monoid M] \n    [UniqueFactorizationMonoid M] (S : Submonoid M) : \n    UniqueFactorizationMonoid (Localization S) := sorry",
+  "transcript_stats": {
+    "turns": 5,
+    "tool_calls_by_name": {
+      "mcp__wiki__wiki_search": 1,
+      "mcp__wiki__nlab_search": 2,
+      "mcp__wiki__wiki_get": 1
+    },
+    "tokens_in": 34,
+    "tokens_out": 3015,
+    "cost_usd": 0.0328107
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"unique factorization monoid localization\"}",
+      "ok": true,
+      "result_chars": 2349,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'unique factorization monoid localization':\\n- Unique factorization domain  (slug: Unique_factorization_domain)\\n    https://en.wikipedia.org/wiki/Unique_fac"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wiki__nlab_search",
+      "input": "{\"q\": \"unique factorization monoid\"}",
+      "ok": true,
+      "result_chars": 1840,
+      "result_head": "[{\"type\": \"text\", \"text\": \"nLab page for 'unique factorization monoid' (https://ncatlab.org/nlab/show/unique+factorization+monoid):\\nnLab\\nunique factorization monoid\\nSkip the Navigation Links |\\nHom"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wiki__wiki_get",
+      "input": "{\"title\": \"Unique_factorization_domain\", \"section\": \"Definition\"}",
+      "ok": true,
+      "result_chars": 4155,
+      "result_head": "[{\"type\": \"text\", \"text\": \"# Unique factorization domain\\n[section 'Definition' not found; returning article head]\\nIn mathematics, a unique factorization domain (UFD) (also sometimes called a factori"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wiki__nlab_search",
+      "input": "{\"q\": \"localization submonoid\"}",
+      "ok": true,
+      "result_chars": 101,
+      "result_head": "[{\"type\": \"text\", \"text\": \"nLab search for 'localization submonoid' — candidate pages:\\n- HomePage\"}]"
+    }
+  ]
+}

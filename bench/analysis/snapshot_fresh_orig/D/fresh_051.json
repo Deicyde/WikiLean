@@ -1,0 +1,167 @@
+{
+  "task_id": "fresh_051",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:41:32Z",
+  "wall_s": 81.2,
+  "output_lean": "theorem stronglyMeasurable_of_continuousOn_compl_countable\n  {α β : Type*} [TopologicalSpace α] [MeasurableSpace α]\n  [TopologicalSpace β] [TopologicalSpace.PseudoMetrizableSpace β] [MeasurableSpace β]\n  (f : α → β) {s : Set α} (hs : Set.Countable s) (hf : ContinuousOn f sᶜ) :\n  MeasureTheory.StronglyMeasurable f := sorry",
+  "transcript_stats": {
+    "turns": 19,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 4,
+      "mcp__wikibrain__brain_search": 6,
+      "mcp__wikibrain__brain_cell": 3,
+      "mcp__wikibrain__decl_exists": 5
+    },
+    "tokens_in": 108,
+    "tokens_out": 5950,
+    "cost_usd": 0.0935908
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"pseudo-metrizable space\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 1499,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"pseudo-metrizable space\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, "
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"strongly measurable function\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3583,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"strongly measurable function\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label m"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"continuous outside a countable set\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3973,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"continuous outside a countable set\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/l"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"PseudoMetrizableSpace\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 833,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"PseudoMetrizableSpace\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:PseudoMetrizableSpace.regularSpace\\\",\\\"label\\\":\\\"PseudoMetrizableSpace.regularSpace\\\",\\\"su"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"StronglyMeasurable\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 736,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"StronglyMeasurable\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:MeasureTheory.condExp_mul_of_stronglyMeasurable_left\\\",\\\"label\\\":\\\"MeasureTheory.condExp_mul_"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"strongly measurable\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 3011,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"strongly measurable\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, res"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"path:Mathlib/Topology/Metrizable/Basic\"}",
+      "ok": true,
+      "result_chars": 1097,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/Topology/Metrizable/Basic\\\",\\\"id\\\":\\\"path:Mathlib/Topology/Metrizable/Basic\\\",\\\"kind\\\":\\\"supercell\\\",\\\"la"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"path:Mathlib/MeasureTheory/Function/StronglyMeasurable\"}",
+      "ok": true,
+      "result_chars": 815,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/MeasureTheory/Function/StronglyMeasurable\\\",\\\"id\\\":\\\"path:Mathlib/MeasureTheory/Function/StronglyMeasurab"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"PseudoMetrizableSpace\", \"StronglyMeasurable\", \"TopologicalSpace.PseudoMetrizableSpace\"]}",
+      "ok": true,
+      "result_chars": 1053,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"PseudoMetrizableSpace\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. "
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.StronglyMeasurable\", \"Continuous\", \"Set.Countable\"]}",
+      "ok": true,
+      "result_chars": 1179,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.StronglyMeasurable\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.MeasureTheory.Function.StronglyMeasurab"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"continuous on complement countable\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 191,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"continuous on complement countable\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"measurable topology countable discontinuity\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 200,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"measurable topology countable discontinuity\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"ContinuousOn\", \"ContinuousAt\", \"Set.compl\"]}",
+      "ok": true,
+      "result_chars": 1042,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"ContinuousOn\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Defs.Filter\\\",\\\"import_line\\\":\\\"import Mathlib.Top"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"borel\", \"MeasureTheory.borel\", \"TopologicalSpace\"]}",
+      "ok": true,
+      "result_chars": 1251,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"borel\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.MeasureTheory.Constructions.BorelSpace.Basic\\\",\\\"import_line\\\":\\\"i"
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:MeasureTheory.StronglyMeasurable\"}",
+      "ok": false,
+      "result_chars": 402,
+      "result_head": "{\"ok\":false,\"error\":\"unresolvable key\",\"key\":\"decl:Mathlib:MeasureTheory.StronglyMeasurable\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare F"
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"StronglyMeasurable definition\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 186,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"StronglyMeasurable definition\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"SecondCountableTopology\", \"MeasureTheory.HasStrictDeriv\"]}",
+      "ok": true,
+      "result_chars": 755,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"SecondCountableTopology\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Bases\\\",\\\"import_line\\\":\\\"import Mathli"
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"set complement notation\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 180,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"set complement notation\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    }
+  ]
+}

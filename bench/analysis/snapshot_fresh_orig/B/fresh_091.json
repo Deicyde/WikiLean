@@ -1,0 +1,46 @@
+{
+  "task_id": "fresh_091",
+  "arm": "B",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T03:54:43Z",
+  "wall_s": 92.4,
+  "output_lean": "theorem totalVariation_two_points (f : ℝ → ℝ) (a b : ℝ) :\n  VariationOn f {a, b} = dist (f a) (f b) := sorry",
+  "transcript_stats": {
+    "turns": 4,
+    "tool_calls_by_name": {
+      "mcp__wiki__wiki_search": 1,
+      "mcp__wiki__nlab_search": 1,
+      "mcp__wiki__wiki_get": 1
+    },
+    "tokens_in": 34,
+    "tokens_out": 8073,
+    "cost_usd": 0.0623402
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"total variation bounded variation function\"}",
+      "ok": true,
+      "result_chars": 2320,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'total variation bounded variation function':\\n- Bounded variation  (slug: Bounded_variation)\\n    https://en.wikipedia.org/wiki/Bounded_variation\\n    mathe"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wiki__nlab_search",
+      "input": "{\"q\": \"bounded variation\"}",
+      "ok": true,
+      "result_chars": 146,
+      "result_head": "[{\"type\": \"text\", \"text\": \"nLab search for 'bounded variation' — candidate pages:\\n- HomePage\\n- absolutely continuous function\\n- distribution\"}]"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wiki__wiki_get",
+      "input": "{\"title\": \"Bounded variation\", \"section\": \"Definition\"}",
+      "ok": true,
+      "result_chars": 4093,
+      "result_head": "[{\"type\": \"text\", \"text\": \"# Bounded variation\\n[section 'Definition' not found; returning article head]\\nIn mathematical analysis, a function of bounded variation, also known as BV function, is a rea"
+    }
+  ]
+}

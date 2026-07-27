@@ -1,0 +1,380 @@
+{
+  "task_id": "fresh_044",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:39:57Z",
+  "wall_s": 95.2,
+  "output_lean": "theorem finitelySemisimple_triangularizable_iff_diagonalizable\n    [IsAlgClosed K] [FiniteDimensional K V] (f : Module.End K V) :\n    (f.IsSemisimple ↔ ⨆ μ : K, f.eigenspace μ = ⊤) ∧\n    (⨆ μ : K, f.maxGenEigenspace μ = ⊤ ↔ ⨆ μ : K, f.eigenspace μ = ⊤) := by\n  sorry",
+  "transcript_stats": {
+    "turns": 45,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 4,
+      "mcp__wikibrain__brain_search": 16,
+      "mcp__wikibrain__brain_cell": 8,
+      "decl_exists": 1,
+      "mcp__wikibrain__decl_exists": 7,
+      "mcp__wikibrain__brain_transfer": 2,
+      "mcp__wikibrain__brain_filter": 2,
+      "mcp__wikibrain__brain_snippets": 3,
+      "mcp__wikibrain__brain_neighborhood": 1
+    },
+    "tokens_in": 162,
+    "tokens_out": 7200,
+    "cost_usd": 0.14435665
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"diagonalizable linear endomorphism\"}",
+      "ok": true,
+      "result_chars": 2870,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"diagonalizable linear endomorphism\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/l"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"triangularizable matrix upper triangular form\"}",
+      "ok": true,
+      "result_chars": 2993,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"triangularizable matrix upper triangular form\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"eigenspace generalized eigenspace spectral decomposition\"}",
+      "ok": false,
+      "result_chars": 289,
+      "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"eigenspace generalized eigenspace spectral decomposition\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brai"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"semisimple algebra module decomposition\"}",
+      "ok": true,
+      "result_chars": 4023,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"semisimple algebra module decomposition\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"triangularizable\"}",
+      "ok": true,
+      "result_chars": 308,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"triangularizable\\\",\\\"hits\\\":[{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Triangularizable\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Triangularizable\\\",\\\""
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"eigenvalue eigenvector\"}",
+      "ok": true,
+      "result_chars": 179,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"eigenvalue eigenvector\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"path:Mathlib/LinearAlgebra/Eigenspace/Triangularizable\"}",
+      "ok": true,
+      "result_chars": 944,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Triangularizable\\\",\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Triangularizab"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"diagonalizable\"}",
+      "ok": true,
+      "result_chars": 613,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"diagonalizable\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q943246\\\",\\\"label\\\":\\\"Wedderburn's little theorem\\\",\\\"aka\\\":[\\\"Wedderburn's Theorem\\\",\\\"Wedderburn's theorem\\\""
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"eigenspace\"}",
+      "ok": true,
+      "result_chars": 3207,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"eigenspace\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q970767\\\",\\\"label\\\":\\\"Generalized eigenvector\\\",\\\"aka\\\":[\\\"Generalized Eigenvector\\\",\\\"Module.End.genEigenspace\\\","
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:decl:Mathlib:Module.End.IsSemisimple.iSup_eigenspace_eq_top\"}",
+      "ok": true,
+      "result_chars": 1719,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:Module.End.IsSemisimple.iSup_eigenspace_eq_top\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.IsSemisimple.iSup_"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:decl:Mathlib:Module.End.iSup_maxGenEigenspace_eq_top\"}",
+      "ok": true,
+      "result_chars": 1884,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:Module.End.iSup_maxGenEigenspace_eq_top\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.iSup_maxGenEigenspace_eq_"
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"finitely-semisimple\"}",
+      "ok": true,
+      "result_chars": 176,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finitely-semisimple\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"IsSemisimple endomorphism\"}",
+      "ok": true,
+      "result_chars": 182,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"IsSemisimple endomorphism\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"maxGenEigenspace generalized eigenspace\"}",
+      "ok": true,
+      "result_chars": 196,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"maxGenEigenspace generalized eigenspace\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q970767\"}",
+      "ok": true,
+      "result_chars": 2774,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q970767\\\",\\\"id\\\":\\\"cell:Q970767\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Generalized eigenvector\\\",\\\"f\\\":2200,\\\"cell\\\":{\\\"id\\\":"
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Module.End.IsTriangularizable\"}",
+      "ok": true,
+      "result_chars": 186,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Module.End.IsTriangularizable\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Basis.IsTriangularizable\"}",
+      "ok": true,
+      "result_chars": 181,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Basis.IsTriangularizable\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 17,
+      "name": "decl_exists",
+      "input": "{\"names\": \"[\\\"Module.End.IsSemisimple\\\", \\\"Module.End.IsTriangularizable\\\", \\\"Module.End.maxGenEigenspace\\\"]\"}",
+      "ok": false,
+      "result_chars": 75,
+      "result_head": "<tool_use_error>Error: No such tool available: decl_exists</tool_use_error>"
+    },
+    {
+      "i": 18,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Module.End.IsSemisimple\", \"Module.End.IsTriangularizable\", \"Module.End.maxGenEigenspace\"]}",
+      "ok": true,
+      "result_chars": 1131,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Module.End.IsSemisimple\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Semisimple\\\",\\\"import_line\\\":\\\"imp"
+    },
+    {
+      "i": 19,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"LinearMap.Diagonalizable\"}",
+      "ok": true,
+      "result_chars": 181,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"LinearMap.Diagonalizable\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 20,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Module.End eigenvalue characteristic polynomial\"}",
+      "ok": true,
+      "result_chars": 204,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Module.End eigenvalue characteristic polynomial\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}"
+    },
+    {
+      "i": 21,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"triangular matrix upper triangular\"}",
+      "ok": true,
+      "result_chars": 191,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"triangular matrix upper triangular\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 22,
+      "name": "mcp__wikibrain__brain_transfer",
+      "input": "{\"q\": \"triangularizable\", \"direction\": \"informal_to_formal\"}",
+      "ok": false,
+      "result_chars": 212,
+      "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"triangularizable\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup\",\"snapshot\":{\"generated_at\":\"2026-07-16T09:25:11+00:00\",\"pin\":\"bf32661"
+    },
+    {
+      "i": 23,
+      "name": "mcp__wikibrain__brain_filter",
+      "input": "{\"f\": 0, \"under\": \"path:Mathlib/LinearAlgebra/Eigenspace/Triangularizable\", \"limit\": 50}",
+      "ok": true,
+      "result_chars": 647,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"f\\\":0,\\\"type\\\":\\\"cell\\\",\\\"under\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Triangularizable\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.exists_eigenvalu"
+    },
+    {
+      "i": 24,
+      "name": "mcp__wikibrain__brain_transfer",
+      "input": "{\"q\": \"diagonalizable\", \"direction\": \"informal_to_formal\"}",
+      "ok": true,
+      "result_chars": 1287,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"informal_to_formal\\\",\\\"q\\\":\\\"diagonalizable\\\",\\\"resolved_from\\\":\\\"search\\\",\\\"id\\\":\\\"cell:Q943246\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Wedderburn's li"
+    },
+    {
+      "i": 25,
+      "name": "mcp__wikibrain__brain_filter",
+      "input": "{\"f\": 0, \"under\": \"path:Mathlib/LinearAlgebra/Eigenspace\", \"limit\": 100}",
+      "ok": true,
+      "result_chars": 5025,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"f\\\":0,\\\"type\\\":\\\"cell\\\",\\\"under\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q190524\\\",\\\"label\\\":\\\"Eigenvalues and eigenvectors\\\",\\\"f\\"
+    },
+    {
+      "i": 26,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Module.End.eigenspace\", \"Module.End.genEigenspace\", \"Module.End.exists_eigenvalue\", \"End\"]}",
+      "ok": true,
+      "result_chars": 1493,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Module.End.eigenspace\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Eigenspace.Basic\\\",\\\"import_line\\\":\\"
+    },
+    {
+      "i": 27,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:Module.End.eigenspace\"}",
+      "ok": true,
+      "result_chars": 1559,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:Module.End.eigenspace\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.eigenspace\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Modu"
+    },
+    {
+      "i": 28,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:Module.End.exists_eigenvalue\"}",
+      "ok": true,
+      "result_chars": 1755,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:Module.End.exists_eigenvalue\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.exists_eigenvalue\\\",\\\"kind\\\":\\\"cell\\\",\\\""
+    },
+    {
+      "i": 29,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"LinearMap.End\", \"Module.End\", \"CategoryTheory.End\"]}",
+      "ok": true,
+      "result_chars": 1074,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"LinearMap.End\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → "
+    },
+    {
+      "i": 30,
+      "name": "mcp__wikibrain__brain_snippets",
+      "input": "{\"id\": \"cell:decl:Mathlib:Module.End.IsSemisimple.iSup_eigenspace_eq_top\"}",
+      "ok": true,
+      "result_chars": 721,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.IsSemisimple.iSup_eigenspace_eq_top\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:Module."
+    },
+    {
+      "i": 31,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"path:Mathlib/LinearAlgebra/Semisimple\"}",
+      "ok": true,
+      "result_chars": 807,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/LinearAlgebra/Semisimple\\\",\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Semisimple\\\",\\\"kind\\\":\\\"supercell\\\",\\\"labe"
+    },
+    {
+      "i": 32,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:decl:Mathlib:Module.End.IsSemisimple\"}",
+      "ok": true,
+      "result_chars": 1676,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:Module.End.IsSemisimple\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.IsSemisimple\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\"
+    },
+    {
+      "i": 33,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"IsTriangularizable triangular basis\"}",
+      "ok": true,
+      "result_chars": 192,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"IsTriangularizable triangular basis\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 34,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Basis matrix representation\"}",
+      "ok": true,
+      "result_chars": 184,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Basis matrix representation\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 35,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"FiniteDimensional\", \"Basis\", \"Matrix.PolyUpperTriangular\"]}",
+      "ok": true,
+      "result_chars": 1147,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"FiniteDimensional\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.FiniteDimensional.Defs\\\",\\\"import_line\\\""
+    },
+    {
+      "i": 36,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Matrix.PolyBlock\", \"LinearMap.Diagonalizable\", \"LinearEquiv.IsTriangularizable\"]}",
+      "ok": true,
+      "result_chars": 956,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Matrix.PolyBlock\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis"
+    },
+    {
+      "i": 37,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Diagonalizable linear algebra matrix\"}",
+      "ok": true,
+      "result_chars": 193,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Diagonalizable linear algebra matrix\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 38,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"path:Mathlib/LinearAlgebra/Eigenspace/Triangularizable\", \"limit\": 100}",
+      "ok": true,
+      "result_chars": 370,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Triangularizable\\\",\\\"kind\\\":\\\"supercell\\\",\\\"synapses\\\":[],\\\"returned\\\":0,\\\"matched\\\":0,\\\"counts\\\":{\\\"syn\\\":0,\\\"or"
+    },
+    {
+      "i": 39,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"charpoly splits characteristic polynomial\"}",
+      "ok": true,
+      "result_chars": 198,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"charpoly splits characteristic polynomial\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 40,
+      "name": "mcp__wikibrain__brain_snippets",
+      "input": "{\"id\": \"cell:decl:Mathlib:Module.End.iSup_maxGenEigenspace_eq_top\"}",
+      "ok": true,
+      "result_chars": 925,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.iSup_maxGenEigenspace_eq_top\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:Module.End.iSu"
+    },
+    {
+      "i": 41,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"IsAlgClosed\", \"Module.End.maxGenEigenspaceIndex\", \"Module.End.HasEigenvalue\"]}",
+      "ok": true,
+      "result_chars": 1218,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"IsAlgClosed\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.FieldTheory.IsAlgClosed.Basic\\\",\\\"import_line\\\":\\\"import Mat"
+    },
+    {
+      "i": 42,
+      "name": "mcp__wikibrain__brain_snippets",
+      "input": "{\"id\": \"cell:decl:Mathlib:Module.End.IsSemisimple.iSup_eigenspace_eq_top\"}",
+      "ok": true,
+      "result_chars": 721,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.IsSemisimple.iSup_eigenspace_eq_top\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:Module."
+    },
+    {
+      "i": 43,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Module.End\", \"End\"]}",
+      "ok": true,
+      "result_chars": 746,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Module.End\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Module.LinearMap.End\\\",\\\"import_line\\\":\\\"import Mathl"
+    }
+  ]
+}

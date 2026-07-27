@@ -1,0 +1,36 @@
+{
+  "task_id": "fresh_049",
+  "arm": "B",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T02:20:34Z",
+  "wall_s": 82.9,
+  "output_lean": "theorem measurable_of_continuousOn_compl_countable\n    {α β : Type*} [TopologicalSpace α] [BorelSpace α] [TopologicalSpace β] [BorelSpace β]\n    (f : α → β) (s : Set α) (hs : Countable s) (hc : ContinuousOn f sᶜ) :\n    Measurable f := sorry",
+  "transcript_stats": {
+    "turns": 3,
+    "tool_calls_by_name": {
+      "mcp__wiki__wiki_search": 2
+    },
+    "tokens_in": 18,
+    "tokens_out": 8578,
+    "cost_usd": 0.0506689
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"Lean measurable continuous function\"}",
+      "ok": true,
+      "result_chars": 2274,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'Lean measurable continuous function':\\n- Probability distribution  (slug: Probability_distribution)\\n    https://en.wikipedia.org/wiki/Probability_distribut"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"Lean countable set Mathlib\"}",
+      "ok": true,
+      "result_chars": 92,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No English Wikipedia results for 'Lean countable set Mathlib'.\"}]"
+    }
+  ]
+}

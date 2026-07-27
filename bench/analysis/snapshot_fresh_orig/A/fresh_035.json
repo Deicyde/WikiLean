@@ -1,0 +1,17 @@
+{
+  "task_id": "fresh_035",
+  "arm": "A",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T01:56:56Z",
+  "wall_s": 110.9,
+  "output_lean": "theorem smooth_at_iff_continuous_and_comp_immersion_smooth_at\n    {M M' M'' : Type*}\n    {E E' E'' : Type*}\n    {H H' H'' : Type*}\n    [NormedAddCommGroup E] [NormedSpace ℝ E]\n    [NormedAddCommGroup E'] [NormedSpace ℝ E']\n    [NormedAddCommGroup E''] [NormedSpace ℝ E'']\n    (I : ModelWithCorners ℝ E H)\n    (I' : ModelWithCorners ℝ E' H')\n    (I'' : ModelWithCorners ℝ E'' H'')\n    [ChartedSpace H M] [SmoothManifoldWithCorners I M]\n    [ChartedSpace H' M'] [SmoothManifoldWithCorners I' M']\n    [ChartedSpace H'' M''] [SmoothManifoldWithCorners I'' M'']\n    {f : M → M'} {g : M'' → M}\n    (hg_smooth : Smooth I'' I g)\n    (hg_immersion : ∀ y, Injective (mfderiv I'' I g y))\n    {x : M} {x'' : M''} (hx : g x'' = x) :\n    SmoothAt I I' f x ↔ ContinuousAt f x ∧ SmoothAt I'' I' (f ∘ g) x'' := sorry",
+  "transcript_stats": {
+    "turns": 1,
+    "tool_calls_by_name": {},
+    "tokens_in": 10,
+    "tokens_out": 12802,
+    "cost_usd": 0.06542875
+  },
+  "tool_trace": []
+}

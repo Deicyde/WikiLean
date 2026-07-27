@@ -1,0 +1,54 @@
+{
+  "task_id": "fresh_092",
+  "arm": "B",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T03:55:03Z",
+  "wall_s": 73.8,
+  "output_lean": "theorem totalVariation_union_additive\n  {α : Type*} {β : Type*} [Preorder α] [MetricSpace β]\n  (f : α → β) (s t : Set α) (x y : α)\n  (V : Set α → ℝ)\n  (hx_greatest : IsGreatest s x)\n  (hy_least : IsLeast t y)\n  (hxy : x ≤ y)\n  : V (s ∪ t) = V s + dist (f x) (f y) + V t := sorry",
+  "transcript_stats": {
+    "turns": 5,
+    "tool_calls_by_name": {
+      "mcp__wiki__wiki_search": 2,
+      "mcp__wiki__wiki_get": 1,
+      "mcp__wiki__nlab_search": 1
+    },
+    "tokens_in": 42,
+    "tokens_out": 5743,
+    "cost_usd": 0.05276175000000001
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"total variation function real analysis\"}",
+      "ok": true,
+      "result_chars": 2371,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'total variation function real analysis':\\n- Total variation  (slug: Total_variation)\\n    https://en.wikipedia.org/wiki/Total_variation\\n    function or a m"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wiki__wiki_get",
+      "input": "{\"title\": \"Total_variation\"}",
+      "ok": true,
+      "result_chars": 4300,
+      "result_head": "[{\"type\": \"text\", \"text\": \"# Total variation\\nIn mathematics, the total variation identifies several slightly different concepts, related to the (local or global) structure of the codomain of a functi"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wiki__nlab_search",
+      "input": "{\"q\": \"total variation bounded variation function\"}",
+      "ok": true,
+      "result_chars": 121,
+      "result_head": "[{\"type\": \"text\", \"text\": \"nLab search for 'total variation bounded variation function' — candidate pages:\\n- HomePage\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"greatest element least element order theory\"}",
+      "ok": true,
+      "result_chars": 2255,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'greatest element least element order theory':\\n- Greatest element and least element  (slug: Greatest_element_and_least_element)\\n    https://en.wikipedia.or"
+    }
+  ]
+}

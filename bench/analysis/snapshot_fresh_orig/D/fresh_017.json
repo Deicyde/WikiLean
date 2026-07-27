@@ -1,0 +1,113 @@
+{
+  "task_id": "fresh_017",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:33:59Z",
+  "wall_s": 30.7,
+  "output_lean": "theorem abs_sub_sin_le_abs_pow_div (x : ℝ) : abs (x - Real.sin x) ≤ abs (x ^ 3) / 6 := sorry",
+  "transcript_stats": {
+    "turns": 12,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 3,
+      "mcp__wikibrain__brain_transfer": 1,
+      "mcp__wikibrain__brain_search": 2,
+      "mcp__wikibrain__brain_cell": 2,
+      "decl_exists": 1,
+      "mcp__wikibrain__decl_exists": 2
+    },
+    "tokens_in": 52,
+    "tokens_out": 2276,
+    "cost_usd": 0.0425321
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"real numbers\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 5077,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"real numbers\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_f"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"absolute value\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 3721,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"absolute value\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"sine function\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 3263,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"sine function\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_f"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_transfer",
+      "input": "{\"q\": \"Real.sin\", \"direction\": \"formal_to_informal\"}",
+      "ok": true,
+      "result_chars": 1437,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"Real.sin\\\",\\\"decl\\\":\\\"Real.sin\\\",\\\"hits\\\":[],\\\"note\\\":\\\"decl is not an organ of any atom — it may still exist in Ma"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"sine\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1734,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"sine\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q13647261\\\",\\\"label\\\":\\\"Sine and cosine\\\",\\\"aka\\\":[\\\"Real.cos\\\",\\\"Real.sin\\\",\\\"Formal Analysis of Robotic Cell Injection"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q13647261\"}",
+      "ok": false,
+      "result_chars": 371,
+      "result_head": "{\"ok\":false,\"error\":\"unresolvable key\",\"key\":\"cell:Q13647261\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | article slug | xr"
+    },
+    {
+      "i": 6,
+      "name": "decl_exists",
+      "input": "{\"names\": \"[\\\"Real.sin\\\", \\\"abs\\\", \\\"Real.sqrt\\\"]\"}",
+      "ok": false,
+      "result_chars": 75,
+      "result_head": "<tool_use_error>Error: No such tool available: decl_exists</tool_use_error>"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"Q13647261\"}",
+      "ok": false,
+      "result_chars": 184,
+      "result_head": "{\"ok\":false,\"error\":\"resolved atom is not in the brain shards\",\"key\":\"Q13647261\",\"id\":\"cell:Q13647261\",\"snapshot\":{\"generated_at\":\"2026-07-16T09:25:11+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Real.sin\", \"abs\", \"Real.sqrt\"]}",
+      "ok": true,
+      "result_chars": 1100,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Real.sin\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.Complex.Trigonometric\\\",\\\"import_line\\\":\\\"import Mathl"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Real\", \"LE.le\", \"Div.div\", \"Pow.pow\"]}",
+      "ok": true,
+      "result_chars": 1145,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Real\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Real.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Real.Basic\\"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Taylor polynomial approximation error bound\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 200,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Taylor polynomial approximation error bound\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    }
+  ]
+}

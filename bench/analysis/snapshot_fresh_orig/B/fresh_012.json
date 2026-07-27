@@ -1,0 +1,78 @@
+{
+  "task_id": "fresh_012",
+  "arm": "B",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T02:11:47Z",
+  "wall_s": 111.8,
+  "output_lean": "theorem gram_matrix_det_eq_norm_det_sq\n  {E : Type*} [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]\n  {ι : Type*} [Fintype ι]\n  (e : ι → E)\n  (he : Orthonormal ℝ e)\n  (f : E →L[ℝ] E) :\n  let gram : Matrix ι ι ℝ := fun i j => inner (f (e i)) (f (e j))\n  (‖Matrix.det (LinearMap.toMatrix' (f.toLinearMap))‖ : ℝ) ^ 2 = Matrix.det gram := sorry",
+  "transcript_stats": {
+    "turns": 8,
+    "tool_calls_by_name": {
+      "mcp__wiki__wiki_search": 4,
+      "mcp__wiki__nlab_search": 2,
+      "mcp__wiki__wiki_get": 1
+    },
+    "tokens_in": 44,
+    "tokens_out": 9569,
+    "cost_usd": 0.07261229999999999
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"Gram matrix linear algebra\"}",
+      "ok": true,
+      "result_chars": 2219,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'Gram matrix linear algebra':\\n- Gram matrix  (slug: Gram_matrix)\\n    https://en.wikipedia.org/wiki/Gram_matrix\\n    In linear algebra, the Gram matrix (or "
+    },
+    {
+      "i": 1,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"determinant linear map\"}",
+      "ok": true,
+      "result_chars": 2267,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'determinant linear map':\\n- Determinant  (slug: Determinant)\\n    https://en.wikipedia.org/wiki/Determinant\\n    properties of the matrix and the linear map"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"Mathlib4 inner product space orthonormal basis\"}",
+      "ok": true,
+      "result_chars": 112,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No English Wikipedia results for 'Mathlib4 inner product space orthonormal basis'.\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"Mathlib Gram matrix definition\"}",
+      "ok": true,
+      "result_chars": 96,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No English Wikipedia results for 'Mathlib Gram matrix definition'.\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wiki__nlab_search",
+      "input": "{\"q\": \"Gram matrix determinant\"}",
+      "ok": true,
+      "result_chars": 102,
+      "result_head": "[{\"type\": \"text\", \"text\": \"nLab search for 'Gram matrix determinant' — candidate pages:\\n- HomePage\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wiki__nlab_search",
+      "input": "{\"q\": \"orthonormal basis volume determinant\"}",
+      "ok": true,
+      "result_chars": 115,
+      "result_head": "[{\"type\": \"text\", \"text\": \"nLab search for 'orthonormal basis volume determinant' — candidate pages:\\n- HomePage\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wiki__wiki_get",
+      "input": "{\"title\": \"Gram matrix\"}",
+      "ok": true,
+      "result_chars": 4400,
+      "result_head": "[{\"type\": \"text\", \"text\": \"# Gram matrix\\nIn linear algebra, the Gram matrix (or Gramian matrix, Gramian) of vectors \\n  \\n    \\n      \\n        \\n          v\\n          \\n            1\\n          \\n "
+    }
+  ]
+}

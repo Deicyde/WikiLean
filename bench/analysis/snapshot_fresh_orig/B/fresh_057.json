@@ -1,0 +1,53 @@
+{
+  "task_id": "fresh_057",
+  "arm": "B",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T02:22:19Z",
+  "wall_s": 49.3,
+  "output_lean": "theorem SignedMeasure.abs_apply_le_totalVar (α : Type*) [MeasurableSpace α] (μ : SignedMeasure α) (s : Set α) :\n    |μ s| ≤ ↑(μ.totalVar s) := sorry",
+  "transcript_stats": {
+    "turns": 5,
+    "tool_calls_by_name": {
+      "mcp__wiki__wiki_search": 2,
+      "mcp__wiki__wiki_get": 2
+    },
+    "tokens_in": 42,
+    "tokens_out": 4099,
+    "cost_usd": 0.040894
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"signed measure total variation\"}",
+      "ok": true,
+      "result_chars": 2166,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'signed measure total variation':\\n- Total variation  (slug: Total_variation)\\n    https://en.wikipedia.org/wiki/Total_variation\\n    total variation identif"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wiki__wiki_get",
+      "input": "{\"title\": \"Signed measure\"}",
+      "ok": true,
+      "result_chars": 4366,
+      "result_head": "[{\"type\": \"text\", \"text\": \"# Signed measure\\nIn mathematics, a signed measure is a generalization of the concept of (positive) measure by allowing the set function to take negative values, i.e., to ac"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wiki__wiki_get",
+      "input": "{\"title\": \"Total variation\"}",
+      "ok": true,
+      "result_chars": 4300,
+      "result_head": "[{\"type\": \"text\", \"text\": \"# Total variation\\nIn mathematics, the total variation identifies several slightly different concepts, related to the (local or global) structure of the codomain of a functi"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"Jordan decomposition signed measure Lean Mathlib\"}",
+      "ok": true,
+      "result_chars": 114,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No English Wikipedia results for 'Jordan decomposition signed measure Lean Mathlib'.\"}]"
+    }
+  ]
+}

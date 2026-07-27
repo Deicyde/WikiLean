@@ -1,0 +1,102 @@
+{
+  "task_id": "fresh_025",
+  "arm": "E",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T05:02:15Z",
+  "wall_s": 59.4,
+  "output_lean": "theorem integral_test {f : ℝ → ℝ} \n    (hf_nonneg : ∀ x ∈ Set.Ici (0 : ℝ), 0 ≤ f x)\n    (hf_antitone : AntitoneOn f (Set.Ici (0 : ℝ)))\n    (hf_integrable : IntegrableOn f (Set.Ici (0 : ℝ)))\n    : Summable (fun n : ℕ => f n) := sorry",
+  "transcript_stats": {
+    "turns": 11,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 5,
+      "mcp__formal__decl_grep": 3,
+      "mcp__formal__decl_read": 2
+    },
+    "tokens_in": 60,
+    "tokens_out": 4379,
+    "cost_usd": 0.0510704
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"AntitoneOn\"}",
+      "ok": true,
+      "result_chars": 884,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 261 declarations mentioning AntitoneOn.\\n- AntitoneOn   [Mathlib.Order.Monotone.Defs]\\n    A function `f` is antitone on `s` if, for all `a, b ∈ s`, `a ≤ b` implies `f"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"IntegrableOn\"}",
+      "ok": true,
+      "result_chars": 96,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IntegrableOn': unknown identifier 'IntegrableOn'\"}]"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Summable\"}",
+      "ok": true,
+      "result_chars": 1165,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 670 declarations mentioning Summable.\\n- Summable   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n    `Summable f` means that `f` has some (infinite) sum with respect t"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Set.Ici\"}",
+      "ok": true,
+      "result_chars": 847,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 831 declarations mentioning Set.Ici.\\n- Set.Ici   [Mathlib.Order.Interval.Set.Defs]\\n    `Ici a` is the left-closed right-infinite interval $[a, ∞)$.\\n- Set.Ici_def   "
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Integrable\"}",
+      "ok": true,
+      "result_chars": 92,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Integrable': unknown identifier 'Integrable'\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(theorem|lemma|def|class|structure) .*[Ii]ntegrable\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 3120,
+      "result_head": "[{\"type\": \"text\", \"text\": \"987 match(es) for '(theorem|lemma|def|class|structure) .*[Ii]ntegrable' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/Bochner/L1.lean:248\\n    theorem map_integral (f : α"
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(class|def) Integrable\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 744,
+      "result_head": "[{\"type\": \"text\", \"text\": \"5 match(es) for '(class|def) Integrable' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/IntegrableOn.lean:92\\n    def IntegrableOn (f : α → ε) (s : Set α) (μ : Measure α :"
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/Integral/IntegrableOn.lean\", \"line\": 92, \"n\": 5}",
+      "ok": true,
+      "result_chars": 357,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Integral/IntegrableOn.lean  (lines 92–96 of 942):\\n    92  def IntegrableOn (f : α → ε) (s : Set α) (μ : Measure α := by volume_tac) : Prop :=\\n    93 "
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/Function/L1Space/Integrable.lean\", \"line\": 58, \"n\": 5}",
+      "ok": true,
+      "result_chars": 384,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Function/L1Space/Integrable.lean  (lines 58–62 of 1258):\\n    58  def Integrable {α} {_ : MeasurableSpace α} (f : α → ε)\\n    59      (μ : Measure α :="
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(theorem|lemma).*integral.*test\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 102,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma).*integral.*test' under Mathlib/.\"}]"
+    }
+  ]
+}

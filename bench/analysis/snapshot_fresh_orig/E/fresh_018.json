@@ -1,0 +1,110 @@
+{
+  "task_id": "fresh_018",
+  "arm": "E",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T05:00:29Z",
+  "wall_s": 51.5,
+  "output_lean": "theorem sin_ge_sub_cube (x : ℝ) (hx : 0 ≤ x) : x - x ^ 3 / 6 ≤ Real.sin x := sorry",
+  "transcript_stats": {
+    "turns": 12,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 3,
+      "mcp__formal__decl_grep": 5,
+      "mcp__formal__decl_read": 3
+    },
+    "tokens_in": 76,
+    "tokens_out": 3353,
+    "cost_usd": 0.0542478
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"sin ?x\"}",
+      "ok": true,
+      "result_chars": 81,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'sin ?x': Unknown identifier `sin`\"}]"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*sin.*bound\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1369,
+      "result_head": "[{\"type\": \"text\", \"text\": \"9 match(es) for 'theorem.*sin.*bound' (via ripgrep):\\n- Mathlib/RepresentationTheory/Homological/GroupHomology/LowDegree.lean:432\\n    theorem single_one_mem_boundaries₁ (a "
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Real.sin\"}",
+      "ok": true,
+      "result_chars": 923,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 322 declarations mentioning Real.sin.\\n- Real.sin   [Mathlib.Analysis.Complex.Trigonometric]\\n    The real sine function, defined as the real part of the complex sine\\"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*sin.*nonneg\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1531,
+      "result_head": "[{\"type\": \"text\", \"text\": \"11 match(es) for 'theorem.*sin.*nonneg' (via ripgrep):\\n- Mathlib/Probability/Martingale/Upcrossing.lean:350\\n    theorem upcrossingStrat_nonneg : 0 ≤ upcrossingStrat a b f "
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*(sin|sine).*le\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 2005,
+      "result_head": "[{\"type\": \"text\", \"text\": \"2435 match(es) for 'theorem.*(sin|sine).*le' (via ripgrep):\\n- Mathlib/Computability/StateTransition.lean:74\\n    theorem Reaches₀.single {σ} {f : σ → Option σ} {a b : σ} (h"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"(x : ℝ) → x ≤ ?a\"}",
+      "ok": true,
+      "result_chars": 302,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 4868 declarations mentioning Real.instLE, Real, and LE.le.\\n- Real.le_norm_self   [Mathlib.Analysis.Normed.Group.Real]\\n- Real.le_sin   [Mathlib.Analysis.SpecialFuncti"
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(theorem|def).*le_sin\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 639,
+      "result_head": "[{\"type\": \"text\", \"text\": \"38 match(es) for '(theorem|def).*le_sin' (via ripgrep):\\n- Mathlib/Data/Matrix/Basis.lean:61\\n    theorem single_eq_of_single_single (i : m) (j : n) (a : α) :\\n- Mathlib/Dat"
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean\", \"line\": 1, \"n\": 60}",
+      "ok": true,
+      "result_chars": 2595,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean  (lines 1–60 of 274):\\n     1  /-\\n     2  Copyright (c) 2022 David Loeffler. All rights reserved.\\n     3  Relea"
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean\", \"line\": 60, \"n\": 20}",
+      "ok": true,
+      "result_chars": 1296,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean  (lines 60–79 of 274):\\n    60  lemma le_sin (hx : x ≤ 0) : x ≤ sin x := by simpa using sin_le <| neg_nonneg.2 hx"
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"sin_gt_sub_cube\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 566,
+      "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for 'sin_gt_sub_cube' (via ripgrep):\\n- Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean:23\\n    * `sin_gt_sub_cube`: For `0 < x` we have `x - x ^ 3 /"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean\", \"line\": 149, \"n\": 30}",
+      "ok": true,
+      "result_chars": 1634,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean  (lines 149–178 of 274):\\n   149  theorem sin_gt_sub_cube {x : ℝ} (hx : 0 < x) : x - x ^ 3 / 6 < Real.sin x := by"
+    }
+  ]
+}

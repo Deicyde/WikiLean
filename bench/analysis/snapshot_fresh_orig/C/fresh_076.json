@@ -1,0 +1,494 @@
+{
+  "task_id": "fresh_076",
+  "arm": "C",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:19:43Z",
+  "wall_s": 153.0,
+  "output_lean": "theorem restrictScalars_exact_iff (f : R →+* R') (S : ShortComplex (ModuleCat.{v} R')) :\n    S.Exact ↔ (S.map (ModuleCat.restrictScalars.{v} f)).Exact :=\n  ⟨ModuleCat.restrictScalars_map_exact f S,\n   fun h => Functor.reflects_exact_of_faithful (ModuleCat.restrictScalars.{v} f) S h⟩",
+  "transcript_stats": {
+    "turns": 60,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 18,
+      "mcp__formal__decl_grep": 30,
+      "mcp__formal__decl_read": 11
+    },
+    "tokens_in": 308,
+    "tokens_out": 8634,
+    "cost_usd": 0.28927349999999996
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"representation\"}",
+      "ok": true,
+      "result_chars": 100,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'representation': unknown identifier 'representation'\"}]"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"restrict\"}",
+      "ok": true,
+      "result_chars": 88,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'restrict': unknown identifier 'restrict'\"}]"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"exact sequence\"}",
+      "ok": true,
+      "result_chars": 91,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'exact sequence': Unknown identifier `exact`\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Module.Dual\"}",
+      "ok": true,
+      "result_chars": 1501,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 622 declarations mentioning Module.Dual.\\n- Module.Dual   [Mathlib.LinearAlgebra.Dual.Defs]\\n    The left dual space of an R-module M is the R-module of linear maps `M"
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"restrict\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2744,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8243 match(es) for 'restrict' (via ripgrep):\\n- Mathlib/Algebra/ContinuedFractions/ConvergentsEquiv.lean:54\\n    - `GenContFract.convs_eq_convs'` shows the equivalence under"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"representation\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 3209,
+      "result_head": "[{\"type\": \"text\", \"text\": \"855 match(es) for 'representation' (via ripgrep):\\n- Mathlib/Algebra/ContinuedFractions/Computation/Basic.lean:20\\n    `v`.  A continued fraction representation of `v` can t"
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Representation\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2799,
+      "result_head": "[{\"type\": \"text\", \"text\": \"415 match(es) for 'Representation' (via ripgrep):\\n- Mathlib/GroupTheory/GroupExtension/Defs.lean:52\\n    (which is also stated as a TODO in `Mathlib/RepresentationTheory/Gr"
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Exact\"}",
+      "ok": true,
+      "result_chars": 82,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Exact': unknown identifier 'Exact'\"}]"
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"exact\", \"limit\": 30}",
+      "ok": true,
+      "result_chars": 2677,
+      "result_head": "[{\"type\": \"text\", \"text\": \"53433 match(es) for 'exact' (via ripgrep):\\n- Mathlib/Algebra/FreeAlgebra.lean:203\\n    exact Quot.sound Rel.mul_assoc\\n- Mathlib/Algebra/FreeAlgebra.lean:206\\n    exact Quo"
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"ShortExact\"}",
+      "ok": true,
+      "result_chars": 92,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'ShortExact': unknown identifier 'ShortExact'\"}]"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Functor.Exact\"}",
+      "ok": true,
+      "result_chars": 98,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Functor.Exact': unknown identifier 'Functor.Exact'\"}]"
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"functor.*exact|Exact\", \"limit\": 25}",
+      "ok": true,
+      "result_chars": 4149,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1430 match(es) for 'functor.*exact|Exact' (via ripgrep):\\n- Mathlib/Algebra/ContinuedFractions/Computation/CorrectnessTerminating.lean:29\\n    `GenContFract.compExactValue_c"
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(lemma|def|theorem).*exact\", \"limit\": 30}",
+      "ok": true,
+      "result_chars": 3338,
+      "result_head": "[{\"type\": \"text\", \"text\": \"531 match(es) for '(lemma|def|theorem).*exact' (via ripgrep):\\n- Mathlib/Algebra/GroupWithZero/Associated.lean:547\\n    theorem le_mul_left {a b : Associates M} : a ≤ b * a "
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"homology\"}",
+      "ok": true,
+      "result_chars": 88,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'homology': unknown identifier 'homology'\"}]"
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"ShortExact\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2523,
+      "result_head": "[{\"type\": \"text\", \"text\": \"187 match(es) for 'ShortExact' (via ripgrep):\\n- Mathlib/Topology/Sheaves/Flasque.lean:112\\n    theorem epi_of_shortExact {S : ShortComplex (Sheaf AddCommGrpCat X)} (hS : S."
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"restrictScalars\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2640,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1995 match(es) for 'restrictScalars' (via ripgrep):\\n- Mathlib/Algebra/DualNumber.lean:108\\n    (hinr : f.toLinearMap ∘ₗ (LinearMap.toSpanSingleton A A[ε] ε).restrictScalars"
+    },
+    {
+      "i": 16,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Module.restriction\"}",
+      "ok": true,
+      "result_chars": 108,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Module.restriction': unknown identifier 'Module.restriction'\"}]"
+    },
+    {
+      "i": 17,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"RepresentationCategory|representation.*category\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 411,
+      "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'RepresentationCategory|representation.*category' (via ripgrep):\\n- Mathlib/Algebra/Homology/HomotopyCategory.lean:127\\n    /-- An arbitrarily chosen represe"
+    },
+    {
+      "i": 18,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Module\\\\.category_instance\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 99,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'Module\\\\\\\\.category_instance' under Mathlib/.\"}]"
+    },
+    {
+      "i": 19,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"ModuleCat comap\"}",
+      "ok": true,
+      "result_chars": 92,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'ModuleCat comap': Unknown identifier `comap`\"}]"
+    },
+    {
+      "i": 20,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"ModuleCat.*map\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2933,
+      "result_head": "[{\"type\": \"text\", \"text\": \"134 match(es) for 'ModuleCat.*map' (via ripgrep):\\n- Mathlib/Algebra/Category/FGModuleCat/Basic.lean:123\\n    ((forget₂ (FGModuleCat.{v} R) (ModuleCat.{v} R)).mapIso i).toLi"
+    },
+    {
+      "i": 21,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"IsLocalization.atBot\"}",
+      "ok": true,
+      "result_chars": 112,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IsLocalization.atBot': unknown identifier 'IsLocalization.atBot'\"}]"
+    },
+    {
+      "i": 22,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Category/ModuleCat/ChangeOfRings.lean\", \"line\": 1, \"n\": 150}",
+      "ok": true,
+      "result_chars": 6046,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Category/ModuleCat/ChangeOfRings.lean  (lines 1–120 of 1070):\\n     1  /-\\n     2  Copyright (c) 2022 Jujian Zhang. All rights reserved.\\n     3  Released un"
+    },
+    {
+      "i": 23,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Functor.PreservesExactness\"}",
+      "ok": true,
+      "result_chars": 124,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Functor.PreservesExactness': unknown identifier 'Functor.PreservesExactness'\"}]"
+    },
+    {
+      "i": 24,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"PreservesExactness|ReflectsExactness\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 107,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'PreservesExactness|ReflectsExactness' under Mathlib/.\"}]"
+    },
+    {
+      "i": 25,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"ShortComplex.*exact\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2489,
+      "result_head": "[{\"type\": \"text\", \"text\": \"202 match(es) for 'ShortComplex.*exact' (via ripgrep):\\n- Mathlib/Algebra/Homology/SingleHomology.lean:36\\n    ShortComplex.exact_of_isZero_X₂ _ (isZero_single_obj_X c _ _ _"
+    },
+    {
+      "i": 26,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"? ⟶ ? ⟶ ? ⟶ ShortComplex\"}",
+      "ok": true,
+      "result_chars": 114,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '? ⟶ ? ⟶ ? ⟶ ShortComplex': <input>:1:2: expected '_' or identifier\"}]"
+    },
+    {
+      "i": 27,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(def|structure) ShortExact\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 512,
+      "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for '(def|structure) ShortExact' (via ripgrep):\\n- Mathlib/Algebra/Homology/ShortComplex/ShortExact.lean:35\\n    structure ShortExact : Prop where\\n- Mathlib/Alg"
+    },
+    {
+      "i": 28,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Homology/ShortComplex/Basic.lean\", \"line\": 1, \"n\": 100}",
+      "ok": true,
+      "result_chars": 3980,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Homology/ShortComplex/Basic.lean  (lines 1–100 of 324):\\n     1  /-\\n     2  Copyright (c) 2023 Joël Riou. All rights reserved.\\n     3  Released under Apach"
+    },
+    {
+      "i": 29,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Homology/ShortComplex/ShortExact.lean\", \"line\": 1, \"n\": 100}",
+      "ok": true,
+      "result_chars": 3516,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Homology/ShortComplex/ShortExact.lean  (lines 1–100 of 225):\\n     1  /-\\n     2  Copyright (c) 2023 Joël Riou. All rights reserved.\\n     3  Released under "
+    },
+    {
+      "i": 30,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Homology/ShortComplex/Exact.lean\", \"line\": 1, \"n\": 80}",
+      "ok": true,
+      "result_chars": 3103,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Homology/ShortComplex/Exact.lean  (lines 1–80 of 1028):\\n     1  /-\\n     2  Copyright (c) 2023 Joël Riou. All rights reserved.\\n     3  Released under Apach"
+    },
+    {
+      "i": 31,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"restrictScalars.*exact|restrictScalars.*Exact\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 1676,
+      "result_head": "[{\"type\": \"text\", \"text\": \"11 match(es) for 'restrictScalars.*exact|restrictScalars.*Exact' (via ripgrep):\\n- Mathlib/Algebra/Module/SpanRankOperations.lean:67\\n    rwa [← restrictScalars_eq_top_iff R"
+    },
+    {
+      "i": 32,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"localizedModuleFunctor_map_exact\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 541,
+      "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for 'localizedModuleFunctor_map_exact' (via ripgrep):\\n- Mathlib/Algebra/Category/ModuleCat/Localization.lean:87\\n    lemma localizedModuleFunctor_map_exact [Sma"
+    },
+    {
+      "i": 33,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Category/ModuleCat/ChangeOfRingsExact.lean\", \"line\": 1, \"n\": 80}",
+      "ok": true,
+      "result_chars": 2189,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Category/ModuleCat/ChangeOfRingsExact.lean  (lines 1–51 of 51):\\n     1  /-\\n     2  Copyright (c) 2025 Nailin Guan. All rights reserved.\\n     3  Released u"
+    },
+    {
+      "i": 34,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"restrict reflects exact\"}",
+      "ok": true,
+      "result_chars": 103,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'restrict reflects exact': Unknown identifier `restrict`\"}]"
+    },
+    {
+      "i": 35,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"restrictScalars.*reflects\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 96,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'restrictScalars.*reflects' under Mathlib/.\"}]"
+    },
+    {
+      "i": 36,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"faithful exact\"}",
+      "ok": true,
+      "result_chars": 94,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'faithful exact': Unknown identifier `faithful`\"}]"
+    },
+    {
+      "i": 37,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Faithful.*exact|exact.*Faithful\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 1925,
+      "result_head": "[{\"type\": \"text\", \"text\": \"65 match(es) for 'Faithful.*exact|exact.*Faithful' (via ripgrep):\\n- Mathlib/Algebra/Polynomial/Roots.lean:486\\n    exact FaithfulSMul.algebraMap_injective T S\\n- Mathlib/Al"
+    },
+    {
+      "i": 38,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"map_exact|exactFunctor\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2743,
+      "result_head": "[{\"type\": \"text\", \"text\": \"54 match(es) for 'map_exact|exactFunctor' (via ripgrep):\\n- Mathlib/Topology/Sheaves/Abelian.lean:21\\n    * `TopCat.Sheaf.exact_iff_stalkFunctor_map_exact`: A complex of she"
+    },
+    {
+      "i": 39,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"ShortComplex.map restrictScalars exact\"}",
+      "ok": true,
+      "result_chars": 126,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'ShortComplex.map restrictScalars exact': Unknown identifier `ShortComplex.map`\"}]"
+    },
+    {
+      "i": 40,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"ModuleCat\\\\.moduleCat_exact_iff\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 104,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'ModuleCat\\\\\\\\.moduleCat_exact_iff' under Mathlib/.\"}]"
+    },
+    {
+      "i": 41,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"moduleCat_exact_iff\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1200,
+      "result_head": "[{\"type\": \"text\", \"text\": \"35 match(es) for 'moduleCat_exact_iff' (via ripgrep):\\n- Mathlib/Algebra/Homology/ShortComplex/ModuleCat.lean:48\\n    lemma moduleCat_exact_iff :\\n- Mathlib/Algebra/Homology"
+    },
+    {
+      "i": 42,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Homology/ShortComplex/ModuleCat.lean\", \"line\": 1, \"n\": 120}",
+      "ok": true,
+      "result_chars": 5471,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Homology/ShortComplex/ModuleCat.lean  (lines 1–120 of 282):\\n     1  /-\\n     2  Copyright (c) 2023 Joël Riou. All rights reserved.\\n     3  Released under A"
+    },
+    {
+      "i": 43,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"restrictScalars.*iff.*exact|exact.*iff.*restrictScalars\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 788,
+      "result_head": "[{\"type\": \"text\", \"text\": \"5 match(es) for 'restrictScalars.*iff.*exact|exact.*iff.*restrictScalars' (via ripgrep):\\n- Mathlib/AlgebraicGeometry/Morphisms/Smooth.lean:259\\n    · exact Algebra.Formally"
+    },
+    {
+      "i": 44,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"exact_iff_of_map\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 87,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'exact_iff_of_map' under Mathlib/.\"}]"
+    },
+    {
+      "i": 45,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"ShortComplex\\\\.map.*exact|exact.*ShortComplex\\\\.map\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 609,
+      "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for 'ShortComplex\\\\\\\\.map.*exact|exact.*ShortComplex\\\\\\\\.map' (via ripgrep):\\n- Mathlib/CategoryTheory/Triangulated/HomologicalFunctor.lean:107\\n    ⟨fun T hT =>"
+    },
+    {
+      "i": 46,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"exact_iff.*faithful|Faithful.*exact_iff\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 416,
+      "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'exact_iff.*faithful|Faithful.*exact_iff' (via ripgrep):\\n- Mathlib/RingTheory/Flat/FaithfullyFlat/Basic.lean:30\\n    - `Module.FaithfullyFlat.iff_exact_iff_"
+    },
+    {
+      "i": 47,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"? → ? → ShortComplex\"}",
+      "ok": true,
+      "result_chars": 110,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '? → ? → ShortComplex': <input>:1:2: expected '_' or identifier\"}]"
+    },
+    {
+      "i": 48,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Category/ModuleCat/ChangeOfRings.lean\", \"line\": 100, \"n\": 130}",
+      "ok": true,
+      "result_chars": 6177,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Category/ModuleCat/ChangeOfRings.lean  (lines 100–219 of 1070):\\n   100  \\n   101  instance {R : Type u₁} {S : Type u₂} [Ring R] [Ring S] (f : R →+* S) :\\n  "
+    },
+    {
+      "i": 49,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"forget.*exact|Faithful.*exact\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 1537,
+      "result_head": "[{\"type\": \"text\", \"text\": \"11 match(es) for 'forget.*exact|Faithful.*exact' (via ripgrep):\\n- Mathlib/Algebra/Homology/ShortComplex/ConcreteCategory.lean:92\\n    rw [S.exact_iff_exact_map_forget₂, ab_"
+    },
+    {
+      "i": 50,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"exact_of_map_exact\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 89,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'exact_of_map_exact' under Mathlib/.\"}]"
+    },
+    {
+      "i": 51,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"reflects_exact_of_faithful\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 738,
+      "result_head": "[{\"type\": \"text\", \"text\": \"5 match(es) for 'reflects_exact_of_faithful' (via ripgrep):\\n- Mathlib/RepresentationTheory/Coinvariants.lean:337\\n    exact := (forget₂ (Rep.{w} k G) (ModuleCat k)).reflect"
+    },
+    {
+      "i": 52,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/CategoryTheory/Abelian/Exact.lean\", \"line\": 210, \"n\": 230}",
+      "ok": true,
+      "result_chars": 6144,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/CategoryTheory/Abelian/Exact.lean  (lines 210–329 of 333):\\n   210  \\n   211  variable {D : Type u₂} [Category.{v₂} D] [Abelian D]\\n   212  variable (F : C ⥤ D) [Pre"
+    },
+    {
+      "i": 53,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Category/ModuleCat/ChangeOfRingsExact.lean\", \"line\": 30, \"n\": 51}",
+      "ok": true,
+      "result_chars": 1090,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Category/ModuleCat/ChangeOfRingsExact.lean  (lines 30–51 of 51):\\n    30  open CategoryTheory\\n    31  \\n    32  section\\n    33  \\n    34  variable (f : R →"
+    },
+    {
+      "i": 54,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/CategoryTheory/Abelian/Exact.lean\", \"line\": 216, \"n\": 228}",
+      "ok": true,
+      "result_chars": 5947,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/CategoryTheory/Abelian/Exact.lean  (lines 216–333 of 333):\\n   216  lemma reflects_exact_of_faithful [F.Faithful] (S : ShortComplex C) (hS : (S.map F).Exact) :\\n   2"
+    },
+    {
+      "i": 55,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"ModuleCat Abelian\"}",
+      "ok": true,
+      "result_chars": 96,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'ModuleCat Abelian': Unknown identifier `Abelian`\"}]"
+    },
+    {
+      "i": 56,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"instance.*Abelian.*ModuleCat|instance.*ModuleCat.*Abelian\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 632,
+      "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for 'instance.*Abelian.*ModuleCat|instance.*ModuleCat.*Abelian' (via ripgrep):\\n- Mathlib/Algebra/Category/FGModuleCat/Abelian.lean:30\\n    instance {X Y : FGMod"
+    },
+    {
+      "i": 57,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Category/ModuleCat/ChangeOfRingsExact.lean\", \"line\": 1, \"n\": 51}",
+      "ok": true,
+      "result_chars": 2189,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Category/ModuleCat/ChangeOfRingsExact.lean  (lines 1–51 of 51):\\n     1  /-\\n     2  Copyright (c) 2025 Nailin Guan. All rights reserved.\\n     3  Released u"
+    },
+    {
+      "i": 58,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"restrictScalars.*↔\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 2087,
+      "result_head": "[{\"type\": \"text\", \"text\": \"29 match(es) for 'restrictScalars.*↔' (via ripgrep):\\n- Mathlib/Algebra/Algebra/Subalgebra/Tower.lean:106\\n    theorem mem_restrictScalars {U : Subalgebra S A} {x : A} : x ∈"
+    }
+  ]
+}

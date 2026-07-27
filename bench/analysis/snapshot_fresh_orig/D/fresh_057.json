@@ -1,0 +1,378 @@
+{
+  "task_id": "fresh_057",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:42:53Z",
+  "wall_s": 84.5,
+  "output_lean": "theorem signed_measure_abs_le_total_variation {α : Type*} [MeasurableSpace α] \n    (μ : MeasureTheory.SignedMeasure α) (s : Set α) :\n    |(μ s : ℝ)| ≤ (μ.totalVariation s : ℝ) := sorry",
+  "transcript_stats": {
+    "turns": 45,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 11,
+      "mcp__wikibrain__brain_search": 10,
+      "mcp__wikibrain__brain_cell": 4,
+      "mcp__wikibrain__decl_exists": 14,
+      "mcp__wikibrain__brain_neighborhood": 1,
+      "mcp__wikibrain__brain_snippets": 3,
+      "mcp__wikibrain__brain_transfer": 1
+    },
+    "tokens_in": 210,
+    "tokens_out": 6728,
+    "cost_usd": 0.18686545000000004
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"signed measure total variation\"}",
+      "ok": false,
+      "result_chars": 263,
+      "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"signed measure total variation\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":{\"gener"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"absolute value measure bounded\"}",
+      "ok": true,
+      "result_chars": 3741,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"absolute value measure bounded\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"signed measure Mathlib\"}",
+      "ok": false,
+      "result_chars": 255,
+      "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"signed measure Mathlib\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":{\"generated_at\""
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"total variation measure\"}",
+      "ok": true,
+      "result_chars": 180,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"total variation measure\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"measure theory measure of a set\"}",
+      "ok": false,
+      "result_chars": 264,
+      "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"measure theory measure of a set\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":{\"gene"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"signed measure\"}",
+      "ok": true,
+      "result_chars": 171,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"signed measure\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"measure\"}",
+      "ok": true,
+      "result_chars": 7729,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"measure\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q338886\\\",\\\"label\\\":\\\"Divergence theorem\\\",\\\"aka\\\":[\\\"Divergence Theorem\\\",\\\"Generalized Stokes theorem\\\",\\\"MeasureTh"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"measure\"}",
+      "ok": true,
+      "result_chars": 7858,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"measure\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q1568811\"}",
+      "ok": true,
+      "result_chars": 4008,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q1568811\\\",\\\"id\\\":\\\"cell:Q1568811\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Hahn decomposition theorem\\\",\\\"f\\\":152,\\\"cell\\\":{\\\"i"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"Jordan decomposition theorem signed measure variation\"}",
+      "ok": true,
+      "result_chars": 2313,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Jordan decomposition theorem signed measure variation\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENT"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"SignedMeasure\"}",
+      "ok": true,
+      "result_chars": 630,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"SignedMeasure\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q1568811\\\",\\\"label\\\":\\\"Hahn decomposition theorem\\\",\\\"aka\\\":[\\\"Hahn decomposition\\\",\\\"MeasureTheory.SignedMeasu"
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.SignedMeasure\", \"MeasureTheory.SignedMeasure.totalVariation\"]}",
+      "ok": true,
+      "result_chars": 997,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.MeasureTheory.VectorMeasure.Basic\\\",\\\"import"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:MeasureTheory.SignedMeasure\"}",
+      "ok": false,
+      "result_chars": 397,
+      "result_head": "{\"ok\":false,\"error\":\"unresolvable key\",\"key\":\"decl:Mathlib:MeasureTheory.SignedMeasure\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ dec"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:MeasureTheory.SignedMeasure.totalVariation\"}",
+      "ok": false,
+      "result_chars": 412,
+      "result_head": "{\"ok\":false,\"error\":\"unresolvable key\",\"key\":\"decl:Mathlib:MeasureTheory.SignedMeasure.totalVariation\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name"
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"MeasureTheory.SignedMeasure\"}",
+      "ok": false,
+      "result_chars": 384,
+      "result_head": "{\"ok\":false,\"error\":\"unresolvable key\",\"key\":\"MeasureTheory.SignedMeasure\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | arti"
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"cell:Q1568811\", \"limit\": 30}",
+      "ok": true,
+      "result_chars": 10948,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q1568811\\\",\\\"kind\\\":\\\"cell\\\",\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q33540\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":3},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q"
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"absolute value signed measure of set\"}",
+      "ok": true,
+      "result_chars": 3747,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"absolute value signed measure of set\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id"
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.SignedMeasure.apply\", \"abs\"]}",
+      "ok": true,
+      "result_chars": 924,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.apply\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"Matrix.IsSymm.apply\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\"
+    },
+    {
+      "i": 18,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"vector measure apply measurable set\"}",
+      "ok": true,
+      "result_chars": 3152,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"vector measure apply measurable set\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/"
+    },
+    {
+      "i": 19,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.VectorMeasure.apply\", \"MeasureTheory.VectorMeasure.coe\"]}",
+      "ok": true,
+      "result_chars": 873,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.VectorMeasure.apply\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"Matrix.IsSymm.apply\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\"
+    },
+    {
+      "i": 20,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"signed measure real value function evaluation\"}",
+      "ok": true,
+      "result_chars": 3493,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"signed measure real value function evaluation\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an"
+    },
+    {
+      "i": 21,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.VectorMeasure.toSignedMeasure\", \"MeasureTheory.Measure.toSignedMeasure\"]}",
+      "ok": true,
+      "result_chars": 855,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.VectorMeasure.toSignedMeasure\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; ren"
+    },
+    {
+      "i": 22,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"total variation bounded norm measure\"}",
+      "ok": true,
+      "result_chars": 2908,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"total variation bounded norm measure\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id"
+    },
+    {
+      "i": 23,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.SignedMeasure.apply_totalVariation_le\"]}",
+      "ok": true,
+      "result_chars": 489,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.apply_totalVariation_le\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namesp"
+    },
+    {
+      "i": 24,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"abs apply signed measure\"}",
+      "ok": true,
+      "result_chars": 181,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"abs apply signed measure\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 25,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.SignedMeasure.abs_apply_le_totalVariation\"]}",
+      "ok": true,
+      "result_chars": 493,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.abs_apply_le_totalVariation\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/na"
+    },
+    {
+      "i": 26,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"Jordan decomposition\"}",
+      "ok": false,
+      "result_chars": 253,
+      "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"Jordan decomposition\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":{\"generated_at\":\""
+    },
+    {
+      "i": 27,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Jordan decomposition theorem signed measure\"}",
+      "ok": true,
+      "result_chars": 200,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Jordan decomposition theorem signed measure\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 28,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.SignedMeasure.le_totalVariation_apply\", \"Real.abs\", \"ENNReal.toReal\"]}",
+      "ok": true,
+      "result_chars": 1004,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.le_totalVariation_apply\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namesp"
+    },
+    {
+      "i": 29,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"variation of measure\"}",
+      "ok": true,
+      "result_chars": 177,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"variation of measure\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 30,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.SignedMeasure.somewhatAbsoluteValue_eq_totalVariation\", \"MeasureTheory.SignedMeasure.apply_le\", \"MeasureTheory.SignedMeasure.integral_le_integral\"]}",
+      "ok": true,
+      "result_chars": 1037,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.somewhatAbsoluteValue_eq_totalVariation\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check"
+    },
+    {
+      "i": 31,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"absolute value measure bounded\"}",
+      "ok": true,
+      "result_chars": 187,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"absolute value measure bounded\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 32,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.SignedMeasure.abs_eq_totalVariation\", \"MeasureTheory.SignedMeasure.someAbsoluteValue\", \"MeasureTheory.SignedMeasure.apply\"]}",
+      "ok": true,
+      "result_chars": 1160,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.abs_eq_totalVariation\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespac"
+    },
+    {
+      "i": 33,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"signed measure abs apply\"}",
+      "ok": true,
+      "result_chars": 181,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"signed measure abs apply\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 34,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.SignedMeasure.absoluteValue\", \"MeasureTheory.SignedMeasure.absoluteValueSMul\"]}",
+      "ok": true,
+      "result_chars": 748,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.absoluteValue\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renam"
+    },
+    {
+      "i": 35,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"absolute value signed measure\"}",
+      "ok": true,
+      "result_chars": 186,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"absolute value signed measure\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 36,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.SignedMeasure.apply_toENNReal_le_totalVariation\", \"MeasureTheory.SignedMeasure.norm_apply_le_totalVariation\"]}",
+      "ok": true,
+      "result_chars": 779,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.apply_toENNReal_le_totalVariation\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spell"
+    },
+    {
+      "i": 37,
+      "name": "mcp__wikibrain__brain_snippets",
+      "input": "{\"id\": \"MeasureTheory.SignedMeasure\"}",
+      "ok": false,
+      "result_chars": 382,
+      "result_head": "{\"ok\":false,\"error\":\"unknown atom id\",\"id\":\"MeasureTheory.SignedMeasure\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | articl"
+    },
+    {
+      "i": 38,
+      "name": "mcp__wikibrain__brain_snippets",
+      "input": "{\"id\": \"MeasureTheory.SignedMeasure.totalVariation\"}",
+      "ok": false,
+      "result_chars": 397,
+      "result_head": "{\"ok\":false,\"error\":\"unknown atom id\",\"id\":\"MeasureTheory.SignedMeasure.totalVariation\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ dec"
+    },
+    {
+      "i": 39,
+      "name": "mcp__wikibrain__brain_snippets",
+      "input": "{\"id\": \"cell:Q1568811\"}",
+      "ok": true,
+      "result_chars": 2523,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q1568811\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"wikidata\\\",\\\"id\\\":\\\"Q1568811\\\",\\\"label\\\":\\\"Hahn decomposition theorem\\\",\\\"snippet\\\":\\\"theo"
+    },
+    {
+      "i": 40,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.VectorMeasure.setFunction_eq_coe_smul_apply\", \"MeasureTheory.SignedMeasure.coe_fn\"]}",
+      "ok": true,
+      "result_chars": 753,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.VectorMeasure.setFunction_eq_coe_smul_apply\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/"
+    },
+    {
+      "i": 41,
+      "name": "mcp__wikibrain__brain_transfer",
+      "input": "{\"q\": \"totalVariation\", \"direction\": \"formal_to_informal\"}",
+      "ok": true,
+      "result_chars": 369,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"totalVariation\\\",\\\"decl\\\":\\\"totalVariation\\\",\\\"hits\\\":[],\\\"note\\\":\\\"decl is not an organ of any atom — it may still"
+    },
+    {
+      "i": 42,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Int.natAbs\", \"MeasureTheory.SignedMeasure.interior_positivePart\", \"MeasureTheory.SignedMeasure.positivePart\"]}",
+      "ok": true,
+      "result_chars": 1005,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Int.natAbs\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Data.Int.Basic\\\",\\\"import_line\\\":\\\"import Init.Data.Int.Basic\\\","
+    },
+    {
+      "i": 43,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.SignedMeasure.ofReal\", \"MeasureTheory.SignedMeasure.eq_zero_of_measure_apply_eq_zero\"]}",
+      "ok": true,
+      "result_chars": 756,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.ofReal\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are "
+    }
+  ]
+}

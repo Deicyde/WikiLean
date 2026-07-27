@@ -1,0 +1,96 @@
+{
+  "task_id": "fresh_039",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:39:02Z",
+  "wall_s": 54.4,
+  "output_lean": "theorem torsion_subgroup_finite_of_approx_parallelogram_law\n    {G : Type*} [CommGroup G]\n    (h : G → ℝ)\n    (h_finite_sublevel : ∀ c : ℝ, Set.Finite {g : G | h g ≤ c})\n    (C : ℝ)\n    (h_approx_parallelogram : ∀ x y : G, |h (x * y) + h (x / y) - 2 * h x - 2 * h y| ≤ C) :\n    Set.Finite {g : G | orderOf g ≠ 0} := by\n  sorry",
+  "transcript_stats": {
+    "turns": 10,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 1,
+      "mcp__wikibrain__decl_exists": 5,
+      "mcp__wikibrain__brain_search": 1,
+      "mcp__wikibrain__brain_filter": 1,
+      "mcp__wikibrain__brain_cell": 1
+    },
+    "tokens_in": 78,
+    "tokens_out": 4311,
+    "cost_usd": 0.0649309
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"torsion subgroup commutative group finite\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 4870,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"torsion subgroup commutative group finite\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exa"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"CommGroup\", \"Subgroup.torsion\", \"Set.Finite\", \"FiniteDimensional\", \"AddCommGroup.fg_torsion_finite\"]}",
+      "ok": true,
+      "result_chars": 1840,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"CommGroup\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Group.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra."
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"torsion group theory\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 177,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"torsion group theory\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_filter",
+      "input": "{\"f\": 0, \"type\": \"supercell\", \"under\": \"path:Mathlib/Algebra/Group\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2721,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"f\\\":0,\\\"type\\\":\\\"supercell\\\",\\\"under\\\":\\\"path:Mathlib/Algebra/Group\\\",\\\"hits\\\":[{\\\"id\\\":\\\"path:Mathlib/Algebra/Group\\\",\\\"label\\\":\\\"Group\\\",\\\"fa\\\":40697,\\\"pare"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"periodic\", \"orderOf\", \"torsionSubgroup\", \"Group.ZMod\", \"zpowers\"]}",
+      "ok": true,
+      "result_chars": 1813,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"periodic\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"Function.Antiperiodic.periodic\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Subgroup\", \"Fintype\", \"Set.Finite\", \"Nat.card\", \"Subgroup.closure\"]}",
+      "ok": true,
+      "result_chars": 1662,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Subgroup\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Group.Subgroup.Defs\\\",\\\"import_line\\\":\\\"import Mathlib."
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:orderOf\"}",
+      "ok": true,
+      "result_chars": 1719,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:orderOf\\\",\\\"id\\\":\\\"cell:decl:Mathlib:orderOf\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"orderOf\\\",\\\"f\\\":128,\\\"cell\\\":{\\\""
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"abs\", \"Abs.abs\", \"zpow_natCast\", \"Set.Finite.subset\", \"Subgroup.center\"]}",
+      "ok": true,
+      "result_chars": 1640,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"abs\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Order.Group.Unbundled.Abs\\\",\\\"import_line\\\":\\\"import Mathlib"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"div_eq_iff_eq_mul_left\", \"torsion\", \"mul_comm\", \"pow_ne_zero\", \"Function.Injective\"]}",
+      "ok": true,
+      "result_chars": 1780,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"div_eq_iff_eq_mul_left\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g."
+    }
+  ]
+}

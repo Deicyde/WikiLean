@@ -1,0 +1,438 @@
+{
+  "task_id": "fresh_079",
+  "arm": "C",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:20:04Z",
+  "wall_s": 148.0,
+  "output_lean": "theorem finite_flat_constant_rank_locally_free\n  {R : Type*} [CommRing R] {M : Type*} [AddCommGroup M] [Module R M]\n  (hfinite : Module.Finite R M) (hflat : Module.Flat R M)\n  (p : Ideal R) (hp : Ideal.IsPrime p)\n  (hrank : ∃ n : ℕ, ∀ q : PrimeSpectrum R, Module.rankAtStalk M q = n)\n  : ∃ a : R, a ∉ p ∧ Module.Free (Localization.Away a) (LocalizedModule.Away a M) := sorry",
+  "transcript_stats": {
+    "turns": 53,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 33,
+      "mcp__formal__decl_grep": 12,
+      "mcp__formal__decl_read": 7
+    },
+    "tokens_in": 220,
+    "tokens_out": 8882,
+    "cost_usd": 0.18341939999999998
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Module.Finite\"}",
+      "ok": true,
+      "result_chars": 1189,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 1119 declarations mentioning Module.Finite.\\n- Module.Finite   [Mathlib.RingTheory.Finiteness.Defs]\\n    A module over a semiring is `Module.Finite` if it is finitely "
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Flat\"}",
+      "ok": true,
+      "result_chars": 80,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Flat': unknown identifier 'Flat'\"}]"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Module.Free\"}",
+      "ok": true,
+      "result_chars": 1378,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 676 declarations mentioning Module.Free.\\n- Module.Free   [Mathlib.LinearAlgebra.FreeModule.Basic]\\n    `Module.Free R M` is the statement that the `R`-module `M` is f"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Ideal.Prime\"}",
+      "ok": true,
+      "result_chars": 94,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Ideal.Prime': unknown identifier 'Ideal.Prime'\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Prime p\"}",
+      "ok": true,
+      "result_chars": 80,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Prime p': Unknown identifier `p`\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"RingHom.Flat\"}",
+      "ok": true,
+      "result_chars": 1056,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 58 declarations mentioning RingHom.Flat.\\n- RingHom.Flat.containsIdentities   [Mathlib.RingTheory.RingHom.Flat]\\n- RingHom.Flat.holdsForLocalizationAway   [Mathlib.Rin"
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Localization.Away\"}",
+      "ok": true,
+      "result_chars": 2238,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 107 declarations mentioning Localization.Away.\\n- Localization.Away   [Mathlib.GroupTheory.MonoidLocalization.Away]\\n    Given `x : M`, the Localization of `M` at the "
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Submodule.IsPrime\"}",
+      "ok": true,
+      "result_chars": 106,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Submodule.IsPrime': unknown identifier 'Submodule.IsPrime'\"}]"
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"rank\"}",
+      "ok": true,
+      "result_chars": 80,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'rank': unknown identifier 'rank'\"}]"
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"natRank\"}",
+      "ok": true,
+      "result_chars": 86,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'natRank': unknown identifier 'natRank'\"}]"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Ideal ?R → Prop\"}",
+      "ok": true,
+      "result_chars": 1869,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 5304 declarations mentioning Ideal.\\n- Ideal.IsTwoSided   [Mathlib.RingTheory.Ideal.Defs]\\n    A left ideal `I : Ideal R` is two-sided if it is also a right ideal.\\n- "
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"IsPrime\"}",
+      "ok": true,
+      "result_chars": 86,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IsPrime': unknown identifier 'IsPrime'\"}]"
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"LinearMap.natRank\"}",
+      "ok": true,
+      "result_chars": 106,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'LinearMap.natRank': unknown identifier 'LinearMap.natRank'\"}]"
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Module.Flat\"}",
+      "ok": true,
+      "result_chars": 1029,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 314 declarations mentioning Module.Flat.\\n- Module.Flat   [Mathlib.RingTheory.Flat.Basic]\\n    An `R`-module `M` is flat if for every finitely generated submodule `N` "
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Algebra.TensorProduct\"}",
+      "ok": true,
+      "result_chars": 114,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Algebra.TensorProduct': unknown identifier 'Algebra.TensorProduct'\"}]"
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Module.rank\"}",
+      "ok": true,
+      "result_chars": 1475,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 424 declarations mentioning Module.rank.\\n- Module.rank   [Mathlib.LinearAlgebra.Dimension.Basic]\\n    The rank of a module, defined as a term of type `Cardinal`.  We "
+    },
+    {
+      "i": 16,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"IsLocalization.AtPrime R ?p\"}",
+      "ok": true,
+      "result_chars": 100,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IsLocalization.AtPrime R ?p': Unknown identifier `R`\"}]"
+    },
+    {
+      "i": 17,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"LocalizationMap\"}",
+      "ok": true,
+      "result_chars": 102,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'LocalizationMap': unknown identifier 'LocalizationMap'\"}]"
+    },
+    {
+      "i": 18,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"TensorProduct\"}",
+      "ok": true,
+      "result_chars": 1256,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 2992 declarations mentioning TensorProduct.\\n- TensorProduct   [Mathlib.LinearAlgebra.TensorProduct.Defs]\\n    The tensor product of two modules `M` and `N` over the s"
+    },
+    {
+      "i": 19,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"LocalizedModule\"}",
+      "ok": true,
+      "result_chars": 1645,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 146 declarations mentioning LocalizedModule.\\n- LocalizedModule   [Mathlib.Algebra.Module.LocalizedModule.Basic]\\n    If `S` is a multiplicative subset of a ring `R` a"
+    },
+    {
+      "i": 20,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"stalk\"}",
+      "ok": true,
+      "result_chars": 82,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'stalk': unknown identifier 'stalk'\"}]"
+    },
+    {
+      "i": 21,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"IsLocalization.Away\"}",
+      "ok": true,
+      "result_chars": 2055,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 185 declarations mentioning IsLocalization.Away.\\n- IsLocalization.Away   [Mathlib.RingTheory.Localization.Away.Basic]\\n    Given `x : R`, the typeclass `IsLocalizatio"
+    },
+    {
+      "i": 22,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Submonoid.powers\"}",
+      "ok": true,
+      "result_chars": 1109,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 339 declarations mentioning Submonoid.powers.\\n- Submonoid.powers   [Mathlib.Algebra.Group.Submonoid.Membership]\\n    The submonoid generated by an element.\\n- Submono"
+    },
+    {
+      "i": 23,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"LocalModule Module.Flat\"}",
+      "ok": true,
+      "result_chars": 106,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'LocalModule Module.Flat': Unknown identifier `LocalModule`\"}]"
+    },
+    {
+      "i": 24,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Localization.Away rank\"}",
+      "ok": true,
+      "result_chars": 98,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Localization.Away rank': Unknown identifier `rank`\"}]"
+    },
+    {
+      "i": 25,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"flatOfLocalizationSpan\"}",
+      "ok": true,
+      "result_chars": 116,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'flatOfLocalizationSpan': unknown identifier 'flatOfLocalizationSpan'\"}]"
+    },
+    {
+      "i": 26,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"finrank\"}",
+      "ok": true,
+      "result_chars": 86,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'finrank': unknown identifier 'finrank'\"}]"
+    },
+    {
+      "i": 27,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Module.rank Cardinal\"}",
+      "ok": true,
+      "result_chars": 87,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for 'Module.rank Cardinal'.\"}]"
+    },
+    {
+      "i": 28,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"^(def|theorem|lemma) Module.rank\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 646,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 match(es) for '^(def|theorem|lemma) Module.rank' (via ripgrep):\\n- Mathlib/RingTheory/Flat/Rank.lean:76\\n    lemma Module.rankAtStalk_pos_iff_algebraMap_injective :\\n- Mat"
+    },
+    {
+      "i": 29,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"^(def|theorem|lemma) Module.Flat\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 397,
+      "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for '^(def|theorem|lemma) Module.Flat' (via ripgrep):\\n- Mathlib/RingTheory/Flat/Equalizer.lean:35\\n    lemma Module.Flat.ker_lTensor_eq [Module.Flat R M] :\\n- M"
+    },
+    {
+      "i": 30,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/RingTheory/Flat/Rank.lean\", \"line\": 1, \"n\": 100}",
+      "ok": true,
+      "result_chars": 5256,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RingTheory/Flat/Rank.lean  (lines 1–100 of 188):\\n     1  /-\\n     2  Copyright (c) 2025 Christian Merten. All rights reserved.\\n     3  Released under Apache 2.0 li"
+    },
+    {
+      "i": 31,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"^(def|lemma|theorem) rankAtStalk\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 726,
+      "result_head": "[{\"type\": \"text\", \"text\": \"5 match(es) for '^(def|lemma|theorem) rankAtStalk' (via ripgrep):\\n- Mathlib/RingTheory/Spectrum/Prime/FreeLocus.lean:183\\n    def rankAtStalk (p : PrimeSpectrum R) : ℕ :=\\n"
+    },
+    {
+      "i": 32,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/RingTheory/Spectrum/Prime/FreeLocus.lean\", \"line\": 183, \"n\": 50}",
+      "ok": true,
+      "result_chars": 3579,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RingTheory/Spectrum/Prime/FreeLocus.lean  (lines 183–232 of 380):\\n   183  def rankAtStalk (p : PrimeSpectrum R) : ℕ :=\\n   184    Module.finrank (Localization.AtPri"
+    },
+    {
+      "i": 33,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"freeLocus_eq_univ\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 683,
+      "result_head": "[{\"type\": \"text\", \"text\": \"5 match(es) for 'freeLocus_eq_univ' (via ripgrep):\\n- Mathlib/RingTheory/Spectrum/Prime/FreeLocus.lean:28\\n    - `Module.freeLocus_eq_univ_iff`:\\n- Mathlib/RingTheory/Spectr"
+    },
+    {
+      "i": 34,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/RingTheory/Spectrum/Prime/FreeLocus.lean\", \"line\": 150, \"n\": 50}",
+      "ok": true,
+      "result_chars": 3130,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RingTheory/Spectrum/Prime/FreeLocus.lean  (lines 150–199 of 380):\\n   150        exact Ideal.mul_mem_right _ _ H\\n   151    rw [mem_freeLocus_of_isLocalization (R :="
+    },
+    {
+      "i": 35,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"LocalizedModule.*Free.*powers\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 100,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'LocalizedModule.*Free.*powers' under Mathlib/.\"}]"
+    },
+    {
+      "i": 36,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"exists_free_localizedModule_powers\", \"limit\": 3}",
+      "ok": true,
+      "result_chars": 484,
+      "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for 'exists_free_localizedModule_powers' (via ripgrep):\\n- Mathlib/RingTheory/Localization/Free.lean:18\\n    - `Module.FinitePresentation.exists_free_localizedMo"
+    },
+    {
+      "i": 37,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/RingTheory/Localization/Free.lean\", \"line\": 1, \"n\": 120}",
+      "ok": true,
+      "result_chars": 5385,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RingTheory/Localization/Free.lean  (lines 1–92 of 92):\\n     1  /-\\n     2  Copyright (c) 2024 Andrew Yang. All rights reserved.\\n     3  Released under Apache 2.0 l"
+    },
+    {
+      "i": 38,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"isLocally.*rankAtStalk\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 726,
+      "result_head": "[{\"type\": \"text\", \"text\": \"5 match(es) for 'isLocally.*rankAtStalk' (via ripgrep):\\n- Mathlib/AlgebraicGeometry/Morphisms/FlatRank.lean:253\\n    exact Module.isLocallyConstant_rankAtStalk\\n- Mathlib/R"
+    },
+    {
+      "i": 39,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"isLocallyConstant rankAtStalk\"}",
+      "ok": true,
+      "result_chars": 118,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'isLocallyConstant rankAtStalk': Unknown identifier `isLocallyConstant`\"}]"
+    },
+    {
+      "i": 40,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"basicOpen.*freeLocus\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 733,
+      "result_head": "[{\"type\": \"text\", \"text\": \"6 match(es) for 'basicOpen.*freeLocus' (via ripgrep):\\n- Mathlib/RingTheory/Smooth/Locus.lean:87\\n    · rw [← PrimeSpectrum.basicOpen_eq_zeroLocus_compl, Module.basicOpen_su"
+    },
+    {
+      "i": 41,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"basicOpen subset freeLocus\"}",
+      "ok": true,
+      "result_chars": 107,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'basicOpen subset freeLocus': Unknown identifier `basicOpen`\"}]"
+    },
+    {
+      "i": 42,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"rankAtStalk.*constant\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 350,
+      "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'rankAtStalk.*constant' (via ripgrep):\\n- Mathlib/RingTheory/Flat/Rank.lean:25\\n    - `Module.algebraMap_bijective_iff_rankAtStalk`: `S` is of constant `R`-r"
+    },
+    {
+      "i": 43,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"exists basicOpen contained freeLocus\"}",
+      "ok": true,
+      "result_chars": 138,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'exists basicOpen contained freeLocus': <input>:1:36: unexpected end of input; expected ','\"}]"
+    },
+    {
+      "i": 44,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"isOpen freeLocus\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 87,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'isOpen freeLocus' under Mathlib/.\"}]"
+    },
+    {
+      "i": 45,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/RingTheory/Spectrum/Prime/FreeLocus.lean\", \"line\": 1, \"n\": 50}",
+      "ok": true,
+      "result_chars": 2358,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RingTheory/Spectrum/Prime/FreeLocus.lean  (lines 1–50 of 380):\\n     1  /-\\n     2  Copyright (c) 2024 Andrew Yang. All rights reserved.\\n     3  Released under Apac"
+    },
+    {
+      "i": 46,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"IsOpen mem basicOpen\"}",
+      "ok": true,
+      "result_chars": 95,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IsOpen mem basicOpen': Unknown identifier `mem`\"}]"
+    },
+    {
+      "i": 47,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"IsOpen.*freeLocus\", \"limit\": 3}",
+      "ok": true,
+      "result_chars": 170,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'IsOpen.*freeLocus' (via ripgrep):\\n- Mathlib/RingTheory/Spectrum/Prime/FreeLocus.lean:172\\n    IsOpen (freeLocus R M) := by\"}]"
+    },
+    {
+      "i": 48,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/RingTheory/Spectrum/Prime/FreeLocus.lean\", \"line\": 171, \"n\": 15}",
+      "ok": true,
+      "result_chars": 961,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RingTheory/Spectrum/Prime/FreeLocus.lean  (lines 171–185 of 380):\\n   171  lemma isOpen_freeLocus [Module.FinitePresentation R M] :\\n   172      IsOpen (freeLocus R "
+    },
+    {
+      "i": 49,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"LocalizedModule.Away\", \"limit\": 3}",
+      "ok": true,
+      "result_chars": 470,
+      "result_head": "[{\"type\": \"text\", \"text\": \"35 match(es) for 'LocalizedModule.Away' (via ripgrep):\\n- Mathlib/AlgebraicGeometry/Modules/Tilde.lean:11\\n    public import Mathlib.Algebra.Module.LocalizedModule.Away\\n- M"
+    },
+    {
+      "i": 50,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"LocalizedModule.Away\"}",
+      "ok": true,
+      "result_chars": 2326,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 15 declarations mentioning LocalizedModule.Away.\\n- LocalizedModule.Away   [Mathlib.Algebra.Module.LocalizedModule.Basic]\\n    Given `x : R`, `LocalizedModule.Away x M"
+    },
+    {
+      "i": 51,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/RingTheory/Spectrum/Prime/FreeLocus.lean\", \"line\": 180, \"n\": 10}",
+      "ok": true,
+      "result_chars": 694,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RingTheory/Spectrum/Prime/FreeLocus.lean  (lines 180–189 of 380):\\n   180  variable (M) in\\n   181  /-- The rank of `M` at the stalk of `p` is the rank of `Mₚ` as a "
+    }
+  ]
+}

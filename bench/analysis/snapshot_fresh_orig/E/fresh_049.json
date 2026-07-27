@@ -1,0 +1,198 @@
+{
+  "task_id": "fresh_049",
+  "arm": "E",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T05:10:19Z",
+  "wall_s": 106.8,
+  "output_lean": "theorem measurable_of_continuousOn_compl_countable [MeasurableSingletonClass α]\n    {f : α → γ} {A : Set α} (hA : A.Countable) (hf : ContinuousOn f Aᶜ) : Measurable f :=\n  hf.measurable_of_countable_compl hA",
+  "transcript_stats": {
+    "turns": 23,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 11,
+      "mcp__formal__decl_grep": 3,
+      "mcp__formal__decl_read": 8
+    },
+    "tokens_in": 126,
+    "tokens_out": 6691,
+    "cost_usd": 0.10388105
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Measurable\"}",
+      "ok": true,
+      "result_chars": 1137,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 1410 declarations mentioning Measurable.\\n- Measurable   [Mathlib.MeasureTheory.MeasurableSpace.Defs]\\n    A function `f` between measurable spaces is measurable if th"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"ContinuousOn\"}",
+      "ok": true,
+      "result_chars": 881,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 1242 declarations mentioning ContinuousOn.\\n- ContinuousOn   [Mathlib.Topology.Defs.Filter]\\n    A function between topological spaces is continuous on a subset `s` wh"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Countable\"}",
+      "ok": true,
+      "result_chars": 772,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 722 declarations mentioning Countable.\\n- Countable   [Mathlib.Data.Countable.Defs]\\n    A type `α` is countable if there exists an injective map `α → ℕ`.\\n- instCount"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"continuous countable measurable\"}",
+      "ok": true,
+      "result_chars": 113,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'continuous countable measurable': Unknown identifier `continuous`\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"measurable_of_continuousOn\"}",
+      "ok": true,
+      "result_chars": 124,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'measurable_of_continuousOn': unknown identifier 'measurable_of_continuousOn'\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Measurable.iff_compl_ae_eq\"}",
+      "ok": true,
+      "result_chars": 124,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Measurable.iff_compl_ae_eq': unknown identifier 'Measurable.iff_compl_ae_eq'\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"ae_of_all Measurable\"}",
+      "ok": true,
+      "result_chars": 101,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'ae_of_all Measurable': Unknown identifier `ae_of_all`\"}]"
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"(α → β) → Set α → Measurable\"}",
+      "ok": true,
+      "result_chars": 101,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(α → β) → Set α → Measurable': Unknown identifier `α`\"}]"
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(theorem|lemma).*continuous.*measurable\", \"limit\": 30}",
+      "ok": true,
+      "result_chars": 2084,
+      "result_head": "[{\"type\": \"text\", \"text\": \"13 match(es) for '(theorem|lemma).*continuous.*measurable' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/Bochner/VitaliCaratheodory.lean:222\\n    theorem exists_lt_lowerS"
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Continuous.measurable\"}",
+      "ok": true,
+      "result_chars": 819,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 3 declarations mentioning Continuous.measurable.\\n- Continuous.measurable   [Mathlib.MeasureTheory.Constructions.BorelSpace.Basic]\\n    A continuous function from an `"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(theorem|lemma).*compl.*countable\", \"limit\": 30}",
+      "ok": true,
+      "result_chars": 406,
+      "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for '(theorem|lemma).*compl.*countable' (via ripgrep):\\n- Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean:282\\n    theorem measurable_of_measurable_on_c"
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"ae_eq Continuous\"}",
+      "ok": true,
+      "result_chars": 93,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'ae_eq Continuous': Unknown identifier `ae_eq`\"}]"
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean\", \"line\": 282, \"n\": 20}",
+      "ok": true,
+      "result_chars": 1198,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean  (lines 282–301 of 1083):\\n   282  theorem measurable_of_measurable_on_compl_countable [MeasurableSingletonClass α] "
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(theorem|lemma).*ContinuousOn.*[Mm]easurable\", \"limit\": 30}",
+      "ok": true,
+      "result_chars": 2079,
+      "result_head": "[{\"type\": \"text\", \"text\": \"13 match(es) for '(theorem|lemma).*ContinuousOn.*[Mm]easurable' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/Bochner/FundThmCalculus.lean:109\\n    theorem ContinuousOn.i"
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"ContinuousOn measurable\"}",
+      "ok": true,
+      "result_chars": 105,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'ContinuousOn measurable': Unknown identifier `measurable`\"}]"
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean\", \"line\": 502, \"n\": 15}",
+      "ok": true,
+      "result_chars": 1046,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean  (lines 502–516 of 751):\\n   502  theorem ContinuousOn.measurable_of_countable_compl [MeasurableSingletonClass α]\\n"
+    },
+    {
+      "i": 16,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean\", \"line\": 475, \"n\": 35}",
+      "ok": true,
+      "result_chars": 2042,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean  (lines 475–509 of 751):\\n   475      (h : μ (frontier s) = 0) (h' : μ (frontier s') = 0) :\\n   476      μ (frontie"
+    },
+    {
+      "i": 17,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean\", \"line\": 1, \"n\": 50}",
+      "ok": true,
+      "result_chars": 2328,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean  (lines 1–50 of 751):\\n     1  /-\\n     2  Copyright (c) 2017 Johannes Hölzl. All rights reserved.\\n     3  Release"
+    },
+    {
+      "i": 18,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean\", \"line\": 450, \"n\": 60}",
+      "ok": true,
+      "result_chars": 3485,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean  (lines 450–509 of 751):\\n   450      exact (A a).measurableSet.prod (isOpen_of_mem_countableBasis ha).measurableSe"
+    },
+    {
+      "i": 19,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean\", \"line\": 130, \"n\": 50}",
+      "ok": true,
+      "result_chars": 2580,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean  (lines 130–179 of 751):\\n   130  \\n   131  /-- Add instances `borel e : MeasurableSpace e` and `⟨rfl⟩ : BorelSpace"
+    },
+    {
+      "i": 20,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean\", \"line\": 350, \"n\": 110}",
+      "ok": true,
+      "result_chars": 6154,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean  (lines 350–459 of 751):\\n   350  -- see Note [lower instance priority]\\n   351  instance (priority := 100) OpensMe"
+    },
+    {
+      "i": 21,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean\", \"line\": 200, \"n\": 60}",
+      "ok": true,
+      "result_chars": 3334,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean  (lines 200–259 of 751):\\n   200      rw [borel_comap]\\n   201      exact comap_mono h.1⟩\\n   202  \\n   203  lemma "
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "task_id": "fresh_006",
+  "arm": "E",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:57:38Z",
+  "wall_s": 29.6,
+  "output_lean": "theorem scalar_mul_left_preserves_monotone [PosSMulMono α β] {γ : Type*} [Preorder γ] {f : γ → β}\n    (hf : Monotone f) (ha : 0 ≤ a) : Monotone fun x ↦ a • f x := sorry",
+  "transcript_stats": {
+    "turns": 5,
+    "tool_calls_by_name": {
+      "mcp__formal__decl_grep": 2,
+      "mcp__formal__loogle": 1,
+      "mcp__formal__decl_read": 1
+    },
+    "tokens_in": 34,
+    "tokens_out": 2260,
+    "cost_usd": 0.026515450000000003
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(theorem|lemma|def) .*Monotone.*smul\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 495,
+      "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for '(theorem|lemma|def) .*Monotone.*smul' (via ripgrep):\\n- Mathlib/Algebra/Order/Module/Defs.lean:331\\n    lemma Monotone.const_smul [PosSMulMono α β] {γ : Typ"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Monotone ?f → Monotone (fun x => ?a • ?f x)\"}",
+      "ok": true,
+      "result_chars": 361,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 22 declarations mentioning Monotone and HSMul.hSMul.\\n- Monotone.const_nsmul   [Mathlib.Algebra.Order.Monoid.Unbundled.Pow]\\n- Monotone.const_smul   [Mathlib.Algebra.O"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Order/Module/Defs.lean\", \"line\": 331, \"n\": 10}",
+      "ok": true,
+      "result_chars": 761,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Order/Module/Defs.lean  (lines 331–340 of 1365):\\n   331  lemma Monotone.const_smul [PosSMulMono α β] {γ : Type*} [Preorder γ] {f : γ → β}\\n   332      (hf :"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"class PosSMulMono\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 162,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'class PosSMulMono' (via ripgrep):\\n- Mathlib/Algebra/Order/Module/Defs.lean:144\\n    class PosSMulMono : Prop where\"}]"
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "task_id": "fresh_080",
+  "arm": "B",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T03:52:19Z",
+  "wall_s": 91.2,
+  "output_lean": "theorem MvPowerSeries.ext_of_constantCoeff_and_pderivative\n    {σ R : Type*} [CommRing R]\n    {φ ψ : MvPowerSeries σ R}\n    (h_const : constantCoeff R φ = constantCoeff R ψ)\n    (h_deriv : ∀ i : σ, pderivative i φ = pderivative i ψ) :\n    φ = ψ := sorry",
+  "transcript_stats": {
+    "turns": 5,
+    "tool_calls_by_name": {
+      "mcp__wiki__wiki_search": 2,
+      "mcp__wiki__nlab_search": 1,
+      "mcp__wiki__wiki_get": 1
+    },
+    "tokens_in": 34,
+    "tokens_out": 8087,
+    "cost_usd": 0.0878936
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"multivariate power series\"}",
+      "ok": true,
+      "result_chars": 2304,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'multivariate power series':\\n- Multivariate statistics  (slug: Multivariate_statistics)\\n    https://en.wikipedia.org/wiki/Multivariate_statistics\\n    Mult"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"partial derivative formal power series\"}",
+      "ok": true,
+      "result_chars": 2299,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'partial derivative formal power series':\\n- Faà di Bruno's formula  (slug: Faà_di_Bruno's_formula)\\n    https://en.wikipedia.org/wiki/Faà_di_Bruno's_formula"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wiki__nlab_search",
+      "input": "{\"q\": \"power series formal derivative\"}",
+      "ok": true,
+      "result_chars": 109,
+      "result_head": "[{\"type\": \"text\", \"text\": \"nLab search for 'power series formal derivative' — candidate pages:\\n- HomePage\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wiki__wiki_get",
+      "input": "{\"title\": \"Formal power series\"}",
+      "ok": true,
+      "result_chars": 4259,
+      "result_head": "[{\"type\": \"text\", \"text\": \"# Formal power series\\nIn mathematics, a formal series is an infinite sum that is considered independently from any notion of convergence, and can be manipulated with the us"
+    }
+  ]
+}

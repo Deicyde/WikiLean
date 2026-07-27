@@ -1,0 +1,154 @@
+{
+  "task_id": "fresh_020",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:34:14Z",
+  "wall_s": 70.8,
+  "output_lean": "theorem antitone_summable_integrable_on_Ioi\n    (f : ℝ → ℝ)\n    (h_nonneg : ∀ x, 0 ≤ f x)\n    (h_antitone : AntitoneOn f (Set.Ioi 0))\n    (h_seq_summable : Summable (fun n : ℕ => f n)) :\n    MeasureTheory.IntegrableOn f (Set.Ioi 0) := sorry",
+  "transcript_stats": {
+    "turns": 17,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 4,
+      "mcp__wikibrain__brain_transfer": 1,
+      "mcp__wikibrain__decl_exists": 5,
+      "mcp__wikibrain__brain_search": 1,
+      "mcp__wikibrain__brain_cell": 3,
+      "mcp__wikibrain__brain_neighborhood": 1,
+      "mcp__wikibrain__brain_snippets": 1
+    },
+    "tokens_in": 100,
+    "tokens_out": 5737,
+    "cost_usd": 0.0952917
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"integrable function\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2787,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"integrable function\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, reso"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"antitone monotone decreasing function\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3563,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"antitone monotone decreasing function\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"summable sequence series convergence\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 4906,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"summable sequence series convergence\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"integral test converse Cauchy condensation\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3625,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"integral test converse Cauchy condensation\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an ex"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_transfer",
+      "input": "{\"q\": \"Integrable\", \"direction\": \"formal_to_informal\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1303,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"Integrable\\\",\\\"decl\\\":\\\"Integrable\\\",\\\"hits\\\":[],\\\"note\\\":\\\"decl is not an organ of any atom — it may still exist i"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Integrable\", \"IntegrableOn\", \"Antitone\", \"Summable\", \"MeasureTheory.integral\"]}",
+      "ok": true,
+      "result_chars": 1817,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Integrable\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"MeasureTheory.Integrable\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\\"Mat"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MeasureTheory.IntegrableOn\", \"integrable_on_Ioi_rpow_iff\", \"AntitoneOn\"]}",
+      "ok": true,
+      "result_chars": 1100,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.IntegrableOn\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.MeasureTheory.Integral.IntegrableOn\\\",\\\"impor"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"integral test\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 240,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"integral test\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q1155313\\\",\\\"label\\\":\\\"integral test for convergence\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+0"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q1051423\"}",
+      "ok": true,
+      "result_chars": 3113,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q1051423\\\",\\\"id\\\":\\\"cell:Q1051423\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Cauchy condensation test\\\",\\\"f\\\":2200,\\\"cell\\\":{\\\"id"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q1155313\"}",
+      "ok": true,
+      "result_chars": 2137,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q1155313\\\",\\\"id\\\":\\\"cell:Q1155313\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"integral test for convergence\\\",\\\"f\\\":160,\\\"cell\\\":{"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:AntitoneOn.summable_of_integrableOn_Ioi_zero\"}",
+      "ok": false,
+      "result_chars": 414,
+      "result_head": "{\"ok\":false,\"error\":\"unresolvable key\",\"key\":\"decl:Mathlib:AntitoneOn.summable_of_integrableOn_Ioi_zero\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Na"
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"cell:Q1155313\", \"kinds\": \"depends,cites\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 6191,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q1155313\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\",\\\"cites\\\"],\\\"synapses\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:AntitoneOn.integral_le_sum_Ico\\\",\\\"w\\\":2,"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"AntitoneOn.summable_of_integrableOn_Ioi_zero\", \"AntitoneOn.integral_le_sum_Ico\", \"AntitoneOn.sum_le_integral\"]}",
+      "ok": true,
+      "result_chars": 1182,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"AntitoneOn.summable_of_integrableOn_Ioi_zero\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; re"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"summable_of_integrableOn_Ioi_zero\", \"integrableOn_Ioi_of_summable\"]}",
+      "ok": true,
+      "result_chars": 723,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"summable_of_integrableOn_Ioi_zero\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are c"
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__brain_snippets",
+      "input": "{\"id\": \"cell:Q1155313\"}",
+      "ok": true,
+      "result_chars": 751,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q1155313\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"wikidata\\\",\\\"id\\\":\\\"Q1155313\\\",\\\"label\\\":\\\"integral test for convergence\\\",\\\"snippet\\\":\\\"t"
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Antitone\", \"Summable\", \"MeasureTheory.IntegrableOn\", \"Ioi\", \"Set.Ioi\"]}",
+      "ok": true,
+      "result_chars": 1673,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Antitone\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Monotone.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Mo"
+    }
+  ]
+}

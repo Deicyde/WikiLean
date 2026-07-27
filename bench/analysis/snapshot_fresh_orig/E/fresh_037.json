@@ -1,0 +1,174 @@
+{
+  "task_id": "fresh_037",
+  "arm": "E",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T05:06:38Z",
+  "wall_s": 125.6,
+  "output_lean": "theorem immersion_is_contMDiff {f : M → N} (h : IsImmersion I J n f) : ContMDiff I J n f := sorry",
+  "transcript_stats": {
+    "turns": 20,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 3,
+      "mcp__formal__decl_grep": 10,
+      "mcp__formal__decl_read": 6
+    },
+    "tokens_in": 152,
+    "tokens_out": 9009,
+    "cost_usd": 0.13977635
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Immersion\"}",
+      "ok": true,
+      "result_chars": 90,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Immersion': unknown identifier 'Immersion'\"}]"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(def|structure|class)\\\\s+Immersion\"}",
+      "ok": true,
+      "result_chars": 248,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '(def|structure|class)\\\\\\\\s+Immersion' (via ripgrep):\\n- Mathlib/Geometry/Manifold/Immersion.lean:134\\n    def ImmersionAtProp : (M → N) → OpenPartialHomeomo"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Geometry/Manifold/Immersion.lean\", \"line\": 1, \"n\": 150}",
+      "ok": true,
+      "result_chars": 6144,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Geometry/Manifold/Immersion.lean  (lines 1–120 of 830):\\n     1  /-\\n     2  Copyright (c) 2025 Michael Rothgang. All rights reserved.\\n     3  Released under Apache"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*contMDiff.*IsImmersion|lemma.*contMDiff.*IsImmersion\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 641,
+      "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for 'theorem.*contMDiff.*IsImmersion|lemma.*contMDiff.*IsImmersion' (via ripgrep):\\n- Mathlib/Geometry/Manifold/Immersion.lean:419\\n    theorem contMDiffOn (h : "
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*IsImmersion.*contMDiff|lemma.*IsImmersion.*contMDiff\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 132,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*IsImmersion.*contMDiff|lemma.*IsImmersion.*contMDiff' under Mathlib/.\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Geometry/Manifold/Immersion.lean\", \"line\": 600, \"n\": 100}",
+      "ok": true,
+      "result_chars": 5595,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Geometry/Manifold/Immersion.lean  (lines 600–699 of 830):\\n   600  \\n   601  /-- Every `ModelWithCorners 𝕜 E H` is an immersion when viewed as a map `H → E`. -/\\n   "
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Geometry/Manifold/Immersion.lean\", \"line\": 700, \"n\": 80}",
+      "ok": true,
+      "result_chars": 4635,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Geometry/Manifold/Immersion.lean  (lines 700–779 of 830):\\n   700  open IsManifold in\\n   701  /-- The identity map is an immersion with complement `PUnit`. -/\\n   7"
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Geometry/Manifold/Immersion.lean\", \"line\": 775, \"n\": 55}",
+      "ok": true,
+      "result_chars": 3207,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Geometry/Manifold/Immersion.lean  (lines 775–829 of 830):\\n   775  /-- If `f` is an immersion, it is an immersion at each point.\\n   776  \\n   777  Note that the con"
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"CMDiff\"}",
+      "ok": true,
+      "result_chars": 84,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'CMDiff': unknown identifier 'CMDiff'\"}]"
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"ContMDiff\"}",
+      "ok": true,
+      "result_chars": 1092,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 262 declarations mentioning ContMDiff.\\n- ContMDiff   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n    `ContMDiff I I' n f` indicates that the function `f : M → M'` bet"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def.*CMDiff|structure.*CMDiff\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 373,
+      "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'def.*CMDiff|structure.*CMDiff' (via ripgrep):\\n- Mathlib/Geometry/Manifold/PartitionOfUnity.lean:315\\n    def toSmoothPartitionOfUnity (f : BumpCovering ι M"
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(?:def|abbrev)\\\\s+CMDiff\\\\b\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 102,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(?:def|abbrev)\\\\\\\\s+CMDiff\\\\\\\\b' under Mathlib/.\"}]"
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"notation.*CMDiff|alias.*CMDiff\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 101,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'notation.*CMDiff|alias.*CMDiff' under Mathlib/.\"}]"
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"CMDiff\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2475,
+      "result_head": "[{\"type\": \"text\", \"text\": \"348 match(es) for 'CMDiff' (via ripgrep):\\n- Mathlib/Geometry/Manifold/Algebra/Structures.lean:34\\n    contMDiff_mul : CMDiff n fun p : R × R => p.1 * p.2\\n- Mathlib/Geometr"
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Geometry/Manifold/ContMDiff/Defs.lean\", \"line\": 1, \"n\": 100}",
+      "ok": true,
+      "result_chars": 5775,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Geometry/Manifold/ContMDiff/Defs.lean  (lines 1–100 of 925):\\n     1  /-\\n     2  Copyright (c) 2020 Sébastien Gouëzel. All rights reserved.\\n     3  Released under "
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"CMDiff|ContMDiff\", \"limit\": 30}",
+      "ok": true,
+      "result_chars": 3959,
+      "result_head": "[{\"type\": \"text\", \"text\": \"918 match(es) for 'CMDiff|ContMDiff' (via ripgrep):\\n- Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean:46\\n    (h : ∀ g : M → ℝ, CMDiff ∞ g → HasCompactSupport g →"
+    },
+    {
+      "i": 16,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Geometry/Manifold/Immersion.lean\", \"line\": 1, \"n\": 20}",
+      "ok": true,
+      "result_chars": 1193,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Geometry/Manifold/Immersion.lean  (lines 1–20 of 830):\\n     1  /-\\n     2  Copyright (c) 2025 Michael Rothgang. All rights reserved.\\n     3  Released under Apache "
+    },
+    {
+      "i": 17,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"CMDiff|notation.*ContMDiff\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2754,
+      "result_head": "[{\"type\": \"text\", \"text\": \"351 match(es) for 'CMDiff|notation.*ContMDiff' (via ripgrep):\\n- Mathlib/Analysis/Complex/UpperHalfPlane/Manifold.lean:45\\n    theorem contMDiff_coe : CMDiff n ((↑) : ℍ → ℂ)"
+    },
+    {
+      "i": 18,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"abbrev\\\\s+CMDiff|def.*CMDiff.*:=\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 105,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'abbrev\\\\\\\\s+CMDiff|def.*CMDiff.*:=' under Mathlib/.\"}]"
+    }
+  ]
+}

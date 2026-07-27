@@ -1,0 +1,406 @@
+{
+  "task_id": "fresh_089",
+  "arm": "C",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:24:09Z",
+  "wall_s": 135.0,
+  "output_lean": "theorem bounded_variation_on_finite {α : Type*} [LinearOrder α] {E : Type*} [PseudoEMetricSpace E]\n    (f : α → E) (s : Set α) (hs : s.Finite) : BoundedVariationOn f s := sorry",
+  "transcript_stats": {
+    "turns": 49,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 11,
+      "mcp__formal__decl_grep": 28,
+      "mcp__formal__decl_read": 9
+    },
+    "tokens_in": 340,
+    "tokens_out": 7151,
+    "cost_usd": 0.27894529999999995
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"BddVariation\"}",
+      "ok": true,
+      "result_chars": 96,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'BddVariation': unknown identifier 'BddVariation'\"}]"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"bounded variation\"}",
+      "ok": true,
+      "result_chars": 96,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'bounded variation': Unknown identifier `bounded`\"}]"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Variation|variation\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2682,
+      "result_head": "[{\"type\": \"text\", \"text\": \"392 match(es) for 'Variation|variation' (via ripgrep):\\n- Mathlib/CategoryTheory/Opposites.lean:23\\n    there are quite a few variations that are needed in practice.\\n- Math"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"totalVariation|total_variation\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2863,
+      "result_head": "[{\"type\": \"text\", \"text\": \"28 match(es) for 'totalVariation|total_variation' (via ripgrep):\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Lebesgue.lean:130\\n    theorem singularPart_totalVariat"
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Function.*metric|hasDerivAt|dist\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 1463,
+      "result_head": "[{\"type\": \"text\", \"text\": \"7709 match(es) for 'Function.*metric|hasDerivAt|dist' (via ripgrep):\\n- Mathlib/Algebra/FreeAlgebra.lean:134\\n    -- distributivity\\n- Mathlib/Algebra/FreeAlgebra.lean:135\\n"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"(α → E) where E is a MetricSpace\"}",
+      "ok": true,
+      "result_chars": 117,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(α → E) where E is a MetricSpace': <input>:1:8: expected end of input\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"MetricSpace\"}",
+      "ok": true,
+      "result_chars": 1429,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 1886 declarations mentioning MetricSpace.\\n- MetricSpace   [Mathlib.Topology.MetricSpace.Defs]\\n    A metric space is a type endowed with a `ℝ`-valued distance `dist` "
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Fintype\"}",
+      "ok": true,
+      "result_chars": 1035,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 8481 declarations mentioning Fintype.\\n- Fintype   [Mathlib.Data.Fintype.Defs]\\n    `Fintype α` means that `α` is finite, i.e. there are only finitely many distinct el"
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def.*[Vv]ar|Bdd\", \"limit\": 30}",
+      "ok": true,
+      "result_chars": 3925,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1647 match(es) for 'def.*[Vv]ar|Bdd' (via ripgrep):\\n- Mathlib/Algebra/ContinuedFractions/Translations.lean:31\\n    Here we give some basic translations that hold by definit"
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"^theorem.*[Ff]inite|^def.*[Ff]inite.*[Vv]ar\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2728,
+      "result_head": "[{\"type\": \"text\", \"text\": \"3138 match(es) for '^theorem.*[Ff]inite|^def.*[Ff]inite.*[Vv]ar' (via ripgrep):\\n- Mathlib/Algebra/Module/ZLattice/Covolume.lean:102\\n    theorem covolume_comap {F : Type*} "
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"dist x y\"}",
+      "ok": true,
+      "result_chars": 81,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'dist x y': Unknown identifier `x`\"}]"
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"sum.*dist|sum.*metric\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2747,
+      "result_head": "[{\"type\": \"text\", \"text\": \"654 match(es) for 'sum.*dist|sum.*metric' (via ripgrep):\\n- Mathlib/Algebra/Azumaya/Matrix.lean:39\\n    map_add' f1 f2 := by simp [add_smul, Finset.sum_add_distrib]\\n- Mathl"
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Finset.sum\"}",
+      "ok": true,
+      "result_chars": 1194,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 3709 declarations mentioning Finset.sum.\\n- Finset.sum   [Mathlib.Algebra.BigOperators.Group.Finset.Defs]\\n    `∑ x ∈ s, f x` is the sum of `f x` as `x` ranges over th"
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Analysis.*Variation\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 418,
+      "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for 'Analysis.*Variation' (via ripgrep):\\n- Mathlib/MeasureTheory/Function/AbsolutelyContinuous.lean:8\\n    public import Mathlib.Analysis.BoundedVariation\\n- Ma"
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"^def|^theorem.*monotone.*dist|^theorem.*convex.*dist\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 1608,
+      "result_head": "[{\"type\": \"text\", \"text\": \"21375 match(es) for '^def|^theorem.*monotone.*dist|^theorem.*convex.*dist' (via ripgrep):\\n- Mathlib/Algebra/FreeAlgebra.lean:76\\n    def hasCoeGenerator : Coe X (Pre R X) :"
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"BoundedVariation|eVariationOn|VariationOn\", \"limit\": 40}",
+      "ok": true,
+      "result_chars": 5526,
+      "result_head": "[{\"type\": \"text\", \"text\": \"168 match(es) for 'BoundedVariation|eVariationOn|VariationOn' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean:20\\n    * `BoundedVariat"
+    },
+    {
+      "i": 16,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"^def BoundedVariationOn|^theorem BoundedVariationOn\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 382,
+      "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for '^def BoundedVariationOn|^theorem BoundedVariationOn' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean:143\\n    theorem"
+    },
+    {
+      "i": 17,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Topology/EMetricSpace/BoundedVariation.lean\", \"line\": 64, \"n\": 30}",
+      "ok": true,
+      "result_chars": 1673,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/EMetricSpace/BoundedVariation.lean  (lines 64–93 of 1178):\\n    64  def BoundedVariationOn (f : α → E) (s : Set α) :=\\n    65    eVariationOn f s ≠ ∞\\n    6"
+    },
+    {
+      "i": 18,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"eVariationOn\"}",
+      "ok": true,
+      "result_chars": 1384,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 71 declarations mentioning eVariationOn.\\n- eVariationOn   [Mathlib.Topology.EMetricSpace.BoundedVariation]\\n    The (extended-real-valued) variation of a function `f`"
+    },
+    {
+      "i": 19,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Finset.coe Set\"}",
+      "ok": true,
+      "result_chars": 94,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Finset.coe Set': Unknown constant `Finset.coe`\"}]"
+    },
+    {
+      "i": 20,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*finite.*bounded|theorem.*finite.*variation\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 122,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*finite.*bounded|theorem.*finite.*variation' under Mathlib/.\"}]"
+    },
+    {
+      "i": 21,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"BoundedVariationOn.*Finite|BoundedVariationOn.*finset|BoundedVariationOn.*Fintype\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 301,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'BoundedVariationOn.*Finite|BoundedVariationOn.*finset|BoundedVariationOn.*Fintype' (via ripgrep):\\n- Mathlib/MeasureTheory/VectorMeasure/BoundedVariation.le"
+    },
+    {
+      "i": 22,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Set\\\\.Finite.*variation|Fintype.*variation\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 115,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'Set\\\\\\\\.Finite.*variation|Fintype.*variation' under Mathlib/.\"}]"
+    },
+    {
+      "i": 23,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*eVariationOn.*finite\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 100,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*eVariationOn.*finite' under Mathlib/.\"}]"
+    },
+    {
+      "i": 24,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"^def eVariationOn\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 88,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '^def eVariationOn' under Mathlib/.\"}]"
+    },
+    {
+      "i": 25,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Topology/EMetricSpace/BoundedVariation.lean\", \"line\": 1, \"n\": 100}",
+      "ok": true,
+      "result_chars": 5475,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/EMetricSpace/BoundedVariation.lean  (lines 1–100 of 1178):\\n     1  /-\\n     2  Copyright (c) 2022 Sébastien Gouëzel. All rights reserved.\\n     3  Released"
+    },
+    {
+      "i": 26,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"BoundedVariationOn.*subsingleton|variation.*subsingleton\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 127,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'BoundedVariationOn.*subsingleton|variation.*subsingleton' under Mathlib/.\"}]"
+    },
+    {
+      "i": 27,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem eVariationOn.*ne_top|theorem eVariationOn.*≠ ∞\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 125,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem eVariationOn.*ne_top|theorem eVariationOn.*≠ ∞' under Mathlib/.\"}]"
+    },
+    {
+      "i": 28,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Finset.sum\"}",
+      "ok": true,
+      "result_chars": 1194,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 3709 declarations mentioning Finset.sum.\\n- Finset.sum   [Mathlib.Algebra.BigOperators.Group.Finset.Defs]\\n    `∑ x ∈ s, f x` is the sum of `f x` as `x` ranges over th"
+    },
+    {
+      "i": 29,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"ENNReal.finset_sum|finset_sum.*ne_top\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 108,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'ENNReal.finset_sum|finset_sum.*ne_top' under Mathlib/.\"}]"
+    },
+    {
+      "i": 30,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"eVariationOn.*finite_range|eVariationOn.*card\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 116,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'eVariationOn.*finite_range|eVariationOn.*card' under Mathlib/.\"}]"
+    },
+    {
+      "i": 31,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*BoundedVariationOn\", \"limit\": 30}",
+      "ok": true,
+      "result_chars": 4370,
+      "result_head": "[{\"type\": \"text\", \"text\": \"59 match(es) for 'theorem.*BoundedVariationOn' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean:143\\n    theorem BoundedVariationOn.int"
+    },
+    {
+      "i": 32,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Topology/EMetricSpace/BoundedVariation.lean\", \"line\": 174, \"n\": 30}",
+      "ok": true,
+      "result_chars": 1579,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/EMetricSpace/BoundedVariation.lean  (lines 174–203 of 1178):\\n   174  theorem _root_.BoundedVariationOn.mono {f : α → E} {s : Set α} (h : BoundedVariationOn"
+    },
+    {
+      "i": 33,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*pair|eVariationOn.pair|variation.*pair\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 2011,
+      "result_head": "[{\"type\": \"text\", \"text\": \"473 match(es) for 'theorem.*pair|eVariationOn.pair|variation.*pair' (via ripgrep):\\n- Mathlib/Algebra/ContinuedFractions/Computation/TerminatesIffRat.lean:63\\n    nonrec the"
+    },
+    {
+      "i": 34,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"eVariationOn\\\\.pair|\\\\.pair.*variation\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 113,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'eVariationOn\\\\\\\\.pair|\\\\\\\\.pair.*variation' under Mathlib/.\"}]"
+    },
+    {
+      "i": 35,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Topology/EMetricSpace/BoundedVariation.lean\", \"line\": 100, \"n\": 80}",
+      "ok": true,
+      "result_chars": 4912,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/EMetricSpace/BoundedVariation.lean  (lines 100–179 of 1178):\\n   100    · simp [Finset.Ico_eq_empty_of_le hnm]\\n   101    let π := projIcc m n hmn\\n   102  "
+    },
+    {
+      "i": 36,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"pair.*variation|variation.*pair\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 102,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'pair.*variation|variation.*pair' under Mathlib/.\"}]"
+    },
+    {
+      "i": 37,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"The variation of.*f.*on a two-point|pair\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 783,
+      "result_head": "[{\"type\": \"text\", \"text\": \"2965 match(es) for 'The variation of.*f.*on a two-point|pair' (via ripgrep):\\n- Mathlib/Computability/PartrecBasis.lean:143\\n    (Primrec.vector_head.pair (_root_.Primrec.co"
+    },
+    {
+      "i": 38,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def pair|theorem pair\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2510,
+      "result_head": "[{\"type\": \"text\", \"text\": \"183 match(es) for 'def pair|theorem pair' (via ripgrep):\\n- Mathlib/Computability/Primrec/Basic.lean:305\\n    theorem pair {α β γ} [Primcodable α] [Primcodable β] [Primcodab"
+    },
+    {
+      "i": 39,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Topology/EMetricSpace/BoundedVariation.lean\", \"line\": 200, \"n\": 50}",
+      "ok": true,
+      "result_chars": 3038,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/EMetricSpace/BoundedVariation.lean  (lines 200–249 of 1178):\\n   200      eVariationOn f s = 0 ↔ ∀ x ∈ s, ∀ y ∈ s, edist (f x) (f y) = 0 := by\\n   201    co"
+    },
+    {
+      "i": 40,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem pair|two-point set\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1329,
+      "result_head": "[{\"type\": \"text\", \"text\": \"137 match(es) for 'theorem pair|two-point set' (via ripgrep):\\n- Mathlib/Algebra/GroupWithZero/Action/Pointwise/Finset.lean:115\\n    theorem pairwiseDisjoint_smul_iff₀ {s : "
+    },
+    {
+      "i": 41,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"pair\", \"limit\": 40}",
+      "ok": true,
+      "result_chars": 6017,
+      "result_head": "[{\"type\": \"text\", \"text\": \"5178 match(es) for 'pair' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/Bochner/Set.lean:128\\n    simp only [Finset.coe_insert, Finset.forall_mem_insert, Set.pairwise_ins"
+    },
+    {
+      "i": 42,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Topology/EMetricSpace/BoundedVariation.lean\", \"line\": 250, \"n\": 100}",
+      "ok": true,
+      "result_chars": 6151,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/EMetricSpace/BoundedVariation.lean  (lines 250–349 of 1178):\\n   250    rw [UniformOnFun.tendsto_iff_tendstoUniformlyOn] at this\\n   251    simp_rw [← tends"
+    },
+    {
+      "i": 43,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"eVariationOn.pair\"}",
+      "ok": true,
+      "result_chars": 247,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning eVariationOn.pair.\\n- eVariationOn.pair   [Mathlib.Topology.EMetricSpace.BoundedVariation]\\n    The variation of `f` on a two-point set `{a,"
+    },
+    {
+      "i": 44,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem pair.*:.*ℝ≥0∞|two-point.*distance\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 112,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem pair.*:.*ℝ≥0∞|two-point.*distance' under Mathlib/.\"}]"
+    },
+    {
+      "i": 45,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Topology/EMetricSpace/BoundedVariation.lean\", \"line\": 380, \"n\": 100}",
+      "ok": true,
+      "result_chars": 5826,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/EMetricSpace/BoundedVariation.lean  (lines 380–479 of 1178):\\n   380      _ ≤ eVariationOn f (s ∪ t) := sum_le (by grind [Monotone]) (by grind)\\n   381  \\n "
+    },
+    {
+      "i": 46,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Topology/EMetricSpace/BoundedVariation.lean\", \"line\": 545, \"n\": 100}",
+      "ok": true,
+      "result_chars": 6152,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/EMetricSpace/BoundedVariation.lean  (lines 545–644 of 1178):\\n   545      rcases this.eq_or_lt with hn | hn; swap\\n   546      · exact (sum_le_of_monotoneOn"
+    },
+    {
+      "i": 47,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Topology/EMetricSpace/BoundedVariation.lean\", \"line\": 650, \"n\": 60}",
+      "ok": true,
+      "result_chars": 3915,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/EMetricSpace/BoundedVariation.lean  (lines 650–709 of 1178):\\n   650  \\n   651  lemma eVariationOn_Ico_eq_Icc_of_continuousWithinAt'\\n   652      [Topologic"
+    }
+  ]
+}

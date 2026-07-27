@@ -1,0 +1,182 @@
+{
+  "task_id": "fresh_042",
+  "arm": "E",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T05:07:59Z",
+  "wall_s": 97.4,
+  "output_lean": "theorem rank_eq_fraction_field\n    (R : Type*) [CommRing R]\n    (M : Type*) [AddCommGroup M]\n    [Module R M] [Module (FractionRing R) M]\n    [IsScalarTower R (FractionRing R) M] :\n    Module.rank (FractionRing R) M = Module.rank R M :=\n  IsLocalization.rank_eq",
+  "transcript_stats": {
+    "turns": 21,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 11,
+      "mcp__formal__decl_grep": 4,
+      "mcp__formal__decl_read": 5
+    },
+    "tokens_in": 118,
+    "tokens_out": 7284,
+    "cost_usd": 0.0971424
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Module.rank\"}",
+      "ok": true,
+      "result_chars": 1475,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 424 declarations mentioning Module.rank.\\n- Module.rank   [Mathlib.LinearAlgebra.Dimension.Basic]\\n    The rank of a module, defined as a term of type `Cardinal`.  We "
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"FractionField\"}",
+      "ok": true,
+      "result_chars": 98,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'FractionField': unknown identifier 'FractionField'\"}]"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"FractionRing\"}",
+      "ok": true,
+      "result_chars": 1523,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 190 declarations mentioning FractionRing.\\n- FractionRing   [Mathlib.RingTheory.Localization.FractionRing]\\n    The fraction ring of a commutative ring `R` as a quotie"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Localization fraction\"}",
+      "ok": true,
+      "result_chars": 101,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Localization fraction': Unknown identifier `fraction`\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"rank comap Submodule\"}",
+      "ok": true,
+      "result_chars": 96,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'rank comap Submodule': Unknown identifier `rank`\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Module.rank restriction scalar\"}",
+      "ok": true,
+      "result_chars": 113,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Module.rank restriction scalar': Unknown identifier `restriction`\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Module.rank algebra\"}",
+      "ok": true,
+      "result_chars": 98,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Module.rank algebra': Unknown identifier `algebra`\"}]"
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"rankStabilityCoeff\"}",
+      "ok": true,
+      "result_chars": 108,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'rankStabilityCoeff': unknown identifier 'rankStabilityCoeff'\"}]"
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(theorem|lemma) .*(FractionRing|Localization).*rank\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 385,
+      "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for '(theorem|lemma) .*(FractionRing|Localization).*rank' (via ripgrep):\\n- Mathlib/LinearAlgebra/Dimension/Localization.lean:65\\n    lemma IsLocalization.rank_e"
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"rank_lt_aleph0\"}",
+      "ok": true,
+      "result_chars": 100,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'rank_lt_aleph0': unknown identifier 'rank_lt_aleph0'\"}]"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/LinearAlgebra/Dimension/Localization.lean\", \"line\": 60, \"n\": 15}",
+      "ok": true,
+      "result_chars": 934,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/LinearAlgebra/Dimension/Localization.lean  (lines 60–74 of 231):\\n    60  \\n    61  lemma IsLocalizedModule.rank_eq {N : Type uM} [AddCommGroup N] [Module R N] (f : "
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/LinearAlgebra/Dimension/Localization.lean\", \"line\": 1, \"n\": 60}",
+      "ok": true,
+      "result_chars": 2491,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/LinearAlgebra/Dimension/Localization.lean  (lines 1–60 of 231):\\n     1  /-\\n     2  Copyright (c) 2024 Andrew Yang. All rights reserved.\\n     3  Released under Apa"
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(theorem|lemma) .*rank.*FractionRing|fraction\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2974,
+      "result_head": "[{\"type\": \"text\", \"text\": \"762 match(es) for '(theorem|lemma) .*rank.*FractionRing|fraction' (via ripgrep):\\n- Mathlib/Algebra/ContinuedFractions/Determinant.lean:21\\n    - https://en.wikipedia.org/wi"
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"FractionRing rank\"}",
+      "ok": true,
+      "result_chars": 93,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'FractionRing rank': Unknown identifier `rank`\"}]"
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/RingTheory/Algebraic/Integral.lean\", \"line\": 545, \"n\": 20}",
+      "ok": true,
+      "result_chars": 1160,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RingTheory/Algebraic/Integral.lean  (lines 545–564 of 685):\\n   545      Cardinal.lift.{u} (Module.rank R' S') = Cardinal.lift.{v} (Module.rank R S) := by\\n   546   "
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"IsLocalization.rank_eq\"}",
+      "ok": true,
+      "result_chars": 161,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning IsLocalization.rank_eq.\\n- IsLocalization.rank_eq   [Mathlib.LinearAlgebra.Dimension.Localization]\"}]"
+    },
+    {
+      "i": 16,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/RingTheory/Algebraic/Integral.lean\", \"line\": 520, \"n\": 45}",
+      "ok": true,
+      "result_chars": 2397,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RingTheory/Algebraic/Integral.lean  (lines 520–564 of 685):\\n   520  instance : IsLocalizedModule R⁰ (IsScalarTower.toAlgHom R S S').toLinearMap :=\\n   521    isLoca"
+    },
+    {
+      "i": 17,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/LinearAlgebra/Dimension/Localization.lean\", \"line\": 24, \"n\": 50}",
+      "ok": true,
+      "result_chars": 2388,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/LinearAlgebra/Dimension/Localization.lean  (lines 24–73 of 231):\\n    24  public section\\n    25  \\n    26  open Cardinal Module nonZeroDivisors\\n    27  \\n    28  s"
+    },
+    {
+      "i": 18,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"instance.*IsLocalization.*FractionRing\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 109,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'instance.*IsLocalization.*FractionRing' under Mathlib/.\"}]"
+    },
+    {
+      "i": 19,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(theorem|lemma|def).*FractionRing.*IsLocalization\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 728,
+      "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for '(theorem|lemma|def).*FractionRing.*IsLocalization' (via ripgrep):\\n- Mathlib/RingTheory/Localization/FractionRing.lean:155\\n    theorem idem : IsFractionRin"
+    }
+  ]
+}

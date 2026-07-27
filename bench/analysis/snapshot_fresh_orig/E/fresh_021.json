@@ -1,0 +1,214 @@
+{
+  "task_id": "fresh_021",
+  "arm": "E",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T05:01:21Z",
+  "wall_s": 104.8,
+  "output_lean": "theorem integral_le_tsum_of_antitone {f : ℝ → ℝ}\n    (anti : AntitoneOn f (Ici 0))\n    (summable : Summable (fun (n : ℕ) ↦ f n))\n    (nonneg : ∀ t ∈ Ioi 0, 0 ≤ f t) :\n    ∫ x in Ioi 0, f x ≤ ∑' (n : ℕ), f n := sorry",
+  "transcript_stats": {
+    "turns": 25,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 15,
+      "mcp__formal__decl_grep": 4,
+      "mcp__formal__decl_read": 5
+    },
+    "tokens_in": 118,
+    "tokens_out": 7265,
+    "cost_usd": 0.09820220000000002
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"∫ tsum\"}",
+      "ok": true,
+      "result_chars": 115,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '∫ tsum': <input>:1:6: unexpected end of input; expected ',' or 'in'\"}]"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"antitone summable\"}",
+      "ok": true,
+      "result_chars": 97,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'antitone summable': Unknown identifier `antitone`\"}]"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"integral sum monotone\"}",
+      "ok": true,
+      "result_chars": 101,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'integral sum monotone': Unknown identifier `integral`\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"tsum\"}",
+      "ok": true,
+      "result_chars": 1354,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 823 declarations mentioning tsum.\\n- tsum   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n    `∑' i, f i` is the unconditional sum of `f` if it exists, or 0 otherwise. "
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"integral\"}",
+      "ok": true,
+      "result_chars": 88,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'integral': unknown identifier 'integral'\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Antitone\"}",
+      "ok": true,
+      "result_chars": 798,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 541 declarations mentioning Antitone.\\n- Antitone   [Mathlib.Order.Monotone.Defs]\\n    A function `f` is antitone if `a ≤ b` implies `f b ≤ f a`.\\n- antitone_const   ["
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"intervalIntegral\"}",
+      "ok": true,
+      "result_chars": 1503,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 435 declarations mentioning intervalIntegral.\\n- intervalIntegral   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n    The interval integral `∫ x in a..b, f "
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Integrable\"}",
+      "ok": true,
+      "result_chars": 92,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Integrable': unknown identifier 'Integrable'\"}]"
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"integral_Ioo\"}",
+      "ok": true,
+      "result_chars": 96,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'integral_Ioo': unknown identifier 'integral_Ioo'\"}]"
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*integral.*tsum\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1522,
+      "result_head": "[{\"type\": \"text\", \"text\": \"15 match(es) for 'theorem.*integral.*tsum' (via ripgrep):\\n- Mathlib/Probability/ProbabilityMassFunction/Integrals.lean:32\\n    theorem integral_eq_tsum (p : PMF α) (f : α →"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"(?a : ℕ → ℝ) → ?b\"}",
+      "ok": true,
+      "result_chars": 102,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(?a : ℕ → ℝ) → ?b': type expected, got\\n  (?a : ℕ → ℝ)\"}]"
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SumIntegralComparisons.lean\", \"line\": 306, \"n\": 20}",
+      "ok": true,
+      "result_chars": 420,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SumIntegralComparisons.lean  (lines 306–309 of 309):\\n   306  theorem AntitoneOn.integral_le_tsum (anti : AntitoneOn f (Ici 0))\\n   307      (summable : Sum"
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SumIntegralComparisons.lean\", \"line\": 289, \"n\": 20}",
+      "ok": true,
+      "result_chars": 1370,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SumIntegralComparisons.lean  (lines 289–308 of 309):\\n   289  theorem AntitoneOn.integral_le_tsum_comp_add (N : ℕ) (anti : AntitoneOn f (Ici (N : ℝ)))\\n   2"
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SumIntegralComparisons.lean\", \"line\": 1, \"n\": 50}",
+      "ok": true,
+      "result_chars": 2920,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SumIntegralComparisons.lean  (lines 1–50 of 309):\\n     1  /-\\n     2  Copyright (c) 2022 Kevin H. Wilson. All rights reserved.\\n     3  Released under Apac"
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SumIntegralComparisons.lean\", \"line\": 50, \"n\": 30}",
+      "ok": true,
+      "result_chars": 1819,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SumIntegralComparisons.lean  (lines 50–79 of 309):\\n    50  public section\\n    51  \\n    52  open Set MeasureTheory MeasureSpace intervalIntegral\\n    53  "
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SumIntegralComparisons.lean\", \"line\": 305, \"n\": 5}",
+      "ok": true,
+      "result_chars": 514,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SumIntegralComparisons.lean  (lines 305–309 of 309):\\n   305  /-- The sum of a nonnegative, antitone function is bounded below by its integral. -/\\n   306  "
+    },
+    {
+      "i": 16,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Ici\"}",
+      "ok": true,
+      "result_chars": 78,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Ici': unknown identifier 'Ici'\"}]"
+    },
+    {
+      "i": 17,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Ioi\"}",
+      "ok": true,
+      "result_chars": 78,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Ioi': unknown identifier 'Ioi'\"}]"
+    },
+    {
+      "i": 18,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def Ici\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 531,
+      "result_head": "[{\"type\": \"text\", \"text\": \"5 match(es) for 'def Ici' (via ripgrep):\\n- Mathlib/Order/Hom/Set.lean:207\\n    protected def Ici [Lattice α] [Lattice β] (e : α ≃o β) (x : α) :\\n- Mathlib/Order/UpperLower/"
+    },
+    {
+      "i": 19,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def Ioi\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 334,
+      "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for 'def Ioi' (via ripgrep):\\n- Mathlib/Order/UpperLower/Principal.lean:47\\n    def Ioi (a : α) : UpperSet α :=\\n- Mathlib/Order/Interval/Multiset.lean:80\\n    d"
+    },
+    {
+      "i": 20,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"notation.*Ici|def.*Ici.*Set\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 428,
+      "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for 'notation.*Ici|def.*Ici.*Set' (via ripgrep):\\n- Mathlib/Topology/Defs/Filter.lean:149\\n    scoped[Topology] notation3 (name := nhdsGE) \\\"𝓝[≥] \\\" x:100 => nhd"
+    },
+    {
+      "i": 21,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Set.Ici\"}",
+      "ok": true,
+      "result_chars": 847,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 831 declarations mentioning Set.Ici.\\n- Set.Ici   [Mathlib.Order.Interval.Set.Defs]\\n    `Ici a` is the left-closed right-infinite interval $[a, ∞)$.\\n- Set.Ici_def   "
+    },
+    {
+      "i": 22,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Set.Ioi\"}",
+      "ok": true,
+      "result_chars": 935,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 1139 declarations mentioning Set.Ioi.\\n- Set.Ioi   [Mathlib.Order.Interval.Set.Defs]\\n    `Ioi a` is the left-open right-infinite interval $(a, ∞)$.\\n- Set.Ioi_def   ["
+    },
+    {
+      "i": 23,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Summable\"}",
+      "ok": true,
+      "result_chars": 1165,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 670 declarations mentioning Summable.\\n- Summable   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n    `Summable f` means that `f` has some (infinite) sum with respect t"
+    }
+  ]
+}

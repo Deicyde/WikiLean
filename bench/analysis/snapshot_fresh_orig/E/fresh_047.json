@@ -1,0 +1,206 @@
+{
+  "task_id": "fresh_047",
+  "arm": "E",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T05:09:31Z",
+  "wall_s": 80.3,
+  "output_lean": "theorem exists_rank_normal_form [Fintype m] [DecidableEq m] [Field R] (M : Matrix m m R) :\n    ∃ (V U : Matrix m m R) (e : m ≃ Fin M.rank ⊕ Fin (Fintype.card m - M.rank)),\n      IsUnit V ∧ IsUnit U ∧\n      V * M * U = (fromBlocks 1 0 0 0).submatrix e e := sorry",
+  "transcript_stats": {
+    "turns": 24,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 7,
+      "mcp__formal__decl_grep": 10,
+      "mcp__formal__decl_read": 6
+    },
+    "tokens_in": 134,
+    "tokens_out": 4998,
+    "cost_usd": 0.10578895000000002
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Matrix.rank\"}",
+      "ok": true,
+      "result_chars": 953,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 36 declarations mentioning Matrix.rank.\\n- Matrix.rank   [Mathlib.LinearAlgebra.Matrix.Rank]\\n    The rank of a matrix is the rank of its image.\\n- Matrix.rank_subsing"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(def|theorem|lemma) .* rank\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 1858,
+      "result_head": "[{\"type\": \"text\", \"text\": \"59 match(es) for '(def|theorem|lemma) .* rank' (via ripgrep):\\n- Mathlib/SetTheory/Ordinal/Rank.lean:72\\n    theorem rank_eq (a : α) : rank r a = ⨆ b : { b // r b a }, Order"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(def|theorem|lemma) .* (Smith|normal|form|diag|equiv)\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2621,
+      "result_head": "[{\"type\": \"text\", \"text\": \"424 match(es) for '(def|theorem|lemma) .* (Smith|normal|form|diag|equiv)' (via ripgrep):\\n- Mathlib/CategoryTheory/Localization/SmallShiftedHom.lean:116\\n    lemma equiv_shi"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Matrix equivalent diagonal\"}",
+      "ok": true,
+      "result_chars": 108,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Matrix equivalent diagonal': Unknown identifier `equivalent`\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Matrix.IsUnit\"}",
+      "ok": true,
+      "result_chars": 98,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Matrix.IsUnit': unknown identifier 'Matrix.IsUnit'\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(def|theorem|lemma) .* (Diagonal|fromBlocks)\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 379,
+      "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for '(def|theorem|lemma) .* (Diagonal|fromBlocks)' (via ripgrep):\\n- Mathlib/Data/Matrix/Block.lean:204\\n    theorem fromBlocks_zero [Zero α] : fromBlocks (0 : M"
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"IsUnit (Matrix n n ?R)\"}",
+      "ok": true,
+      "result_chars": 95,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IsUnit (Matrix n n ?R)': Unknown identifier `n`\"}]"
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(def|theorem|lemma) .* IsUnit\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1354,
+      "result_head": "[{\"type\": \"text\", \"text\": \"630 match(es) for '(def|theorem|lemma) .* IsUnit' (via ripgrep):\\n- Mathlib/Algebra/TrivSqZeroExt/Basic.lean:755\\n    theorem isUnit_iff_isUnit_fst {x : tsze R M} : IsUnit x"
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(def|theorem|lemma) .*mul.*invertible\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1382,
+      "result_head": "[{\"type\": \"text\", \"text\": \"19 match(es) for '(def|theorem|lemma) .*mul.*invertible' (via ripgrep):\\n- Mathlib/Algebra/GroupWithZero/Invertible.lean:61\\n    theorem inv_mul_cancel_of_invertible (a : α)"
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"?P * ?M * ?Q = Matrix.diagonal\"}",
+      "ok": true,
+      "result_chars": 97,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for '?P * ?M * ?Q = Matrix.diagonal'.\"}]"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(def|theorem|lemma) .* rankOne\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1276,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 match(es) for '(def|theorem|lemma) .* rankOne' (via ripgrep):\\n- Mathlib/NumberTheory/NumberField/Completion/FinitePlace.lean:225\\n    alias NumberField.rankOne_hom'_def :"
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Matrix.rank ?M ≤ ?n\"}",
+      "ok": true,
+      "result_chars": 748,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 10 declarations mentioning Matrix.rank, LE.le, instLENat, and Nat.\\n- Matrix.rank_le_card_width   [Mathlib.LinearAlgebra.Matrix.Rank]\\n- Matrix.rank_le_height   [Mathl"
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(def|theorem|lemma) .*Matrix.*equivalent\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 111,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(def|theorem|lemma) .*Matrix.*equivalent' under Mathlib/.\"}]"
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/LinearAlgebra/Matrix/Rank.lean\", \"line\": 1, \"n\": 50}",
+      "ok": true,
+      "result_chars": 2548,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/LinearAlgebra/Matrix/Rank.lean  (lines 1–50 of 530):\\n     1  /-\\n     2  Copyright (c) 2021 Johan Commelin. All rights reserved.\\n     3  Released under Apache 2.0 "
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"exists_rank_normal_form\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 481,
+      "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for 'exists_rank_normal_form' (via ripgrep):\\n- Mathlib/LinearAlgebra/Matrix/Rank.lean:39\\n    * `Matrix.exists_rank_normal_form`: every square matrix over a fie"
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/LinearAlgebra/Matrix/Rank.lean\", \"line\": 351, \"n\": 30}",
+      "ok": true,
+      "result_chars": 2373,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/LinearAlgebra/Matrix/Rank.lean  (lines 351–380 of 530):\\n   351  theorem exists_rank_normal_form [Fintype m] [DecidableEq m] (M : Matrix m m R) :\\n   352      ∃ (V U"
+    },
+    {
+      "i": 16,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/LinearAlgebra/Matrix/Rank.lean\", \"line\": 43, \"n\": 100}",
+      "ok": true,
+      "result_chars": 4829,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/LinearAlgebra/Matrix/Rank.lean  (lines 43–142 of 530):\\n    43  \\n    44  @[expose] public section\\n    45  \\n    46  open Matrix\\n    47  \\n    48  namespace Matrix"
+    },
+    {
+      "i": 17,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/LinearAlgebra/Matrix/Rank.lean\", \"line\": 340, \"n\": 50}",
+      "ok": true,
+      "result_chars": 3532,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/LinearAlgebra/Matrix/Rank.lean  (lines 340–389 of 530):\\n   340  \\n   341  /-- The rank of a diagonal matrix is the count of non-zero elements on its main diagonal -"
+    },
+    {
+      "i": 18,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/LinearAlgebra/Matrix/Rank.lean\", \"line\": 250, \"n\": 100}",
+      "ok": true,
+      "result_chars": 6068,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/LinearAlgebra/Matrix/Rank.lean  (lines 250–349 of 530):\\n   250    rw [rank, rank, mulVecLin_submatrix, LinearMap.range_comp, LinearMap.range_comp,\\n   251      show"
+    },
+    {
+      "i": 19,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"IsUnit\"}",
+      "ok": true,
+      "result_chars": 1525,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 1295 declarations mentioning IsUnit.\\n- IsUnit   [Mathlib.Algebra.Group.Units.Defs]\\n    An element `a : M` of a `Monoid` is a unit if it has a two-sided inverse. The "
+    },
+    {
+      "i": 20,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def fromBlocks\", \"limit\": 3}",
+      "ok": true,
+      "result_chars": 510,
+      "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for 'def fromBlocks' (via ripgrep):\\n- Mathlib/Data/Matrix/Block.lean:46\\n    def fromBlocks (A : Matrix n l α) (B : Matrix n m α) (C : Matrix o l α) (D : Matrix"
+    },
+    {
+      "i": 21,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def submatrix\", \"limit\": 3}",
+      "ok": true,
+      "result_chars": 494,
+      "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for 'def submatrix' (via ripgrep):\\n- Mathlib/LinearAlgebra/Matrix/Defs.lean:452\\n    def submatrix (A : Matrix m n α) (r : l → m) (c : o → n) : Matrix l o α :=\\"
+    },
+    {
+      "i": 22,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/LinearAlgebra/Matrix/Rank.lean\", \"line\": 337, \"n\": 50}",
+      "ok": true,
+      "result_chars": 3403,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/LinearAlgebra/Matrix/Rank.lean  (lines 337–386 of 530):\\n   337  section Field\\n   338  \\n   339  variable [Field R]\\n   340  \\n   341  /-- The rank of a diagonal ma"
+    }
+  ]
+}

@@ -1,0 +1,218 @@
+{
+  "task_id": "fresh_048",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:41:11Z",
+  "wall_s": 82.7,
+  "output_lean": "theorem symplectic_matrix_det {R : Type*} [CommRing R] {l : Type*} \n  {M : Matrix (l ⊕ l) (l ⊕ l) R} (h : M ∈ Matrix.symplecticGroup) :\n  Matrix.det M = 1 := sorry",
+  "transcript_stats": {
+    "turns": 25,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 1,
+      "mcp__wikibrain__brain_search": 7,
+      "mcp__wikibrain__brain_cell": 3,
+      "mcp__wikibrain__brain_snippets": 1,
+      "mcp__wikibrain__brain_neighborhood": 1,
+      "mcp__wikibrain__decl_exists": 9,
+      "mcp__wikibrain__brain_transfer": 2
+    },
+    "tokens_in": 198,
+    "tokens_out": 5767,
+    "cost_usd": 0.13287575000000001
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"symplectic matrix determinant 1\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 4142,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"symplectic matrix determinant 1\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/labe"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"symplectic\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 2894,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"symplectic\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:SymplecticGroup\\\",\\\"label\\\":\\\"SymplecticGroup\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Symplectic"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:decl:Mathlib:SymplecticGroup\"}",
+      "ok": true,
+      "result_chars": 1310,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:SymplecticGroup\\\",\\\"id\\\":\\\"cell:decl:Mathlib:SymplecticGroup\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"SymplecticGr"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:decl:Mathlib:Matrix.symplecticGroup\"}",
+      "ok": true,
+      "result_chars": 1794,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:Matrix.symplecticGroup\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Matrix.symplecticGroup\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_snippets",
+      "input": "{\"id\": \"cell:decl:Mathlib:Matrix.symplecticGroup\"}",
+      "ok": true,
+      "result_chars": 887,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:Matrix.symplecticGroup\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:Matrix.symplecticGroup\\\",\\\"labe"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"cell:decl:Mathlib:Matrix.symplecticGroup\", \"kinds\": \"cites,depends\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 1010,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:Matrix.symplecticGroup\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"cites\\\",\\\"depends\\\"],\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q524607\\\",\\\"w\\\":2,\\\"kinds\\\""
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"determinant equals 1\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 177,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"determinant equals 1\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"special linear group det 1\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 183,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"special linear group det 1\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"special linear group\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 177,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"special linear group\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"matrix group determinant\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 181,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"matrix group determinant\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Matrix.symplecticGroup\", \"Matrix.det\", \"Submonoid\"]}",
+      "ok": true,
+      "result_chars": 1184,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Matrix.symplecticGroup\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.SymplecticGroup\\\",\\\"import_line\\\":\\"
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__brain_transfer",
+      "input": "{\"q\": \"symplectic matrix\", \"direction\": \"informal_to_formal\", \"limit\": 10}",
+      "ok": false,
+      "result_chars": 213,
+      "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"symplectic matrix\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup\",\"snapshot\":{\"generated_at\":\"2026-07-16T09:25:11+00:00\",\"pin\":\"bf3266"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Matrix.SpecialLinearGroup\", \"Matrix.GL\", \"Units\"]}",
+      "ok": true,
+      "result_chars": 1098,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Matrix.SpecialLinearGroup\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Matrix.SpecialLinearGroup\\\",\\\"im"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Matrix.SymplecticGroup\", \"SymplecticGroup\"]}",
+      "ok": true,
+      "result_chars": 845,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Matrix.SymplecticGroup\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g."
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:Matrix.symplecticGroup\"}",
+      "ok": true,
+      "result_chars": 1790,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:Matrix.symplecticGroup\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Matrix.symplecticGroup\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Ma"
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Submonoid.mem_carrier_iff\", \"CommRing\", \"Fintype\"]}",
+      "ok": true,
+      "result_chars": 997,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Submonoid.mem_carrier_iff\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e"
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Matrix.mem_symplecticGroup\", \"Matrix.symplecticGroup_mem\", \"symplecticGroup_det\"]}",
+      "ok": true,
+      "result_chars": 957,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Matrix.mem_symplecticGroup\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common ("
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Matrix.det_coe\", \"Matrix.SpecialLinearGroup\", \"Subgroup\"]}",
+      "ok": true,
+      "result_chars": 1320,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Matrix.det_coe\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"Matrix.SpecialLinearGroup.det_coe\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"m"
+    },
+    {
+      "i": 18,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Matrix.SpecialLinearGroup.det_coe\", \"Matrix.symplecticGroup_det\", \"det_mem_symplecticGroup\"]}",
+      "ok": true,
+      "result_chars": 1095,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Matrix.SpecialLinearGroup.det_coe\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Matrix.SpecialLinearGrou"
+    },
+    {
+      "i": 19,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Matrix.SpecialLinearGroup.coe_det\", \"Submonoid.map\", \"Function.Injective\"]}",
+      "ok": true,
+      "result_chars": 1067,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Matrix.SpecialLinearGroup.coe_det\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are c"
+    },
+    {
+      "i": 20,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"symplectic det\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 171,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"symplectic det\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 21,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"symplectic form matrix\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 179,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"symplectic form matrix\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 22,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Submonoid.carrier_eq_coe\", \"SetLike\", \"Membership\"]}",
+      "ok": true,
+      "result_chars": 964,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Submonoid.carrier_eq_coe\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e."
+    },
+    {
+      "i": 23,
+      "name": "mcp__wikibrain__brain_transfer",
+      "input": "{\"direction\": \"formal_to_informal\", \"q\": \"Matrix.det\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 639,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"Matrix.det\\\",\\\"decl\\\":\\\"Matrix.det\\\",\\\"id\\\":\\\"cell:Q178546\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Determinant\\\",\\\"hits\\\":["
+    }
+  ]
+}

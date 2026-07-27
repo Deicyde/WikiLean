@@ -1,0 +1,406 @@
+{
+  "task_id": "fresh_059",
+  "arm": "C",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:14:07Z",
+  "wall_s": 129.9,
+  "output_lean": "theorem totalVariation_eq_variation (s : SignedMeasure α) :\n    s.totalVariation = s.variation := sorry",
+  "transcript_stats": {
+    "turns": 49,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 7,
+      "mcp__formal__decl_grep": 27,
+      "mcp__formal__decl_read": 14
+    },
+    "tokens_in": 252,
+    "tokens_out": 8885,
+    "cost_usd": 0.23942395000000002
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"SignedMeasure\"}",
+      "ok": true,
+      "result_chars": 98,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'SignedMeasure': unknown identifier 'SignedMeasure'\"}]"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"total_variation\"}",
+      "ok": true,
+      "result_chars": 102,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'total_variation': unknown identifier 'total_variation'\"}]"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"HahnDecomposition\"}",
+      "ok": true,
+      "result_chars": 106,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'HahnDecomposition': unknown identifier 'HahnDecomposition'\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"SignedMeasure|signed.*measure\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2712,
+      "result_head": "[{\"type\": \"text\", \"text\": \"172 match(es) for 'SignedMeasure|signed.*measure' (via ripgrep):\\n- Mathlib/MeasureTheory/Measure/Decomposition/RadonNikodym.lean:28\\n    * `MeasureTheory.SignedMeasure.abso"
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"total_variation|totalVariation\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2863,
+      "result_head": "[{\"type\": \"text\", \"text\": \"28 match(es) for 'total_variation|totalVariation' (via ripgrep):\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Lebesgue.lean:130\\n    theorem singularPart_totalVariat"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Hahn|Jordan.*decomposition\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2463,
+      "result_head": "[{\"type\": \"text\", \"text\": \"337 match(es) for 'Hahn|Jordan.*decomposition' (via ripgrep):\\n- Mathlib/Algebra/Vertex/VertexOperator.lean:70\\n    (h : -n - 1 < HahnSeries.order ((HahnModule.of R).symm (A"
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean\", \"line\": 460, \"n\": 40}",
+      "ok": true,
+      "result_chars": 2452,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean  (lines 460–499 of 550):\\n   460  def totalVariation (s : SignedMeasure α) : Measure α :=\\n   461    s.toJordan"
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"toJordanDecomposition\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2906,
+      "result_head": "[{\"type\": \"text\", \"text\": \"45 match(es) for 'toJordanDecomposition' (via ripgrep):\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Lebesgue.lean:65\\n    posPart : s.toJordanDecomposition.posPart."
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"supremum.*total|partition.*total\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 103,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'supremum.*total|partition.*total' under Mathlib/.\"}]"
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean\", \"line\": 1, \"n\": 60}",
+      "ok": true,
+      "result_chars": 2691,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean  (lines 1–60 of 550):\\n     1  /-\\n     2  Copyright (c) 2021 Kexing Ying. All rights reserved.\\n     3  Releas"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"VectorMeasure.*total\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 245,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'VectorMeasure.*total' (via ripgrep):\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Lebesgue.lean:253\\n    rw [VectorMeasure.equivMeasure.right_inv, t"
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"VectorMeasure\"}",
+      "ok": true,
+      "result_chars": 98,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'VectorMeasure': unknown identifier 'VectorMeasure'\"}]"
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"class VectorMeasure|def VectorMeasure\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 253,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'class VectorMeasure|def VectorMeasure' (via ripgrep):\\n- Mathlib/MeasureTheory/VectorMeasure/Integral.lean:89\\n    noncomputable def VectorMeasure.transpose"
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"structure VectorMeasure\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 230,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'structure VectorMeasure' (via ripgrep):\\n- Mathlib/MeasureTheory/VectorMeasure/Basic.lean:60\\n    structure VectorMeasure (α : Type*) [MeasurableSpace α] (M"
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"type VectorMeasure|abbreviation VectorMeasure\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 116,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'type VectorMeasure|abbreviation VectorMeasure' under Mathlib/.\"}]"
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/VectorMeasure/Basic.lean\", \"line\": 60, \"n\": 30}",
+      "ok": true,
+      "result_chars": 1298,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/VectorMeasure/Basic.lean  (lines 60–89 of 1464):\\n    60  structure VectorMeasure (α : Type*) [MeasurableSpace α] (M : Type*) [AddCommMonoid M]\\n    61"
+    },
+    {
+      "i": 16,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"abbrev.*SignedMeasure|type.*SignedMeasure\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 218,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'abbrev.*SignedMeasure|type.*SignedMeasure' (via ripgrep):\\n- Mathlib/MeasureTheory/VectorMeasure/Basic.lean:73\\n    abbrev SignedMeasure (α : Type*) [Measur"
+    },
+    {
+      "i": 17,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"finset.*sum.*abs|Finset.*sum.*abs\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 1545,
+      "result_head": "[{\"type\": \"text\", \"text\": \"11 match(es) for 'finset.*sum.*abs|Finset.*sum.*abs' (via ripgrep):\\n- Mathlib/NumberTheory/NumberField/DedekindZeta.lean:86\\n    ← Finset.card_preimage_eq_sum_card_image_eq"
+    },
+    {
+      "i": 18,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"sInf|sSup.*partition\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2620,
+      "result_head": "[{\"type\": \"text\", \"text\": \"2217 match(es) for 'sInf|sSup.*partition' (via ripgrep):\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:783\\n    theorem coe_sInf (S : Set (NonUnitalSubalgebra R A)) : "
+    },
+    {
+      "i": 19,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean\", \"line\": 400, \"n\": 80}",
+      "ok": true,
+      "result_chars": 4353,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean  (lines 400–479 of 550):\\n   400  @[simp]\\n   401  theorem toJordanDecomposition_toSignedMeasure (j : JordanDec"
+    },
+    {
+      "i": 20,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"totalVariation.*eq|totalVariation.*def\", \"limit\": 30}",
+      "ok": true,
+      "result_chars": 379,
+      "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'totalVariation.*eq|totalVariation.*def' (via ripgrep):\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean:471\\n    rw [totalVariation, Measure"
+    },
+    {
+      "i": 21,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"supremum|sSup.*measure|partition.*measurable\", \"limit\": 30}",
+      "ok": true,
+      "result_chars": 4310,
+      "result_head": "[{\"type\": \"text\", \"text\": \"609 match(es) for 'supremum|sSup.*measure|partition.*measurable' (via ripgrep):\\n- Mathlib/Algebra/Algebra/Subalgebra/Directed.lean:16\\n    * `Subalgebra.coe_iSup_of_directe"
+    },
+    {
+      "i": 22,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean\", \"line\": 500, \"n\": 50}",
+      "ok": true,
+      "result_chars": 2879,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean  (lines 500–549 of 550):\\n   500      exacts [this.1, this.2]\\n   501    · refine Measure.AbsolutelyContinuous."
+    },
+    {
+      "i": 23,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Hahn.*decomp|partition.*vector.*measure\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2847,
+      "result_head": "[{\"type\": \"text\", \"text\": \"26 match(es) for 'Hahn.*decomp|partition.*vector.*measure' (via ripgrep):\\n- Mathlib/MeasureTheory/Measure/Decomposition/Lebesgue.lean:708\\n    -- for all `n : ℕ`, obtain th"
+    },
+    {
+      "i": 24,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/VectorMeasure/Decomposition/Hahn.lean\", \"line\": 1, \"n\": 50}",
+      "ok": true,
+      "result_chars": 1993,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/VectorMeasure/Decomposition/Hahn.lean  (lines 1–50 of 448):\\n     1  /-\\n     2  Copyright (c) 2021 Kexing Ying. All rights reserved.\\n     3  Released"
+    },
+    {
+      "i": 25,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"finpartition|Finpartition\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2400,
+      "result_head": "[{\"type\": \"text\", \"text\": \"212 match(es) for 'finpartition|Finpartition' (via ripgrep):\\n- Mathlib/Data/Setoid/Partition.lean:9\\n    public import Mathlib.Order.Partition.Finpartition\\n- Mathlib/Data/"
+    },
+    {
+      "i": 26,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"measure.*sum.*abs|sum.*measure.*abs\", \"limit\": 30}",
+      "ok": true,
+      "result_chars": 538,
+      "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for 'measure.*sum.*abs|sum.*measure.*abs' (via ripgrep):\\n- Mathlib/MeasureTheory/Covering/VitaliFamily.lean:158\\n    theorem measure_le_tsum_of_absolutelyContin"
+    },
+    {
+      "i": 27,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"(Set α) → Measure α\"}",
+      "ok": true,
+      "result_chars": 92,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(Set α) → Measure α': Unknown identifier `α`\"}]"
+    },
+    {
+      "i": 28,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"jordan.*measure|hahn.*measure|partition.*supremum\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 688,
+      "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for 'jordan.*measure|hahn.*measure|partition.*supremum' (via ripgrep):\\n- Mathlib/Probability/Kernel/Disintegration/Density.lean:69\\n    `⨆ n, countableFiltratio"
+    },
+    {
+      "i": 29,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"characterization|characterise|alternative.*definition\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2911,
+      "result_head": "[{\"type\": \"text\", \"text\": \"247 match(es) for 'characterization|characterise|alternative.*definition' (via ripgrep):\\n- Mathlib/Algebra/Algebra/Basic.lean:132\\n    /-- Explicit characterization of the "
+    },
+    {
+      "i": 30,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean\", \"line\": 200, \"n\": 80}",
+      "ok": true,
+      "result_chars": 4816,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean  (lines 200–279 of 550):\\n   200  def toJordanDecomposition (s : SignedMeasure α) : JordanDecomposition α :=\\n "
+    },
+    {
+      "i": 31,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"totalVariation_apply|totalVariation_eq\", \"limit\": 30}",
+      "ok": true,
+      "result_chars": 109,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'totalVariation_apply|totalVariation_eq' under Mathlib/.\"}]"
+    },
+    {
+      "i": 32,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*totalVariation|totalVariation.*theorem\", \"limit\": 40}",
+      "ok": true,
+      "result_chars": 1047,
+      "result_head": "[{\"type\": \"text\", \"text\": \"6 match(es) for 'theorem.*totalVariation|totalVariation.*theorem' (via ripgrep):\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Lebesgue.lean:130\\n    theorem singular"
+    },
+    {
+      "i": 33,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"sSup|Finset.sum|iSup.*measure\", \"limit\": 30}",
+      "ok": true,
+      "result_chars": 3310,
+      "result_head": "[{\"type\": \"text\", \"text\": \"5165 match(es) for 'sSup|Finset.sum|iSup.*measure' (via ripgrep):\\n- Mathlib/Algebra/GradedMonoid.lean:684\\n    rw [Finset.prod_insert hF2, Finset.sum_insert hF2]\\n- Mathlib"
+    },
+    {
+      "i": 34,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean\", \"line\": 150, \"n\": 50}",
+      "ok": true,
+      "result_chars": 2808,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean  (lines 150–199 of 550):\\n   150    j.posPart.toSignedMeasure - j.negPart.toSignedMeasure\\n   151  \\n   152  th"
+    },
+    {
+      "i": 35,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Finpartition\"}",
+      "ok": true,
+      "result_chars": 1542,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 211 declarations mentioning Finpartition.\\n- Finpartition.instBotFinset   [Mathlib.Order.Partition.Finpartition]\\n    `⊥` is the partition in singletons, aka discrete "
+    },
+    {
+      "i": 36,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Finpartition.*apply|finpartition_parts\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 2178,
+      "result_head": "[{\"type\": \"text\", \"text\": \"20 match(es) for 'Finpartition.*apply|finpartition_parts' (via ripgrep):\\n- Mathlib/MeasureTheory/VectorMeasure/Variation/Basic.lean:422\\n    lemma iSup_sum_finpartition_par"
+    },
+    {
+      "i": 37,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/VectorMeasure/Variation/Basic.lean\", \"line\": 1, \"n\": 50}",
+      "ok": true,
+      "result_chars": 2302,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/VectorMeasure/Variation/Basic.lean  (lines 1–50 of 444):\\n     1  /-\\n     2  Copyright (c) 2025 Oliver Butterley. All rights reserved.\\n     3  Releas"
+    },
+    {
+      "i": 38,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/VectorMeasure/Variation/Basic.lean\", \"line\": 420, \"n\": 30}",
+      "ok": true,
+      "result_chars": 1379,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/VectorMeasure/Variation/Basic.lean  (lines 420–444 of 444):\\n   420  `⟨s, hs⟩ : Subtype MeasurableSet` of the sum of `μ` over parts equals `μ s`. -/\\n "
+    },
+    {
+      "i": 39,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/VectorMeasure/Variation/Basic.lean\", \"line\": 50, \"n\": 100}",
+      "ok": true,
+      "result_chars": 6158,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/VectorMeasure/Variation/Basic.lean  (lines 50–149 of 444):\\n    50  section Basic\\n    51  \\n    52  variable [TopologicalSpace V] [ENormedAddCommMonoi"
+    },
+    {
+      "i": 40,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"preVariationFun|variation_apply\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2390,
+      "result_head": "[{\"type\": \"text\", \"text\": \"43 match(es) for 'preVariationFun|variation_apply' (via ripgrep):\\n- Mathlib/MeasureTheory/Measure/PreVariation.lean:51\\n    /-- If `s` is measurable then `preVariationFun f"
+    },
+    {
+      "i": 41,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/Measure/PreVariation.lean\", \"line\": 1, \"n\": 80}",
+      "ok": true,
+      "result_chars": 3295,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Measure/PreVariation.lean  (lines 1–80 of 274):\\n     1  /-\\n     2  Copyright (c) 2025 Oliver Butterley. All rights reserved.\\n     3  Released under "
+    },
+    {
+      "i": 42,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"totalVariation.*variation|variation.*totalVariation\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 122,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'totalVariation.*variation|variation.*totalVariation' under Mathlib/.\"}]"
+    },
+    {
+      "i": 43,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"SignedMeasure α → VectorMeasure\"}",
+      "ok": true,
+      "result_chars": 116,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'SignedMeasure α → VectorMeasure': Unknown identifier `SignedMeasure`\"}]"
+    },
+    {
+      "i": 44,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"coe.*SignedMeasure|SignedMeasure.*coe\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 366,
+      "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'coe.*SignedMeasure|SignedMeasure.*coe' (via ripgrep):\\n- Mathlib/MeasureTheory/VectorMeasure/Basic.lean:1446\\n    rw [SignedMeasure.toMeasureOfZeroLE_apply "
+    },
+    {
+      "i": 45,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"SignedMeasure.*variation|variation.*SignedMeasure\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 1216,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 match(es) for 'SignedMeasure.*variation|variation.*SignedMeasure' (via ripgrep):\\n- Mathlib/MeasureTheory/VectorMeasure/Variation/Semivariation.lean:101\\n    SignedMeasure"
+    },
+    {
+      "i": 46,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/VectorMeasure/Variation/Basic.lean\", \"line\": 340, \"n\": 25}",
+      "ok": true,
+      "result_chars": 1741,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/VectorMeasure/Variation/Basic.lean  (lines 340–364 of 444):\\n   340    infer_instance\\n   341  \\n   342  @[simp] lemma _root_.MeasureTheory.Measure.var"
+    },
+    {
+      "i": 47,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/VectorMeasure/Decomposition/Lebesgue.lean\", \"line\": 1, \"n\": 100}",
+      "ok": true,
+      "result_chars": 4983,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/VectorMeasure/Decomposition/Lebesgue.lean  (lines 1–100 of 461):\\n     1  /-\\n     2  Copyright (c) 2021 Kexing Ying. All rights reserved.\\n     3  Rel"
+    }
+  ]
+}

@@ -1,0 +1,353 @@
+{
+  "task_id": "fresh_045",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:40:10Z",
+  "wall_s": 115.1,
+  "output_lean": "import Mathlib.LinearAlgebra.Eigenspace.Semisimple\nimport Mathlib.LinearAlgebra.Eigenspace.Basic\n\ntheorem semisimple_triangularizable_iff_diagonalizable (f : Module.End K V) (hf : f.IsSemisimple) :\n    (⨆ μ : K, f.maxGenEigenspace μ = ⊤) ↔ (⨆ μ : K, f.eigenspace μ = ⊤) := sorry",
+  "transcript_stats": {
+    "turns": 42,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 6,
+      "mcp__wikibrain__brain_search": 18,
+      "mcp__wikibrain__brain_cell": 9,
+      "mcp__wikibrain__brain_neighborhood": 4,
+      "mcp__wikibrain__decl_exists": 3,
+      "mcp__wikibrain__brain_snippets": 1
+    },
+    "tokens_in": 162,
+    "tokens_out": 9568,
+    "cost_usd": 0.17163915000000002
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"diagonalizable endomorphism\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2863,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"diagonalizable endomorphism\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label ma"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"semisimple endomorphism\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2859,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"semisimple endomorphism\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match,"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"triangularizable matrix\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2971,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"triangularizable matrix\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match,"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"eigenspace eigenvalue\", \"limit\": 8}",
+      "ok": false,
+      "result_chars": 254,
+      "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"eigenspace eigenvalue\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":{\"generated_at\":"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"generalized eigenspace\", \"limit\": 8}",
+      "ok": false,
+      "result_chars": 255,
+      "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"generalized eigenspace\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":{\"generated_at\""
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"semisimple linear algebra\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2923,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"semisimple linear algebra\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label matc"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"diagonalizable\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 613,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"diagonalizable\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q943246\\\",\\\"label\\\":\\\"Wedderburn's little theorem\\\",\\\"aka\\\":[\\\"Wedderburn's Theorem\\\",\\\"Wedderburn's theorem\\\""
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"eigenspace\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 2448,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"eigenspace\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q970767\\\",\\\"label\\\":\\\"Generalized eigenvector\\\",\\\"aka\\\":[\\\"Generalized Eigenvector\\\",\\\"Module.End.genEigenspace\\\","
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"characteristic polynomial\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 931,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"characteristic polynomial\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Equiv.Perm.permMatrix\\\",\\\"label\\\":\\\"Equiv.Perm.permMatrix\\\",\\\"aka\\\":[\\\"On pseudo-inver"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q970767\"}",
+      "ok": true,
+      "result_chars": 2774,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q970767\\\",\\\"id\\\":\\\"cell:Q970767\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Generalized eigenvector\\\",\\\"f\\\":2200,\\\"cell\\\":{\\\"id\\\":"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"Module.End.IsSemisimple.iSup_eigenspace_eq_top\"}",
+      "ok": true,
+      "result_chars": 1701,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"decl\\\",\\\"key\\\":\\\"Module.End.IsSemisimple.iSup_eigenspace_eq_top\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.IsSemisimple.iSup_eigenspace_eq_top\\"
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"semisimple endomorphism\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 180,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"semisimple endomorphism\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"IsSemisimple\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 2380,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"IsSemisimple\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q776578\\\",\\\"label\\\":\\\"Artin–Wedderburn theorem\\\",\\\"aka\\\":[\\\"IsSemisimpleRing.exists_algEquiv_pi_matrix_divisionR"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"is_diagonalizable\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 174,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"is_diagonalizable\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"path:Mathlib/LinearAlgebra/Eigenspace/Semisimple\"}",
+      "ok": true,
+      "result_chars": 876,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Semisimple\\\",\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Semisimple\\\",\\\"kind\\"
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"Q1631086\"}",
+      "ok": true,
+      "result_chars": 3907,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"Q1631086\\\",\\\"id\\\":\\\"cell:Q1631086\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Jordan–Chevalley decomposition\\\",\\\"f\\\":144,\\\"cell\\\":{\\\"i"
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Module.End.IsSemisimple\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 760,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Module.End.IsSemisimple\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.IsSemisimple\\\",\\\"label\\\":\\\"Module.End.IsSemisimple\\\",\\\"supercell\\\":\\\"path:Mat"
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"Module.End.IsSemisimple\"}",
+      "ok": true,
+      "result_chars": 1658,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"decl\\\",\\\"key\\\":\\\"Module.End.IsSemisimple\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.IsSemisimple\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Module.End.IsS"
+    },
+    {
+      "i": 18,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"diagonalizable linear\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 178,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"diagonalizable linear\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 19,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"Module.End.IsSemisimple\", \"limit\": 30}",
+      "ok": true,
+      "result_chars": 1135,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.IsSemisimple\\\",\\\"resolved_from\\\":\\\"decl\\\",\\\"key\\\":\\\"Module.End.IsSemisimple\\\",\\\"kind\\\":\\\"cell\\\",\\\"synapses\\\":[{\\\"id\\\":\\\"ce"
+    },
+    {
+      "i": 20,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"Q82571\"}",
+      "ok": true,
+      "result_chars": 5014,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"Q82571\\\",\\\"id\\\":\\\"path:Mathlib/LinearAlgebra\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"LinearAlgebra\\\",\\\"supercell\\\":{\\\"path\\\":"
+    },
+    {
+      "i": 21,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"triangularizable\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 308,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"triangularizable\\\",\\\"hits\\\":[{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Triangularizable\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Triangularizable\\\",\\\""
+    },
+    {
+      "i": 22,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"path:Mathlib/LinearAlgebra/Eigenspace/Semisimple\", \"limit\": 30}",
+      "ok": true,
+      "result_chars": 364,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Semisimple\\\",\\\"kind\\\":\\\"supercell\\\",\\\"synapses\\\":[],\\\"returned\\\":0,\\\"matched\\\":0,\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\""
+    },
+    {
+      "i": 23,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"path:Mathlib/LinearAlgebra/Eigenspace/Triangularizable\"}",
+      "ok": true,
+      "result_chars": 944,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Triangularizable\\\",\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Triangularizab"
+    },
+    {
+      "i": 24,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"LinearMap.IsTriangularizable\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 185,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"LinearMap.IsTriangularizable\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 25,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"Module.End.exists_eigenvalue\"}",
+      "ok": true,
+      "result_chars": 1741,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"decl\\\",\\\"key\\\":\\\"Module.End.exists_eigenvalue\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.exists_eigenvalue\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Modu"
+    },
+    {
+      "i": 26,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"Module.End.iSup_maxGenEigenspace_eq_top\"}",
+      "ok": true,
+      "result_chars": 1866,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"decl\\\",\\\"key\\\":\\\"Module.End.iSup_maxGenEigenspace_eq_top\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.iSup_maxGenEigenspace_eq_top\\\",\\\"kind\\\":\\\"c"
+    },
+    {
+      "i": 27,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Module.End.diagonalizable\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 182,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Module.End.diagonalizable\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 28,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"IsNilpotent\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 2214,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"IsNilpotent\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:IsNilpotent\\\",\\\"label\\\":\\\"IsNilpotent\\\",\\\"supercell\\\":\\\"path:Mathlib/Algebra/GroupWithZero/Basic\\\",\\"
+    },
+    {
+      "i": 29,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"Module.End.IsSemisimple.iSup_eigenspace_eq_top\", \"limit\": 30, \"kinds\": \"depends\"}",
+      "ok": true,
+      "result_chars": 463,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.IsSemisimple.iSup_eigenspace_eq_top\\\",\\\"resolved_from\\\":\\\"decl\\\",\\\"key\\\":\\\"Module.End.IsSemisimple.iSup_eigenspace_eq_top\\"
+    },
+    {
+      "i": 30,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"maxGenEigenspace\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 821,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"maxGenEigenspace\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:LinearMap.finrank_maxGenEigenspace_eq\\\",\\\"label\\\":\\\"LinearMap.finrank_maxGenEigenspace_eq\\\",\\\"a"
+    },
+    {
+      "i": 31,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Module.End.IsSemisimple\", \"Module.End.eigenspace\", \"Module.End.genEigenspace\", \"Module.End.maxGenEigenspace\", \"Module.End.iSup_maxGenEigenspace_eq_top\", \"Module.End.IsSemisimple.iSup_eigenspace_eq_top\"]}",
+      "ok": true,
+      "result_chars": 2350,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Module.End.IsSemisimple\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Semisimple\\\",\\\"import_line\\\":\\\"imp"
+    },
+    {
+      "i": 32,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"semisimple diagonalizable characterization\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 199,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"semisimple diagonalizable characterization\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 33,
+      "name": "mcp__wikibrain__brain_snippets",
+      "input": "{\"id\": \"Module.End.IsSemisimple\"}",
+      "ok": true,
+      "result_chars": 895,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.IsSemisimple\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:Module.End.IsSemisimple\\\",\\\"la"
+    },
+    {
+      "i": 34,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"isSemisimple_iff\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 173,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"isSemisimple_iff\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 35,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Module.End.isSemisimple_iff\"]}",
+      "ok": true,
+      "result_chars": 541,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Module.End.isSemisimple_iff\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Semisimple\\\",\\\"import_line\\\":\\"
+    },
+    {
+      "i": 36,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"EndomorphismIsTriangularizable\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 187,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"EndomorphismIsTriangularizable\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 37,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"nilpotent commuting semisimple\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 187,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"nilpotent commuting semisimple\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 38,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"cell:Q1631086\", \"limit\": 30}",
+      "ok": true,
+      "result_chars": 11252,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q1631086\\\",\\\"kind\\\":\\\"cell\\\",\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q838495\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":1,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"ki"
+    },
+    {
+      "i": 39,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"iSup_eigenspace\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 704,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"iSup_eigenspace\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:ContinuousLinearMap.orthogonalComplement_iSup_eigenspaces_eq_bot\\\",\\\"label\\\":\\\"ContinuousLinearM"
+    },
+    {
+      "i": 40,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Module.End.eigenspace_le_maxGenEigenspace\", \"Module.End.le_of_le_iSup\", \"Submodule.iSup_le\"]}",
+      "ok": true,
+      "result_chars": 1076,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Module.End.eigenspace_le_maxGenEigenspace\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Eigenspace.Basic"
+    }
+  ]
+}

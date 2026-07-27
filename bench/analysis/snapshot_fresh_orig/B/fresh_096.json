@@ -1,0 +1,85 @@
+{
+  "task_id": "fresh_096",
+  "arm": "B",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T03:56:16Z",
+  "wall_s": 81.3,
+  "output_lean": "theorem left_right_continuous_implies_continuous\n    {α β : Type*}\n    [ConditionallyCompleteLinearOrder α] [OrderTopology α]\n    [ConditionallyCompleteLinearOrder β] [OrderTopology β]\n    (f : α → β)\n    (h_left : ∀ s : Set α, BddBelow s → s.Nonempty → f (sSup s) = sSup (f '' s))\n    (h_right : ∀ s : Set α, BddAbove s → s.Nonempty → f (sInf s) = sInf (f '' s))\n    : Continuous f := sorry",
+  "transcript_stats": {
+    "turns": 9,
+    "tool_calls_by_name": {
+      "mcp__wiki__wiki_search": 6,
+      "mcp__wiki__wiki_nlab_search": 2
+    },
+    "tokens_in": 52,
+    "tokens_out": 7188,
+    "cost_usd": 0.061790349999999994
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"order topology conditionally complete linear order\"}",
+      "ok": true,
+      "result_chars": 2179,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'order topology conditionally complete linear order':\\n- Lattice (order)  (slug: Lattice_(order))\\n    https://en.wikipedia.org/wiki/Lattice_(order)\\n    gen"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"left continuous right continuous order theory lattice\"}",
+      "ok": true,
+      "result_chars": 2292,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'left continuous right continuous order theory lattice':\\n- Lattice (order)  (slug: Lattice_(order))\\n    https://en.wikipedia.org/wiki/Lattice_(order)\\n    "
+    },
+    {
+      "i": 2,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"semi-continuity lower upper continuous\"}",
+      "ok": true,
+      "result_chars": 2262,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'semi-continuity lower upper continuous':\\n- Semi-continuity  (slug: Semi-continuity)\\n    https://en.wikipedia.org/wiki/Semi-continuity\\n    and upper semi-"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"order topology Lean Mathlib monotone continuous\"}",
+      "ok": true,
+      "result_chars": 113,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No English Wikipedia results for 'order topology Lean Mathlib monotone continuous'.\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"supremum infimum preserving continuous function order\"}",
+      "ok": true,
+      "result_chars": 2255,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'supremum infimum preserving continuous function order':\\n- Lattice (order)  (slug: Lattice_(order))\\n    https://en.wikipedia.org/wiki/Lattice_(order)\\n    "
+    },
+    {
+      "i": 5,
+      "name": "mcp__wiki__wiki_nlab_search",
+      "input": "{\"q\": \"order topology continuous function\"}",
+      "ok": false,
+      "result_chars": 91,
+      "result_head": "<tool_use_error>Error: No such tool available: mcp__wiki__wiki_nlab_search</tool_use_error>"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wiki__wiki_nlab_search",
+      "input": "{\"q\": \"Scott continuous supremum preserving\"}",
+      "ok": false,
+      "result_chars": 91,
+      "result_head": "<tool_use_error>Error: No such tool available: mcp__wiki__wiki_nlab_search</tool_use_error>"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"Scott continuity directed supremum domain theory\"}",
+      "ok": true,
+      "result_chars": 2218,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'Scott continuity directed supremum domain theory':\\n- Domain theory  (slug: Domain_theory)\\n    https://en.wikipedia.org/wiki/Domain_theory\\n    Domain theo"
+    }
+  ]
+}

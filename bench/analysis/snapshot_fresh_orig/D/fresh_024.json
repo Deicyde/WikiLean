@@ -1,0 +1,171 @@
+{
+  "task_id": "fresh_024",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:35:05Z",
+  "wall_s": 111.7,
+  "output_lean": "theorem integral_test {f : ℝ → ℝ} {N : ℕ} :\n  (∀ x ≥ (N : ℝ), 0 ≤ f x) →\n  AntitoneOn f {x | (N : ℝ) ≤ x} →\n  (∃ C, ∀ b ≥ (N : ℝ), ∫ x in (N : ℝ)..b, f x ≤ C) →\n  Summable (fun n : ℕ => f (N + n)) := sorry",
+  "transcript_stats": {
+    "turns": 19,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 3,
+      "mcp__wikibrain__brain_cell": 2,
+      "decl_exists": 1,
+      "mcp__wikibrain__decl_exists": 2,
+      "mcp__wikibrain__brain_neighborhood": 1,
+      "mcp__wikibrain__brain_snippets": 2,
+      "mcp__wikibrain__brain_transfer": 2,
+      "mcp__wikibrain__brain_search": 5
+    },
+    "tokens_in": 118,
+    "tokens_out": 9625,
+    "cost_usd": 0.12360120000000001
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"integral test for convergence of series\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 4999,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"integral test for convergence of series\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"antitone decreasing function\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3554,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"antitone decreasing function\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label ma"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"summable series convergent sum\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 3944,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"summable series convergent sum\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q1155313\"}",
+      "ok": true,
+      "result_chars": 2137,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q1155313\\\",\\\"id\\\":\\\"cell:Q1155313\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"integral test for convergence\\\",\\\"f\\\":160,\\\"cell\\\":{"
+    },
+    {
+      "i": 4,
+      "name": "decl_exists",
+      "input": "{\"names\": \"[\\\"AntitoneOn.summable_of_integrableOn_Ioi_zero\\\", \\\"Summable\\\", \\\"Antitone\\\", \\\"IntervalIntegrable\\\"]\"}",
+      "ok": false,
+      "result_chars": 75,
+      "result_head": "<tool_use_error>Error: No such tool available: decl_exists</tool_use_error>"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"AntitoneOn.summable_of_integrableOn_Ioi_zero\", \"Summable\", \"Antitone\", \"IntervalIntegrable\", \"AntitoneOn\"]}",
+      "ok": true,
+      "result_chars": 1722,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"AntitoneOn.summable_of_integrableOn_Ioi_zero\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; re"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_neighborhood",
+      "input": "{\"id\": \"cell:Q1155313\", \"kinds\": \"depends,cites\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 4773,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q1155313\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\",\\\"cites\\\"],\\\"synapses\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:AntitoneOn.integral_le_sum_Ico\\\",\\\"w\\\":2,"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"AntitoneOn.integral_le_sum_Ico\", \"AntitoneOn.sum_le_integral\", \"Summable\", \"AntitoneOn\", \"IntervalIntegrable\"]}",
+      "ok": true,
+      "result_chars": 1880,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"AntitoneOn.integral_le_sum_Ico\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.SumIntegralComparisons\\\",\\\"impor"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__brain_snippets",
+      "input": "{\"id\": \"decl:Mathlib:AntitoneOn.integral_le_sum_Ico\"}",
+      "ok": true,
+      "result_chars": 894,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:AntitoneOn.integral_le_sum_Ico\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:AntitoneOn.integral_le_"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__brain_snippets",
+      "input": "{\"id\": \"decl:Mathlib:AntitoneOn.sum_le_integral\"}",
+      "ok": true,
+      "result_chars": 826,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:AntitoneOn.sum_le_integral\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:AntitoneOn.sum_le_integral\\"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__brain_transfer",
+      "input": "{\"q\": \"Summable\", \"direction\": \"formal_to_informal\"}",
+      "ok": true,
+      "result_chars": 627,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"Summable\\\",\\\"decl\\\":\\\"Summable\\\",\\\"id\\\":\\\"cell:Q1211057\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Convergent series\\\",\\\"hits\\"
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"summable antitone integrable\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 185,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"summable antitone integrable\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"AntitoneOn Summable\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 176,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"AntitoneOn Summable\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 13,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"integral Ioi infinity convergent\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 189,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"integral Ioi infinity convergent\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"AntitoneOn Icc sum integral comparison\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 195,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"AntitoneOn Icc sum integral comparison\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Summable natCast integral\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 182,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Summable natCast integral\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:Q1211057\"}",
+      "ok": true,
+      "result_chars": 2851,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q1211057\\\",\\\"id\\\":\\\"cell:Q1211057\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Convergent series\\\",\\\"f\\\":34840,\\\"cell\\\":{\\\"id\\\":\\\"c"
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__brain_transfer",
+      "input": "{\"q\": \"AntitoneOn.integral_le_sum_Ico\", \"direction\": \"formal_to_informal\"}",
+      "ok": true,
+      "result_chars": 773,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"AntitoneOn.integral_le_sum_Ico\\\",\\\"decl\\\":\\\"AntitoneOn.integral_le_sum_Ico\\\",\\\"id\\\":\\\"cell:decl:Mathlib:AntitoneOn."
+    }
+  ]
+}

@@ -1,0 +1,262 @@
+{
+  "task_id": "fresh_035",
+  "arm": "C",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:06:33Z",
+  "wall_s": 103.7,
+  "output_lean": "theorem contMDiffAt_iff_continuous_and_comp_immersion {𝕜 : Type*} [NontriviallyNormedField 𝕜]\n    {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]\n    {H : Type*} [TopologicalSpace H]\n    {I : ModelWithCorners 𝕜 E H}\n    {E' : Type*} [NormedAddCommGroup E'] [NormedSpace 𝕜 E']\n    {H' : Type*} [TopologicalSpace H']\n    {I' : ModelWithCorners 𝕜 E' H'}\n    {M : Type*} [ChartedSpace H M] [IsManifold I n M]\n    {M' : Type*} [ChartedSpace H' M'] [IsManifold I' n M']\n    (f : M → M') (x : M) :\n    ContMDiffAt I I' n f x ↔ \n    ContinuousAt f x ∧ \n    ∃ (N : Type*) (G : Type*) [ChartedSpace G N] (J : ModelWithCorners 𝕜 E'' G) \n      [IsManifold J n N] (i : N → M) (y : N),\n      IsImmersionAt J I n i y ∧ i y = x ∧ ContMDiffAt J I' n (f ∘ i) y := sorry",
+  "transcript_stats": {
+    "turns": 31,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 4,
+      "mcp__formal__decl_grep": 22,
+      "mcp__formal__decl_read": 4
+    },
+    "tokens_in": 152,
+    "tokens_out": 7830,
+    "cost_usd": 0.12828889999999998
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"SmoothAt\"}",
+      "ok": true,
+      "result_chars": 88,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'SmoothAt': unknown identifier 'SmoothAt'\"}]"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Immersion\"}",
+      "ok": true,
+      "result_chars": 90,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Immersion': unknown identifier 'Immersion'\"}]"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"ContinuousAt manifold\"}",
+      "ok": true,
+      "result_chars": 101,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'ContinuousAt manifold': Unknown identifier `manifold`\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(def|theorem|lemma) .*Smooth\", \"limit\": 30}",
+      "ok": true,
+      "result_chars": 4116,
+      "result_head": "[{\"type\": \"text\", \"text\": \"196 match(es) for '(def|theorem|lemma) .*Smooth' (via ripgrep):\\n- Mathlib/Analysis/Calculus/VectorField.lean:443\\n    lemma leibniz_identity_lieBracketWithin (hn : minSmoot"
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(def|theorem|lemma) .*Immersion\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2765,
+      "result_head": "[{\"type\": \"text\", \"text\": \"142 match(es) for '(def|theorem|lemma) .*Immersion' (via ripgrep):\\n- Mathlib/AlgebraicGeometry/Noetherian.lean:151\\n    lemma isLocallyNoetherian_of_isOpenImmersion {Y : Sc"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(def|theorem) ContDiff\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2822,
+      "result_head": "[{\"type\": \"text\", \"text\": \"228 match(es) for '(def|theorem) ContDiff' (via ripgrep):\\n- Mathlib/Analysis/Analytic/IteratedFDeriv.lean:250\\n    theorem ContDiffWithinAt.iteratedFDerivWithin_comp_perm\\n"
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"(?a → ?b) → ?x → Prop\"}",
+      "ok": true,
+      "result_chars": 136,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(?a → ?b) → ?x → Prop': Cannot search: No constants or name fragments in search pattern.\"}]"
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(def|class) .*Manifold\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 1675,
+      "result_head": "[{\"type\": \"text\", \"text\": \"12 match(es) for '(def|class) .*Manifold' (via ripgrep):\\n- Mathlib/Geometry/Manifold/IsManifold/Basic.lean:93\\n    manifolds, the last typeclass should be replaced with `[I"
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def Smooth [.*Manifold\", \"limit\": 10}",
+      "ok": false,
+      "result_chars": 59,
+      "result_head": "error: bad regex: unterminated character set at position 11"
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def ContMDiff\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 1235,
+      "result_head": "[{\"type\": \"text\", \"text\": \"10 match(es) for 'def ContMDiff' (via ripgrep):\\n- Mathlib/Geometry/Manifold/Sheaf/Smooth.lean:159\\n    def ContMDiff.smoothSheafHom (f : M → P) (hf : ContMDiff IM IP ∞ f) :"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"class ContMDiffImmersion\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 95,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'class ContMDiffImmersion' under Mathlib/.\"}]"
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Geometry/Manifold/ContMDiff/Defs.lean\", \"line\": 170, \"n\": 50}",
+      "ok": true,
+      "result_chars": 3035,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Geometry/Manifold/ContMDiff/Defs.lean  (lines 170–219 of 925):\\n   170  def ContMDiffWithinAt (n : ℕ∞ω) (f : M → M') (s : Set M) (x : M) :=\\n   171    LiftPropWithin"
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def Immersion\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 225,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'def Immersion' (via ripgrep):\\n- Mathlib/Geometry/Manifold/Immersion.lean:134\\n    def ImmersionAtProp : (M → N) → OpenPartialHomeomorph M H → OpenPartialHo"
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Geometry/Manifold/Immersion.lean\", \"line\": 130, \"n\": 30}",
+      "ok": true,
+      "result_chars": 1969,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Geometry/Manifold/Immersion.lean  (lines 130–159 of 830):\\n   130  \\n   131  This definition has a fixed parameter `F`, which is a choice of complement of `E` in the"
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"class IsImmersion\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 210,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'class IsImmersion' (via ripgrep):\\n- Mathlib/AlgebraicGeometry/Morphisms/Immersion.lean:45\\n    class IsImmersion (f : X ⟶ Y) : Prop extends IsPreimmersion "
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def ImmersionAt\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 227,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'def ImmersionAt' (via ripgrep):\\n- Mathlib/Geometry/Manifold/Immersion.lean:134\\n    def ImmersionAtProp : (M → N) → OpenPartialHomeomorph M H → OpenPartial"
+    },
+    {
+      "i": 16,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def Immersion\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 225,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'def Immersion' (via ripgrep):\\n- Mathlib/Geometry/Manifold/Immersion.lean:134\\n    def ImmersionAtProp : (M → N) → OpenPartialHomeomorph M H → OpenPartialHo"
+    },
+    {
+      "i": 17,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(def|theorem|lemma) .*[Ii]mmersion.*At\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2730,
+      "result_head": "[{\"type\": \"text\", \"text\": \"20 match(es) for '(def|theorem|lemma) .*[Ii]mmersion.*At' (via ripgrep):\\n- Mathlib/Geometry/Manifold/Immersion.lean:134\\n    def ImmersionAtProp : (M → N) → OpenPartialHome"
+    },
+    {
+      "i": 18,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Geometry/Manifold/Immersion.lean\", \"line\": 165, \"n\": 30}",
+      "ok": true,
+      "result_chars": 1863,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Geometry/Manifold/Immersion.lean  (lines 165–194 of 830):\\n   165  def IsImmersionAtOfComplement (f : M → N) (x : M) : Prop :=\\n   166    LiftSourceTargetPropertyAt "
+    },
+    {
+      "i": 19,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(theorem|lemma).*composition.*immersion\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 110,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma).*composition.*immersion' under Mathlib/.\"}]"
+    },
+    {
+      "i": 20,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(theorem|lemma).*compose.*Immersion\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 106,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma).*compose.*Immersion' under Mathlib/.\"}]"
+    },
+    {
+      "i": 21,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(theorem|lemma).*IsImmersion.*Cont\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 505,
+      "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for '(theorem|lemma).*IsImmersion.*Cont' (via ripgrep):\\n- Mathlib/Geometry/Manifold/Immersion.lean:415\\n    theorem continuousAt (h : IsImmersionAtOfComplement "
+    },
+    {
+      "i": 22,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*IsImmersionAt.*ContMDiff\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 104,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*IsImmersionAt.*ContMDiff' under Mathlib/.\"}]"
+    },
+    {
+      "i": 23,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem contMDiffAt_iff\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 1413,
+      "result_head": "[{\"type\": \"text\", \"text\": \"12 match(es) for 'theorem contMDiffAt_iff' (via ripgrep):\\n- Mathlib/Geometry/Manifold/ContMDiff/NormedSpace.lean:54\\n    theorem contMDiffAt_iff_contDiffAt {f : E → E'} {x "
+    },
+    {
+      "i": 24,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem ContMDiffAt.*iff.*continuous\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 107,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem ContMDiffAt.*iff.*continuous' under Mathlib/.\"}]"
+    },
+    {
+      "i": 25,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Geometry/Manifold/ContMDiff/Defs.lean\", \"line\": 184, \"n\": 10}",
+      "ok": true,
+      "result_chars": 682,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Geometry/Manifold/ContMDiff/Defs.lean  (lines 184–193 of 925):\\n   184  theorem contMDiffAt_iff {n : ℕ∞ω} {f : M → M'} {x : M} :\\n   185      ContMDiffAt I I' n f x "
+    },
+    {
+      "i": 26,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*ContMDiffAt.*composition\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 104,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*ContMDiffAt.*composition' under Mathlib/.\"}]"
+    },
+    {
+      "i": 27,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*smooth.*immersion.*composition\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 110,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*smooth.*immersion.*composition' under Mathlib/.\"}]"
+    },
+    {
+      "i": 28,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*contMDiffAt.*continuousAt\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 105,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*contMDiffAt.*continuousAt' under Mathlib/.\"}]"
+    },
+    {
+      "i": 29,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem ContMDiffAt.continuous\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 236,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'theorem ContMDiffAt.continuous' (via ripgrep):\\n- Mathlib/Geometry/Manifold/ContMDiff/Defs.lean:616\\n    theorem ContMDiffAt.continuousAt (hf : ContMDiffAt "
+    }
+  ]
+}

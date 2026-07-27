@@ -1,0 +1,248 @@
+{
+  "task_id": "fresh_084",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:51:00Z",
+  "wall_s": 134.5,
+  "output_lean": "theorem LinearMap.closedRange_of_finiteCodim_closed_image\n  {R : Type*} [Semiring R]\n  {E F : Type*} [AddCommMonoid E] [Module R E] [TopologicalSpace E]\n  [AddCommMonoid F] [Module R F] [TopologicalSpace F]\n  (f : E →L[R] F) :\n  (∃ (S : Submodule R E), Module.Finite R (E ⧸ S) ∧ IsClosed (f '' ↑S)) →\n  IsClosed (Set.range f) := sorry",
+  "transcript_stats": {
+    "turns": 29,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 9,
+      "mcp__wikibrain__brain_search": 8,
+      "mcp__wikibrain__brain_cell": 2,
+      "decl_exists": 1,
+      "mcp__wikibrain__decl_exists": 8
+    },
+    "tokens_in": 142,
+    "tokens_out": 10053,
+    "cost_usd": 0.15303545
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"linear map closed range topological vector space codimension\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 4341,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"linear map closed range topological vector space codimension\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved "
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"closed range linear map\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 4123,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"closed range linear map\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match,"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"codimension subspace finite\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 1975,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"codimension subspace finite\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label mat"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"topological vector space\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 4293,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"topological vector space\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"IsClosed closed set topology\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2008,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"IsClosed closed set topology\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label ma"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Submodule\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 1925,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Submodule\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Submodule\\\",\\\"label\\\":\\\"Submodule\\\",\\\"aka\\\":[\\\"Solving Linear Systems over Tropical Semirings through "
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:decl:Mathlib:IsClosed\"}",
+      "ok": true,
+      "result_chars": 1606,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:IsClosed\\\",\\\"id\\\":\\\"cell:decl:Mathlib:IsClosed\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"IsClosed\\\",\\\"f\\\":128,\\\"cel"
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"cell:decl:Mathlib:Submodule\"}",
+      "ok": true,
+      "result_chars": 1820,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:Submodule\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Submodule\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Submodule\\\",\\\"f\\\":128,\\\""
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"codimension\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 914,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"codimension\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:AlgebraicGeometry.coheight_eq_of_isOpenImmersion\\\",\\\"label\\\":\\\"AlgebraicGeometry.coheight_eq_of_isOp"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"finrank finite rank dimension\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 1977,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finrank finite rank dimension\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label m"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"FiniteDimensional Module Basis\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 187,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"FiniteDimensional Module Basis\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 11,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Vector space dimension rank\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 184,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Vector space dimension rank\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 12,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"closed map continuous surjective\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 189,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"closed map continuous surjective\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 13,
+      "name": "decl_exists",
+      "input": "{\"names\": \"[\\\"LinearMap.range\\\", \\\"ClosedRange\\\", \\\"IsClosedMap\\\", \\\"Submodule.Quotient\\\"]\"}",
+      "ok": false,
+      "result_chars": 75,
+      "result_head": "<tool_use_error>Error: No such tool available: decl_exists</tool_use_error>"
+    },
+    {
+      "i": 14,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"LinearMap.range\", \"ClosedRange\", \"IsClosedMap\", \"Submodule.Quotient\", \"LinearMap.ker\", \"Submodule.comap\"]}",
+      "ok": true,
+      "result_chars": 2056,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"LinearMap.range\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Module.Submodule.Range\\\",\\\"import_line\\\":\\\"impor"
+    },
+    {
+      "i": 15,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"Module.Finite finrank dimension\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 4247,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Module.Finite finrank dimension\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/labe"
+    },
+    {
+      "i": 16,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"image closed LinearMap\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 179,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"image closed LinearMap\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 17,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"ContinuousLinearMap\", \"LinearMap.map\", \"Submodule.map\", \"Set.image\", \"TopologicalSpace\", \"Module.Free\"]}",
+      "ok": true,
+      "result_chars": 2009,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"ContinuousLinearMap\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Basic\\\","
+    },
+    {
+      "i": 18,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Submodule.Quotient\", \"Submodule.map\", \"IsClosed\", \"LinearMap.range\"]}",
+      "ok": true,
+      "result_chars": 1500,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Submodule.Quotient\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"Submodule.hasQuotient\\\",\\\"suggestion_basis\\\":\\\"verified-rename\\\",\\\"module\\\":\\\"Ma"
+    },
+    {
+      "i": 19,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"LinearMap quotient map Submodule image range\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 5350,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"LinearMap quotient map Submodule image range\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an "
+    },
+    {
+      "i": 20,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"LinearMap.range\", \"Set.range\", \"Submodule.map\", \"Submodule.carrier\", \"LinearMap.map_submodule_le\"]}",
+      "ok": true,
+      "result_chars": 1613,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"LinearMap.range\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Module.Submodule.Range\\\",\\\"import_line\\\":\\\"impor"
+    },
+    {
+      "i": 21,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"Banach open mapping closed range theorem\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 2303,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Banach open mapping closed range theorem\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exac"
+    },
+    {
+      "i": 22,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"ContinuousLinearMap.comp\", \"LinearMap.toFun\", \"Submodule.coe\", \"Set.image\", \"IsClosed\"]}",
+      "ok": true,
+      "result_chars": 1696,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"ContinuousLinearMap.comp\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Bas"
+    },
+    {
+      "i": 23,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Module.Quotient.mk\", \"Quotient.mk\", \"Submodule.Quotient.mk\", \"instModuleQuotient\"]}",
+      "ok": true,
+      "result_chars": 1248,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Module.Quotient.mk\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Bas"
+    },
+    {
+      "i": 24,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"quotient map Submodule\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 179,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"quotient map Submodule\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 25,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Submodule.mem\", \"SetOf\", \"Submodule.carrier\", \"↑\", \"DFunLike.coe\"]}",
+      "ok": true,
+      "result_chars": 1425,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Submodule.mem\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → "
+    },
+    {
+      "i": 26,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"Submodule carrier set coercion\", \"limit\": 8}",
+      "ok": true,
+      "result_chars": 187,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Submodule carrier set coercion\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 27,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Set.range\", \"Module.Finite\", \"IsClosed\", \"LinearMap.range\", \"ContinuousLinearMap\"]}",
+      "ok": true,
+      "result_chars": 1776,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Set.range\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Set.Operations\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Se"
+    }
+  ]
+}

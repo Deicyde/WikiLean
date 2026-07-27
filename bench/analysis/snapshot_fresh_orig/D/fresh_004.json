@@ -1,0 +1,111 @@
+{
+  "task_id": "fresh_004",
+  "arm": "D",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:29:36Z",
+  "wall_s": 90.7,
+  "output_lean": "theorem monoid_algebra_mem_span_support\n    (k : Type*) [Semiring k] (G : Type*) [Monoid G]\n    (x : MonoidAlgebra k G) :\n    x ∈ Submodule.span k (Set.image (fun g ↦ Finsupp.single g 1) ↑(Finsupp.support x)) := sorry",
+  "transcript_stats": {
+    "turns": 12,
+    "tool_calls_by_name": {
+      "mcp__wikibrain__brain_bridge": 2,
+      "mcp__wikibrain__brain_search": 1,
+      "mcp__wikibrain__brain_cell": 1,
+      "mcp__wikibrain__decl_exists": 7
+    },
+    "tokens_in": 92,
+    "tokens_out": 7683,
+    "cost_usd": 0.123864
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"group algebra\"}",
+      "ok": true,
+      "result_chars": 4465,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"group algebra\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wikibrain__brain_bridge",
+      "input": "{\"q\": \"MonoidAlgebra\"}",
+      "ok": true,
+      "result_chars": 3550,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"MonoidAlgebra\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_"
+    },
+    {
+      "i": 2,
+      "name": "mcp__wikibrain__brain_search",
+      "input": "{\"q\": \"monoid algebra group ring\"}",
+      "ok": true,
+      "result_chars": 182,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"monoid algebra group ring\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-07-16T09:25:11+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__wikibrain__brain_cell",
+      "input": "{\"key\": \"decl:Mathlib:MonoidAlgebra\"}",
+      "ok": false,
+      "result_chars": 218,
+      "result_head": "{\"ok\":false,\"error\":\"resolved atom is not in the brain shards\",\"key\":\"decl:Mathlib:MonoidAlgebra\",\"id\":\"cell:decl:Mathlib:MonoidAlgebra\",\"snapshot\":{\"generated_at\":\"2026-07-16T09:25:11+00:00\",\"pin\":\"b"
+    },
+    {
+      "i": 4,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"MonoidAlgebra\", \"Finsupp\", \"Finsupp.supported\", \"Submodule.span\"]}",
+      "ok": true,
+      "result_chars": 1411,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MonoidAlgebra\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.MonoidAlgebra.Defs\\\",\\\"import_line\\\":\\\"import Math"
+    },
+    {
+      "i": 5,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Finsupp.support\", \"Set.support\", \"Submodule.mem_span\", \"Submodule.span_singleton\"]}",
+      "ok": true,
+      "result_chars": 1285,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Finsupp.support\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Finsupp.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Dat"
+    },
+    {
+      "i": 6,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Finsupp.span_equivMapRange\", \"Basis.span_eq_top\", \"Submodule.restrict\", \"Finsupp.mem_supported\"]}",
+      "ok": true,
+      "result_chars": 1377,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Finsupp.span_equivMapRange\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common ("
+    },
+    {
+      "i": 7,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Finsupp.coe_lsum\", \"Basis.singleton\", \"LinearMap.lsum\", \"Finsupp.single\"]}",
+      "ok": true,
+      "result_chars": 1327,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Finsupp.coe_lsum\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Finsupp.LSum\\\",\\\"import_line\\\":\\\"import M"
+    },
+    {
+      "i": 8,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Finsupp.supported\", \"Finsupp.support\", \"Basis\", \"Submodule.span\"]}",
+      "ok": true,
+      "result_chars": 1462,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Finsupp.supported\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Finsupp.Supported\\\",\\\"import_line\\\":\\\"im"
+    },
+    {
+      "i": 9,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Finsupp.mem_supported\", \"DFinsupp.mem_supported\", \"Finsupp.coe_supported\"]}",
+      "ok": true,
+      "result_chars": 1041,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Finsupp.mem_supported\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Finsupp.Supported\\\",\\\"import_line\\\":"
+    },
+    {
+      "i": 10,
+      "name": "mcp__wikibrain__decl_exists",
+      "input": "{\"names\": [\"Set.image\", \"Finsupp.support_single\"]}",
+      "ok": true,
+      "result_chars": 774,
+      "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Set.image\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Set.Defs"
+    }
+  ]
+}

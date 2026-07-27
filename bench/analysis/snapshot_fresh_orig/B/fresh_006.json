@@ -1,0 +1,37 @@
+{
+  "task_id": "fresh_006",
+  "arm": "B",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T02:10:14Z",
+  "wall_s": 116.9,
+  "output_lean": "theorem Monotone.const_smul {α β : Type*} [Preorder α] [Preorder β]\n    [OrderedSemiring R] [DistribMulAction R β] [OrderedSMul R β]\n    {f : α → β} (hf : Monotone f) (a : R) (ha : 0 ≤ a) :\n    Monotone (fun x => a • f x) := sorry",
+  "transcript_stats": {
+    "turns": 3,
+    "tool_calls_by_name": {
+      "mcp__wiki__wiki_search": 1,
+      "mcp__wiki__nlab_search": 1
+    },
+    "tokens_in": 26,
+    "tokens_out": 11431,
+    "cost_usd": 0.0682571
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__wiki__wiki_search",
+      "input": "{\"q\": \"monotone function mathematics\"}",
+      "ok": true,
+      "result_chars": 2477,
+      "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'monotone function mathematics':\\n- Monotonic function  (slug: Monotonic_function)\\n    https://en.wikipedia.org/wiki/Monotonic_function\\n    In mathematics,"
+    },
+    {
+      "i": 1,
+      "name": "mcp__wiki__nlab_search",
+      "input": "{\"q\": \"monotone function category theory\"}",
+      "ok": true,
+      "result_chars": 112,
+      "result_head": "[{\"type\": \"text\", \"text\": \"nLab search for 'monotone function category theory' — candidate pages:\\n- HomePage\"}]"
+    }
+  ]
+}

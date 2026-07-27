@@ -1,0 +1,270 @@
+{
+  "task_id": "fresh_029",
+  "arm": "E",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T05:03:14Z",
+  "wall_s": 106.2,
+  "output_lean": "theorem commutative_cube_lemma \n  {C : Type*} [Category C]\n  -- 8 vertices: bottom face (z=0) and top face (z=1)\n  {v₀₀₀ v₁₀₀ v₀₁₀ v₁₁₀ v₀₀₁ v₁₀₁ v₀₁₁ v₁₁₁ : C}\n  -- Bottom face edges\n  (f_bot : v₀₀₀ ⟶ v₁₀₀) (g_bot : v₀₀₀ ⟶ v₀₁₀) \n  (h_bot : v₁₀₀ ⟶ v₁₁₀) (i_bot : v₀₁₀ ⟶ v₁₁₀)\n  -- Top face edges\n  (f_top : v₀₀₁ ⟶ v₁₀₁) (g_top : v₀₀₁ ⟶ v₀₁₁) \n  (h_top : v₁₀₁ ⟶ v₁₁₁) (i_top : v₀₁₁ ⟶ v₁₁₁)\n  -- Vertical edges connecting bottom to top\n  (e_v0 : v₀₀₀ ⟶ v₀₀₁) (e_v1 : v₁₀₀ ⟶ v₁₀₁) \n  (e_v2 : v₀₁₀ ⟶ v₀₁₁) (e_v3 : v₁₁₀ ⟶ v₁₁₁)\n  -- Five faces commute\n  (h_bottom : CommSq f_bot g_bot h_bot i_bot)\n  (h_top : CommSq f_top g_top h_top i_top)\n  (h_front : CommSq f_bot e_v0 e_v1 f_top)\n  (h_back : CommSq g_bot e_v0 e_v2 g_top)\n  (h_right : CommSq i_bot e_v2 e_v3 i_top)\n  -- One edge out of the source vertex is a monomorphism\n  [Mono f_bot]\n  -- Then the sixth (left) face also commutes\n  : CommSq h_bot e_v1 e_v3 h_top := sorry",
+  "transcript_stats": {
+    "turns": 32,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 6,
+      "mcp__formal__decl_grep": 20,
+      "mcp__formal__decl_read": 5
+    },
+    "tokens_in": 208,
+    "tokens_out": 7139,
+    "cost_usd": 0.1410162
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"cube commutative\"}",
+      "ok": true,
+      "result_chars": 92,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'cube commutative': Unknown identifier `cube`\"}]"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(def|structure) Cube\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 91,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(def|structure) Cube' under Mathlib/.\"}]"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(lemma|theorem).*five.*six\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 97,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(lemma|theorem).*five.*six' under Mathlib/.\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(def|structure) CommSq\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 766,
+      "result_head": "[{\"type\": \"text\", \"text\": \"5 match(es) for '(def|structure) CommSq' (via ripgrep):\\n- Mathlib/CategoryTheory/CommSq.lean:49\\n    structure CommSq {W X Y Z : C} (f : W ⟶ X) (g : W ⟶ Y) (h : X ⟶ Z) (i :"
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"CommSq\"}",
+      "ok": true,
+      "result_chars": 84,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'CommSq': unknown identifier 'CommSq'\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Mono\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 535,
+      "result_head": "[{\"type\": \"text\", \"text\": \"10946 match(es) for 'Mono' (via ripgrep):\\n- Mathlib/Tactic.lean:44\\n    public import Mathlib.Tactic.CategoryTheory.Monoidal.Basic\\n- Mathlib/Tactic.lean:45\\n    public imp"
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/CategoryTheory/CommSq.lean\", \"line\": 49, \"n\": 30}",
+      "ok": true,
+      "result_chars": 1254,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/CategoryTheory/CommSq.lean  (lines 49–78 of 292):\\n    49  structure CommSq {W X Y Z : C} (f : W ⟶ X) (g : W ⟶ Y) (h : X ⟶ Z) (i : Y ⟶ Z) : Prop where\\n    50    /--"
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(def|structure).*Cube\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 364,
+      "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for '(def|structure).*Cube' (via ripgrep):\\n- Mathlib/NumberTheory/ModularForms/LevelOne/GradedRing.lean:31\\n    private noncomputable def E₄CubeSubE₆SqForm : Mo"
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"snake lemma\"}",
+      "ok": true,
+      "result_chars": 96,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'snake lemma': <input>:1:6: expected end of input\"}]"
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"class Mono\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 725,
+      "result_head": "[{\"type\": \"text\", \"text\": \"19 match(es) for 'class Mono' (via ripgrep):\\n- Mathlib/Algebra/GroupWithZero/Hom.lean:60\\n    class MonoidWithZeroHomClass (F : Type*) (α β : outParam Type*) [MulZeroOneCla"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Mono ?f\"}",
+      "ok": true,
+      "result_chars": 83,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Mono ?f': Unknown identifier `Mono`\"}]"
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def Mono|abbrev Mono\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 699,
+      "result_head": "[{\"type\": \"text\", \"text\": \"57 match(es) for 'def Mono|abbrev Mono' (via ripgrep):\\n- Mathlib/Algebra/GroupWithZero/Hom.lean:81\\n    def MonoidWithZeroHom.ofClass [FunLike F α β] [MonoidWithZeroHomClas"
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Mono.*:=\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1233,
+      "result_head": "[{\"type\": \"text\", \"text\": \"4817 match(es) for 'Mono.*:=' (via ripgrep):\\n- Mathlib/CategoryTheory/CommSq.lean:143\\n    theorem eq_of_mono {f : W ⟶ X} {g : W ⟶ X} {i : X ⟶ Y} [Mono i] (sq : CommSq f g "
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"class Mono \\\\[\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 87,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'class Mono \\\\\\\\[' under Mathlib/.\"}]"
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Mono\", \"limit\": 15}",
+      "ok": true,
+      "result_chars": 1595,
+      "result_head": "[{\"type\": \"text\", \"text\": \"19434 match(es) for 'Mono' (via ripgrep):\\n- Mathlib/Algebra/FreeAlgebra.lean:10\\n    public import Mathlib.Algebra.FreeMonoid.UniqueProds\\n- Mathlib/Algebra/FreeAlgebra.lea"
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(class|def) Mono\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 726,
+      "result_head": "[{\"type\": \"text\", \"text\": \"71 match(es) for '(class|def) Mono' (via ripgrep):\\n- Mathlib/Algebra/GroupWithZero/Hom.lean:60\\n    class MonoidWithZeroHomClass (F : Type*) (α β : outParam Type*) [MulZero"
+    },
+    {
+      "i": 16,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Preorder\", \"limit\": 1}",
+      "ok": true,
+      "result_chars": 185,
+      "result_head": "[{\"type\": \"text\", \"text\": \"542 match(es) for 'Preorder' (via ripgrep):\\n- Mathlib/Algebra/GroupWithZero/Associated.lean:480\\n    instance instPreorder : Preorder (Associates M) where\"}]"
+    },
+    {
+      "i": 17,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"?f →[Mono] ?g\"}",
+      "ok": true,
+      "result_chars": 153,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '?f →[Mono] ?g': overloaded, errors \\n  0:0 Unknown identifier `Mono`\\n  \\n  0:0 Unknown identifier `Mono`\"}]"
+    },
+    {
+      "i": 18,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"inductive Mono|structure Mono|abbrev Mono|def Mono\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 692,
+      "result_head": "[{\"type\": \"text\", \"text\": \"64 match(es) for 'inductive Mono|structure Mono|abbrev Mono|def Mono' (via ripgrep):\\n- Mathlib/CategoryTheory/Subobject/MonoOver.lean:65\\n    abbrev MonoOver (X : C) := (Ov"
+    },
+    {
+      "i": 19,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"^class.*Mono.*:=|^abbrev Mono\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 733,
+      "result_head": "[{\"type\": \"text\", \"text\": \"6 match(es) for '^class.*Mono.*:=|^abbrev Mono' (via ripgrep):\\n- Mathlib/CategoryTheory/Subobject/MonoOver.lean:65\\n    abbrev MonoOver (X : C) := (Over.isMono X).FullSubca"
+    },
+    {
+      "i": 20,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"\\\\[Mono\", \"limit\": 3}",
+      "ok": true,
+      "result_chars": 409,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1662 match(es) for '\\\\\\\\[Mono' (via ripgrep):\\n- Mathlib/Algebra/GroupWithZero/Idempotent.lean:34\\n    variable {G₀ : Type*} [MonoidWithZero G₀] [IsLeftCancelMulZero G₀]\\n- "
+    },
+    {
+      "i": 21,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/CategoryTheory/CommSq.lean\", \"line\": 1, \"n\": 60}",
+      "ok": true,
+      "result_chars": 2114,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/CategoryTheory/CommSq.lean  (lines 1–60 of 292):\\n     1  /-\\n     2  Copyright (c) 2022 Kim Morrison. All rights reserved.\\n     3  Released under Apache 2.0 licens"
+    },
+    {
+      "i": 22,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"EpiMono|Mono.*Category\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1210,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1220 match(es) for 'EpiMono|Mono.*Category' (via ripgrep):\\n- Mathlib/Topology/Sheaves/Flasque.lean:9\\n    public import Mathlib.CategoryTheory.Sites.EpiMono\\n- Mathlib/Topo"
+    },
+    {
+      "i": 23,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"class Mono|def Mono\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 732,
+      "result_head": "[{\"type\": \"text\", \"text\": \"71 match(es) for 'class Mono|def Mono' (via ripgrep):\\n- Mathlib/Algebra/GroupWithZero/Hom.lean:60\\n    class MonoidWithZeroHomClass (F : Type*) (α β : outParam Type*) [MulZ"
+    },
+    {
+      "i": 24,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"CategoryTheory.EpiMono\", \"limit\": 1}",
+      "ok": true,
+      "result_chars": 180,
+      "result_head": "[{\"type\": \"text\", \"text\": \"9 match(es) for 'CategoryTheory.EpiMono' (via ripgrep):\\n- Mathlib/CategoryTheory/Types/Basic.lean:9\\n    public import Mathlib.CategoryTheory.EpiMono\"}]"
+    },
+    {
+      "i": 25,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/CategoryTheory/EpiMono.lean\", \"line\": 1, \"n\": 80}",
+      "ok": true,
+      "result_chars": 3408,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/CategoryTheory/EpiMono.lean  (lines 1–80 of 278):\\n     1  /-\\n     2  Copyright (c) 2019 Reid Barton. All rights reserved.\\n     3  Released under Apache 2.0 licens"
+    },
+    {
+      "i": 26,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"class.*Mono.*where|def.*Mono\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1438,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1314 match(es) for 'class.*Mono.*where|def.*Mono' (via ripgrep):\\n- Mathlib/Algebra/FreeAlgebra.lean:457\\n    noncomputable def equivMonoidAlgebraFreeMonoid : FreeAlgebra R "
+    },
+    {
+      "i": 27,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/CategoryTheory/Category/Basic.lean\", \"line\": 1, \"n\": 100}",
+      "ok": true,
+      "result_chars": 4556,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/CategoryTheory/Category/Basic.lean  (lines 1–100 of 412):\\n     1  /-\\n     2  Copyright (c) 2017 Kim Morrison. All rights reserved.\\n     3  Released under Apache 2"
+    },
+    {
+      "i": 28,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"class Epi|class Mono\", \"limit\": 20}",
+      "ok": true,
+      "result_chars": 2408,
+      "result_head": "[{\"type\": \"text\", \"text\": \"20 match(es) for 'class Epi|class Mono' (via ripgrep):\\n- Mathlib/Algebra/GroupWithZero/Hom.lean:60\\n    class MonoidWithZeroHomClass (F : Type*) (α β : outParam Type*) [Mul"
+    },
+    {
+      "i": 29,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/CategoryTheory/Category/Basic.lean\", \"line\": 321, \"n\": 15}",
+      "ok": true,
+      "result_chars": 835,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/CategoryTheory/Category/Basic.lean  (lines 321–335 of 412):\\n   321  class Epi (f : X ⟶ Y) : Prop where\\n   322    /-- A morphism `f` is an epimorphism if it can be "
+    },
+    {
+      "i": 30,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"CommSq ?f ?g ?h ?i → CommSq\"}",
+      "ok": true,
+      "result_chars": 105,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'CommSq ?f ?g ?h ?i → CommSq': Unknown identifier `CommSq`\"}]"
+    }
+  ]
+}

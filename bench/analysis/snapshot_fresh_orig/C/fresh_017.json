@@ -1,0 +1,198 @@
+{
+  "task_id": "fresh_017",
+  "arm": "C",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T04:01:44Z",
+  "wall_s": 87.7,
+  "output_lean": "theorem abs_sub_sin_le (x : ℝ) : |x - Real.sin x| ≤ |x ^ 3| / 6 := sorry",
+  "transcript_stats": {
+    "turns": 23,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 9,
+      "mcp__formal__decl_grep": 7,
+      "mcp__formal__decl_read": 6
+    },
+    "tokens_in": 174,
+    "tokens_out": 4698,
+    "cost_usd": 0.10930530000000001
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Real.sin\"}",
+      "ok": true,
+      "result_chars": 923,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 322 declarations mentioning Real.sin.\\n- Real.sin   [Mathlib.Analysis.Complex.Trigonometric]\\n    The real sine function, defined as the real part of the complex sine\\"
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"abs\"}",
+      "ok": true,
+      "result_chars": 857,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 1277 declarations mentioning abs.\\n- abs   [Mathlib.Algebra.Order.Group.Unbundled.Abs]\\n    `abs a`, denoted `|a|`, is the absolute value of `a`\\n- le_abs_self   [Math"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"ℝ\"}",
+      "ok": true,
+      "result_chars": 713,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 26993 declarations mentioning Real.\\n- Real.commRing   [Mathlib.Data.Real.Basic]\\n- Real.instAdd   [Mathlib.Data.Real.Basic]\\n- Real.instAddCommGroup   [Mathlib.Data.R"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def Real\\\\.sin\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 87,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'def Real\\\\\\\\.sin' under Mathlib/.\"}]"
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*abs.*sin\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 687,
+      "result_head": "[{\"type\": \"text\", \"text\": \"15 match(es) for 'theorem.*abs.*sin' (via ripgrep):\\n- Mathlib/Algebra/Order/Group/Abs.lean:78\\n    theorem mabs_mul' (a b : G) : |a|ₘ ≤ |b|ₘ * |b * a|ₘ := by simpa using ma"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/Complex/Trigonometric.lean\", \"line\": 674, \"n\": 10}",
+      "ok": true,
+      "result_chars": 521,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Complex/Trigonometric.lean  (lines 674–683 of 990):\\n   674  theorem abs_sin_le_one : |sin x| ≤ 1 :=\\n   675    abs_le_one_iff_mul_self_le_one.2 <| by simp "
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"sin\"}",
+      "ok": true,
+      "result_chars": 78,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'sin': unknown identifier 'sin'\"}]"
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"noncomputable.*sin\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 666,
+      "result_head": "[{\"type\": \"text\", \"text\": \"69 match(es) for 'noncomputable.*sin' (via ripgrep):\\n- Mathlib/Combinatorics/Schnirelmann.lean:33\\n    Despite the definition being noncomputable, we include a decidable in"
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*sin_.*:\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 816,
+      "result_head": "[{\"type\": \"text\", \"text\": \"100 match(es) for 'theorem.*sin_.*:' (via ripgrep):\\n- Mathlib/Geometry/Euclidean/Angle/Unoriented/Affine.lean:495\\n    nonrec theorem sin_eq_zero_iff_angle_eq_zero_or_angle"
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/Complex/Trigonometric.lean\", \"line\": 1, \"n\": 50}",
+      "ok": true,
+      "result_chars": 1757,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Complex/Trigonometric.lean  (lines 1–50 of 990):\\n     1  /-\\n     2  Copyright (c) 2018 Chris Hughes. All rights reserved.\\n     3  Released under Apache 2"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Real\\\\.sin|namespace Real\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1279,
+      "result_head": "[{\"type\": \"text\", \"text\": \"287 match(es) for 'Real\\\\\\\\.sin|namespace Real' (via ripgrep):\\n- Mathlib/Geometry/Euclidean/Similarity.lean:56\\n    have h_sin_ne1 : Real.sin (∠ b c a) ≠ 0 := by\\n- Mathlib"
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/Complex/Trigonometric.lean\", \"line\": 100, \"n\": 80}",
+      "ok": true,
+      "result_chars": 3510,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Complex/Trigonometric.lean  (lines 100–179 of 990):\\n   100    (cosh x).re\\n   101  \\n   102  /-- The real hyperbolic tangent function, defined as the real "
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/Complex/Trigonometric.lean\", \"line\": 60, \"n\": 45}",
+      "ok": true,
+      "result_chars": 1562,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Complex/Trigonometric.lean  (lines 60–104 of 990):\\n    60    sinh z / cosh z\\n    61  \\n    62  end\\n    63  \\n    64  end Complex\\n    65  \\n    66  names"
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"(?a : ?b) ^ (?n : ℕ)\"}",
+      "ok": true,
+      "result_chars": 896,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 9086 declarations mentioning HPow.hPow and Nat.\\n- BitVec.ofFin   [Init.Prelude]\\n    Construct a `BitVec w` from a number less than `2^w`. O(1), because we use `Fin` "
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"notation.*\\\\|.*\\\\| :=.*abs\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 101,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'notation.*\\\\\\\\|.*\\\\\\\\| :=.*abs' under Mathlib/.\"}]"
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"notation:50 \\\"|\\\" x \\\"|\\\"\"}",
+      "ok": true,
+      "result_chars": 110,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'notation:50 \\\"|\\\" x \\\"|\\\"': <input>:1:0: expected end of input\"}]"
+    },
+    {
+      "i": 16,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Order/Group/Unbundled/Abs.lean\", \"line\": 1, \"n\": 40}",
+      "ok": true,
+      "result_chars": 1599,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Order/Group/Unbundled/Abs.lean  (lines 1–40 of 314):\\n     1  /-\\n     2  Copyright (c) 2016 Jeremy Avigad. All rights reserved.\\n     3  Released under Apac"
+    },
+    {
+      "i": 17,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"^def abs\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 437,
+      "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for '^def abs' (via ripgrep):\\n- Mathlib/Algebra/Order/Ring/Abs.lean:55\\n    def absHom : α →*₀ α where\\n- Mathlib/Data/Num/Basic.lean:318\\n    def abs : ZNum → "
+    },
+    {
+      "i": 18,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Algebra/Order/Group/Unbundled/Abs.lean\", \"line\": 35, \"n\": 80}",
+      "ok": true,
+      "result_chars": 3709,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Order/Group/Unbundled/Abs.lean  (lines 35–114 of 314):\\n    35  variable [Group α] {a b : α}\\n    36  \\n    37  /-- `mabs a`, denoted `|a|ₘ`, is the absolute"
+    },
+    {
+      "i": 19,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"(?a : ℝ) / (?b : ℝ) : ℝ\"}",
+      "ok": true,
+      "result_chars": 109,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(?a : ℝ) / (?b : ℝ) : ℝ': <input>:1:20: expected end of input\"}]"
+    },
+    {
+      "i": 20,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"div ℝ\"}",
+      "ok": true,
+      "result_chars": 80,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'div ℝ': Unknown identifier `div`\"}]"
+    },
+    {
+      "i": 21,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"HDiv.hDiv\"}",
+      "ok": true,
+      "result_chars": 791,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 6095 declarations mentioning HDiv.hDiv.\\n- HDiv.hDiv   [Init.Prelude]\\n    `a / b` computes the result of dividing `a` by `b`. The meaning of this notation is type-dep"
+    }
+  ]
+}

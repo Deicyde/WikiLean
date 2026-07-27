@@ -1,0 +1,414 @@
+{
+  "task_id": "fresh_026",
+  "arm": "E",
+  "model": "claude-haiku-4-5-20251001",
+  "max_turns": 30,
+  "timestamp": "2026-07-19T05:02:27Z",
+  "wall_s": 150.8,
+  "output_lean": "theorem sum_from_index_one_bounded_by_integral\n    (f : ℝ → ℝ)\n    (anti : AntitoneOn f (Ici 0))\n    (integrable : IntegrableOn f (Ioi 0))\n    (nonneg : ∀ t ∈ Ioi 0, 0 ≤ f t) :\n    ∑' (n : ℕ), f (n + 1 : ℕ) ≤ ∫ x in Ioi 0, f x := sorry",
+  "transcript_stats": {
+    "turns": 50,
+    "tool_calls_by_name": {
+      "mcp__formal__loogle": 14,
+      "mcp__formal__decl_grep": 25,
+      "mcp__formal__decl_read": 10
+    },
+    "tokens_in": 282,
+    "tokens_out": 9244,
+    "cost_usd": 0.21397175
+  },
+  "tool_trace": [
+    {
+      "i": 0,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Antitone\"}",
+      "ok": true,
+      "result_chars": 798,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 541 declarations mentioning Antitone.\\n- Antitone   [Mathlib.Order.Monotone.Defs]\\n    A function `f` is antitone if `a ≤ b` implies `f b ≤ f a`.\\n- antitone_const   ["
+    },
+    {
+      "i": 1,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Integrable\"}",
+      "ok": true,
+      "result_chars": 92,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Integrable': unknown identifier 'Integrable'\"}]"
+    },
+    {
+      "i": 2,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"sum integral bound\"}",
+      "ok": true,
+      "result_chars": 93,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'sum integral bound': Unknown identifier `sum`\"}]"
+    },
+    {
+      "i": 3,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"^(def|theorem|lemma) Integrable\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1521,
+      "result_head": "[{\"type\": \"text\", \"text\": \"126 match(es) for '^(def|theorem|lemma) Integrable' (via ripgrep):\\n- Mathlib/Probability/Process/Filtration.lean:214\\n    theorem Integrable.uniformIntegrable_condExp_filtr"
+    },
+    {
+      "i": 4,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"(?a : ℕ) → (f : ℕ → ℝ) → ℝ\"}",
+      "ok": true,
+      "result_chars": 107,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(?a : ℕ) → (f : ℕ → ℝ) → ℝ': type expected, got\\n  (?a : ℕ)\"}]"
+    },
+    {
+      "i": 5,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"^class Integrable\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 88,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '^class Integrable' under Mathlib/.\"}]"
+    },
+    {
+      "i": 6,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"^def tsum\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 159,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '^def tsum' (via ripgrep):\\n- Mathlib/Algebra/Module/ZLattice/Summable.lean:214\\n    def tsumNormRPowBound : ℝ :=\"}]"
+    },
+    {
+      "i": 7,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"tsum\"}",
+      "ok": true,
+      "result_chars": 1354,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 823 declarations mentioning tsum.\\n- tsum   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n    `∑' i, f i` is the unconditional sum of `f` if it exists, or 0 otherwise. "
+    },
+    {
+      "i": 8,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Integrable.*:=\", \"limit\": 3}",
+      "ok": true,
+      "result_chars": 382,
+      "result_head": "[{\"type\": \"text\", \"text\": \"447 match(es) for 'Integrable.*:=' (via ripgrep):\\n- Mathlib/Probability/IdentDistrib.lean:229\\n    (hf : Integrable f μ) : Integrable g ν := by\\n- Mathlib/Probability/Ident"
+    },
+    {
+      "i": 9,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"integral\"}",
+      "ok": true,
+      "result_chars": 88,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'integral': unknown identifier 'integral'\"}]"
+    },
+    {
+      "i": 10,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def Integrable\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 736,
+      "result_head": "[{\"type\": \"text\", \"text\": \"5 match(es) for 'def Integrable' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/IntegrableOn.lean:92\\n    def IntegrableOn (f : α → ε) (s : Set α) (μ : Measure α := by vol"
+    },
+    {
+      "i": 11,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*sum.*integral\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1283,
+      "result_head": "[{\"type\": \"text\", \"text\": \"29 match(es) for 'theorem.*sum.*integral' (via ripgrep):\\n- Mathlib/Geometry/Manifold/IntegralCurve/ExistUnique.lean:29\\n    For the existence and uniqueness theorems, we as"
+    },
+    {
+      "i": 12,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/Function/L1Space/Integrable.lean\", \"line\": 58, \"n\": 15}",
+      "ok": true,
+      "result_chars": 844,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Function/L1Space/Integrable.lean  (lines 58–72 of 1258):\\n    58  def Integrable {α} {_ : MeasurableSpace α} (f : α → ε)\\n    59      (μ : Measure α :="
+    },
+    {
+      "i": 13,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*antitone.*sum\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 93,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*antitone.*sum' under Mathlib/.\"}]"
+    },
+    {
+      "i": 14,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*decreasing\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1464,
+      "result_head": "[{\"type\": \"text\", \"text\": \"10 match(es) for 'theorem.*decreasing' (via ripgrep):\\n- Mathlib/NumberTheory/NumberField/Units/DirichletTheorem.lean:261\\n    theorem seq_decreasing {n m : ℕ} (h : n < m) ("
+    },
+    {
+      "i": 15,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Finset.sum\"}",
+      "ok": true,
+      "result_chars": 1194,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 3709 declarations mentioning Finset.sum.\\n- Finset.sum   [Mathlib.Algebra.BigOperators.Group.Finset.Defs]\\n    `∑ x ∈ s, f x` is the sum of `f x` as `x` ranges over th"
+    },
+    {
+      "i": 16,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"notation.*∫\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1577,
+      "result_head": "[{\"type\": \"text\", \"text\": \"26 match(es) for 'notation.*∫' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/Bochner/Set.lean:23\\n    Since `∫ x in s, f x ∂μ` is a notation, one can rewrite or apply any"
+    },
+    {
+      "i": 17,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"HasFiniteIntegral\"}",
+      "ok": true,
+      "result_chars": 106,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'HasFiniteIntegral': unknown identifier 'HasFiniteIntegral'\"}]"
+    },
+    {
+      "i": 18,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def HasFiniteIntegral\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 215,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'def HasFiniteIntegral' (via ripgrep):\\n- Mathlib/MeasureTheory/Function/L1Space/HasFiniteIntegral.lean:80\\n    def HasFiniteIntegral {_ : MeasurableSpace α}"
+    },
+    {
+      "i": 19,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"integrable antitone\"}",
+      "ok": true,
+      "result_chars": 101,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'integrable antitone': Unknown identifier `integrable`\"}]"
+    },
+    {
+      "i": 20,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"∑ n, f n ≤\"}",
+      "ok": true,
+      "result_chars": 98,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '∑ n, f n ≤': <input>:1:10: unexpected end of input\"}]"
+    },
+    {
+      "i": 21,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*sum.*mono\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1471,
+      "result_head": "[{\"type\": \"text\", \"text\": \"18 match(es) for 'theorem.*sum.*mono' (via ripgrep):\\n- Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean:260\\n    theorem tsum_mono_subtype (f : α → ℝ≥0∞) {s t : Set α} (h "
+    },
+    {
+      "i": 22,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*tsum.*integral\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 769,
+      "result_head": "[{\"type\": \"text\", \"text\": \"5 match(es) for 'theorem.*tsum.*integral' (via ripgrep):\\n- Mathlib/Analysis/SumIntegralComparisons.lean:221\\n    theorem AntitoneOn.tsum_comp_add_le_integral (N : ℕ) (anti "
+    },
+    {
+      "i": 23,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"NonNeg\"}",
+      "ok": true,
+      "result_chars": 84,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'NonNeg': unknown identifier 'NonNeg'\"}]"
+    },
+    {
+      "i": 24,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SumIntegralComparisons.lean\", \"line\": 242, \"n\": 10}",
+      "ok": true,
+      "result_chars": 822,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SumIntegralComparisons.lean  (lines 242–251 of 309):\\n   242  theorem AntitoneOn.tsum_le_integral (anti : AntitoneOn f (Ici 0))\\n   243      (integrable : I"
+    },
+    {
+      "i": 25,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SumIntegralComparisons.lean\", \"line\": 235, \"n\": 10}",
+      "ok": true,
+      "result_chars": 804,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SumIntegralComparisons.lean  (lines 235–244 of 309):\\n   235  theorem AntitoneOn.tsum_add_one_le_integral (anti : AntitoneOn f (Ici 0))\\n   236      (integr"
+    },
+    {
+      "i": 26,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/MeasureTheory/Integral/IntegrableOn.lean\", \"line\": 92, \"n\": 10}",
+      "ok": true,
+      "result_chars": 524,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Integral/IntegrableOn.lean  (lines 92–101 of 942):\\n    92  def IntegrableOn (f : α → ε) (s : Set α) (μ : Measure α := by volume_tac) : Prop :=\\n    93"
+    },
+    {
+      "i": 27,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SumIntegralComparisons.lean\", \"line\": 1, \"n\": 30}",
+      "ok": true,
+      "result_chars": 1552,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SumIntegralComparisons.lean  (lines 1–30 of 309):\\n     1  /-\\n     2  Copyright (c) 2022 Kevin H. Wilson. All rights reserved.\\n     3  Released under Apac"
+    },
+    {
+      "i": 28,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SumIntegralComparisons.lean\", \"line\": 200, \"n\": 45}",
+      "ok": true,
+      "result_chars": 3154,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SumIntegralComparisons.lean  (lines 200–244 of 309):\\n   200    exact_mod_cast AntitoneOn.sum_Ico_le_integral (a := 0) (mod_cast anti)\\n   201      (mod_cas"
+    },
+    {
+      "i": 29,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Analysis/SumIntegralComparisons.lean\", \"line\": 31, \"n\": 60}",
+      "ok": true,
+      "result_chars": 3765,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SumIntegralComparisons.lean  (lines 31–90 of 309):\\n    31  * `MonotoneOn.integral_le_sum`: The integral of a monotone function is at most the sum of its\\n "
+    },
+    {
+      "i": 30,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Ici\"}",
+      "ok": true,
+      "result_chars": 78,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Ici': unknown identifier 'Ici'\"}]"
+    },
+    {
+      "i": 31,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"Ioi\"}",
+      "ok": true,
+      "result_chars": 78,
+      "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Ioi': unknown identifier 'Ioi'\"}]"
+    },
+    {
+      "i": 32,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def Ici\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 531,
+      "result_head": "[{\"type\": \"text\", \"text\": \"5 match(es) for 'def Ici' (via ripgrep):\\n- Mathlib/Order/UpperLower/Principal.lean:41\\n    def Ici (a : α) : UpperSet α :=\\n- Mathlib/Order/Interval/Set/ProjIcc.lean:154\\n "
+    },
+    {
+      "i": 33,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"def Ioi\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 334,
+      "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for 'def Ioi' (via ripgrep):\\n- Mathlib/Order/Interval/Finset/Defs.lean:363\\n    def Ioi (a : α) : Finset α :=\\n- Mathlib/Order/Interval/Multiset.lean:80\\n    de"
+    },
+    {
+      "i": 34,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Set\\\\.Ici|namespace Set\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1030,
+      "result_head": "[{\"type\": \"text\", \"text\": \"431 match(es) for 'Set\\\\\\\\.Ici|namespace Set' (via ripgrep):\\n- Mathlib/Order/LatticeIntervals.lean:27\\n    * `Set.Ici.boundedOrder`, within an `OrderTop`\\n- Mathlib/Order/L"
+    },
+    {
+      "i": 35,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Order/LatticeIntervals.lean\", \"line\": 35, \"n\": 30}",
+      "ok": true,
+      "result_chars": 1336,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/LatticeIntervals.lean  (lines 35–64 of 283):\\n    35  namespace Set\\n    36  \\n    37  namespace Ico\\n    38  \\n    39  instance semilatticeInf [SemilatticeInf"
+    },
+    {
+      "i": 36,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"(def|abbrev).*Ici.*:=.*{\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 95,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(def|abbrev).*Ici.*:=.*{' under Mathlib/.\"}]"
+    },
+    {
+      "i": 37,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"^(def|abbrev) Ici\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 437,
+      "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for '^(def|abbrev) Ici' (via ripgrep):\\n- Mathlib/Order/UpperLower/Principal.lean:41\\n    def Ici (a : α) : UpperSet α :=\\n- Mathlib/Order/Interval/Set/ProjIcc.l"
+    },
+    {
+      "i": 38,
+      "name": "mcp__formal__loogle",
+      "input": "{\"q\": \"AntitoneOn\"}",
+      "ok": true,
+      "result_chars": 884,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Found 261 declarations mentioning AntitoneOn.\\n- AntitoneOn   [Mathlib.Order.Monotone.Defs]\\n    A function `f` is antitone on `s` if, for all `a, b ∈ s`, `a ≤ b` implies `f"
+    },
+    {
+      "i": 39,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Order/Monotone/Defs.lean\", \"line\": 1, \"n\": 50}",
+      "ok": true,
+      "result_chars": 2418,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/Monotone/Defs.lean  (lines 1–50 of 583):\\n     1  /-\\n     2  Copyright (c) 2014 Jeremy Avigad. All rights reserved.\\n     3  Released under Apache 2.0 license"
+    },
+    {
+      "i": 40,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"^def AntitoneOn\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 171,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '^def AntitoneOn' (via ripgrep):\\n- Mathlib/Order/Monotone/Defs.lean:80\\n    def AntitoneOn (f : α → β) (s : Set α) : Prop :=\"}]"
+    },
+    {
+      "i": 41,
+      "name": "mcp__formal__decl_read",
+      "input": "{\"file\": \"Mathlib/Order/Monotone/Defs.lean\", \"line\": 80, \"n\": 5}",
+      "ok": true,
+      "result_chars": 286,
+      "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/Monotone/Defs.lean  (lines 80–84 of 583):\\n    80  def AntitoneOn (f : α → β) (s : Set α) : Prop :=\\n    81    ∀ ⦃a⦄ (_ : a ∈ s) ⦃b⦄ (_ : b ∈ s), a ≤ b → f b ≤"
+    },
+    {
+      "i": 42,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"notation.*Ici|Ici.*notation\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 224,
+      "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'notation.*Ici|Ici.*notation' (via ripgrep):\\n- Mathlib/Topology/Defs/Filter.lean:149\\n    scoped[Topology] notation3 (name := nhdsGE) \\\"𝓝[≥] \\\" x:100 => nhd"
+    },
+    {
+      "i": 43,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Set\\\\.Ici|^def Ici \\\\(\", \"limit\": 10}",
+      "ok": true,
+      "result_chars": 1304,
+      "result_head": "[{\"type\": \"text\", \"text\": \"219 match(es) for 'Set\\\\\\\\.Ici|^def Ici \\\\\\\\(' (via ripgrep):\\n- Mathlib/Data/EReal/Basic.lean:647\\n    @[simp] theorem range_coe_ennreal : range ((↑) : ℝ≥0∞ → EReal) = Set."
+    },
+    {
+      "i": 44,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"^def.*Ici_def\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 84,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '^def.*Ici_def' under Mathlib/.\"}]"
+    },
+    {
+      "i": 45,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Mathlib/Data/Set.*Ici\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 92,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'Mathlib/Data/Set.*Ici' under Mathlib/.\"}]"
+    },
+    {
+      "i": 46,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"theorem.*Ici_def\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 87,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*Ici_def' under Mathlib/.\"}]"
+    },
+    {
+      "i": 47,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"Set\\\\.Ici_def\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 316,
+      "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'Set\\\\\\\\.Ici_def' (via ripgrep):\\n- Mathlib/Algebra/Module/Submodule/Pointwise.lean:367\\n    simp_rw [← Set.Ici_def, iSup_le_iff, @forall_comm M]\\n- Mathlib/"
+    },
+    {
+      "i": 48,
+      "name": "mcp__formal__decl_grep",
+      "input": "{\"pattern\": \"^theorem Ici_def|^theorem.*Set\\\\.Ici_def\", \"limit\": 5}",
+      "ok": true,
+      "result_chars": 113,
+      "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '^theorem Ici_def|^theorem.*Set\\\\\\\\.Ici_def' under Mathlib/.\"}]"
+    }
+  ]
+}
