@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Restricts g to ℝ → ℝ instead of a general normed space E, losing the generality of the gold statement",
+  "Adds an extra hypothesis (hg : IntegrableOn g (Set.Ioi (Real.exp a))) not present in the gold statement, which is unconditional",
+  "Uses scalar multiplication of exp x on g(exp x) in gold vs. plain real multiplication in produced (equivalent for E = ℝ, but only because of the type restriction)"
+ ],
+ "arm": "A",
+ "task_id": "fresh_052",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 18.1,
+ "judge_cost_usd": 0.065132,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "9f08b625456f944021193cc5cedfdbec10f4a0a1dc7fa801d68e8d29fe727cd9"
+}

@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Replaces gold's `[Small.{v} R]` hypothesis with a directly assumed `[CategoryTheory.HasExt.{v} (ModuleCat.{v} R)]` typeclass; in the gold file `Small.{v} R` is presumably what supplies `HasExt` via a derived instance, but `HasExt` is not obviously equivalent to `Small.{v} R` (it could hold more generally), so this is a different hypothesis, not just a rephrasing",
+  "`Module.support N` drops the explicit ring argument that `Module.support` takes (gold correctly writes `Module.support R N`); as stated this does not match the standard signature `Module.support R M`",
+  "Uses `≠ ⊤` instead of gold's `< ⊤` for the properness of `I • ⊤`; equivalent here since submodules are always `≤ ⊤`, but a different relation than stated in gold"
+ ],
+ "arm": "C",
+ "task_id": "fresh_077",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 100.9,
+ "judge_cost_usd": 0.289707,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "f9483ebcf26c629830e8cdf942e9d171db7697034782c645534cfb550b3a9859"
+}

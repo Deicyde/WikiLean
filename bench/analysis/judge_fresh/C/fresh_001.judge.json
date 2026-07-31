@@ -1,0 +1,15 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Adds an unnecessary [Monoid M] typeclass hypothesis not present in the gold statement. The underlying Mathlib lemma (MonoidAlgebra.addHom_ext) holds for M an arbitrary type (only [Semiring R] and [AddZeroClass N] are needed, since MonoidAlgebra R M is just Finsupp M R and the statement is purely additive), so requiring M to be a Monoid strictly restricts generality compared to the gold statement."
+ ],
+ "arm": "C",
+ "task_id": "fresh_001",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 51.6,
+ "judge_cost_usd": 0.145564,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "35fbedc334dd812d1bd22de08057cd2090c76678373f239919237f94d1fe3bf1"
+}

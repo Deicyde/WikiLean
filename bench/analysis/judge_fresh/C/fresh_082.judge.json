@@ -1,0 +1,15 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "`Ideal.span R (↑S : Set R)` misuses the `Ideal.span` API: `Ideal.span` has signature `(s : Set α) : Ideal α` with the ring `α` implicit (inferred from `s`), not an explicit first argument — this is likely confused with `Submodule.span`'s explicit-ring signature, and as written does not type-check (passing `R : Type*` where a `Set R` is expected)."
+ ],
+ "arm": "C",
+ "task_id": "fresh_082",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 76.9,
+ "judge_cost_usd": 0.220708,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "9cd23c23b5f907d40a9a0f9b2cd137c07bbcd1dfc4a706d007f0652523f7268b"
+}

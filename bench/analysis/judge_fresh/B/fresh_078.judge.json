@@ -1,0 +1,21 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Condition (1)'s hypothesis on N is supposed to be 'Module.support R N ⊆ PrimeSpectrum.zeroLocus I' (i.e. every prime in Supp N contains I), but the produced statement instead requires 'for every prime p, if M⊗Localization.At p ≠ 0 then N⊗Localization.At p ≠ 0', i.e. Supp M ⊆ Supp N — a condition relating N's support to M's support, with no reference to I at all. This is a different mathematical condition, not an equivalent encoding.",
+  "Condition (3)'s existential N is supposed to satisfy 'Module.support R N = PrimeSpectrum.zeroLocus I', but the produced statement instead requires 'for every prime p, M⊗Localization.At p ≠ 0 ↔ N⊗Localization.At p ≠ 0', i.e. Supp N = Supp M, again substituting M's support for the zero locus of I. Since I is an arbitrary ideal with no assumed relation to Supp M, this changes the theorem's content.",
+  "Condition (4) (regular sequence) is not a faithful encoding of RingTheory.Sequence.IsRegular: the produced clause '∃ m : M, m ≠ 0 ∧ ∀ i' < j, s i' • m ≠ m' expresses that m is not a fixed point of scalar multiplication by each s_i', which is unrelated to the actual regular-sequence condition (that s_j is a nonzerodivisor on M/(s_0,...,s_{j-1})M). The extra universally quantified but unused-in-a-meaningful-way variable k : Fin j → R with values restricted to {s_0,...,s_{j-1}} is also spurious and does not correspond to any part of the standard definition.",
+  "Structural mismatch: gold states a 4-way TFAE (all pairwise equivalences among (1)-(4)), while produced states only 'condition1 ↔ (condition2 ∧ condition3 ∧ condition4)'. Even if the components were individually correct, this is logically weaker than TFAE (e.g. it does not assert that condition2 alone implies condition1), so it is not the same proposition and not confidently equivalent to it.",
+  "Uses 'Ext R i N M' applied to bare unbundled modules (Type* with Module R instance) rather than the ModuleCat/CategoryTheory.Abelian.Ext framework gold uses; it is doubtful this generalized signature exists in Mathlib, so this may reference a nonexistent/ill-typed construction.",
+  "hM bundles an explicit nontriviality witness (∃ m : M, m ≠ 0) alongside Module.Finite, which, while actually implied by hIM (I•⊤ < ⊤ forces M ≠ 0), is stated as a separate explicit hypothesis; not itself wrong but reflects the informal 'nontrivial M' hypothesis being handled inconsistently with how N's nontriviality is asserted elsewhere.",
+  "Universe/category-theoretic apparatus of gold (Small.{v} R, ModuleCat.{v} R, Shrink.{v} (R ⧸ I)) is dropped in favor of plain Type*, which is an acceptable simplification only if the Ext construction used is genuinely equivalent — but combined with the dubious 'Ext R i N M' signature this cannot be confirmed as faithful."
+ ],
+ "arm": "B",
+ "task_id": "fresh_078",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 131.5,
+ "judge_cost_usd": 0.351658,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "ca07778eb5599bca739ab1372578943a137fc4b20f3618e0ffbd9b000867b3d7"
+}

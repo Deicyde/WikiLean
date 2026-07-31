@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Conclusion has unbalanced/mismatched parentheses (\"(Rep.resFunctor φ).mapShortComplex S).Exact\"), which is not valid Lean syntax as written",
+  "Uses a fabricated/nonstandard API 'F.mapShortComplex S' (functor-dot-method taking the short complex) instead of the actual Mathlib idiom 'S.map F' (ShortComplex.map) used in the gold statement",
+  "Weakens the ring hypothesis on k from CommRing (required by gold for this lemma) to Semiring, changing the class of structures the statement ranges over and likely breaking the abelian/preadditive category assumptions needed for ShortComplex.Exact to behave as intended"
+ ],
+ "arm": "D",
+ "task_id": "fresh_076",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 40.5,
+ "judge_cost_usd": 0.120589,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "afa72f4cc7553559564292fd28ea8e79930892d6d3322886da804e80572b7f7d"
+}

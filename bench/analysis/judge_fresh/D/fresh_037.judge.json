@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Manifolds M, N are given only a `ChartedSpace ℝ M` instance (charted directly over the field ℝ) instead of the proper `ModelWithCorners 𝕜 E H`-based structure with a separate model space H; this collapses/loses the manifold's actual model and dimension data present in the gold statement.",
+  "Conclusion uses `ContDiff n f`, which is the smoothness predicate for maps between normed vector spaces, not `ContMDiff`/`CMDiff n f` (smoothness between manifolds/charted spaces) as in the gold; since M, N here are not normed spaces (only ChartedSpace ℝ), `ContDiff n f` likely does not even typecheck for f : M → N.",
+  "Hypothesis uses `Manifold.IsImmersion f`, dropping the gold's `IsImmersionOfComplement F I J n f` structure entirely — no complement space F, no model-with-corners parameters I, J, and no smoothness class n threaded through the hypothesis.",
+  "The smoothness class n in the hypothesis is disconnected from the conclusion: gold ties the same n from the immersion hypothesis to the CMDiff conclusion, whereas produced statement's IsImmersion has no n parameter at all.",
+  "Missing the base field/model infrastructure: no `NontriviallyNormedField 𝕜`, no normed space parameters E, E', E'', E''', F, F', and no `ModelWithCorners` instances I, I', J, J' that the gold statement requires to properly state the theorem for general manifolds with corners."
+ ],
+ "arm": "D",
+ "task_id": "fresh_037",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 26.0,
+ "judge_cost_usd": 0.089658,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "bf9d2f4af0d3513eb8604702b7d0b2340f6588ee5812e272257aeac43429a670"
+}

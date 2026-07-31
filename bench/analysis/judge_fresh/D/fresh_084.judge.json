@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Requires f to be a continuous linear map (E →L[R] F) instead of gold's plain (possibly discontinuous) linear map (E →ₗ[𝕜] F); this adds a continuity hypothesis absent from the gold statement, changing the theorem's content",
+  "Drops the topological-vector-space structure: gold requires IsTopologicalAddGroup and ContinuousSMul on both E and F, produced only assumes bare TopologicalSpace with no compatibility between the topology and the algebraic/module structure",
+  "Replaces the NontriviallyNormedField 𝕜 with CompleteSpace 𝕜 by an arbitrary Semiring R, losing the normed-field/completeness structure that the theorem's classical proof relies on",
+  "Uses AddCommMonoid instead of AddCommGroup for E and F, a weaker algebraic hypothesis than gold's AddCommGroup",
+  "Overall these changes make the produced statement a different (not clearly equivalent) proposition rather than a faithful restatement of the gold theorem"
+ ],
+ "arm": "D",
+ "task_id": "fresh_084",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 27.5,
+ "judge_cost_usd": 0.093814,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "c40e7d6e7cc87b600bbbae4fd45c0303d2228569dc8a3113c0bdfc3f07440712"
+}

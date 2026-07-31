@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Drops the OrderTopology hypotheses on α and β (and TopologicalSpace α entirely) which are essential to the theorem: continuity only interacts with order structure this way when the topology is the order topology",
+  "Replaces LinearOrder α, LinearOrder β with SemilatticeSup α, SemilatticeSup β, a materially different (and non-comparable, not just weaker) order assumption",
+  "Uses sSup s and sSup (f '' s) but only assumes SemilatticeSup, which provides no SupSet instance, so the statement does not typecheck as written",
+  "Conclusion is stated as f (sSup s) = sSup (f '' s) for all s, using junk-value sSup semantics, instead of the gold's IsLUB-based LeftOrdContinuous, which only asserts the property for sets that actually have a supremum ('any set that has one') — these are not equivalent for sets lacking a supremum",
+  "Does not use/restate the actual Mathlib definition LeftOrdContinuous, producing a differently-shaped and not clearly equivalent proposition"
+ ],
+ "arm": "B",
+ "task_id": "fresh_099",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 32.8,
+ "judge_cost_usd": 0.102264,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "e22768ee506bf5cf8c2d64fa521973be4cd84cf09a966df17a3e230c0fa3a5bb"
+}

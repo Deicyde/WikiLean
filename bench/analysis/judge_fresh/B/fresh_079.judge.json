@@ -1,0 +1,20 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Hypothesis h is vacuous (`∃ n : ℕ, True` is trivially true for any q, q'), so it completely fails to encode the 'rank constant across stalks' condition from the informal statement and from gold's rankAtStalk equality hypothesis — this is a total loss of the key hypothesis, not just a weakening.",
+  "Never uses rankAtStalk or any rank-comparison mechanism at all, so the core mathematical content ('rank of M at every stalk is constant') is entirely absent from the formalization.",
+  "M is declared as [AddCommMonoid M] instead of [AddCommGroup M], weakening the algebraic structure relative to gold.",
+  "Uses `Ideal.Prime p` instead of the standard `Ideal.IsPrime` (or `p.IsPrime`) — likely an incorrect/nonexistent way to state ideal primality, differing from gold's `[p.IsPrime]`.",
+  "Conclusion uses `M ⊗[R] Localization.Away a` instead of gold's `LocalizedModule.Away a M`, a different (not clearly validated as equivalent in this context) formalization of the localized module.",
+  "Drops the second module N entirely (present in gold's variable context, even if unused in the specific theorem, indicating a different overall setup/generality)."
+ ],
+ "arm": "B",
+ "task_id": "fresh_079",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 45.6,
+ "judge_cost_usd": 0.138695,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "8090bef34c54c927b5ed1ebd6d660acd9b64f9788fa13676491488b58bb9cb79"
+}

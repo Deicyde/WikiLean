@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Uses a non-standard/likely fabricated Ext signature `Ext R (ModuleCat R) i`, treating Ext as a bifunctor that takes both the ring type R and the module category ModuleCat R as separate explicit arguments before being applied via `.obj`/`.obj`; gold instead uses the actual Mathlib Ext-groups API `Ext N M i : Type*` (two objects plus an index). This redundant double-argument pattern does not match known Mathlib API and is likely a hallucinated/non-existent construction, casting doubt on whether the statement even type-checks.",
+  "Encodes Ext-vanishing via `CategoryTheory.IsZero` applied to the output of the above questionable bifunctor construction, rather than gold's `Subsingleton (Ext N M i)` on the type-valued Ext group; presumed equivalent in spirit but rests on the unverified/likely-incorrect Ext construction above.",
+  "Drops all universe-management machinery from gold (`Small.{v} R`, `ModuleCat.{v} R`, `Shrink.{v} (R ⧸ I)`), instead using unconstrained `Type*` for R, M, N; this changes the technical setup needed for Ext/HasExt instances to exist and is not an evidently equivalent restatement.",
+  "Adds an explicit `[Nontrivial M]` hypothesis not present in gold; it is logically implied by `hIM : I • ⊤ ≠ ⊤` so does not change truth conditions, but is technically an added hypothesis versus gold's formulation.",
+  "Replaces gold's single `List.TFAE [P1,P2,P3,P4]` packaging of the four-way equivalence with an explicit conjunction of only three adjacent iffs (P1↔P2) ∧ (P2↔P3) ∧ (P3↔P4); while this chain implies the full pairwise TFAE by transitivity of iff, it is a different top-level logical structure than gold's TFAE statement."
+ ],
+ "arm": "C",
+ "task_id": "fresh_078",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 140.3,
+ "judge_cost_usd": 0.385308,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "739574359b587ab143d50af09f68d2153e993dd0498786afc90d280168bf9639"
+}

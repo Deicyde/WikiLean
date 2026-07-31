@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "hM_proper : I • M ≠ (⊤ : Submodule R M) is not well-typed as written since M is the module type (Type*), not a term of type Submodule R M; the intended statement (matching gold's smul_lt : I • (⊤ : Submodule R M) < ⊤) requires writing I • (⊤ : Submodule R M)",
+  "hN_support uses Ideal.vanishingLocus I, which is not a standard/existing Mathlib declaration; the gold and actual Mathlib notion is PrimeSpectrum.zeroLocus I",
+  "hExt uses Ext R i N M = 0, an argument order/signature (explicit ring, then index, then modules) inconsistent with Mathlib's categorical Ext X Y n (used in gold) which takes no explicit ring argument and takes the two objects before the index; applying this to unbundled Type* modules M, N rather than ModuleCat R objects makes the application inconsistent with how Ext is actually defined for module categories in Mathlib",
+  "Conclusion uses IsRegularSequence M seq with seq : Fin n → R, whereas gold/Mathlib exposes this notion as RingTheory.Sequence.IsRegular M rs for rs : List R; IsRegularSequence under this name/signature does not appear to be a genuine Mathlib declaration",
+  "Uses ≠ instead of the strict order < for the properness of I•M, which combined with the typing issue above leaves the properness hypothesis ambiguous/ill-formed rather than a clean equivalent restatement"
+ ],
+ "arm": "B",
+ "task_id": "fresh_077",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 123.2,
+ "judge_cost_usd": 0.326714,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "719de3fb4a819563c3b9b721b69fb1514d8f1d70a0ec26dfd655875a31959d2f"
+}

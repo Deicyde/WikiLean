@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Produced conclusion uses `Module.rank` (cardinal-valued rank) while gold uses `finrank` (the ℕ-valued, Cardinal.toNat-truncated rank) — these are different Mathlib notions expressing a different, non-equivalent proposition (finrank equality can hold trivially whenever both sides are infinite-dimensional, even if the underlying cardinal ranks differ, so it does not imply, nor is it equivalent to, cardinal rank equality)",
+  "Produced statement omits the localization data present in gold's hypothesis context: the submonoid p : Submonoid R, the module M, the localized-module map f : M →ₗ[R] N with [IsLocalizedModule p f], and hp : p ≤ R⁰ — dropping structure the gold theorem is parameterized over"
+ ],
+ "arm": "D",
+ "task_id": "fresh_041",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 191.4,
+ "judge_cost_usd": 0.48367,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "393def8272cdb3447630b2350be9e0e75c2278636420047f68a889d1a7a4f44f"
+}

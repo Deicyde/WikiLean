@@ -1,0 +1,20 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Conclusion bounds the sum by the integral over a finite interval (Icc 0 n) rather than the integral over the infinite ray (Ioi a) as required by the informal statement and the gold; this drops the 'ray' aspect entirely and is a materially different bound",
+  "Antitone hypothesis is strengthened from local (AntitoneOn f (Icc a b)) to global (Antitone f)",
+  "Nonneg hypothesis is strengthened from holding only on Ioi a to holding for all x ∈ ℝ",
+  "Loses the general starting point a (gold is parameterized by arbitrary a b : ℕ); produced statement hardcodes the start at 0",
+  "Missing the integrability hypothesis (IntegrableOn f (Ioi a)) that gold requires for the ray integral to be meaningful",
+  "Sum indexing differs: gold sums f(n+1) over n ∈ Ico a b (i.e. f evaluated from a+1 to b), produced sums f(k) over k ∈ range n (i.e. f evaluated from 0 to n-1); these are not equivalent reindexings given the differing bounds"
+ ],
+ "arm": "A",
+ "task_id": "fresh_022",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 31.0,
+ "judge_cost_usd": 0.102301,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "fe905d752437fba5121792a9bf57ce57605f59815b57d7577dc8940521dc84da"
+}

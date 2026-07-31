@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Only covers the smooth (C^∞) case (`Smooth`) instead of general C^n for arbitrary n : ℕ∞ω as in the gold statement",
+  "Immersion direction is reversed: gold takes φ : N → N' mapping OUT of the codomain N into a further manifold N', with conclusion about φ ∘ f; produced takes e : M' → M mapping INTO the domain M, with conclusion about f ∘ e — this is a structurally different (non-equivalent) claim, not just a renaming",
+  "Produced universally quantifies the (would-be) immersion inside the iff rather than fixing it as an external lemma parameter as gold does; since the identity map on M trivially qualifies as such an 'immersion e', the right-hand side collapses to essentially 'continuous ∧ f smooth', making the produced statement trivial/vacuous rather than expressing the genuine (nontrivial) content of the gold theorem",
+  "Does not use Mathlib's `IsImmersion` predicate (gold: `IsImmersion J J' n φ`); instead manually encodes an immersion-like condition (smoothness + trivial kernel of mfderiv) only for the reversed map e, which does not correspond to the same mathematical object",
+  "Loses the general manifold-with-corners structure of gold (distinct model spaces H, H', G, G' and ModelWithCorners I, I', J, J'); produced conflates models directly with 𝓘(𝕜,E)/𝓘(𝕜,E') and forces the auxiliary manifold M' to share the same model E as M, rather than allowing an independent further manifold/model as gold's N', J' do"
+ ],
+ "arm": "A",
+ "task_id": "fresh_034",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 53.0,
+ "judge_cost_usd": 0.149108,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "2ae8f428c900a3c0f62630bc1b77f235202435bd2013dacb59074d041cd94dcf"
+}

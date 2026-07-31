@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "M and N are given only TopologicalSpace instances, with no ChartedSpace/ModelWithCorners manifold structure at all, so `Smooth 𝕜 f` cannot be inferred/typecheck as in the gold's manifold setting",
+  "Composition direction is reversed: gold composes an immersion φ AFTER f (φ ∘ f : M → N', immersion goes from target N into a further manifold N'), while produced composes an immersion φ BEFORE f (f ∘ φ : P → N, immersion goes into the source M) — a different theorem, not merely a reshaping",
+  "Produced universally quantifies over all immersions φ : P → M inside the iff's RHS, whereas gold fixes a single given immersion φ (with hypothesis hφ) as a parameter of the lemma — changes the logical structure/strength of the statement",
+  "Drops the `IsImmersionOfComplement` hypothesis (immersion admitting a complement) and replaces it with an apparently different/nonexistent `SmoothImmersion` notion, losing the specific structural requirement on φ",
+  "Restricts to Smooth (C^∞) only, dropping the general C^n parameter n : ℕ∞ω present in the gold, so the produced statement is not stated with the same generality"
+ ],
+ "arm": "A",
+ "task_id": "fresh_036",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 37.6,
+ "judge_cost_usd": 0.113426,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "09509cb465b862bdb2ac035313aa43ebdee429450adb86e6cb9efe08080377c7"
+}

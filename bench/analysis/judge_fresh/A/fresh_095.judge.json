@@ -1,0 +1,20 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Hypothesis is `BddVariationOn f s` (bounded variation on s) rather than gold's `LocallyBoundedVariationOn f s` (local bounded variation) — a different, generally stronger hypothesis, not the same proposition",
+  "Conclusion demands `Monotone g` and `Monotone h` (monotone on all of ℝ) instead of gold's `MonotoneOn p s` / `MonotoneOn q s` (monotone only on s) — a much stronger and generally unachievable requirement",
+  "Decomposition equality is only asserted pointwise on s (`∀ x ∈ s, f x = g x - h x`) rather than gold's global function equality `f = p - q`, weakening that part of the conclusion",
+  "Variation identity is quantified over all `a b : ℝ` with an added `a ≤ b` hypothesis instead of gold's `∀ x ∈ s, ∀ y ∈ s` (no order restriction, no requirement that a,b lie outside s be excluded) — changes the shape/domain of the universal claim",
+  "Uses `TotalVariation f s a b` in place of gold's `variationOnFromTo f s x y`, an unverified/likely nonexistent identifier not matching the actual mathlib primitive",
+  "Statement is specialized to `f s : ℝ → ℝ`, `Set ℝ` rather than gold's general `[LinearOrder α]` domain, dropping generality present in the gold statement"
+ ],
+ "arm": "A",
+ "task_id": "fresh_095",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 45.5,
+ "judge_cost_usd": 0.14652,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "324668a538e829171bd834dc5b81e5a798215d7b65291251801c62b4d255acd0"
+}

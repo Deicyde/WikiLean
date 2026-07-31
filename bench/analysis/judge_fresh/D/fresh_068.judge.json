@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Adds an extra hypothesis [Ideal.IsMaximal I] on the third ideal that is not present in the gold statement (gold only assumes p and P are maximal).",
+  "Drops the [IsScalarTower R S T] hypothesis present in gold; this is needed to make the R→S→T algebra maps compatible so that the 'lies over' relation composes (I over P over p implies I over p), which is essential for the tower structure the theorem is about.",
+  "Replaces the typeclass-based LiesOver instances ([P.LiesOver p], [I.LiesOver P]) used by gold with plain propositional equalities hp, hP via Ideal.comap; since Module.finrank (R⧸p)(S⧸P), (S⧸P)(T⧸I), and (R⧸p)(T⧸I) require actual Module/Algebra instances relating the quotient rings (not just bare equalities), these instances are not obviously derivable from hp/hP alone without IsScalarTower/LiesOver, so the statement's finrank terms are not properly grounded the way gold's inertiaDeg' (built on LiesOver instances) is."
+ ],
+ "arm": "D",
+ "task_id": "fresh_068",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 231.6,
+ "judge_cost_usd": 0.61352,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "bf64060c2e4eb94edd6dfd72d36a58f758ee95072ec16cbed2c7a35bdad4f425"
+}

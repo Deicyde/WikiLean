@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Composes with the immersion in the wrong direction: the gold post-composes f with an immersion φ : N → N' out of the codomain (φ ∘ f), but the produced statement pre-composes with an immersion i : N → M into the domain (f ∘ i). This is a different mathematical claim, not just a reshaping — e.g. for f(x,y) = |x| on ℝ²→ℝ (not C¹ at the origin), the immersion i(t)=(0,t) gives f∘i ≡ 0 which is C^n, and f is continuous, so the produced RHS would hold while f is not C^n at the origin — a counterexample showing the produced statement is false as stated.",
+  "Quantifies the immersion existentially (∃ N G J i y, IsImmersionAt ... ∧ ...) instead of universally/as a fixed given hypothesis as in the gold (φ is an arbitrary immersion supplied via hφ), which weakens/changes the theorem's content even setting aside the direction issue.",
+  "Uses the type variable E'' inside `ModelWithCorners 𝕜 E'' G` without declaring it (with the required NormedAddCommGroup/NormedSpace instances) anywhere in the produced statement's signature, an elaboration/well-formedness defect."
+ ],
+ "arm": "C",
+ "task_id": "fresh_035",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 85.3,
+ "judge_cost_usd": 0.238314,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "2b3fcbd0489c9f474f72f8bd22684d43bef2c1a49551570e33a0c8d1783f7d0c"
+}

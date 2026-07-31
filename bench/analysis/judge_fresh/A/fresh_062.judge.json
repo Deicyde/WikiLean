@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Replaces the specific weight-2 Eisenstein series E2 (a fixed, canonically defined function from Mathlib's EisensteinSeries library) with an arbitrary universally-quantified function parameter E_2 : ℂ → ℂ, so the theorem no longer asserts boundedness of the actual Eisenstein series but a generic (and in general false) claim about arbitrary functions",
+  "Loses the domain restriction to the upper half-plane ℍ; z ranges over all of ℂ rather than ℍ",
+  "Adds an unjustified positivity constraint C > 0 on the bound (harmless in effect but not part of the gold's IsBoundedAtImInfty notion, which only needs boundedness)",
+  "Does not use or reference the actual IsBoundedAtImInfty predicate/filter machinery, instead manually unfolding a bespoke (and mis-scoped) definition"
+ ],
+ "arm": "A",
+ "task_id": "fresh_062",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 22.7,
+ "judge_cost_usd": 0.07377,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "ee68d13870f64fd7e008576144f3a19c8d2311f85c06e577f4f284ea02aee261"
+}

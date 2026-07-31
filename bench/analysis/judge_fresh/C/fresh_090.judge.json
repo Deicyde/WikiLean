@@ -1,0 +1,15 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "LHS index is shifted: uses u '' Iic (n + 1) (n+2 points) instead of gold's u '' Iic n (n+1 points), while the RHS sum remains over Finset.range n (only n terms) instead of range (n+1); this off-by-one is not compensated and makes the equality generally false (e.g., at n=0 it asserts edist (f (u 1)) (f (u 0)) = 0, i.e. f(u 0) = f(u 1), which need not hold)."
+ ],
+ "arm": "C",
+ "task_id": "fresh_090",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 20.8,
+ "judge_cost_usd": 0.075145,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "116edc0c7f701907c840269d69e67e5a8e33f0938dbf5088f70265ec22cab648"
+}

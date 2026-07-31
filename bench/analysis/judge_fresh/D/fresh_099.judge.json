@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Missing `TopologicalSpace α` instance: `Continuous f` requires a topology on the domain α, not just on β; as written the hypothesis `hf_cont : Continuous f` cannot elaborate.",
+  "Missing `OrderTopology` hypotheses on α and β entirely; the theorem specifically depends on the topology being the order topology (compatible with the order), which is essential to the informal claim — without it, continuity is unrelated to the order structure and the result is false.",
+  "Replaces `LinearOrder` with `ConditionallyCompleteLattice` on α (and β), changing the algebraic hypotheses rather than just re-spelling them; this imposes completeness instead of the weaker linear order used in the gold's general `IsLUB`-based `LeftOrdContinuous` definition.",
+  "Conclusion `f (sSup s) = sSup (f '' s)` is asserted for an arbitrary set s with no hypothesis that s is nonempty/bounded above (i.e. that it 'has' a supremum in the intended sense); in a conditionally complete lattice sSup returns junk values for empty or unbounded sets, so the statement is false in those edge cases, unlike the gold which only requires the conclusion when `IsLUB s x` holds.",
+  "Drops the general `IsLUB`/`LeftOrdContinuous` formulation in favor of a bare sSup equality, losing the case where a set has a supremum without the ambient type being a complete lattice."
+ ],
+ "arm": "D",
+ "task_id": "fresh_099",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 32.2,
+ "judge_cost_usd": 0.106633,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "d8bdd81ae3c95e111c0d54a0f7440bba67777ac278f6a0b406ae29c339499c81"
+}

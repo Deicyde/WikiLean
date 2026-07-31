@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Uses `VariationOn`, which is not an existing Mathlib declaration for unconditional total variation (the actual Mathlib definition is `eVariationOn`, returning ℝ≥0∞); as stated the lemma does not typecheck against any known declaration",
+  "Specializes the statement to f : ℝ → ℝ instead of the general `LinearOrder α`, `PseudoEMetricSpace E` setting in the gold, dropping generality",
+  "Uses `dist` (real-valued) instead of `edist` (ℝ≥0∞-valued), changing the codomain/type of the equality from the gold's extended-metric formulation"
+ ],
+ "arm": "B",
+ "task_id": "fresh_091",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 16.5,
+ "judge_cost_usd": 0.066026,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "4622e0db86648f0b0f931a05316e2ddf61def3787109cd1e9a1d0848174b6879"
+}

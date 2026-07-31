@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Adds three explicit typeclass hypotheses `[IsManifold I n M] [IsManifold I' n M'] [IsManifold I'' n M'']` that are absent from the gold statement (gold only assumes ChartedSpace/ModelWithCorners structure, no smoothness-of-atlas requirement), narrowing the statement's generality beyond what the gold claims.",
+  "Adds an explicit hypothesis `hg_smooth : ContMDiff I' I'' n g` not present in gold; a 'C^n immersion' (IsImmersion) is standardly already required to be C^n, so this extra hypothesis is either redundant (changing the hypothesis set relative to gold) or reveals that the produced IsImmersion predicate does not itself guarantee smoothness, in either case a mismatch with gold's single-hypothesis formulation."
+ ],
+ "arm": "C",
+ "task_id": "fresh_034",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 71.4,
+ "judge_cost_usd": 0.215564,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "cd8efba1e14a48dcc80ad5074a568033083563432f83bcf797e4015a2893cbb3"
+}

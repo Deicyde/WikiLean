@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Replaces LinearOrder + OrderTopology on α and β with CompleteLattice + plain TopologicalSpace, entirely changing the ambient structure rather than being an equivalent spelling",
+  "Drops the OrderTopology hypothesis (only generic TopologicalSpace is assumed), removing the link between the topology and the order that is essential for continuity to force supremum-preservation",
+  "Conclusion is stated as a pointwise equation f(sSup s) = sSup (f '' s) for every set s in a CompleteLattice, rather than the gold's LeftOrdContinuous predicate (IsLUB s x → IsLUB (f '' s) (f x)) which applies to arbitrary sets that merely happen to have a supremum in a general LinearOrder, not requiring global completeness",
+  "As stated, with arbitrary (non-order) topologies on complete lattices, monotone + continuous does not generally imply supremum preservation, so the produced statement is not a faithful (and likely not even true) rendering of the gold"
+ ],
+ "arm": "A",
+ "task_id": "fresh_099",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 23.2,
+ "judge_cost_usd": 0.083132,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "4f039edf8761b7506e58029727046260b2ef8737a80e70ff14dbc970f9d94b86"
+}

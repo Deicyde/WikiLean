@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Drops the general linear order α and PseudoEMetricSpace E of the gold, specializing to f : ℝ → ℝ with the standard metric, which changes the class of the theorem (not the same generality).",
+  "Does not formalize 'total variation' at all: the gold LHS is eVariationOn f (u '' Iic n), the supremum-based variation over the sequence's image set, whereas the produced LHS is just ∑ |f(x_{i+1}) - f(x_i)|, a plain finite sum. This discards the core mathematical content (that the sup-defined variation collapses to this sum for a monotone sequence) and turns the statement into a near-tautology equating |a-b| with dist(a,b) on ℝ.",
+  "Never references an image set (gold's u '' Iic n) or the ambient order/metric structure the variation is computed over — the notion of 'variation along a monotone sequence of points in a metric space' is absent.",
+  "The hypothesis h_mono (∀ i : Fin n, x i ≤ x (i.castSucc)) is malformed/trivial: x has type Fin (n+1) → ℝ but i has type Fin n, so 'x i' requires an implicit coercion; if that coercion is castSucc (as used explicitly on the RHS of the inequality), the hypothesis reduces to x (i.castSucc) ≤ x (i.castSucc), a vacuous tautology rather than expressing monotonicity between consecutive points x_i ≤ x_{i+1}.",
+  "As written, LHS and RHS of the produced conclusion are equal merely by the definition of dist on ℝ (dist a b = |a - b|), so the theorem is essentially trivial/definitional rather than the substantive equality asserted by the gold."
+ ],
+ "arm": "A",
+ "task_id": "fresh_090",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 52.3,
+ "judge_cost_usd": 0.152289,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "42bb9f92a0fdf93c17d442f1b97b19d4c520f4970fcd2a95314af1abbca6d618"
+}

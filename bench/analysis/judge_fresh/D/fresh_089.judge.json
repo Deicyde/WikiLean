@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Missing the `LinearOrder α` hypothesis on the domain type that `BoundedVariationOn` requires (gold's ambient `variable` block has `[LinearOrder α]`); without it the produced statement does not even elaborate, since there is no generic `LinearOrder` instance for an arbitrary `α : Type*`",
+  "Uses `[EMetricSpace E]` instead of `[PseudoMetricSpace E]` (the actual hypothesis in the gold theorem's local binder). `EMetricSpace` requires point-separation but allows extended (possibly infinite) distances, whereas `PseudoMetricSpace` allows non-separated points but requires finite real-valued distances — neither implies the other, so this changes the mathematical content of the codomain hypothesis",
+  "Finiteness is given as an explicit hypothesis `h : Set.Finite s` rather than the instance-implicit `[Finite s]` used in gold; logically equivalent via `Set.finite_coe_iff` but a different binder/spelling"
+ ],
+ "arm": "D",
+ "task_id": "fresh_089",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 46.1,
+ "judge_cost_usd": 0.148039,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "39c1c043b9123d2ce400b82ee3909c73645515e9cde910c37005ee6154d020b4"
+}

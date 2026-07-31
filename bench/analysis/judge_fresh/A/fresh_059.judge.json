@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Does not reference `variation` (the supremum-over-partitions definition) at all, so it fails to state the gold's core claim that totalVariation (Jordan decomposition) equals variation (partition supremum)",
+  "Instead asserts totalVariation = posPart + negPart, which is essentially an unfolding of the Jordan-decomposition definition of totalVariation, a different (and likely near-trivial/definitional) proposition from the gold",
+  "`s.posPart` and `s.negPart` are not standard fields of `SignedMeasure` in Mathlib — pos/neg parts belong to `JordanDecomposition` and are accessed via `s.toJordanDecomposition.posPart`/`negPart`, so the statement may not even elaborate as written"
+ ],
+ "arm": "A",
+ "task_id": "fresh_059",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 22.1,
+ "judge_cost_usd": 0.070676,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "9d75cc2f71f8d14b6b6fb22b2de872b7f972030026c6b5de018c01de1251a8a6"
+}

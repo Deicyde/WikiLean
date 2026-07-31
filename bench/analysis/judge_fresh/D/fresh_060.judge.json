@@ -1,0 +1,15 @@
+{
+ "strict": false,
+ "evaluated": true,
+ "defects": [
+  "Order of operations swapped relative to the gold: the produced statement computes Complex.re (Complex.log (riemannZeta s)) — i.e. Re(log ζ(s)) — whereas the gold computes Real.log ((riemannZeta s).re) — i.e. log(Re ζ(s)). These are structurally different propositions; they only coincide because riemannZeta(s) is a positive real number for real s>1, which is an external fact not encoded in the produced statement's literal form."
+ ],
+ "arm": "D",
+ "task_id": "fresh_060",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 50.7,
+ "judge_cost_usd": 0.147989,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "b19f22dd0b7f30e89611fc4676d8597d8d266ca533103401ff4250440a4fd4f9"
+}

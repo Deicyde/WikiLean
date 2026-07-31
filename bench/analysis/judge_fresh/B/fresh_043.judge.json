@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Adds hypothesis that R is a Ring and an IsDomain, whereas gold only requires R to be a Semiring with Nontrivial R — this restricts the theorem to domains and drops the intended generality (e.g. rings with zero divisors are excluded).",
+  "Formalizes torsion via 'r ≠ 0 ∧ r • m = 0' instead of the non-zero-divisor condition (r ∈ nonZeroDivisors R) used in Module.IsTorsion; these coincide only when R is a domain, so under the produced statement's added IsDomain hypothesis they happen to agree, but this makes the produced theorem a strictly weaker special case rather than the same proposition as the gold's IsTorsion-based statement.",
+  "Overall the produced theorem is a corollary of the gold theorem (holds under strictly stronger hypotheses on R), not an equivalent restatement of the same proposition."
+ ],
+ "arm": "B",
+ "task_id": "fresh_043",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 34.9,
+ "judge_cost_usd": 0.106189,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "be9fb64523d9805b549bc40136f2ceab7d79dbfbf2bf671ced27a30008fc5a20"
+}

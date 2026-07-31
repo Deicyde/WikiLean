@@ -1,0 +1,20 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Requires f to be a continuous linear map (E →L[𝕜] F) instead of a general (not necessarily continuous) linear map (E →ₗ[𝕜] F) as in gold — an added/strengthened hypothesis not present in gold or the informal statement, since the theorem's argument does not actually need continuity of f",
+  "Requires E to carry a full topological vector space structure (TopologicalSpace, TopologicalAddCommGroup, TopologicalVectorSpace); gold's E (locally shadowed inside the theorem) carries no topology at all — this is an added hypothesis relative to gold",
+  "Missing the CompleteSpace 𝕜 hypothesis that is present in gold's ambient variable context",
+  "Uses AddCommMonoid instead of AddCommGroup for E and F, a nonstandard/weaker algebraic structure choice compared to gold's AddCommGroup",
+  "Uses the identifiers TopologicalAddCommGroup and TopologicalVectorSpace, which do not correspond to standard current Mathlib class names (IsTopologicalAddGroup / ContinuousSMul-based formulation used in gold), casting doubt on whether the statement even elaborates",
+  "Packages the finite-codimension witness and closed-image condition into a single existential hypothesis rather than gold's fixed submodule s with a [s.CoFG] instance plus explicit closedness hypothesis h — logically fine as a restructuring, but combined with the other changes shows the statement was not derived from the same hypothesis skeleton as gold"
+ ],
+ "arm": "B",
+ "task_id": "fresh_084",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 110.5,
+ "judge_cost_usd": 0.314651,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "6c0352b1a891638492fdce67221456177515c76257416c396ba3bf378d065d60"
+}

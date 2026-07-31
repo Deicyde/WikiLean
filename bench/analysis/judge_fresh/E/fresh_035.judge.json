@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Composition direction is reversed: gold formalizes POST-composition with the immersion (φ ∘ f, where φ : N → N' is an immersion at f(x), N being f's codomain), but produced formalizes PRE-composition (f ∘ g, where g : N → M is an immersion at y with g(y) = x, N feeding into f's domain M). This is not a renaming — it is a different composition and a different theorem.",
+  "The pre-composition version in produced is not mathematically equivalent to the gold's post-composition theorem: an immersion g into the domain M need not be locally surjective onto a neighborhood of x (e.g. if dim N < dim M), so knowing f∘g is C^n at y together with continuity of f at x does not in general let you recover C^n-ness of f at x. The gold's version relies specifically on immersions into the codomain admitting local smooth retractions, which is the mathematically valid mechanism; the produced statement lacks this justification and is not a faithful/true restatement.",
+  "The immersion hypothesis `hg : IsImmersionAt g y` does not reference the smoothness order n (unlike gold's `IsImmersionAt J J' n φ (f x)`), so it is unclear the produced statement enforces that g is specifically a C^n immersion matching the theorem's order n, as required by the informal statement 'composition with a C^n immersion'.",
+  "The produced statement therefore fails to capture the informal statement's intended claim and the accompanying gold caveat about φ (immersion) not being inducing; under produced's reversed composition this caveat/reasoning does not carry over."
+ ],
+ "arm": "E",
+ "task_id": "fresh_035",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 101.1,
+ "judge_cost_usd": 0.220539,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "2e23fe9fdf1e75a2d6e6713a651e4d87a0e60e099f9e5e1703e10ace346d0c06"
+}

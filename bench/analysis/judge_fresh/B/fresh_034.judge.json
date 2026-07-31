@@ -1,0 +1,20 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "The immersion is universally quantified inside the RHS (∀ Q i, IsImmersion i → ContMDiff ∞ n i → ContMDiff ∞ n (i ∘ f)) rather than being a single fixed C^n immersion φ given as an outer hypothesis (as in gold's `(hφ : IsImmersion J J' n φ)`); this changes the logical content substantially — e.g. taking i = id_N (a trivial immersion) makes both directions of the iff essentially vacuous, destroying the actual mathematical content of the theorem (which needs a specific immersion, e.g. into Euclidean space, and a nontrivial local argument).",
+  "ContMDiff is applied as `ContMDiff (∞ : WithTop ℕ) n f`, but Mathlib's ContMDiff takes two ModelWithCorners arguments before n and f (ContMDiff I I' n f); passing `(∞ : WithTop ℕ)` in the position of a ModelWithCorners is a type/signature mismatch, not a valid use of the real declaration.",
+  "M, N (and the quantified Q) are only given `ChartedSpace ℝ M` with no ModelWithCorners (I, J) and no ambient model vector spaces (E, H, etc.); this hardcodes charts directly over ℝ instead of a general model space, which is a materially different (and essentially degenerate/ill-typed) manifold setup compared to gold's general 𝕜, E, H, ModelWithCorners structure.",
+  "IsImmersion is applied as `IsImmersion i` with a single argument, omitting the model-with-corners and smoothness-order parameters that gold's `IsImmersion J J' n φ` requires — an arity/signature mismatch with the real declaration.",
+  "n : ℕ instead of gold's n : ℕ∞ω, narrowing the class of smoothness orders the statement ranges over (drops ∞ and ω smoothness cases), a hypothesis weakening.",
+  "No generality over the base field 𝕜 (NontriviallyNormedField) — hardcoded to ℝ, unlike gold's general 𝕜."
+ ],
+ "arm": "B",
+ "task_id": "fresh_034",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 47.5,
+ "judge_cost_usd": 0.146639,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "02a0d01f671388c7d9260364d805a57516f0c07beed80a865a18ce916833c10f"
+}

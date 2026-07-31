@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Replaces the gold's fixed hypothesis `IsImmersionOfComplement F J J' n φ` (a specific immersion with a complemented/split structure) with a plain `IsImmersion J K i` inside a universally-quantified clause, dropping the 'of complement' condition that is essential to the actual theorem (as reflected in the gold lemma's name and design)",
+  "Changes the fixed-φ formulation of gold into a universally quantified statement over all target manifolds P, models K, and immersions i; this trivializes the reverse direction (e.g. instantiating i with the identity map on N immediately gives ContMDiff I J n f from the hypothesis), which is a materially different and weaker/trivial proposition compared to the gold's nontrivial per-immersion characterization",
+  "Uses `ModelWithCorners 𝕜 E M` and `SmoothManifoldWithCorners 𝕜 E M`, collapsing the model topological space H (which in gold is distinct from the manifold M and supports corners/boundary) into M itself, and misapplies `SmoothManifoldWithCorners` as if it took (𝕜, E, M) directly rather than an explicit `ModelWithCorners` instance plus a charted space over a separate H — this diverges from and restricts the standard manifold-with-corners formalization used in gold",
+  "Existentially/universally restructures which object plays the role of 'the further manifold and its immersion' compared to gold, changing the overall logical shape of the biconditional rather than being a mere restatement of the same proposition"
+ ],
+ "arm": "B",
+ "task_id": "fresh_036",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 73.9,
+ "judge_cost_usd": 0.202295,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "2e3afef8a9b41c64b8830aea6aad970827be42abf008ce077a10b9da9b053c18"
+}

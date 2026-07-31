@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Requires much stronger algebraic structure than the gold: β must be an OrderedAddCommMonoid and a Module R β over an OrderedSemiring R, whereas gold only needs the minimal order-scalar typeclass PosSMulMono α β (built from just Preorder α, Zero α, Preorder β, SMul α β). This restricts the statement to module-like scalar actions and excludes the many non-additive/non-module ordered scalar actions the gold's PosSMulMono covers, so it is a narrower corollary, not the same proposition.",
+  "The scalar type R is used in instance binders ([OrderedSemiring R], [Module R β], [OrderedSMul R β]) and in {a : R} but is never declared as a type variable (e.g. {R : Type*}); this relies on autoImplicit, which is disabled by default in Mathlib-style files and would likely fail to elaborate.",
+  "Uses the OrderedSMul R β typeclass (a module/ring-based ordered-scalar API) instead of PosSMulMono α β; this is not merely a bundled/unbundled restatement of the same typeclass but a different, more specialized structure."
+ ],
+ "arm": "E",
+ "task_id": "fresh_005",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 80.0,
+ "judge_cost_usd": 0.229764,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "1f6a8bd5fa06f5f662a4d48ec6c9b3e5ac11de5349d398dd5083f50822091d1b"
+}

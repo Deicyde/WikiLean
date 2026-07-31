@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Produced statement calls `μ.posPart` and `μ.negPart` directly on a `SignedMeasure`, but `posPart`/`negPart` are fields of `JordanDecomposition`, not of `SignedMeasure` — the gold correctly routes through `s.toJordanDecomposition.posPart`/`.negPart`; as written this likely does not resolve/type-check",
+  "Omits the intermediate `toJordanDecomposition` step present in gold, changing the actual mathematical content/API path referenced",
+  "Uses `ENNReal.toReal (μ.posPart s)` instead of the `Measure.real` notation used in gold, which is a cosmetic difference only if the underlying posPart/negPart access were valid"
+ ],
+ "arm": "A",
+ "task_id": "fresh_056",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 20.3,
+ "judge_cost_usd": 0.076601,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "73e2d6e747982447a5c2ce157130b67b42eeaa6006dee04b8a8a6f8f7731a943"
+}

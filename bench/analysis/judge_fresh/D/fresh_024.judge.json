@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": true,
+ "defects": [
+  "Nonneg hypothesis is stated on the closed ray [N,∞) instead of gold's open ray (N,∞); harmless since it's already implied by antitone + nonneg-on-Ioi in the gold, but not a literal match",
+  "Integrability is replaced by an existential boundedness condition on interval integrals (∃ C, ∀ b ≥ N, ∫ x in N..b, f x ≤ C) instead of gold's direct IntegrableOn f (Ioi N); mathematically equivalent given the nonneg+antitone hypotheses via the monotone convergence theorem, but requires a bridging lemma rather than being a notational restatement",
+  "Conclusion is Summable (fun n => f (N + n)) (tail sequence) rather than gold's Summable (fun n => f n) (full sequence); equivalent via the standard finite-index-shift summability lemma, but not a literal syntactic match"
+ ],
+ "arm": "D",
+ "task_id": "fresh_024",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 86.9,
+ "judge_cost_usd": 0.243833,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "256ab6f3e567ba1d72350226d3903aee0f14f9e0a3c6ed730c2704e40557d6a4"
+}

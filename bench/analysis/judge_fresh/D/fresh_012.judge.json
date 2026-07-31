@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Restricts f to an endomorphism on the same space 𝕜^n → 𝕜^n (using ContinuousLinearMap), whereas gold allows a linear map f : U →ₗ[𝕜] V between two potentially different (and V possibly infinite-dimensional) inner product spaces — this discards the actual generality that the 'normDet' notion (a generalized determinant/volume factor) is meant to capture for non-square/non-endomorphism linear maps",
+  "Replaces the presumably genuine generalized 'normDet' function (f.normDet, defined to work for maps between different-dimensional spaces) with the ordinary square matrix determinant ‖f.toLinearMap.det‖, which is only equivalent to normDet in the square/endomorphism special case — not a faithful rendering of the gold conclusion",
+  "Drops the extra ambient typeclass variables V, W (general codomain and auxiliary space) present in gold, collapsing everything to the single space Fin n → 𝕜",
+  "Adds an extra explicit hypothesis hb_basis (LinearIndependent ∧ spans ⊤) not present in gold's OrthonormalBasis-based formulation; even though this content is implicit in the bundled OrthonormalBasis structure, here it is only meaningful/necessary because b is forced to live in the same n-dimensional space as the domain, which is itself a symptom of the lost generality",
+  "Uses a bare orthonormal family b : Fin n → (Fin n → 𝕜) with side conditions rather than the bundled OrthonormalBasis ι 𝕜 U of gold, tying the basis index type ι to the same Fin n rather than an arbitrary finite index type"
+ ],
+ "arm": "D",
+ "task_id": "fresh_012",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 45.7,
+ "judge_cost_usd": 0.130614,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "4b81a66dfdf5ad97fb4620e2862bd62fc21bfec936a1f86476aed6ef2d3082fc"
+}

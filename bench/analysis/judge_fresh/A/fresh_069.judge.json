@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Uses `Ideal.Prime` (the multiplicative-monoid notion, which excludes the zero ideal since Prime elements must be nonzero) instead of `Ideal.IsPrime`; this is a strictly stronger/different hypothesis than gold's `P.IsPrime` instance (and the implicitly-derived primality of `p`), incorrectly ruling out the valid case where the base or lying-over ideal is the zero ideal in a domain.",
+  "Replaces the 'lies over' relation (`P.LiesOver p`, equivalent to `Q.comap (algebraMap R S) = P`) with a strictly weaker one-directional containment `Ideal.map (algebraMap R S) P ≤ Q`; this does not force Q to lie over P and does not guarantee a well-defined residue-field extension/module structure, so the conclusion need not correspond to the actual inertia degree.",
+  "Conclusion is rephrased as `FiniteDimensional.finrank` of residue fields of `Localization.AtPrime` at P and Q rather than gold's dedicated `inertiaDeg'` function; this reformulation is only equivalent to the intended inertia degree when the (missing) exact lying-over condition holds."
+ ],
+ "arm": "A",
+ "task_id": "fresh_069",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 103.3,
+ "judge_cost_usd": 0.281095,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "5cd6733b7aff0d08f87b40c798a737e09df48e04c5afb11810c157d918aaf820"
+}

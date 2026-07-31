@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Requires f to be a bundled continuous linear map (`f : E →L[𝕜] F`) instead of a general linear map (`E →ₗ[𝕜] F`) as in gold — adds an unjustified continuity hypothesis, making the produced statement strictly weaker (a special case) rather than equivalent.",
+  "Weakens/changes the scalar field hypotheses: uses plain `Field 𝕜` instead of gold's `NontriviallyNormedField 𝕜` with `CompleteSpace 𝕜`, dropping the completeness and norm structure the argument (finite-dimensional quotient topology uniqueness) actually needs.",
+  "Uses `TopologicalVectorSpace 𝕜 E` / `TopologicalVectorSpace 𝕜 F`, which is not a real Mathlib typeclass (Mathlib spells this out via separate `TopologicalSpace`, `IsTopologicalAddGroup`, `Module`, `ContinuousSMul` instances, as gold does) — likely a nonexistent declaration, so the statement probably fails to elaborate.",
+  "Imposes a full topological-vector-space structure on the domain E, whereas gold's actual theorem statement requires no topology on E at all (only `AddCommGroup`/`Module`), so the hypothesis sets on E do not match."
+ ],
+ "arm": "A",
+ "task_id": "fresh_084",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 74.2,
+ "judge_cost_usd": 0.22162,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "9069472dd4f10c427e7ece3a033a97617fb0102875ac55855e46a276c8618a40"
+}

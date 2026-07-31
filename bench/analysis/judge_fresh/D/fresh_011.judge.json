@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "LHS uses the operator norm ‖f‖ of the continuous linear map instead of the gold's f.normDet, a distinct construction (the norm-determinant, related to the induced map on the top exterior power); these are not the same quantity in general",
+  "As stated, the produced theorem is mathematically false in general — operator norm need not equal |det f| (e.g. a diagonal map with eigenvalues 2 and 1/2 has ‖f‖ = 2 but |det f| = 1), so it does not correctly formalize the informal claim about norm-determinant",
+  "Uses bundled continuous linear maps (E →L[𝕜] E) rather than the gold's plain linear maps (U →ₗ[𝕜] U), an unjustified structural change",
+  "Drops the two extra ambient normed/inner-product space variables V, W present in gold's context (likely immaterial, but signals the produced statement was formalized without matching the surrounding declaration context)"
+ ],
+ "arm": "D",
+ "task_id": "fresh_011",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 32.7,
+ "judge_cost_usd": 0.105676,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "1a4a10b5edc2ed274a20a5825ace63642d561a739870f4e5720c6011dbfac9f0"
+}

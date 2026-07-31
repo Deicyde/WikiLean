@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Hypothesis is strengthened compared to gold: `(l.filter p).length ≤ 1` requires at most one *position* in the list to satisfy p (counting multiplicity), whereas gold's `{x ∈ l₁ | p x}.Subsingleton` only requires at most one *distinct value* satisfying p among the (deduplicated) set of elements. E.g. l = [a, a] with p a = true satisfies gold's hypothesis (the set {x ∈ l | p x} = {a} is a singleton, hence Subsingleton) but violates the produced hypothesis (l.filter p = [a, a] has length 2), so the produced theorem applies to a strictly smaller class of lists than the gold theorem — it is a weaker/less general statement.",
+  "Uses `List.find` (a plain, non-Option-returning finder) rather than `List.find?`, which gold and Lean core actually use for this Bool-predicate search; `List.find` with this signature/behavior does not correspond to a standard current declaration, raising doubt about whether the statement even elaborates as intended."
+ ],
+ "arm": "A",
+ "task_id": "fresh_033",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 75.5,
+ "judge_cost_usd": 0.210745,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "3a5ecc8f51019bb65c60b861485c172843856de4e485840ac912e04e49d4cab7"
+}

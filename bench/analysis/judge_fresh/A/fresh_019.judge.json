@@ -1,0 +1,20 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "f is typed as ℕ → ℝ instead of ℝ → ℝ, so the theorem only covers sequences realized as piecewise-constant (floor-extended) step functions rather than general antitone integrable real functions as in the gold — a fundamentally narrower and different statement",
+  "Uses `⊤` as the upper endpoint of a real interval integral/IntervalIntegrable (`(N-1:ℝ)..⊤`), but ℝ has no `Top`/`OrderTop` instance in Mathlib, so this does not type-check / references a nonexistent construction",
+  "The conclusion's integral ∫ f(⌊x⌋) over (N-1)..⊤ equals f(N-1) + tail-sum rather than the integral of a genuine antitone function as in the gold's ∫_{Ioi(N-1)} f, changing the mathematical content of the inequality (would make it essentially trivial given nonneg f(N-1))",
+  "hnonneg is required for all n : ℕ rather than only for t in (N-1, ∞) as in the gold, unnecessarily strengthening/altering the hypothesis",
+  "hantitone requires global Antitone f on all of ℕ rather than AntitoneOn f restricted to [N-1, ∞) as in the gold, unnecessarily strengthening the hypothesis",
+  "Uses deprecated `∑ n in Finset.range N` notation instead of `∑ n ∈ Finset.range N`"
+ ],
+ "arm": "A",
+ "task_id": "fresh_019",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 56.2,
+ "judge_cost_usd": 0.166195,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "51d6f6b0a87151bd52ea0829155db6437638a71fc0bdf60e6764fc34a1a10f8c"
+}

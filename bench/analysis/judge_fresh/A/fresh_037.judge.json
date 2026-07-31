@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "The hypothesis `hc : ContDiff 𝕜 n f` already asserts the exact conclusion `ContDiff 𝕜 n f`, making the theorem statement vacuous/trivial (provable by `exact hc`), whereas the gold theorem's whole content is deriving smoothness from the immersion hypothesis alone with no such assumption.",
+  "Uses `IsImmersion f` instead of gold's `IsImmersionOfComplement F I J n f`; these are not obviously the same notion — gold's immersion structure explicitly involves a complemented-subspace hypothesis (F, I, J, n) suited to infinite-dimensional/Banach manifold immersions, which the produced simpler `IsImmersion` predicate does not capture.",
+  "Conclusion uses `ContDiff 𝕜 n f` (differentiability between normed vector spaces) instead of gold's `CMDiff n f` (i.e. `ContMDiff I J n f`, manifold smoothness via charts). Since f : M → N with M, N only assumed to be ChartedSpace/manifold types (not literally equal to the normed spaces E, F), `ContDiff 𝕜 n f` does not correctly express — and likely does not even typecheck for — smoothness of a map between manifolds.",
+  "Manifold structure is set up incorrectly relative to Mathlib conventions: omits the separate model-space types H, H' and ModelWithCorners I, J used in gold, instead writing `[SmoothManifoldWithCorners 𝕜 E M]`, which does not match Mathlib's actual signature `SmoothManifoldWithCorners (I : ModelWithCorners 𝕜 E H) (M : Type*) ...`.",
+  "Drops gold's universe/type generality (E', E'', E''', F', H', G, G', J, J', N, N') entirely, collapsing to a much narrower two-manifold setting without the complement space F needed for the immersion definition used correctly."
+ ],
+ "arm": "A",
+ "task_id": "fresh_037",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 56.1,
+ "judge_cost_usd": 0.167276,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "66a970370d0d373f4eea1dc78828e3e7bdeaf55284db08b363942ec8ccc8444c"
+}

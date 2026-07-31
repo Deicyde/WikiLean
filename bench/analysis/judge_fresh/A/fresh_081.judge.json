@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Uses an undefined/nonexistent identifier `MvPowerSeries.deriv` instead of the actual Mathlib declaration `MvPowerSeries.pderiv` used in the gold statement, so the statement does not type-check against real Mathlib API",
+  "Adds an extra `[DecidableEq σ]` typeclass hypothesis not present in (and not required by) the gold statement, restricting generality",
+  "States the coefficient as `(n : R)` cast into R first, rather than gold's `n` (a ℕ literal coerced directly into `MvPowerSeries σ R`); while likely defeq via cast lemmas, it reflects a different (invented) API rather than confirmed equivalence to `pderiv`"
+ ],
+ "arm": "A",
+ "task_id": "fresh_081",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 52.6,
+ "judge_cost_usd": 0.14992,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "db3b230fdeb6ee17a93fdb0af458b87bfe8041459d7f59c96b0824ed937eb99c"
+}

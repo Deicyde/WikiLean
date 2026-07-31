@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "No `variable`/typeclass declarations for `K` and `V` are given (unlike gold's explicit `[CommRing R] [AddCommGroup M] [Module R M]`), so the statement as shown is incomplete and cannot be checked to type-check as stated.",
+  "Uses `K`/`V` naming (standard Mathlib convention for a field and a vector space over it) rather than `R`/`M` for a general commutative ring and module, suggesting the theorem is restricted to the field/vector-space case — a strictly less general statement than the gold, which holds for arbitrary commutative rings and modules.",
+  "`f` is an explicit argument in the produced statement versus an implicit section variable in the gold (minor, cosmetic, but combined with the above indicates the surrounding hypotheses were not faithfully reproduced)."
+ ],
+ "arm": "D",
+ "task_id": "fresh_045",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 69.5,
+ "judge_cost_usd": 0.194382,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "2c893646f4650f357b100ff0f7dcbf5baff0eab0015fda91c164267ac030cd69"
+}

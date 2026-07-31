@@ -1,0 +1,20 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "M is required to be Module.Finite (finite) rather than Module.FinitePresentation (finitely presented); finite generation alone is not sufficient for the theorem, so this is a strictly weaker/wrong hypothesis",
+  "The given map f : LocalizedModule S M → LocalizedModule S N is only assumed to be a function, not an R-linear map, dropping the linearity hypothesis on ϕ from the gold",
+  "No hypothesis ties f (or the surjective map) to being 'the' localization map via IsLocalizedModule aside from using the concrete LocalizedModule type; there's no analogous g (target localization map) structure",
+  "The conclusion is vacuous: g : M →ₗ[R] N and g_localized : LocalizedModule S M → LocalizedModule S N are existentially quantified with no stated relationship between them, and no relationship to the given map f at all — it is trivially satisfiable and does not express that g's localization equals (a unit multiple of) f or that the lift is related to the original surjection",
+  "Missing the gold's precise conclusion that the localization of the lift equals s • ϕ for some s ∈ S, and that this localized map (not an unrelated map) is surjective",
+  "No linearity requirement is imposed on g_localized"
+ ],
+ "arm": "D",
+ "task_id": "fresh_000",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 25.8,
+ "judge_cost_usd": 0.091139,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "011021a5b74ee4e7f78b9ac1f8544e517f8e4c8f0262737e797fd8f918a1af7d"
+}

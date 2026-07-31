@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Type inconsistency: f is declared as `ℕ → ℝ` but is then used as if it were `ℝ → ℝ` in every hypothesis and the integral (`AntitoneOn f (Ici (0:ℝ))`, `∀ t ∈ Ioi (0:ℝ), 0 ≤ f t`, `IntegrableOn f (Ioi (0:ℝ))`, `∫ x in Ioi (0:ℝ), f x`) — this does not typecheck as written since AntitoneOn/IntegrableOn/the integral require f's domain to match Set ℝ, contradicting the stated `f : ℕ → ℝ`",
+  "Drops the general ray start point: gold's `a : ℕ` is an arbitrary parameter, but the produced statement hard-codes a = 0 everywhere (Ici 0, Ioi 0), losing generality of the lemma",
+  "Drops the explicit upper bound `b`; while replaced by a universal `∀ n`, this only reproduces the a=0 special case of the gold lemma, not the general a,b statement",
+  "AntitoneOn hypothesis is stated on the unbounded set Ici 0 rather than the bounded Icc a b as in gold — a strictly stronger (though here forced by the ∀n reformulation) hypothesis that changes the statement's structure",
+  "Conclusion adds an extra `f 0 +` term and re-indexes the sum via Finset.range n starting at i=0 instead of Ico a b starting at n+1 — only algebraically equivalent to gold's a=0 instance, not a faithful transcription of the general statement"
+ ],
+ "arm": "C",
+ "task_id": "fresh_022",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 89.6,
+ "judge_cost_usd": 0.248595,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "092a437a717201491d708264be1251d7b3c4d7da3ef0482316e9499fa3d1980d"
+}

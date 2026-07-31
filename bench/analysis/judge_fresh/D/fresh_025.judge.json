@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "hf_antitone : Antitone f requires f to be antitone on all of ℝ, whereas gold only requires AntitoneOn f (Ici 0) — this is a strictly stronger (more restrictive) hypothesis than the gold statement",
+  "hf_nonneg : ∀ x, 0 ≤ f x requires nonnegativity on all of ℝ, whereas gold only requires nonnegativity on Ioi 0 — again strictly stronger than gold",
+  "hf_integrable uses IntegrableOn f (Set.Ici 0) instead of gold's IntegrableOn f (Ioi 0); mathematically inconsequential (differs by a single point) but not syntactically identical"
+ ],
+ "arm": "D",
+ "task_id": "fresh_025",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 20.5,
+ "judge_cost_usd": 0.06947,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "82b14a913f15dc571e6328a0f6a9c83100628aa9cf18f6b11d069980507e0083"
+}

@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Conclusion drops all connection between the produced lift g and the given surjective map f: gold requires the localization of the lift to equal s • ϕ for some unit s ∈ S (i.e., g is genuinely a lift of the given map up to a unit), while produced merely asserts existence of some g: M →ₗ[R] N whose localization is surjective, with no reference to f at all — hypothesis hf ends up unused, making the theorem a different (much weaker/trivialized) statement than 'this map lifts'",
+  "Missing existential witness s : S and the equation IsLocalizedModule.map S f g φ = s • ϕ present in gold",
+  "Uses concrete LocalizedModule S M / LocalizedModule S N instead of gold's general IsLocalizedModule-abstracted targets Mₚ, Nₚ with arbitrary localization maps f, g",
+  "Uses AddCommMonoid instead of AddCommGroup for M and N, weakening/altering the typeclass hypotheses relative to gold"
+ ],
+ "arm": "B",
+ "task_id": "fresh_000",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 36.5,
+ "judge_cost_usd": 0.117276,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "5b0c24910bc917f05150edfae0a314ade7b0442f578906e15e501f253822ef8a"
+}

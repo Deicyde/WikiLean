@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "`Matrix n n F` is written with `n : ℕ`, a natural-number term, in the type-argument position where `Matrix` requires actual types (`Matrix : Type* → Type* → Type* → Type*`); as stated this does not type-check.",
+  "The quantifier `∀ i j : Fin n` is inconsistent with `A : Matrix n n F` (which, if `n` were somehow a type, would need indices of type `n`, not `Fin n`) — the statement is internally incoherent.",
+  "Even reading the intent charitably (index type meant to be `Fin n` throughout), the statement drops the gold's generality over an arbitrary finite index type `m` (with `[Fintype m] [DecidableEq m]`), specializing to the canonical `Fin n` representation instead.",
+  "No existential equivalence/permutation (analogous to gold's `e : m ≃ Fin M.rank ⊕ Fin (Fintype.card m - M.rank)`) is included; the block placement is instead hard-coded via the natural order of `Fin n`, which is a structurally different (though not obviously wrong) way of asserting the same normal form.",
+  "Uses `Matrix.rank A` directly compared via `<` on ℕ without any coercion issues noted, but this is only sound once the underlying type error is fixed."
+ ],
+ "arm": "A",
+ "task_id": "fresh_047",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 70.9,
+ "judge_cost_usd": 0.181826,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "e4fd9b7bfb9fdd2e6bcca45be4bbc59947e4f81236ed40224d74005bfbb94cbe"
+}

@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Reverses the composition direction: gold composes the immersion after f (φ ∘ f : M → N', with φ : N → N'), while produced composes it before f (f ∘ φ : E → N, with φ : E → M) — these are different maps entangling different manifolds.",
+  "Gold fixes a single immersion φ via a hypothesis `hφ : IsImmersionAt J J' n φ (f x)` at the specific point f x; produced instead universally quantifies over all φ (and all source manifolds E) inside the RHS of the iff, changing the logical role and strength of the immersion condition from 'given' to 'for all'.",
+  "Produced statement introduces an existential 'y : E with φ y = x' and asserts ContMDiffAt of f∘φ at y, which has no counterpart in gold (gold directly asserts CMDiffAt n (φ ∘ f) at x, not at some preimage point of a universally chosen map).",
+  "The immersion condition on φ in produced is split into a global smoothness clause (`∀ y, ContMDiffAt γ α φ n y`) and a global `Immersion φ` predicate, rather than gold's single local notion `IsImmersionAt` at the specific point f x — this changes what is required of φ (global immersion everywhere vs. immersion at one point).",
+  "Uses a manifold signature inconsistent with real Mathlib API: `ContMDiffAt α β f n x` and `ChartedSpace α M` are used as if α, β, γ were the relevant model parameters directly, omitting the ModelWithCorners structure (I, I', J, J') that both gold and actual Mathlib ContMDiffAt require; the declaration is not well-formed against the real definitions."
+ ],
+ "arm": "B",
+ "task_id": "fresh_035",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 42.7,
+ "judge_cost_usd": 0.123564,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "9e341f76338b1cce8a08a2328100cbc0002a81fd68f632481b474f3bee72859e"
+}

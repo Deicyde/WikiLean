@@ -1,0 +1,15 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Hypothesis is stronger than gold's: `(List.filter p l).length ≤ 1` requires at most one *position* in the list to satisfy p, whereas gold's `{x ∈ l₁ | p x}.Subsingleton` only requires at most one *distinct value* satisfying p (duplicates of the same satisfying element are allowed). E.g. l = [1,1,2] with p x = (x == 1): filter length = 2 (fails produced hypothesis) but the set {x | x ∈ l ∧ p x} = {1} is a subsingleton (satisfies gold hypothesis), and the conclusion still holds. So the produced statement is a strictly narrower special case, not equivalent to the gold theorem."
+ ],
+ "arm": "B",
+ "task_id": "fresh_033",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 43.3,
+ "judge_cost_usd": 0.130389,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "112955df164e4916f7061be0b94c62a07d08bdb0fcd8f9b0758c56b40c1ac68c"
+}

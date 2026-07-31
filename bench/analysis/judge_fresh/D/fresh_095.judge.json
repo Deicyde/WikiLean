@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Hypothesis strengthened: uses `BoundedVariationOn f s` (global finite variation, eVariationOn f s ≠ ⊤) instead of the weaker `LocallyBoundedVariationOn f s` required by the informal statement and gold",
+  "The decomposition equality is weakened from full function equality `f = p - q` to a pointwise statement only on s (`∀ x ∈ s, f x = g x - h x`), losing the global equality gold asserts",
+  "The 'combined increments equal total variation' clause is substantially weakened: gold requires the strong local/pointwise property `∀ x y ∈ s, (p y - p x) + (q y - q x) = variationOnFromTo f s x y` (increments match the signed variation between every pair of points), while produced only asserts a single global scalar equality `eVariationOn g s + eVariationOn h s = eVariationOn f s`, which is a much weaker and different mathematical claim",
+  "Mismatched quantity types in the final clause: gold uses the signed, real-valued `variationOnFromTo`, produced uses the unsigned ℝ≥0∞-valued `eVariationOn`, so even the global special case is stated over a different codomain/semantics"
+ ],
+ "arm": "D",
+ "task_id": "fresh_095",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 46.7,
+ "judge_cost_usd": 0.13582,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "79af8cd155e28ab0227cc17c29531a2d50cc8070b799aaba641eed930d710141"
+}

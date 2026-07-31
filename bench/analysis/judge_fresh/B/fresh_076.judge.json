@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Uses the raw `Representation R H` type instead of the bundled category `Rep k H`/`Rep k G`; `Representation` requires three type arguments (k, G, V) and has no Category instance on its own, so `ShortComplex (Representation R H)` is not a well-formed category object as in gold's `ShortComplex (Rep k G)`",
+  "Cites `Representation.restrict f`, which does not correspond to any known Mathlib declaration for this operation; gold uses `resFunctor f` on the bundled `Rep` category (`Rep.res`/`Rep.resFunctor`)",
+  "Strengthens the hypotheses from `Monoid G`, `Monoid H` (gold) to `Group G`, `Group H` (produced), restricting the theorem to groups instead of general monoids",
+  "Weakens the ring hypothesis from `CommRing k` (gold's effective, shadowing instance) to `Ring R` (produced), changing the class of coefficient rings covered by the claim"
+ ],
+ "arm": "B",
+ "task_id": "fresh_076",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 65.7,
+ "judge_cost_usd": 0.184301,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "bc94094c0f05647c324113418c530c789d7f43cbbf7033f99e473fe9a8237c20"
+}

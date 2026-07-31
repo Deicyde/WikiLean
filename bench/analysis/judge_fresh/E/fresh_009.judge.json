@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Uses [DivisionRing F] instead of [Field F], broadening the class of admissible F beyond what the informal statement (\"F a field\") specifies — a hypothesis change relative to gold's [Field F].",
+  "Formalizes pairwise inequivalence as `v i ≠ v j` (mere function inequality) instead of `¬(v i).IsEquiv (v j)` (topological/order inequivalence). This is a strictly weaker hypothesis: two absolute values can be distinct as functions yet equivalent (e.g. v and v^c for a positive real c ≠ 1), in which case the density conclusion actually fails, so the produced statement is not mathematically equivalent to the gold and may even be false as stated.",
+  "Uses [Fintype ι] instead of [Finite ι]; while related, Fintype carries extra data versus the Prop-valued Finite, a spelling divergence from gold.",
+  "Conclusion is spelled out as `fun x i => WithAbs.toAbs (v i) x` rather than `algebraMap F (Π i, WithAbs (v i))`; correctness depends on `WithAbs.toAbs` being the exact same map as the algebra map into WithAbs (v i), which is unverified and a nonstandard/possibly nonexistent API name."
+ ],
+ "arm": "E",
+ "task_id": "fresh_009",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 92.0,
+ "judge_cost_usd": 0.22527,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "94f10f0a838e3efc17c2812af8f37fd8a355159cdf6bb77e02c9caf24c908f1b"
+}

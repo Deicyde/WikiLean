@@ -1,0 +1,15 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Drops the [Field R] hypothesis entirely: the produced statement declares `{R : Type*}` with no algebraic structure at all, whereas gold requires R to be a Field. Without at least a semiring/ring structure the statement doesn't even elaborate (matrix multiplication, `1`, `0`, `IsUnit` all need instances), and without a field/division-ring structure specifically the rank-normal-form claim via invertible matrices is false in general — this is an essential hypothesis, not incidental."
+ ],
+ "arm": "C",
+ "task_id": "fresh_047",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 23.1,
+ "judge_cost_usd": 0.078789,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "7fb2effd60b091d17747a85d9521b6b90fedf07b0bfddc0ba7bf222e58c3e591"
+}

@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "J is left as an arbitrary matrix instead of the fixed standard symplectic form (Matrix.fromBlocks 0 (-1) 1 0) used to define symplecticGroup; this loses the required antisymmetric/nondegenerate structure",
+  "Domain is generalized from the block-paired index type l ⊕ l (guaranteeing even dimension) to an arbitrary Fin n, dropping the even-dimensionality inherent to the symplectic group",
+  "As generalized, the statement is mathematically false: e.g. take J = 1 (identity) and M a transposition permutation matrix in Fin 2 — M.transpose * J * M = J holds but det M = -1 ≠ 1, so the hypothesis does not entail the conclusion in general"
+ ],
+ "arm": "A",
+ "task_id": "fresh_048",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 26.8,
+ "judge_cost_usd": 0.090114,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "de2871333658520303bda039498a472995115a04c31d594a4644704be0e55980"
+}

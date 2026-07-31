@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": true,
+ "defects": [
+  "Nonneg hypothesis is stated on Ici (N:ℝ) instead of gold's Ioi (N:ℝ); this is only equivalent to gold's hypothesis because AntitoneOn f (Ici N) combined with nonneg on Ioi N forces f(N) ≥ f(N+1) ≥ 0 — it is not a literal restatement of the same hypothesis",
+  "Integrable hypothesis is written as Integrable f (volume.restrict (Ici (N:ℝ))) (i.e. IntegrableOn f (Ici N)) instead of gold's IntegrableOn f (Ioi (N:ℝ)); equivalent only via the fact that the singleton {N} is a null set, not a literal restatement",
+  "Conclusion is Summable (fun n => f (n + N)) (tail sequence starting at N) rather than gold's Summable (fun n => f n) (full sequence from 0); equivalent only via the standard shift-invariance of summability (summable_nat_add_iff), not the same proposition syntactically"
+ ],
+ "arm": "E",
+ "task_id": "fresh_024",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 118.3,
+ "judge_cost_usd": 0.333989,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "4b27b0df2f3fee23700e146bbfc4fb12b0beaa11bba3470043aa4fab5869dde3"
+}

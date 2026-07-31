@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Hypothesis strengthened from [CommSemiring R] to [CommRing R], dropping generality (gold only needs a semiring)",
+  "Type arguments to MvPowerSeries appear swapped: Mathlib's MvPowerSeries takes (index type σ, coefficient ring R) in that order, but produced writes `MvPowerSeries R X` with the CommRing-constrained R in the index slot and the unconstrained X in the coefficient-ring slot, leaving the actual coefficient type X without any Semiring/CommRing instance needed for `g^n`, `*`, and partialDeriv to even typecheck",
+  "Scalar cast `(n : R) * g^(n-1)` is applied against the wrong ring given the swapped argument order, compounding the type mismatch rather than matching gold's `n * g^(n-1)` cast into the power series ring"
+ ],
+ "arm": "B",
+ "task_id": "fresh_081",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 65.7,
+ "judge_cost_usd": 0.184426,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "a6e9fd566093694726dc3a1e77ea6ddd9710ca6f0b0b0d9bd46052cca9e945aa"
+}

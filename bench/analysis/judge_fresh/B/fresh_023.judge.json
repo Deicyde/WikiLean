@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "hf_nonneg requires 0 ≤ f x for all x ∈ ℝ, but gold only requires nonnegativity on Ioi 0 — hypothesis strengthened over an unnecessary domain",
+  "hf_antitone requires Antitone f globally on ℝ, but gold only requires AntitoneOn f (Icc 0 N) — hypothesis strengthened, and also loses the N-dependence of the antitonicity requirement",
+  "hf_integrable requires Integrable f (integrable over all of ℝ w.r.t. volume), but gold only requires IntegrableOn f (Ioi 0) — a much stronger and more restrictive hypothesis (in fact forces f to vanish a.e. on (-∞,0] given the other hypotheses), making the theorem apply to a strictly narrower class of functions than gold's"
+ ],
+ "arm": "B",
+ "task_id": "fresh_023",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 35.6,
+ "judge_cost_usd": 0.113714,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "ecdd4ac27e388b6052afab699290d44b65a92f3b68e5513b5fdfeaaf161de9c1"
+}

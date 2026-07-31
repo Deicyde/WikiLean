@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Drops the general ambient set s entirely: gold computes eVariationOn over s ∩ Icc a b for f only required to be MonotoneOn s (with a, b ∈ s); produced statement has no set s at all and only computes over Icc a b directly, losing the 'part of a set lying in an interval' generality that is the core content of the informal statement.",
+  "Strengthens the monotonicity hypothesis from MonotoneOn f s (monotone only on the given set) to Monotone f (monotone on all of ℝ), which is a materially different and less general hypothesis.",
+  "Specializes the ambient order type from a general LinearOrder α to ℝ specifically, losing generality present in the gold statement.",
+  "Uses the identifier `totalVariation`, which is not a standard Mathlib declaration for this notion (Mathlib's relevant definition is `eVariationOn`); this looks like a non-existent/invented function.",
+  "Type/codomain mismatch: gold's conclusion is an equation in ℝ≥0∞ (eVariationOn ... = ENNReal.ofReal (f b - f a)), while produced statement asserts equality directly in ℝ with no ENNReal/ofReal wrapping, changing the structure of the equality."
+ ],
+ "arm": "B",
+ "task_id": "fresh_088",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 36.6,
+ "judge_cost_usd": 0.116826,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "75363ce00ea9fd477c7e36eace1c57e4adf0b20187cbd9cfc42a678bcb90ac51"
+}

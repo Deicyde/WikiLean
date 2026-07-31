@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Gold fixes a single (arbitrary but given) immersion φ as an explicit parameter with hypothesis `IsImmersionOfComplement F J J' n φ`, and the iff `CMDiff n f ↔ Continuous f ∧ CMDiff n (φ ∘ f)` is stated per-φ (so the backward direction only needs ONE such immersion, i.e. an existential-strength hypothesis when aggregated over all valid φ). The produced statement instead embeds a universal quantifier over ALL immersions g inside the RHS of the iff (`∀ g, IsImmersion g → ContMDiff (g ∘ f)`), making the backward direction require the composition property to hold for every immersion simultaneously — a materially different (and strictly weaker/different) proposition, not a restatement of gold.",
+  "Produced uses the plain `IsImmersion` predicate instead of gold's more specific `IsImmersionOfComplement` (which carries an explicit complement space F), dropping/altering the technical 'admits a complement' hypothesis on the immersion that the theorem in gold relies on.",
+  "Because the immersion is universally quantified in the produced statement, instantiating at a trivial immersion such as the identity map M' → M' collapses `ContMDiff I I'' n (g ∘ f)` to `ContMDiff I I' n f` itself, making the backward direction of the produced iff nearly tautological/circular and not capturing the nontrivial theorem content expressed in gold.",
+  "The 'further manifold' N' in gold is a fixed target of the given immersion φ, whereas in produced it is universally quantified (∀ M''), changing the logical role of the further manifold from a fixed given object to an arbitrarily-ranging one."
+ ],
+ "arm": "C",
+ "task_id": "fresh_036",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 99.5,
+ "judge_cost_usd": 0.269439,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "2b15f504eb176a40fe6e2cb7832735aff34cd8cb3ebbaacd6f6b7069d4269ef9"
+}

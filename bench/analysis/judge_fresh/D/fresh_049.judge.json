@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Missing [MeasurableSpace α] on the domain type — without it \"Measurable f\" cannot even be stated/typechecked",
+  "Missing [MeasurableSingletonClass α], which the gold statement needs to convert countability of the complement into measurability of that set",
+  "Missing [OpensMeasurableSpace α] on the domain (present in gold); instead the produced statement puts an OpensMeasurableSpace-type constraint on the codomain β, which is the wrong side",
+  "Codomain β is only required to be [OpensMeasurableSpace β] instead of the stronger [BorelSpace β] (matching gold's γ), which is insufficient to conclude measurability of f from continuity when β's σ-algebra can properly contain the Borel σ-algebra"
+ ],
+ "arm": "D",
+ "task_id": "fresh_049",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 54.1,
+ "judge_cost_usd": 0.170826,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "434687a52b15ec45110b6640d5f3dc25a5f71c40a6c5af63ccdb466d1aa958f0"
+}

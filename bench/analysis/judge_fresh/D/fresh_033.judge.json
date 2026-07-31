@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Predicate type mismatch: gold uses p : α → Bool as required by List.find?/List.countP; produced declares p : α → Prop with [DecidablePred p], which does not directly typecheck as the Bool-valued argument these core list functions expect (would need an explicit `decide`/Bool-valued wrapper).",
+  "Hypothesis strength mismatch: gold's hypothesis {x ∈ l₁ | p x}.Subsingleton only requires at most one DISTINCT VALUE in l₁ satisfying p (duplicates of that value are fine), whereas produced's l.countP p ≤ 1 requires at most one OCCURRENCE/position satisfying p. countP ≤ 1 implies Subsingleton but not conversely (e.g. l₁ = [1,2,1] with p x := x=1 has countP = 2 but the filtered set {1} is still subsingleton), so produced's hypothesis is strictly stronger than gold's, making produced a weaker/less general theorem."
+ ],
+ "arm": "D",
+ "task_id": "fresh_033",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 59.7,
+ "judge_cost_usd": 0.172757,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "4b56de846720e4eb80b7330d4b4d29299d792b88742d8b4207cc1e7a84c2e0e1"
+}

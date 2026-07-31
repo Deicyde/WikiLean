@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Uses `variationOn` instead of Mathlib's `eVariationOn`; Mathlib's BoundedVariation file has no two-argument real-valued `variationOn (f) (s)` declaration (the real-valued variant that exists, `variationOnFromTo`, takes four arguments and has a different definition), so this likely cites a nonexistent/fabricated declaration",
+  "Drops the general ambient set `s` and hypotheses `a ∈ s`, `b ∈ s`; only covers the special case s = univ (variation over Set.Icc a b alone) instead of variation over s ∩ Icc a b for arbitrary s containing a, b",
+  "Adds hypothesis `hab : a ≤ b` that is not present in the gold statement (gold avoids this via ENNReal.ofReal clamping negative differences to 0, remaining valid for a > b as well)",
+  "Equality is stated in ℝ (`= b - a`) rather than in ℝ≥0∞ via `ENNReal.ofReal (b - a)` as in the gold, changing the semantics/type of the conclusion"
+ ],
+ "arm": "B",
+ "task_id": "fresh_093",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 38.3,
+ "judge_cost_usd": 0.127664,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "0c258b9d1cd1b0d67648205303f598be3fa219966b62615601e7af0aed1a909f"
+}

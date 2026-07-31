@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Missing the `[LinearOrder α]` hypothesis on the domain type α that the gold's outer `variable` block supplies; the notion of bounded variation requires an order on α (to index monotone point sequences), so dropping this hypothesis changes/weakens the statement",
+  "Conclusion uses `BddVarOn f s` instead of the actual Mathlib predicate `BoundedVariationOn f s`; `BddVarOn` does not appear to be an existing Mathlib declaration, so the statement likely does not even type-check or refers to an undefined/different notion"
+ ],
+ "arm": "B",
+ "task_id": "fresh_089",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 24.9,
+ "judge_cost_usd": 0.088251,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "a11396d673061ec3feaf4b79949a409b679503eac09fbdb43824912a8c3ad92b"
+}

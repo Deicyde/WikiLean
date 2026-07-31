@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Conclusion uses Module.rank (cardinal-valued dimension) instead of finrank (ℕ-valued, truncated-at-infinity dimension) as in the gold statement; these are genuinely different functions — rank equality is a strictly stronger, non-equivalent claim (it would imply finrank equality via Cardinal.toNat, but finrank equality does not imply rank equality, e.g. when both ranks are infinite), so this is not a mere notational variant.",
+  "N is only assumed [AddCommMonoid N] rather than [AddCommGroup N] as in gold (and as standard for an actual module in the informal statement), weakening/altering the algebraic structure assumed for N.",
+  "Drops gold's general localized-module framework entirely: no Submonoid p, no [IsLocalization p S], no auxiliary R-module M with f : M →ₗ[R] N and [IsLocalizedModule p f], and no hp : p ≤ R⁰ — produced only covers the narrow case where N is directly a module over the canonical FractionField R, not gold's general 'N is the localization of some M at p ≤ R⁰' setup.",
+  "Uses the concrete type FractionField R in place of gold's abstract S together with [IsFractionRing R S], so the statement is tied to one canonical construction rather than any type satisfying IsFractionRing.",
+  "Adds an explicit [IsDomain R] hypothesis that is not among gold's stated variables."
+ ],
+ "arm": "B",
+ "task_id": "fresh_041",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 157.8,
+ "judge_cost_usd": 0.406426,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "84b0c17bd3065ad2020529cd385630b9f7d2d675f5b41f5daaf88fb492be0017"
+}

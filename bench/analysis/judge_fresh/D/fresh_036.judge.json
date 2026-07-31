@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Replaces the gold's single fixed immersion φ (satisfying IsImmersionOfComplement) with a universal quantifier over ALL manifolds N and ALL immersions g : M' → N satisfying ContMDiff n g; this changes the logical content of the theorem (e.g. the reverse direction becomes essentially trivial by taking N = M', g = id, since id is always an immersion and ContMDiff, making 'Continuous f' and the immersion-composition hypothesis unnecessary to derive ContMDiff n f)",
+  "Uses the plain 'Manifold.IsImmersion' hypothesis instead of gold's stronger 'IsImmersionOfComplement', dropping the extra structural ('complement') condition on the immersion that is presumably required to make the backward ('if') direction of the equivalence true in general",
+  "Forces the further manifold N to share the exact same chart model type H as M and M' (via [ChartedSpace H N]), rather than allowing an independent model space/ModelWithCorners as in gold (which uses distinct G, G', J, J'); this is an unjustified restriction on what 'a further manifold' can be",
+  "Omits the ModelWithCorners parameters (I, I', J, J') that ContMDiff actually requires as explicit arguments in Mathlib; 'ContMDiff n f' and 'ContMDiff n g' are stated without any model-with-corners context, unlike gold which carries I, J, J' throughout, so the statement is structurally underspecified/likely does not correspond to the real ContMDiff signature",
+  "Variable/manifold naming swaps roles versus gold (f : M → M' plus immersions into N, vs gold's f : M → N plus fixed immersion into N'), which is fine on its own, but combined with the above issues the overall proposition is materially different, not just a renaming"
+ ],
+ "arm": "D",
+ "task_id": "fresh_036",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 54.0,
+ "judge_cost_usd": 0.16427,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "191472dad355301ff379f3bbf9f6e38cdef18fb2fdf671797b50635376d11534"
+}

@@ -1,0 +1,20 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Drops the central hypothesis `f.IsFinitelySemisimple` entirely — the theorem is stated for an arbitrary endomorphism, not a finitely-semisimple one",
+  "Uses `⨁` (DirectSum big-operator notation) instead of `⨆` (iSup); as written `⨁ μ : K, Module.End.generalizedEigenspace f μ = ⊤` binds the equality inside the binder, producing a direct sum of Props rather than an iSup-equals-top statement — does not typecheck / does not express the gold's `(⨆ μ, f.maxGenEigenspace μ) = ⊤`",
+  "Right-hand side uses `Diagonalizable K f`, which is not a real Mathlib declaration (no such bundled predicate exists); gold's RHS is `(⨆ μ, f.eigenspace μ) = ⊤`",
+  "Uses `generalizedEigenspace` instead of gold's `maxGenEigenspace`, a different/likely nonexistent declaration name for the generalized-eigenspace-sup concept",
+  "Unnecessarily restricts to `Field K`, `FiniteDimensional K V`, and `AddCommMonoid V` instead of gold's general `CommRing R`, `AddCommGroup M`, arbitrary `Module R M` — narrows the scope of the theorem",
+  "No `open`/variable structure matching gold; overall statement does not typecheck as written"
+ ],
+ "arm": "A",
+ "task_id": "fresh_044",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 30.1,
+ "judge_cost_usd": 0.100364,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "8bf0ffebf5d827bc1dd08e9162a451778f16e73c6c32c270d6fd21b981ff9278"
+}

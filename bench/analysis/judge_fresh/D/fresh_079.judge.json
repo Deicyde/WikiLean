@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "The constant-rank hypothesis is vacuous: `∀ q, Ideal.IsPrime q → ∃ (k : ℕ), True` is trivially true for any q (the existential body is `True`), so it encodes no actual constraint on rank at all, let alone that rankAtStalk is constant and equal to rankAtStalk at p across maximal ideals — this is the core mathematical content of the theorem and it is missing.",
+  "M is required to be an AddCommMonoid rather than AddCommGroup, weakening/changing the algebraic structure expected of a module.",
+  "Conclusion is phrased via M ⊗[R] Localization.Away a R rather than LocalizedModule.Away a M; while localization can be expressed as a tensor product, the produced signature 'Localization.Away a R' incorrectly supplies R as an explicit argument to Localization.Away, which does not take the ring as a separate parameter.",
+  "hfinite and hflat are stated as ordinary hypotheses (Module.Finite R M, Module.Flat R M) rather than as instances, and hprime as Ideal.IsPrime p rather than the instance [p.IsPrime] — a stylistic difference but combined with the other issues indicates a generally loose transcription."
+ ],
+ "arm": "D",
+ "task_id": "fresh_079",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 38.2,
+ "judge_cost_usd": 0.117239,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "ae58c53ba042fb64d4565ec1696c6ad4bbc4b04cc0c6893c290c68b136a8a2a6"
+}

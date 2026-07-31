@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Conclusion uses Module.rank (cardinal-valued dimension) instead of finrank (ℕ-valued Module.finrank) as in gold; rank equality is strictly stronger than finrank equality (finrank = rank.toNat), so the two conclusions are not equivalent — rank equality implies finrank equality but not conversely (e.g. two distinct infinite ranks would give finrank equality without rank equality)",
+  "Adds hypothesis [Field S] that is not present in, nor implied by, gold's hypotheses (gold only assumes CommRing S together with IsLocalization p S / IsFractionRing R S, without requiring R to be a domain); IsFractionRing R S does not force S to be a field when R has zero divisors (e.g. R = ℤ/6ℤ, where the nonzerodivisors are units and the localization is isomorphic to R itself, not a field), so this is a strictly stronger/added hypothesis restricting generality"
+ ],
+ "arm": "C",
+ "task_id": "fresh_041",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 84.7,
+ "judge_cost_usd": 0.241739,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "0118a544954044325e93a945a926dea02015084f4834be63e6a13d71bd87b715"
+}

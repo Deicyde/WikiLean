@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Restricts to endomorphisms f : E →L[ℝ] E instead of gold's general linear map f : U →ₗ[𝕜] V between possibly different inner product spaces U and V",
+  "Restricts the field to ℝ only, dropping gold's general RCLike 𝕜 (e.g. ℂ) hypothesis",
+  "Uses `Orthonormal ℝ e` (a mere orthonormal family indexed by an arbitrary Fintype ι) instead of `OrthonormalBasis ι 𝕜 U`; without forcing Fintype.card ι = finrank E this is a weaker/incorrect hypothesis, since for a non-spanning orthonormal family the stated equation need not hold",
+  "Misuses `LinearMap.toMatrix'`, which is defined only for linear maps between pi-type modules (n → R) →ₗ[R] (m → R); applying it to f.toLinearMap : E →ₗ[ℝ] E for an abstract finite-dimensional inner product space E does not type-check since no basis/identification with a pi type is supplied",
+  "Even setting aside the type error, using det of a basis-dependent matrix representation (via toMatrix') rather than the gold's basis-independent f.normDet means the produced conclusion is not obviously the same quantity as gold's normDet ^ 2"
+ ],
+ "arm": "B",
+ "task_id": "fresh_012",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 76.4,
+ "judge_cost_usd": 0.218957,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "a8881577b7a6fe4a8631bbeb741d727851ede5b8d9e6da9854dc7cf7d02e2d34"
+}

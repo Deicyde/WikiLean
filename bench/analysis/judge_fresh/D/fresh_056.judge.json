@@ -1,0 +1,15 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Uses `(s.toJordanDecomposition.posPart E : ℝ)` / `(... .negPart E : ℝ)`, i.e. a bare type-ascription coercion from `ℝ≥0∞` to `ℝ`. Mathlib provides no such `Coe ℝ≥0∞ ℝ` instance (only `ENNReal.toReal`/`Measure.real`, used explicitly), so as written this almost certainly fails to elaborate rather than matching the gold's `Measure.real` (`.real i`, i.e. `(μ i).toReal`)."
+ ],
+ "arm": "D",
+ "task_id": "fresh_056",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 32.5,
+ "judge_cost_usd": 0.106233,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "724a8b494f2626b9ace9deb2159a3420cd536dd6aca61dda17e19aae649aafed"
+}

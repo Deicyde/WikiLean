@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Adds an extra hypothesis `h : ∀ x y : β, x < y → a • x < a • y` (monotonicity of scalar mult by a) that is not present in the gold and is not derivable from the stated typeclasses (`DistribMulAction ℝ β`, `Preorder β`, `0 < a`) alone — in the gold this fact is instead derived automatically from the `PosSMulStrictMono α β` instance together with `ha : 0 < a`. This trivializes the theorem (its proof becomes mere composition of hf and h) and changes the mathematical content.",
+  "Fixes the scalar type to ℝ via `[DistribMulAction ℝ β]` instead of a general ordered scalar type α with `[Zero α] [Preorder α] [SMul α β]`, losing the generality of the gold statement.",
+  "Uses `DistribMulAction` instead of an order-compatible typeclass (e.g. `PosSMulStrictMono`) that actually encodes 'positive scalars preserve strict order', so the produced typeclass assumptions do not capture the intended mathematical content."
+ ],
+ "arm": "A",
+ "task_id": "fresh_007",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 36.4,
+ "judge_cost_usd": 0.110739,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "534783051baea238136f4c9b25b1f691030c01553723ea5264219ccbd37e2180"
+}
