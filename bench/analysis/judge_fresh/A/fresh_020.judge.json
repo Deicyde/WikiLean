@@ -1,0 +1,20 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Uses global Antitone f instead of AntitoneOn f (Ici N) restricted to a ray, dropping the ray parameter N",
+  "Uses global nonneg (∀ x, 0 ≤ f x) instead of nonneg only on Ioi N, an unwarranted strengthening",
+  "Summable (f ∘ Int.cast) sums over all of ℤ (including negative integers), not over ℕ shifted by N as in gold's Summable (fun n ↦ f (n+N)); this is a materially different and stronger condition",
+  "Combining global Antitone, global nonnegativity, and two-sided ℤ-summability forces f to be identically 0 (a non-decreasing nonneg sequence tending to 0 as index → -∞ must vanish, and antitone+nonneg then forces f ≡ 0 everywhere), making the produced theorem vacuous/trivial rather than expressing the intended integral-test-converse content",
+  "No parameter N ties hypotheses to conclusion; conclusion instead existentially quantifies an unrelated a : ℝ, disconnected from the ray used in the hypotheses",
+  "Conclusion phrased as ∃ a, Integrable (indicator (Ici a) f) rather than IntegrableOn f (Ioi N) for the specific N from the hypotheses, changing the logical structure of the statement"
+ ],
+ "arm": "A",
+ "task_id": "fresh_020",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 63.7,
+ "judge_cost_usd": 0.181889,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "0f3b154eed54c3c08fcd8d95f42103363da575af7ce702ffe52d3be2fe7317b0"
+}

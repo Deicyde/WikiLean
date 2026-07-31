@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Adds an extra hypothesis h_smooth : ContDiff 𝕜 n f that is identical to the conclusion, making the theorem a trivial tautology (proof is literally `h_smooth`) rather than expressing that immersion implies smoothness",
+  "Uses ContDiff (smoothness for maps between normed vector spaces) instead of ContMDiff/CMDiff (smoothness for maps between manifolds via charts and model with corners), failing to capture the manifold structure central to the gold statement",
+  "Missing the model-with-corners data I, J (and J' etc.) and the auxiliary space F used in gold's IsImmersionOfComplement F I J n f",
+  "'Immersion f' is an undefined/unspecified hypothesis not matching gold's IsImmersionOfComplement structure",
+  "Does not use ChartedSpace/manifold typeclasses at all, so M and N are not established as manifolds in the produced statement"
+ ],
+ "arm": "B",
+ "task_id": "fresh_037",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 15.3,
+ "judge_cost_usd": 0.061876,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "a0da5626cd528893561a9ac09aebe98aa9754893587e8a1efdb20a3828162460"
+}

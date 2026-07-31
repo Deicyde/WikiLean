@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Adds an extra hypothesis `hI : IsMaximal I` that is not present in the gold statement and is not implied by the other hypotheses (P.IsMaximal and the lying-over relations do not force I to be maximal without an integrality assumption), so the produced theorem is a strictly weaker/different proposition than the gold's more general result.",
+  "Missing `Algebra R T` and `IsScalarTower R S T` (or equivalent) — with only `[Algebra R S] [Algebra S T]` declared, there is no automatic instance giving R a module/algebra action compatible with T, so `FiniteDimensional.finrank (R ⧸ p) (T ⧸ I)` has no canonical Module (R⧸p) (T⧸I) instance and the statement likely fails to elaborate as intended (or silently picks up an unintended/ambiguous instance)."
+ ],
+ "arm": "B",
+ "task_id": "fresh_068",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 53.8,
+ "judge_cost_usd": 0.156139,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "f3d50f74391ea5d087bbbf2335fa524db0870d74d6f8fdef2c7b7c129e9abfe3"
+}

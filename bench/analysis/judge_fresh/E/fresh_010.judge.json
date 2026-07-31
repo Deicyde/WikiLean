@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Restricts to LinearIsometryEquiv (a bijective self-map f : E ≃ₗᵢ[𝕜] E) instead of a general linear isometry f : U →ₗᵢ[𝕜] V between possibly distinct spaces U, V — domain and codomain are forced to be equal and the map forced to be invertible, which is a much narrower class of maps than the gold statement covers",
+  "Uses ordinary LinearMap.det (only defined for endomorphisms) instead of the gold's LinearMap.normDet, the generalized orthonormal-basis determinant defined for linear maps between possibly different (and possibly differently-dimensioned) inner product spaces — this loses the whole point of the gold theorem (it applies even when domain ≠ codomain)",
+  "Drops the third ambient space W present in gold's variable context and collapses U, V into a single space E, losing the generality that only the domain need be finite-dimensional while codomain(s) need not be",
+  "Typeclass hypotheses are inconsistent/likely fail to elaborate: [InnerProductSpace 𝕜 E] requires an [RCLike 𝕜] instance, but the statement only provides [NontriviallyNormedField 𝕜]; likewise InnerProductSpace requires [NormedAddCommGroup E] but only [SeminormedAddCommGroup E] is given",
+  "States conclusion as ‖LinearMap.det ...‖ = 1 rather than the gold's f.toLinearMap.normDet = 1, changing which defined quantity is being asserted equal to 1"
+ ],
+ "arm": "E",
+ "task_id": "fresh_010",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 46.8,
+ "judge_cost_usd": 0.129145,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "600a92d6662e7b9b22fa872666d41c1bb9f1d7569e6587f1bef3be7aa2bd8e90"
+}

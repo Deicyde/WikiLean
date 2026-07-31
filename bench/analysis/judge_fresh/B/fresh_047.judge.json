@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": true,
+ "defects": [
+  "Uses an existentially quantified r ≤ n instead of directly referencing M.rank; equivalence to the gold requires the nontrivial fact that rank is invariant under left/right multiplication by invertible matrices (so r is forced to equal M.rank), rather than being a direct syntactic match",
+  "Represents the target block form as an explicit entrywise if-then-else formula (1 when i<r and i=j) instead of gold's fromBlocks 1 0 0 0 submatrix'd by an arbitrary equivalence e; this fixes the identity block to the initial segment of indices rather than allowing an arbitrary placement via e, though the difference is absorbed into the freedom of choosing P, Q (including permutation matrices), preserving mathematical equivalence"
+ ],
+ "arm": "B",
+ "task_id": "fresh_047",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 89.3,
+ "judge_cost_usd": 0.23202,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "566e5f3bafd1f07fa0b274f10cae88f7085b1e4e18af58e959a138e790b14922"
+}

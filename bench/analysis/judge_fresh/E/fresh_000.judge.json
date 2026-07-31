@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "The conclusion drops the essential 'lifts to' relationship: gold requires the localized image of the constructed map to equal s • φ for some s ∈ S (i.e. the lift genuinely reproduces the given surjective map up to a unit multiple), whereas the produced statement's conclusion `∃ h, Function.Surjective (LocalizedModule.map S h)` makes no reference to φ at all — it only asserts existence of some map with surjective localization, disconnected from the given hypothesis map, which is a strictly weaker/different claim.",
+  "The auxiliary existential witness s : S and its defining equation `IsLocalizedModule.map S f g φ = s • ϕ` from the gold statement are entirely absent from the produced conclusion.",
+  "Produced statement is specialized to the canonical localized module `LocalizedModule S M`/`LocalizedModule S N` and the ring `Localization S`, rather than gold's general setting of arbitrary modules Mₚ, Nₚ satisfying `IsLocalizedModule S f`/`IsLocalizedModule S g`, reducing stated generality (only equivalent to gold via an extra unstated transport/uniqueness-of-localization argument)."
+ ],
+ "arm": "E",
+ "task_id": "fresh_000",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 111.6,
+ "judge_cost_usd": 0.484421,
+ "num_turns": 1,
+ "attempts": 2,
+ "prompt_sha256": "3ee13210757fd5a3346471de84279b4eca6ff3dc80e65b65fff2106de52b1990"
+}

@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Calls `Complex.zeta`, which is not a Mathlib declaration — the Riemann zeta function is `riemannZeta : ℂ → ℂ` (top-level, not in the `Complex` namespace); as written this identifier does not exist",
+  "Uses `Nat.ArithmeticFunction.vonMangoldt`, an outdated/nonexistent namespace path — current Mathlib defines this as `ArithmeticFunction.vonMangoldt` (matching the gold's `open ArithmeticFunction` and `Λ` notation) without the `Nat.` prefix",
+  "Because both cited names are not resolvable as given, the produced statement cannot be confirmed to type-check or to denote the same objects as the gold, even though the intended shape (log of Re(ζ(s)) = ∑' Λ(n)/(n^s log n)) mirrors the gold"
+ ],
+ "arm": "A",
+ "task_id": "fresh_060",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 45.0,
+ "judge_cost_usd": 0.139445,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "225318a38df3ac09535030b8696c6fc98d9461c96609eb9ef41fa3a9ffa8e5ba"
+}

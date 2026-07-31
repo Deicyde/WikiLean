@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Restricts to 𝕜 = ℂ only, whereas gold is stated for general RCLike 𝕜 (covers ℝ and ℂ)",
+  "Requires a linear isometric equivalence f : E ≃ₗᵢ F (hence bijective, and both E and F finite-dimensional) instead of a general linear isometry f : U →ₗᵢ V (only injective, target V need not be finite-dimensional) as in gold",
+  "Uses arbitrary bases basis_E, basis_F with no orthonormality requirement, whereas the informal/gold notion of norm-determinant is defined via orthonormal bases; using arbitrary bases changes the mathematical content",
+  "States mere existence of some pair of bases making |det| = 1 rather than asserting a canonically-defined invariant (normDet) equals 1 for the (orthonormal) basis-independent quantity; since basis_F can be chosen as the image of basis_E under f, the matrix becomes the identity and the claim becomes trivially true, not capturing the substantive content of the gold theorem",
+  "Drops the W type variable/section context (minor, unused in gold theorem itself)"
+ ],
+ "arm": "D",
+ "task_id": "fresh_010",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 32.5,
+ "judge_cost_usd": 0.10282,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "af14134259799c4e39fffe7091621781d041a5c1feacc3b3681945cf91ea93f3"
+}

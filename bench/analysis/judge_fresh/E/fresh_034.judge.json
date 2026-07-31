@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "The quantifier over the auxiliary immersion is moved inside the RHS of the iff (∀ g, IsImmersion g → ContMDiff (g∘f)) instead of being an outer parameter/hypothesis of the lemma as in gold (fixed φ with hφ : IsImmersion φ). This changes the theorem's content: gold asserts that composing with a SINGLE (arbitrary but fixed) C^n immersion suffices to reflect C^n-ness of f, given continuity; produced instead requires composition with EVERY immersion into every target to be C^n, which is a materially different (and much weaker/near-trivial) statement — its backward direction is satisfiable just by instantiating the identity map as the immersion, without invoking the substantive 'immersions reflect regularity' fact.",
+  "Because of this quantifier restructuring, the produced statement is not logically equivalent to the gold: gold's per-φ iff implies produced's statement, but produced's statement does not imply gold's per-φ iff (knowing C^n-ness of g∘f for one immersion is not derivable from the ∀-wrapped hypothesis).",
+  "Produced adds typeclass hypotheses [IsManifold I n M], [IsManifold I' n N], [IsManifold I'' n P] that are not present in the shown gold variable context (though these may be implicit from the source file, this cannot be confirmed from the given excerpt)."
+ ],
+ "arm": "E",
+ "task_id": "fresh_034",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 146.6,
+ "judge_cost_usd": 0.283226,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "cb29de830aa8f51202eda285784bb650493da0f75a083f7c003da70bdc7f9152"
+}

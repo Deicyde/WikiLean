@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Uses identifier `BddVariationOn`, which is not a standard Mathlib declaration (the correct name is `BoundedVariationOn`), so the statement likely does not even typecheck as intended",
+  "Adds hypothesis `hab : a ≤ b` not present in the gold statement, which is unnecessary since BoundedVariationOn holds vacuously/trivially when a > b (Icc a b empty), so this narrows the statement's generality"
+ ],
+ "arm": "A",
+ "task_id": "fresh_087",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 14.0,
+ "judge_cost_usd": 0.055707,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "3bb6ab0e3e27c89d6b4406f12011f1554f11d0ad20db12ff8f2656e0b77a03ac"
+}

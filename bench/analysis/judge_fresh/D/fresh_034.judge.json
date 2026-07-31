@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "`ContMDiff n f` supplies only the smoothness order and the map, omitting the required source/target `ModelWithCorners` arguments (`ContMDiff` needs `I I' n f`); as written the target's model is never specified, which is a type-correctness defect distinct from the gold's explicit `I`, `J` models.",
+  "Restricts the target manifold N and the auxiliary manifold P to the *same* charted space `H` as the domain M (`[ChartedSpace H N]`, `[ChartedSpace H P]`), whereas the gold (and the informal statement's 'further manifold') allows completely independent model spaces (J : ModelWithCorners 𝕜 E'' G, J' : ModelWithCorners 𝕜 E''' G'). This is an unjustified narrowing of the class of manifolds considered.",
+  "Replaces the gold's fixed/given C^n immersion φ (an explicit hypothesis of the lemma) with a nested universal quantifier '∀ P g, ContMDiff n g → IsImmersion g → ContMDiff n (g∘f)' ranging over all P and g simultaneously — a different logical structure from the gold's single-φ formulation, and combined with the H-restriction above it is not evidently equivalent (the quantifier no longer ranges over genuinely arbitrary target manifolds).",
+  "Calls `Manifold.IsImmersion g` with no smoothness-order or model arguments, while the gold's `IsImmersion` takes explicit `J J' n φ` (i.e. is parametrized by the smoothness class n); the produced statement's immersion predicate appears to have mismatched arity relative to the actual declaration, and separately imposes `ContMDiff n g` as an extra conjunct rather than the immersion notion carrying its own smoothness data.",
+  "No universe-polymorphic manifold data (E'' as Type u) is preserved; the produced statement collapses all manifold-related types to reuse `E`/`H`, losing the generality of independent normed spaces/model spaces present in the gold."
+ ],
+ "arm": "D",
+ "task_id": "fresh_034",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 118.1,
+ "judge_cost_usd": 0.313658,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "b085ce61e69a6694f0629e2ba38ac153e8fe67867939053cce1b3ef5eb120484"
+}

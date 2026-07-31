@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Uses `[SeminormedAddCommGroup E]` instead of `[NormedAddCommGroup E]`; `InnerProductSpace 𝕜 E` in Mathlib requires `[NormedAddCommGroup E]` as its underlying group structure, and `NormedAddCommGroup` is not derivable from `SeminormedAddCommGroup`, so `[InnerProductSpace 𝕜 E]` likely fails to elaborate given only a seminormed group instance — this is a genuine typeclass defect, not just a cosmetic rewording",
+  "Inner product notation `⟪w, v⟫` / `⟪u, v⟫` omits the field subscript `_𝕜` that Mathlib's standard notation requires (gold uses `⟪v, u⟫_𝕜`), which may fail to parse/elaborate as written",
+  "Replaces gold's `[Fact (finrank 𝕜 E = 2)]` instance with an explicit hypothesis `h_dim : finrank 𝕜 E = 2` plus an added `[FiniteDimensional 𝕜 E]` instance parameter — mathematically redundant/derivable rather than a genuine strengthening, but a structurally different (non-drop-in) formulation from the gold's Fact-based dimension hypothesis"
+ ],
+ "arm": "D",
+ "task_id": "fresh_013",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 69.1,
+ "judge_cost_usd": 0.216445,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "446ea2fee1d2b38369e345709aacff2240a464e28b1980ceca6cdedfadb308e9"
+}

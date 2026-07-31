@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Uses an undefined/non-standard predicate \"Ramifies p K\" instead of Mathlib's Algebra.IsUnramifiedIn on the ideal span {p}; this identifier does not appear to exist in Mathlib, so the conclusion cannot be verified as equivalent to the gold's precise unramified-ideal formulation",
+  "Does not introduce or parameterize over the ring of integers 𝒪 (with IsIntegralClosure 𝒪 ℤ K) as the gold does — ramification is stated directly on K/p with no explicit ring of integers, leaving the meaning of \"Ramifies\" ambiguous",
+  "Uses Algebra ℚ K plus NumberField K as hypotheses rather than the gold's minimal Field K + NumberField K setup, though this is likely harmless since NumberField implies the algebra structure"
+ ],
+ "arm": "A",
+ "task_id": "fresh_067",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 16.8,
+ "judge_cost_usd": 0.06672,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "fcaabee4f6a4a43260eb675a11353ef946fed211e969ef03020a401a5d8b26c1"
+}

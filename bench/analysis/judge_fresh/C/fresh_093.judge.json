@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Fixes the set s to Set.univ instead of keeping s as a general free variable, dropping the 'part of a set' generality (and the a ∈ s, b ∈ s hypotheses) that is central to the informal statement",
+  "Uses variationOnFromTo (a real-valued function defined via .toReal of eVariationOn, with sign branching on a ≤ b) instead of eVariationOn (the ℝ≥0∞-valued extended variation) — a different, derived notion rather than the same one used in gold",
+  "Adds a hypothesis a ≤ b not present in the gold statement; gold holds unconditionally for all a, b since s ∩ Icc a b and ENNReal.ofReal(b-a) both degenerate correctly when b < a"
+ ],
+ "arm": "C",
+ "task_id": "fresh_093",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 42.2,
+ "judge_cost_usd": 0.129645,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "7445e684970e33a3aa56f3e317db675eca2902cdd170b0da00939e0a65be2baf"
+}

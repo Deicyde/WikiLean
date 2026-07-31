@@ -1,0 +1,20 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Typeclass `ConditionalCompleteLinearOrder` does not exist in Mathlib (should be `ConditionallyCompleteLinearOrder`) — this is a nonexistent identifier / typo",
+  "Missing `[TopologicalSpace α]` instance entirely, so `ContinuousOn` cannot even elaborate",
+  "Missing `[OrderTopology α]` hypothesis present in gold",
+  "Missing `[DenselyOrdered α]` hypothesis present in gold — without it the theorem is false in general (e.g. a discrete-topology linear order admits a fixed-point-free self-map of a finite interval), so this omission is not merely cosmetic",
+  "Redundant/odd `[Preorder α]` instance alongside `[ConditionallyCompleteLinearOrder α]`, which already extends Preorder",
+  "Uses `Set.Icc a b` with an added explicit hypothesis `a ≤ b` instead of gold's `uIcc a b`, narrowing the statement to only the pre-ordered case rather than the symmetric/unordered interval covered by gold"
+ ],
+ "arm": "D",
+ "task_id": "fresh_098",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 38.4,
+ "judge_cost_usd": 0.12262,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "edad5c47d2770405b90e63e9bcd79926a2e2670a77f000cde4f2815dc0d5f300"
+}

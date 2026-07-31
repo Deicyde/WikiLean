@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Adds hypothesis `a0 ∈ f.support` that is not required by the gold's `UniqueMul` condition (UniqueMul only constrains pairs whose product equals a0*b0; it does not assert a0 itself is in the support)",
+  "Adds hypothesis `b0 ∈ g.support` that is not required by the gold's `UniqueMul` condition, for the same reason",
+  "Requires `[Monoid M]` instead of gold's `[Mul A]`, unnecessarily strengthening the algebraic structure required (drops generality to non-monoidal magmas)",
+  "Requires `[Ring R]` instead of gold's `[Semiring R]`, unnecessarily strengthening the coefficient structure required (drops generality to semirings)"
+ ],
+ "arm": "B",
+ "task_id": "fresh_003",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 48.9,
+ "judge_cost_usd": 0.151789,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "be7733e7d2be4998aa34b6e5797489dd46ac44f73a846a652f3f8613ba1a62b6"
+}

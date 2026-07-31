@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Replaces `InfinitePlace K`/`InfinitePlace L` (equivalence classes of absolute values arising from complex embeddings) with bare `AbsoluteValue K ℝ`/`AbsoluteValue L ℝ`, dropping the essential restriction that v and w are archimedean/infinite places; the theorem need not hold for arbitrary absolute values",
+  "Replaces the `[w.LiesOver v]` typeclass (the actual Mathlib 'lies over' relation for infinite places) with an ad hoc condition `∀ x : K, w (algebraMap K L x) = v x`, which is not verified to be equivalent and does not account for how infinite places are represented as equivalence classes",
+  "Uses `ramificationIndex v w > 1` as the ramification hypothesis, a notion/declaration not established to exist for generic `AbsoluteValue`s in Mathlib, in place of the gold's `w.IsRamified K` predicate specific to infinite places; likely fabricated or mismatched declaration",
+  "Because v, w are not constrained to be infinite places, the overall statement is a different (and likely false in generality, or at best unverifiable) proposition rather than a restatement of the gold"
+ ],
+ "arm": "B",
+ "task_id": "fresh_065",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 42.5,
+ "judge_cost_usd": 0.13372,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "479552db927419feef9922f12d0b4cb3c6081b55915cd050d01d5e9bf279d005"
+}

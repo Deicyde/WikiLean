@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Fixes the ray's starting point a to 0 instead of allowing an arbitrary a : ℕ as in the gold statement, losing the generality of the lemma",
+  "Requires f to be antitone on the entire ray Ici 0 rather than only on the compact interval Icc a b (Icc 0 N) as in gold — a strictly stronger/different hypothesis than what is needed and than what gold assumes",
+  "Sum indexing differs from gold: gold sums f(n+1) for n ∈ Ico a b (i.e. f(a+1)+...+f(b)) with no extra additive term on the RHS, while produced sums f(n) for n ∈ range N (i.e. f(0)+...+f(N-1)) and adds a compensating f(0) term to the RHS — not a mere renaming/reindexing of the same proposition"
+ ],
+ "arm": "E",
+ "task_id": "fresh_022",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 76.8,
+ "judge_cost_usd": 0.210076,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "fff505a9379a93a301d08dc7ab68a4463e29a5be1a172f1ab1aa9836a05f7a26"
+}

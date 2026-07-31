@@ -1,0 +1,20 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Condition (1) drops the gold hypothesis that N's support is contained in the zero locus of I (Module.support R N ⊆ PrimeSpectrum.zeroLocus I); without it the universally-quantified clause is a different (and generally false, e.g. for N=R) statement rather than the intended one restricted to I-torsion-supported modules.",
+  "Condition (3) drops the gold hypothesis that N's support equals the zero locus of I (Module.support R N = PrimeSpectrum.zeroLocus I); the existential becomes an unrestricted 'exists some nontrivial f.g. module with vanishing Ext', a fundamentally weaker/different statement than the gold's witness condition.",
+  "The hand-rolled definition of 'M-regular sequence' in condition (4) is mathematically wrong: for j = 0 the hypothesis '(∏ i<0, a i) • m = 0' reduces to 'm = 0' (empty product = 1), making the base case vacuously true and failing to require a 0 to be M-regular; more generally it substitutes '(∏_{i<j} a_i) • m = 0' for the correct condition 'm ∈ (a_0,...,a_{j-1})·M', which is not equivalent to regularity of a_j on the quotient module.",
+  "Ext is used with the wrong argument order/API: gold's Subsingleton (Ext N M i) (Ext returning a Type, vanishing = subsingleton) is replaced by 'CategoryTheory.Abelian.Ext i N M = 0' (index first, and equated to 0), which does not match Mathlib's Ext X Y n signature/usage and likely does not type-check or misrepresents what Ext-vanishing means.",
+  "The four equivalences are stated as a naive chain A ↔ B ↔ C ↔ D instead of gold's explicit List.TFAE (all-pairs equivalence); Lean's ↔ is a binary, non-chaining connective, so this does not clearly express that all four conditions are pairwise equivalent.",
+  "Universe/category-theoretic setup (Small.{v} R, ModuleCat, Shrink) is dropped in favor of plain Type*-based modules; while a reasonable unbundling in isolation, combined with the Ext misuse above it undermines faithfulness to the intended categorical Ext groups."
+ ],
+ "arm": "D",
+ "task_id": "fresh_078",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 112.6,
+ "judge_cost_usd": 0.298758,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "5519f5a84358470beae2b3e2333f18677ec1df64046f84092871e3af73da8161"
+}

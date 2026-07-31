@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": true,
+ "defects": [
+  "Conclusion is manually unfolded as `∃ K > 0, ∃ M > 0, ∀ τ, τ.im > K → ‖f τ‖ ≤ M` instead of using Mathlib's `IsBoundedAtImInfty f`; provably equivalent (via the definition of atImInfty/IsBigO and a WLOG positivity adjustment on K, M) but not the same syntactic predicate as gold.",
+  "Gold's single `HasSum (fun m ↦ c m • 𝕢 h τ ^ m) (f τ)` hypothesis is split into two separate hypotheses (`hq_expansion` using `tsum` equality and `hconv` using `Summable`); jointly equivalent to `HasSum` via standard Mathlib lemmas (Summable.hasSum / HasSum.tsum_eq) in a Hausdorff space like ℂ, but structured differently than gold.",
+  "Uses `Complex.exp ((2*π*I*τ)/h)` via a local `let q := ...` instead of the named abbreviation `𝕢 h τ` (Periodic.qParam); same value, different spelling.",
+  "Arguments `f`, `c`, `h` are explicit in the produced statement versus implicit in gold; cosmetic difference only."
+ ],
+ "arm": "B",
+ "task_id": "fresh_064",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 154.9,
+ "judge_cost_usd": 0.427995,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "3ea70e517eba07b11aa356c8b8a9fb2dc41ae9ad08dff53c656541814da60fdb"
+}

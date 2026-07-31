@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Uses the identifier `totalVariationOn` instead of the gold's `eVariationOn`; `totalVariationOn` does not appear to be an existing Mathlib declaration for real-valued total variation of a function, making this likely a hallucinated/nonexistent symbol",
+  "Conclusion has the wrong codomain: gold states equality in ℝ≥0∞ (`eVariationOn id (Icc a b) = ENNReal.ofReal (b - a)`), while produced states equality in ℝ (`... = b - a`), which is a different mathematical object/type, not merely a notational variant",
+  "Adds hypothesis `hab : a ≤ b` that is absent from the gold statement; the gold lemma holds unconditionally for all real a, b (including a > b, where both sides degenerate to 0), so restricting to a ≤ b strictly narrows the claim"
+ ],
+ "arm": "B",
+ "task_id": "fresh_094",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 23.3,
+ "judge_cost_usd": 0.083376,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "2e015f6d2fcfe421b839ccb175461be17d4980ccee9499825aab5762c48c1a7b"
+}

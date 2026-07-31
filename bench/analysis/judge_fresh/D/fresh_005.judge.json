@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Scalar type α is specialized to ℝ instead of remaining a generic type with [SMul α β] [Zero α] [PosSMulMono α β] as in gold, making the produced statement strictly less general (only covers real scalars, not arbitrary ordered scalar types like ℤ, ℚ, ℝ≥0∞, etc.)",
+  "Uses [SMulWithZero ℝ β] instead of the gold's [Zero α] together with [SMul α β], conflating the zero structure with the concrete real scalar type"
+ ],
+ "arm": "D",
+ "task_id": "fresh_005",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 17.2,
+ "judge_cost_usd": 0.061495,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "e29c47ab98b06cbaad25cb2f92fc0195544e64842791f608356f8e6975ed351a"
+}

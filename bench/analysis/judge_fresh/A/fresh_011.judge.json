@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Produced statement is about a matrix A over ℂ, not an endomorphism of a finite-dimensional inner product space over general RCLike field 𝕜; drops the InnerProductSpace/FiniteDimensional structure entirely",
+  "Gold's 'normDet' (f.normDet) is a specific defined quantity for linear maps (an operator/singular-value-based norm of the determinant), not simply 'take the norm of the determinant value'; produced statement omits this concept entirely",
+  "Produced statement reduces to the trivial tautology that ‖z‖ = Complex.abs z for a complex number z, which is essentially definitional in Mathlib and captures none of the actual mathematical content of the theorem",
+  "No linear map f : U →ₗ[𝕜] U or its .det / .normDet fields appear at all",
+  "Conclusion does not correspond to gold's f.normDet = ‖f.det‖"
+ ],
+ "arm": "A",
+ "task_id": "fresh_011",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 13.6,
+ "judge_cost_usd": 0.053676,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "91ab0605a220376d4956ad8c5e62132ec5aa0043a4f045f1e2f087814349d7be"
+}

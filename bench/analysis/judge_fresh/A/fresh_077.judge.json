@@ -1,0 +1,20 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Uses `[NoetherianRing R]`, which is not a Mathlib class; the correct declaration (used correctly by gold) is `IsNoetherianRing R`",
+  "Uses `Module.FinitelyGenerated R M`/`Module.FinitelyGenerated R N`, which does not match Mathlib's actual finiteness typeclass `Module.Finite R M` used by gold — likely a nonexistent/hallucinated name",
+  "`hN_support` compares `Module.support R N` (which in Mathlib has type `Set (PrimeSpectrum R)`) to `{p : Ideal R | p.IsPrime ∧ I ≤ p} : Set (Ideal R)`, a type mismatch; gold correctly compares against `PrimeSpectrum.zeroLocus I : Set (PrimeSpectrum R)`",
+  "`hExt` writes `Ext R i N M = 0`, treating the Ext object as an element compared to `0`; this argument order/signature does not match Mathlib's `Ext N M i` (a Type/additive-group object), and gold correctly expresses vanishing via `Subsingleton (Ext N M i)` — the produced form is likely ill-typed or refers to a nonexistent declaration",
+  "Conclusion uses `IsRegularSequence M seq` with `seq : Fin n → R`, whereas gold's `IsRegular` (from the `RingTheory.Sequence` namespace) is stated for `rs : List R`; `IsRegularSequence` does not appear to be an existing Mathlib declaration matching this signature",
+  "`hIM_proper` manually unfolds the ideal-times-submodule action instead of using `I • (⊤ : Submodule R M)`, introducing risk of not being definitionally/propositionally the same object relied on by supporting lemmas"
+ ],
+ "arm": "A",
+ "task_id": "fresh_077",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 88.8,
+ "judge_cost_usd": 0.754572,
+ "num_turns": 1,
+ "attempts": 3,
+ "prompt_sha256": "678cd7f84d79f1fb378af4abb86c5446acf17081e983f382ebfab7e2cccb6e00"
+}

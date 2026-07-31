@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Adds `p.IsMaximal` and `q.IsMaximal` hypotheses not present in gold; gold only assumes `P.IsPrime` (primality of `p` follows automatically since it is the comap of a prime), so the produced statement is a strictly weaker special case, not the same proposition.",
+  "Replaces the `Algebra R S` instance and `P.LiesOver p` typeclass with a bare ring hom `f : R →+* S` and a propositional equality `hlying_over : q.comap f = p`; without an `Algebra R S` instance there is no canonical `Module R S` instance, so `Module.Finite R S` cannot elaborate, and without the induced `Algebra (R⧸p) (S⧸q)` instance (normally supplied by `LiesOver`) `FiniteDimensional.finrank (R ⧸ p) (S ⧸ q)` also cannot elaborate — the statement as written does not type-check as stated.",
+  "Conclusion is spelled out via `FiniteDimensional.finrank (R⧸p) (S⧸q)` rather than the packaged `inertiaDeg' p P` used in gold, bypassing the definition that ties the quotient module structure to the `LiesOver` instance."
+ ],
+ "arm": "B",
+ "task_id": "fresh_069",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 90.7,
+ "judge_cost_usd": 0.238083,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "f37828c520d89febe4c72619c5cc4b8339fb5481befc1e26d4bf62d63459d5ec"
+}

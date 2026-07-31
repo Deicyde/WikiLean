@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Specialized to ℝ instead of the general ConditionallyCompleteLinearOrder + OrderTopology + DenselyOrdered setting in the gold",
+  "Uses Set.Icc a b with an added hypothesis a ≤ b instead of uIcc a b, so the case a > b is not covered (loses generality present in gold)",
+  "Requires global Continuous f instead of ContinuousOn f (uIcc a b), strengthening the continuity hypothesis beyond what's needed on the interval"
+ ],
+ "arm": "B",
+ "task_id": "fresh_098",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 20.4,
+ "judge_cost_usd": 0.071701,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "ffd5070df86a2004bd0fe8158045700e43bb3ed635fddad930d18bb6c50279bb"
+}

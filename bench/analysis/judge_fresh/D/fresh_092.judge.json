@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Uses `dist (f x) (f y)` (real-valued metric distance) wrapped in `ENNReal.ofReal`, but only `PseudoEMetricSpace E` is assumed — `dist` is not defined for a bare `PseudoEMetricSpace` (that structure only provides `edist`), so the statement does not typecheck as given / requires an unstated `PseudoMetricSpace` instance",
+  "Even if `dist` were available, `ENNReal.ofReal (dist (f x) (f y))` is not equivalent to `edist (f x) (f y)` in general (loses information when the true extended distance is infinite, and depends on a possibly different metric structure than the one used for `eVariationOn`)"
+ ],
+ "arm": "D",
+ "task_id": "fresh_092",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 20.8,
+ "judge_cost_usd": 0.072464,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "2d86c49af8ab9c832278e232960cd0069d6e469d53834ab8644ac3676cf2c919"
+}

@@ -1,0 +1,15 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Hypothesis mismatch: produced uses List.countP p l ≤ 1 (bounds the number of *occurrences* satisfying p, counting multiplicity), while gold uses {x ∈ l₁ | p x}.Subsingleton (bounds the number of *distinct values* satisfying p, since it's a Set). countP ≤ 1 is strictly stronger — e.g. l = [2,1,1,3] with p = (·=1) satisfies gold's subsingleton condition (only the value 1 matches) but fails countP ≤ 1 (two occurrences). This makes the produced theorem a strictly weaker/narrower special case, not the same proposition as gold."
+ ],
+ "arm": "C",
+ "task_id": "fresh_033",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 77.2,
+ "judge_cost_usd": 0.217001,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "a99ef5cfe46901f11010f577da2d22ecaa3f9a3d82a83c66f0ab267e99738aa3"
+}

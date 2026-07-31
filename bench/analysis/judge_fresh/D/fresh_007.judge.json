@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Missing `[SMul R β]` instance in context: `PosSMulStrictMono R β` (and the expression `a • f x`) requires a scalar-multiplication structure between the scalar type R and β, which is not declared or otherwise inferable from the given hypotheses, so the statement does not elaborate as written.",
+  "Missing `[Preorder R]` (order on the scalar type R): the produced statement only supplies `[Preorder α] [Preorder β]` for the domain and codomain types, but never gives an order on R, even though `PosSMulStrictMono R β` and the hypothesis `0 < a` both presuppose an order on R (matching gold's `variable [Preorder α]` on the scalar type)."
+ ],
+ "arm": "D",
+ "task_id": "fresh_007",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 70.9,
+ "judge_cost_usd": 0.198307,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "f30b830be61f55961a1b491f123903b1adf09a519fb51429d1d808800239e513"
+}

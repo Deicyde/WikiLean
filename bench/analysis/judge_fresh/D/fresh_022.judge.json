@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Conclusion inequality direction is wrong: the produced sum ∑_{i<n} f(x₀+i) is a left-endpoint sum (terms f(x₀),...,f(x₀+n-1)), which for an antitone f is an upper bound (not lower bound) of ∫_{x₀}^{x₀+n} f, so the stated inequality sum ≤ integral is mathematically false in general (counterexample: f(x)=e^{-x}, x₀=0, n=2 gives sum≈1.368 > integral≈0.865)",
+  "Gold sums f(n+1) over n ∈ Ico a b (i.e. right-endpoint-shifted terms f(a+1)…f(b)); produced sums f(x₀+i) over i ∈ range n (left-endpoint terms f(x₀)…f(x₀+n-1)) — an off-by-one shift that changes which bound the integral gives",
+  "Gold integrates over the infinite ray Ioi a, matching the informal statement's 'integral over a ray'; produced integrates over the finite interval x₀..x₀+n, a different (bounded) integral, not a ray",
+  "Hypotheses are globalized (Antitone f and ∀ x, 0 ≤ f x on all of ℝ) instead of the gold's localized hypotheses (AntitoneOn f (Icc a b), nonneg only on Ioi a), changing the class of functions covered",
+  "Missing the IntegrableOn f (Ioi a) hypothesis present in gold (even though it may be derivable for the finite-interval case, it changes the formal hypothesis set)"
+ ],
+ "arm": "D",
+ "task_id": "fresh_022",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 60.0,
+ "judge_cost_usd": 0.189882,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "0e941c1a708baf506251e649358e8bc3859f550cd8c7cd40b73425fce20ecc68"
+}

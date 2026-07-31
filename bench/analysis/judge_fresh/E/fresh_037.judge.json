@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Hypothesis uses a different structure `IsImmersion I J n f` instead of gold's `IsImmersionOfComplement F I J n f`, dropping the explicit complement-space type parameter `F` entirely — this is a structurally different (and unverified to be equivalent) hypothesis, not just a renaming",
+  "No way to confirm `IsImmersion` (produced) is defeq/equivalent to `IsImmersionOfComplement` (gold); the 'OfComplement' variant appears to bundle extra data (a complement subspace F) that a plain immersion hypothesis would not require",
+  "Conclusion spelled as explicit `ContMDiff I J n f` rather than gold's `CMDiff n f`; unverifiable whether these denote the same proposition without seeing the definition of `CMDiff`"
+ ],
+ "arm": "E",
+ "task_id": "fresh_037",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 119.9,
+ "judge_cost_usd": 0.124283,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "f33a228abd313568d681933fa488615c003ad7a6192e92fb0e20e5ceed052820"
+}

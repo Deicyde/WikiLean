@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": true,
+ "defects": [
+  "States the conclusion as the raw formula `0 < Module.rank (S ⧸ P) (R ⧸ Q)` instead of invoking the gold's named definition `inertiaDeg' p P`; equivalence relies on the (contextually well-supported but unverified) assumption that `inertiaDeg'` is defined exactly as this residue-field rank",
+  "Adds an explicit hypothesis `[Ideal.IsPrime P]` on the base ideal that is absent from the gold's hypothesis list; it is logically redundant (derivable from `Ideal.IsPrime Q` plus the comap equality via `Ideal.IsPrime.comap`), so it does not change the class of valid instances, but it is nonetheless an added typeclass assumption not present in gold",
+  "Represents the 'lies over' relation as an explicit equality hypothesis `h : Ideal.comap (Algebra.ofId S R) Q = P` rather than the `Ideal.LiesOver` typeclass instance used in gold (an unbundled vs bundled spelling of the same structure)"
+ ],
+ "arm": "D",
+ "task_id": "fresh_069",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 185.8,
+ "judge_cost_usd": 0.478914,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "a3ff8d3c002fbe8c272f5133ed8e8bb374af3bbba49fd0bbadf09a7397cce4af"
+}

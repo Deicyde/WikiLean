@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "The hypothesis hbv requires bounded variation over ALL partitions with points in the interval Icc a b (unrestricted to s), rather than partitions restricted to s ∩ neighborhood as in mathlib's LocallyBoundedVariationOn f s — this is a strictly stronger (non-equivalent) hypothesis than the gold's, since it bounds variation over a superset of partitions.",
+  "The conclusion completely omits the 'moreover' clause of the informal statement: the requirement that the combined increments of the two monotone parts equal the total variation (gold's ∀ x y ∈ s, (p y - p x) + (q y - q x) = variationOnFromTo f s x y) is missing entirely.",
+  "Conclusion uses global Monotone g / Monotone h (monotonicity over all of ℝ) instead of MonotoneOn p s / MonotoneOn q s (monotonicity only on s), changing the structure and strength of the claim relative to gold.",
+  "f = p - q in gold is a global function equality, while the produced statement only asserts equality pointwise on s (∀ x ∈ s, f x = g x - h x) — a weaker version of that conjunct.",
+  "The partition-based definition of bounded variation does not require a and b to be endpoints of the list p nor enforce a minimum length, making the encoded notion of variation only loosely correspond to the standard definition used in LocallyBoundedVariationOn."
+ ],
+ "arm": "B",
+ "task_id": "fresh_095",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 65.2,
+ "judge_cost_usd": 0.184264,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "31ddd36bd42d21e56fd0606a5a5a8c52ffed047fffe4f0d2c5da42643217e2ad"
+}

@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Adds hypothesis hg_cont: ContinuousOn g (Ioi (exp a)) not present in the gold, which holds unconditionally",
+  "Adds hypothesis hg1: IntegrableOn g (Ici (exp a)) not present in the gold",
+  "Adds hypothesis hg2: IntegrableOn (fun x => g (exp x) * exp x) (Ici a) not present in the gold",
+  "Restricts g from a general Banach space E (NormedAddCommGroup + NormedSpace ℝ) to ℝ-valued functions, losing generality present in the gold",
+  "Overall states a weaker/conditional special case rather than the same unconditional proposition as the gold"
+ ],
+ "arm": "C",
+ "task_id": "fresh_052",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 15.7,
+ "judge_cost_usd": 0.063082,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "b6959fbdc505214a497a432e5848d3153924b9b72477e2d0c61046a9f79eb285"
+}

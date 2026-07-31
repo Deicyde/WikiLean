@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Conclusion asserts f is bounded everywhere on all of ℍ (∃ B, ∀ τ, |f τ| ≤ B) rather than bounded at the cusp i∞ (IsBoundedAtImInfty, i.e. bounded only as Im τ → ∞). This is a strictly stronger and in general false claim: e.g. h=1, c_m=1 for all m gives f(τ)=1/(1-q(τ)) with q(τ)=exp(2πiτ), which satisfies the q-expansion hypothesis (radius of convergence 1) but is unbounded as τ→0, so the produced statement is not even true, let alone equivalent to the gold.",
+  "Hypothesis is phrased as a tsum equality (∑' m, c m * q^m = f τ) rather than gold's HasSum hypothesis; tsum defaults to 0 when the series is not summable, so this does not genuinely assert convergence of the q-expansion, weakening the intended 'convergent q-expansion' hypothesis from the informal statement."
+ ],
+ "arm": "A",
+ "task_id": "fresh_064",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 38.8,
+ "judge_cost_usd": 0.127176,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "b220a30d3498b1e0d62018c41ab391d6e7de034fd442cb49d17a0e85a08badf2"
+}

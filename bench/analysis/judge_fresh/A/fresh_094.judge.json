@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Adds hypothesis `hab : a ≤ b` not present in the gold statement, which holds unconditionally (the gold's `.ofReal (b - a)` truncates to 0 when b < a, matching eVariationOn on the resulting empty/degenerate interval)",
+  "Uses `totalVariation` as the variation function, which is not the standard Mathlib declaration for this concept (Mathlib defines `eVariationOn`, ℝ≥0∞-valued); `totalVariation` as applied here does not correspond to any known matching Mathlib declaration for pointwise function variation",
+  "Changes the codomain/equality target from ℝ≥0∞ via `ENNReal.ofReal (b - a)` to a plain real number `b - a`, altering the mathematical structure of the conclusion rather than just its spelling"
+ ],
+ "arm": "A",
+ "task_id": "fresh_094",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 26.1,
+ "judge_cost_usd": 0.08692,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "6bade14962c989064f7fe3a64bf149a60e8898fdd68e4634384a5b4e07d23843"
+}

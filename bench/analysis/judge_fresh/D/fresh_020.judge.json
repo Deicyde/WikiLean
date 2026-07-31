@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Gold is stated for an arbitrary ray starting at N : ℕ (AntitoneOn on Ici N, summable of f(n+N), nonneg/integrability on Ioi N); produced hardcodes N = 0, losing the generality of the theorem (it is at best the N=0 special case, not the same proposition).",
+  "Produced's nonneg hypothesis (∀ x, 0 ≤ f x) requires nonnegativity on all of ℝ, strictly stronger/more restrictive than gold's hypothesis which only requires nonnegativity on Ioi N (i.e. Ioi 0 in the N=0 case).",
+  "Produced's antitone hypothesis uses Ioi 0 (open ray) instead of gold's Ici N = Ici 0 (closed ray including the endpoint) for the N=0 case, an inconsistent domain choice relative to gold's pattern."
+ ],
+ "arm": "D",
+ "task_id": "fresh_020",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 32.2,
+ "judge_cost_usd": 0.107464,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "fabde995305fb3950613a6d944d57ebf41e1042ceeac5b6295169dc9e907136a"
+}

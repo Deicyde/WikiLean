@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "The existentials over `p` and `P` are not linked: nothing forces `P` to lie over `(p)` (e.g. no `P.LiesOver (Ideal.span {(p:ℕ)})` or `P ∩ ℤ = Ideal.span {p}` constraint), so `Nat.Prime p` is a vacuous/decorative clause satisfiable independently of which ideal P is ramified — the statement's real content collapses to 'some maximal ideal P of O_K is ramified over ℤ', which is not the same proposition as 'there exists a rational prime p that ramifies'.",
+  "Uses the concrete `NumberField.RingOfIntegers K` instead of an abstract ring of integers `𝒪` satisfying `IsIntegralClosure 𝒪 ℤ K` as in gold, reducing generality.",
+  "Uses a different ramification predicate (`Algebra.IsUnramifiedAt ℤ P`, local at a prime ideal of the integral closure) instead of gold's `Algebra.IsUnramifiedIn 𝒪 (Ideal.span {(p:ℤ)})` (predicate on the ideal (p) of the base ring); the correspondence between the two predicates is not established by the statement due to the missing link between p and P."
+ ],
+ "arm": "D",
+ "task_id": "fresh_067",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 122.0,
+ "judge_cost_usd": 0.667734,
+ "num_turns": 1,
+ "attempts": 2,
+ "prompt_sha256": "789b15374b22e45b9f7f5c555d8c87c50e815a9b71d79a71ca6ebc2912ee8668"
+}

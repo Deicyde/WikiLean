@@ -1,0 +1,4030 @@
+{
+  "runs_dir": "/Users/jack/Desktop/LEAN/WikiLean/bench/data/runs",
+  "tasks_file": "/Users/jack/Desktop/LEAN/WikiLean/bench/data/bridge_tasks.jsonl",
+  "oracle_enabled": true,
+  "success_metric": "produced ∧ no-halluc ∧ TYPECHECK (judge pending calibration)",
+  "arms": {
+    "A": {
+      "n": 471,
+      "produced": 471,
+      "success_proxy_k": 331,
+      "success_proxy_rate": 0.7028,
+      "success_k": 241,
+      "success_rate": 0.5117,
+      "typecheck_ok_k": 270,
+      "typecheck_none_k": 0,
+      "typecheck_timeout_k": 0,
+      "runs_with_hallucination": 140,
+      "cited_total": 1637,
+      "hallucinated_total": 214,
+      "hallucinated_decl_rate": 0.1307,
+      "mean_decl_existence_rate": 0.8877,
+      "mean_tool_calls": 0.0,
+      "tool_calls_by_name": {},
+      "mean_tokens_out": 6463.7,
+      "mean_tokens_in": 10.0
+    },
+    "B": {
+      "n": 471,
+      "produced": 471,
+      "success_proxy_k": 322,
+      "success_proxy_rate": 0.6837,
+      "success_k": 234,
+      "success_rate": 0.4968,
+      "typecheck_ok_k": 260,
+      "typecheck_none_k": 0,
+      "typecheck_timeout_k": 2,
+      "runs_with_hallucination": 149,
+      "cited_total": 1643,
+      "hallucinated_total": 209,
+      "hallucinated_decl_rate": 0.1272,
+      "mean_decl_existence_rate": 0.8866,
+      "mean_tool_calls": 2.2,
+      "tool_calls_by_name": {
+        "AskUserQuestion": 1,
+        "Glob": 1,
+        "mcp__wiki__nlab_search": 199,
+        "mcp__wiki__wiki_get": 183,
+        "mcp__wiki__wiki_nlab_search": 2,
+        "mcp__wiki__wiki_search": 650
+      },
+      "mean_tokens_out": 6804.3,
+      "mean_tokens_in": 23.7
+    },
+    "C": {
+      "n": 471,
+      "produced": 471,
+      "success_proxy_k": 319,
+      "success_proxy_rate": 0.6773,
+      "success_k": 256,
+      "success_rate": 0.5435,
+      "typecheck_ok_k": 340,
+      "typecheck_none_k": 0,
+      "typecheck_timeout_k": 0,
+      "runs_with_hallucination": 152,
+      "cited_total": 1832,
+      "hallucinated_total": 248,
+      "hallucinated_decl_rate": 0.1354,
+      "mean_decl_existence_rate": 0.8774,
+      "mean_tool_calls": 31.42,
+      "tool_calls_by_name": {
+        "mcp__formal__decl_grep": 5443,
+        "mcp__formal__decl_read": 2467,
+        "mcp__formal__logue": 1,
+        "mcp__formal__loogle": 6885,
+        "mcp__formal__loogleq": 1,
+        "mcp__formal__lookie": 1
+      },
+      "mean_tokens_out": 7325.4,
+      "mean_tokens_in": 179.7
+    },
+    "D": {
+      "n": 471,
+      "produced": 471,
+      "success_proxy_k": 391,
+      "success_proxy_rate": 0.8301,
+      "success_k": 280,
+      "success_rate": 0.5945,
+      "typecheck_ok_k": 325,
+      "typecheck_none_k": 0,
+      "typecheck_timeout_k": 0,
+      "runs_with_hallucination": 80,
+      "cited_total": 1823,
+      "hallucinated_total": 112,
+      "hallucinated_decl_rate": 0.0614,
+      "mean_decl_existence_rate": 0.947,
+      "mean_tool_calls": 22.51,
+      "tool_calls_by_name": {
+        "brain_bridge": 3,
+        "decl_exists": 136,
+        "mcp__wikibrain__brain_brain_bridge": 1,
+        "mcp__wikibrain__brain_brain_cell": 1,
+        "mcp__wikibrain__brain_bridge": 1901,
+        "mcp__wikibrain__brain_cell": 1138,
+        "mcp__wikibrain__brain_filter": 37,
+        "mcp__wikibrain__brain_neighborhood": 350,
+        "mcp__wikibrain__brain_search": 3599,
+        "mcp__wikibrain__brain_snippets": 191,
+        "mcp__wikibrain__brain_transfer": 292,
+        "mcp__wikibrain__decl_exists": 2955
+      },
+      "mean_tokens_out": 6352.2,
+      "mean_tokens_in": 140.2
+    },
+    "E": {
+      "n": 471,
+      "produced": 471,
+      "success_proxy_k": 315,
+      "success_proxy_rate": 0.6688,
+      "success_k": 256,
+      "success_rate": 0.5435,
+      "typecheck_ok_k": 349,
+      "typecheck_none_k": 0,
+      "typecheck_timeout_k": 1,
+      "runs_with_hallucination": 156,
+      "cited_total": 1845,
+      "hallucinated_total": 258,
+      "hallucinated_decl_rate": 0.1398,
+      "mean_decl_existence_rate": 0.8757,
+      "mean_tool_calls": 30.39,
+      "tool_calls_by_name": {
+        "TaskCreate": 2,
+        "TaskUpdate": 2,
+        "mcp__formal__decl_grep": 5503,
+        "mcp__formal__decl_read": 2517,
+        "mcp__formal__logue": 1,
+        "mcp__formal__loogle": 6281,
+        "mcp__formal__lookie": 1,
+        "mcp__wiki__wiki_get": 1,
+        "mcp__wiki__wiki_search": 4
+      },
+      "mean_tokens_out": 7376.4,
+      "mean_tokens_in": 174.4
+    }
+  },
+  "paired_matrix": {
+    "Artin|exercise_10_1_13": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Artin|exercise_10_2_4": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Artin|exercise_10_4_6": {
+      "A": false,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Artin|exercise_10_4_7a": {
+      "A": true,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Artin|exercise_10_6_7": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": true
+    },
+    "Artin|exercise_10_7_10": {
+      "A": false,
+      "B": true,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Artin|exercise_11_13_3": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Artin|exercise_11_2_13": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "Artin|exercise_11_4_1b": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Artin|exercise_11_4_6a": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Artin|exercise_11_4_6b": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Artin|exercise_11_4_6c": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": true
+    },
+    "Artin|exercise_11_4_8": {
+      "A": true,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Artin|exercise_13_4_10": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Artin|exercise_13_6_10": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": false
+    },
+    "Artin|exercise_2_11_3": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Artin|exercise_2_2_9": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Artin|exercise_2_3_2": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Artin|exercise_2_4_19": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Artin|exercise_2_8_6": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Artin|exercise_3_2_7": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Artin|exercise_3_5_6": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Artin|exercise_3_7_2": {
+      "A": false,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": false
+    },
+    "Artin|exercise_6_1_14": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Artin|exercise_6_4_12": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Artin|exercise_6_4_2": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Artin|exercise_6_4_3": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Artin|exercise_6_8_1": {
+      "A": false,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Axler|exercise_1_2": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Axler|exercise_1_3": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Axler|exercise_1_4": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Axler|exercise_1_6": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Axler|exercise_1_7": {
+      "A": true,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Axler|exercise_1_8": {
+      "A": true,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Axler|exercise_1_9": {
+      "A": false,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": false
+    },
+    "Axler|exercise_3_1": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "Axler|exercise_3_8": {
+      "A": false,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Axler|exercise_4_4": {
+      "A": false,
+      "B": true,
+      "C": false,
+      "D": false,
+      "E": true
+    },
+    "Axler|exercise_5_1": {
+      "A": true,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": true
+    },
+    "Axler|exercise_5_11": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Axler|exercise_5_12": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Axler|exercise_5_13": {
+      "A": true,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": false
+    },
+    "Axler|exercise_5_20": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Axler|exercise_5_24": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Axler|exercise_5_4": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Axler|exercise_6_13": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Axler|exercise_6_16": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Axler|exercise_6_2": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": false
+    },
+    "Axler|exercise_6_3": {
+      "A": true,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": false
+    },
+    "Axler|exercise_6_7": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": true
+    },
+    "Axler|exercise_7_10": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": false
+    },
+    "Axler|exercise_7_11": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": true
+    },
+    "Axler|exercise_7_14": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Axler|exercise_7_5": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": false
+    },
+    "Axler|exercise_7_6": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Axler|exercise_7_9": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": false
+    },
+    "Dummit-Foote|exercise_11_1_13": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Dummit-Foote|exercise_1_1_15": {
+      "A": true,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Dummit-Foote|exercise_1_1_16": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Dummit-Foote|exercise_1_1_17": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Dummit-Foote|exercise_1_1_18": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Dummit-Foote|exercise_1_1_20": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "Dummit-Foote|exercise_1_1_22a": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Dummit-Foote|exercise_1_1_22b": {
+      "A": false,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": true
+    },
+    "Dummit-Foote|exercise_1_1_25": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Dummit-Foote|exercise_1_1_29": {
+      "A": true,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": false
+    },
+    "Dummit-Foote|exercise_1_1_2a": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Dummit-Foote|exercise_1_1_3": {
+      "A": true,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "Dummit-Foote|exercise_1_1_34": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Dummit-Foote|exercise_1_1_4": {
+      "A": false,
+      "B": true,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Dummit-Foote|exercise_1_1_5": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Dummit-Foote|exercise_1_3_8": {
+      "A": false,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": true
+    },
+    "Dummit-Foote|exercise_1_6_11": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Dummit-Foote|exercise_1_6_17": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Dummit-Foote|exercise_1_6_23": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Dummit-Foote|exercise_1_6_4": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Dummit-Foote|exercise_2_1_13": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Dummit-Foote|exercise_2_1_5": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "Dummit-Foote|exercise_2_4_16a": {
+      "A": true,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Dummit-Foote|exercise_2_4_16b": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Dummit-Foote|exercise_2_4_16c": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "Dummit-Foote|exercise_2_4_4": {
+      "A": true,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Dummit-Foote|exercise_3_1_22a": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Dummit-Foote|exercise_3_1_22b": {
+      "A": false,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Dummit-Foote|exercise_3_1_3a": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Dummit-Foote|exercise_3_2_11": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Dummit-Foote|exercise_3_2_16": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Dummit-Foote|exercise_3_2_21a": {
+      "A": true,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": false
+    },
+    "Dummit-Foote|exercise_3_2_8": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "Dummit-Foote|exercise_3_3_3": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Dummit-Foote|exercise_3_4_1": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "Dummit-Foote|exercise_3_4_11": {
+      "A": false,
+      "B": true,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Dummit-Foote|exercise_3_4_4": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": true
+    },
+    "Dummit-Foote|exercise_3_4_5a": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "Dummit-Foote|exercise_3_4_5b": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Dummit-Foote|exercise_4_2_14": {
+      "A": true,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "Dummit-Foote|exercise_4_2_8": {
+      "A": false,
+      "B": true,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Dummit-Foote|exercise_4_2_9a": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Dummit-Foote|exercise_4_3_26": {
+      "A": false,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": false
+    },
+    "Dummit-Foote|exercise_4_4_2": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Dummit-Foote|exercise_4_4_6a": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Dummit-Foote|exercise_4_4_6b": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Dummit-Foote|exercise_4_4_7": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Dummit-Foote|exercise_4_4_8a": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Dummit-Foote|exercise_4_5_13": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Dummit-Foote|exercise_4_5_14": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Dummit-Foote|exercise_4_5_15": {
+      "A": false,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Dummit-Foote|exercise_4_5_16": {
+      "A": true,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": false
+    },
+    "Dummit-Foote|exercise_4_5_17": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": false
+    },
+    "Dummit-Foote|exercise_4_5_18": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Dummit-Foote|exercise_4_5_19": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": false
+    },
+    "Dummit-Foote|exercise_4_5_1a": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Dummit-Foote|exercise_4_5_20": {
+      "A": true,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Dummit-Foote|exercise_4_5_21": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Dummit-Foote|exercise_4_5_22": {
+      "A": false,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Dummit-Foote|exercise_4_5_23": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Dummit-Foote|exercise_4_5_28": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "Dummit-Foote|exercise_4_5_33": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Dummit-Foote|exercise_5_4_2": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Dummit-Foote|exercise_7_1_11": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Dummit-Foote|exercise_7_1_12": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Dummit-Foote|exercise_7_1_15": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Dummit-Foote|exercise_7_1_2": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": false
+    },
+    "Dummit-Foote|exercise_7_2_12": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Dummit-Foote|exercise_7_2_2": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": true
+    },
+    "Dummit-Foote|exercise_7_3_16": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": false,
+      "E": true
+    },
+    "Dummit-Foote|exercise_7_3_37": {
+      "A": true,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "Dummit-Foote|exercise_7_4_27": {
+      "A": true,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": false
+    },
+    "Dummit-Foote|exercise_8_1_12": {
+      "A": false,
+      "B": true,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Dummit-Foote|exercise_8_2_4": {
+      "A": false,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": false
+    },
+    "Dummit-Foote|exercise_8_3_4": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": false
+    },
+    "Dummit-Foote|exercise_8_3_5a": {
+      "A": true,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Dummit-Foote|exercise_8_3_6a": {
+      "A": true,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": true
+    },
+    "Dummit-Foote|exercise_8_3_6b": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": true
+    },
+    "Dummit-Foote|exercise_9_1_10": {
+      "A": true,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": false
+    },
+    "Dummit-Foote|exercise_9_1_6": {
+      "A": true,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": true
+    },
+    "Dummit-Foote|exercise_9_3_2": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Dummit-Foote|exercise_9_4_11": {
+      "A": true,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Dummit-Foote|exercise_9_4_2a": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Dummit-Foote|exercise_9_4_2b": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Dummit-Foote|exercise_9_4_2c": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Dummit-Foote|exercise_9_4_2d": {
+      "A": true,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": false
+    },
+    "Dummit-Foote|exercise_9_4_9": {
+      "A": false,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Herstein|exercise_2_10_1": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": true
+    },
+    "Herstein|exercise_2_11_22": {
+      "A": true,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Herstein|exercise_2_11_6": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Herstein|exercise_2_11_7": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Herstein|exercise_2_1_18": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Herstein|exercise_2_1_21": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Herstein|exercise_2_1_26": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": false,
+      "E": true
+    },
+    "Herstein|exercise_2_1_27": {
+      "A": true,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Herstein|exercise_2_2_3": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Herstein|exercise_2_2_5": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Herstein|exercise_2_2_6c": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": false
+    },
+    "Herstein|exercise_2_3_16": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Herstein|exercise_2_3_17": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "Herstein|exercise_2_4_36": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Herstein|exercise_2_5_23": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Herstein|exercise_2_5_30": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Herstein|exercise_2_5_31": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Herstein|exercise_2_5_37": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": true
+    },
+    "Herstein|exercise_2_5_43": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Herstein|exercise_2_5_44": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Herstein|exercise_2_5_52": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Herstein|exercise_2_6_15": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Herstein|exercise_2_7_7": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Herstein|exercise_2_8_12": {
+      "A": false,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": false
+    },
+    "Herstein|exercise_2_8_15": {
+      "A": false,
+      "B": true,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "Herstein|exercise_2_9_2": {
+      "A": true,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Herstein|exercise_3_2_21": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "Herstein|exercise_4_1_19": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": false
+    },
+    "Herstein|exercise_4_1_34": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Herstein|exercise_4_2_5": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Herstein|exercise_4_2_6": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Herstein|exercise_4_2_9": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": true
+    },
+    "Herstein|exercise_4_3_1": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": false
+    },
+    "Herstein|exercise_4_3_25": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Herstein|exercise_4_4_9": {
+      "A": true,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": false
+    },
+    "Herstein|exercise_4_5_16": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Herstein|exercise_4_5_23": {
+      "A": true,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": true
+    },
+    "Herstein|exercise_4_5_25": {
+      "A": true,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": true
+    },
+    "Herstein|exercise_4_6_2": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Herstein|exercise_4_6_3": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Herstein|exercise_5_1_8": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": false,
+      "E": false
+    },
+    "Herstein|exercise_5_2_20": {
+      "A": false,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Herstein|exercise_5_3_10": {
+      "A": false,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Herstein|exercise_5_3_7": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Herstein|exercise_5_4_3": {
+      "A": true,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "Herstein|exercise_5_5_2": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": false
+    },
+    "Herstein|exercise_5_6_14": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Ireland-Rosen|exercise_12_12": {
+      "A": true,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "Ireland-Rosen|exercise_18_4": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Ireland-Rosen|exercise_1_27": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Ireland-Rosen|exercise_1_30": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Ireland-Rosen|exercise_1_31": {
+      "A": false,
+      "B": true,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "Ireland-Rosen|exercise_2_21": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": true
+    },
+    "Ireland-Rosen|exercise_2_27a": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Ireland-Rosen|exercise_2_4": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": false
+    },
+    "Ireland-Rosen|exercise_3_1": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Ireland-Rosen|exercise_3_10": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": false,
+      "E": false
+    },
+    "Ireland-Rosen|exercise_3_14": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Ireland-Rosen|exercise_3_4": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Ireland-Rosen|exercise_3_5": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Ireland-Rosen|exercise_4_11": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": true
+    },
+    "Ireland-Rosen|exercise_4_4": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Ireland-Rosen|exercise_4_5": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Ireland-Rosen|exercise_4_6": {
+      "A": false,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Ireland-Rosen|exercise_4_8": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Ireland-Rosen|exercise_5_13": {
+      "A": true,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Ireland-Rosen|exercise_5_28": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Ireland-Rosen|exercise_5_37": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Munkres|exercise_13_1": {
+      "A": false,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Munkres|exercise_13_3b": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Munkres|exercise_13_4a1": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "Munkres|exercise_13_4a2": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "Munkres|exercise_13_4b1": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Munkres|exercise_13_4b2": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Munkres|exercise_13_5a": {
+      "A": false,
+      "B": true,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Munkres|exercise_13_5b": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Munkres|exercise_13_6": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Munkres|exercise_13_8a": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Munkres|exercise_13_8b": {
+      "A": true,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Munkres|exercise_16_1": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Munkres|exercise_16_4": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Munkres|exercise_16_6": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Munkres|exercise_17_4": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Munkres|exercise_18_13": {
+      "A": true,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": true
+    },
+    "Munkres|exercise_18_8a": {
+      "A": true,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Munkres|exercise_18_8b": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "Munkres|exercise_19_6a": {
+      "A": true,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "Munkres|exercise_20_2": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Munkres|exercise_21_6a": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": true
+    },
+    "Munkres|exercise_21_6b": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Munkres|exercise_21_8": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Munkres|exercise_22_2a": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Munkres|exercise_22_2b": {
+      "A": false,
+      "B": true,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Munkres|exercise_22_5": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Munkres|exercise_23_11": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Munkres|exercise_23_2": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Munkres|exercise_23_3": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Munkres|exercise_23_4": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Munkres|exercise_23_6": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Munkres|exercise_23_9": {
+      "A": true,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Munkres|exercise_24_2": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Munkres|exercise_24_3a": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Munkres|exercise_25_4": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": false
+    },
+    "Munkres|exercise_25_9": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Munkres|exercise_26_11": {
+      "A": false,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Munkres|exercise_26_12": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": false
+    },
+    "Munkres|exercise_27_4": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Munkres|exercise_28_4": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Munkres|exercise_28_5": {
+      "A": true,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "Munkres|exercise_28_6": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Munkres|exercise_29_1": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": false,
+      "E": false
+    },
+    "Munkres|exercise_29_10": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": false
+    },
+    "Munkres|exercise_29_4": {
+      "A": false,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Munkres|exercise_30_10": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Munkres|exercise_30_13": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": true
+    },
+    "Munkres|exercise_31_1": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Munkres|exercise_31_2": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Munkres|exercise_31_3": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Munkres|exercise_32_1": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Munkres|exercise_32_2a": {
+      "A": false,
+      "B": true,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "Munkres|exercise_32_2b": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": true
+    },
+    "Munkres|exercise_32_2c": {
+      "A": true,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Munkres|exercise_32_3": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Munkres|exercise_33_7": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": true
+    },
+    "Munkres|exercise_33_8": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": false
+    },
+    "Munkres|exercise_34_9": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": true
+    },
+    "Munkres|exercise_38_6": {
+      "A": true,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Munkres|exercise_43_2": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "Pugh|exercise_2_126": {
+      "A": false,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Pugh|exercise_2_12a": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": false
+    },
+    "Pugh|exercise_2_26": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": false
+    },
+    "Pugh|exercise_2_29": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Pugh|exercise_2_32a": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Pugh|exercise_2_41": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": true
+    },
+    "Pugh|exercise_2_46": {
+      "A": true,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Pugh|exercise_2_57": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Pugh|exercise_2_92": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "Pugh|exercise_3_1": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Pugh|exercise_3_4": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Pugh|exercise_3_63a": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Pugh|exercise_3_63b": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Pugh|exercise_4_15a": {
+      "A": false,
+      "B": true,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "Putnam|exercise_1998_a3": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Putnam|exercise_1998_b6": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "Putnam|exercise_1999_b4": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "Putnam|exercise_2000_a2": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Putnam|exercise_2001_a5": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Putnam|exercise_2010_a4": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Putnam|exercise_2014_a5": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Putnam|exercise_2017_b3": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Putnam|exercise_2018_a5": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": false,
+      "E": true
+    },
+    "Putnam|exercise_2018_b2": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Putnam|exercise_2018_b4": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": false
+    },
+    "Putnam|exercise_2020_b5": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Rudin|exercise_1_11a": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Rudin|exercise_1_12": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "Rudin|exercise_1_13": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Rudin|exercise_1_14": {
+      "A": false,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Rudin|exercise_1_16a": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Rudin|exercise_1_17": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "Rudin|exercise_1_18a": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": false
+    },
+    "Rudin|exercise_1_18b": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": false
+    },
+    "Rudin|exercise_1_19": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Rudin|exercise_1_1a": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Rudin|exercise_1_1b": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Rudin|exercise_1_2": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Rudin|exercise_1_4": {
+      "A": false,
+      "B": true,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Rudin|exercise_1_5": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Rudin|exercise_1_8": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Rudin|exercise_2_19a": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Rudin|exercise_2_24": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Rudin|exercise_2_25": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Rudin|exercise_2_27a": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Rudin|exercise_2_27b": {
+      "A": true,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": true
+    },
+    "Rudin|exercise_2_28": {
+      "A": false,
+      "B": true,
+      "C": false,
+      "D": false,
+      "E": true
+    },
+    "Rudin|exercise_2_29": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Rudin|exercise_3_13": {
+      "A": false,
+      "B": true,
+      "C": false,
+      "D": false,
+      "E": true
+    },
+    "Rudin|exercise_3_1a": {
+      "A": true,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": true
+    },
+    "Rudin|exercise_3_20": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Rudin|exercise_3_21": {
+      "A": true,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": true
+    },
+    "Rudin|exercise_3_22": {
+      "A": true,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Rudin|exercise_3_2a": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Rudin|exercise_3_3": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": true
+    },
+    "Rudin|exercise_3_5": {
+      "A": true,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": false
+    },
+    "Rudin|exercise_3_6a": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": false
+    },
+    "Rudin|exercise_3_7": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Rudin|exercise_3_8": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Rudin|exercise_4_11a": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Rudin|exercise_4_12": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Rudin|exercise_4_15": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Rudin|exercise_4_19": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Rudin|exercise_4_1a": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Rudin|exercise_4_21a": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Rudin|exercise_4_24": {
+      "A": true,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Rudin|exercise_4_2a": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Rudin|exercise_4_3": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": false,
+      "E": true
+    },
+    "Rudin|exercise_4_4a": {
+      "A": true,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Rudin|exercise_4_4b": {
+      "A": false,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Rudin|exercise_4_5a": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Rudin|exercise_4_5b": {
+      "A": true,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Rudin|exercise_4_6": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": true
+    },
+    "Rudin|exercise_4_8a": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": true
+    },
+    "Rudin|exercise_4_8b": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Rudin|exercise_5_1": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Rudin|exercise_5_15": {
+      "A": false,
+      "B": true,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "Rudin|exercise_5_17": {
+      "A": false,
+      "B": true,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "Rudin|exercise_5_2": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": false
+    },
+    "Rudin|exercise_5_3": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Rudin|exercise_5_4": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Rudin|exercise_5_5": {
+      "A": true,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Rudin|exercise_5_6": {
+      "A": true,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "Rudin|exercise_5_7": {
+      "A": false,
+      "B": true,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "Shakarchi|exercise_1_13a": {
+      "A": true,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Shakarchi|exercise_1_13b": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Shakarchi|exercise_1_13c": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": false
+    },
+    "Shakarchi|exercise_1_19a": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Shakarchi|exercise_1_19b": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Shakarchi|exercise_1_19c": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Shakarchi|exercise_1_26": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": false
+    },
+    "Shakarchi|exercise_2_13": {
+      "A": false,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": true
+    },
+    "Shakarchi|exercise_2_2": {
+      "A": true,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "Shakarchi|exercise_2_9": {
+      "A": false,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Shakarchi|exercise_3_14": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Shakarchi|exercise_3_22": {
+      "A": false,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Shakarchi|exercise_3_3": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Shakarchi|exercise_3_4": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "Shakarchi|exercise_3_9": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "Shakarchi|exercise_5_1": {
+      "A": false,
+      "B": true,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "fresh_000": {
+      "A": false,
+      "B": true,
+      "C": true,
+      "D": false,
+      "E": false
+    },
+    "fresh_001": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": true
+    },
+    "fresh_002": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "fresh_003": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": true
+    },
+    "fresh_004": {
+      "A": true,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_005": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_006": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_007": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_008": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "fresh_009": {
+      "A": false,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": true
+    },
+    "fresh_010": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": false
+    },
+    "fresh_011": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "fresh_012": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "fresh_013": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_014": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "fresh_015": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "fresh_016": {
+      "A": false,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": true
+    },
+    "fresh_017": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "fresh_018": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "fresh_019": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_020": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": false
+    },
+    "fresh_021": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "fresh_022": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "fresh_023": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_024": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "fresh_025": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "fresh_026": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "fresh_027": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "fresh_028": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": true
+    },
+    "fresh_029": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_030": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_031": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_032": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": false
+    },
+    "fresh_033": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_034": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_035": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_036": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_037": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_038": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": true
+    },
+    "fresh_039": {
+      "A": true,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "fresh_040": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": true
+    },
+    "fresh_041": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": true
+    },
+    "fresh_042": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": false
+    },
+    "fresh_043": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": false,
+      "E": true
+    },
+    "fresh_044": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_045": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_046": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_047": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "fresh_048": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_049": {
+      "A": true,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_050": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "fresh_051": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "fresh_052": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_053": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "fresh_054": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_055": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_056": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_057": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_058": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_059": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_060": {
+      "A": false,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": true
+    },
+    "fresh_061": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": false,
+      "E": false
+    },
+    "fresh_062": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_063": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_064": {
+      "A": false,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "fresh_065": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "fresh_066": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_067": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_068": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_069": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_070": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "fresh_071": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "fresh_072": {
+      "A": false,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": false
+    },
+    "fresh_073": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "fresh_074": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "fresh_075": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "fresh_076": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_077": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_078": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_079": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": false
+    },
+    "fresh_080": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": true
+    },
+    "fresh_081": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": true
+    },
+    "fresh_082": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": true
+    },
+    "fresh_083": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": true
+    },
+    "fresh_084": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_085": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": true
+    },
+    "fresh_086": {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "fresh_087": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "fresh_088": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_089": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "fresh_090": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_091": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "fresh_092": {
+      "A": false,
+      "B": true,
+      "C": true,
+      "D": false,
+      "E": false
+    },
+    "fresh_093": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": false
+    },
+    "fresh_094": {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "fresh_095": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": true,
+      "E": true
+    },
+    "fresh_096": {
+      "A": false,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": true
+    },
+    "fresh_097": {
+      "A": true,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false
+    },
+    "fresh_098": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": false,
+      "E": false
+    },
+    "fresh_099": {
+      "A": true,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": true
+    }
+  },
+  "mcnemar": {
+    "D_vs_E": {
+      "n_paired": 471,
+      "both_success": 192,
+      "x_only": 88,
+      "y_only": 64,
+      "neither": 127,
+      "discordant": 152,
+      "note": "McNemar b=x_only, c=y_only on `success` (proxy ∧ typecheck when available; judge pending calibration)"
+    },
+    "D_vs_C": {
+      "n_paired": 471,
+      "both_success": 188,
+      "x_only": 92,
+      "y_only": 68,
+      "neither": 123,
+      "discordant": 160,
+      "note": "McNemar b=x_only, c=y_only on `success` (proxy ∧ typecheck when available; judge pending calibration)"
+    },
+    "A_vs_B": {
+      "n_paired": 471,
+      "both_success": 182,
+      "x_only": 59,
+      "y_only": 52,
+      "neither": 178,
+      "discordant": 111,
+      "note": "McNemar b=x_only, c=y_only on `success` (proxy ∧ typecheck when available; judge pending calibration)"
+    },
+    "A_vs_C": {
+      "n_paired": 471,
+      "both_success": 175,
+      "x_only": 66,
+      "y_only": 81,
+      "neither": 149,
+      "discordant": 147,
+      "note": "McNemar b=x_only, c=y_only on `success` (proxy ∧ typecheck when available; judge pending calibration)"
+    },
+    "A_vs_D": {
+      "n_paired": 471,
+      "both_success": 192,
+      "x_only": 49,
+      "y_only": 88,
+      "neither": 142,
+      "discordant": 137,
+      "note": "McNemar b=x_only, c=y_only on `success` (proxy ∧ typecheck when available; judge pending calibration)"
+    },
+    "A_vs_E": {
+      "n_paired": 471,
+      "both_success": 172,
+      "x_only": 69,
+      "y_only": 84,
+      "neither": 146,
+      "discordant": 153,
+      "note": "McNemar b=x_only, c=y_only on `success` (proxy ∧ typecheck when available; judge pending calibration)"
+    },
+    "B_vs_C": {
+      "n_paired": 471,
+      "both_success": 172,
+      "x_only": 62,
+      "y_only": 84,
+      "neither": 153,
+      "discordant": 146,
+      "note": "McNemar b=x_only, c=y_only on `success` (proxy ∧ typecheck when available; judge pending calibration)"
+    },
+    "B_vs_D": {
+      "n_paired": 471,
+      "both_success": 186,
+      "x_only": 48,
+      "y_only": 94,
+      "neither": 143,
+      "discordant": 142,
+      "note": "McNemar b=x_only, c=y_only on `success` (proxy ∧ typecheck when available; judge pending calibration)"
+    },
+    "B_vs_E": {
+      "n_paired": 471,
+      "both_success": 171,
+      "x_only": 63,
+      "y_only": 85,
+      "neither": 152,
+      "discordant": 148,
+      "note": "McNemar b=x_only, c=y_only on `success` (proxy ∧ typecheck when available; judge pending calibration)"
+    },
+    "C_vs_D": {
+      "n_paired": 471,
+      "both_success": 188,
+      "x_only": 68,
+      "y_only": 92,
+      "neither": 123,
+      "discordant": 160,
+      "note": "McNemar b=x_only, c=y_only on `success` (proxy ∧ typecheck when available; judge pending calibration)"
+    },
+    "C_vs_E": {
+      "n_paired": 471,
+      "both_success": 201,
+      "x_only": 55,
+      "y_only": 55,
+      "neither": 160,
+      "discordant": 110,
+      "note": "McNemar b=x_only, c=y_only on `success` (proxy ∧ typecheck when available; judge pending calibration)"
+    }
+  },
+  "v2_provenance": {
+    "generated_by": "bench/analysis/score_e31_v2.py",
+    "date": "2026-07-27",
+    "base": "/Users/jack/Desktop/LEAN/WikiLean/bench/data/bridge_summary.json",
+    "what_changed": "The 31 arm-E fresh rows fresh_069..fresh_099 (originally 429 session-limit errors, archived in bench/data/runs_E_fresh_429_archive/) were rerun 2026-07-27 via bench/analysis/rerun_E_fresh.py and are scored here with the identical score_bridge.py pipeline (Oracle citation classification + fresh-pin REPL typecheck). Only these 31 (arm, task) cells changed; arms.E aggregates and every McNemar pair involving E were recomputed; all other cells and pairs verified unchanged.",
+    "grading_env": {
+      "project": "/Users/jack/Desktop/LEAN/bench-lean-fresh",
+      "socket": "/tmp/wikilean_tc_fresh.sock",
+      "toolchain": "leanprover/lean4:v4.33.0-rc1",
+      "mathlib_rev": "9944fe2973b8dc0b86949101ed98232c07cd54a0"
+    },
+    "v1_reproduction_check": "pre-repair E population (440 current + 31 archived rows) re-derived citation stats match bridge_summary.json arms.E exactly",
+    "changed_cells": [
+      {
+        "task_id": "fresh_069",
+        "arm": "E",
+        "old_folded_success": false,
+        "new_folded_success": false,
+        "moved": "False -> False",
+        "old_row": "429 session-limit error, no output (archived)",
+        "new_success_proxy": false,
+        "new_typecheck_ok": true,
+        "new_n_hallucinated": 1,
+        "new_hallucinated_names": [
+          "IsPrime"
+        ],
+        "new_typecheck_errors": []
+      },
+      {
+        "task_id": "fresh_070",
+        "arm": "E",
+        "old_folded_success": false,
+        "new_folded_success": true,
+        "moved": "False -> True",
+        "old_row": "429 session-limit error, no output (archived)",
+        "new_success_proxy": true,
+        "new_typecheck_ok": true,
+        "new_n_hallucinated": 0,
+        "new_hallucinated_names": [],
+        "new_typecheck_errors": []
+      },
+      {
+        "task_id": "fresh_071",
+        "arm": "E",
+        "old_folded_success": false,
+        "new_folded_success": false,
+        "moved": "False -> False",
+        "old_row": "429 session-limit error, no output (archived)",
+        "new_success_proxy": false,
+        "new_typecheck_ok": false,
+        "new_n_hallucinated": 2,
+        "new_hallucinated_names": [
+          "EqvGen.eqvGen_le",
+          "EqvGen"
+        ],
+        "new_typecheck_errors": [
+          "Function expected at\n  EqvGen\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  r\n\nHint: The identifier `EqvGen` is unknown, and Lean's `aut",
+          "Invalid field notation: Field projection operates on types of the form `C ...` where C is a constant. The expression\n  EqvGen\nhas type `x✝` which does not have the necessary form."
+        ]
+      },
+      {
+        "task_id": "fresh_072",
+        "arm": "E",
+        "old_folded_success": false,
+        "new_folded_success": false,
+        "moved": "False -> False",
+        "old_row": "429 session-limit error, no output (archived)",
+        "new_success_proxy": false,
+        "new_typecheck_ok": true,
+        "new_n_hallucinated": 1,
+        "new_hallucinated_names": [
+          "LinearOrder.finite_of_wellFoundedLT_wellFoundedGT"
+        ],
+        "new_typecheck_errors": []
+      },
+      {
+        "task_id": "fresh_073",
+        "arm": "E",
+        "old_folded_success": false,
+        "new_folded_success": true,
+        "moved": "False -> True",
+        "old_row": "429 session-limit error, no output (archived)",
+        "new_success_proxy": true,
+        "new_typecheck_ok": true,
+        "new_n_hallucinated": 0,
+        "new_hallucinated_names": [],
+        "new_typecheck_errors": []
+      },
+      {
+        "task_id": "fresh_074",
+        "arm": "E",
+        "old_folded_success": false,
+        "new_folded_success": true,
+        "moved": "False -> True",
+        "old_row": "429 session-limit error, no output (archived)",
+        "new_success_proxy": true,
+        "new_typecheck_ok": true,
+        "new_n_hallucinated": 0,
+        "new_hallucinated_names": [],
+        "new_typecheck_errors": []
+      },
+      {
+        "task_id": "fresh_075",
+        "arm": "E",
+        "old_folded_success": false,
+        "new_folded_success": true,
+        "moved": "False -> True",
+        "old_row": "429 session-limit error, no output (archived)",
+        "new_success_proxy": true,
+        "new_typecheck_ok": true,
+        "new_n_hallucinated": 0,
+        "new_hallucinated_names": [],
+        "new_typecheck_errors": []
+      },
+      {
+        "task_id": "fresh_076",
+        "arm": "E",
+        "old_folded_success": false,
+        "new_folded_success": false,
+        "moved": "False -> False",
+        "old_row": "429 session-limit error, no output (archived)",
+        "new_success_proxy": false,
+        "new_typecheck_ok": false,
+        "new_n_hallucinated": 4,
+        "new_hallucinated_names": [
+          "S.map",
+          "S.Exact",
+          "ShortComplex",
+          "Exact"
+        ],
+        "new_typecheck_errors": [
+          "typecheck exceeded 90.0s budget"
+        ]
+      },
+      {
+        "task_id": "fresh_077",
+        "arm": "E",
+        "old_folded_success": false,
+        "new_folded_success": false,
+        "moved": "False -> False",
+        "old_row": "429 session-limit error, no output (archived)",
+        "new_success_proxy": true,
+        "new_typecheck_ok": false,
+        "new_n_hallucinated": 0,
+        "new_hallucinated_names": [],
+        "new_typecheck_errors": [
+          "expected token"
+        ]
+      },
+      {
+        "task_id": "fresh_078",
+        "arm": "E",
+        "old_folded_success": false,
+        "new_folded_success": false,
+        "moved": "False -> False",
+        "old_row": "429 session-limit error, no output (archived)",
+        "new_success_proxy": false,
+        "new_typecheck_ok": false,
+        "new_n_hallucinated": 1,
+        "new_hallucinated_names": [
+          "IsZero"
+        ],
+        "new_typecheck_errors": [
+          "expected token"
+        ]
+      },
+      {
+        "task_id": "fresh_079",
+        "arm": "E",
+        "old_folded_success": false,
+        "new_folded_success": false,
+        "moved": "False -> False",
+        "old_row": "429 session-limit error, no output (archived)",
+        "new_success_proxy": false,
+        "new_typecheck_ok": true,
+        "new_n_hallucinated": 1,
+        "new_hallucinated_names": [
+          "IsPrime"
+        ],
+        "new_typecheck_errors": []
+      },
+      {
+        "task_id": "fresh_080",
+        "arm": "E",
+        "old_folded_success": false,
+        "new_folded_success": true,
+        "moved": "False -> True",
+        "old_row": "429 session-limit error, no output (archived)",
+        "new_success_proxy": true,
+        "new_typecheck_ok": true,
+        "new_n_hallucinated": 0,
+        "new_hallucinated_names": [],
+        "new_typecheck_errors": []
+      },
+      {
+        "task_id": "fresh_081",
+        "arm": "E",
+        "old_folded_success": false,
+        "new_folded_success": true,
+        "moved": "False -> True",
+        "old_row": "429 session-limit error, no output (archived)",
+        "new_success_proxy": true,
+        "new_typecheck_ok": true,
+        "new_n_hallucinated": 0,
+        "new_hallucinated_names": [],
+        "new_typecheck_errors": []
+      },
+      {
+        "task_id": "fresh_082",
+        "arm": "E",
+        "old_folded_success": false,
+        "new_folded_success": true,
+        "moved": "False -> True",
+        "old_row": "429 session-limit error, no output (archived)",
+        "new_success_proxy": true,
+        "new_typecheck_ok": true,
+        "new_n_hallucinated": 0,
+        "new_hallucinated_names": [],
+        "new_typecheck_errors": []
+      },
+      {
+        "task_id": "fresh_083",
+        "arm": "E",
+        "old_folded_success": false,
+        "new_folded_success": true,
+        "moved": "False -> True",
+        "old_row": "429 session-limit error, no output (archived)",
+        "new_success_proxy": true,
+        "new_typecheck_ok": true,
+        "new_n_hallucinated": 0,
+        "new_hallucinated_names": [],
+        "new_typecheck_errors": []
+      },
+      {
+        "task_id": "fresh_084",
+        "arm": "E",
+        "old_folded_success": false,
+        "new_folded_success": false,
+        "moved": "False -> False",
+        "old_row": "429 session-limit error, no output (archived)",
+        "new_success_proxy": false,
+        "new_typecheck_ok": false,
+        "new_n_hallucinated": 2,
+        "new_hallucinated_names": [
+          "TopologicalRing",
+          "TopologicalAddCommGroup"
+        ],
+        "new_typecheck_errors": [
+          "invalid binder annotation, type is not a class instance\n  ?m.2\n\nNote: Use the command `set_option checkBinderAnnotations false` to disable the check"
+        ]
+      },
+      {
+        "task_id": "fresh_085",
+        "arm": "E",
+        "old_folded_success": false,
+        "new_folded_success": true,
+        "moved": "False -> True",
+        "old_row": "429 session-limit error, no output (archived)",
+        "new_success_proxy": true,
+        "new_typecheck_ok": true,
+        "new_n_hallucinated": 0,
+        "new_hallucinated_names": [],
+        "new_typecheck_errors": []
+      },
+      {
+        "task_id": "fresh_086",
+        "arm": "E",
+        "old_folded_success": false,
+        "new_folded_success": true,
+        "moved": "False -> True",
+        "old_row": "429 session-limit error, no output (archived)",
+        "new_success_proxy": true,
+        "new_typecheck_ok": true,
+        "new_n_hallucinated": 0,
+        "new_hallucinated_names": [],
+        "new_typecheck_errors": []
+      },
+      {
+        "task_id": "fresh_087",
+        "arm": "E",
+        "old_folded_success": false,
+        "new_folded_success": false,
+        "moved": "False -> False",
+        "old_row": "429 session-limit error, no output (archived)",
+        "new_success_proxy": false,
+        "new_typecheck_ok": false,
+        "new_n_hallucinated": 1,
+        "new_hallucinated_names": [
+          "Icc"
+        ],
+        "new_typecheck_errors": [
+          "Function expected at\n  Icc\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  a\n\nHint: The identifier `Icc` is unknown, and Lean's `autoImpli"
+        ]
+      },
+      {
+        "task_id": "fresh_088",
+        "arm": "E",
+        "old_folded_success": false,
+        "new_folded_success": false,
+        "moved": "False -> False",
+        "old_row": "429 session-limit error, no output (archived)",
+        "new_success_proxy": false,
+        "new_typecheck_ok": false,
+        "new_n_hallucinated": 1,
+        "new_hallucinated_names": [
+          "Icc"
+        ],
+        "new_typecheck_errors": [
+          "Function expected at\n  Icc\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  a\n\nHint: The identifier `Icc` is unknown, and Lean's `autoImpli"
+        ]
+      },
+      {
+        "task_id": "fresh_089",
+        "arm": "E",
+        "old_folded_success": false,
+        "new_folded_success": true,
+        "moved": "False -> True",
+        "old_row": "429 session-limit error, no output (archived)",
+        "new_success_proxy": true,
+        "new_typecheck_ok": true,
+        "new_n_hallucinated": 0,
+        "new_hallucinated_names": [],
+        "new_typecheck_errors": []
+      },
+      {
+        "task_id": "fresh_090",
+        "arm": "E",
+        "old_folded_success": false,
+        "new_folded_success": false,
+        "moved": "False -> False",
+        "old_row": "429 session-limit error, no output (archived)",
+        "new_success_proxy": true,
+        "new_typecheck_ok": false,
+        "new_n_hallucinated": 0,
+        "new_hallucinated_names": [],
+        "new_typecheck_errors": [
+          "unexpected token 'in'; expected ','"
+        ]
+      },
+      {
+        "task_id": "fresh_091",
+        "arm": "E",
+        "old_folded_success": false,
+        "new_folded_success": false,
+        "moved": "False -> False",
+        "old_row": "429 session-limit error, no output (archived)",
+        "new_success_proxy": true,
+        "new_typecheck_ok": false,
+        "new_n_hallucinated": 0,
+        "new_hallucinated_names": [],
+        "new_typecheck_errors": [
+          "failed to synthesize instance of type class\n  LinearOrder α\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command."
+        ]
+      },
+      {
+        "task_id": "fresh_092",
+        "arm": "E",
+        "old_folded_success": false,
+        "new_folded_success": false,
+        "moved": "False -> False",
+        "old_row": "429 session-limit error, no output (archived)",
+        "new_success_proxy": true,
+        "new_typecheck_ok": false,
+        "new_n_hallucinated": 0,
+        "new_hallucinated_names": [],
+        "new_typecheck_errors": [
+          "failed to synthesize instance of type class\n  LE α\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.",
+          "failed to synthesize instance of type class\n  LE α\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.",
+          "failed to synthesize instance of type class\n  LE α\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.",
+          "failed to synthesize instance of type class\n  LinearOrder α\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command."
+        ]
+      },
+      {
+        "task_id": "fresh_093",
+        "arm": "E",
+        "old_folded_success": false,
+        "new_folded_success": false,
+        "moved": "False -> False",
+        "old_row": "429 session-limit error, no output (archived)",
+        "new_success_proxy": false,
+        "new_typecheck_ok": false,
+        "new_n_hallucinated": 1,
+        "new_hallucinated_names": [
+          "Icc"
+        ],
+        "new_typecheck_errors": [
+          "Function expected at\n  Icc\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  a\n\nHint: The identifier `Icc` is unknown, and Lean's `autoImpli"
+        ]
+      },
+      {
+        "task_id": "fresh_094",
+        "arm": "E",
+        "old_folded_success": false,
+        "new_folded_success": false,
+        "moved": "False -> False",
+        "old_row": "429 session-limit error, no output (archived)",
+        "new_success_proxy": false,
+        "new_typecheck_ok": false,
+        "new_n_hallucinated": 1,
+        "new_hallucinated_names": [
+          "Icc"
+        ],
+        "new_typecheck_errors": [
+          "Function expected at\n  Icc\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  a\n\nHint: The identifier `Icc` is unknown, and Lean's `autoImpli"
+        ]
+      },
+      {
+        "task_id": "fresh_095",
+        "arm": "E",
+        "old_folded_success": false,
+        "new_folded_success": true,
+        "moved": "False -> True",
+        "old_row": "429 session-limit error, no output (archived)",
+        "new_success_proxy": true,
+        "new_typecheck_ok": true,
+        "new_n_hallucinated": 0,
+        "new_hallucinated_names": [],
+        "new_typecheck_errors": []
+      },
+      {
+        "task_id": "fresh_096",
+        "arm": "E",
+        "old_folded_success": false,
+        "new_folded_success": true,
+        "moved": "False -> True",
+        "old_row": "429 session-limit error, no output (archived)",
+        "new_success_proxy": true,
+        "new_typecheck_ok": true,
+        "new_n_hallucinated": 0,
+        "new_hallucinated_names": [],
+        "new_typecheck_errors": []
+      },
+      {
+        "task_id": "fresh_097",
+        "arm": "E",
+        "old_folded_success": false,
+        "new_folded_success": false,
+        "moved": "False -> False",
+        "old_row": "429 session-limit error, no output (archived)",
+        "new_success_proxy": false,
+        "new_typecheck_ok": false,
+        "new_n_hallucinated": 2,
+        "new_hallucinated_names": [
+          "Icc",
+          "IsFixedPt"
+        ],
+        "new_typecheck_errors": [
+          "Function expected at\n  Icc\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  a\n\nHint: The identifier `Icc` is unknown, and Lean's `autoImpli",
+          "Function expected at\n  Icc\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  a\n\nHint: The identifier `Icc` is unknown, and Lean's `autoImpli",
+          "Function expected at\n  Icc\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  a\n\nHint: The identifier `Icc` is unknown, and Lean's `autoImpli",
+          "Function expected at\n  Icc\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  a\n\nHint: The identifier `Icc` is unknown, and Lean's `autoImpli"
+        ]
+      },
+      {
+        "task_id": "fresh_098",
+        "arm": "E",
+        "old_folded_success": false,
+        "new_folded_success": false,
+        "moved": "False -> False",
+        "old_row": "429 session-limit error, no output (archived)",
+        "new_success_proxy": false,
+        "new_typecheck_ok": false,
+        "new_n_hallucinated": 1,
+        "new_hallucinated_names": [
+          "IsFixedPt"
+        ],
+        "new_typecheck_errors": [
+          "Function expected at\n  IsFixedPt\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  f\n\nHint: The identifier `IsFixedPt` is unknown, and Lean'"
+        ]
+      },
+      {
+        "task_id": "fresh_099",
+        "arm": "E",
+        "old_folded_success": false,
+        "new_folded_success": true,
+        "moved": "False -> True",
+        "old_row": "429 session-limit error, no output (archived)",
+        "new_success_proxy": true,
+        "new_typecheck_ok": true,
+        "new_n_hallucinated": 0,
+        "new_hallucinated_names": [],
+        "new_typecheck_errors": []
+      }
+    ]
+  }
+}

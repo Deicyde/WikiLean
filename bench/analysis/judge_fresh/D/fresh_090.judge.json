@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": true,
+ "defects": [
+  "Sequence is indexed by Fin (n+1) → α with Monotone required only on that finite domain, instead of gold's ℕ → α with Monotone required on the full sequence and restricted via image of Iic n — a genuine reindexing/structural change rather than mere renaming, though provably equivalent",
+  "Arguments to edist are swapped (edist (f (u (i+1))) (f (u i)) vs gold's edist (f (u i)) (f (u (i+1)))); harmless since edist is symmetric but syntactically not identical",
+  "n is implicit in the produced statement vs explicit in gold; f, u, hu argument order differs from gold's f, hu, n ordering"
+ ],
+ "arm": "D",
+ "task_id": "fresh_090",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 98.4,
+ "judge_cost_usd": 0.282251,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "360dd7970a0a3b321da8ef9bc8948942917d054790bac8232fb379920c1650ac"
+}

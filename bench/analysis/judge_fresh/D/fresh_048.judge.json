@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Missing `[Fintype l]` instance hypothesis, which is required both for `Matrix.symplecticGroup` to be defined and for `Matrix.det` on the `l ⊕ l` index type to be well-typed",
+  "Missing `[DecidableEq l]` instance hypothesis, required for the same reasons",
+  "`Matrix.symplecticGroup` is referenced without its explicit `l` and `R` arguments (its actual signature is `symplecticGroup (l R : Type*) [DecidableEq l] [Fintype l] [CommRing R] : Submonoid (Matrix (l ⊕ l) (l ⊕ l) R)`), so as written it does not correctly denote the symplectic group and likely fails to elaborate"
+ ],
+ "arm": "D",
+ "task_id": "fresh_048",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 23.5,
+ "judge_cost_usd": 0.084401,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "b48c4d7a52d6c05b2ebb1e5f3a370faa7e6152dac5aa3cc563db3c3f92fdfdcb"
+}

@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": true,
+ "defects": [
+  "The finite-sublevel-sets hypothesis is spelled out as an explicit predicate (`∀ B, Set.Finite {x | h x ≤ B}`) rather than going through the `Northcott h` typeclass used in gold — content-equivalent assuming `Northcott` unfolds to exactly this predicate, but structurally an unbundled rather than typeclass-based formalization.",
+  "The growth witnesses n, b, c are packaged as an existential hypothesis (`∃ n, ∃ b c, ...`) rather than as universally-quantified implicit arguments as in gold — logically equivalent as an overall implication (since the conclusion doesn't mention n, b, c), but a different quantifier structure for the hypothesis itself.",
+  "The conclusion is stated as `Set.Finite {x : G | orderOf x ≠ 0}` instead of `Finite (torsion G)` — provably equivalent via standard facts (`orderOf x ≠ 0 ↔ IsOfFinOrder x`, and the torsion subgroup's carrier being `{x | IsOfFinOrder x}`, plus `Set.Finite ↔ Finite` on the coerced subtype), but does not directly use the named `torsion` subgroup from gold."
+ ],
+ "arm": "D",
+ "task_id": "fresh_038",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 110.2,
+ "judge_cost_usd": 0.560096,
+ "num_turns": 1,
+ "attempts": 2,
+ "prompt_sha256": "8bc8ed817ad5dd8540fed3f67c66a43d245c8724c1cecf3091be505d857f908d"
+}

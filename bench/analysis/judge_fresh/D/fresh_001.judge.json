@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Adds an unnecessary hypothesis `[Monoid M]` on the index type M that is absent from the gold statement (MonoidAlgebra/AddMonoidAlgebra as a Finsupp type doesn't require M to be a Monoid for this additive-hom extensionality fact)",
+  "Strengthens the codomain hypothesis from `[AddZeroClass N]` (gold) to `[AddMonoid N]` (produced), restricting generality",
+  "Uses `AddMonoidAlgebra R M` in place of the gold's `R[M]` which (under `open MonoidAlgebra`) denotes `MonoidAlgebra R M`, a different (though related) structure than what the informal statement specifies"
+ ],
+ "arm": "D",
+ "task_id": "fresh_001",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 48.8,
+ "judge_cost_usd": 0.147314,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "452dd33d5efc11d23544910f56fb20f943b47c08d92a92beeed07df56d6c4144"
+}

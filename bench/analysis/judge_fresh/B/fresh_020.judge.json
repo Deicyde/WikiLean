@@ -1,0 +1,21 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Changes the underlying object of study: gold's f is a genuine real-valued function of a real variable (f : ℝ → ℝ) with antitonicity/integrability stated about the continuous function itself; produced's f is a sequence (f : ℕ → ℝ), and the continuous-variable integrand is manufactured via f (Int.floor x).natAbs, i.e. a step-function extension — not the same mathematical object.",
+  "Conclusion type differs: gold concludes IntegrableOn f (Ioi N) (Bochner integrability of the original real function); produced concludes finiteness of a lower Lebesgue integral (∫⁻) of the artificially constructed step function — not equivalent to integrability of a general antitone real function.",
+  "Likely type error: ∫⁻ requires an ℝ≥0∞-valued integrand, but f (Int.floor x).natAbs has type ℝ with no ENNReal.ofReal coercion applied, so the statement as written likely does not typecheck.",
+  "Loses generality of starting point: gold has a free parameter N : ℕ for where the ray/antitonicity begins; produced hard-codes the ray to start at 1.",
+  "Antitone hypothesis differs in domain: gold's AntitoneOn f (Ici N) is a genuine continuous-domain monotonicity condition; produced's Antitone f only constrains the discrete sequence, and antitonicity of the constructed step function on the reals is not asserted or equivalent to a continuous integrability statement.",
+  "Trivializes the theorem: because the constructed integrand is constant on each unit interval [n, n+1), finiteness of its lintegral is essentially definitionally equivalent to Summable f, so the produced statement no longer captures the substantive integral-comparison-test content (relating integrability of a general antitone continuous function to summability of its samples) that the gold statement expresses.",
+  "Nonnegativity hypothesis only covers the sequence (∀ n, 0 ≤ f n) rather than the gold's pointwise nonnegativity on the whole ray (∀ t ∈ Ioi N, 0 ≤ f t) for a continuous-domain function."
+ ],
+ "arm": "B",
+ "task_id": "fresh_020",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 35.8,
+ "judge_cost_usd": 0.112676,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "617cf7358897c59a98b186056e82aa70d5892242fed08bb01b8250d9dbc32052"
+}

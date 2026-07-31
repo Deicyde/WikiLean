@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Hypothesis is stated as `w.1.LiesOver v.1` (LiesOver applied to the underlying AbsoluteValue projections of w and v) instead of gold's `w.LiesOver v` (LiesOver applied directly to the InfinitePlace terms) — it is not clear this is the same typeclass/relation rather than a distinct or possibly ill-typed condition",
+  "Gold's `[w.LiesOver v]` is an instance-implicit typeclass argument; produced version turns it into an explicit hypothesis `(hv : ...)`, a structural change from the intended typeclass-resolution pattern (worked around in-proof via `haveI`, but the statement itself differs)",
+  "`w` changed from implicit `{w : InfinitePlace L}` in gold to explicit `(w : InfinitePlace L)` in produced",
+  "`K L` changed from implicit `{K L : Type*}` in gold to explicit `(K L : Type*)` in produced"
+ ],
+ "arm": "C",
+ "task_id": "fresh_066",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 138.2,
+ "judge_cost_usd": 0.377945,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "948521ea4d710fe1ab376323bf50fd863be07295e9a5de806f051c24fbc1e32c"
+}

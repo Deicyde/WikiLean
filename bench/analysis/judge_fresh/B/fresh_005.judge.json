@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Adds an extra hypothesis `smul_mono : ∀ b c : β, b ≤ c → a • b ≤ a • c` not present in gold; this hypothesis directly assumes the very fact (that scalar multiplication by `a` is order-preserving) that gold's `[PosSMulMono α β]` typeclass is meant to supply/encode for a whole scalar structure, so the produced statement is a materially different (and essentially trivial, since it reduces to composing an antitone map with an assumed-monotone map) proposition rather than the intended theorem about nonnegative scalars in an ordered-scalar structure.",
+  "Restricts the scalar type to ℝ via `[Module ℝ β]` instead of gold's general scalar type `α` with `[SMul α β] [Preorder α] [Zero α]`, losing the generality of gold's statement (which applies to any type with a `PosSMulMono` instance, not just ℝ).",
+  "Because `smul_mono` is assumed directly, the `[Module ℝ β]` structure and the `0 ≤ a` hypothesis's role in guaranteeing scalar monotonicity (via `PosSMulMono`) is bypassed entirely, so the produced statement does not actually encode the mathematical content that nonnegative scalar multiplication preserves order — it just assumes it."
+ ],
+ "arm": "B",
+ "task_id": "fresh_005",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 42.2,
+ "judge_cost_usd": 0.129739,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "b55d546fc4f92dfe6a14b6cb5e2574137806347dc281cdf36691d88115c8b251"
+}

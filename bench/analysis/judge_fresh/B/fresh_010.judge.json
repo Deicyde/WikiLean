@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Restricts the scalar field to ℝ only, whereas the gold statement works over any RCLike 𝕜 (including ℂ) — a real loss of generality.",
+  "Adds an un-stated hypothesis that the codomain F has the same finite dimension n as the domain E (forced by requiring a Basis (Fin n) ℝ F). The gold statement only requires the domain U to be finite-dimensional; V (the codomain) can be infinite-dimensional or of strictly larger finite dimension, so a general isometric embedding into a bigger/infinite space is excluded from the produced statement.",
+  "Replaces the citation of the actual Mathlib `LinearMap.normDet` (the intended, basis-independent norm-determinant) with an ad hoc matrix-determinant formula tied to a specific arbitrary pair of orthonormal bases; this only coincides with the general theorem in the special case dim E = dim F, so it is not a faithful restatement of the gold proposition.",
+  "The arguments to `LinearMap.toMatrix` appear swapped: Mathlib's convention is `toMatrix (domainBasis) (codomainBasis)`, but the statement calls `LinearMap.toMatrix b_F b_E ↑f` with f : E →ₗ[ℝ] F, which requires the domain/codomain bases in the order (b_E, b_F); as written this is a type mismatch and the statement likely fails to elaborate."
+ ],
+ "arm": "B",
+ "task_id": "fresh_010",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 101.4,
+ "judge_cost_usd": 0.282658,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "7572aa11649711b292decafbf3c6a055b496fa442b888dde4d70b8ded4d58b08"
+}

@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Adds two extra hypotheses (a0 ∈ f.support, b0 ∈ g.support) that are not part of the gold's UniqueMul hypothesis; the gold theorem holds even when a0 ∉ f.support or b0 ∉ g.support (both sides vanish), so these added hypotheses strictly restrict the scope of the produced theorem compared to gold.",
+  "Strengthens the algebraic structure requirement from [Mul A] (gold) to [Monoid G], an unnecessary restriction not needed for the statement.",
+  "Adds an unnecessary [DecidableEq G] typeclass assumption not present in the gold statement."
+ ],
+ "arm": "A",
+ "task_id": "fresh_003",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 67.6,
+ "judge_cost_usd": 0.222393,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "e75d39fb2e4e3655cb01fd32ba80f324c691f8c819c769512b97789333152d98"
+}

@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Adds an extra hypothesis [Fintype σ] not present in the gold statement, unnecessarily restricting the theorem to finite index/variable types",
+  "Replaces the gold's [IsAddTorsionFree R] hypothesis with [CharZero R]; these are not equivalent — CharZero only forces torsion-freeness on the image of ℕ (i.e. on multiples of 1), not on arbitrary ring elements, so it is strictly weaker than IsAddTorsionFree. A counterexample ring such as R = ℤ[a]/(2a, a²) is CharZero but not additively torsion-free, and admits distinct power series satisfying the produced hypotheses, so the produced statement is not a valid (or equivalent) formalization of the gold claim"
+ ],
+ "arm": "D",
+ "task_id": "fresh_080",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 80.0,
+ "judge_cost_usd": 0.230382,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "9eba885587e716c098a8ee00c7cba7a264e9fc53a6f8b5c2467463a11c7dc3df"
+}

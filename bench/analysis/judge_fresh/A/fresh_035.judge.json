@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Composition order is reversed relative to the gold: gold composes the immersion AFTER f (φ ∘ f, with φ's immersion hypothesis at the point f x), while the produced statement composes the immersion BEFORE f (f ∘ g, with g mapping into the domain of f). This is not just a cosmetic rearrangement — it changes the mathematical content and makes the statement false in general (e.g. M=ℝ², M'=ℝ, f(x,y)=|y| is continuous at (0,0) but not smooth there; g(t)=(t,0) is a smooth immersion with f∘g ≡ 0 smooth, giving a counterexample to the claimed iff).",
+  "Restricts to C^∞ (`Smooth`/`SmoothAt`) instead of the general C^n regularity parameter `n : ℕ∞ω` used in the gold, losing generality.",
+  "Strengthens the immersion hypothesis from a purely local condition (IsImmersionAt at the single point f x) to a global one: g is required to be smooth everywhere (`Smooth I'' I g`) and to have injective mfderiv at every point, rather than merely being a C^n immersion at one point.",
+  "Introduces an extra hypothesis `hx : g x'' = x` linking a separate point x'' to x, reflecting the reversed composition structure rather than the gold's direct evaluation of φ at f x.",
+  "As a consequence of the above, the produced statement is not an equivalent restatement of the gold theorem; it asserts a different (and generally false) proposition."
+ ],
+ "arm": "A",
+ "task_id": "fresh_035",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 37.1,
+ "judge_cost_usd": 0.125633,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "f0c46997c36c63ff65d428e7cac3f39fe0833ce92f528251ead4dadc463090c9"
+}

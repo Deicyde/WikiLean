@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "h_left pairs sSup with the wrong boundedness hypothesis: it requires `BddBelow s` (plus Nonempty) rather than `BddAbove s`, which is the condition actually needed for `sSup s` to equal the real supremum; for sets bounded below but not above, `sSup s` is a junk/default value, so this hypothesis is not equivalent to gold's `LeftOrdContinuous f` (preservation of `IsLUB`).",
+  "h_right pairs sInf with the wrong boundedness hypothesis: it requires `BddAbove s` (plus Nonempty) rather than `BddBelow s`, the condition needed for `sInf s` to be the real infimum; analogous junk-value problem, not equivalent to gold's `RightOrdContinuous f` (preservation of `IsGLB`).",
+  "Because of the swapped boundedness conditions, the produced hypotheses do not correctly capture 'preserves suprema of bounded-above sets' / 'preserves infima of bounded-below sets'; the resulting proposition is not clearly equivalent (could be weaker, stronger, or simply different) from the gold statement.",
+  "Gold's definitions (via IsLUB/IsGLB) cover the general order-continuity condition uniformly, while the produced statement explicitly restricts to Nonempty sets via an added conjunct — a further (minor) divergence in generality.",
+  "Produced signature omits explicit `[TopologicalSpace α]`/`[TopologicalSpace β]` instance arguments that `OrderTopology` depends on; relies on autoBound/autoImplicit to insert them, which is fragile compared to gold's explicit typeclass arguments."
+ ],
+ "arm": "B",
+ "task_id": "fresh_096",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 93.0,
+ "judge_cost_usd": 0.263389,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "118fabd8fbc1ee589494b9aa52e7b81349113019ecbcee42f813627472ed1a62"
+}

@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "The produced statement swaps which face is the hypothesis vs. the conclusion relative to gold: gold's actual conclusion equation (f0x1 ≫ fx11 = fx01 ≫ f1x1, the 'k=1' face) is supplied as the hypothesis h_right, while a different face (the 'j=1' face, equivalent to gold's hx1x, which gold gives as a hypothesis) is used as the produced conclusion.",
+  "The Epi hypothesis is placed on the wrong edge: in gold, Epi f00x is on an edge disjoint from the sixth (missing) face's own edges, mapping into one of that face's source vertices (the edge used to precompose-and-cancel in the classical proof). In the produced statement, Epi i₁ is placed on an edge that is literally one of the four edges appearing directly in the concluded CommSq equation itself (i₁ appears in the goal i₀ ≫ p₁₁ = p₁₀ ≫ i₁), which is a structurally different, non-equivalent hypothesis and does not support the epi-cancellation argument the lemma relies on.",
+  "This mismatch is invariant under all cube relabelings/symmetries (verified by checking the axis of variation of the epi edge against the axis defining the missing face), so no renaming can reconcile produced with gold; the produced statement encodes a genuinely different (and likely non-standard/not straightforwardly provable) proposition rather than a restatement of the gold cube lemma."
+ ],
+ "arm": "D",
+ "task_id": "fresh_028",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 283.4,
+ "judge_cost_usd": 0.772126,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "49543252dc90d2fdb563894c91d9fccc1c30cbc0f90b1a1a458a3a89b137bec5"
+}

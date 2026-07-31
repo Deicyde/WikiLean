@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Missing [TopologicalSpace α] instance entirely — ContinuousOn f s / f sᶜ requires a topology on α, which is never declared, so the statement likely fails to typecheck as written",
+  "Missing [OpensMeasurableSpace α] hypothesis relating the (absent) topology to the measurable space on α, needed for the theorem to hold",
+  "Missing [MeasurableSingletonClass α] hypothesis, needed so the countable exceptional set is measurable",
+  "Missing [SecondCountableTopologyEither α β] separability hypothesis, needed for the strong-measurability conclusion",
+  "β hypothesis strengthened from [TopologicalSpace β] + [PseudoMetrizableSpace β] (topology merely admits some pseudometric) to [PseudoMetricSpace β] (a specific bundled metric is assumed) — a stronger, non-equivalent requirement, not just a bundled/unbundled restatement"
+ ],
+ "arm": "A",
+ "task_id": "fresh_051",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 55.2,
+ "judge_cost_usd": 0.159095,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "da3af9cf382dbe10a76648293100993929d61c6ab0a6ada2a4eee8e07e72f246"
+}

@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "h_inf uses `iInf s` with `s : Set α`, but `iInf` expects an indexed family `ι → α`, not a `Set α` (it should be `sInf s` / `sInf (f '' s)`); as written this does not typecheck against a `Set α` argument",
+  "The `[OrderTopology α]`/`[OrderTopology β]` instance arguments are used without first providing `[TopologicalSpace α]`/`[TopologicalSpace β]`, which `OrderTopology` requires as a prerequisite instance; since no canonical order-topology instance is registered globally, this fails to elaborate",
+  "Both h_sup and h_inf drop the `Set.Nonempty s` condition that the standard sSup/sInf characterization of LeftOrdContinuous/RightOrdContinuous requires; without it the hypotheses also constrain the empty-set case (e.g. forcing f(sSup ∅) = sSup ∅, a junk-value equality such as f 0 = 0 in ℝ), making them not equivalent to the gold's LeftOrdContinuous/RightOrdContinuous hypotheses",
+  "Hypotheses are stated as explicit sSup/sInf-preservation equations rather than the gold's LeftOrdContinuous/RightOrdContinuous (IsLUB/IsGLB-based) predicates; given the above issues this reformulation is not confirmed equivalent"
+ ],
+ "arm": "D",
+ "task_id": "fresh_096",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 136.0,
+ "judge_cost_usd": 0.374376,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "298c52ef6e1200324a4a33ddb33e875e9c5eda21c2039ff6ee2c658359a40b05"
+}

@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Drops the arbitrary set s entirely: informal statement is about variation over 's ∩ Icc a b' (the 'part of a set' in [a,b]), but produced statement only covers the full interval Set.Icc a b, i.e. only the special case s = univ",
+  "Uses 'eVariation' instead of Mathlib's actual 'eVariationOn' — likely a wrong/nonexistent declaration name",
+  "Adds an extraneous hypothesis hab : a ≤ b not present in gold; gold instead uses a ∈ s, b ∈ s and holds even when a > b (both sides vanish), so the produced statement changes the required hypotheses"
+ ],
+ "arm": "A",
+ "task_id": "fresh_093",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 22.5,
+ "judge_cost_usd": 0.082676,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "7218ef915a81f5b32a9dd741132cc1e63d7cb1475de97f2e7247da350b601bf8"
+}

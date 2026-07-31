@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Uses `LinearMap.det`, which in Mathlib is only defined for endomorphisms `M →ₗ[R] M` (same source and target type); here `f : E →ₗᵢ[𝕜] F` with E and F distinct general types, so `LinearMap.det (f : E →ₗ[𝕜] F)` does not typecheck",
+  "Replaces the gold's purpose-built `LinearMap.normDet` (generalized norm-determinant for maps between possibly different-dimensional inner product spaces, defined via orthonormal bases) with an attempt to reconstruct it via `‖LinearMap.det ...‖`, which is not mathematically equivalent and not even well-typed for non-endomorphisms",
+  "Adds an extra hypothesis `[FiniteDimensional 𝕜 F]` (codomain finite-dimensional) that is not present in the gold, which only requires the domain U to be finite-dimensional",
+  "Uses `[NormedField 𝕜]` instead of `[RCLike 𝕜]`; since `InnerProductSpace 𝕜 E` itself requires an `RCLike 𝕜` instance argument, declaring only `NormedField 𝕜` is insufficient/inconsistent with the rest of the hypotheses",
+  "Redundant explicit `[NormedSpace 𝕜 E]`/`[NormedSpace 𝕜 F]` hypotheses alongside `InnerProductSpace`, which already extends `NormedSpace`"
+ ],
+ "arm": "A",
+ "task_id": "fresh_010",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 45.7,
+ "judge_cost_usd": 0.140976,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "a2e16bef23c5b4c58eb8642db6dc12a522c98f34f218354b897a5d5f0c774fba"
+}

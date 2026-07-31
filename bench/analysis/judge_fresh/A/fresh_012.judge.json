@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Restricts the linear map to an endomorphism f : V →ₗ[ℝ] V (domain = codomain), whereas the gold statement (and the informal statement's notion of 'norm-determinant') is for a general linear map f : U →ₗ[𝕜] V between possibly different spaces of possibly different dimensions",
+  "Restricts the scalar field to ℝ instead of the general RCLike 𝕜 in the gold statement, losing the ℂ case",
+  "Replaces the 'norm-determinant' (f.normDet) concept — which is the actual generalized notion being formalized and makes sense for non-square maps — with the ordinary determinant of a matrix representation (LinearMap.toMatrix b b f).det, which only exists when domain = codomain, so the statement fails to capture the intended generalized concept",
+  "Uses an unbundled Basis with a separate Orthonormal hypothesis indexed by Fin (finrank ℝ V) rather than the bundled OrthonormalBasis ι 𝕜 U used in gold, tying the formalization further to the finite square case rather than an arbitrary orthonormal basis"
+ ],
+ "arm": "A",
+ "task_id": "fresh_012",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 40.4,
+ "judge_cost_usd": 0.122951,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "b3a58ed9b7562f00beedf14c6ae0f1871100f5aab59a8286b6c84b731cb3a80c"
+}

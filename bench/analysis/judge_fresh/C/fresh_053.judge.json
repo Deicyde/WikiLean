@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Restricts g to ℝ → ℝ instead of a general normed space E as in the gold statement, reducing generality",
+  "Adds a continuity hypothesis (hg_cont : ContinuousOn g (Ioi (log a))) not present in the gold, which holds unconditionally for arbitrary g",
+  "Adds an integrability hypothesis (hg_int : IntegrableOn g (Ici (log a))) not present in the gold",
+  "Adds an integrability hypothesis (h_comp_int : IntegrableOn (fun x => g (log x) * x⁻¹) (Ici a)) not present in the gold",
+  "Uses Ici (log a) / Ici a domains for the added hypotheses instead of Ioi, inconsistent with the integral domains used elsewhere in the statement"
+ ],
+ "arm": "C",
+ "task_id": "fresh_053",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 18.2,
+ "judge_cost_usd": 0.070295,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "df1ec99f66ebe9612e77d50d1da57b14c46205355208c9504c2fb842020862f4"
+}

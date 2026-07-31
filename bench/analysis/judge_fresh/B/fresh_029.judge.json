@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Hypothesis/conclusion roles are swapped relative to gold: the produced statement takes as a *given* hypothesis (`hbot : k ∘ f = h ∘ g`) exactly the equation that gold treats as the theorem's *conclusion* (gold's 'k=0' face, using f0x0,fx00,fx10,f1x0), and instead makes gold's hypothesis face `hx1x` (the 'j=1'/back face, fx10 ≫ f11x = f01x ≫ fx11) into the goal `s ∘ h = h' ∘ r`.",
+  "Consequently gold's hypothesis hx1x is dropped from the hypothesis list and repurposed as the goal, while gold's actual conclusion is smuggled in as a hypothesis — this is not a mere relabeling but a different logical arrangement of the same six equations.",
+  "The monomorphism hypothesis is on the wrong edge: `Mono p` where p : a ⟶ a' corresponds to gold's f00x, an edge out of the cube's overall source vertex M000, which is not adjacent to the produced conclusion's vertices (c, d, c', d'). Gold's mono is on f11x, an edge out of the target vertex of its missing face, adjacent to that face.",
+  "For the face the produced statement actually leaves as its conclusion, the terminal vertex d' (≅ M111) has no outgoing edges in the diagram, so the 'postcompose with a mono out of the target' argument used in gold cannot apply; the needed condition would instead be something like `Epi g` (g : a ⟶ c) to cancel on the source side, which is unrelated to `Mono p`.",
+  "As written, the five given equations plus `Mono p` do not entail the stated conclusion `s ∘ h = h' ∘ r` in a general category — the theorem appears unprovable/false as stated, not just differently shaped from gold."
+ ],
+ "arm": "B",
+ "task_id": "fresh_029",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 219.4,
+ "judge_cost_usd": 0.595664,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "514c497fe7757d3eaa052223f4f692d7614e04e07626313c798f22bf85c9c9f4"
+}

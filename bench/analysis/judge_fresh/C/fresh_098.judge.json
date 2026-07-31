@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Missing hypothesis `ConditionallyCompleteLinearOrder α`: without order-completeness the theorem is false in general (e.g. counterexample over ℚ with a continuous self-map of a rational interval whose only real fixed point is irrational)",
+  "Missing hypothesis `OrderTopology α`: continuity is assumed w.r.t. an arbitrary TopologicalSpace instead of the order topology, further weakening the statement so it no longer holds in general",
+  "Missing hypothesis `DenselyOrdered α` present in gold's type class assumptions",
+  "Adds an extraneous hypothesis `hab : a ≤ b` not present in gold, which instead uses `uIcc` to handle both orderings of a,b symmetrically",
+  "Uses `Set.Icc a b` instead of `Set.uIcc a b` throughout, making the statement only cover the a ≤ b case rather than both orderings as in gold"
+ ],
+ "arm": "C",
+ "task_id": "fresh_098",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 24.9,
+ "judge_cost_usd": 0.093433,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "77b00a0b383226f850fea3015181a96eca35dbb915a459ac625a7d35035cbff5"
+}

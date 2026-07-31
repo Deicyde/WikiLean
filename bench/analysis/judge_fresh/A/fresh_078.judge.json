@@ -1,0 +1,20 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Uses a chained Iff (`P1 ↔ P2 ↔ P3 ↔ P4`) instead of the gold's `List.TFAE`; a chained ↔ is logically an XNOR-fold, not full pairwise equivalence (e.g. it can hold with a=T,b=F,c=F,d=T), and `Iff` is non-associative in Lean 4 so this expression is unlikely to even parse without explicit parentheses.",
+  "`hIM_proper : I • M < ⊤ : Submodule R M` is ill-typed: `M` is a bare `Type*`, not a `Submodule R M`, so `I • M` does not typecheck; the gold correctly writes `I • (⊤ : Submodule R M) < ⊤`.",
+  "The support hypothesis for N in clauses (1) and (3) is ill-typed/incorrect: `p ∈ Submodule.annihilator N` requires `p : R` but `p : Ideal R` here, and `Submodule.annihilator` expects a `Submodule`, not a whole module type `N`; also `Ideal.vanishingLocus` does not appear to be an actual Mathlib declaration (gold correctly uses `Module.support R N ⊆ PrimeSpectrum.zeroLocus I`).",
+  "Clause (4)'s regular-sequence condition `∀ i < s.length, IsRegular M (s.get i)` only requires each list element to be individually M-regular, not that s_i is regular on M/(s_1,...,s_{i-1})M as required by the actual notion of an M-regular sequence (`RingTheory.Sequence.IsRegular M rs` in gold); this materially weakens/changes the mathematical content.",
+  "`Module.Ext R i N M = 0` appears to be a non-standard/likely nonexistent Mathlib declaration for unbundled modules, replacing gold's categorical `Ext` (from `CategoryTheory.Abelian.Ext`) with `Subsingleton (Ext N M i)`.",
+  "Uses `IsNoetherian R R`, `IsNoetherian R M`, `IsNoetherian R N` in place of gold's `IsNoetherianRing R`, `Module.Finite R M`, `Module.Finite R N`; mathematically interchangeable given the Noetherian ring hypothesis, but a notable deviation from the gold's chosen spellings."
+ ],
+ "arm": "A",
+ "task_id": "fresh_078",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 105.0,
+ "judge_cost_usd": 0.291764,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "4483acf8a68e28aeb9007dfa8502fc304bb6c1d7b00d17afc72b80976d5d27ad"
+}

@@ -1,0 +1,20 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Uses `ContDiffAt` (analysis on normed spaces) instead of a manifold-smoothness predicate like `ContMDiffAt`; M and N are only given `ChartedSpace ℝ` structure, not normed-space structure, so `ContDiffAt n f x` likely does not even typecheck for f : M → N",
+  "Hardcodes the model space/field to `ChartedSpace ℝ M`/`ChartedSpace ℝ N`, discarding the general `ModelWithCorners 𝕜 E H` framework (I, I', J, J', 𝕜) used in gold — collapses 'C^n manifold' to a much narrower, essentially 1-dimensional real-chart setting",
+  "Reverses the composition direction: gold composes the immersion AFTER f (φ ∘ f : M → N', immersion on the codomain side), while produced composes the immersion BEFORE f (f ∘ g : P → N, immersion g mapping INTO the domain M) — a different mathematical construction",
+  "Replaces the gold's single fixed immersion φ : N → N' with hypothesis `IsImmersionAt J J' n φ (f x)` at the specific point f x, with a universal quantification over arbitrary types P and arbitrary immersions g : P → M plus an existential 'some preimage y of x' — this is a fundamentally different logical/quantifier structure, not an equivalent reformulation",
+  "The immersion hypothesis `Manifold.IsImmersion g` has no explicit smoothness order n or 'at a point' qualifier tying it to the gold's `IsImmersionAt J J' n φ (f x)`, so the required immersion is not clearly of class C^n at the relevant point",
+  "Overall the produced statement formalizes a different proposition (precomposition-with-immersion characterization) than the gold/informal statement (postcomposition with a C^n immersion into another manifold), not merely a reshaping of the same claim"
+ ],
+ "arm": "D",
+ "task_id": "fresh_035",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 41.9,
+ "judge_cost_usd": 0.126026,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "8d14a574b2c4c3f4faaa0b3a606e12985aa4f3d5c4938112d3b1f5706347534c"
+}

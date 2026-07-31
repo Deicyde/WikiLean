@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Boundedness hypotheses are swapped: h_sup guards f(sSup s) = sSup(f '' s) with BddBelow s, but sSup s is only meaningful (matches IsLUB) when s is BddAbove; likewise h_inf guards f(sInf s) = sInf(f '' s) with BddAbove s, but sInf s is only meaningful when s is BddBelow. As stated, the hypotheses impose conditions on sSup/sInf of sets for which those values are unconstrained junk (not bounded on the relevant side), so they do not correctly express 'preserves suprema of sets bounded above' / 'preserves infima of sets bounded below' as encoded by the gold's LeftOrdContinuous/RightOrdContinuous.",
+  "Missing [TopologicalSpace α] and [TopologicalSpace β] instances: OrderTopology is defined as OrderTopology (α) [TopologicalSpace α] [Preorder α], so writing [OrderTopology α] without a prior/declared [TopologicalSpace α] instance (unlike the gold, which explicitly includes [TopologicalSpace X] and [TopologicalSpace Y]) leaves the required topology instance unresolved.",
+  "Produced hypotheses explicitly require s.Nonempty and thus exclude the empty-set case, whereas gold's IsLUB/IsGLB-based LeftOrdContinuous/RightOrdContinuous also constrain behavior on the empty set when the domain has a bottom/top element respectively — a minor edge-case divergence."
+ ],
+ "arm": "A",
+ "task_id": "fresh_096",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 166.4,
+ "judge_cost_usd": 0.449383,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "ca91584b4e289bbf70dcf75ff823ce1ef67b286d6d1055f6bac3c083870b7a44"
+}

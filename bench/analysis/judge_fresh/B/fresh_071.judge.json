@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Drops the `JordanHolderLattice` typeclass entirely, so there is no `IsMaximal`/second-isomorphism-theorem structure available; only a bare `Lattice` is assumed",
+  "Replaces the concrete generating condition `IsMaximal x (x ⊔ y) → e (x, x ⊔ y) (x ⊓ y, y)` with an arbitrary uninterpreted relation `moves`, losing the specific second-isomorphism-theorem move that the theorem is actually about",
+  "Replaces the concrete library relation `Iso` (whose containment is the actual claim) with an existentially quantified relation `eqv`, so the statement no longer asserts anything about `Iso` specifically",
+  "Turns the theorem into a generic, trivially-true fact about the existence of a least equivalence relation containing an arbitrary relation, rather than the specific claim that `Iso` is that least relation for the SIT-move relation",
+  "Conclusion direction differs: gold proves `Iso x y → e x y` for a given closed relation `e`; produced only asserts existence of some minimal `eqv`, never establishing that `Iso` (or any specific relation) plays that role"
+ ],
+ "arm": "B",
+ "task_id": "fresh_071",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 26.6,
+ "judge_cost_usd": 0.090182,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "2318e7d935fe561476e862334ef9c335e807f640c377e3ec0ff21ae8f8140866"
+}

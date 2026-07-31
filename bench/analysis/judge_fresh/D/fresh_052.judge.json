@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Conclusion uses `g (Real.exp x) * Real.exp x` (multiplication) instead of `Real.exp x • g (Real.exp x)` (scalar multiplication); since E is a general NormedAddCommGroup/NormedSpace ℝ E with no Mul instance, this likely fails to typecheck at all",
+  "Adds an extra hypothesis `hg : ∀ x ∈ Set.Ioi (Real.exp a), MeasureTheory.Integrable g` not present in the gold statement, which has no integrability hypothesis (relying on the standard convention that non-integrable functions integrate to 0)",
+  "The added hypothesis `hg` is itself malformed/nonstandard: `MeasureTheory.Integrable g` omits the required measure argument, and quantifying over x is vacuous since the integrability of g does not depend on x"
+ ],
+ "arm": "D",
+ "task_id": "fresh_052",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 20.4,
+ "judge_cost_usd": 0.082326,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "416fc853cd87351b85aeef34423c79225f37863e6cd0a4ca370585cfe6002c56"
+}

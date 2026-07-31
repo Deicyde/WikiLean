@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Typeclass hypotheses replaced: gold requires [ConditionallyCompleteLinearOrder α] [OrderTopology α] [DenselyOrdered α] (ensuring completeness/order-connectedness essential to the fixed-point argument), while produced substitutes an unrelated algebraic hypothesis [LinearOrderedAddCommGroup α] [OrderTopology α] that neither implies completeness nor density. This makes the produced statement false in general — e.g. α = ℤ with the (discrete) order topology is a LinearOrderedAddCommGroup+OrderTopology instance, and a 3-cycle permutation of {0,1,2} (continuous, since ℤ is discrete) satisfies Icc 0 2 ⊆ f '' Icc 0 2 with a ≤ b, yet has no fixed point.",
+  "Continuity hypothesis strengthened: gold only requires ContinuousOn f (Icc a b), but produced requires global Continuous f, an unnecessarily stronger/different hypothesis not matching the informal statement's local continuity requirement."
+ ],
+ "arm": "B",
+ "task_id": "fresh_097",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 47.3,
+ "judge_cost_usd": 0.14582,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "6aec5d6261175958d4cf5a244e1923b2213b664b9b254a33bc3b4f8e9afefe5a"
+}

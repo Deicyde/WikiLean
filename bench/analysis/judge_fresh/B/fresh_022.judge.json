@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Missing integrability hypothesis entirely (gold requires IntegrableOn f (Ioi a)); without it the integral is a junk value of 0 when f is not integrable, making the produced statement false for non-integrable antitone nonneg f (e.g. f(x)=1/(x+1) truncated below 0)",
+  "Off-by-one/index-shift error: produced sums f(0)+...+f(N-1) (Finset.range N) whereas gold sums f(a+1)+...+f(b) (shifted by one); this makes the produced statement mathematically false in general, e.g. f(x)=e^{-x} gives sum f(0)+f(1)=1.368 > ∫_0^∞ e^{-x}dx = 1",
+  "Hypotheses strengthened from local AntitoneOn f (Icc a b) to global Antitone f, and from nonneg only on Ioi a to nonneg on all of ℝ — narrows the class of functions covered, not equivalent to gold's more general local hypotheses",
+  "Loses generality of arbitrary starting point a : ℕ (gold's lemma holds for any a, b); produced statement only fixes the ray/sum start at 0, so it is a strictly less general (and, due to the index shift, actually incorrect) special case"
+ ],
+ "arm": "B",
+ "task_id": "fresh_022",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 50.8,
+ "judge_cost_usd": 0.165976,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "ca0fd053db2e354c1c370d18fc8b9ca456abf5e585c686a34221c627d43b1096"
+}

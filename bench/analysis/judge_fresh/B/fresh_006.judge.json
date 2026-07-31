@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Scalar type hypotheses are wrong: gold only needs [SMul α β] [Preorder α] [Zero α] [PosSMulMono α β], but produced requires [OrderedSemiring R], which forces R to have full semiring (add/mul/distributivity) structure not needed for this lemma",
+  "Uses DistribMulAction R β instead of a mere SMul action, forcing β to have an additive monoid structure, whereas gold's β only needs a Preorder (no addition required)",
+  "Uses OrderedSMul R β, a strictly stronger typeclass than PosSMulMono α β since OrderedSMul also encodes the converse implication (lt_of_smul_lt_smul_of_pos), which is not needed for this monotonicity lemma",
+  "These substitutions narrow the class of types β/R for which the statement applies compared to the gold's more general typeclass assumptions, making it a different (less general) proposition rather than an equivalent restatement"
+ ],
+ "arm": "B",
+ "task_id": "fresh_006",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 43.9,
+ "judge_cost_usd": 0.133082,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "d6768d58225bafebcac1ffe1993ee0e6f98f6dac28fef0826a9361e43bd5fc8f"
+}

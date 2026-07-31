@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Conclusion is stated for `Cardinal.toENat` (mapping into `ℕ∞`, with infinite cardinals sent to `⊤`) rather than `Cardinal.toNat` (mapping into `ℕ`, with infinite cardinals sent to `0`); this is a different function/codomain than the 'natural-number truncation' the informal statement and gold theorem are about.",
+  "Hypothesis is phrased via the auxiliary map `toENat` and the `ℕ∞` order (`(n:ℕ∞) ≤ toENat κ`) instead of directly via the cardinal order (`(n:Cardinal) ≤ c`) as in gold; this substitutes a different comparison than the one given in the informal statement.",
+  "Drops the cross-universe generality of gold, which allows `c : Cardinal.{u}` and `d : Cardinal.{v}` in distinct universes; the produced statement's `κ λ : Cardinal` are elaborated in the same universe, an added implicit restriction."
+ ],
+ "arm": "C",
+ "task_id": "fresh_083",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 115.7,
+ "judge_cost_usd": 0.322295,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "b62c76a2393b6ee604e91dbb3585b076d508b69ed2b1a59299006ed9619adeff"
+}

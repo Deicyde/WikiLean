@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Ring hypothesis strengthened: gold only needs [Semiring R] [Nontrivial R], produced requires [CommRing R] [IsDomain R], a strictly narrower class of rings (adds commutativity, no zero divisors), so the produced statement is a special case rather than the same generality as gold",
+  "Torsion hypothesis spelled as r ≠ 0 ∧ r • m = 0 rather than mathlib's IsTorsion predicate (∃ r ∈ nonZeroDivisors R, r • m = 0); these coincide only because IsDomain forces nonzero elements to be non-zero-divisors, so the produced hypothesis is not a faithful unfolding of IsTorsion in the general setting gold uses"
+ ],
+ "arm": "A",
+ "task_id": "fresh_043",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 21.5,
+ "judge_cost_usd": 0.076126,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "2906dc026d9a03d050c3806e541d806f7726effac658b2e79ad7fbd13b74570d"
+}

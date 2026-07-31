@@ -1,0 +1,20 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "hIM_proper hypothesis is malformed/type-incorrect Lean (`I.span_le.submodule.span_eq_top` does not type-check as written) and fails to correctly express the gold's `I • (⊤ : Submodule R M) < ⊤` (I·M is a proper submodule of M)",
+  "h_support does not correctly encode 'support N = zeroLocus I': the bound prime `p` is never referenced inside the iff body, so the condition is independent of p and fails to characterize the support via primes containing I",
+  "h_ext uses `Nonempty (Ext N M i) → False` (asserting the Ext group is empty) instead of gold's `Subsingleton (Ext N M i)` (asserting the Ext group is trivial); since Ext N M i is an abelian group it is never empty, so this hypothesis is either vacuous/unsatisfiable or otherwise does not correctly capture 'Ext vanishes', diverging from the gold's meaning",
+  "conclusion's regularity condition is not the standard M-regular sequence definition: it checks membership in the annihilator of the submodule (seq j) • M rather than the correct condition that seq j is a nonzerodivisor on M/(seq_1,...,seq_{j-1})M, so it does not faithfully express IsRegular M rs",
+  "uses free-standing `Type v` for M and N without `v` being bound by a `universe` declaration in the produced signature, an unresolved/inconsistent universe reference",
+  "overall replaces gold's ModuleCat/Ext (derived-category) framework with an ad hoc, mathematically incorrect encoding of both the proper-submodule hypothesis, the support hypothesis, the Ext-vanishing hypothesis, and the regular-sequence conclusion"
+ ],
+ "arm": "D",
+ "task_id": "fresh_077",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 39.1,
+ "judge_cost_usd": 0.133851,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "74d5f273bb0aba4e2ffe657a0fc9d9a12d05731f84491bda16a286f5a6fca2b8"
+}
