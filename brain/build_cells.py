@@ -62,8 +62,11 @@ ATTACH_RANK = {"generalization": 0, "special_case": 1, "invocation": 2, "related
 ATTACHABLE = tuple(ATTACH_RANK)  # what --attach may name (default stays ATTACH)
 
 # Weak bonds -> synapses. `formalizes` with match_kind invocation/related joins
-# them (rule 3); `contains` is containment (supercells), never a synapse.
-WEAK_EDGE_KINDS = frozenset(("depends", "mentions", "relates", "cites", "links"))
+# them (rule 3); top-level `invocation` edges (frontier decl -> Mathlib decl,
+# method fq-name-in-statement) are synapses the same way — never merges;
+# `contains` is containment (supercells), never a synapse.
+WEAK_EDGE_KINDS = frozenset(("depends", "mentions", "relates", "cites", "links",
+                             "invocation"))
 
 TRACE_CAP = 64  # safety valve; `truncated` records what a cap dropped (never silent)
 
@@ -783,7 +786,7 @@ def build_synapses(cells: dict[str, dict], owner: dict[str, str],
         return trace
 
     # in-memory weak kinds
-    for kind in ("depends", "mentions", "relates", "cites"):
+    for kind in ("depends", "mentions", "relates", "cites", "invocation"):
         for edge in edges_by_kind[kind]:
             a, b = owner.get(edge["src"]), owner.get(edge["dst"])
             if a and b:

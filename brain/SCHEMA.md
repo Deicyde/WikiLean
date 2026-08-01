@@ -325,6 +325,7 @@ ontology edges at whatever altitude their evidence supports).
 | `relates` | concept ↔ concept | Wikidata P-property (P279, P361, P2579...) | wikidata_edges.jsonl |
 | `links` | ext → ext; concept → concept (projected); literature paper → paper | `{"context": "statement"\|"proof"\|"body"\|"related"\|"bibliography"}`; projected form adds `{"projected": true, "via": "<db>", "src_page", "dst_page"}`; `bibliography` = src paper's bibliography cites dst paper (OpenAlex `referenced_works`, CC0, both endpoints ours) | `catalog/data/external/<db>_links.jsonl` (v2 ingest adapters); projection joins page-level links through xref anchors; `catalog/data/external/arxiv_citations.jsonl` (brain/ingest/openalex_citations.py, provenance `openalex`) |
 | `cites` | concept → literature | lifted via decl (transitive join) | theoremgraph_links.json |
+| `invocation` | frontier decl → decl:Mathlib:* | `{"name": "<full FQ name>"}`, method `fq-name-in-statement` | deterministic scan of the frontier harvest's statement snippets for whole-token fully-qualified Mathlib names (suffix-proof; universe = current minted Mathlib decls). Synapse-only — NEVER a merge kind (rule 3). |
 | `instance_of` | object → concept | invariant agreement | LMFDB/OEIS joins (future) |
 
 The **`formalizes` → container** case is the altitude answer for field-of-study

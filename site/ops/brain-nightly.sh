@@ -183,9 +183,10 @@ cd "$REPO" || exit 1
 
   # ---- 2. AGENTS (propose-only; off until Jack enables) ----------------------
   if [ "$BRAIN_AGENTS" = "1" ]; then
-    echo "=== agent team: cartographer + skeptic (writes brain/proposals/ only) ==="
+    echo "=== agent team: cartographer + linker + skeptic (writes brain/proposals/ only) ==="
     retry_on_ratelimit "$PY" "$REPO/brain/sync_agents.py" \
         --budget-tokens "$BRAIN_AGENT_BUDGET" \
+        --repo-modules "${WIKILEAN_BRAIN_REPO_MODULES:-8}" \
       || echo "(sync_agents returned $? — proposals may be partial; the fold gates everything)"
   else
     echo "(agent team disabled — WIKILEAN_BRAIN_AGENTS=0)"
