@@ -378,12 +378,22 @@ body.embed .wl-header, body.embed #crumbbar { display:none; }   /* flex column f
 const BASE = "/assets/brain/cells/";
 const SOURCES_URL = "/assets/brain/sources.json";   // the legend is v-agnostic
 const ROOTS_ID = "__libs__";          // pseudo-focus: the library roots
-const UNPLACED_ID = "__unplaced__";   // pseudo-focus: cells with no decl organ,
-                                      // so no supercell to nest in (1.5k of 8.9k)
+const UNPLACED_ID = "__unplaced__";   // pseudo-focus: cells neither the tree nor
+                                      // the frontier partition places — with the
+                                      // frontier shipped, only the residue whose
+                                      // decls have no recorded module (~5 cells);
+                                      // without it (fail-soft), the whole
+                                      // homeless population, as before
 const STRAYS_PREFIX = "__strays__:";  // pseudo-focus: "__strays__:<path>" — the
                                       // cells filed at that level, collapsed into
                                       // one bubble but dive-able like a folder
                                       // bubble (see focusItems)
+const FRONTIER_ID = "__frontier__";   // pseudo-focus: the Frontier group — the
+                                      // frontier:<Area> partition of the homeless
+                                      // cells (brain/build_frontier.py), which
+                                      // replaced the old undifferentiated
+                                      // "no formal home" blob
+const isFrontierId = id => typeof id === "string" && id.startsWith("frontier:");
 let manifest = null, labels = null, labelById = null, tree = null, aliases = null;
 const shardCache = new Map(), entryCache = new Map();
 
@@ -469,7 +479,9 @@ async function ensureTree() {
     fetch(BASE + "supercells.json" + vq()).then(r => (r.ok ? r.json() : null)).catch(() => null),
     ensureLabels(),
   ]);
-  if (!j) { tree = {roots: [], sc: {}, unplaced: [], unplacedFa: 0, count: () => 0}; return tree; }
+  if (!j) { tree = {roots: [], frontier: [], frontierFa: 0, frontierN: 0,
+                    cellArea: new Map(), sc: {}, unplaced: [], unplacedFa: 0,
+                    count: () => 0}; return tree; }
   const sc = j.supercells || {};
   const memo = new Map();
   const count = p => {
@@ -484,12 +496,30 @@ async function ensureTree() {
   };
   const placed = new Set();
   for (const p of Object.keys(sc)) for (const c of sc[p].cells || []) placed.add(c);
-  // a cell with no decl organ has no module to nest in — it would otherwise be
-  // browsable only through search and the Explorer
+  // a cell no supercell OR frontier area claims. With the frontier layer shipped
+  // this is a tiny residue (decls with no `contains` parent, e.g. Mathlib-Archive
+  // names), NOT the old 1.6k homeless blob — but it stays browsable either way,
+  // because a bucket that silently vanishes is the 'extreme minority' bug.
   const unplaced = (labels || []).map(r => r.id).filter(id => !placed.has(id));
   let unplacedFa = 0;
   for (const id of unplaced) unplacedFa |= (labelById.get(id) || {}).f || 0;
-  tree = {roots: j.roots || [], sc, unplaced, unplacedFa, count};
+  // the FRONTIER partition (brain/build_frontier.py): frontier:<Area> rows are
+  // parentless like library roots, but they are not libraries — split them out so
+  // the root level shows ONE dive-able "Frontier" group beside the library roots
+  // instead of 46 loose area bubbles (or, before the frontier, one grey blob).
+  const frontier = (j.roots || []).filter(p => (sc[p] || {}).frontier)
+    .sort((a, b) => ((sc[b].cells || []).length - (sc[a].cells || []).length)
+                    || (a < b ? -1 : 1));
+  const roots = (j.roots || []).filter(p => !(sc[p] || {}).frontier);
+  let frontierFa = 0, frontierN = 0;
+  const cellArea = new Map();   // homeless cell -> its area (breadcrumb/zoom-out)
+  for (const p of frontier) {
+    frontierFa |= sc[p].fa || 0;
+    frontierN += (sc[p].cells || []).length;
+    for (const c of sc[p].cells || []) cellArea.set(c, p);
+  }
+  tree = {roots, frontier, frontierFa, frontierN, cellArea, sc,
+          unplaced, unplacedFa, count};
   return tree;
 }
 async function ensureAliases() {
@@ -504,8 +534,9 @@ async function ensureAliases() {
 // function). A rule-5 organ (a field-of-study concept) resolves to its folder.
 async function resolveId(id) {
   if (!id) return null;
-  if (id === ROOTS_ID || id === UNPLACED_ID || isCellId(id)) return id;
+  if (id === ROOTS_ID || id === UNPLACED_ID || id === FRONTIER_ID || isCellId(id)) return id;
   await ensureTree();
+  if (isFrontierId(id)) return tree.sc[id] ? id : null;
   if (id.startsWith(STRAYS_PREFIX))
     return tree.sc[id.slice(STRAYS_PREFIX.length)] ? id : null;
   if (isPathId(id)) return tree.sc[id] ? id : null;
@@ -598,7 +629,14 @@ const CELL_FORMAL = "#3b82f6";        // the atom has a decl organ (a formal hom
 const CELL_INFORMAL = "#8c959f";      // concept-only atom — nothing formalizes it yet
 const GOLD = "#eab308";               // a hand-written @[wikidata] tag rides in this atom
 function fillFor(item) {
-  if (item.type === "folder") return SHADE;
+  // a frontier area's tint IS its mean stateability, on the SAME grey→blue
+  // formalization axis the cells use (CELL_INFORMAL → CELL_FORMAL); an unscored
+  // area (`s` null — no halo-joined member) keeps the plain folder shade rather
+  // than faking a zero
+  if (item.type === "folder")
+    return item.s != null
+      ? mix(CELL_INFORMAL, CELL_FORMAL, Math.max(0, Math.min(1, item.s)))
+      : SHADE;
   if (item.type === "strays") return "#8c959f";
   return item.p ? CELL_FORMAL : CELL_INFORMAL;
 }
@@ -608,6 +646,18 @@ function folderItem(p) {
   const sc = tree.sc[p] || {};
   return {id: p, type: "folder", label: sc.label || p, n: tree.count(p),
           f: 0, fa: sc.fa || 0};
+}
+// a frontier area's display name: "Analysis frontier" → "Analysis" (the group's
+// breadcrumb already says Frontier; repeating it 46 times is noise)
+function frontierName(p) {
+  const sc = (tree.sc || {})[p] || {};
+  return (sc.label || p.slice(9)).replace(/\s+frontier$/i, "");
+}
+function frontierItem(p) {
+  const sc = tree.sc[p] || {};
+  return {id: p, type: "folder", label: frontierName(p),
+          n: (sc.cells || []).length, f: 0, fa: sc.fa || 0,
+          s: sc.stateability != null ? sc.stateability : null};
 }
 function cellItem(cid) {
   // a synapse endpoint may legitimately be a SUPERCELL: a field concept's bonds
@@ -627,11 +677,28 @@ async function focusItems(id) {
     // a root with no cells has nothing to dive into — v3 ships no library_kind,
     // so emptiness (not a taxonomy toggle) is what prunes the 39 roots to 6
     const items = tree.roots.filter(p => tree.count(p) > 0).map(folderItem);
-    if (tree.unplaced.length)
+    // the FRONTIER: one root-level group holding the frontier:<Area> partition of
+    // the homeless cells (+ the tiny unfiled residue) — replaces the old
+    // undifferentiated "no formal home" blob. When the build shipped no frontier
+    // rows (fail-soft path), the old blob stays, honestly labelled.
+    if (tree.frontier.length)
+      items.push({id: FRONTIER_ID, type: "folder", label: "Frontier",
+                  n: tree.frontierN + tree.unplaced.length, f: 0,
+                  fa: tree.frontierFa | tree.unplacedFa});
+    else if (tree.unplaced.length)
       items.push({id: UNPLACED_ID, type: "folder", label: "no formal home",
                   n: tree.unplaced.length, f: 0, fa: tree.unplacedFa});
     return items;
   }
+  if (id === FRONTIER_ID) {
+    const items = tree.frontier.map(frontierItem);
+    if (tree.unplaced.length)
+      items.push({id: UNPLACED_ID, type: "folder", label: "unfiled",
+                  n: tree.unplaced.length, f: 0, fa: tree.unplacedFa});
+    return items;
+  }
+  // an area's cells dive exactly like a supercell's: flat dots, cellItem each
+  if (isFrontierId(id)) return ((tree.sc[id] || {}).cells || []).map(cellItem);
   if (id === UNPLACED_ID) return tree.unplaced.map(cellItem);
   // diving into a strays bubble shows EVERY cell filed at its level as dots —
   // including any a facet filter kept out of the collapse (the filter still dims)
@@ -723,6 +790,7 @@ function drawNodes() {
     .on("click", (ev, l) => { ev.stopPropagation(); nodeClick(l.data); });
   if (withTitles) all.select("title").text(l => l.data.label
     + (l.data.type === "folder" ? ` — ${(l.data.n || 0).toLocaleString()} cells`
+        + (l.data.s != null ? ` · mean stateability ${l.data.s.toFixed(2)}` : "")
       : l.data.type === "strays" ? " — click to open them as dots, with the story of why they sit here"
       : ((l.data.f || 0) & 1 ? " — carries a hand-written @[wikidata] tag" : "")));
 }
@@ -963,8 +1031,10 @@ async function enrich(seq, leaves) {
   // grandchild preview: faint inner circles (top 24 by size) — free, from the tree
   for (const l of leaves) {
     if (l.data.type !== "folder" || l.r <= 26) continue;
-    const kids = (tree.sc[l.data.id] && tree.sc[l.data.id].children || [])
-      .map(folderItem).sort((a, b) => b.n - a.n).slice(0, 24);
+    // the Frontier group's "children" are its areas — same faint preview
+    const kids = (l.data.id === FRONTIER_ID ? tree.frontier.map(frontierItem)
+      : (tree.sc[l.data.id] && tree.sc[l.data.id].children || []).map(folderItem))
+      .sort((a, b) => b.n - a.n).slice(0, 24);
     if (kids.length < 2) continue;
     const inner = d3.hierarchy({children: kids})
       .sum(d => d.children ? 0 : Math.pow(Math.max(d.n || 1, 1), 0.6));
@@ -1033,7 +1103,9 @@ async function renderFocus(anim) {
   const folders = fv.items.filter(i => i.type === "folder").length;
   statusEl.textContent = `${(fv.items.length - folders).toLocaleString()} cells · ` +
     `${folders} areas · ${focusId === ROOTS_ID ? "all libraries"
-      : focusId === UNPLACED_ID ? "no formal home"
+      : focusId === FRONTIER_ID ? "the Frontier"
+      : isFrontierId(focusId) ? frontierName(focusId) + " frontier"
+      : focusId === UNPLACED_ID ? (tree.frontier.length ? "unfiled" : "no formal home")
       : focusId.startsWith(STRAYS_PREFIX)
         ? focusId.slice(STRAYS_PREFIX.length + 5)
           + (focusId.slice(STRAYS_PREFIX.length + 5).includes("/")
@@ -1271,10 +1343,13 @@ async function zoomInto(id) {
   await renderFocus(true);
 }
 // the supercell an atom calls home (for zoom-out + the breadcrumb). A cell with
-// no decl organ has no breadcrumb at all — its home is the unplaced bucket.
+// no decl organ has no breadcrumb at all — its home is its frontier AREA (the
+// partition claims every homeless cell), or the unfiled residue bucket.
 function homeOf(entry) {
   const bc = entry.breadcrumb || [];
-  return bc.length ? bc[bc.length - 1].id : UNPLACED_ID;
+  if (bc.length) return bc[bc.length - 1].id;
+  const area = tree && tree.cellArea && tree.cellArea.get(entry.cell.id);
+  return area || UNPLACED_ID;
 }
 async function zoomOut() {
   if (focusId === ROOTS_ID) return;
@@ -1288,7 +1363,9 @@ async function zoomOut() {
     await renderFocus(true);
     return;
   }
-  const parent = focusId === UNPLACED_ID ? ROOTS_ID
+  const parent = focusId === FRONTIER_ID ? ROOTS_ID
+    : isFrontierId(focusId) ? FRONTIER_ID
+    : focusId === UNPLACED_ID ? (tree.frontier.length ? FRONTIER_ID : ROOTS_ID)
     : focusId.startsWith(STRAYS_PREFIX) ? focusId.slice(STRAYS_PREFIX.length)
     : ((tree.sc[focusId] || {}).parent || ROOTS_ID);
   focusId = parent;
@@ -1342,8 +1419,16 @@ function pathChain(p) {
 }
 async function renderCrumb() {
   let html = `<a data-nav="${ROOTS_ID}">all libraries</a>`;
-  if (focusId === UNPLACED_ID) {
-    html += ` <span class="sep">/</span> <b>no formal home</b>`;
+  if (focusId === FRONTIER_ID) {
+    html += ` <span class="sep">/</span> <b>Frontier</b>`;
+  } else if (isFrontierId(focusId)) {
+    html += ` <span class="sep">/</span> <a data-nav="${FRONTIER_ID}">Frontier</a>` +
+      ` <span class="sep">/</span> <b>${esc(frontierName(focusId))}</b>`;
+  } else if (focusId === UNPLACED_ID) {
+    html += tree.frontier.length
+      ? ` <span class="sep">/</span> <a data-nav="${FRONTIER_ID}">Frontier</a>` +
+        ` <span class="sep">/</span> <b>unfiled</b>`
+      : ` <span class="sep">/</span> <b>no formal home</b>`;
   } else if (focusId.startsWith(STRAYS_PREFIX)) {
     const parent = focusId.slice(STRAYS_PREFIX.length);
     for (const b of pathChain(parent))
@@ -1354,8 +1439,17 @@ async function renderCrumb() {
     const e = await getEntry(focusId);
     for (const b of (e && e.breadcrumb) || [])
       html += ` <span class="sep">/</span> <a data-nav="${esc(b.id)}">${esc(b.label)}</a>`;
-    if (e && !(e.breadcrumb || []).length)
-      html += ` <span class="sep">/</span> <a data-nav="${UNPLACED_ID}">no formal home</a>`;
+    if (e && !(e.breadcrumb || []).length) {
+      // a homeless cell's home is its frontier area; the residue keeps the bucket
+      const area = tree.cellArea.get(focusId);
+      html += area
+        ? ` <span class="sep">/</span> <a data-nav="${FRONTIER_ID}">Frontier</a>` +
+          ` <span class="sep">/</span> <a data-nav="${esc(area)}">${esc(frontierName(area))}</a>`
+        : tree.frontier.length
+        ? ` <span class="sep">/</span> <a data-nav="${FRONTIER_ID}">Frontier</a>` +
+          ` <span class="sep">/</span> <a data-nav="${UNPLACED_ID}">unfiled</a>`
+        : ` <span class="sep">/</span> <a data-nav="${UNPLACED_ID}">no formal home</a>`;
+    }
     html += ` <span class="sep">/</span> <b>● ${esc((e && e.cell.label) || focusId)}</b>`;
   } else if (focusId !== ROOTS_ID) {
     for (const b of pathChain(focusId))
@@ -2156,6 +2250,9 @@ async function renderPanel(id) {
   lastPanelId = id;
   if (id === ROOTS_ID) return rootsPanel();
   if (id === UNPLACED_ID) return unplacedPanel();
+  // frontier ids are TREE rows, not shard entries — they must never reach getEntry
+  if (id === FRONTIER_ID) return frontierPanel();
+  if (isFrontierId(id)) return frontierAreaPanel(id);
   if (id.startsWith(STRAYS_PREFIX)) return straysPanel(id.slice(STRAYS_PREFIX.length));
   if (isPathId(id)) return renderSupercellPanel(id);
   const resolved = isCellId(id) ? id : await resolveId(id);
@@ -2196,12 +2293,100 @@ function rootsPanel() {
       <small>${n.toLocaleString()}</small></span>`;
   html += `</div><p class="note">${
     tree.roots.length - rows.length} further library roots hold no cells yet.</p></section>`;
-  if (tree.unplaced.length)
+  if (tree.frontier.length)
+    html += `<section class="kind"><h3>The Frontier <span class="cnt">(${
+      (tree.frontierN + tree.unplaced.length).toLocaleString()})</span></h3>
+      <p class="note">Atoms with no Lean declaration have no module to nest in — nothing
+      formalizes them yet. Each is filed under the library area its synapse neighborhood
+      points at, tinted by how <i>stateable</i> it already is.
+      <a data-nav="${FRONTIER_ID}">Dive into the ${tree.frontier.length} areas</a>.</p></section>`;
+  else if (tree.unplaced.length)
     html += `<section class="kind"><h3>No formal home <span class="cnt">(${
       tree.unplaced.length.toLocaleString()})</span></h3>
       <p class="note">Atoms with no Lean declaration have no module to nest in — nothing
       formalizes them yet. <a data-nav="${UNPLACED_ID}">Browse them</a>, or find them in the
       Explorer, which places every atom.</p></section>`;
+  panelEl.innerHTML = html;
+  wirePanel();
+}
+// ---- the Frontier group + its areas (frontier:<Area> rows on the tree) ------
+async function frontierPanel() {
+  await ensureTree();
+  let html = `<div class="crumb"><a data-nav="${ROOTS_ID}">all libraries</a> / Frontier</div>
+    <h2>The Frontier</h2>
+    <div class="sub">${tree.frontierN.toLocaleString()} cells ·
+      ${tree.frontier.length} areas · atoms with no Lean declaration</div>
+    <p class="note">Nothing formalizes these atoms yet, so the containment tree cannot
+    place them. Instead of one undifferentiated blob, each cell is filed under the
+    <b>library area its synapse neighborhood points at</b> — a weighted vote of its
+    formalized neighbors (deterministic, no LLM; <code>brain/build_frontier.py</code>).
+    Bubble tint is the area's mean <b>stateability</b> — how formalized each cell's
+    neighborhood already is — from grey (0) to blue (1).</p>
+    <section class="kind"><h3>Areas <span class="cnt">(${tree.frontier.length})</span></h3>
+    <div class="chips">`;
+  for (const p of tree.frontier)
+    html += `<span class="chip"><a data-nav="${esc(p)}">${esc(frontierName(p))}</a>
+      <small>${((tree.sc[p] || {}).cells || []).length.toLocaleString()}</small></span>`;
+  html += `</div></section>`;
+  if (tree.unplaced.length)
+    html += `<section class="kind"><h3>Unfiled <span class="cnt">(${
+      tree.unplaced.length.toLocaleString()})</span></h3>
+      <p class="note">A different residue: these cells DO hold Lean declarations, but
+      no module is recorded for them (Mathlib-Archive names with no
+      <code>contains</code> parent), so neither the tree nor the frontier partition —
+      which claims only declaration-less cells — can file them.
+      <a data-nav="${UNPLACED_ID}">Browse them</a>.</p></section>`;
+  panelEl.innerHTML = html;
+  wirePanel();
+}
+async function frontierAreaPanel(id) {
+  await ensureTree();
+  const sc = tree.sc[id];
+  if (lastPanelId !== id) return;
+  if (!sc) { panelEl.innerHTML = `<p class="note">Unknown frontier area: ${esc(id)}</p>`; return; }
+  const cells = sc.cells || [];
+  const near = sc.near || null;
+  const st = sc.stateability;
+  let html = `<div class="crumb"><a data-nav="${ROOTS_ID}">all libraries</a> /
+      <a data-nav="${FRONTIER_ID}">Frontier</a> / ${esc(frontierName(id))}</div>
+    <h2>${esc(sc.label || id)}</h2>
+    <div class="sub">frontier area · <code>${esc(id)}</code> ·
+      ${cells.length.toLocaleString()} cells, none formalized yet</div>`;
+  html += `<section class="kind"><h3>Nearest formal home</h3>` + (near
+    ? `<div class="chips"><span class="chip"><a data-nav="${esc(near)}">${esc(near.slice(5))}</a>
+        <small>${esc(((tree.sc[near] || {}).label) || "")}</small></span></div>
+      <p class="note">These atoms hold no Lean declaration; their synapse neighborhoods
+      vote them next to <code>${esc(near)}</code> — the library area a formalization
+      would most likely land in.</p>`
+    : `<p class="note">none — ${id === "frontier:Unsorted"
+        ? `these cells' neighborhoods reach no formalized cell at all (most have no
+           synapses), so no library area can claim them; this is the honest remainder
+           of the partition`
+        : "no formalized neighbor votes for a library area here"}.</p>`) + `</section>`;
+  html += `<section class="kind"><h3>Stateability</h3>` + (st != null
+    ? `<p class="note">mean <b>${st.toFixed(2)}</b> — the fraction of each cell's
+       neighborhood that is already formalized, averaged over the area's halo-scored
+       cells (0 = isolated from formal code, 1 = surrounded by it). The area bubble's
+       grey→blue tint carries this number.</p>`
+    : `<p class="note">not yet scored — none of this area's cells appear in the
+       stateability halo.</p>`) + `</section>`;
+  if ((sc.top || []).length) {
+    html += `<section class="kind"><h3>Top cells <span class="cnt">(${sc.top.length})</span></h3>
+      <p class="note">the area's most-connected cells (total synapse weight; formal
+      bonds count 3×) — the natural first formalization targets.</p><div class="chips">`;
+    for (const t of sc.top)
+      html += `<span class="chip"><a data-nav="${esc(t.cell)}">${esc(t.label || t.cell)}</a>
+        <small title="weighted synapse degree">${Number(t.score || 0).toLocaleString()}</small></span>`;
+    html += `</div></section>`;
+  }
+  if (cells.length) {
+    html += `<section class="kind"><h3>Cells <span class="cnt">(${cells.length})</span></h3><div class="chips">`;
+    for (const cid of cells.slice(0, 80))
+      html += `<span class="chip"><a data-nav="${esc(cid)}">${
+        esc(((labelById && labelById.get(cid)) || {}).label || cid)}</a></span>`;
+    if (cells.length > 80) html += `<span class="chip">… +${cells.length - 80} more</span>`;
+    html += `</div></section>`;
+  }
   panelEl.innerHTML = html;
   wirePanel();
 }
@@ -2247,12 +2432,25 @@ async function straysPanel(parent) {
   wirePanel();
 }
 function unplacedPanel() {
-  panelEl.innerHTML = `<h2>No formal home</h2>
+  // two different buckets share this id: with the frontier shipped it holds only
+  // the residue (cells whose decls have no recorded module); without it (fail-soft
+  // build) it is the whole homeless population, and the copy must not lie
+  const crumb = tree.frontier.length
+    ? `<div class="crumb"><a data-nav="${ROOTS_ID}">all libraries</a> /
+        <a data-nav="${FRONTIER_ID}">Frontier</a> / unfiled</div>` : "";
+  panelEl.innerHTML = crumb + `<h2>${tree.frontier.length ? "Unfiled" : "No formal home"}</h2>
     <div class="sub">${tree.unplaced.length.toLocaleString()} cells</div>
-    <p class="note">These atoms hold no Lean declaration, so they have no module to nest
-    inside — the containment tree can't place them. They are real atoms with real
-    synapses: the Explorer places every one of them, and search finds them by any of
-    their organs' names.</p>`;
+    <p class="note">${tree.frontier.length
+      ? `These atoms hold Lean declarations, but no module is recorded for them
+         (Mathlib-Archive names with no <code>contains</code> parent) — so the
+         containment tree cannot place them, and the frontier partition, which claims
+         only declaration-less atoms, cannot either. Real atoms with real synapses:
+         the Explorer places every one of them, and search finds them by any of their
+         organs' names.`
+      : `These atoms hold no Lean declaration, so they have no module to nest
+         inside — the containment tree can't place them. They are real atoms with real
+         synapses: the Explorer places every one of them, and search finds them by any of
+         their organs' names.`}</p>`;
   wirePanel();
 }
 async function renderSupercellPanel(p) {
@@ -2410,8 +2608,12 @@ async function ensureSearchIndex() {
   for (const [p, sc] of Object.entries(tree.sc || {})) {
     const n = tree.count(p);
     if (!n) continue;   // an empty folder is not a destination
-    rows.push({id: p, label: sc.label || p, type: "area", n,
-               hay: [(sc.label || "").toLowerCase(), p.slice(5).toLowerCase()]});
+    // a frontier row's id prefix is "frontier:" (9 chars), not "path:" (5) — a
+    // blind slice(5) would index "ier:Analysis" and never match "analysis"
+    const fr = isFrontierId(p);
+    rows.push({id: p, label: sc.label || p, type: fr ? "frontier" : "area", n,
+               hay: [(sc.label || "").toLowerCase(),
+                     (fr ? p.slice(9) : p.slice(5)).toLowerCase()]});
   }
   searchIndex = rows;
   return rows;
