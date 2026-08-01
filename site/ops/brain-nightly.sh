@@ -14,8 +14,9 @@
 #      writes brain/proposals/*.jsonl ONLY — never brain/data.
 #   3. FOLD + BUILD: fold_proposals -> build_nodes -> build_edges ->
 #      test_acceptance (RED = abort publish, keep old shards) -> build_shards ->
-#      build_cells -> test_cells -> build_cell_shards -> test_cell_shards
-#      (the v3 atom layer; any RED aborts the publish the same way) ->
+#      build_cells -> test_cells -> build_frontier (the homeless-cell partition,
+#      brain/data/frontier.jsonl) -> build_cell_shards -> test_cell_shards ->
+#      test_frontier (the v3 atom layer; any RED aborts the publish the same way) ->
 #      build_brain_page (the /brain page itself, so the page we PUBLISH is the
 #      page we just BUILT, from the source the deploy gate verifies below).
 #      Rollups are pinned — not rebuilt nightly.
@@ -238,6 +239,17 @@ cd "$REPO" || exit 1
       PUBLISH_OK=0
     fi
   fi
+  # ---- the FRONTIER layer (brain/SCHEMA.md "Frontier layer") -----------------
+  # Partitions the homeless (decl-less) cells into named frontier areas
+  # (brain/data/frontier.jsonl); build_cell_shards folds the rows into
+  # supercells.json so the "no formal home" blob drains into browsable
+  # territories. Deterministic + cheap (~2s). A failure aborts the publish:
+  # shards cut against a stale frontier would drop or double-place cells, which
+  # test_frontier below would catch anyway — abort here with the honest message.
+  if [ "$PUBLISH_OK" = "1" ] && ! python3 "$REPO/brain/build_frontier.py"; then
+    echo "!!! build_frontier FAILED — publish aborted (old frontier.jsonl intact)"
+    PUBLISH_OK=0
+  fi
   if [ "$PUBLISH_OK" = "1" ] && ! python3 "$REPO/brain/build_cell_shards.py"; then
     echo "!!! build_cell_shards FAILED — publish aborted, old cell shards stay live"
     PUBLISH_OK=0
@@ -247,6 +259,14 @@ cd "$REPO" || exit 1
       echo "(cell shard acceptance GREEN)"
     else
       echo "!!! test_cell_shards RED — publish aborted, old cell shards stay live"
+      PUBLISH_OK=0
+    fi
+  fi
+  if [ "$PUBLISH_OK" = "1" ]; then
+    if python3 "$REPO/brain/test_frontier.py"; then
+      echo "(frontier acceptance GREEN — the homeless partition holds)"
+    else
+      echo "!!! test_frontier RED — publish aborted, old cell shards stay live"
       PUBLISH_OK=0
     fi
   fi

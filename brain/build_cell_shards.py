@@ -9,7 +9,12 @@ the `contains` edges (for organ payloads and the containment tree) and writes
   <key>.json       prefix-named shards: {cell id -> entry}
   aliases.json     EVERY organ id -> its cell id  (the v2->v3 compat layer)
   labels.json      searchable cell rows (label + every organ label as an alias)
-  supercells.json  the containment tree, whose leaves are now CELLS
+  supercells.json  the containment tree, whose leaves are now CELLS — plus the
+                   FRONTIER areas (`frontier:<Area>` rows from
+                   brain/data/frontier.jsonl, brain/build_frontier.py): each
+                   lists the homeless cells assigned to it, so the client's
+                   derived "no formal home" bucket drains to the handful of
+                   genuinely unplaceable cells
   explorer.json    the whole flat graph: cells with build-time xy + synapses
 
 Sharding is `build_shards.py`'s scheme, reused verbatim (longest-prefix keys, split
@@ -209,12 +214,70 @@ def pick_synapses(syns: list[dict], cap: int) -> list[dict]:
     return sorted(picked.values(), key=lambda e: (-e["w"], e["id"]))
 
 
+def load_frontier(cells: dict[str, dict]) -> tuple[list[dict], dict]:
+    """Read brain/data/frontier.jsonl (build_frontier.py), validated against the
+    CURRENT cell set — fail-soft when absent (the tree just keeps the old blob).
+
+    A stale frontier row must never place a vanished cell (S5 would go red) or
+    double-place a now-formalized one (the bubble tree would count it twice), so
+    both are dropped — COUNTED, never silently ('extreme minority' rule), along
+    with the coverage the partition contract promises: every currently-homeless
+    cell claimed by exactly one area.
+    """
+    path = BRAIN_DATA / "frontier.jsonl"
+    stats = {"areas": 0, "cells": 0, "unknown_dropped": 0, "formalized_dropped": 0,
+             "homeless": 0, "unclaimed": 0}
+    if not path.exists():
+        print("  ! no brain/data/frontier.jsonl — frontier areas not emitted; "
+              "run python3 brain/build_frontier.py first", file=sys.stderr)
+        return [], stats
+    homeless = {cid for cid, c in cells.items()
+                if not any(o.get("kind") == "decl" for o in c["organs"])}
+    stats["homeless"] = len(homeless)
+    rows, claimed = [], set()
+    for _, row in _iter(path):
+        keep = []
+        for cid in row.get("cells", []):
+            if cid not in cells:
+                stats["unknown_dropped"] += 1
+            elif cid not in homeless:
+                stats["formalized_dropped"] += 1
+            else:
+                keep.append(cid)
+        claimed.update(keep)
+        if keep:
+            kept_set = set(keep)
+            out = {**row, "cells": sorted(keep), "n": len(keep)}
+            # top chips must never point at cells just dropped as stale
+            if out.get("top"):
+                n_top = len(out["top"])
+                out["top"] = [t for t in out["top"] if t.get("cell") in kept_set]
+                if len(out["top"]) != n_top:
+                    stats["stale_top"] = stats.get("stale_top", 0) + \
+                        (n_top - len(out["top"]))
+            rows.append(out)
+        stats["areas"] += 1
+        stats["cells"] += len(keep)
+    stats["unclaimed"] = len(homeless - claimed)
+    pct = 100 * (len(homeless) - stats["unclaimed"]) / max(len(homeless), 1)
+    print(f"frontier:  {stats['areas']} areas claim {stats['cells']}/"
+          f"{len(homeless)} homeless cells ({pct:.1f}% coverage)", file=sys.stderr)
+    for key, why in (("unknown_dropped", "cells no longer in cells.jsonl"),
+                     ("formalized_dropped", "cells that grew a decl organ"),
+                     ("unclaimed", "homeless cells no area claims")):
+        if stats[key]:
+            print(f"  ! STALE frontier.jsonl: {stats[key]} {why} — rerun "
+                  f"python3 brain/build_frontier.py", file=sys.stderr)
+    return rows, stats
+
+
 def main() -> int:
     t0 = time.monotonic()
     cell_meta, cell_rows = load_jsonl(BRAIN_DATA / "cells.jsonl")
     syn_meta, synapses = load_jsonl(BRAIN_DATA / "synapses.jsonl")
     cells = {c["id"]: c for c in cell_rows}
     print(f"{len(cells)} cells / {len(synapses)} synapses", file=sys.stderr)
+    frontier_rows, frontier_stats = load_frontier(cells)
 
     nodes: dict[str, dict] = {}
     for _, node in _iter(BRAIN_DATA / "nodes.jsonl"):
@@ -441,6 +504,31 @@ def main() -> int:
             if len(kept) < len(syns):
                 row["truncated"] = {"syn": len(syns) - len(kept)}
         supercells[path] = row
+
+    # ---- frontier areas: parentless tree rows, exactly like a path: supercell -
+    # `frontier:<Area>` lists the homeless cells the FRONTIER CONTRACT assigned to
+    # it (brain/build_frontier.py; brain/SCHEMA.md "Frontier layer"). Listing them
+    # in `cells` is what drains the client's derived "no formal home" bucket —
+    # ensureTree computes unplaced = labels minus the union of every row's cells.
+    # Parentless => they join `roots` below and render beside the library roots.
+    # `fa` is computed here (the ancestor walk above only sees `supercells` on
+    # cell rows, which homeless cells don't have) so facet chips never grey a
+    # frontier folder that holds matching cells.
+    for row in frontier_rows:
+        entry = {"label": row.get("label") or row["id"].split(":", 1)[1],
+                 "frontier": True, "cells": row["cells"]}
+        area_fa = 0
+        for cid in row["cells"]:
+            area_fa |= cells[cid].get("f", 0)
+        if area_fa:
+            entry["fa"] = area_fa
+        if row.get("near"):
+            entry["near"] = row["near"]
+        if row.get("mean_stateability") is not None:
+            entry["stateability"] = row["mean_stateability"]
+        if row.get("top"):
+            entry["top"] = row["top"]
+        supercells[row["id"]] = entry
     n_sup_syn = sum(len(r.get("syn") or []) for r in supercells.values())
     sup_doc = {"_meta": {"schema": "brain/SCHEMA.md#v3", "generated_at": gen,
                          "traces": "supercell `syn` rows carry NO traces (byte budget: "
@@ -450,7 +538,14 @@ def main() -> int:
                          "counts": {"supercells": len(supercells),
                                     "with_cells": sum(1 for r in supercells.values()
                                                       if r.get("cells")),
-                                    "synapse_rows": n_sup_syn}},
+                                    "synapse_rows": n_sup_syn,
+                                    # the frontier layer, so its presence (and the
+                                    # coverage its partition promises) is declared
+                                    # in the artifact, never inferred
+                                    "frontier_areas": len(frontier_rows),
+                                    "frontier_cells": frontier_stats["cells"],
+                                    "frontier_homeless": frontier_stats["homeless"],
+                                    "frontier_unclaimed": frontier_stats["unclaimed"]}},
                "roots": sorted(p for p in supercells if p not in parent),
                "supercells": supercells}
 
@@ -502,7 +597,8 @@ def main() -> int:
             "generated_at": gen,   # the cell build's stamp, not wall clock
             "counts": {"cells": len(cells), "shards": len(leaves),
                        "synapses": len(synapses), "synapse_attachments": n_syn_attached,
-                       "organs": sum(len(c["organs"]) for c in cell_rows)},
+                       "organs": sum(len(c["organs"]) for c in cell_rows),
+                       "frontier_areas": len(frontier_rows)},
             "caps": {"synapses_per_cell": SYN_CAP,
                      "traces_per_synapse": SHARD_TRACE_CAP,
                      # Every cap this file applies is named here, with what it
@@ -532,14 +628,23 @@ def main() -> int:
         # n_decls, n_files) plus the cell count: without them the renderer's
         # math/CS/physics/tooling Libraries filter has nothing to filter ON, and it
         # was dropped as dead UI. `cells` is the subtree count — 6 of 39 roots hold
-        # any cell at all, so the top level can lead with those.
-        "roots": [{"id": p,
-                   "label": (nodes.get(p) or {}).get("label") or p[5:],
-                   **{k: (nodes.get(p) or {})[k]
-                      for k in ("library_kind", "n_decls", "n_files")
-                      if (nodes.get(p) or {}).get(k) is not None},
-                   **({"cells": subtree_cells[p]} if subtree_cells.get(p) else {}),
-                   **({"fa": fa[p]} if fa.get(p) else {})}
+        # any cell at all, so the top level can lead with those. Frontier areas are
+        # parentless too, so they are roots — but they are not libraries: their
+        # label/counts come from their own tree row and they carry `frontier: true`
+        # so a consumer can keep the two apart.
+        "roots": [({"id": p, "frontier": True,
+                    "label": supercells[p]["label"],
+                    "cells": len(supercells[p].get("cells") or []),
+                    **({"fa": supercells[p]["fa"]}
+                       if supercells[p].get("fa") else {})}
+                   if supercells[p].get("frontier") else
+                   {"id": p,
+                    "label": (nodes.get(p) or {}).get("label") or p[5:],
+                    **{k: (nodes.get(p) or {})[k]
+                       for k in ("library_kind", "n_decls", "n_files")
+                       if (nodes.get(p) or {}).get(k) is not None},
+                    **({"cells": subtree_cells[p]} if subtree_cells.get(p) else {}),
+                    **({"fa": fa[p]} if fa.get(p) else {})})
                   for p in sup_doc["roots"]],
         "prov": cell_meta.get("prov", []),
         "shards": {k: len(leaves[k]) for k in sorted(leaves)},
@@ -592,7 +697,10 @@ def main() -> int:
           file=sys.stderr)
     print(f"labels:    {len(labels)} atoms ({n_labels / 1e6:.1f} MB)", file=sys.stderr)
     print(f"supercells:{len(supercells)} ({n_sup / 1e6:.1f} MB), "
-          f"{sup_doc['_meta']['counts']['with_cells']} hold cells", file=sys.stderr)
+          f"{sup_doc['_meta']['counts']['with_cells']} hold cells, "
+          f"{len(frontier_rows)} frontier areas "
+          f"({frontier_stats['cells']} homeless cells claimed, "
+          f"{frontier_stats['unclaimed']} unclaimed)", file=sys.stderr)
     print(f"explorer:  {len(cells)} nodes + {len(rows)} edges, complete "
           f"({len(explorer_blob.encode()) / 1e6:.1f} MB)", file=sys.stderr)
     print(f"-> {OUT_DIR} in {time.monotonic() - t0:.1f}s", file=sys.stderr)

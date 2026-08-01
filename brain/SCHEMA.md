@@ -194,6 +194,70 @@ L3. The layout is deterministic across rebuilds.
 
 Status: **36/36 green** (`python3 brain/test_cells.py`; the nightly aborts on red).
 
+### The FRONTIER layer — a partition of the homeless cells (brain/build_frontier.py)
+
+A cell with no decl organ has no module to nest in; the bubble view used to pool
+all of them (1,612 of 20,880 on 2026-08-01) into one grey "no formal home" bucket.
+The frontier layer partitions them into named AREAS — `brain/data/frontier.jsonl`:
+
+```json
+{"_meta": {"generated_at": "<the cell build's stamp>", "method": "...",
+           "counts": {"homeless": 1612, "assigned": 1303, "unsorted": 309}}}
+{"id": "frontier:Analysis", "label": "Analysis frontier", "cells": ["cell:Q…"],
+ "n": 509, "near": "path:Mathlib/Analysis", "mean_stateability": 0.3856,
+ "top": [{"cell": "cell:Q903783", "label": "Naive set theory", "score": 3436}]}
+```
+
+`<Area>` matches `^[A-Za-z][A-Za-z0-9_]{0,63}$`. **The partition IS the contract**:
+every homeless cell appears in EXACTLY ONE area — no drops, no dupes — and the
+counts must reconcile (asserted in the builder AND in `brain/test_frontier.py`).
+
+Assignment is deterministic, seedless, no LLM — four tiers, each logging what
+falls through and why:
+
+1. **Synapse vote.** Neighbors WITH decl organs vote for their owning library
+   area — the top-level dir of their supercells (`Mathlib/<Dir>` → `<Dir>`,
+   `<Lib>/<Dir>` → `<Lib>_<Dir>`, bare `<Lib>` → `<Lib>`, so TauCeti areas read
+   `TauCeti_<Dir>`). Vote weight = per-kind trace count with `depends`/
+   `invocation` ×3, everything else ×1; a neighbor spanning several areas splits
+   its vote equally; winner by (-score, name) so ties break lexicographically.
+2. **MSC.** No formalized neighbors → the cell's MSC top-level class (an
+   `xref:msc:*` organ or a concept-organ xref edge) → `frontier:DeepFrontier_
+   <MSCName>` (lowest class code wins; name table in the builder).
+3. **Relates propagation.** ONE round over `relates`-kind synapses to homeless
+   cells already assigned by tiers 1–2 (majority by relates count) — never
+   iterated, so distant noise cannot cascade.
+4. **`frontier:Unsorted`** — the honest remainder (mostly synapse-less cells).
+
+`near` = the area's formal home (`path:<Lib>[/<Dir>]`, null for DeepFrontier/
+Unsorted). `mean_stateability` = mean `all_frac` of `manage/data/halo.json`
+items over the area's cells (null when none joins; halo.json is an OPTIONAL
+input — fail-soft). `top` = the area's ≤12 most-connected cells (score = total
+effective synapse weight, same ×3/×1 multipliers).
+
+**Shard emission** (`build_cell_shards.py`): each area becomes a PARENTLESS
+`supercells.json` row `{label, frontier: true, cells, fa?, near?, stateability?,
+top?}` (`fa` emitted only when the member-OR is nonzero; `_meta` also carries
+`frontier_*` count keys and frontier.jsonl's `phases`/`inputs` diagnostics) —
+so it joins `roots`, renders beside the library roots, and drains the
+client's DERIVED "no formal home" bucket (unplaced = labels minus the union of
+every row's `cells`) down to the few decl-carrying cells whose decls have no
+`contains` parent (5 Mathlib-Archive names today). `manifest.roots` lists the
+areas with `frontier: true` so library metadata never blurs with frontier rows.
+Stale frontier rows are validated against the CURRENT cell set: vanished or
+newly-formalized cells are dropped LOUDLY (counted in `supercells.json`
+`_meta.counts.frontier_*`), and unclaimed homeless cells are reported — a cap or
+filter is never silent. Frontier ids live only in the tree: they never enter the
+cell shards, aliases.json or explorer.json, and `path:`/organ-id resolution is
+untouched.
+
+Acceptance: **F1–F8 in `brain/test_frontier.py`** — the partition + count
+reconciliation, contract regex, a spec-re-derived vote on pinned + sampled
+cells, Unsorted share ceiling, byte-identical determinism, stateability
+recomputation, and the shard-side drain. The nightly runs
+`build_frontier` between `test_cells` and `build_cell_shards`, and
+`test_frontier` after `test_cell_shards`; any RED aborts the publish.
+
 ### v3 shard acceptance (brain/test_cell_shards.py) — the artifact the client reads
 
 `site/assets/brain/cells/` is built by `brain/build_cell_shards.py` and can drift from
