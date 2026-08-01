@@ -12,6 +12,13 @@ EVERY row regardless of verdict, and emits only rows that survive:
                                         nightly sync_agents cartographer (action:"xref"
                                         rows); merge-deduped on (qid, db, id), _meta
                                         first line, tombstone-free append semantics
+  catalog/data/<key>_links.jsonl        concept -> frontier-repo decl agent joins
+                                        (action:"repo_link" rows, one file per
+                                        source_registry frontier_sources key, e.g.
+                                        tauceti_links.jsonl); MENTIONS-ONLY — this
+                                        channel can never mint an identity-strength
+                                        kind (moderation contract; see the repo_link
+                                        branch below)
   brain/data/discovery_rejected.jsonl   every rejected row + reason (audit trail)
   catalog/data/grounding_overrides.jsonl   accepted override rows APPENDED
   catalog/data/universe_extension.jsonl    label/P31 rows for new QIDs APPENDED
@@ -167,30 +174,63 @@ def row_key(r: dict) -> tuple:
     skeptic .verified.jsonl overlay. action:"xref" rows key on the (db, id)
     pair too: one QID can carry many external-page anchors, and without it
     every xref proposal on a QID would collide onto one key (skeptic overlay
-    verdicts would cross-apply between different pages)."""
+    verdicts would cross-apply between different pages). repo_link rows key on
+    `repo` too (decl names are repo-namespaced, but the key must not depend on
+    that convention)."""
     x = r.get("xref") or {}
     return (r.get("qid"), r.get("decl") or r.get("new_decl"),
-            r.get("path"), r.get("action"),
+            r.get("path"), r.get("action"), r.get("repo"),
             x.get("db"), str(x["id"]) if x.get("id") is not None else None)
 
 
-def fc_decl_names() -> set[str] | None:
-    """FQ decl names of the formal-conjectures harvest — the existence oracle
-    for fc_link rows (catalog/data/formal_conjectures.jsonl, first line _meta).
-    None when the harvest is absent (rows then reject with a clear reason)."""
-    f = CATALOG / "formal_conjectures.jsonl"
-    if not f.exists():
+REPO_KEY_RE = re.compile(r"^[a-z][a-z0-9_]{0,63}$")
+_frontier_names: dict[str, set[str] | None] = {}
+
+
+def frontier_repo_keys() -> set[str]:
+    """source_registry.json frontier_sources keys — the only legal `repo`
+    values on repo_link rows (same single-source-of-truth contract as
+    crossref_dbs())."""
+    try:
+        reg = json.loads((CATALOG / "source_registry.json").read_text())
+        return set(reg.get("frontier_sources", {}))
+    except (OSError, json.JSONDecodeError):
+        return set()
+
+
+def frontier_decl_names(key: str) -> set[str] | None:
+    """FQ decl names of a frontier-repo harvest — the existence oracle for
+    fc_link / repo_link rows. catalog/data/<key>.jsonl (first line _meta),
+    except user_lean_repos whose harvests are the catalog/data/user_repos/
+    glob. None when the harvest is absent (rows then reject with a clear
+    reason). Cached per key."""
+    if key in _frontier_names:
+        return _frontier_names[key]
+    if key == "user_lean_repos":
+        files = sorted((CATALOG / "user_repos").glob("*.jsonl"))
+    else:
+        f = CATALOG / f"{key}.jsonl"
+        files = [f] if f.exists() else []
+    if not files:
+        _frontier_names[key] = None
         return None
     names: set[str] = set()
-    with f.open() as fh:
-        for line in fh:
-            line = line.strip()
-            if not line:
-                continue
-            r = json.loads(line)
-            if "_meta" not in r and r.get("decl"):
-                names.add(r["decl"])
+    for f in files:
+        with f.open() as fh:
+            for line in fh:
+                line = line.strip()
+                if not line:
+                    continue
+                r = json.loads(line)
+                if "_meta" not in r and r.get("decl"):
+                    names.add(r["decl"])
+    _frontier_names[key] = names
     return names
+
+
+def fc_decl_names() -> set[str] | None:
+    """Thin wrapper: the fc_link oracle is the formal_conjectures harvest."""
+    return frontier_decl_names("formal_conjectures")
 
 
 def known_qids() -> dict[str, dict]:
@@ -318,7 +358,7 @@ def main() -> int:
     need = sorted({r["qid"] for r in rows
                    if r.get("qid") and QID_RE.match(r["qid"]) and r["qid"] not in known
                    and rtype(r) in ("container", "discover", "replace_decl",
-                                    "xref", "fc_link")})
+                                    "xref", "fc_link", "repo_link")})
     fetched = fetch_entities(need) if need else {}
     print(f"fetched {len(fetched)}/{len(need)} unknown QIDs from Wikidata", file=sys.stderr)
 
@@ -344,10 +384,12 @@ def main() -> int:
 
     xref_dbs = crossref_dbs()
     fc_names = fc_decl_names()
+    repo_keys = frontier_repo_keys()
     containers_out: dict[tuple[str, str], dict] = {}
     discovery_out: dict[tuple[str, str], dict] = {}
     xref_out: dict[tuple[str, str, str], dict] = {}
     fc_out: dict[tuple[str, str], dict] = {}
+    repo_out: dict[str, dict[tuple[str, str], dict]] = {}  # key -> (qid, decl)
     overrides_out: list[dict] = []
     rejected: list[dict] = []
     disputes: list[dict] = []
@@ -376,6 +418,9 @@ def main() -> int:
                             str(x["id"]) if x.get("id") is not None else None))
             elif t == "fc_link":
                 vetoed.add(("fc_link", r.get("qid"), r.get("decl")))
+            elif t == "repo_link":
+                vetoed.add(("repo_link", r.get("repo"), r.get("qid"),
+                            r.get("decl")))
 
     for r in rows:
         t = rtype(r)
@@ -408,6 +453,11 @@ def main() -> int:
                           "(any-reject wins)")
                 continue
         if t == "fc_link" and ("fc_link", r.get("qid"), r.get("decl")) in vetoed:
+            reject(r, "fold-check: conflicting skeptic verdicts across batches "
+                      "(any-reject wins)")
+            continue
+        if t == "repo_link" and ("repo_link", r.get("repo"), r.get("qid"),
+                                 r.get("decl")) in vetoed:
             reject(r, "fold-check: conflicting skeptic verdicts across batches "
                       "(any-reject wins)")
             continue
@@ -608,6 +658,73 @@ def main() -> int:
             fc_out[(qid, d)] = row_out
             continue
 
+        if t == "repo_link":
+            # Generic frontier-repo agent joins (the fc_link channel
+            # parameterized by source_registry frontier_sources key): join a
+            # Wikidata concept to a decl:<Lib>:* declaration of any
+            # git-harvested Lean repo. Existence oracle = that repo's harvest
+            # (catalog/data/<key>.jsonl); QID checks are the same
+            # live-Wikidata machinery as discover rows. MODERATION CONTRACT
+            # (hard): this channel folds MENTIONS ONLY — never a kind
+            # build_cells fuses cells on (formalizes/exact identity claims
+            # need human review; FC's gated formalizes path is FC-only and
+            # separate). Mentions fold pending at capped medium, like
+            # discover rows.
+            key, qid, d = r.get("repo"), r.get("qid"), r.get("decl")
+            if not (isinstance(key, str) and REPO_KEY_RE.match(key)
+                    and key in repo_keys):
+                reject(r, f"fold-check: repo not a source_registry "
+                          f"frontier_sources key: {key!r}")
+                continue
+            if r.get("kind") != "mentions":
+                reject(r, f"fold-check: repo_link folds kind 'mentions' only "
+                          f"(AI joins never mint identity claims — moderation "
+                          f"contract), got {r.get('kind')!r}")
+                continue
+            if not (qid and QID_RE.match(qid)):
+                reject(r, "fold-check: bad qid")
+                continue
+            if not (r.get("evidence") or "").strip():
+                reject(r, "fold-check: repo_link requires evidence text")
+                continue
+            if not (r.get("qid_label") or "").strip():
+                reject(r, "fold-check: repo_link requires qid_label "
+                          "(the label-agreement gate needs a claim to check)")
+                continue
+            names = frontier_decl_names(key)
+            if names is None:
+                reject(r, f"fold-check: harvest missing "
+                          f"catalog/data/{key}.jsonl — run the repo's ingest "
+                          f"(brain/ingest/lean_repo.py)")
+                continue
+            d_orig = d
+            if d and d not in names:
+                # same unique-dotted-suffix completion as fc_link (proposers
+                # sometimes drop the top-level namespace); ambiguity rejects.
+                cands = [n for n in names if n.endswith("." + d)]
+                if len(cands) == 1:
+                    d = cands[0]
+            if not d or d not in names:
+                reject(r, f"fold-check: decl not in the {key} harvest: {d}")
+                continue
+            info = qid_info(qid)
+            if info is None or info.get("missing"):
+                reject(r, "fold-check: qid missing upstream")
+                continue
+            if not label_agrees(r, info):
+                reject(r, f"fold-check: label mismatch (upstream: {info.get('label')!r})")
+                continue
+            evidence = {"note": r.get("evidence"), "module": r.get("module"),
+                        "file": r.get("file"), "proposer": r.get("proposer"),
+                        "skeptic": skeptic, "shard": r.get("_shard"),
+                        "decl_as_proposed": d_orig if d != d_orig else None}
+            repo_out.setdefault(key, {})[(qid, d)] = {
+                "qid": qid, "decl": d, "repo": key, "kind": "mentions",
+                "confidence": conf,
+                "evidence": {k: v for k, v in evidence.items() if v is not None},
+            }
+            continue
+
         reject(r, f"fold-check: unknown row type {t!r}")
 
     # ---- writes ---------------------------------------------------------------
@@ -655,13 +772,27 @@ def main() -> int:
                           "n_rows": n_xref}}
         dump(xa_path, [meta] + [merged[k] for k in sorted(merged)])
 
+
+def _completed_retract_key(qid: str, decl: str, names: set[str] | None) -> tuple[str, str]:
+    """Retraction keys must match FOLDED rows, whose decl may have been
+    namespace-suffix-completed at fold time — apply the identical completion
+    (unique dotted-suffix, ambiguity leaves the name as-proposed) so a
+    refuted join is always withdrawable."""
+    if names and decl not in names:
+        cands = [n for n in names if n.endswith("." + decl)]
+        if len(cands) == 1:
+            return (qid, cands[0])
+    return (qid, decl)
+
     # fc links: same merge/retraction semantics as ext anchors — regenerated
     # from all verified proposals, merged with the existing file, minus every
     # (qid, decl) key rejected THIS fold (a refuted join must be withdrawable).
     fc_retract: set[tuple[str, str]] = set()
+    _fc_names_for_retract = fc_decl_names()
     for r in rejected:
         if rtype(r) == "fc_link" and r.get("qid") and r.get("decl"):
-            fc_retract.add((r["qid"], r["decl"]))
+            fc_retract.add(_completed_retract_key(
+                r["qid"], r["decl"], _fc_names_for_retract))
     fcl_path = DATA / "fc_links.jsonl"
     n_fc = 0
     if fc_out or fcl_path.exists():
@@ -683,6 +814,47 @@ def main() -> int:
                           "inputs": "brain/proposals/fc_links_*.jsonl",
                           "n_rows": n_fc}}
         dump(fcl_path, [meta] + [fc_merged[k] for k in sorted(fc_merged)])
+
+    # repo links (generic frontier-repo agent joins): same merge/retraction
+    # semantics as fc links, one catalog/data/<key>_links.jsonl per repo key.
+    # Existing keys with no new rows this fold still get retraction applied
+    # (a refuted join must be withdrawable), which is why the loop covers
+    # every key that has EITHER folded rows or an existing file.
+    repo_retract: dict[str, set[tuple[str, str]]] = {}
+    for r in rejected:
+        key = r.get("repo")
+        if rtype(r) == "repo_link" and r.get("qid") and r.get("decl") \
+                and isinstance(key, str) and REPO_KEY_RE.match(key) \
+                and key in repo_keys:  # never a path from an unvalidated row
+            repo_retract.setdefault(key, set()).add(_completed_retract_key(
+                r["qid"], r["decl"], frontier_decl_names(key)))
+    n_repo_links: dict[str, int] = {}
+    # keys with folded rows always write; keys with only retractions rewrite
+    # an existing file; untouched keys' files are never rewritten (mtime is
+    # build_common's edge pin)
+    live_keys = set(repo_out) | {
+        k for k in repo_retract if (CATALOG / f"{k}_links.jsonl").exists()}
+    for key in sorted(live_keys):
+        rl_path = CATALOG / f"{key}_links.jsonl"
+        rl_merged: dict[tuple[str, str], dict] = {}
+        if rl_path.exists():
+            for line in rl_path.read_text().splitlines():
+                if not line.strip():
+                    continue
+                row = json.loads(line)
+                if "_meta" in row:
+                    continue
+                if row.get("qid") and row.get("decl"):
+                    kk = (row["qid"], row["decl"])
+                    if kk not in repo_retract.get(key, set()):
+                        rl_merged[kk] = row
+        rl_merged.update(repo_out.get(key, {}))
+        n_repo_links[key] = len(rl_merged)
+        meta = {"_meta": {"source": "brain/fold_proposals.py",
+                          "inputs": f"brain/proposals/repo_link_{key}_*.jsonl",
+                          "repo": key, "kinds": ["mentions"],
+                          "n_rows": len(rl_merged)}}
+        dump(rl_path, [meta] + [rl_merged[k] for k in sorted(rl_merged)])
 
     ov_path = CATALOG / "grounding_overrides.jsonl"
     existing = set()
@@ -709,7 +881,8 @@ def main() -> int:
                 have.add(json.loads(line).get("qid"))
     added_ext = 0
     accepted_qids = {k[0] for k in containers_out} | {k[0] for k in discovery_out} \
-        | {k[0] for k in xref_out} | {k[0] for k in fc_out}
+        | {k[0] for k in xref_out} | {k[0] for k in fc_out} \
+        | {k[0] for m in repo_out.values() for k in m}
     with ext_path.open("a") as fh:
         for qid in sorted(accepted_qids):
             info = fetched.get(qid)
@@ -724,12 +897,18 @@ def main() -> int:
             have.add(qid)
             added_ext += 1
 
+    n_repo_folded = sum(len(m) for m in repo_out.values())
+    repo_note = "; ".join(
+        f"{k}: {len(repo_out.get(k, {}))} folded ({n_repo_links[k]} total in "
+        f"catalog/data/{k}_links.jsonl)" for k in sorted(n_repo_links)) or "none"
     n_pending = sum(1 for v in list(containers_out.values()) + list(discovery_out.values())
                     + list(xref_out.values()) + list(fc_out.values())
+                    + [row for m in repo_out.values() for row in m.values()]
                     if (v.get("skeptic") or v["evidence"].get("skeptic")) == "pending")
     print(f"folded: {len(containers_out)} container links, {len(discovery_out)} discovery "
           f"links, {len(xref_out)} ext-anchor links ({n_xref} total in file), "
           f"{len(fc_out)} fc links ({n_fc} total in file), "
+          f"{n_repo_folded} repo links [{repo_note}], "
           f"{added_ov} new overrides, {added_ext} universe-extension rows; "
           f"{n_ok} ok-confirmations; {len(rejected)} rejected; "
           f"{len(disputes)} grading disputes (review → grounding_overrides.jsonl); "

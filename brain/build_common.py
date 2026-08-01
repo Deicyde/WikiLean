@@ -59,8 +59,10 @@ OPTIONAL_INPUTS = {
     "fc_links.jsonl": BRAIN_DATA / "fc_links.jsonl",
     # generic Lean-repo frontier (brain/ingest/lean_repo.py) — same fail-soft;
     # user-registered repos live under catalog/data/user_repos/*.jsonl (globbed,
-    # not listed here)
+    # not listed here). <key>_links.jsonl = fold-verified repo_link agent joins
+    # (brain/fold_proposals.py), minted mentions-ONLY by _frontier_repo_layer.
     "tauceti.jsonl": DATA / "tauceti.jsonl",
+    "tauceti_links.jsonl": DATA / "tauceti_links.jsonl",
 }
 REGISTRY = DATA / "source_registry.json"
 USER_REPOS_DIR = DATA / "user_repos"
@@ -80,9 +82,11 @@ EDGES_OUT = BRAIN_DATA / "edges.jsonl"
 EDGES_LINKS_OUT = BRAIN_DATA / "edges_links.jsonl"
 
 # "links" sorts last: page-level hyperlinks are the lowest-priority edge kind,
-# and appending keeps pre-v2 edge ordering byte-identical.
+# and appending keeps pre-v2 edge ordering byte-identical. "invocation"
+# (frontier decl -> Mathlib decl it names in its statement) is deterministic
+# but weak — mentions-strength, never anything build_cells may fuse on.
 KIND_ORDER = ["contains", "formalizes", "mentions", "depends", "relates",
-              "xref", "cites", "matches", "links"]
+              "xref", "cites", "matches", "invocation", "links"]
 
 # ---- SCHEMA.md v2 facet bitmask `f` -----------------------------------------
 F_GOLD_WIKIDATA = 1 << 0    # decl carries a gold @[wikidata] source tag
@@ -372,7 +376,42 @@ def _frontier_stats() -> dict:
     return {"decls": 0, "containers": 0, "xref_erdos": 0, "xref_oeis": 0,
             "formalizes_det": 0, "mentions_det": 0, "agent_links": 0,
             "skipped_unknown_qid": 0, "agent_rows_skipped": 0,
-            "duplicate_decls": 0}
+            "duplicate_decls": 0, "invocation_det": 0,
+            "invocation_overflow_decls": 0}
+
+
+# Maximal runs of Lean-identifier characters + dots. Python's \w covers the
+# unicode identifier alphabet Mathlib actually uses (Greek, subscripts: α, Gδ,
+# h₁ all stay inside one token), so `h₁.Basis` is ONE token and bare `Basis`
+# can never be extracted from it — the word-boundary guard is structural.
+_FQ_TOKEN = re.compile(r"[\w'!?.]+")
+
+
+def _scan_fq_names(code: str, universe: dict[str, str],
+                   ambiguous: set[str]) -> list[str]:
+    """Fully-qualified Mathlib decl names present in a statement snippet.
+
+    Discipline (mathlib decl-oracle memory, non-negotiable): match FQ names
+    ONLY, at word boundaries — NEVER a bare suffix. Tokens are maximal
+    identifier+dot runs, so `Module.Basis` matches inside `(Module.Basis R M)`
+    but never inside `h.Basis` or `Foo.Module.Basis.mk` (those are single
+    longer tokens). Dot-leading/trailing tokens (`.symm` dot-notation, `1..n`
+    ranges) are namespace-relative or non-names and are skipped. A token that
+    is also a dotted suffix of one of the repo's OWN decls (`ambiguous`) is
+    skipped: under `open`, it may denote the repo-local decl, and a miss is
+    always preferable to a wrong edge.
+    """
+    out: list[str] = []
+    seen: set[str] = set()
+    for tok in _FQ_TOKEN.findall(code or ""):
+        if tok in seen:
+            continue
+        seen.add(tok)
+        if tok.startswith(".") or tok.endswith(".") or ".." in tok:
+            continue
+        if tok in universe and tok not in ambiguous:
+            out.append(tok)
+    return out
 
 
 def _frontier_repo_layer(*, lib: str, rows: list[dict], n_files, pin: str,
@@ -383,13 +422,25 @@ def _frontier_repo_layer(*, lib: str, rows: list[dict], n_files, pin: str,
                          research_gate: bool = False,
                          wikipedia_formalizes: bool = False,
                          node_extra: dict | None = None,
+                         agent_links: Path | None = None,
+                         mathlib_names: dict[str, str] | None = None,
                          ) -> tuple[dict[str, str], set[tuple[str, str]]]:
     """Mint one frontier repo's containers/decls/xrefs/citation joins into the
     shared node/edge accumulators; returns (bare FQ name -> node id,
     (qid, decl id) pairs already joined) for repo-specific follow-ups (the FC
     agent-join fold). `node_extra` rides on every minted node (user repos carry
     {"repo": "<owner>/<repo>"} — the registry's user_lean_repos entry covers
-    the class, the node names the concrete repo)."""
+    the class, the node names the concrete repo). `agent_links` names the
+    repo's fold-verified repo_link file (catalog/data/<key>_links.jsonl,
+    written only by brain/fold_proposals.py); its rows mint decl↔concept
+    `mentions` edges — NEVER anything stronger (moderation contract: this
+    channel must not emit a kind build_cells fuses cells on; identity claims
+    need human review — FC's gated formalizes path is FC-only and separate).
+    `mathlib_names` (bare FQ name -> existing decl:Mathlib:* node id) turns on
+    deterministic decl→decl `invocation` edges: each decl's statement snippet
+    is scanned for full Mathlib FQ names (_scan_fq_names discipline) — also
+    mentions-strength, never a merge kind, and only onto nodes that already
+    exist (no new minting rule; a name-universe miss = no edge)."""
     root_id = f"path:{lib}"
     if root_id in containers:
         print(f"WARNING: frontier repo lib {lib!r} collides with an existing "
@@ -419,6 +470,17 @@ def _frontier_repo_layer(*, lib: str, rows: list[dict], n_files, pin: str,
         edges.append(_edge(parent_id, cid, "contains", source, tree_method,
                            pin, "high", {"n_decls": dirs[d]}))
     stats["containers"] = 1 + len(dirs)
+
+    # Repo-local ambiguity set for invocation matching: every proper dotted
+    # suffix of the repo's own decl names. Inside `namespace TauCeti.Algebra`,
+    # a snippet's `HopfAlgebra.antipode` could denote the repo's OWN
+    # TauCeti.Algebra.HopfAlgebra.antipode rather than Mathlib's — skip.
+    repo_suffixes: set[str] = set()
+    if mathlib_names:
+        for r in rows:
+            parts = r["decl"].split(".")
+            for i in range(1, len(parts)):
+                repo_suffixes.add(".".join(parts[i:]))
 
     decl_ids: dict[str, str] = {}          # bare FQ name -> node id
     pair_seen: set[tuple[str, str]] = set()  # (qid, decl id) joins
@@ -474,6 +536,29 @@ def _frontier_repo_layer(*, lib: str, rows: list[dict], n_files, pin: str,
                                    pin, "high", {"value": a}))
                 stats["xref_oeis"] += 1
 
+        # ---- deterministic Mathlib invocation edges (every row, no gates) ---
+        # decl:<Lib>:X -(invocation)-> decl:Mathlib:Y for each full Mathlib FQ
+        # name Y in X's statement header. Deduped per (source, target) by
+        # construction: rows mint once, _scan_fq_names dedupes tokens, and
+        # name -> node id is injective.
+        if mathlib_names:
+            names = _scan_fq_names(r.get("code") or "", mathlib_names,
+                                   repo_suffixes)
+            if len(names) > 50:
+                # a statement header naming >50 distinct Mathlib decls is a
+                # parsing bug, not mathematics — fail closed, loudly
+                stats["invocation_overflow_decls"] += 1
+                print(f"WARNING: {did} matched {len(names)} Mathlib FQ names "
+                      f"in one statement header — invocation edges for this "
+                      f"decl skipped (parser sanity cap, investigate)",
+                      file=sys.stderr)
+            else:
+                for name in names:
+                    edges.append(_edge(did, mathlib_names[name], "invocation",
+                                       source, "fq-name-in-statement", pin,
+                                       "medium", {"name": name}))
+                    stats["invocation_det"] += 1
+
         if research_gate and not (r.get("category") or "").startswith("research"):
             continue
         file_wiki = (r.get("file_refs") or {}).get("wikipedia") or []
@@ -509,6 +594,38 @@ def _frontier_repo_layer(*, lib: str, rows: list[dict], n_files, pin: str,
                                    pin, "high",
                                    {"role": "citation", "url": url}))
                 stats["mentions_det"] += 1
+
+    # ---- agent joins (fold-verified repo_link rows) — mentions ONLY ---------
+    # Provenance ai: source = the repo's registry key, method marks the agent
+    # channel. Any row whose kind is not exactly "mentions" is skipped here
+    # even though fold_proposals already enforces it (defense in depth — a
+    # hand-edited links file gets the same gate).
+    if agent_links is not None and agent_links.exists():
+        pin_al = datetime.fromtimestamp(agent_links.stat().st_mtime,
+                                        tz=timezone.utc).date().isoformat()
+        with agent_links.open() as fh:
+            for line in fh:
+                line = line.strip()
+                if not line:
+                    continue
+                rec = json.loads(line)
+                if "_meta" in rec:
+                    continue
+                did = decl_ids.get(rec.get("decl") or "")
+                qid = rec.get("qid")
+                if (rec.get("kind") != "mentions" or not did
+                        or not qid or not ensure_concept(qid)):
+                    stats["agent_rows_skipped"] += 1
+                    continue
+                if (qid, did) in pair_seen:
+                    continue
+                pair_seen.add((qid, did))
+                ev = dict(rec.get("evidence") or {})
+                ev.setdefault("role", "citation")
+                edges.append(_edge(qid, did, "mentions", source,
+                                   "agent-join (fold-verified)", pin_al,
+                                   rec.get("confidence") or "medium", ev))
+                stats["agent_links"] += 1
     return decl_ids, pair_seen
 
 
@@ -1708,6 +1825,37 @@ def build() -> tuple[list[dict], list[dict], dict]:
     slug_lookup.update(slug2qid_local)
     frontier_stats: dict[str, dict] = {}
 
+    # Mathlib FQ-name universe for the frontier repos' deterministic
+    # `invocation` joins: bare FQ name -> decl:Mathlib:* node id, restricted to
+    # names that denote a CURRENT Mathlib decl already minted in this build.
+    # Excluded on purpose: renamed cited names ('Basis' is stale history and
+    # must never be a target), module-less names (the stale/hallucinated
+    # annotation-citation residue that files at the library root, plus
+    # cross-library decls the oracle declined), and dotless names that are
+    # also the trailing segment of a dotted one ('Basis' vs 'Module.Basis' —
+    # under `open` a bare token is ambiguous). Referenced-but-unminted decls
+    # get NO edge — there is no referenced-decl minting path in this layer and
+    # we do not invent one; a universe miss means a missing edge, never a
+    # wrong one.
+    inv_trailing: set[str] = set()
+    for _d, _did in decl_id.items():
+        if _did.startswith("decl:Mathlib:") and "." in _d:
+            inv_trailing.add(_d.rsplit(".", 1)[1])
+    mathlib_fq_ids: dict[str, str] = {}
+    for _d, _did in decl_id.items():
+        if (_did.startswith("decl:Mathlib:") and _d not in decl_renames
+                and resolve(_d)[1]
+                and ("." in _d or _d not in inv_trailing)):
+            mathlib_fq_ids[_d] = _did
+    for _did, _nd in new_decls.items():
+        _d = _nd.get("label") or ""
+        if (_did.startswith("decl:Mathlib:") and _nd.get("module") and _d
+                and _d not in decl_renames
+                and ("." in _d or _d not in inv_trailing)):
+            mathlib_fq_ids.setdefault(_d, _did)
+    print(f"  invocation name universe: {len(mathlib_fq_ids)} current "
+          f"decl:Mathlib:* FQ names", file=sys.stderr)
+
     fc_stats = _frontier_stats()
     p = OPTIONAL_INPUTS["formal_conjectures.jsonl"]
     if p.exists():
@@ -1736,7 +1884,8 @@ def build() -> tuple[list[dict], list[dict], dict]:
             containers=containers, decl_nodes=decl_nodes, edges=edges,
             slug_lookup=slug_lookup, ensure_concept=ensure_concept,
             stats=fc_stats, erdos_oeis=erdos_oeis,
-            research_gate=True, wikipedia_formalizes=True)
+            research_gate=True, wikipedia_formalizes=True,
+            mathlib_names=mathlib_fq_ids)
 
         # agent joins, fold-verified (brain/fold_proposals.py fc_link rows)
         p = OPTIONAL_INPUTS["fc_links.jsonl"]
@@ -1776,7 +1925,10 @@ def build() -> tuple[list[dict], list[dict], dict]:
               f"{fc_stats['containers']} containers; xrefs erdos="
               f"{fc_stats['xref_erdos']} oeis={fc_stats['xref_oeis']}; "
               f"deterministic joins formalizes={fc_stats['formalizes_det']} "
-              f"mentions={fc_stats['mentions_det']}; agent joins "
+              f"mentions={fc_stats['mentions_det']} "
+              f"invocation={fc_stats['invocation_det']} "
+              f"({fc_stats['invocation_overflow_decls']} overflow-skipped); "
+              f"agent joins "
               f"{fc_stats['agent_links']} ({fc_stats['agent_rows_skipped']} "
               f"rows skipped, {fc_stats['skipped_unknown_qid']} unknown QIDs)",
               file=sys.stderr)
@@ -1798,12 +1950,19 @@ def build() -> tuple[list[dict], list[dict], dict]:
             ref_method="tauceti reference URL",
             containers=containers, decl_nodes=decl_nodes, edges=edges,
             slug_lookup=slug_lookup, ensure_concept=ensure_concept,
-            stats=tc_stats)
+            stats=tc_stats,
+            agent_links=OPTIONAL_INPUTS["tauceti_links.jsonl"],
+            mathlib_names=mathlib_fq_ids)
         frontier_stats["TauCeti"] = tc_stats
         print(f"  tauceti layer: {tc_stats['decls']} decls in "
               f"{tc_stats['containers']} containers; deterministic joins "
               f"mentions={tc_stats['mentions_det']} "
-              f"({tc_stats['skipped_unknown_qid']} unknown QIDs)",
+              f"invocation={tc_stats['invocation_det']} "
+              f"({tc_stats['skipped_unknown_qid']} unknown QIDs, "
+              f"{tc_stats['invocation_overflow_decls']} overflow-skipped); "
+              f"agent joins "
+              f"mentions={tc_stats['agent_links']} "
+              f"({tc_stats['agent_rows_skipped']} rows skipped)",
               file=sys.stderr)
     else:
         print("NOTE: catalog/data/tauceti.jsonl missing — tauceti layer "
@@ -1857,11 +2016,13 @@ def build() -> tuple[list[dict], list[dict], dict]:
             ref_method=f"user-repo reference URL ({owner_repo})",
             containers=containers, decl_nodes=decl_nodes, edges=edges,
             slug_lookup=slug_lookup, ensure_concept=ensure_concept,
-            stats=u_stats, node_extra={"repo": owner_repo})
+            stats=u_stats, node_extra={"repo": owner_repo},
+            mathlib_names=mathlib_fq_ids)
         frontier_stats[u_lib] = u_stats
         print(f"  user repo {owner_repo} ({u_lib}): {u_stats['decls']} decls "
               f"in {u_stats['containers']} containers; "
-              f"mentions={u_stats['mentions_det']}", file=sys.stderr)
+              f"mentions={u_stats['mentions_det']} "
+              f"invocation={u_stats['invocation_det']}", file=sys.stderr)
     if user_repo_files or n_user_repos_skipped:
         print(f"  user Lean repos: {len(user_repo_files)} harvest files, "
               f"{n_user_repos_skipped} skipped", file=sys.stderr)
@@ -2096,6 +2257,8 @@ def build() -> tuple[list[dict], list[dict], dict]:
             "fc_mentions_deterministic": fc_stats["mentions_det"],
             "fc_agent_links": fc_stats["agent_links"],
             "fc_agent_rows_skipped": fc_stats["agent_rows_skipped"],
+            "fc_invocation_deterministic": fc_stats["invocation_det"],
+            "fc_invocation_overflow_decls": fc_stats["invocation_overflow_decls"],
             "fc_unknown_qids_skipped": fc_stats["skipped_unknown_qid"],
             "fc_duplicate_decls": fc_stats["duplicate_decls"],
             # generic frontier Lean repos (TauCeti + user_lean_repos), keyed by

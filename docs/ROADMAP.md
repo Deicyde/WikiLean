@@ -331,6 +331,8 @@ into `wiki/public/assets/`. Edit sources, then run build-public, never edit
 
 ## Status log
 
+- 2026-08-01 — **TauCeti wired into the fabric.** Deterministic decl→decl `invocation` edges (FQ-name-in-statement scan, suffix-proof, oracle-restricted: TauCeti 6,174 + FC 2,853, all surfacing as synapses — never merges) + a generic frontier-repo agent-join channel (fold_proposals `repo_link` action per frontier_sources key → catalog/data/`<key>`_links.jsonl, mentions-ONLY by moderation contract; sync_agents `linker` role + repo_link skeptic, nightly-wired via WIKILEAN_BRAIN_REPO_MODULES). First bounded TauCeti linker pass in flight; its folded joins land as `mentions` synapses once the skeptic + fold complete.
+
 - 2026-07-25 — **Generic Lean-repo frontier ingester live** (brain/ingest/lean_repo.py + build_common's parameterized `_frontier_repo_layer`; FC refactored onto it byte-identically): TauCeti minted as frontier client #2 (7,858 decl:TauCeti:* nodes @ b67da432056b), user-registered repos wired end-to-end (weekly /api/repos/enabled sync → per-repo harvest, caps 50 repos / 20k decls, provenance `user_lean_repos`); acceptance P12–P14 guard the registry entries + count conservation.
 
 - 2026-06-16 — **Search-verified moderation + nightly automation live.** Reviewer

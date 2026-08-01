@@ -25,7 +25,13 @@ note, never counted as passing — when catalog/data/external/ lacks the needed
 ingest file (P6-P8, P10) or when nodes.jsonl predates the v2 unit build (P9).
 Skipped checks don't gate exit. P12-P14 cover the generic Lean-repo frontier
 (registry entries; TauCeti minted + count-conserved; FC count conservation);
-P13/P14 auto-SKIP without their catalog/data harvest files.
+P13/P14 auto-SKIP without their catalog/data harvest files. P15/P16 cover the
+deterministic frontier→Mathlib `invocation` edges: P15 re-verifies every
+invocation edge against its harvest snippet (full-FQ-name word-boundary match
+— a bare suffix like 'Basis' inside 'h.Basis'/'Module.Basis' must never have
+minted an edge, and 'decl:Mathlib:Basis' never appears as a target unless the
+snippet contained the standalone full string); P16 requires TauCeti invocation
+edges to exist when the tauceti harvest does.
 
     python3 brain/test_acceptance.py
 """
@@ -208,6 +214,11 @@ def main() -> int:
     n_biblio = 0                       # paper->paper bibliography links edges
     n_fc_fz = 0                        # formalizes edges onto FormalConjectures decls
     fc_e1_xref = False                 # Erdos1.erdos_1 -> xref:erdos:1 witness
+    n_invocation = 0                   # deterministic frontier->Mathlib invocation
+    n_tc_invocation = 0                # ... with a decl:TauCeti:* src
+    inv_shape_bad: list[str] = []      # malformed invocation edges (P15)
+    n_inv_shape_bad = 0
+    inv_edges: list[tuple[str, str, str]] = []  # (src, dst, evidence.name)
 
     edge_streams = [iter_jsonl(EDGES, "src")]
     if EDGES_LINKS.exists():
@@ -255,6 +266,23 @@ def main() -> int:
         elif kind == "xref" and dst == "xref:erdos:1" \
                 and src == "decl:FormalConjectures:Erdos1.erdos_1":
             fc_e1_xref = True
+        elif kind == "invocation":
+            n_invocation += 1
+            if src.startswith("decl:TauCeti:"):
+                n_tc_invocation += 1
+            name = (rec.get("evidence") or {}).get("name")
+            bare = dst.split(":", 2)[2] if dst.count(":") >= 2 else ""
+            if (not src.startswith("decl:") or src.startswith("decl:Mathlib:")
+                    or not dst.startswith("decl:Mathlib:")
+                    or dst not in node_ids or src not in node_ids
+                    or name != bare
+                    or (rec.get("provenance") or {}).get("method")
+                    != "fq-name-in-statement"):
+                n_inv_shape_bad += 1
+                if len(inv_shape_bad) < MAX_EXAMPLES:
+                    inv_shape_bad.append(f"{src} -> {dst} (name={name!r})")
+            else:
+                inv_edges.append((src, dst, name))
         elif kind == "links":
             ev = rec.get("evidence") or {}
             if ev.get("projected") is True \
@@ -532,6 +560,90 @@ def main() -> int:
             [f"count drift: {n_fc_decl_nodes} decl:FormalConjectures:* nodes, "
              f"notes fc_decls={fc_minted} fc_duplicate_decls={fc_dups}, "
              f"harvest n_decls={fc_expected} (rerun brain/build_nodes.py)"],
+        ))
+
+    # ---- deterministic invocation edges (frontier decl -> Mathlib decl) ------
+    # P15 re-verifies every invocation edge against its source's harvest
+    # snippet: the FULL FQ name must occur at word boundaries (identifier chars
+    # + dots on either side break the match), so a suffix occurrence — 'Basis'
+    # inside 'h.Basis' or 'Module.Basis' — can never justify an edge. The
+    # decl:Mathlib:Basis sentinel is the same law applied to the historic
+    # failure mode: it may be a target ONLY if the snippet contains the
+    # standalone full string 'Basis'.
+    snippet_of: dict[str, str] = {}    # decl node id -> statement snippet
+    harvests: list[tuple[str, Path]] = []
+    if tc_ingest.exists():
+        harvests.append(("TauCeti", tc_ingest))
+    if fc_ingest.exists():
+        harvests.append(("FormalConjectures", fc_ingest))
+    user_repo_dir = ROOT / "catalog" / "data" / "user_repos"
+    if user_repo_dir.is_dir():
+        for up in sorted(user_repo_dir.glob("*.jsonl")):
+            lib = first_meta(up).get("lib")
+            if lib:
+                harvests.append((str(lib), up))
+    for lib, hp in harvests:
+        # same row filter as the builder's _read_frontier_jsonl
+        rows = [r for r in iter_jsonl(hp, "decl")
+                if r.get("module") and r.get("file")]
+        for r in sorted(rows, key=lambda r: r["decl"]):
+            # first-in-sorted-order wins, matching the builder's dedupe
+            snippet_of.setdefault(f"decl:{lib}:{r['decl']}", r.get("code") or "")
+    inv_unverifiable = 0
+    inv_no_snippet_match: list[str] = []
+    n_inv_no_snippet_match = 0
+    basis_targets = 0
+    for src, dst, name in inv_edges:
+        if dst == "decl:Mathlib:Basis":
+            basis_targets += 1
+        code = snippet_of.get(src)
+        if code is None:
+            inv_unverifiable += 1      # harvest for this repo absent here
+            continue
+        if not re.search(r"(?<![\w'!?.])" + re.escape(name) + r"(?![\w'!?.])",
+                         code):
+            n_inv_no_snippet_match += 1
+            if len(inv_no_snippet_match) < MAX_EXAMPLES:
+                inv_no_snippet_match.append(f"{src} -> {dst}: {name!r} not a "
+                                            f"whole token in the snippet")
+    p15_details = (
+        ([f"{n_inv_shape_bad} malformed invocation edges, e.g. {inv_shape_bad}"]
+         if n_inv_shape_bad else [])
+        + ([f"{n_inv_no_snippet_match} edges whose full FQ name is NOT a "
+            f"word-bounded token of the source snippet (suffix-match bug), "
+            f"e.g. {inv_no_snippet_match}"] if n_inv_no_snippet_match else [])
+        + ([f"NOTE: {inv_unverifiable} invocation edges lack a local harvest "
+            f"snippet — content check skipped for those"]
+           if inv_unverifiable else [])
+        + ([f"NOTE: decl:Mathlib:Basis is a target {basis_targets}x — each "
+            f"occurrence passed the standalone-full-string check above"]
+           if basis_targets else []))
+    # Unverifiable edges (harvest absent locally) gate visibly as 'skip'
+    # rather than silently passing — a fresh checkout without gitignored
+    # user-repo harvests must not report a green content check it never ran.
+    p15_ok: bool | str = (n_inv_shape_bad == 0 and n_inv_no_snippet_match == 0)
+    if p15_ok and inv_unverifiable:
+        p15_ok = "skip"
+    checks.append((
+        "P15", f"invocation edges ({n_invocation}) are frontier-decl -> existing "
+               f"decl:Mathlib:* with evidence.name == full FQ name, re-verified "
+               f"word-bounded in the harvest snippet (no suffix matches; "
+               f"Basis sentinel)",
+        p15_ok,
+        p15_details,
+    ))
+
+    if not tc_ingest.exists():
+        checks.append(("P16", "TauCeti invocation edges exist (>0)", "skip",
+                       ["no catalog/data/tauceti.jsonl — tauceti ingest not "
+                        "run (brain/ingest/lean_repo.py tauceti)"]))
+    else:
+        checks.append((
+            "P16", "TauCeti invocation edges exist (>0)",
+            n_tc_invocation >= 1,
+            [] if n_tc_invocation else
+            ["tauceti.jsonl present but no invocation edge has a "
+             "decl:TauCeti:* src (rerun brain/build_edges.py)"],
         ))
 
     # ---- report ---------------------------------------------------------------
