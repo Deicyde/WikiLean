@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Drops the core hypothesis `f.IsFinitelySemisimple` that gold conditions on, replacing it with unrelated ambient hypotheses (`IsAlgClosed K`, `FiniteDimensional K V`) that do not imply finite semisimplicity of the specific f",
+  "Because the semisimplicity hypothesis is dropped, the stated theorem is mathematically false in general (e.g. for a nontrivial nilpotent f, maxGenEigenspace sup is trivially ⊤ but eigenspace sup is not ⊤, so the second iff fails)",
+  "Narrows the gold's general setting (commutative ring R, module M) to a field K that is algebraically closed with V finite-dimensional, changing the scope of the statement without justification from the informal task",
+  "Adds an extra unjustified conjunct `f.IsSemisimple ↔ ⨆ μ, f.eigenspace μ = ⊤` not present in and not entailed by the gold statement",
+  "Overall produced statement is not the same proposition as gold and is not a valid equivalent reformulation"
+ ],
+ "arm": "D",
+ "task_id": "fresh_044",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 35.9,
+ "judge_cost_usd": 0.113258,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "7b0c8c6122e25bc1ff38699387ab7f10e1d5153e632591d25f9798984abf0e86"
+}

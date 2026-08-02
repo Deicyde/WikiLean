@@ -86,7 +86,7 @@ def mcn(outcomes: dict[tuple[str, str], bool], ids: list[str], x: str, y: str) -
     return {"pair": f"{x}_vs_{y}", "n_paired": len(ids), "both_success": both,
             f"{x}_only": xonly, f"{y}_only": yonly, "neither": neither,
             "discordant": xonly + yonly,
-            "p_exact_binomial_two_sided": round(mcnemar_exact(xonly, yonly), 6)}
+            "p_exact_binomial_two_sided": float(f"{mcnemar_exact(xonly, yonly):.3g}")}
 
 
 def main() -> int:
@@ -177,6 +177,27 @@ def main() -> int:
         "human_grading_queue": sorted(
             t for t in fresh_ids if evald[("D", t)] != evald[("E", t)]),
     }
+
+    # ---- exposure addendum (interpretive, reuses fresh_exposure.json) -------
+    # Arms C and E hold Mathlib source-grep tools; at their tool pin ~half the
+    # fresh golds are present in the tree (bench/analysis/fresh_exposure.md), so
+    # high judge-equivalence there can reflect RETRIEVAL of the gold rather than
+    # formalization. Split judge outcomes by the same own-module exposure basis.
+    exposure = json.loads((HERE / "fresh_exposure.json").read_text())
+    exposed_ids = sorted(t["id"] for t in exposure["per_task"]
+                         if t["basename_in_own_module"])
+    unexposed_ids = sorted(set(fresh_ids) - set(exposed_ids))
+    result["exposure_addendum"] = {
+        "basis": "basename_in_own_module at the C/E tool pin "
+                 "(bench/analysis/fresh_exposure.json)",
+        "n_exposed": len(exposed_ids), "n_unexposed": len(unexposed_ids),
+        "evaluated_exposed": arm_table(evald, exposed_ids),
+        "evaluated_unexposed": arm_table(evald, unexposed_ids),
+        "conjunction_exposed": arm_table(conj, exposed_ids),
+        "conjunction_unexposed": arm_table(conj, unexposed_ids),
+        "mcnemar_evaluated_D_vs_E_exposed": mcn(evald, exposed_ids, "D", "E"),
+        "mcnemar_evaluated_D_vs_E_unexposed": mcn(evald, unexposed_ids, "D", "E"),
+    }
     OUT_JSON.write_text(json.dumps(result, indent=2) + "\n")
 
     # ------------------------------- markdown -------------------------------
@@ -247,6 +268,27 @@ def main() -> int:
         "McNemar, so hand-grade them first:\n",
         ", ".join(hq) or "(none)",
     ]
+    ea = result["exposure_addendum"]
+    md += [
+        "\n## Exposure addendum — retrieval vs formalization caveat\n",
+        "Arms C/E carry Mathlib source-grep tools and ~half the fresh golds "
+        "exist in their tool tree (fresh_exposure.md), so their judge-"
+        "equivalence can reflect retrieval of the gold statement. Evaluated-"
+        f"equivalence split (exposed n={ea['n_exposed']} / unexposed "
+        f"n={ea['n_unexposed']}, own-module basis):\n",
+        "| arm | exposed | unexposed |", "|---|---|---|",
+    ]
+    for a in ARMS:
+        ex, un = ea["evaluated_exposed"][a], ea["evaluated_unexposed"][a]
+        md.append(f"| {a} | {ex['k']}/{ex['n']} ({ex['rate']:.3f}) "
+                  f"| {un['k']}/{un['n']} ({un['rate']:.3f}) |")
+    for key, label in (("mcnemar_evaluated_D_vs_E_exposed", "exposed"),
+                       ("mcnemar_evaluated_D_vs_E_unexposed", "unexposed")):
+        b = ea[key]
+        md.append(f"- D vs E on evaluated, {label}: both={b['both_success']}, "
+                  f"D-only={b['D_only']}, E-only={b['E_only']}, "
+                  f"neither={b['neither']} -> p = "
+                  f"{b['p_exact_binomial_two_sided']:.4g}")
     md.append("")
     OUT_MD.write_text("\n".join(md))
     print(f"wrote {OUT_JSON}\nwrote {OUT_MD}")

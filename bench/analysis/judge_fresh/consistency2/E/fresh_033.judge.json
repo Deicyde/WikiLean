@@ -1,0 +1,15 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Hypothesis differs from gold: gold requires `{x ∈ l₁ | p x}.Subsingleton`, i.e. at most one *distinct value* among the list's p-satisfying elements (duplicates of that value are fine), whereas produced requires `(l.filter p).length ≤ 1`, i.e. at most one *occurrence/position* in the list satisfies p. These are not equivalent: e.g. l = [a, a] with p a = true satisfies gold's hypothesis (the set {a} is a subsingleton) but violates produced's hypothesis (filter length = 2). Produced's hypothesis strictly implies gold's but not conversely, so the produced theorem is a strictly weaker/special case of the gold theorem, not the same proposition."
+ ],
+ "arm": "E",
+ "task_id": "fresh_033",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 35.3,
+ "judge_cost_usd": 0.112558,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "b889850cbbe2e8942163267e9452dc69af00c537a878112a132ace9eaf6c5f67"
+}

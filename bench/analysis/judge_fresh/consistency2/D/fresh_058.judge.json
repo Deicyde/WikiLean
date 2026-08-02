@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Casts `‖σ s‖ : ℝ` to `ℝ≥0∞` via `(‖σ s‖ : ℝ≥0∞)`, but Mathlib has no registered coercion `ℝ → ℝ≥0∞` (ℝ admits negatives, so no total order-preserving coe exists; the standard idiom is `(‖σ s‖₊ : ℝ≥0∞)` via nnnorm, or `ENNReal.ofReal ‖σ s‖`). As literally written this term will not elaborate/type-check.",
+  "Compares in ℝ≥0∞ against the raw `σ.totalVariation s` instead of converting the total variation to ℝ via `.toReal`/`.real` as the gold does, so even if the cast issue were fixed the statement's shape (real inequality vs. ENNReal inequality) differs from the gold, relying on an unstated finiteness fact to be equivalent."
+ ],
+ "arm": "D",
+ "task_id": "fresh_058",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 64.2,
+ "judge_cost_usd": 0.186045,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "557e62d20c012b5e3f23c151fe57fc5a927f9b59897179da1d3aeed1d7d78768"
+}

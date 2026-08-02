@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Composition order is reversed relative to gold: gold requires the immersion φ to be POST-composed with f (φ ∘ f : M → N'), i.e. φ maps the codomain N into a further space N'; the produced statement instead PRE-composes, with g : N → M an immersion into the domain of f, giving f ∘ g : N → M'. This is a different (and generally false) mathematical claim: e.g. take M=ℝ², M'=ℝ, f(a,b)=a|b| (continuous everywhere), g(y)=(y,0) an immersion/embedding of the x-axis; then f∘g ≡ 0 is C^∞ and f is continuous at (1,0), yet f is not even C^1 at (1,0), so the produced iff fails.",
+  "IsImmersionAt is invoked as `IsImmersionAt g y` with only the map and point, omitting the explicit smoothness degree and model-with-corners arguments that gold's signature `IsImmersionAt J J' n φ (f x)` requires; the smoothness level of the immersion is left unpinned/mismatched to the ambient n.",
+  "Because of the swapped composition direction, the produced statement's point hypothesis `hxy : g y = x` and the immersion point `y` do not correspond to the gold's immersion-at-`f x` condition, reflecting a structurally different (non-equivalent) setup rather than a mere relabeling."
+ ],
+ "arm": "E",
+ "task_id": "fresh_035",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 75.3,
+ "judge_cost_usd": 0.219539,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "2e23fe9fdf1e75a2d6e6713a651e4d87a0e60e099f9e5e1703e10ace346d0c06"
+}

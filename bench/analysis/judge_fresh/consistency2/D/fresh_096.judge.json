@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Missing `[TopologicalSpace α]` and `[TopologicalSpace β]` instance hypotheses: `OrderTopology` is defined as `OrderTopology (α) [TopologicalSpace α] [Preorder α]`, so writing `[OrderTopology α]`/`[OrderTopology β]` without first providing the topology instances will fail to synthesize and the statement will not elaborate.",
+  "`h_inf` uses `iInf s` where `s : Set α`, but `iInf` expects an indexed family `ι → α`, not a `Set α`; this is a type mismatch (should be `sInf s`), so `f (iInf s) = iInf (f '' s)` does not type-check as written.",
+  "`h_sup`/`h_inf` quantify over *all* sets satisfying `BddAbove`/`BddBelow`, including the empty set, whereas gold's `LeftOrdContinuous`/`RightOrdContinuous` (stated via `IsLUB`/`IsGLB`) place no real constraint on the empty-set/junk-value case in a general conditionally complete linear order lacking a bottom/top element; the produced hypotheses thus silently impose an extra, non-equivalent requirement on how `f` treats the underspecified junk values `sSup ∅`/`sInf ∅`, rather than matching gold (which effectively only constrains nonempty bounded sets) — a `s.Nonempty` condition is missing to make the hypotheses faithfully equivalent to `LeftOrdContinuous`/`RightOrdContinuous`."
+ ],
+ "arm": "D",
+ "task_id": "fresh_096",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 173.5,
+ "judge_cost_usd": 0.452508,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "298c52ef6e1200324a4a33ddb33e875e9c5eda21c2039ff6ee2c658359a40b05"
+}
