@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Weakens the ring hypothesis: gold requires [CommRing k] (needed for Rep k G / ShortComplex.Exact to make sense) but produced only assumes [Semiring k], dropping both the additive-inverse (ring) and commutativity requirements",
+  "Uses a non-standard/likely nonexistent method '(Rep.resFunctor φ).mapShortComplex S' instead of the actual mathlib API 'S.map (resFunctor φ)' (ShortComplex.map takes the functor as argument on the complex, not the reverse dot-notation used here)",
+  "Statement has unbalanced parentheses in the conclusion '(Rep.resFunctor φ).mapShortComplex S).Exact' — an extra closing paren with no matching open, so as written it is not valid/parseable Lean syntax"
+ ],
+ "arm": "D",
+ "task_id": "fresh_076",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 46.8,
+ "judge_cost_usd": 0.142239,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "afa72f4cc7553559564292fd28ea8e79930892d6d3322886da804e80572b7f7d"
+}

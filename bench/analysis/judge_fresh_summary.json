@@ -1,0 +1,859 @@
+{
+  "generated_by": "bench/analysis/judge_fresh_summary.py",
+  "header_note": "UNCALIBRATED LLM JUDGE \u2014 exploratory numbers only. The judge is claude-sonnet-5 (blind: sees only informal statement, gold formal statement + its variable context, and the candidate output; no arm identity, no tools, empty cwd). The preregistered 50-item human calibration of judge-vs-human agreement remains UNDONE (planned as future work), so these rates must not be read as confirmatory. The grounded-typecheck leg (bridge_summary_v2.json) is the mechanical anchor; the judge adds an equivalence signal on top.",
+  "judge_model": "claude-sonnet-5",
+  "subject_model": "claude-haiku-4-5-20251001",
+  "typecheck_outcome_source": "/Users/jack/Desktop/LEAN/WikiLean/bench/analysis/bridge_summary_v2.json",
+  "census": {
+    "verdicts": 500,
+    "sent_to_judge": 500,
+    "no_output_predecided": 0,
+    "judge_errors": 0,
+    "total_judge_cost_usd": 81.86,
+    "mean_judge_wall_s": 47.9
+  },
+  "fresh_100": {
+    "strict_table": {
+      "A": {
+        "k": 11,
+        "n": 100,
+        "rate": 0.11,
+        "wilson95": [
+          0.0625,
+          0.1863
+        ]
+      },
+      "B": {
+        "k": 9,
+        "n": 100,
+        "rate": 0.09,
+        "wilson95": [
+          0.0481,
+          0.1623
+        ]
+      },
+      "C": {
+        "k": 43,
+        "n": 100,
+        "rate": 0.43,
+        "wilson95": [
+          0.3373,
+          0.5278
+        ]
+      },
+      "D": {
+        "k": 8,
+        "n": 100,
+        "rate": 0.08,
+        "wilson95": [
+          0.0411,
+          0.15
+        ]
+      },
+      "E": {
+        "k": 46,
+        "n": 100,
+        "rate": 0.46,
+        "wilson95": [
+          0.3656,
+          0.5574
+        ]
+      }
+    },
+    "evaluated_table": {
+      "A": {
+        "k": 17,
+        "n": 100,
+        "rate": 0.17,
+        "wilson95": [
+          0.1089,
+          0.2555
+        ]
+      },
+      "B": {
+        "k": 16,
+        "n": 100,
+        "rate": 0.16,
+        "wilson95": [
+          0.101,
+          0.2442
+        ]
+      },
+      "C": {
+        "k": 51,
+        "n": 100,
+        "rate": 0.51,
+        "wilson95": [
+          0.4135,
+          0.6058
+        ]
+      },
+      "D": {
+        "k": 19,
+        "n": 100,
+        "rate": 0.19,
+        "wilson95": [
+          0.1251,
+          0.2778
+        ]
+      },
+      "E": {
+        "k": 53,
+        "n": 100,
+        "rate": 0.53,
+        "wilson95": [
+          0.4329,
+          0.6249
+        ]
+      }
+    },
+    "grounded_typecheck_table_v2": {
+      "A": {
+        "k": 20,
+        "n": 100,
+        "rate": 0.2,
+        "wilson95": [
+          0.1334,
+          0.2888
+        ]
+      },
+      "B": {
+        "k": 22,
+        "n": 100,
+        "rate": 0.22,
+        "wilson95": [
+          0.15,
+          0.3107
+        ]
+      },
+      "C": {
+        "k": 25,
+        "n": 100,
+        "rate": 0.25,
+        "wilson95": [
+          0.1755,
+          0.343
+        ]
+      },
+      "D": {
+        "k": 42,
+        "n": 100,
+        "rate": 0.42,
+        "wilson95": [
+          0.328,
+          0.5179
+        ]
+      },
+      "E": {
+        "k": 30,
+        "n": 100,
+        "rate": 0.3,
+        "wilson95": [
+          0.2189,
+          0.3958
+        ]
+      }
+    },
+    "conjunction_table": {
+      "A": {
+        "k": 8,
+        "n": 100,
+        "rate": 0.08,
+        "wilson95": [
+          0.0411,
+          0.15
+        ]
+      },
+      "B": {
+        "k": 9,
+        "n": 100,
+        "rate": 0.09,
+        "wilson95": [
+          0.0481,
+          0.1623
+        ]
+      },
+      "C": {
+        "k": 16,
+        "n": 100,
+        "rate": 0.16,
+        "wilson95": [
+          0.101,
+          0.2442
+        ]
+      },
+      "D": {
+        "k": 15,
+        "n": 100,
+        "rate": 0.15,
+        "wilson95": [
+          0.0931,
+          0.2328
+        ]
+      },
+      "E": {
+        "k": 18,
+        "n": 100,
+        "rate": 0.18,
+        "wilson95": [
+          0.117,
+          0.2667
+        ]
+      }
+    },
+    "mcnemar_evaluated": {
+      "D_vs_E": {
+        "pair": "D_vs_E",
+        "n_paired": 100,
+        "both_success": 18,
+        "D_only": 1,
+        "E_only": 35,
+        "neither": 46,
+        "discordant": 36,
+        "p_exact_binomial_two_sided": 1.08e-09
+      },
+      "D_vs_C": {
+        "pair": "D_vs_C",
+        "n_paired": 100,
+        "both_success": 16,
+        "D_only": 3,
+        "C_only": 35,
+        "neither": 46,
+        "discordant": 38,
+        "p_exact_binomial_two_sided": 6.68e-08
+      },
+      "D_vs_A": {
+        "pair": "D_vs_A",
+        "n_paired": 100,
+        "both_success": 12,
+        "D_only": 7,
+        "A_only": 5,
+        "neither": 76,
+        "discordant": 12,
+        "p_exact_binomial_two_sided": 0.774
+      },
+      "E_vs_A": {
+        "pair": "E_vs_A",
+        "n_paired": 100,
+        "both_success": 16,
+        "E_only": 37,
+        "A_only": 1,
+        "neither": 46,
+        "discordant": 38,
+        "p_exact_binomial_two_sided": 2.84e-10
+      },
+      "E_vs_B": {
+        "pair": "E_vs_B",
+        "n_paired": 100,
+        "both_success": 14,
+        "E_only": 39,
+        "B_only": 2,
+        "neither": 45,
+        "discordant": 41,
+        "p_exact_binomial_two_sided": 7.84e-10
+      },
+      "E_vs_C": {
+        "pair": "E_vs_C",
+        "n_paired": 100,
+        "both_success": 40,
+        "E_only": 13,
+        "C_only": 11,
+        "neither": 36,
+        "discordant": 24,
+        "p_exact_binomial_two_sided": 0.839
+      }
+    },
+    "mcnemar_conjunction": {
+      "D_vs_E": {
+        "pair": "D_vs_E",
+        "n_paired": 100,
+        "both_success": 9,
+        "D_only": 6,
+        "E_only": 9,
+        "neither": 76,
+        "discordant": 15,
+        "p_exact_binomial_two_sided": 0.607
+      },
+      "D_vs_C": {
+        "pair": "D_vs_C",
+        "n_paired": 100,
+        "both_success": 7,
+        "D_only": 8,
+        "C_only": 9,
+        "neither": 76,
+        "discordant": 17,
+        "p_exact_binomial_two_sided": 1.0
+      },
+      "D_vs_A": {
+        "pair": "D_vs_A",
+        "n_paired": 100,
+        "both_success": 6,
+        "D_only": 9,
+        "A_only": 2,
+        "neither": 83,
+        "discordant": 11,
+        "p_exact_binomial_two_sided": 0.0654
+      },
+      "E_vs_A": {
+        "pair": "E_vs_A",
+        "n_paired": 100,
+        "both_success": 7,
+        "E_only": 11,
+        "A_only": 1,
+        "neither": 81,
+        "discordant": 12,
+        "p_exact_binomial_two_sided": 0.00635
+      },
+      "E_vs_B": {
+        "pair": "E_vs_B",
+        "n_paired": 100,
+        "both_success": 6,
+        "E_only": 12,
+        "B_only": 3,
+        "neither": 79,
+        "discordant": 15,
+        "p_exact_binomial_two_sided": 0.0352
+      },
+      "E_vs_C": {
+        "pair": "E_vs_C",
+        "n_paired": 100,
+        "both_success": 12,
+        "E_only": 6,
+        "C_only": 4,
+        "neither": 78,
+        "discordant": 10,
+        "p_exact_binomial_two_sided": 0.754
+      }
+    }
+  },
+  "completed_69": {
+    "strict_table": {
+      "A": {
+        "k": 5,
+        "n": 69,
+        "rate": 0.0725,
+        "wilson95": [
+          0.0313,
+          0.1587
+        ]
+      },
+      "B": {
+        "k": 4,
+        "n": 69,
+        "rate": 0.058,
+        "wilson95": [
+          0.0228,
+          0.1398
+        ]
+      },
+      "C": {
+        "k": 31,
+        "n": 69,
+        "rate": 0.4493,
+        "wilson95": [
+          0.3377,
+          0.5662
+        ]
+      },
+      "D": {
+        "k": 4,
+        "n": 69,
+        "rate": 0.058,
+        "wilson95": [
+          0.0228,
+          0.1398
+        ]
+      },
+      "E": {
+        "k": 31,
+        "n": 69,
+        "rate": 0.4493,
+        "wilson95": [
+          0.3377,
+          0.5662
+        ]
+      }
+    },
+    "evaluated_table": {
+      "A": {
+        "k": 10,
+        "n": 69,
+        "rate": 0.1449,
+        "wilson95": [
+          0.0807,
+          0.2466
+        ]
+      },
+      "B": {
+        "k": 9,
+        "n": 69,
+        "rate": 0.1304,
+        "wilson95": [
+          0.0702,
+          0.2297
+        ]
+      },
+      "C": {
+        "k": 37,
+        "n": 69,
+        "rate": 0.5362,
+        "wilson95": [
+          0.4198,
+          0.6489
+        ]
+      },
+      "D": {
+        "k": 11,
+        "n": 69,
+        "rate": 0.1594,
+        "wilson95": [
+          0.0914,
+          0.2633
+        ]
+      },
+      "E": {
+        "k": 37,
+        "n": 69,
+        "rate": 0.5362,
+        "wilson95": [
+          0.4198,
+          0.6489
+        ]
+      }
+    },
+    "conjunction_table": {
+      "A": {
+        "k": 3,
+        "n": 69,
+        "rate": 0.0435,
+        "wilson95": [
+          0.0149,
+          0.1202
+        ]
+      },
+      "B": {
+        "k": 3,
+        "n": 69,
+        "rate": 0.0435,
+        "wilson95": [
+          0.0149,
+          0.1202
+        ]
+      },
+      "C": {
+        "k": 8,
+        "n": 69,
+        "rate": 0.1159,
+        "wilson95": [
+          0.0599,
+          0.2125
+        ]
+      },
+      "D": {
+        "k": 10,
+        "n": 69,
+        "rate": 0.1449,
+        "wilson95": [
+          0.0807,
+          0.2466
+        ]
+      },
+      "E": {
+        "k": 9,
+        "n": 69,
+        "rate": 0.1304,
+        "wilson95": [
+          0.0702,
+          0.2297
+        ]
+      }
+    },
+    "mcnemar_evaluated": {
+      "D_vs_E": {
+        "pair": "D_vs_E",
+        "n_paired": 69,
+        "both_success": 11,
+        "D_only": 0,
+        "E_only": 26,
+        "neither": 32,
+        "discordant": 26,
+        "p_exact_binomial_two_sided": 2.98e-08
+      },
+      "D_vs_C": {
+        "pair": "D_vs_C",
+        "n_paired": 69,
+        "both_success": 9,
+        "D_only": 2,
+        "C_only": 28,
+        "neither": 30,
+        "discordant": 30,
+        "p_exact_binomial_two_sided": 8.68e-07
+      },
+      "D_vs_A": {
+        "pair": "D_vs_A",
+        "n_paired": 69,
+        "both_success": 7,
+        "D_only": 4,
+        "A_only": 3,
+        "neither": 55,
+        "discordant": 7,
+        "p_exact_binomial_two_sided": 1.0
+      },
+      "E_vs_A": {
+        "pair": "E_vs_A",
+        "n_paired": 69,
+        "both_success": 9,
+        "E_only": 28,
+        "A_only": 1,
+        "neither": 31,
+        "discordant": 29,
+        "p_exact_binomial_two_sided": 1.12e-07
+      },
+      "E_vs_B": {
+        "pair": "E_vs_B",
+        "n_paired": 69,
+        "both_success": 7,
+        "E_only": 30,
+        "B_only": 2,
+        "neither": 30,
+        "discordant": 32,
+        "p_exact_binomial_two_sided": 2.46e-07
+      },
+      "E_vs_C": {
+        "pair": "E_vs_C",
+        "n_paired": 69,
+        "both_success": 30,
+        "E_only": 7,
+        "C_only": 7,
+        "neither": 25,
+        "discordant": 14,
+        "p_exact_binomial_two_sided": 1.0
+      }
+    },
+    "mcnemar_conjunction": {
+      "D_vs_E": {
+        "pair": "D_vs_E",
+        "n_paired": 69,
+        "both_success": 6,
+        "D_only": 4,
+        "E_only": 3,
+        "neither": 56,
+        "discordant": 7,
+        "p_exact_binomial_two_sided": 1.0
+      },
+      "D_vs_C": {
+        "pair": "D_vs_C",
+        "n_paired": 69,
+        "both_success": 3,
+        "D_only": 7,
+        "C_only": 5,
+        "neither": 54,
+        "discordant": 12,
+        "p_exact_binomial_two_sided": 0.774
+      },
+      "D_vs_A": {
+        "pair": "D_vs_A",
+        "n_paired": 69,
+        "both_success": 3,
+        "D_only": 7,
+        "A_only": 0,
+        "neither": 59,
+        "discordant": 7,
+        "p_exact_binomial_two_sided": 0.0156
+      },
+      "E_vs_A": {
+        "pair": "E_vs_A",
+        "n_paired": 69,
+        "both_success": 2,
+        "E_only": 7,
+        "A_only": 1,
+        "neither": 59,
+        "discordant": 8,
+        "p_exact_binomial_two_sided": 0.0703
+      },
+      "E_vs_B": {
+        "pair": "E_vs_B",
+        "n_paired": 69,
+        "both_success": 1,
+        "E_only": 8,
+        "B_only": 2,
+        "neither": 58,
+        "discordant": 10,
+        "p_exact_binomial_two_sided": 0.109
+      },
+      "E_vs_C": {
+        "pair": "E_vs_C",
+        "n_paired": 69,
+        "both_success": 6,
+        "E_only": 3,
+        "C_only": 2,
+        "neither": 58,
+        "discordant": 5,
+        "p_exact_binomial_two_sided": 1.0
+      }
+    }
+  },
+  "self_consistency": {
+    "n": 50,
+    "seed": 20260727,
+    "stratification": "10 per arm",
+    "strict_agreement": 0.98,
+    "evaluated_agreement": 1.0,
+    "strict_disagreements": [
+      "A/fresh_015"
+    ],
+    "evaluated_disagreements": [],
+    "second_pass_cost_usd": 7.28
+  },
+  "human_grading_queue": [
+    "fresh_002",
+    "fresh_004",
+    "fresh_006",
+    "fresh_007",
+    "fresh_011",
+    "fresh_012",
+    "fresh_013",
+    "fresh_014",
+    "fresh_019",
+    "fresh_021",
+    "fresh_023",
+    "fresh_026",
+    "fresh_027",
+    "fresh_032",
+    "fresh_044",
+    "fresh_048",
+    "fresh_049",
+    "fresh_050",
+    "fresh_051",
+    "fresh_056",
+    "fresh_057",
+    "fresh_059",
+    "fresh_062",
+    "fresh_063",
+    "fresh_064",
+    "fresh_067",
+    "fresh_069",
+    "fresh_076",
+    "fresh_077",
+    "fresh_085",
+    "fresh_086",
+    "fresh_092",
+    "fresh_094",
+    "fresh_095",
+    "fresh_096",
+    "fresh_099"
+  ],
+  "exposure_addendum": {
+    "basis": "basename_in_own_module at the C/E tool pin (bench/analysis/fresh_exposure.json)",
+    "n_exposed": 51,
+    "n_unexposed": 49,
+    "evaluated_exposed": {
+      "A": {
+        "k": 8,
+        "n": 51,
+        "rate": 0.1569,
+        "wilson95": [
+          0.0817,
+          0.2801
+        ]
+      },
+      "B": {
+        "k": 9,
+        "n": 51,
+        "rate": 0.1765,
+        "wilson95": [
+          0.0957,
+          0.3025
+        ]
+      },
+      "C": {
+        "k": 36,
+        "n": 51,
+        "rate": 0.7059,
+        "wilson95": [
+          0.57,
+          0.8129
+        ]
+      },
+      "D": {
+        "k": 10,
+        "n": 51,
+        "rate": 0.1961,
+        "wilson95": [
+          0.1102,
+          0.3246
+        ]
+      },
+      "E": {
+        "k": 35,
+        "n": 51,
+        "rate": 0.6863,
+        "wilson95": [
+          0.5497,
+          0.7967
+        ]
+      }
+    },
+    "evaluated_unexposed": {
+      "A": {
+        "k": 9,
+        "n": 49,
+        "rate": 0.1837,
+        "wilson95": [
+          0.0998,
+          0.3136
+        ]
+      },
+      "B": {
+        "k": 7,
+        "n": 49,
+        "rate": 0.1429,
+        "wilson95": [
+          0.071,
+          0.2667
+        ]
+      },
+      "C": {
+        "k": 15,
+        "n": 49,
+        "rate": 0.3061,
+        "wilson95": [
+          0.1952,
+          0.4453
+        ]
+      },
+      "D": {
+        "k": 9,
+        "n": 49,
+        "rate": 0.1837,
+        "wilson95": [
+          0.0998,
+          0.3136
+        ]
+      },
+      "E": {
+        "k": 18,
+        "n": 49,
+        "rate": 0.3673,
+        "wilson95": [
+          0.2467,
+          0.5073
+        ]
+      }
+    },
+    "conjunction_exposed": {
+      "A": {
+        "k": 3,
+        "n": 51,
+        "rate": 0.0588,
+        "wilson95": [
+          0.0202,
+          0.1592
+        ]
+      },
+      "B": {
+        "k": 3,
+        "n": 51,
+        "rate": 0.0588,
+        "wilson95": [
+          0.0202,
+          0.1592
+        ]
+      },
+      "C": {
+        "k": 9,
+        "n": 51,
+        "rate": 0.1765,
+        "wilson95": [
+          0.0957,
+          0.3025
+        ]
+      },
+      "D": {
+        "k": 9,
+        "n": 51,
+        "rate": 0.1765,
+        "wilson95": [
+          0.0957,
+          0.3025
+        ]
+      },
+      "E": {
+        "k": 11,
+        "n": 51,
+        "rate": 0.2157,
+        "wilson95": [
+          0.1249,
+          0.3463
+        ]
+      }
+    },
+    "conjunction_unexposed": {
+      "A": {
+        "k": 5,
+        "n": 49,
+        "rate": 0.102,
+        "wilson95": [
+          0.0444,
+          0.2176
+        ]
+      },
+      "B": {
+        "k": 6,
+        "n": 49,
+        "rate": 0.1224,
+        "wilson95": [
+          0.0573,
+          0.2424
+        ]
+      },
+      "C": {
+        "k": 7,
+        "n": 49,
+        "rate": 0.1429,
+        "wilson95": [
+          0.071,
+          0.2667
+        ]
+      },
+      "D": {
+        "k": 6,
+        "n": 49,
+        "rate": 0.1224,
+        "wilson95": [
+          0.0573,
+          0.2424
+        ]
+      },
+      "E": {
+        "k": 7,
+        "n": 49,
+        "rate": 0.1429,
+        "wilson95": [
+          0.071,
+          0.2667
+        ]
+      }
+    },
+    "mcnemar_evaluated_D_vs_E_exposed": {
+      "pair": "D_vs_E",
+      "n_paired": 51,
+      "both_success": 9,
+      "D_only": 1,
+      "E_only": 26,
+      "neither": 15,
+      "discordant": 27,
+      "p_exact_binomial_two_sided": 4.17e-07
+    },
+    "mcnemar_evaluated_D_vs_E_unexposed": {
+      "pair": "D_vs_E",
+      "n_paired": 49,
+      "both_success": 9,
+      "D_only": 0,
+      "E_only": 9,
+      "neither": 31,
+      "discordant": 9,
+      "p_exact_binomial_two_sided": 0.00391
+    }
+  }
+}

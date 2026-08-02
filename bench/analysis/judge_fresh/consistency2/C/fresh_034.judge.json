@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Adds three extra instance hypotheses [IsManifold I n M], [IsManifold I' n M'], [IsManifold I'' n M''] that are not present in the gold statement, restricting the theorem to manifolds satisfying these instances rather than the more general charted-space setting used in the gold snippet",
+  "Adds an extra explicit hypothesis hg_smooth : ContMDiff I' I'' n g requiring g to be separately known to be C^n, whereas gold only assumes hφ : IsImmersion J J' n φ (the C^n immersion hypothesis alone), suggesting IsImmersion is expected to already encode the smoothness of the map",
+  "Because of the added hypotheses, the produced statement is a possibly-weaker specialization rather than a hypothesis-for-hypothesis match of the gold proposition, and equivalence cannot be confidently established"
+ ],
+ "arm": "C",
+ "task_id": "fresh_034",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 107.9,
+ "judge_cost_usd": 0.300033,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "cd8efba1e14a48dcc80ad5074a568033083563432f83bcf797e4015a2893cbb3"
+}

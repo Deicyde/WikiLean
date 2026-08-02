@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": true,
+ "defects": [
+  "Uses `Fintype α` instead of `Finite α`; these are different typeclasses (Fintype carries explicit enumeration/decidability data, Finite is a Prop-valued existence claim). Every Finite type admits a Fintype instance and vice versa, so the mathematical content is equivalent, but it is not literally the same typeclass as the gold.",
+  "Argument `f` is explicit in the produced statement (`(f : α → α)`) versus implicit in the gold (`{f : α → α}`), a minor binder-style difference that does not change the proposition but alters the call signature."
+ ],
+ "arm": "C",
+ "task_id": "fresh_075",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 32.0,
+ "judge_cost_usd": 0.103008,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "583aff62e8bd2c75e40d195ddfc7093b0d2437869a88f5f205949f19fb1ecd9f"
+}
