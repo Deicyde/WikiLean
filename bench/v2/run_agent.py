@@ -58,6 +58,13 @@ def scrub_env() -> dict:
     for k in ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "ANTHROPIC_BASE_URL",
               "USE_STAGING_OAUTH", "USE_LOCAL_OAUTH", "CLAUDE_CODE_OAUTH_SCOPES"):
         env.pop(k, None)
+    # Ride out MCP cold-start bursts: at batch start N claude processes boot at
+    # once and the stdio/http servers can miss the CLI's attach window — the
+    # first API turn then carries NO tools (see the U-arm launch postmortem;
+    # the same race put 175/810 zero-tool "pending" rows in the original F
+    # grid). A generous startup timeout narrows the window; run_one() condemns
+    # any row that still slips through.
+    env.setdefault("MCP_TIMEOUT", "120000")
     return env
 
 DEFAULT_MODEL = "claude-sonnet-5"
@@ -121,6 +128,7 @@ def parse_stream(stdout: str) -> dict:
     (the raw stream is saved separately by the caller)."""
     result_text, subtype, is_error = "", None, None
     turns = cost = tin = tout = None
+    mcp_init: list[list[str]] | None = None
     tool_calls: dict[str, int] = {}
     trace: list[dict] = []
     by_id: dict[str, dict] = {}
@@ -133,7 +141,10 @@ def parse_stream(stdout: str) -> dict:
         except json.JSONDecodeError:
             continue
         et = ev.get("type")
-        if et == "assistant":
+        if et == "system" and ev.get("subtype") == "init":
+            mcp_init = [[s.get("name", "?"), s.get("status", "?")]
+                        for s in ev.get("mcp_servers") or []]
+        elif et == "assistant":
             for blk in (ev.get("message") or {}).get("content", []) or []:
                 if isinstance(blk, dict) and blk.get("type") == "tool_use":
                     nm = blk.get("name", "?")
@@ -166,7 +177,7 @@ def parse_stream(stdout: str) -> dict:
     return {"result_text": result_text, "subtype": subtype, "is_error": is_error,
             "turns": turns, "cost_usd": cost, "tokens_in": tin,
             "tokens_out": tout, "tool_calls_by_name": tool_calls,
-            "tool_trace": trace}
+            "tool_trace": trace, "mcp_init": mcp_init}
 
 
 def run_one(bench: str, arm: str, model: str, qid: str, query: str,
@@ -206,6 +217,20 @@ def run_one(bench: str, arm: str, model: str, qid: str, query: str,
     if err or st["is_error"] or not ranked:
         row["error"] = err or ("CLI error" if st["is_error"] else
                                "no JSON array in final message")
+    # Condemn cold-start-race victims: an MCP arm whose run made ZERO mcp tool
+    # calls AND whose init event shows the servers not (yet) connected almost
+    # certainly fired its first API turn with no tools attached — the row is
+    # effectively arm N. Marking it an error keeps the raw stream but makes a
+    # resume pass retry it after the row file is deleted. A 0-call row with
+    # every server "connected" at init is the model's genuine choice and stays.
+    if mcp_config is not None:
+        row["mcp_init"] = st["mcp_init"]
+        n_mcp = sum(v for k, v in st["tool_calls_by_name"].items()
+                    if k.startswith("mcp__"))
+        statuses = [s for _, s in (st["mcp_init"] or [])]
+        if "error" not in row and n_mcp == 0 and (
+                not statuses or any(x != "connected" for x in statuses)):
+            row["error"] = f"mcp not attached (init={st['mcp_init']}, 0 mcp calls)"
     (out_dir / f"{qid}.json").write_text(json.dumps(row) + "\n")
     n_tools = sum(st["tool_calls_by_name"].values())
     return f"{qid} {row['wall_s']}s tools={n_tools} ranked={len(ranked)}" + \
@@ -231,8 +256,15 @@ def main() -> int:
         print(f"[{args.bench}/{arm}/{args.model}] {len(todo)} to run "
               f"({len(items) - len(todo)} resumed) -> {out_dir}", file=sys.stderr)
         with ThreadPoolExecutor(max_workers=args.concurrency) as ex:
-            futs = {ex.submit(run_one, args.bench, arm, args.model, q, t,
-                              out_dir, mcp, args.timeout): q for q, t in todo}
+            futs = {}
+            for j, (q, t) in enumerate(todo):
+                futs[ex.submit(run_one, args.bench, arm, args.model, q, t,
+                               out_dir, mcp, args.timeout)] = q
+                # Stagger the first wave only: N simultaneous cold `claude`
+                # boots starve the MCP servers' attach window (see run_one's
+                # condemnation note). Later submissions just queue.
+                if j < args.concurrency - 1:
+                    time.sleep(5.0)
             for i, fut in enumerate(as_completed(futs), 1):
                 print(f"  [{i}/{len(todo)}] {fut.result()}", file=sys.stderr)
     return 0
