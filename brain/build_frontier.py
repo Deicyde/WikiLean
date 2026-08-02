@@ -12,15 +12,26 @@ FRONTIER CONTRACT (pinned across agents; documented in brain/SCHEMA.md):
 
   brain/data/frontier.jsonl —
     line 1: {"_meta": {"generated_at", "method",
-                       "counts": {"homeless", "assigned", "unsorted"}}}
+                       "counts": {"homeless", "assigned", "unsorted"},
+                       "halo": {"shell_counts", "method"}}}
     then one row per area:
       {"id": "frontier:<Area>", "label", "cells": [cell ids], "n",
+       "shells": {"1": [ids], "2": [ids], "3": [ids], "disc": [ids]},
        "near": "path:<Lib>/<Dir>"|null, "mean_stateability": float|null,
        "top": [up to 12 {"cell", "label", "score"}]}
     <Area> matches ^[A-Za-z][A-Za-z0-9_]{0,63}$.
 
   PARTITION: every homeless cell appears in EXACTLY ONE area — no drops, no
   dupes; counts reconcile (asserted here AND in brain/test_frontier.py).
+
+  HALO SHELLS (the halo view's data): a multi-source BFS from ALL formalized
+  cells (>=1 decl organ) over cell<->cell synapses — every kind conducts,
+  path: (supercell) endpoints never do — gives every homeless cell a hop
+  distance d to the nearest formalized cell. Each area row's "shells" is a
+  partition of that area's "cells" keyed by str(d) ("disc" = unreachable;
+  empty shell keys omitted; ids sorted). _meta.halo.shell_counts is the
+  global tally (855/454/13/290 on 2026-08-01 data) and must equal the sum
+  over rows — asserted here AND spec-re-derived in brain/test_frontier.py.
 
   ASSIGNMENT (deterministic, seedless, no LLM):
     1. weighted vote of the cell's synapse neighbors that have decl organs —
@@ -62,7 +73,7 @@ import json
 import re
 import sys
 import time
-from collections import Counter, defaultdict
+from collections import Counter, defaultdict, deque
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -347,6 +358,43 @@ def main() -> int:
           f"{total} == homeless {len(homeless)}")
     assert total == len(homeless)
 
+    # ---- halo BFS: hop distance to the formalized interior -------------------
+    # Multi-source BFS from EVERY formalized cell (>=1 decl organ) over
+    # cell<->cell synapses. ALL kinds conduct (this measures reachability, not
+    # vote strength, so no 3x weighting); path: endpoints are supercells, not
+    # cells, and never conduct. d = hops from a homeless cell to the nearest
+    # formalized cell; unreachable cells are "disc". Deterministic: BFS layers
+    # are order-independent and the seed set is iterated sorted anyway.
+    dist: dict[str, int] = {cid: 0 for cid in decl_cells}
+    bfs_queue = deque(sorted(decl_cells))
+    while bfs_queue:
+        cur = bfs_queue.popleft()
+        for other, _kinds, _eff in nbrs.get(cur, []):
+            if other in cells and other not in dist:
+                dist[other] = dist[cur] + 1
+                bfs_queue.append(other)
+
+    def shell_of(cid: str) -> str:
+        d = dist.get(cid)
+        return "disc" if d is None else str(d)
+
+    shell_counts = Counter(shell_of(c) for c in homeless)
+    # partition set-math: every homeless cell lands in exactly one shell
+    assert sum(shell_counts.values()) == len(homeless), \
+        "halo shells lost or invented cells"
+    shell_keys = sorted((k for k in shell_counts if k != "disc"), key=int) \
+        + (["disc"] if "disc" in shell_counts else [])
+    deep = [k for k in shell_keys if k != "disc" and int(k) > 3]
+    print("halo BFS (all-kinds cell<->cell synapses, path: endpoints excluded): "
+          + ", ".join(f"d={k}: {shell_counts[k]}" if k != "disc"
+                      else f"disconnected: {shell_counts[k]}"
+                      for k in shell_keys)
+          + f"; sums to {sum(shell_counts.values())} == homeless")
+    if deep:
+        print(f"  ! {sum(shell_counts[k] for k in deep)} cells sit DEEPER than "
+              f"d=3 (shells {deep}) — the halo view's 3-ring layout will need "
+              f"a look")
+
     # ---- halo join: mean_stateability ----------------------------------------
     halo_frac: dict[str, float] = {}
     if HALO_IN.exists():
@@ -382,11 +430,23 @@ def main() -> int:
         fracs = [halo_frac[c] for c in cell_ids if c in halo_frac]
         top = sorted(((cell_score(c), c) for c in cell_ids),
                      key=lambda sc: (-sc[0], sc[1]))[:TOP_CAP]
+        # shells: this area's slice of the halo BFS — a PARTITION of cell_ids
+        # (asserted), keyed "1"/"2"/…/"disc", empty keys omitted, ids sorted
+        # (cell_ids is sorted, so per-shell append order stays sorted).
+        by_shell: dict[str, list[str]] = defaultdict(list)
+        for c in cell_ids:
+            by_shell[shell_of(c)].append(c)
+        assert sum(len(v) for v in by_shell.values()) == len(cell_ids) \
+            and set().union(*by_shell.values()) == set(cell_ids), \
+            f"shells do not partition {area}"
+        area_shell_keys = sorted((k for k in by_shell if k != "disc"), key=int) \
+            + (["disc"] if "disc" in by_shell else [])
         rows.append({
             "id": f"frontier:{area}",
             "label": area_label(area, info["lib"], info["top"]),
             "cells": cell_ids,
             "n": len(cell_ids),
+            "shells": {k: by_shell[k] for k in area_shell_keys},
             "near": info["near"],
             "mean_stateability":
                 round(sum(fracs) / len(fracs), 4) if fracs else None,
@@ -398,11 +458,15 @@ def main() -> int:
     n_state = sum(1 for r in rows if r["mean_stateability"] is not None)
     print(f"\nareas: {len(rows)} ({n_state} with mean_stateability, "
           f"{len(rows) - n_state} null — no halo-joined member)")
-    print(f"{'area':<44} {'n':>5}  {'near':<36} state")
+    print(f"{'area':<44} {'n':>5}  {'near':<36} state  "
+          f"shells d1/d2/d3/disc")
     for r in rows:
         state = ("-" if r["mean_stateability"] is None
                  else f"{r['mean_stateability']:.3f}")
-        print(f"{r['id']:<44} {r['n']:>5}  {r['near'] or '-':<36} {state}")
+        sh = "/".join(str(len(r["shells"].get(k, []))) for k in ("1", "2", "3",
+                                                                "disc"))
+        print(f"{r['id']:<44} {r['n']:>5}  {r['near'] or '-':<36} {state:<6} "
+              f"{sh}")
 
     # ---- write (atomic) ------------------------------------------------------
     meta = {"_meta": {
@@ -413,6 +477,11 @@ def main() -> int:
         "counts": {"homeless": len(homeless),
                    "assigned": len(homeless) - len(unsorted),
                    "unsorted": len(unsorted)},
+        "halo": {"shell_counts": {k: shell_counts[k] for k in shell_keys},
+                 "method": "multi-source BFS from all decl-organ cells over "
+                           "cell<->cell synapses (all kinds conduct; path: "
+                           "endpoints excluded); d = hops to the nearest "
+                           "formalized cell, disc = unreachable"},
         "phases": {"vote": n_by_tier["vote"], "msc": n_by_tier["msc"],
                    "relates": n_by_tier["relates"],
                    "unsorted": n_by_tier["unsorted"]},

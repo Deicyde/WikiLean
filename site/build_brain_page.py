@@ -19,6 +19,11 @@ bonds between two cells collapse to ONE **synapse** carrying every trace.
                synapses), drawn at its BUILD-TIME `xy`. The client runs no
                physics at all — SCHEMA "Layout is BUILD-TIME" — which is what
                killed the freeze and the ring-around-a-clump artefact.
+  · Halo     — the Frontier's second face (#__halo__): the same homeless cells
+               on concentric shells by BFS hop distance to the nearest
+               formalized cell (frontier rows' `shells`), a deterministic
+               client-computed polar layout — no simulation. Fail-soft: a build
+               whose frontier rows ship no shells renders the areas view only.
   · Card     — the selected cell's organs grouped by kind, each with its bond,
                its provenance (a merged @[wikidata] tag never reads like an
                AI-queued candidate — C7) and its embedded payload: Lean code,
@@ -241,6 +246,8 @@ section.kind.community h3 { border-bottom-color:#c9b98a; }
   color:#9aa3b2; font-size:.78rem; cursor:pointer; font-family:inherit; }
 .fchip:hover { border-color:#38bdf8; color:#e6e4de; }
 .fchip.on { background:#173753; border-color:#38bdf8; color:#cdeafe; }
+/* the Frontier's areas|halo view toggle — a canvas overlay, shown only there */
+#viewtoggle { position:absolute; top:10px; right:12px; display:none; gap:6px; z-index:5; }
 .fgrouplabel { color:#6b7488; font-size:.7rem; margin:0 2px 0 8px; white-space:nowrap;
   border-left:1px solid #2a3244; padding-left:9px; cursor:help; }
 .fgrouplabel:first-of-type { border-left:none; padding-left:0; }
@@ -346,6 +353,10 @@ body.embed .wl-header, body.embed #crumbbar { display:none; }   /* flex column f
 <div id="crumbbar"></div>
 <div class="main">
   <div id="stage"><svg id="svg"></svg>
+    <div id="viewtoggle">
+      <button id="vt-areas" class="fchip" title="the frontier partition as dive-able area bubbles">areas</button>
+      <button id="vt-halo" class="fchip" title="every homeless cell on concentric shells by its synapse distance to the nearest formalized cell">halo</button>
+    </div>
     <div class="hint">scroll to zoom · drag to pan · click an area to dive in ·
       background to go up · click any synapse for its evidence ·
       dots = <b>cells</b> (atoms of organs) ·
@@ -393,6 +404,12 @@ const FRONTIER_ID = "__frontier__";   // pseudo-focus: the Frontier group — th
                                       // cells (brain/build_frontier.py), which
                                       // replaced the old undifferentiated
                                       // "no formal home" blob
+const HALO_ID = "__halo__";           // pseudo-focus: the Frontier's HALO view —
+                                      // the same homeless cells on concentric
+                                      // shells by hop distance to the nearest
+                                      // formalized cell (frontier rows' `shells`).
+                                      // #__halo__ and #__frontier__ both resolve;
+                                      // a shells-less build falls back to areas.
 const isFrontierId = id => typeof id === "string" && id.startsWith("frontier:");
 let manifest = null, labels = null, labelById = null, tree = null, aliases = null;
 const shardCache = new Map(), entryCache = new Map();
@@ -482,6 +499,7 @@ async function ensureTree() {
   ]);
   if (!j) { tree = {roots: [], frontier: [], frontierFa: 0, frontierN: 0,
                     cellArea: new Map(), sc: {}, unplaced: [], unplacedFa: 0,
+                    halo: false, haloDrift: 0, cellHops: new Map(),
                     count: () => 0}; return tree; }
   const sc = j.supercells || {};
   const memo = new Map();
@@ -519,8 +537,38 @@ async function ensureTree() {
     frontierN += (sc[p].cells || []).length;
     for (const c of sc[p].cells || []) cellArea.set(c, p);
   }
+  // the HALO layer: frontier rows may carry `shells` — a partition of that
+  // area's cells by BFS hop distance to the nearest formalized cell (keys
+  // "1"/"2"/"3"/"disc"). cellHops powers the halo view, the cell cards'
+  // "N hops from Mathlib" line and the d-ascending dive sort. The partition is
+  // RE-CHECKED here on the shipped bytes: any drift between an area's shells
+  // and its cells is counted and logged, never silent.
+  let halo = false, haloDrift = 0;
+  const cellHops = new Map();   // homeless cell -> 1 | 2 | 3 | "disc"
+  for (const p of frontier) {
+    const sh = sc[p].shells;
+    if (!sh) continue;
+    halo = true;
+    const own = new Set(sc[p].cells || []);
+    const local = new Set();
+    for (const [k, arr] of Object.entries(sh))
+      for (const c of arr || []) {
+        cellHops.set(c, k === "disc" ? "disc" : Number(k));
+        local.add(c);
+      }
+    let covered = 0;
+    for (const c of own) if (local.has(c)) covered++;
+    haloDrift += (own.size - covered) + (local.size - covered);
+  }
+  if (haloDrift)
+    console.warn(`[brain halo] shells drift: ${haloDrift} cell(s) where an area's shells and its cells disagree`);
+  if (halo) {
+    const noShells = frontier.filter(p => !sc[p].shells);
+    if (noShells.length)
+      console.warn(`[brain halo] ${noShells.length} frontier area(s) ship no shells: ${noShells.join(", ")}`);
+  }
   tree = {roots, frontier, frontierFa, frontierN, cellArea, sc,
-          unplaced, unplacedFa, count};
+          unplaced, unplacedFa, halo, haloDrift, cellHops, count};
   return tree;
 }
 async function ensureAliases() {
@@ -537,6 +585,9 @@ async function resolveId(id) {
   if (!id) return null;
   if (id === ROOTS_ID || id === UNPLACED_ID || id === FRONTIER_ID || isCellId(id)) return id;
   await ensureTree();
+  // #__halo__ resolves like #__frontier__; a build with no shells falls back to
+  // the areas view (fail-soft — exactly today's UI)
+  if (id === HALO_ID) return tree.halo ? HALO_ID : FRONTIER_ID;
   if (isFrontierId(id)) return tree.sc[id] ? id : null;
   if (id.startsWith(STRAYS_PREFIX))
     return tree.sc[id.slice(STRAYS_PREFIX.length)] ? id : null;
@@ -660,6 +711,21 @@ function frontierItem(p) {
           n: (sc.cells || []).length, f: 0, fa: sc.fa || 0,
           s: sc.stateability != null ? sc.stateability : null};
 }
+// an area's cells for a DIVE, nearest-to-Mathlib first: (halo hop d ascending,
+// then the row's own order). The sort is STABLE, so a build without shells — or
+// any cell the shells miss — keeps exactly today's order.
+function frontierHopRank(cid) {
+  // disc must rank after ANY numeric hop count (a future d=4+ build would
+  // otherwise collide with it); unknown ranks between known hops and disc
+  const h = tree.cellHops && tree.cellHops.get(cid);
+  return h === undefined ? 1e8 : h === "disc" ? 1e9 : h;
+}
+function frontierCells(p) {
+  const ids = ((tree.sc || {})[p] || {}).cells || [];
+  if (!tree.halo) return ids;
+  return ids.map((c, i) => [frontierHopRank(c), i, c])
+    .sort((a, b) => a[0] - b[0] || a[1] - b[1]).map(t => t[2]);
+}
 function cellItem(cid) {
   // a synapse endpoint may legitimately be a SUPERCELL: a field concept's bonds
   // hang off the module that holds it (SCHEMA rule 5), so it reads as its folder
@@ -698,8 +764,9 @@ async function focusItems(id) {
                   n: tree.unplaced.length, f: 0, fa: tree.unplacedFa});
     return items;
   }
-  // an area's cells dive exactly like a supercell's: flat dots, cellItem each
-  if (isFrontierId(id)) return ((tree.sc[id] || {}).cells || []).map(cellItem);
+  // an area's cells dive exactly like a supercell's: flat dots, cellItem each —
+  // sorted nearest-to-Mathlib first (halo hop d asc; stable without shells)
+  if (isFrontierId(id)) return frontierCells(id).map(cellItem);
   if (id === UNPLACED_ID) return tree.unplaced.map(cellItem);
   // diving into a strays bubble shows EVERY cell filed at its level as dots —
   // including any a facet filter kept out of the collapse (the filter still dims)
@@ -793,7 +860,10 @@ function drawNodes() {
     + (l.data.type === "folder" ? ` — ${(l.data.n || 0).toLocaleString()} cells`
         + (l.data.s != null ? ` · mean stateability ${l.data.s.toFixed(2)}` : "")
       : l.data.type === "strays" ? " — click to open them as dots, with the story of why they sit here"
-      : ((l.data.f || 0) & 1 ? " — carries a hand-written @[wikidata] tag" : "")));
+      : (((l.data.f || 0) & 1 ? " — carries a hand-written @[wikidata] tag" : "")
+         + (l.data.hop === undefined ? ""     // the halo view's dots wear their hop
+           : l.data.hop === "disc" ? " — disconnected from Mathlib"
+           : ` — ${l.data.hop} hop${l.data.hop === 1 ? "" : "s"} from Mathlib`))));
 }
 
 // Cell labels in the level views get the SAME treatment the explorer's do:
@@ -973,6 +1043,9 @@ function synVisible(e, kinds, provs) {
 let edgeStore = [];   // [{a, b, w, kinds, traces, tt}] for the level/ego views
 
 function renderEdges() {
+  // the halo view's shell rings + core disc live in gEdges — never wipe them
+  // (its dots carry no level-view synapse web to draw anyway)
+  if (layout && layout.halo) return;
   gEdges.selectAll("*").remove();
   if (!layout || layout.explorer) return;
   const kinds = activeKinds(), provs = activeProv();
@@ -1077,6 +1150,10 @@ async function renderFocus(anim) {
   resetZoom();
   await ensureTree();
   if (seq !== renderSeq) return;
+  if (focusId === HALO_ID) {
+    if (tree.halo) return renderHalo(seq, anim);
+    focusId = FRONTIER_ID;   // fail-soft: this build's frontier rows ship no shells
+  }
   if (isCellId(focusId)) {
     const fe = await getEntry(focusId);
     if (seq !== renderSeq) return;
@@ -1174,6 +1251,209 @@ async function renderCellEgo(seq, entry, anim) {
   updateFilterStat(null);
   if (anim) fadeIn();
   renderPanel(id);
+}
+// ---- halo view: the frontier by hop distance to Mathlib ---------------------
+// A deterministic, client-computed polar layout — pure arithmetic over the
+// frontier rows' `shells` (each a PARTITION of that area's cells by BFS hop
+// distance to the nearest formalized cell) and the area sizes. No simulation,
+// no RNG: the same build renders the same halo every visit. The central disc is
+// the formalized interior; shells sit at d = 1, 2, 3; the DISCONNECTED cells
+// ride a dashed, dimmer outermost ring — visually apart, because "far" and
+// "unreachable" are different facts. Dots go through the same cellItem pathway
+// as an area dive (same tint, same click-through to the ego view), grouped into
+// angular sectors by area — sector order = area size desc, stable.
+const HALO_SHELL_KEYS = ["1", "2", "3", "disc"];
+const HALO_FRAC = {"1": 0.42, "2": 0.62, "3": 0.76, "disc": 0.92};
+const HALO_RING_LABEL = {"1": "1 hop", "2": "2 hops", "3": "3 hops", "disc": "disconnected"};
+const HALO_RIM_LABELS = 12;   // the largest sectors get rim labels
+function updateHaloToggle() {
+  const el = $("#viewtoggle");
+  if (!el) return;
+  const show = !explorerOn && tree && tree.halo &&
+    (focusId === FRONTIER_ID || focusId === HALO_ID);
+  el.style.display = show ? "flex" : "none";
+  const a = $("#vt-areas"), h = $("#vt-halo");
+  if (a) a.classList.toggle("on", focusId === FRONTIER_ID);
+  if (h) h.classList.toggle("on", focusId === HALO_ID);
+}
+function renderHalo(seq, anim) {
+  // ---- data pass FIRST (geometry-free): sectors, shell counts, facet filter --
+  // sectors: tree.frontier is already (size desc, id) — a stable order
+  const perArea = [];
+  let totalCells = 0;
+  // shell keys come from the DATA (numeric asc, disc last) so a future build
+  // with d>=4 renders its own ring instead of silently dropping those dots;
+  // HALO_SHELL_KEYS is only the fallback ordering baseline.
+  const keySet = new Set();
+  for (const p of tree.frontier)
+    Object.keys((tree.sc[p] || {}).shells || {}).forEach(k => keySet.add(k));
+  const haloKeys = [...keySet].sort((a, b) =>
+    (a === "disc") - (b === "disc") || Number(a) - Number(b));
+  if (!haloKeys.length) haloKeys.push(...HALO_SHELL_KEYS);
+  const cnt = Object.fromEntries(haloKeys.map(k => [k, 0]));
+  for (const p of tree.frontier) {
+    const sh = (tree.sc[p] || {}).shells;
+    if (!sh) continue;   // a shells-less area is COUNTED below, never silent
+    let n = 0;
+    for (const k of haloKeys) { const m = (sh[k] || []).length; n += m; cnt[k] += m; }
+    if (n) perArea.push({p, sh, n});
+    totalCells += n;
+  }
+  const uncovered = tree.frontierN - totalCells;   // shells-less areas' cells + drift
+  const placed = [];   // [{it, A, k, idx}] — items now, coordinates after measuring
+  for (const A of perArea)
+    for (const k of haloKeys)
+      (A.sh[k] || []).forEach((cid, idx) => {
+        const it = cellItem(cid);
+        it.hop = k === "disc" ? "disc" : Number(k);   // hover + card plumbing
+        placed.push({it, A, k, idx});
+      });
+  const fv = applyFacetFilter(placed.map(e => e.it));
+  // ---- chrome pass: write EVERY toolbar/crumb line, THEN measure the stage --
+  // The long status line and the filter stat can re-wrap the flex toolbar, and
+  // the crumb bar grows from empty at boot — each changes the stage height with
+  // NO window `resize` event (and ResizeObserver is undeliverable in embedded
+  // panes, measured). Solving the radial layout before those writes left the
+  // halo drawn for a stage 16px taller than the one on screen, interleaving the
+  // d=1/d=2 bands. Write first; the clientWidth/Height reads below then force
+  // (and measure) the settled layout.
+  updateFilterStat(fv);
+  renderCrumb();   // the halo branch writes synchronously (no await on its path)
+  statusEl.textContent = `${totalCells.toLocaleString()} cells · halo view · ` +
+    haloKeys.map(k => `${(cnt[k] || 0).toLocaleString()} ${k === "disc"
+      ? "disconnected" : `at ${k} hop${k === "1" ? "" : "s"}`}`).join(" · ") +
+    (uncovered > 0 ? ` · ${uncovered} cells lack shell data (drift — see console)` : "");
+  if (uncovered > 0)
+    console.warn(`[brain halo] ${uncovered} frontier cell(s) missing from shells — ` +
+      `the halo draws only what this build's shells cover`);
+  const stat = $("#structstat");
+  if (stat) stat.textContent =
+    "deterministic polar layout — no simulation; dashed ring = no path to formal code";
+  // ---- geometry pass: solve the polar layout for the settled stage ----------
+  const W = stageEl.clientWidth || 800, H = stageEl.clientHeight || 600;
+  const cx = W / 2, cy = H / 2;
+  const maxR = Math.min(W, H) / 2 - 36;   // rim-label margin: nothing clips the stage
+  const coreR = Math.max(26, maxR * 0.17);
+  const ringR = {};
+  haloKeys.forEach((k, i) => {
+    // known keys keep their designed radii; unknown (d>=4) keys interpolate
+    // evenly between the last known numeric ring and the disc ring
+    ringR[k] = maxR * (HALO_FRAC[k] ?? (0.76 + 0.16 * ((i + 1) / haloKeys.length)));
+  });
+  // a thin top wedge stays clear of dots so the ring labels sit on empty sky
+  const TOP_GUTTER = 0.14;
+  const start = -Math.PI / 2 + TOP_GUTTER / 2;
+  const avail = 2 * Math.PI - TOP_GUTTER;
+  const SMOOTH = 2;   // a 1-cell area still gets a visible wedge
+  const wSum = perArea.reduce((s, A) => s + A.n + SMOOTH, 0) || 1;
+  let a0 = start;
+  for (const A of perArea) { A.a0 = a0; A.span = avail * (A.n + SMOOTH) / wSum; a0 += A.span; }
+  // dot geometry adapts to the viewport; rows stack around each ring, and the
+  // row gap shrinks so a band NEVER crosses into the neighbouring shell
+  const ARC_STEP = Math.max(5.5, Math.min(8, maxR / 42));
+  const DOT = maxR < 220 ? 2.2 : 2.6;
+  const bandHalf = k => {
+    const i = haloKeys.indexOf(k);
+    const inner = i === 0 ? coreR : ringR[haloKeys[i - 1]];
+    const outer = i === haloKeys.length - 1 ? maxR : ringR[haloKeys[i + 1]];
+    // true geometric half-band, no floor — on tiny stages a floored excursion
+    // walks dots into the neighbouring shell / the core disc
+    return Math.max(0, Math.min(ringR[k] - inner, outer - ringR[k]) / 2 - 1);
+  };
+  const rowGeom = new Map();   // "<area>|<shell>" -> {perRow, rows, gap}
+  for (const A of perArea)
+    for (const k of haloKeys) {
+      const n = (A.sh[k] || []).length;
+      if (!n) continue;
+      const perRow = Math.max(1, Math.floor((A.span * ringR[k]) / ARC_STEP));
+      const rows = Math.ceil(n / perRow);
+      rowGeom.set(A.p + "|" + k, {perRow, rows,
+        gap: rows > 1 ? Math.min(7, (2 * bandHalf(k)) / (rows - 1)) : 0});
+    }
+  const leaves = placed.map(({it, A, k, idx}) => {
+    const g = rowGeom.get(A.p + "|" + k);
+    const n = (A.sh[k] || []).length;
+    const row = Math.floor(idx / g.perRow);
+    const inRow = row === g.rows - 1 ? n - row * g.perRow : g.perRow;
+    const ang = A.a0 + (((idx % g.perRow) + 0.5) / inRow) * A.span;
+    const rr = ringR[k] + (row - (g.rows - 1) / 2) * g.gap;
+    return {data: it, x: cx + rr * Math.cos(ang), y: cy + rr * Math.sin(ang), r: DOT};
+  });
+  // haloW/H: the stage this layout was solved FOR — the deferred self-check
+  // below (and the stage ResizeObserver, where it delivers) re-render on drift
+  layout = {items: new Map(leaves.map(l => [l.data.id, l])), leaves, halo: true,
+            haloW: W, haloH: H};
+  edgeStore = [];
+  gEdges.selectAll("*").remove();
+  gOverlay.selectAll("*").remove();
+  gBubbles.selectAll("circle.preview").remove();
+  gLabels.selectAll("*").remove();
+  // shell rings + the core disc render UNDER the dots (gEdges is the bottom
+  // layer; renderEdges() early-returns in halo view so nothing wipes them)
+  for (const k of haloKeys) {
+    const disc = k === "disc";
+    const ring = gEdges.append("circle")
+      .attr("cx", cx).attr("cy", cy).attr("r", ringR[k]).attr("fill", "none")
+      .attr("stroke", disc ? "#57606a" : "#33405c")
+      .attr("stroke-opacity", disc ? 0.55 : 0.85)
+      .attr("stroke-width", disc ? 1 : 1.2);
+    if (disc) ring.attr("stroke-dasharray", "5 5");
+    // a fat transparent twin makes the thin ring hoverable; its title says what
+    // the ring MEANS (the disconnected ring especially needs the explanation)
+    gEdges.append("circle")
+      .attr("cx", cx).attr("cy", cy).attr("r", ringR[k]).attr("fill", "none")
+      .attr("stroke", "transparent").attr("stroke-width", 12)
+      .append("title").text(disc
+        ? `disconnected (${cnt.disc.toLocaleString()} cells) — no synapse path from these cells reaches any formalized cell`
+        : `${HALO_RING_LABEL[k]} from Mathlib (${cnt[k].toLocaleString()} cells) — shortest synapse path to a formalized cell`);
+  }
+  const core = gEdges.append("g").style("cursor", "pointer")
+    .on("click", ev => { ev.stopPropagation(); focusId = ROOTS_ID; selectedId = null;
+      setHash(""); renderFocus(true); renderPanel(ROOTS_ID); });
+  core.append("circle").attr("cx", cx).attr("cy", cy).attr("r", coreR)
+    .attr("fill", CELL_FORMAL).attr("fill-opacity", 0.3)
+    .attr("stroke", CELL_FORMAL).attr("stroke-opacity", 0.9).attr("stroke-width", 1.5);
+  core.append("title").text(
+    "the formalized interior — every cell with a Lean declaration; click to open the library roots");
+  drawNodes();
+  // core label + ring labels + sector rim labels — inked with a dark outline so
+  // they stay readable wherever they land over dots
+  const inked = t => t.attr("stroke", "#0b0e14").attr("stroke-width", 3)
+    .attr("paint-order", "stroke").attr("stroke-linejoin", "round");
+  inked(gLabels.append("text").attr("class", "blabel")
+    .attr("x", cx).attr("y", cy - 3).attr("font-size", Math.max(12, coreR * 0.3))
+    .text("Mathlib"));
+  inked(gLabels.append("text").attr("class", "bcount")
+    .attr("x", cx).attr("y", cy + Math.max(11, coreR * 0.26))
+    .attr("font-size", Math.max(9, coreR * 0.2)).text("+ libraries"));
+  for (const k of haloKeys)
+    inked(gLabels.append("text").attr("class", "bcount")
+      .attr("x", cx).attr("y", cy - ringR[k] - 5).attr("font-size", 9.5)
+      .text(`${HALO_RING_LABEL[k] || `${k} hops`} · ${(cnt[k] || 0).toLocaleString()}`));
+  perArea.slice(0, HALO_RIM_LABELS).forEach(A => {
+    const mid = A.a0 + A.span / 2;
+    const t = gLabels.append("text").attr("class", "blabel rimlab")
+      .attr("x", cx + (maxR + 12) * Math.cos(mid))
+      .attr("y", cy + (maxR + 12) * Math.sin(mid) + 3)
+      .attr("font-size", 10)
+      .style("text-anchor", Math.cos(mid) > 0.25 ? "start"
+        : Math.cos(mid) < -0.25 ? "end" : "middle")
+      .text(frontierName(A.p));
+    inked(t);
+  });
+  drawSelRing();
+  webState = {shown: 0, cells: totalCells, capped: false};
+  if (anim) fadeIn();
+  // Safety net for any OTHER late reflow (scrollbars, panel content, chrome):
+  // if the stage the layout was solved for is no longer the stage on screen,
+  // re-solve once against the settled one. Converges — the second pass writes
+  // identical chrome, so the stage cannot move again.
+  setTimeout(() => {
+    if (!layout || !layout.halo || focusId !== HALO_ID) return;
+    if (Math.abs(stageEl.clientWidth - layout.haloW) < 2 &&
+        Math.abs(stageEl.clientHeight - layout.haloH) < 2) return;
+    renderFocus(false);
+  }, 120);
 }
 // ---- logical communities ---------------------------------------------------
 // Greedy modularity merging over the level's `depends` synapses. Makes arXiv
@@ -1364,7 +1644,7 @@ async function zoomOut() {
     await renderFocus(true);
     return;
   }
-  const parent = focusId === FRONTIER_ID ? ROOTS_ID
+  const parent = focusId === FRONTIER_ID || focusId === HALO_ID ? ROOTS_ID
     : isFrontierId(focusId) ? FRONTIER_ID
     : focusId === UNPLACED_ID ? (tree.frontier.length ? FRONTIER_ID : ROOTS_ID)
     : focusId.startsWith(STRAYS_PREFIX) ? focusId.slice(STRAYS_PREFIX.length)
@@ -1419,8 +1699,12 @@ function pathChain(p) {
   return out;
 }
 async function renderCrumb() {
+  updateHaloToggle();   // every crumb-bearing view settles the areas|halo toggle
   let html = `<a data-nav="${ROOTS_ID}">all libraries</a>`;
-  if (focusId === FRONTIER_ID) {
+  if (focusId === HALO_ID) {
+    html += ` <span class="sep">/</span> <a data-nav="${FRONTIER_ID}">Frontier</a>` +
+      ` <span class="sep">/</span> <b>halo</b>`;
+  } else if (focusId === FRONTIER_ID) {
     html += ` <span class="sep">/</span> <b>Frontier</b>`;
   } else if (isFrontierId(focusId)) {
     html += ` <span class="sep">/</span> <a data-nav="${FRONTIER_ID}">Frontier</a>` +
@@ -2043,6 +2327,13 @@ async function renderCellPanel(id, e) {
     nOrg === 1 ? "" : "s"} · ${nSyn.toLocaleString()} synapse${nSyn === 1 ? "" : "s"}${
     (c.supercells || []).length > 1
       ? ` · spans ${c.supercells.length} modules — it renders inside each` : ""}</div>`;
+  // a frontier cell wears its halo distance (shells → cellHops, the same
+  // plumbing cellArea rides): how many synapse hops from formal code it sits
+  const hop = tree && tree.cellHops ? tree.cellHops.get(c.id) : undefined;
+  if (hop !== undefined)
+    html += `<div class="sub" title="shortest synapse path (any bond kind) to a cell holding a Lean declaration — the frontier halo BFS">${
+      hop === "disc" ? "disconnected from Mathlib — no synapse path reaches formal code"
+        : `${hop} hop${hop === 1 ? "" : "s"} from Mathlib`}</div>`;
 
   // organs, grouped by kind: the informal identity, the formal identity, the
   // article, the outside world, the literature — in that order
@@ -2366,6 +2657,7 @@ async function renderPanel(id) {
   if (id === UNPLACED_ID) return unplacedPanel();
   // frontier ids are TREE rows, not shard entries — they must never reach getEntry
   if (id === FRONTIER_ID) return frontierPanel();
+  if (id === HALO_ID) return haloPanel();
   if (isFrontierId(id)) return frontierAreaPanel(id);
   if (id.startsWith(STRAYS_PREFIX)) return straysPanel(id.slice(STRAYS_PREFIX.length));
   if (isPathId(id)) return renderSupercellPanel(id);
@@ -2442,6 +2734,11 @@ async function frontierPanel() {
     html += `<span class="chip"><a data-nav="${esc(p)}">${esc(frontierName(p))}</a>
       <small>${((tree.sc[p] || {}).cells || []).length.toLocaleString()}</small></span>`;
   html += `</div></section>`;
+  if (tree.halo)
+    html += `<section class="kind"><h3>Halo</h3>
+      <p class="note">The same cells, ringed by <b>synapse distance to Mathlib</b> —
+      how many hops each sits from the nearest formalized cell.
+      <a data-nav="${HALO_ID}">Switch to the halo view</a>.</p></section>`;
   if (tree.unplaced.length)
     html += `<section class="kind"><h3>Unfiled <span class="cnt">(${
       tree.unplaced.length.toLocaleString()})</span></h3>
@@ -2458,7 +2755,7 @@ async function frontierAreaPanel(id) {
   const sc = tree.sc[id];
   if (lastPanelId !== id) return;
   if (!sc) { panelEl.innerHTML = `<p class="note">Unknown frontier area: ${esc(id)}</p>`; return; }
-  const cells = sc.cells || [];
+  const cells = frontierCells(id);   // nearest-to-Mathlib first (halo d asc, stable)
   const near = sc.near || null;
   const st = sc.stateability;
   let html = `<div class="crumb"><a data-nav="${ROOTS_ID}">all libraries</a> /
@@ -2484,6 +2781,17 @@ async function frontierAreaPanel(id) {
        grey→blue tint carries this number.</p>`
     : `<p class="note">not yet scored — none of this area's cells appear in the
        stateability halo.</p>`) + `</section>`;
+  if (tree.halo && sc.shells) {
+    const n = k => (sc.shells[k] || []).length;
+    html += `<section class="kind"><h3>Distance to Mathlib</h3><div class="chips">${
+      ["1", "2", "3"].filter(k => n(k)).map(k =>
+        `<span class="chip">${k} hop${k === "1" ? "" : "s"} <b>${n(k).toLocaleString()}</b></span>`).join("")}${
+      n("disc") ? `<span class="chip" title="no synapse path from these cells reaches any formalized cell">disconnected <b>${
+        n("disc").toLocaleString()}</b></span>` : ""}</div>
+      <p class="note">synapse hops to the nearest formalized cell (the halo BFS) — the
+      dive and the list below run nearest-to-Mathlib first.
+      <a data-nav="${HALO_ID}">See every area on the halo</a>.</p></section>`;
+  }
   if ((sc.top || []).length) {
     html += `<section class="kind"><h3>Top cells <span class="cnt">(${sc.top.length})</span></h3>
       <p class="note">the area's most-connected cells (total synapse weight; formal
@@ -2502,6 +2810,35 @@ async function frontierAreaPanel(id) {
     html += `</div></section>`;
   }
   panelEl.innerHTML = html;
+  wirePanel();
+}
+// ---- the halo view's reading panel ------------------------------------------
+async function haloPanel() {
+  await ensureTree();
+  if (lastPanelId !== HALO_ID) return;
+  const cnt = {1: 0, 2: 0, 3: 0, disc: 0};
+  for (const h of tree.cellHops.values()) cnt[h] = (cnt[h] || 0) + 1;
+  const total = cnt[1] + cnt[2] + cnt[3] + cnt.disc;
+  panelEl.innerHTML = `<div class="crumb"><a data-nav="${ROOTS_ID}">all libraries</a> /
+      <a data-nav="${FRONTIER_ID}">Frontier</a> / halo</div>
+    <h2>The Frontier — halo</h2>
+    <div class="sub">${total.toLocaleString()} cells on concentric shells ·
+      hop distance to the nearest formalized cell</div>
+    <p class="note">A multi-source BFS from <b>every cell with a Lean declaration</b>
+    over the cell↔cell synapses (all bond kinds conduct) gives each homeless cell a
+    hop distance <b>d</b> — how far its neighborhood sits from formal code. Shell
+    radius IS that distance: the innermost ring is one synapse from Mathlib. Dots
+    keep their frontier-area grouping as angular sectors and dive exactly like the
+    <a data-nav="${FRONTIER_ID}">areas view</a>'s.</p>
+    <section class="kind"><h3>Shells</h3><div class="chips">
+      <span class="chip">1 hop <b>${cnt[1].toLocaleString()}</b></span>
+      <span class="chip">2 hops <b>${cnt[2].toLocaleString()}</b></span>
+      <span class="chip">3 hops <b>${cnt[3].toLocaleString()}</b></span>
+      <span class="chip" title="no synapse path from these cells reaches any formalized cell">disconnected
+        <b>${cnt.disc.toLocaleString()}</b></span></div>
+    <p class="note">The dashed outer ring is <b>disconnected</b>: no synapse path from
+    those cells reaches formal code at all — the deepest frontier. The central disc is
+    Mathlib + the other formal libraries; click it to open them.</p></section>`;
   wirePanel();
 }
 async function straysPanel(parent) {
@@ -2899,6 +3236,7 @@ async function renderExplorer(anim) {
     return renderFocus(false);
   }
   resetZoom();
+  updateHaloToggle();   // the explorer sets no crumb via renderCrumb — hide it here
   selectedId = null;
   const nodes = j.nodes;
   const totalN = nodes.length;
@@ -3070,6 +3408,20 @@ $("#explorerbtn").addEventListener("click", () => {
   else renderFocus(true);
 });
 
+// the Frontier's areas|halo toggle (canvas overlay; its state IS the hash id —
+// #__frontier__ vs #__halo__, so both faces deep-link and the toggle just travels)
+function gotoFrontierView(id) {
+  if (focusId === id) return;
+  if (explorerOn) setExplorer(false);
+  focusId = id;
+  selectedId = null;
+  setHash(id);
+  renderPanel(id);
+  renderFocus(true);
+}
+$("#vt-areas").addEventListener("click", () => gotoFrontierView(FRONTIER_ID));
+$("#vt-halo").addEventListener("click", () => gotoFrontierView(HALO_ID));
+
 window.addEventListener("hashchange", async () => {
   const h = parseHash();
   filterMask = h.f;
@@ -3103,6 +3455,26 @@ window.addEventListener("resize", () => {
     renderFocus(false);
   }, 160);
 });
+// The HALO view additionally watches the STAGE ELEMENT itself: its radial
+// layout is keyed to min(W, H), and the stage can change height with NO window
+// resize at all — the toolbar re-wraps when webfonts land and the stage flexes
+// to fill. Measured at boot: the halo stayed drawn for a stage ~40px taller
+// than the one on screen, interleaving the d=1/d=2 bands by ~3px. Scoped to the
+// halo (the pannable level views keep the width-only guard above on purpose),
+// and gated on the geometry the layout was actually solved for.
+if (typeof ResizeObserver !== "undefined") {
+  let stageRT = 0;
+  new ResizeObserver(() => {
+    clearTimeout(stageRT);
+    stageRT = setTimeout(() => {
+      if (!layout || !layout.halo) return;
+      const w = stageEl.clientWidth, h = stageEl.clientHeight;
+      if (Math.abs(w - (layout.haloW || 0)) < 2 &&
+          Math.abs(h - (layout.haloH || 0)) < 2) return;
+      renderFocus(false);
+    }, 120);
+  }).observe(stageEl);
+}
 
 // ======================= community connections (Project 2) ==================
 // Live, user/API-submitted edges (docs/BRAIN-EDITS-ROADMAP.md). The overlay is

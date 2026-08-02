@@ -10,7 +10,8 @@ are checked against the shipped bytes, not against the builder's intent.
   S2  aliases.json is a FUNCTION over organ ids, and resolves the v2 entry points
   S3  a cell entry is SELF-CONTAINED — one fetch renders the whole card
   S4  explorer.json indices are in range, and its omissions are accounted for
-  S5  supercells.json is a consistent tree whose leaves are cells
+  S5  supercells.json is a consistent tree whose leaves are cells, and its
+      frontier rows carry frontier.jsonl's halo `shells` VERBATIM
   S6  no licensed snippet ships without its licence
   S7  the trace SIDECAR (traces/<key>.json) covers every supercell-involving
       synapse, its documented lookup resolves every pair, tt counts every trim,
@@ -258,6 +259,31 @@ def main() -> int:
                       for c in r["cells"][:3])]
     check("S5 a supercell holding a faceted cell has fa", not leaked,
           f"{len(leaked)} folders would dim wrongly, e.g. {leaked[:3]}")
+    # HALO CONTRACT: a frontier row's `shells` (the hop-distance partition the
+    # halo view renders) passes through from frontier.jsonl VERBATIM — any
+    # rewrite here would let the shard drift from the tested partition.
+    frontier_src = ROOT / "brain" / "data" / "frontier.jsonl"
+    if frontier_src.exists():
+        src_shells = {}
+        with frontier_src.open() as fh:
+            for line in fh:
+                if not line.strip():
+                    continue
+                row = json.loads(line)
+                if "_meta" in row and len(row) == 1:
+                    continue
+                if row.get("shells") is not None:
+                    src_shells[row["id"]] = row["shells"]
+        bad_shells = [fid for fid, sh in src_shells.items()
+                      if fid in tree and tree[fid].get("shells") != sh]
+        no_shells = [fid for fid in src_shells if fid not in tree]
+        check(f"S5 frontier rows' shells match frontier.jsonl VERBATIM "
+              f"({len(src_shells)} areas)", not bad_shells and not no_shells,
+              f"{len(bad_shells)} rewritten (e.g. {bad_shells[:3]}), "
+              f"{len(no_shells)} missing from the tree (e.g. {no_shells[:3]})")
+    else:
+        print("  SKIP S5 shells pass-through (brain/data/frontier.jsonl absent "
+              "— artifact-only run)")
 
     # ---- S6: licensing. Snippets exist only for permitting sources and must carry
     # their per-source licence wherever they are rendered.

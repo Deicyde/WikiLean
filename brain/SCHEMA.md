@@ -219,9 +219,12 @@ The frontier layer partitions them into named AREAS — `brain/data/frontier.jso
 
 ```json
 {"_meta": {"generated_at": "<the cell build's stamp>", "method": "...",
-           "counts": {"homeless": 1612, "assigned": 1303, "unsorted": 309}}}
+           "counts": {"homeless": 1612, "assigned": 1303, "unsorted": 309},
+           "halo": {"shell_counts": {"1": 855, "2": 454, "3": 13, "disc": 290},
+                    "method": "multi-source BFS …"}}}
 {"id": "frontier:Analysis", "label": "Analysis frontier", "cells": ["cell:Q…"],
- "n": 509, "near": "path:Mathlib/Analysis", "mean_stateability": 0.3856,
+ "n": 509, "shells": {"1": ["cell:Q…"], "2": ["cell:Q…"]},
+ "near": "path:Mathlib/Analysis", "mean_stateability": 0.3856,
  "top": [{"cell": "cell:Q903783", "label": "Naive set theory", "score": 3436}]}
 ```
 
@@ -252,9 +255,26 @@ items over the area's cells (null when none joins; halo.json is an OPTIONAL
 input — fail-soft). `top` = the area's ≤12 most-connected cells (score = total
 effective synapse weight, same ×3/×1 multipliers).
 
+**Halo shells** (HALO CONTRACT — the `/brain` halo view's data): a multi-source
+BFS from ALL formalized cells (≥1 decl organ) over cell↔cell synapses — every
+kind conducts equally (reachability, not vote strength), `path:` endpoints
+never do — assigns every homeless cell a hop distance d to the nearest
+formalized cell. Each area row's `shells` is a PARTITION of that area's
+`cells`, keyed `str(d)` plus `"disc"` for unreachable (empty shell keys
+omitted; member lists sorted). `_meta.halo` = `{shell_counts, method}`;
+`shell_counts` must equal the per-area sum AND a spec-re-derived BFS
+(2026-08-01 ground truth: d=1: 855, d=2: 454, d=3: 13, disc: 290 — pinned in
+`test_frontier.py` `HALO_PIN`; re-measure on legitimate data drift). The
+builder never hardcodes these counts — it computes them; only the test pins
+them.
+
 **Shard emission** (`build_cell_shards.py`): each area becomes a PARENTLESS
-`supercells.json` row `{label, frontier: true, cells, fa?, near?, stateability?,
-top?}` (`fa` emitted only when the member-OR is nonzero; `_meta` also carries
+`supercells.json` row `{label, frontier: true, cells, fa?, near?,
+stateability?, top?, shells?}` (field order as emitted; `shells` last) —
+`shells` passes through from frontier.jsonl VERBATIM
+(~30KB total; asserted in `test_cell_shards.py`), so the halo view renders the
+exact partition the frontier tests proved
+(`fa` emitted only when the member-OR is nonzero; `_meta` also carries
 `frontier_*` count keys and frontier.jsonl's `phases`/`inputs` diagnostics) —
 so it joins `roots`, renders beside the library roots, and drains the
 client's DERIVED "no formal home" bucket (unplaced = labels minus the union of
@@ -268,10 +288,13 @@ filter is never silent. Frontier ids live only in the tree: they never enter the
 cell shards, aliases.json or explorer.json, and `path:`/organ-id resolution is
 untouched.
 
-Acceptance: **F1–F8 in `brain/test_frontier.py`** — the partition + count
+Acceptance: **F1–F9 in `brain/test_frontier.py`** — the partition + count
 reconciliation, contract regex, a spec-re-derived vote on pinned + sampled
 cells, Unsorted share ceiling, byte-identical determinism, stateability
-recomputation, and the shard-side drain. The nightly runs
+recomputation, the shard-side drain, and the halo shells (per-area partition +
+per-cell distances vs a spec-re-derived BFS + the pinned global counts); the
+shard-side shells pass-through is asserted in `test_cell_shards.py` (S5). The
+nightly runs
 `build_frontier` between `test_cells` and `build_cell_shards`, and
 `test_frontier` after `test_cell_shards`; any RED aborts the publish.
 
