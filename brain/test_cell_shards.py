@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Acceptance for the v3 cell SHARDS — S1..S6.
+"""Acceptance for the v3 cell SHARDS — S1..S7.
 
 test_cells.py proves the atom layer (brain/data/*.jsonl). This proves the artifact
 the browser and the Worker actually read: site/assets/brain/cells/. They can drift
@@ -12,12 +12,21 @@ are checked against the shipped bytes, not against the builder's intent.
   S4  explorer.json indices are in range, and its omissions are accounted for
   S5  supercells.json is a consistent tree whose leaves are cells
   S6  no licensed snippet ships without its licence
+  S7  the trace SIDECAR (traces/<key>.json) covers every supercell-involving
+      synapse, its documented lookup resolves every pair, tt counts every trim,
+      prov indexes resolve, files fit the byte budget — and supercells.json
+      itself stays traceless
+
+Plus a determinism gate (when brain/data is present): rebuilding the shards is
+byte-identical for manifest.json + the sidecar.
 
 Run: python3 brain/test_cell_shards.py   (after brain/build_cell_shards.py)
 """
 from __future__ import annotations
 
+import hashlib
 import json
+import subprocess
 import sys
 from pathlib import Path
 
@@ -261,11 +270,173 @@ def main() -> int:
     check("S6 no snippet ships without its licence", not unlicensed,
           f"{len(unlicensed)} unlicensed, e.g. {unlicensed[:3]}")
 
+    # ---- S7: the trace SIDECAR. supercells.json ships its syn rows traceless
+    # (byte budget) and the drawer can only re-hydrate cell<->cell pairs from the
+    # partner cell's shard — so every supercell-involving synapse (cell<->path,
+    # path<->path) must have a lazily-fetchable entry in traces/<key>.json, or its
+    # evidence drawer is empty FOREVER. The _meta is manifest.traces; every check
+    # below re-derives the client's behaviour from that spec, not from the builder.
+    tmeta = manifest.get("traces") or {}
+    tfiles = tmeta.get("files") or {}
+    tscheme = tmeta.get("scheme") or {}
+    check("S7 manifest.traces declares caps + files + rows",
+          bool((tmeta.get("caps") or {}).get("traces_per_synapse"))
+          and "files" in tmeta and "rows" in tmeta,
+          "manifest.json carries no sidecar _meta under `traces`")
+    tdir = OUT / (tmeta.get("dir") or "traces")
+    buckets: dict[str, dict] = {}
+    missing_files = []
+    for key in tfiles:
+        fp = tdir / f"{key}.json"
+        if fp.exists():
+            buckets[key] = json.loads(fp.read_text())
+        else:
+            missing_files.append(key)
+    check("S7 every declared bucket file exists", not missing_files,
+          f"{len(missing_files)} missing, e.g. {missing_files[:3]}")
+    shipped_rows = sum(len(b) for b in buckets.values())
+    check("S7 shipped rows match _meta (total + per-file counts)",
+          shipped_rows == tmeta.get("rows")
+          and all(len(buckets.get(k, {})) == n for k, n in tfiles.items()),
+          f"shipped {shipped_rows}, _meta claims {tmeta.get('rows')}")
+    # completeness at the artifact level: the sidecar must cover EXACTLY the
+    # synapses the explorer declares as living on supercells.json — none of the
+    # 'extreme minority' can go missing between the two accountings
+    check("S7 sidecar rows == the explorer's declared supercell split",
+          tmeta.get("rows") == counts["supercell_edges_on_supercells_json"],
+          f"{tmeta.get('rows')} sidecar rows != "
+          f"{counts['supercell_edges_on_supercells_json']} supercell edges")
+    t_shadow = [k for k in tfiles for j in tfiles if j != k and k.startswith(j)]
+    check("S7 bucket keys are prefix-free", not t_shadow,
+          f"{len(t_shadow)} keys shadow another, e.g. {t_shadow[:3]}")
+
+    def trace_bucket_for(pair: str) -> str | None:
+        """The client's shardFor over manifest.traces, re-derived from the SPEC."""
+        pad = tscheme.get("pad", "_")
+
+        def key(length: int) -> str:
+            out = ""
+            for i in range(length):
+                c = pair[i].lower() if i < len(pair) else pad
+                out += c if ("a" <= c <= "z" or "0" <= c <= "9") else pad
+            return out
+
+        lo = tscheme.get("min_len", 2)
+        hi = tscheme.get("max_len", lo)
+        for ln in range(min(hi, max(len(pair), lo)), lo - 1, -1):
+            k = key(ln)
+            if k in tfiles:
+                return k
+        return None
+
+    # set math: every supercell-involving syn row shipped in supercells.json has a
+    # sidecar entry the client can DERIVE (min|max) and FETCH (longest prefix)
+    expected = set()
+    for path, row in tree.items():
+        for e in row.get("syn") or []:
+            a, b = (path, e["id"]) if path < e["id"] else (e["id"], path)
+            expected.add(f"{a}|{b}")
+    shipped_pairs = {p for b in buckets.values() for p in b}
+    # The client (JS) iterates UTF-16 code units while this test and the builder
+    # iterate codepoints — identical ONLY while the key prefix is BMP. Guard it
+    # so a future astral character in a pair key goes red here instead of
+    # silently 404ing every synapse in that bucket.
+    hi_len = tscheme.get("max_len", 19)
+    astral = [p for p in shipped_pairs
+              if any(ord(c) > 0xFFFF for c in p[:hi_len])]
+    check("S7 pair-key prefixes are BMP (JS/Python bucket parity)", not astral,
+          f"{len(astral)} pair keys carry astral chars in the first "
+          f"{hi_len} chars, e.g. {astral[:2]}")
+    absent = sorted(expected - shipped_pairs)
+    check(f"S7 every supercell syn row has a sidecar entry "
+          f"({len(expected)} pairs from supercells.json)", not absent,
+          f"{len(absent)} missing, e.g. {absent[:3]}")
+    misordered = [p for p in shipped_pairs
+                  if p.split("|", 1)[0] >= p.split("|", 1)[1]]
+    check("S7 every pair key is stored src<dst (min|max derives it)",
+          not misordered, f"{len(misordered)} misordered, e.g. {misordered[:3]}")
+    mis_bucket = [p for key, b in buckets.items() for p in b
+                  if trace_bucket_for(p) != key]
+    check("S7 the documented lookup lands every pair in its own bucket",
+          not mis_bucket,
+          f"{len(mis_bucket)} rows unreachable, e.g. {mis_bucket[:3]}")
+    t_budget = tscheme.get("max_bytes", 150_000)
+    t_oversize = {k: (tdir / f"{k}.json").stat().st_size for k in buckets}
+    t_oversize = {k: s for k, s in t_oversize.items() if s > t_budget}
+    check(f"S7 every bucket file fits the byte budget ({t_budget}B)",
+          not t_oversize,
+          f"{len(t_oversize)} over budget, e.g. {sorted(t_oversize.items())[:3]}")
+    t_cap = (tmeta.get("caps") or {}).get("traces_per_synapse") or 0
+    t_prov = tmeta.get("prov") or manifest.get("prov") or []
+    bad_shape, bad_tt, bad_cap, bad_prov = [], [], [], []
+    for key, b in buckets.items():
+        for pair, entry_row in b.items():
+            traces = entry_row.get("traces")
+            if not isinstance(traces, list) or "tt" not in entry_row:
+                bad_shape.append(pair)
+                continue
+            if entry_row["tt"] < len(traces):
+                bad_tt.append(pair)
+            if len(traces) > t_cap:
+                bad_cap.append(pair)
+            for t in traces:
+                if not (t.get("kind") and t.get("src") and t.get("dst")):
+                    bad_shape.append(pair)
+                pi = t.get("prov")
+                if pi is not None and not (isinstance(pi, int)
+                                           and 0 <= pi < len(t_prov)):
+                    bad_prov.append(pair)
+    check("S7 every entry is {tt, traces} with kind/src/dst per trace",
+          not bad_shape, f"{len(bad_shape)} malformed, e.g. {bad_shape[:3]}")
+    check("S7 tt >= shipped traces on every entry (trims counted, never silent)",
+          not bad_tt, f"{len(bad_tt)} undercount their tt, e.g. {bad_tt[:3]}")
+    check(f"S7 no entry exceeds the declared cap ({t_cap})", not bad_cap,
+          f"{len(bad_cap)} over cap, e.g. {bad_cap[:3]}")
+    check("S7 every trace prov index resolves against the drawer's prov table",
+          not bad_prov, f"{len(bad_prov)} out of range, e.g. {bad_prov[:3]}")
+    # the sidecar must not leak back: supercells.json itself does not grow
+    leaked_tr = [f"{p}->{e['id']}" for p, r in tree.items()
+                 for e in (r.get("syn") or []) if e.get("traces")]
+    check("S7 supercells.json stays traceless (the sidecar must not grow it)",
+          not leaked_tr, f"{len(leaked_tr)} syn rows carry traces, "
+          f"e.g. {leaked_tr[:3]}")
+
     # ---- search
     check("labels.json lets an organ label find its atom",
           any(r["id"] == "cell:Q18848" and "Vector space" in (r.get("aka") or [])
               for r in labels),
           "searching 'Vector space' would not surface the Module atom")
+
+    # ---- determinism: rebuild and compare bytes. A cached manifest + fresh
+    # buckets must always agree (the "Unknown cell" ghost-bug class), so the
+    # sidecar and its _meta must reproduce byte-identically from the same inputs.
+    # Scoped to manifest.json + traces/ — the sidecar's own contract — and gated
+    # on the atom layer being present (this test can also run artifact-only).
+    data_dir = ROOT / "brain" / "data"
+    if all((data_dir / f).exists() for f in
+           ("cells.jsonl", "synapses.jsonl", "nodes.jsonl", "edges.jsonl")):
+        def digest() -> dict[str, str]:
+            out = {"manifest.json":
+                   hashlib.sha256((OUT / "manifest.json").read_bytes()).hexdigest()}
+            for fp in sorted((OUT / "traces").glob("*.json")):
+                out[f"traces/{fp.name}"] = \
+                    hashlib.sha256(fp.read_bytes()).hexdigest()
+            return out
+        before = digest()
+        r = subprocess.run([sys.executable, str(HERE / "build_cell_shards.py")],
+                           capture_output=True, text=True)
+        if r.returncode != 0:
+            check("determinism: the rebuild succeeded", False,
+                  (r.stderr or r.stdout)[-300:])
+        else:
+            after = digest()
+            diff = sorted(k for k in before.keys() | after.keys()
+                          if before.get(k) != after.get(k))
+            check("determinism: rebuild is byte-identical "
+                  "(manifest.json + trace sidecar)", not diff,
+                  f"{len(diff)} files changed, e.g. {diff[:3]}")
+    else:
+        print("  SKIP determinism (brain/data inputs absent — artifact-only run)")
 
     print(f"\n{CHECKS - len(FAILURES)}/{CHECKS} checks passed")
     if FAILURES:
