@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Adds hypothesis ContinuousOn g (Ioi (exp a)) not present in the gold, which holds unconditionally",
+  "Adds hypothesis IntegrableOn g (Ici (exp a)) not present in the gold",
+  "Adds hypothesis IntegrableOn (fun x => g (exp x) * exp x) (Ici a) not present in the gold",
+  "Restricts g from a general Banach space E (NormedAddCommGroup, NormedSpace ℝ E) to g : ℝ → ℝ, losing generality of the gold statement",
+  "Uses scalar multiplication vs multiplication only incidentally matches since codomain is ℝ, but this is a consequence of the unjustified type restriction"
+ ],
+ "arm": "E",
+ "task_id": "fresh_052",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 15.4,
+ "judge_cost_usd": 0.064948,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "02f9c6156765b87979c7f9ef42ef5484b68be9e60b8be67165776be08621441d"
+}

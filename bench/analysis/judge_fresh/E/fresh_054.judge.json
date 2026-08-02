@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Replaces the bundled `IsSetSemiring C` hypothesis with an ad hoc `h_semiring` predicate that only captures the two-set difference-decomposition axiom (analogous to `diff_eq_sUnion'`), dropping the `empty_mem` (∅ ∈ C) and `inter_mem` (closure under intersection) components of `IsSetSemiring`. This is a strictly weaker/different premise, not an equivalent restatement, so the produced theorem is a generalization rather than the same proposition as the gold.",
+  "Final conclusion has an apparent variable bug: `⋃ j ∈ J, (i : Set α)` binds `j` but the body references `i`, which is not in scope there (the only `i` in scope is bound separately on the LHS by `⋃ i ∈ I`). As written this either fails to type-check or (if auto-bound as a fresh implicit) yields an incorrect conclusion unrelated to unioning over `J`."
+ ],
+ "arm": "E",
+ "task_id": "fresh_054",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 136.9,
+ "judge_cost_usd": 0.386161,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "0cb2ecfc7a630e7be959a7b019806c6668f57971f8a6c6771fe399d7fec404a5"
+}

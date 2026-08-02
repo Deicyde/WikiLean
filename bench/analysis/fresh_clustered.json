@@ -1,0 +1,1363 @@
+{
+ "generated_by": "bench/analysis/fresh_clustered.py",
+ "review_items": "REVIEW-2 \u00a71 (one coherent paired inference) + \u00a72 (cluster structure)",
+ "seed": 20260801,
+ "B": 10000,
+ "jaccard_threshold": 0.4,
+ "outcome_provenance": {
+  "success_metric": "produced \u2227 no-halluc \u2227 TYPECHECK (judge pending calibration)",
+  "per_task_outcomes": "/Users/jack/Desktop/LEAN/WikiLean/bench/analysis/bridge_summary_v2.json paired_matrix (post-repair; E fresh_069..099 = 2026-07-27 rerun)",
+  "cluster_labels": "/Users/jack/Desktop/LEAN/WikiLean/bench/data/fresh_tasks.jsonl added_in.commit / module",
+  "cross_checked_against": "/Users/jack/Desktop/LEAN/WikiLean/bench/analysis/part1_fresh100_v2.json"
+ },
+ "census": {
+  "n_tasks": 100,
+  "n_distinct_commits": 44,
+  "reviewer_claim_roughly_44_commits": {
+   "claim": "roughly 44",
+   "true_value": 44,
+   "verdict": "exactly correct"
+  },
+  "n_distinct_files_modules": 57,
+  "n_families": 59,
+  "n_multi_member_families": 24,
+  "n_singleton_families": 35,
+  "family_rule": "within one module: connected components under (shared leading name token) OR (name-token Jaccard >= 0.4); tokens = decl name split on '.'/'_', '_root_' dropped, primes stripped, lowercased",
+  "hierarchy": {
+   "module_nested_in_commit": true,
+   "family_nested_in_commit": true
+  },
+  "commit_size_hist": {
+   "1": 14,
+   "2": 20,
+   "3": 4,
+   "4": 3,
+   "5": 1,
+   "8": 1,
+   "9": 1
+  },
+  "module_size_hist": {
+   "1": 32,
+   "2": 19,
+   "3": 3,
+   "4": 1,
+   "8": 1,
+   "9": 1
+  },
+  "family_size_hist": {
+   "1": 35,
+   "2": 18,
+   "3": 3,
+   "4": 1,
+   "7": 1,
+   "9": 1
+  },
+  "largest_commits": [
+   {
+    "commit": "87a6eccfb8c6",
+    "n": 9
+   },
+   {
+    "commit": "49ed1b2de10c",
+    "n": 8
+   },
+   {
+    "commit": "613038575adb",
+    "n": 5
+   },
+   {
+    "commit": "5e1cacbae25b",
+    "n": 4
+   },
+   {
+    "commit": "3849b6a105ce",
+    "n": 4
+   }
+  ],
+  "multi_member_families": [
+   {
+    "family": "fresh_019",
+    "n": 9,
+    "module": "Mathlib.Analysis.SumIntegralComparisons",
+    "commit": "87a6eccfb8c6",
+    "members": [
+     {
+      "id": "fresh_019",
+      "decl": "AntitoneOn.abs_tsum_sub_sum_range_le_integral"
+     },
+     {
+      "id": "fresh_020",
+      "decl": "AntitoneOn.integrableOn_Ioi_of_summable_comp_add"
+     },
+     {
+      "id": "fresh_021",
+      "decl": "AntitoneOn.integral_le_tsum"
+     },
+     {
+      "id": "fresh_022",
+      "decl": "AntitoneOn.sum_Ico_le_integral"
+     },
+     {
+      "id": "fresh_023",
+      "decl": "AntitoneOn.sum_range_le_integral"
+     },
+     {
+      "id": "fresh_024",
+      "decl": "AntitoneOn.summable_of_integrableOn_Ioi"
+     },
+     {
+      "id": "fresh_025",
+      "decl": "AntitoneOn.summable_of_integrableOn_Ioi_zero"
+     },
+     {
+      "id": "fresh_026",
+      "decl": "AntitoneOn.tsum_add_one_le_integral"
+     },
+     {
+      "id": "fresh_027",
+      "decl": "AntitoneOn.tsum_le_integral"
+     }
+    ]
+   },
+   {
+    "family": "fresh_087",
+    "n": 7,
+    "module": "Mathlib.Topology.EMetricSpace.BoundedVariation",
+    "commit": "49ed1b2de10c",
+    "members": [
+     {
+      "id": "fresh_087",
+      "decl": "BoundedVariationOn.id_Icc"
+     },
+     {
+      "id": "fresh_089",
+      "decl": "eVariationOn._root_.BoundedVariationOn.of_finite"
+     },
+     {
+      "id": "fresh_090",
+      "decl": "eVariationOn.image_range_of_monotone"
+     },
+     {
+      "id": "fresh_091",
+      "decl": "eVariationOn.pair"
+     },
+     {
+      "id": "fresh_092",
+      "decl": "eVariationOn.union'"
+     },
+     {
+      "id": "fresh_093",
+      "decl": "eVariationOn_id"
+     },
+     {
+      "id": "fresh_094",
+      "decl": "eVariationOn_id_Icc"
+     }
+    ]
+   },
+   {
+    "family": "fresh_034",
+    "n": 4,
+    "module": "Mathlib.Geometry.Manifold.Immersion",
+    "commit": "5e1cacbae25b",
+    "members": [
+     {
+      "id": "fresh_034",
+      "decl": "Manifold.IsImmersion._root_.ContMDiff.iff_comp_isImmersion"
+     },
+     {
+      "id": "fresh_035",
+      "decl": "Manifold.IsImmersionAt._root_.ContMDiffAt.iff_comp_isImmersionAt"
+     },
+     {
+      "id": "fresh_036",
+      "decl": "Manifold.IsImmersionOfComplement._root_.ContMDiff.iff_comp_isImmersionOfComplement"
+     },
+     {
+      "id": "fresh_037",
+      "decl": "Manifold.IsImmersionOfComplement.contMDiff"
+     }
+    ]
+   },
+   {
+    "family": "fresh_005",
+    "n": 3,
+    "module": "Mathlib.Algebra.Order.Module.Defs",
+    "commit": "fa1dc79258f4",
+    "members": [
+     {
+      "id": "fresh_005",
+      "decl": "Antitone.const_smul"
+     },
+     {
+      "id": "fresh_006",
+      "decl": "Monotone.const_smul"
+     },
+     {
+      "id": "fresh_007",
+      "decl": "StrictMono.const_smul"
+     }
+    ]
+   },
+   {
+    "family": "fresh_010",
+    "n": 3,
+    "module": "Mathlib.Analysis.InnerProductSpace.NormDet",
+    "commit": "ae588ec23e9a",
+    "members": [
+     {
+      "id": "fresh_010",
+      "decl": "LinearMap._root_.LinearIsometry.normDet_eq_one"
+     },
+     {
+      "id": "fresh_011",
+      "decl": "LinearMap.normDet_eq_norm_det"
+     },
+     {
+      "id": "fresh_012",
+      "decl": "LinearMap.normDet_sq_eq_det_gram"
+     }
+    ]
+   },
+   {
+    "family": "fresh_057",
+    "n": 3,
+    "module": "Mathlib.MeasureTheory.VectorMeasure.Variation.SignedMeasure",
+    "commit": "3849b6a105ce",
+    "members": [
+     {
+      "id": "fresh_057",
+      "decl": "MeasureTheory.SignedMeasure.enorm_le_totalVariation"
+     },
+     {
+      "id": "fresh_058",
+      "decl": "MeasureTheory.SignedMeasure.norm_le_totalVariation"
+     },
+     {
+      "id": "fresh_059",
+      "decl": "MeasureTheory.SignedMeasure.totalVariation_eq_variation"
+     }
+    ]
+   },
+   {
+    "family": "fresh_001",
+    "n": 2,
+    "module": "Mathlib.Algebra.MonoidAlgebra.Defs",
+    "commit": "613038575adb",
+    "members": [
+     {
+      "id": "fresh_001",
+      "decl": "MonoidAlgebra.addMonoidHom_ext"
+     },
+     {
+      "id": "fresh_002",
+      "decl": "MonoidAlgebra.single_left_injective"
+     }
+    ]
+   },
+   {
+    "family": "fresh_015",
+    "n": 2,
+    "module": "Mathlib.Analysis.SpecialFunctions.Integrals.Basic",
+    "commit": "6420e6d6623d",
+    "members": [
+     {
+      "id": "fresh_015",
+      "decl": "integral_inv_div_log"
+     },
+     {
+      "id": "fresh_016",
+      "decl": "integral_inv_div_log_sq"
+     }
+    ]
+   },
+   {
+    "family": "fresh_017",
+    "n": 2,
+    "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds",
+    "commit": "1082fe00c1d9",
+    "members": [
+     {
+      "id": "fresh_017",
+      "decl": "Real.abs_sub_sin_le"
+     },
+     {
+      "id": "fresh_018",
+      "decl": "Real.sin_ge_sub_cube"
+     }
+    ]
+   },
+   {
+    "family": "fresh_028",
+    "n": 2,
+    "module": "Mathlib.CategoryTheory.EpiMono",
+    "commit": "f0630767e52e",
+    "members": [
+     {
+      "id": "fresh_028",
+      "decl": "CategoryTheory.cube_lemma_of_epi"
+     },
+     {
+      "id": "fresh_029",
+      "decl": "CategoryTheory.cube_lemma_of_mono"
+     }
+    ]
+   },
+   {
+    "family": "fresh_030",
+    "n": 2,
+    "module": "Mathlib.Combinatorics.Enumerative.Pentagonal.PowerSeries",
+    "commit": "805e37bcd567",
+    "members": [
+     {
+      "id": "fresh_030",
+      "decl": "PowerSeries.WithPiTopology.hasProd_one_sub_X_pow"
+     },
+     {
+      "id": "fresh_031",
+      "decl": "PowerSeries.WithPiTopology.hasSum_pentagonalSeries"
+     }
+    ]
+   },
+   {
+    "family": "fresh_032",
+    "n": 2,
+    "module": "Mathlib.Data.List.Find",
+    "commit": "b883e5758cef",
+    "members": [
+     {
+      "id": "fresh_032",
+      "decl": "List.find?_congr"
+     },
+     {
+      "id": "fresh_033",
+      "decl": "List.find?_eq_find?_of_perm"
+     }
+    ]
+   },
+   {
+    "family": "fresh_038",
+    "n": 2,
+    "module": "Mathlib.GroupTheory.Descent",
+    "commit": "ff4ee7173b66",
+    "members": [
+     {
+      "id": "fresh_038",
+      "decl": "CommGroup.finite_torsion_of_descent"
+     },
+     {
+      "id": "fresh_039",
+      "decl": "CommGroup.finite_torsion_of_descent'"
+     }
+    ]
+   },
+   {
+    "family": "fresh_041",
+    "n": 2,
+    "module": "Mathlib.LinearAlgebra.Dimension.Localization",
+    "commit": "2d8c533bd0a0",
+    "members": [
+     {
+      "id": "fresh_041",
+      "decl": "IsFractionRing.finrank_right_eq"
+     },
+     {
+      "id": "fresh_042",
+      "decl": "IsFractionRing.rank_right_eq"
+     }
+    ]
+   },
+   {
+    "family": "fresh_044",
+    "n": 2,
+    "module": "Mathlib.LinearAlgebra.Eigenspace.Semisimple",
+    "commit": "daa89cd356fa",
+    "members": [
+     {
+      "id": "fresh_044",
+      "decl": "Module.End.IsFinitelySemisimple.iSup_maxGenEigenspace_eq_top_iff"
+     },
+     {
+      "id": "fresh_045",
+      "decl": "Module.End.IsSemisimple.iSup_maxGenEigenspace_eq_top_iff"
+     }
+    ]
+   },
+   {
+    "family": "fresh_049",
+    "n": 2,
+    "module": "Mathlib.MeasureTheory.Constructions.BorelSpace.Basic",
+    "commit": "5a0753dc7256",
+    "members": [
+     {
+      "id": "fresh_049",
+      "decl": "ContinuousOn.measurable_of_countable_compl"
+     },
+     {
+      "id": "fresh_050",
+      "decl": "measurable_of_countable_not_continuousAt"
+     }
+    ]
+   },
+   {
+    "family": "fresh_052",
+    "n": 2,
+    "module": "Mathlib.MeasureTheory.Integral.IntegralEqImproper",
+    "commit": "170a0e5a87e1",
+    "members": [
+     {
+      "id": "fresh_052",
+      "decl": "MeasureTheory.integral_comp_exp_Ioi"
+     },
+     {
+      "id": "fresh_053",
+      "decl": "MeasureTheory.integral_comp_log_Ioi"
+     }
+    ]
+   },
+   {
+    "family": "fresh_065",
+    "n": 2,
+    "module": "Mathlib.NumberTheory.NumberField.Completion.Ramification",
+    "commit": "383070160f86",
+    "members": [
+     {
+      "id": "fresh_065",
+      "decl": "NumberField.InfinitePlace.IsRamified.finrank_eq_two"
+     },
+     {
+      "id": "fresh_066",
+      "decl": "NumberField.InfinitePlace.IsUnramified.finrank_eq_one"
+     }
+    ]
+   },
+   {
+    "family": "fresh_068",
+    "n": 2,
+    "module": "Mathlib.NumberTheory.RamificationInertia.Inertia",
+    "commit": "faaff5e5590a",
+    "members": [
+     {
+      "id": "fresh_068",
+      "decl": "Ideal.inertiaDeg'_algebra_tower"
+     },
+     {
+      "id": "fresh_069",
+      "decl": "Ideal.inertiaDeg'_pos'"
+     }
+    ]
+   },
+   {
+    "family": "fresh_074",
+    "n": 2,
+    "module": "Mathlib.Order.Preorder.Finite",
+    "commit": "07c971f2d3e9",
+    "members": [
+     {
+      "id": "fresh_074",
+      "decl": "StrictMono.apply_eq"
+     },
+     {
+      "id": "fresh_075",
+      "decl": "StrictMono.eq_id"
+     }
+    ]
+   },
+   {
+    "family": "fresh_077",
+    "n": 2,
+    "module": "Mathlib.RingTheory.Depth.Rees",
+    "commit": "29fdc2c22d46",
+    "members": [
+     {
+      "id": "fresh_077",
+      "decl": "ModuleCat.exists_isRegular_of_exists_subsingleton_ext"
+     },
+     {
+      "id": "fresh_078",
+      "decl": "ModuleCat.exists_isRegular_tfae"
+     }
+    ]
+   },
+   {
+    "family": "fresh_080",
+    "n": 2,
+    "module": "Mathlib.RingTheory.MvPowerSeries.Derivative",
+    "commit": "044efe507e1f",
+    "members": [
+     {
+      "id": "fresh_080",
+      "decl": "MvPowerSeries.pderiv.ext"
+     },
+     {
+      "id": "fresh_081",
+      "decl": "MvPowerSeries.pderiv_pow"
+     }
+    ]
+   },
+   {
+    "family": "fresh_085",
+    "n": 2,
+    "module": "Mathlib.Topology.Connected.PathConnected",
+    "commit": "61df950f3fe7",
+    "members": [
+     {
+      "id": "fresh_085",
+      "decl": "IsPathConnected.pi"
+     },
+     {
+      "id": "fresh_086",
+      "decl": "IsPathConnected.prod"
+     }
+    ]
+   },
+   {
+    "family": "fresh_097",
+    "n": 2,
+    "module": "Mathlib.Topology.Order.IntermediateValue",
+    "commit": "4de1b93c2153",
+    "members": [
+     {
+      "id": "fresh_097",
+      "decl": "exists_mem_Icc_isFixedPt_of_surjOn"
+     },
+     {
+      "id": "fresh_098",
+      "decl": "exists_mem_uIcc_isFixedPt_of_mapsTo"
+     }
+    ]
+   }
+  ],
+  "reviewer_named_examples": {
+   "AntitoneOn_integral_results": {
+    "task_ids": [
+     "fresh_019",
+     "fresh_020",
+     "fresh_021",
+     "fresh_022",
+     "fresh_023",
+     "fresh_024",
+     "fresh_025",
+     "fresh_026",
+     "fresh_027"
+    ],
+    "one_family_under_rule": true
+   },
+   "bounded_variation_variants": {
+    "task_ids": [
+     "fresh_087",
+     "fresh_088",
+     "fresh_089",
+     "fresh_090",
+     "fresh_091",
+     "fresh_092",
+     "fresh_093",
+     "fresh_094"
+    ],
+    "n_families_under_rule": 2,
+    "note": "one file (Topology.EMetricSpace.BoundedVariation, commit 49ed1b2d, 8 tasks); the name-stem rule splits it into eVariationOn.* vs two loners, but file- and commit-level collapses (reported below) treat all 8 as one unit; fresh_095 (VariationOnFromTo) is a different file AND commit, so it stays separate at every level"
+   },
+   "monotonicity_const_smul_variants": {
+    "task_ids": [
+     "fresh_005",
+     "fresh_006",
+     "fresh_007"
+    ],
+    "one_family_under_rule": true
+   }
+  }
+ },
+ "HEADLINE_D_vs_E_full100_commit_clustered": {
+  "n_clusters": 44,
+  "n_tasks": 100,
+  "B": 10000,
+  "seed": 20260802,
+  "rd": 0.12,
+  "ci95_percentile": [
+   -0.04878,
+   0.271028
+  ],
+  "p_two_sided_percentile_inversion": 0.191981,
+  "boot_se": 0.08211,
+  "cluster_robust_se_analytic": 0.084616
+ },
+ "effect_concentration_by_commit": {
+  "D_vs_E": {
+   "total_net_paired_diff": 12,
+   "top3_commit_contributions": [
+    {
+     "commit": "87a6eccfb8c6",
+     "net_paired_diff": 7,
+     "n_tasks": 9,
+     "module_example": "Mathlib.Analysis.SumIntegralComparisons"
+    },
+    {
+     "commit": "49ed1b2de10c",
+     "net_paired_diff": 3,
+     "n_tasks": 8,
+     "module_example": "Mathlib.Topology.EMetricSpace.BoundedVariation"
+    },
+    {
+     "commit": "5a0753dc7256",
+     "net_paired_diff": 2,
+     "n_tasks": 3,
+     "module_example": "Mathlib.MeasureTheory.Constructions.BorelSpace.Basic"
+    }
+   ],
+   "top2_share_of_net": 0.8333
+  },
+  "D_vs_C": {
+   "total_net_paired_diff": 17,
+   "top3_commit_contributions": [
+    {
+     "commit": "87a6eccfb8c6",
+     "net_paired_diff": 6,
+     "n_tasks": 9,
+     "module_example": "Mathlib.Analysis.SumIntegralComparisons"
+    },
+    {
+     "commit": "613038575adb",
+     "net_paired_diff": 2,
+     "n_tasks": 5,
+     "module_example": "Mathlib.Algebra.MonoidAlgebra.Defs"
+    },
+    {
+     "commit": "6420e6d6623d",
+     "net_paired_diff": 2,
+     "n_tasks": 2,
+     "module_example": "Mathlib.Analysis.SpecialFunctions.Integrals.Basic"
+    }
+   ],
+   "top2_share_of_net": 0.4706
+  },
+  "D_vs_A": {
+   "total_net_paired_diff": 22,
+   "top3_commit_contributions": [
+    {
+     "commit": "87a6eccfb8c6",
+     "net_paired_diff": 6,
+     "n_tasks": 9,
+     "module_example": "Mathlib.Analysis.SumIntegralComparisons"
+    },
+    {
+     "commit": "49ed1b2de10c",
+     "net_paired_diff": 4,
+     "n_tasks": 8,
+     "module_example": "Mathlib.Topology.EMetricSpace.BoundedVariation"
+    },
+    {
+     "commit": "1082fe00c1d9",
+     "net_paired_diff": 2,
+     "n_tasks": 2,
+     "module_example": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds"
+    }
+   ],
+   "top2_share_of_net": 0.4545
+  }
+ },
+ "old_numbers_for_supplement_D_vs_E": {
+  "paired_wald_rd_ci95": [
+   0.001491,
+   0.238509
+  ],
+  "paired_wald_rd": 0.12,
+  "p_mcnemar_exact": 0.072951,
+  "mismatch_explanation_one_sentence": "The paired-Wald interval is a normal approximation over all 100 paired differences while exact McNemar conditions on only the 38 discordant pairs, and near the significance boundary these two approximations can land on opposite sides of alpha=.05 \u2014 which is why v2 replaces both with a single commit-clustered bootstrap whose interval and p-value come from the same resampling distribution."
+ },
+ "clustered_bootstraps": {
+  "D_vs_E": {
+   "commit": {
+    "n_clusters": 44,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260802,
+    "rd": 0.12,
+    "ci95_percentile": [
+     -0.04878,
+     0.271028
+    ],
+    "p_two_sided_percentile_inversion": 0.191981,
+    "boot_se": 0.08211,
+    "cluster_robust_se_analytic": 0.084616
+   },
+   "module": {
+    "n_clusters": 57,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260803,
+    "rd": 0.12,
+    "ci95_percentile": [
+     -0.044444,
+     0.274197
+    ],
+    "p_two_sided_percentile_inversion": 0.177982,
+    "boot_se": 0.082245,
+    "cluster_robust_se_analytic": 0.083599
+   },
+   "family": {
+    "n_clusters": 59,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260804,
+    "rd": 0.12,
+    "ci95_percentile": [
+     -0.044457,
+     0.273585
+    ],
+    "p_two_sided_percentile_inversion": 0.185981,
+    "boot_se": 0.08173,
+    "cluster_robust_se_analytic": 0.084017
+   },
+   "task": {
+    "n_clusters": 100,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260805,
+    "rd": 0.12,
+    "ci95_percentile": [
+     0.0,
+     0.24
+    ],
+    "p_two_sided_percentile_inversion": 0.061994,
+    "boot_se": 0.060583,
+    "cluster_robust_se_analytic": 0.060769
+   }
+  },
+  "D_vs_C": {
+   "commit": {
+    "n_clusters": 44,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260812,
+    "rd": 0.17,
+    "ci95_percentile": [
+     0.011236,
+     0.314294
+    ],
+    "p_two_sided_percentile_inversion": 0.040396,
+    "boot_se": 0.077031,
+    "cluster_robust_se_analytic": 0.078458
+   },
+   "module": {
+    "n_clusters": 57,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260813,
+    "rd": 0.17,
+    "ci95_percentile": [
+     0.021053,
+     0.310345
+    ],
+    "p_two_sided_percentile_inversion": 0.029997,
+    "boot_se": 0.073823,
+    "cluster_robust_se_analytic": 0.075306
+   },
+   "family": {
+    "n_clusters": 59,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260814,
+    "rd": 0.17,
+    "ci95_percentile": [
+     0.020608,
+     0.310686
+    ],
+    "p_two_sided_percentile_inversion": 0.031997,
+    "boot_se": 0.073795,
+    "cluster_robust_se_analytic": 0.0752
+   },
+   "task": {
+    "n_clusters": 100,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260815,
+    "rd": 0.17,
+    "ci95_percentile": [
+     0.05,
+     0.29
+    ],
+    "p_two_sided_percentile_inversion": 0.006399,
+    "boot_se": 0.060821,
+    "cluster_robust_se_analytic": 0.060394
+   }
+  },
+  "D_vs_A": {
+   "commit": {
+    "n_clusters": 44,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260822,
+    "rd": 0.22,
+    "ci95_percentile": [
+     0.092784,
+     0.336066
+    ],
+    "p_two_sided_percentile_inversion": 0.0014,
+    "boot_se": 0.062854,
+    "cluster_robust_se_analytic": 0.064171
+   },
+   "module": {
+    "n_clusters": 57,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260823,
+    "rd": 0.22,
+    "ci95_percentile": [
+     0.08046,
+     0.344011
+    ],
+    "p_two_sided_percentile_inversion": 0.0026,
+    "boot_se": 0.067961,
+    "cluster_robust_se_analytic": 0.069347
+   },
+   "family": {
+    "n_clusters": 59,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260824,
+    "rd": 0.22,
+    "ci95_percentile": [
+     0.079545,
+     0.346161
+    ],
+    "p_two_sided_percentile_inversion": 0.0028,
+    "boot_se": 0.068395,
+    "cluster_robust_se_analytic": 0.070364
+   },
+   "task": {
+    "n_clusters": 100,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260825,
+    "rd": 0.22,
+    "ci95_percentile": [
+     0.11,
+     0.33
+    ],
+    "p_two_sided_percentile_inversion": 0.0002,
+    "boot_se": 0.055385,
+    "cluster_robust_se_analytic": 0.056102
+   }
+  }
+ },
+ "family_collapsed_sensitivity": {
+  "family": {
+   "n_units": 59,
+   "majority": {
+    "rates": {
+     "A": {
+      "k": 12,
+      "n": 59,
+      "rate": 0.2034
+     },
+     "B": {
+      "k": 13,
+      "n": 59,
+      "rate": 0.2203
+     },
+     "C": {
+      "k": 12,
+      "n": 59,
+      "rate": 0.2034
+     },
+     "D": {
+      "k": 20,
+      "n": 59,
+      "rate": 0.339
+     },
+     "E": {
+      "k": 19,
+      "n": 59,
+      "rate": 0.322
+     }
+    },
+    "majority_ties_counted_as_failure": {
+     "A": 3,
+     "B": 5,
+     "C": 5,
+     "D": 7,
+     "E": 3
+    },
+    "pairs": {
+     "D_vs_E": {
+      "n_units": 59,
+      "x_only": 10,
+      "y_only": 9,
+      "both": 10,
+      "neither": 30,
+      "discordant": 19,
+      "p_mcnemar_exact": 1.0,
+      "rd": 0.016949,
+      "rd_ci95_paired_wald": [
+       -0.127788,
+       0.161686
+      ]
+     },
+     "D_vs_C": {
+      "n_units": 59,
+      "x_only": 15,
+      "y_only": 7,
+      "both": 5,
+      "neither": 32,
+      "discordant": 22,
+      "p_mcnemar_exact": 0.133801,
+      "rd": 0.135593,
+      "rd_ci95_paired_wald": [
+       -0.016331,
+       0.287518
+      ]
+     },
+     "D_vs_A": {
+      "n_units": 59,
+      "x_only": 15,
+      "y_only": 7,
+      "both": 5,
+      "neither": 32,
+      "discordant": 22,
+      "p_mcnemar_exact": 0.133801,
+      "rd": 0.135593,
+      "rd_ci95_paired_wald": [
+       -0.016331,
+       0.287518
+      ]
+     }
+    }
+   },
+   "any": {
+    "rates": {
+     "A": {
+      "k": 16,
+      "n": 59,
+      "rate": 0.2712
+     },
+     "B": {
+      "k": 20,
+      "n": 59,
+      "rate": 0.339
+     },
+     "C": {
+      "k": 19,
+      "n": 59,
+      "rate": 0.322
+     },
+     "D": {
+      "k": 27,
+      "n": 59,
+      "rate": 0.4576
+     },
+     "E": {
+      "k": 23,
+      "n": 59,
+      "rate": 0.3898
+     }
+    },
+    "majority_ties_counted_as_failure": null,
+    "pairs": {
+     "D_vs_E": {
+      "n_units": 59,
+      "x_only": 13,
+      "y_only": 9,
+      "both": 14,
+      "neither": 23,
+      "discordant": 22,
+      "p_mcnemar_exact": 0.523467,
+      "rd": 0.067797,
+      "rd_ci95_paired_wald": [
+       -0.087054,
+       0.222648
+      ]
+     },
+     "D_vs_C": {
+      "n_units": 59,
+      "x_only": 15,
+      "y_only": 7,
+      "both": 12,
+      "neither": 25,
+      "discordant": 22,
+      "p_mcnemar_exact": 0.133801,
+      "rd": 0.135593,
+      "rd_ci95_paired_wald": [
+       -0.016331,
+       0.287518
+      ]
+     },
+     "D_vs_A": {
+      "n_units": 59,
+      "x_only": 16,
+      "y_only": 5,
+      "both": 11,
+      "neither": 27,
+      "discordant": 21,
+      "p_mcnemar_exact": 0.026604,
+      "rd": 0.186441,
+      "rd_ci95_paired_wald": [
+       0.041833,
+       0.331048
+      ]
+     }
+    }
+   }
+  },
+  "module": {
+   "n_units": 57,
+   "majority": {
+    "rates": {
+     "A": {
+      "k": 11,
+      "n": 57,
+      "rate": 0.193
+     },
+     "B": {
+      "k": 12,
+      "n": 57,
+      "rate": 0.2105
+     },
+     "C": {
+      "k": 11,
+      "n": 57,
+      "rate": 0.193
+     },
+     "D": {
+      "k": 18,
+      "n": 57,
+      "rate": 0.3158
+     },
+     "E": {
+      "k": 18,
+      "n": 57,
+      "rate": 0.3158
+     }
+    },
+    "majority_ties_counted_as_failure": {
+     "A": 4,
+     "B": 5,
+     "C": 5,
+     "D": 8,
+     "E": 4
+    },
+    "pairs": {
+     "D_vs_E": {
+      "n_units": 57,
+      "x_only": 9,
+      "y_only": 9,
+      "both": 9,
+      "neither": 30,
+      "discordant": 18,
+      "p_mcnemar_exact": 1.0,
+      "rd": 0.0,
+      "rd_ci95_paired_wald": [
+       -0.145885,
+       0.145885
+      ]
+     },
+     "D_vs_C": {
+      "n_units": 57,
+      "x_only": 14,
+      "y_only": 7,
+      "both": 4,
+      "neither": 32,
+      "discordant": 21,
+      "p_mcnemar_exact": 0.189247,
+      "rd": 0.122807,
+      "rd_ci95_paired_wald": [
+       -0.031507,
+       0.277122
+      ]
+     },
+     "D_vs_A": {
+      "n_units": 57,
+      "x_only": 14,
+      "y_only": 7,
+      "both": 4,
+      "neither": 32,
+      "discordant": 21,
+      "p_mcnemar_exact": 0.189247,
+      "rd": 0.122807,
+      "rd_ci95_paired_wald": [
+       -0.031507,
+       0.277122
+      ]
+     }
+    }
+   },
+   "any": {
+    "rates": {
+     "A": {
+      "k": 16,
+      "n": 57,
+      "rate": 0.2807
+     },
+     "B": {
+      "k": 19,
+      "n": 57,
+      "rate": 0.3333
+     },
+     "C": {
+      "k": 18,
+      "n": 57,
+      "rate": 0.3158
+     },
+     "D": {
+      "k": 26,
+      "n": 57,
+      "rate": 0.4561
+     },
+     "E": {
+      "k": 23,
+      "n": 57,
+      "rate": 0.4035
+     }
+    },
+    "majority_ties_counted_as_failure": null,
+    "pairs": {
+     "D_vs_E": {
+      "n_units": 57,
+      "x_only": 12,
+      "y_only": 9,
+      "both": 14,
+      "neither": 22,
+      "discordant": 21,
+      "p_mcnemar_exact": 0.663624,
+      "rd": 0.052632,
+      "rd_ci95_paired_wald": [
+       -0.104348,
+       0.209611
+      ]
+     },
+     "D_vs_C": {
+      "n_units": 57,
+      "x_only": 15,
+      "y_only": 7,
+      "both": 11,
+      "neither": 24,
+      "discordant": 22,
+      "p_mcnemar_exact": 0.133801,
+      "rd": 0.140351,
+      "rd_ci95_paired_wald": [
+       -0.016761,
+       0.297463
+      ]
+     },
+     "D_vs_A": {
+      "n_units": 57,
+      "x_only": 15,
+      "y_only": 5,
+      "both": 11,
+      "neither": 26,
+      "discordant": 20,
+      "p_mcnemar_exact": 0.041389,
+      "rd": 0.175439,
+      "rd_ci95_paired_wald": [
+       0.028562,
+       0.322315
+      ]
+     }
+    }
+   }
+  },
+  "commit": {
+   "n_units": 44,
+   "majority": {
+    "rates": {
+     "A": {
+      "k": 8,
+      "n": 44,
+      "rate": 0.1818
+     },
+     "B": {
+      "k": 8,
+      "n": 44,
+      "rate": 0.1818
+     },
+     "C": {
+      "k": 7,
+      "n": 44,
+      "rate": 0.1591
+     },
+     "D": {
+      "k": 13,
+      "n": 44,
+      "rate": 0.2955
+     },
+     "E": {
+      "k": 15,
+      "n": 44,
+      "rate": 0.3409
+     }
+    },
+    "majority_ties_counted_as_failure": {
+     "A": 4,
+     "B": 4,
+     "C": 5,
+     "D": 9,
+     "E": 4
+    },
+    "pairs": {
+     "D_vs_E": {
+      "n_units": 44,
+      "x_only": 5,
+      "y_only": 7,
+      "both": 8,
+      "neither": 24,
+      "discordant": 12,
+      "p_mcnemar_exact": 0.774414,
+      "rd": -0.045455,
+      "rd_ci95_paired_wald": [
+       -0.199176,
+       0.108267
+      ]
+     },
+     "D_vs_C": {
+      "n_units": 44,
+      "x_only": 10,
+      "y_only": 4,
+      "both": 3,
+      "neither": 27,
+      "discordant": 14,
+      "p_mcnemar_exact": 0.179565,
+      "rd": 0.136364,
+      "rd_ci95_paired_wald": [
+       -0.025364,
+       0.298091
+      ]
+     },
+     "D_vs_A": {
+      "n_units": 44,
+      "x_only": 8,
+      "y_only": 3,
+      "both": 5,
+      "neither": 28,
+      "discordant": 11,
+      "p_mcnemar_exact": 0.226562,
+      "rd": 0.113636,
+      "rd_ci95_paired_wald": [
+       -0.030235,
+       0.257508
+      ]
+     }
+    }
+   },
+   "any": {
+    "rates": {
+     "A": {
+      "k": 14,
+      "n": 44,
+      "rate": 0.3182
+     },
+     "B": {
+      "k": 17,
+      "n": 44,
+      "rate": 0.3864
+     },
+     "C": {
+      "k": 15,
+      "n": 44,
+      "rate": 0.3409
+     },
+     "D": {
+      "k": 23,
+      "n": 44,
+      "rate": 0.5227
+     },
+     "E": {
+      "k": 20,
+      "n": 44,
+      "rate": 0.4545
+     }
+    },
+    "majority_ties_counted_as_failure": null,
+    "pairs": {
+     "D_vs_E": {
+      "n_units": 44,
+      "x_only": 10,
+      "y_only": 7,
+      "both": 13,
+      "neither": 14,
+      "discordant": 17,
+      "p_mcnemar_exact": 0.629059,
+      "rd": 0.068182,
+      "rd_ci95_paired_wald": [
+       -0.114372,
+       0.250736
+      ]
+     },
+     "D_vs_C": {
+      "n_units": 44,
+      "x_only": 12,
+      "y_only": 4,
+      "both": 11,
+      "neither": 17,
+      "discordant": 16,
+      "p_mcnemar_exact": 0.076813,
+      "rd": 0.181818,
+      "rd_ci95_paired_wald": [
+       0.011932,
+       0.351705
+      ]
+     },
+     "D_vs_A": {
+      "n_units": 44,
+      "x_only": 12,
+      "y_only": 3,
+      "both": 11,
+      "neither": 18,
+      "discordant": 15,
+      "p_mcnemar_exact": 0.035156,
+      "rd": 0.204545,
+      "rd_ci95_paired_wald": [
+       0.042958,
+       0.366133
+      ]
+     }
+    }
+   }
+  }
+ },
+ "family_mean_collapse_commit_clustered": {
+  "D_vs_E": {
+   "n_clusters": 44,
+   "n_tasks": 59,
+   "B": 10000,
+   "seed": 20260832,
+   "rd": 0.043045,
+   "ci95_percentile": [
+    -0.104123,
+    0.182922
+   ],
+   "p_two_sided_percentile_inversion": 0.554145,
+   "boot_se": 0.073179,
+   "cluster_robust_se_analytic": 0.073291,
+   "note": "units = families (equal weight), unit value = member success fraction; RD = mean over families of paired unit differences; commit-clustered bootstrap over family units"
+  },
+  "D_vs_C": {
+   "n_clusters": 44,
+   "n_tasks": 59,
+   "B": 10000,
+   "seed": 20260833,
+   "rd": 0.132365,
+   "ci95_percentile": [
+    -0.029582,
+    0.280703
+   ],
+   "p_two_sided_percentile_inversion": 0.10219,
+   "boot_se": 0.079181,
+   "cluster_robust_se_analytic": 0.079997,
+   "note": "units = families (equal weight), unit value = member success fraction; RD = mean over families of paired unit differences; commit-clustered bootstrap over family units"
+  },
+  "D_vs_A": {
+   "n_clusters": 44,
+   "n_tasks": 59,
+   "B": 10000,
+   "seed": 20260834,
+   "rd": 0.156578,
+   "ci95_percentile": [
+    0.042855,
+    0.264458
+   ],
+   "p_two_sided_percentile_inversion": 0.006399,
+   "boot_se": 0.05588,
+   "cluster_robust_se_analytic": 0.056207,
+   "note": "units = families (equal weight), unit value = member success fraction; RD = mean over families of paired unit differences; commit-clustered bootstrap over family units"
+  }
+ }
+}

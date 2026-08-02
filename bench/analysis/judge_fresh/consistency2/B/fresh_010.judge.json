@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Restricted to the real field ℝ only, dropping the gold's general RCLike 𝕜 (so the ℂ case, covered by the gold, is lost)",
+  "Forces E and F to be finite-dimensional of the SAME dimension n (via requiring bases indexed by a common Fin n for both), which is a hypothesis not present in the gold: gold only assumes FiniteDimensional 𝕜 U, leaving V's dimension (and even finite-dimensionality) unconstrained, so gold's theorem is strictly more general",
+  "Formalizes 'norm-determinant' by universally quantifying over explicit orthonormal bases b_E, b_F and their orthonormality hypotheses and computing an ordinary square-matrix determinant, instead of applying the gold's basis-independent, already-defined `LinearMap.normDet`; this adds extra hypotheses/parameters (the bases and orthonormality proofs) not present in gold's clean application form",
+  "Drops the ambient type W present in gold's variable block (minor)",
+  "Conclusion is phrased as |det (toMatrix b_F b_E f)| = 1 rather than f.toLinearMap.normDet = 1, making it a differently-scoped (basis- and dimension-restricted) proposition rather than the same statement up to renaming/notation"
+ ],
+ "arm": "B",
+ "task_id": "fresh_010",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 86.7,
+ "judge_cost_usd": 0.234857,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "7572aa11649711b292decafbf3c6a055b496fa442b888dde4d70b8ded4d58b08"
+}

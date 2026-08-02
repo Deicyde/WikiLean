@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "hantitone uses global `Antitone f` instead of gold's `AntitoneOn f (Ici 0)`, requiring the function to be antitone on all of ℝ rather than just on [0,∞), which is a stronger/less general hypothesis",
+  "hnoneg uses global `∀ x, 0 ≤ f x` instead of gold's nonnegativity restricted to `Ioi 0`, again a stronger/less general hypothesis than needed",
+  "hintegrable uses `IntegrableOn f (Ici 0)` instead of gold's `IntegrableOn f (Ioi 0)` — mathematically near-equivalent (differs by a measure-zero point) but not syntactically the same domain"
+ ],
+ "arm": "B",
+ "task_id": "fresh_025",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 25.3,
+ "judge_cost_usd": 0.089539,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "465b0097a11e8c81978dbb53f0e83a8c55252c238194a5b92cc4498cad013ccb"
+}

@@ -1,0 +1,20 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Missing `[TopologicalSpace α]` instance: `Continuous f` requires a topology on the domain, but the produced statement never declares one, so it does not even type-check as written",
+  "Replaces `LinearOrder` + `OrderTopology` on α and β (gold) with mere `SemilatticeSup`, dropping the order-topology hypothesis that is essential to the theorem (continuity + monotonicity implying order-continuity relies on the order topology, not just a sup-semilattice structure)",
+  "Uses `sSup`, which requires a `SupSet` instance (e.g. from `CompleteLattice`/`ConditionallyCompleteLattice`); `SemilatticeSup` alone does not provide arbitrary-set suprema, so `sSup s` is not well-typed/well-defined under the stated hypotheses",
+  "Conclusion `f (sSup s) = sSup (f '' s)` is asserted for an arbitrary set `s`, presupposing `sSup` always denotes an actual least upper bound; this is a different and less careful statement than gold's `LeftOrdContinuous f`, which unfolds to `IsLUB s x → IsLUB (f '' s) (f x)` and only concerns sets that actually have a supremum, avoiding junk-value issues",
+  "Drops the `LinearOrder β` requirement present in gold, replacing it with `SemilatticeSup β`",
+  "Does not use the `LeftOrdContinuous` predicate from Mathlib at all, changing how the conclusion is packaged and losing the definitional link to the standard order-continuity notion"
+ ],
+ "arm": "B",
+ "task_id": "fresh_099",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 31.1,
+ "judge_cost_usd": 0.098689,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "e22768ee506bf5cf8c2d64fa521973be4cd84cf09a966df17a3e230c0fa3a5bb"
+}

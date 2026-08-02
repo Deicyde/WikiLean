@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Drops the arbitrary set s: gold computes eVariationOn id (s ∩ Icc a b) for a,b ∈ s, capturing 'variation over the part of a set in [a,b]'; produced only proves the special case s = univ (plain Icc a b), losing the general-set content of the informal statement",
+  "Adds an extraneous hypothesis a ≤ b not present in gold; gold holds for all a b (when b < a, Icc a b is empty and ENNReal.ofReal (b-a) = 0 automatically), so produced statement's domain of validity is narrower than gold's"
+ ],
+ "arm": "E",
+ "task_id": "fresh_093",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 16.9,
+ "judge_cost_usd": 0.06551,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "fab7197fbe2277193739c05cad59c1d4c91d78fbb0a64c9b9d25e223935151ce"
+}

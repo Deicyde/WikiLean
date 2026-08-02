@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Uses `CharZero R` instead of the gold's `IsAddTorsionFree R` (additive torsion-freeness). These are not equivalent for a general CommRing: CharZero only requires the canonical map ℕ→R to be injective, whereas IsAddTorsionFree requires n•x=0 → x=0 for all x, not just x=1. A ring like ℤ × ZMod p is CommRing + CharZero but has additive torsion (e.g. (0,1) is killed by p), so the produced hypothesis is strictly weaker and the resulting statement is actually false/unprovable in general (counterexample: two power series agreeing except at the coefficient where the torsion element appears, satisfying h_const and h_pderiv but with f ≠ g).",
+  "hD (pderiv f = pderiv g as power series) is replaced by an explicit unfolded coefficient formula (n i + 1) * coeff (n + single i 1) f = ... ; this is mathematically equivalent to hD given Mathlib's coeff_pderiv lemma, but is a reformulation rather than the same structural hypothesis, so it does not count as 'strict' identical phrasing (though it would be fine for 'evaluated' were the typeclass issue not present)."
+ ],
+ "arm": "E",
+ "task_id": "fresh_080",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 108.5,
+ "judge_cost_usd": 0.565084,
+ "num_turns": 1,
+ "attempts": 2,
+ "prompt_sha256": "3646e96d8b5223b98b6db95294b08d9a7f2b3b53c88aba41881a07c0e3550c00"
+}

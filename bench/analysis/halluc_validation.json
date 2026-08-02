@@ -1,0 +1,1335 @@
+{
+ "provenance": {
+  "fresh_rows": "bench/data/runs/{A..E}/fresh_*.json (100/arm, post-repair; 31 arm-E rows rerun 2026-07-27 per bridge_summary_v2.json v2_provenance)",
+  "classifier": "bench/score_bridge.py extract_cited + Oracle (imported)",
+  "oracle_decl_index": ".claude/skills/mathlib-search/.cache/declaration-data.json",
+  "oracle_decl_index_etag": "\"6a6dbedd-3f3c0b9\"",
+  "oracle_rename_map": "catalog/data/decl_renames.jsonl",
+  "ground_truth_tree": "mathlib4 @ 61a5e4f338bfdddf2f6296402a49fe80f3b1a147 (agents' pinned tree), cross-check 9944fe2973b8dc0b86949101ed98232c07cd54a0 (bench-lean-fresh rev)",
+  "seed": 20260801
+ },
+ "run_level": {
+  "per_arm": {
+   "A": {
+    "n_runs": 100,
+    "runs_any_halluc": 54,
+    "run_rate": 0.54,
+    "run_wilson95": [
+     0.4426,
+     0.6344
+    ],
+    "citations_total": 443,
+    "citations_halluc": 94,
+    "citation_rate": 0.2122
+   },
+   "B": {
+    "n_runs": 100,
+    "runs_any_halluc": 48,
+    "run_rate": 0.48,
+    "run_wilson95": [
+     0.3846,
+     0.5768
+    ],
+    "citations_total": 429,
+    "citations_halluc": 76,
+    "citation_rate": 0.1772
+   },
+   "C": {
+    "n_runs": 100,
+    "runs_any_halluc": 49,
+    "run_rate": 0.49,
+    "run_wilson95": [
+     0.3942,
+     0.5865
+    ],
+    "citations_total": 517,
+    "citations_halluc": 108,
+    "citation_rate": 0.2089
+   },
+   "D": {
+    "n_runs": 100,
+    "runs_any_halluc": 23,
+    "run_rate": 0.23,
+    "run_wilson95": [
+     0.1584,
+     0.3215
+    ],
+    "citations_total": 472,
+    "citations_halluc": 32,
+    "citation_rate": 0.0678
+   },
+   "E": {
+    "n_runs": 100,
+    "runs_any_halluc": 49,
+    "run_rate": 0.49,
+    "run_wilson95": [
+     0.3942,
+     0.5865
+    ],
+    "citations_total": 505,
+    "citations_halluc": 107,
+    "citation_rate": 0.2119
+   }
+  },
+  "mcnemar_pairs": {
+   "D_vs_E": {
+    "n_paired": 100,
+    "both_halluc": 13,
+    "D_only": 10,
+    "E_only": 36,
+    "neither": 41,
+    "discordant": 46,
+    "p_mcnemar_exact_two_sided": 0.000156,
+    "rate_diff": -0.26,
+    "rate_diff_wald95": [
+     -0.3828,
+     -0.1372
+    ]
+   },
+   "D_vs_C": {
+    "n_paired": 100,
+    "both_halluc": 15,
+    "D_only": 8,
+    "C_only": 34,
+    "neither": 43,
+    "discordant": 42,
+    "p_mcnemar_exact_two_sided": 6.88e-05,
+    "rate_diff": -0.26,
+    "rate_diff_wald95": [
+     -0.3763,
+     -0.1437
+    ]
+   },
+   "D_vs_A": {
+    "n_paired": 100,
+    "both_halluc": 16,
+    "D_only": 7,
+    "A_only": 38,
+    "neither": 39,
+    "discordant": 45,
+    "p_mcnemar_exact_two_sided": 3.12e-06,
+    "rate_diff": -0.31,
+    "rate_diff_wald95": [
+     -0.4266,
+     -0.1934
+    ]
+   },
+   "D_vs_B": {
+    "n_paired": 100,
+    "both_halluc": 15,
+    "D_only": 8,
+    "B_only": 33,
+    "neither": 44,
+    "discordant": 41,
+    "p_mcnemar_exact_two_sided": 0.000112,
+    "rate_diff": -0.25,
+    "rate_diff_wald95": [
+     -0.3655,
+     -0.1345
+    ]
+   },
+   "E_vs_C": {
+    "n_paired": 100,
+    "both_halluc": 39,
+    "E_only": 10,
+    "C_only": 10,
+    "neither": 41,
+    "discordant": 20,
+    "p_mcnemar_exact_two_sided": 1.0,
+    "rate_diff": 0.0,
+    "rate_diff_wald95": [
+     -0.0877,
+     0.0877
+    ]
+   }
+  },
+  "ratio_summary": {
+   "run_level_E_over_D": 2.13,
+   "run_level_C_over_D": 2.13,
+   "citation_level_E_over_D": 3.13,
+   "citation_level_C_over_D": 3.08
+  }
+ },
+ "blinded_validation": {
+  "n_sample": 60,
+  "truth_label_counts": {
+   "real": 46,
+   "nonexistent": 4,
+   "not_a_citation": 9,
+   "renamed": 1
+  },
+  "confusion_cells": {
+   "oracle=exists|truth=not_a_citation": 1,
+   "oracle=exists|truth=real": 24,
+   "oracle=hallucinated|truth=nonexistent": 4,
+   "oracle=hallucinated|truth=not_a_citation": 8,
+   "oracle=hallucinated|truth=real": 18,
+   "oracle=renamed|truth=real": 4,
+   "oracle=renamed|truth=renamed": 1
+  },
+  "strict_noise_as_FP": {
+   "n": 60,
+   "tp": 4,
+   "fp": 26,
+   "fn": 0,
+   "tn": 30,
+   "hallucinated_precision": 0.1333,
+   "hallucinated_recall": 1.0,
+   "real_precision": 1.0,
+   "real_recall": 0.5357,
+   "accuracy": 0.5667,
+   "errors": [
+    {
+     "i": 5,
+     "name": "IntegrableOn",
+     "arm": "C",
+     "task_id": "fresh_019",
+     "oracle": "hallucinated",
+     "truth": "real",
+     "note": "namespaced: MeasureTheory.IntegrableOn (IntegrableOn.lean:92, namespace MeasureTheory); bare short name standard under open MeasureTheory"
+    },
+    {
+     "i": 6,
+     "name": "Bottom",
+     "arm": "E",
+     "task_id": "fresh_029",
+     "oracle": "hallucinated",
+     "truth": "not_a_citation",
+     "note": "comment prose: '-- Bottom face edges'"
+    },
+    {
+     "i": 13,
+     "name": "M.det",
+     "arm": "A",
+     "task_id": "fresh_048",
+     "oracle": "hallucinated",
+     "truth": "real",
+     "note": "dot-notation on variable M : Matrix -> resolves to Matrix.det (real); token itself is not a global name (extractor artifact, kept as real since the cited decl exists)"
+    },
+    {
+     "i": 15,
+     "name": "Mathlib.LinearAlgebra.Eigenspace.Semisimple",
+     "arm": "D",
+     "task_id": "fresh_045",
+     "oracle": "hallucinated",
+     "truth": "not_a_citation",
+     "note": "module name in an import line, not a declaration; module exists at pin"
+    },
+    {
+     "i": 16,
+     "name": "AddContent",
+     "arm": "D",
+     "task_id": "fresh_055",
+     "oracle": "hallucinated",
+     "truth": "real",
+     "note": "namespaced: MeasureTheory.AddContent (AddContent.lean:76, namespace MeasureTheory at :68)"
+    },
+    {
+     "i": 18,
+     "name": "S.map",
+     "arm": "B",
+     "task_id": "fresh_076",
+     "oracle": "hallucinated",
+     "truth": "real",
+     "note": "dot-notation on variable S : ShortComplex -> ShortComplex.map (real); extractor artifact"
+    },
+    {
+     "i": 19,
+     "name": "Epi",
+     "arm": "C",
+     "task_id": "fresh_028",
+     "oracle": "hallucinated",
+     "truth": "real",
+     "note": "namespaced: CategoryTheory.Epi (Category/Basic.lean:321); bare short name standard under open CategoryTheory"
+    },
+    {
+     "i": 21,
+     "name": "Monotone.const_smul_nonneg",
+     "arm": "D",
+     "task_id": "fresh_006",
+     "oracle": "hallucinated",
+     "truth": "not_a_citation",
+     "note": "agent's own theorem-name declaration (task fresh_006 targets Monotone.const_smul, added post-pin); name itself absent at pin"
+    },
+    {
+     "i": 22,
+     "name": "SignedMeasure",
+     "arm": "B",
+     "task_id": "fresh_056",
+     "oracle": "hallucinated",
+     "truth": "real",
+     "note": "namespaced: MeasureTheory.SignedMeasure abbrev (VectorMeasure/Basic.lean:73)"
+    },
+    {
+     "i": 24,
+     "name": "SignedMeasure.jordan",
+     "arm": "A",
+     "task_id": "fresh_056",
+     "oracle": "hallucinated",
+     "truth": "not_a_citation",
+     "note": "agent's own theorem-name declaration; no decl 'jordan' at pin (real API: toJordanDecomposition)"
+    },
+    {
+     "i": 25,
+     "name": "M.restrict",
+     "arm": "D",
+     "task_id": "fresh_055",
+     "oracle": "hallucinated",
+     "truth": "real",
+     "note": "dot-notation on variable (Measure/content) -> Measure.restrict (real); extractor artifact"
+    },
+    {
+     "i": 27,
+     "name": "Ici",
+     "arm": "A",
+     "task_id": "fresh_025",
+     "oracle": "hallucinated",
+     "truth": "real",
+     "note": "bare short name of Set.Ici (also Finset.Ici); requires open Set but denotes a real decl"
+    },
+    {
+     "i": 30,
+     "name": "SignedMeasure",
+     "arm": "A",
+     "task_id": "fresh_056",
+     "oracle": "hallucinated",
+     "truth": "real",
+     "note": "namespaced: MeasureTheory.SignedMeasure"
+    },
+    {
+     "i": 31,
+     "name": "Icc",
+     "arm": "C",
+     "task_id": "fresh_087",
+     "oracle": "hallucinated",
+     "truth": "real",
+     "note": "bare short name of Set.Icc; real decl"
+    },
+    {
+     "i": 32,
+     "name": "Epi",
+     "arm": "B",
+     "task_id": "fresh_028",
+     "oracle": "hallucinated",
+     "truth": "real",
+     "note": "namespaced: CategoryTheory.Epi"
+    },
+    {
+     "i": 34,
+     "name": "JordanDecomposition.negPart",
+     "arm": "D",
+     "task_id": "fresh_056",
+     "oracle": "hallucinated",
+     "truth": "real",
+     "note": "structure-field projection of MeasureTheory.JordanDecomposition (Jordan.lean structure fields posPart/negPart); cited without MeasureTheory prefix"
+    },
+    {
+     "i": 36,
+     "name": "JordanDecomposition.toSignedMeasure",
+     "arm": "C",
+     "task_id": "fresh_056",
+     "oracle": "hallucinated",
+     "truth": "real",
+     "note": "MeasureTheory.JordanDecomposition.toSignedMeasure (Jordan.lean:149, namespace JordanDecomposition at :72); cited without MeasureTheory prefix"
+    },
+    {
+     "i": 40,
+     "name": "Then",
+     "arm": "E",
+     "task_id": "fresh_029",
+     "oracle": "hallucinated",
+     "truth": "not_a_citation",
+     "note": "comment prose: '-- Then the sixth (left) face also commutes'"
+    },
+    {
+     "i": 41,
+     "name": "Measure",
+     "arm": "D",
+     "task_id": "fresh_055",
+     "oracle": "hallucinated",
+     "truth": "real",
+     "note": "namespaced: MeasureTheory.Measure (MeasureSpaceDef.lean:77)"
+    },
+    {
+     "i": 45,
+     "name": "Submodule.eq_span_of_finrank_eq_one",
+     "arm": "C",
+     "task_id": "fresh_046",
+     "oracle": "hallucinated",
+     "truth": "not_a_citation",
+     "note": "agent's own theorem-name declaration; zero hits at pin"
+    },
+    {
+     "i": 46,
+     "name": "M.det",
+     "arm": "C",
+     "task_id": "fresh_048",
+     "oracle": "hallucinated",
+     "truth": "real",
+     "note": "dot-notation on variable M : Matrix -> Matrix.det; extractor artifact"
+    },
+    {
+     "i": 47,
+     "name": "PseudoMetrizableSpace",
+     "arm": "E",
+     "task_id": "fresh_051",
+     "oracle": "hallucinated",
+     "truth": "real",
+     "note": "namespaced: TopologicalSpace.PseudoMetrizableSpace (Topology/Metrizable/Basic.lean:40); bare short name standard under open TopologicalSpace"
+    },
+    {
+     "i": 51,
+     "name": "S.Exact",
+     "arm": "E",
+     "task_id": "fresh_076",
+     "oracle": "hallucinated",
+     "truth": "real",
+     "note": "dot-notation on variable S : ShortComplex -> ShortComplex.Exact structure (ShortComplex/Exact.lean:45); extractor artifact"
+    },
+    {
+     "i": 55,
+     "name": "Laurent.coeff.support",
+     "arm": "E",
+     "task_id": "fresh_008",
+     "oracle": "hallucinated",
+     "truth": "not_a_citation",
+     "note": "mid-dot-chain fragment of `f.toLaurent.coeff.support` (regex starts at the capital 'L' inside toLaurent); underlying projections are real API"
+    },
+    {
+     "i": 57,
+     "name": "BoundedAtFilter",
+     "arm": "E",
+     "task_id": "fresh_064",
+     "oracle": "hallucinated",
+     "truth": "real",
+     "note": "namespaced: Filter.BoundedAtFilter (Order/Filter/ZeroAndBoundedAtFilter.lean:75); used bare in mathlib under open Filter"
+    },
+    {
+     "i": 58,
+     "name": "List.find_congr",
+     "arm": "A",
+     "task_id": "fresh_032",
+     "oracle": "hallucinated",
+     "truth": "not_a_citation",
+     "note": "agent's own theorem-name declaration; List version absent at pin (Nat.find_congr and Fin.find_congr exist)"
+    }
+   ]
+  },
+  "lenient_noise_excluded": {
+   "n": 51,
+   "tp": 4,
+   "fp": 18,
+   "fn": 0,
+   "tn": 29,
+   "hallucinated_precision": 0.1818,
+   "hallucinated_recall": 1.0,
+   "real_precision": 1.0,
+   "real_recall": 0.617,
+   "accuracy": 0.6471,
+   "errors": [
+    {
+     "i": 5,
+     "name": "IntegrableOn",
+     "arm": "C",
+     "task_id": "fresh_019",
+     "oracle": "hallucinated",
+     "truth": "real",
+     "note": "namespaced: MeasureTheory.IntegrableOn (IntegrableOn.lean:92, namespace MeasureTheory); bare short name standard under open MeasureTheory"
+    },
+    {
+     "i": 13,
+     "name": "M.det",
+     "arm": "A",
+     "task_id": "fresh_048",
+     "oracle": "hallucinated",
+     "truth": "real",
+     "note": "dot-notation on variable M : Matrix -> resolves to Matrix.det (real); token itself is not a global name (extractor artifact, kept as real since the cited decl exists)"
+    },
+    {
+     "i": 16,
+     "name": "AddContent",
+     "arm": "D",
+     "task_id": "fresh_055",
+     "oracle": "hallucinated",
+     "truth": "real",
+     "note": "namespaced: MeasureTheory.AddContent (AddContent.lean:76, namespace MeasureTheory at :68)"
+    },
+    {
+     "i": 18,
+     "name": "S.map",
+     "arm": "B",
+     "task_id": "fresh_076",
+     "oracle": "hallucinated",
+     "truth": "real",
+     "note": "dot-notation on variable S : ShortComplex -> ShortComplex.map (real); extractor artifact"
+    },
+    {
+     "i": 19,
+     "name": "Epi",
+     "arm": "C",
+     "task_id": "fresh_028",
+     "oracle": "hallucinated",
+     "truth": "real",
+     "note": "namespaced: CategoryTheory.Epi (Category/Basic.lean:321); bare short name standard under open CategoryTheory"
+    },
+    {
+     "i": 22,
+     "name": "SignedMeasure",
+     "arm": "B",
+     "task_id": "fresh_056",
+     "oracle": "hallucinated",
+     "truth": "real",
+     "note": "namespaced: MeasureTheory.SignedMeasure abbrev (VectorMeasure/Basic.lean:73)"
+    },
+    {
+     "i": 25,
+     "name": "M.restrict",
+     "arm": "D",
+     "task_id": "fresh_055",
+     "oracle": "hallucinated",
+     "truth": "real",
+     "note": "dot-notation on variable (Measure/content) -> Measure.restrict (real); extractor artifact"
+    },
+    {
+     "i": 27,
+     "name": "Ici",
+     "arm": "A",
+     "task_id": "fresh_025",
+     "oracle": "hallucinated",
+     "truth": "real",
+     "note": "bare short name of Set.Ici (also Finset.Ici); requires open Set but denotes a real decl"
+    },
+    {
+     "i": 30,
+     "name": "SignedMeasure",
+     "arm": "A",
+     "task_id": "fresh_056",
+     "oracle": "hallucinated",
+     "truth": "real",
+     "note": "namespaced: MeasureTheory.SignedMeasure"
+    },
+    {
+     "i": 31,
+     "name": "Icc",
+     "arm": "C",
+     "task_id": "fresh_087",
+     "oracle": "hallucinated",
+     "truth": "real",
+     "note": "bare short name of Set.Icc; real decl"
+    },
+    {
+     "i": 32,
+     "name": "Epi",
+     "arm": "B",
+     "task_id": "fresh_028",
+     "oracle": "hallucinated",
+     "truth": "real",
+     "note": "namespaced: CategoryTheory.Epi"
+    },
+    {
+     "i": 34,
+     "name": "JordanDecomposition.negPart",
+     "arm": "D",
+     "task_id": "fresh_056",
+     "oracle": "hallucinated",
+     "truth": "real",
+     "note": "structure-field projection of MeasureTheory.JordanDecomposition (Jordan.lean structure fields posPart/negPart); cited without MeasureTheory prefix"
+    },
+    {
+     "i": 36,
+     "name": "JordanDecomposition.toSignedMeasure",
+     "arm": "C",
+     "task_id": "fresh_056",
+     "oracle": "hallucinated",
+     "truth": "real",
+     "note": "MeasureTheory.JordanDecomposition.toSignedMeasure (Jordan.lean:149, namespace JordanDecomposition at :72); cited without MeasureTheory prefix"
+    },
+    {
+     "i": 41,
+     "name": "Measure",
+     "arm": "D",
+     "task_id": "fresh_055",
+     "oracle": "hallucinated",
+     "truth": "real",
+     "note": "namespaced: MeasureTheory.Measure (MeasureSpaceDef.lean:77)"
+    },
+    {
+     "i": 46,
+     "name": "M.det",
+     "arm": "C",
+     "task_id": "fresh_048",
+     "oracle": "hallucinated",
+     "truth": "real",
+     "note": "dot-notation on variable M : Matrix -> Matrix.det; extractor artifact"
+    },
+    {
+     "i": 47,
+     "name": "PseudoMetrizableSpace",
+     "arm": "E",
+     "task_id": "fresh_051",
+     "oracle": "hallucinated",
+     "truth": "real",
+     "note": "namespaced: TopologicalSpace.PseudoMetrizableSpace (Topology/Metrizable/Basic.lean:40); bare short name standard under open TopologicalSpace"
+    },
+    {
+     "i": 51,
+     "name": "S.Exact",
+     "arm": "E",
+     "task_id": "fresh_076",
+     "oracle": "hallucinated",
+     "truth": "real",
+     "note": "dot-notation on variable S : ShortComplex -> ShortComplex.Exact structure (ShortComplex/Exact.lean:45); extractor artifact"
+    },
+    {
+     "i": 57,
+     "name": "BoundedAtFilter",
+     "arm": "E",
+     "task_id": "fresh_064",
+     "oracle": "hallucinated",
+     "truth": "real",
+     "note": "namespaced: Filter.BoundedAtFilter (Order/Filter/ZeroAndBoundedAtFilter.lean:75); used bare in mathlib under open Filter"
+    }
+   ]
+  },
+  "all_rows": [
+   {
+    "i": 0,
+    "name": "IsImmersion",
+    "arm": "E",
+    "task_id": "fresh_034",
+    "oracle": "renamed",
+    "truth": "real",
+    "note": "namespaced: Manifold.IsImmersion at pin (Geometry/Manifold/Immersion.lean:651, namespace Manifold opens at :106); AlgebraicGeometry.IsImmersion also exists; bare root name absent"
+   },
+   {
+    "i": 1,
+    "name": "MeromorphicAt",
+    "arm": "E",
+    "task_id": "fresh_014",
+    "oracle": "exists",
+    "truth": "real",
+    "note": "root def, Analysis/Meromorphic/Basic.lean:37"
+   },
+   {
+    "i": 2,
+    "name": "FractionField",
+    "arm": "A",
+    "task_id": "fresh_041",
+    "oracle": "hallucinated",
+    "truth": "nonexistent",
+    "note": "no def/abbrev/alias at pin or typecheck rev (only `section FractionField` headers); real names: FractionRing, IsFractionRing"
+   },
+   {
+    "i": 3,
+    "name": "IsGreatest",
+    "arm": "E",
+    "task_id": "fresh_092",
+    "oracle": "exists",
+    "truth": "real",
+    "note": "no textual def \u2014 generated by @[to_dual] from IsLeast (Order/Bounds/Defs.lean:45); root name, used bare throughout mathlib"
+   },
+   {
+    "i": 4,
+    "name": "Localization.At",
+    "arm": "B",
+    "task_id": "fresh_078",
+    "oracle": "hallucinated",
+    "truth": "nonexistent",
+    "note": "no def/abbrev At in any namespace at pin, zero usages; real name: Localization.AtPrime"
+   },
+   {
+    "i": 5,
+    "name": "IntegrableOn",
+    "arm": "C",
+    "task_id": "fresh_019",
+    "oracle": "hallucinated",
+    "truth": "real",
+    "note": "namespaced: MeasureTheory.IntegrableOn (IntegrableOn.lean:92, namespace MeasureTheory); bare short name standard under open MeasureTheory"
+   },
+   {
+    "i": 6,
+    "name": "Bottom",
+    "arm": "E",
+    "task_id": "fresh_029",
+    "oracle": "hallucinated",
+    "truth": "not_a_citation",
+    "note": "comment prose: '-- Bottom face edges'"
+   },
+   {
+    "i": 7,
+    "name": "ContMDiffAt",
+    "arm": "C",
+    "task_id": "fresh_035",
+    "oracle": "exists",
+    "truth": "real",
+    "note": "root def, Geometry/Manifold/ContMDiff/Defs.lean:181"
+   },
+   {
+    "i": 8,
+    "name": "Set.Pairwise",
+    "arm": "D",
+    "task_id": "fresh_055",
+    "oracle": "exists",
+    "truth": "real",
+    "note": "exists; used as Set.Pairwise throughout mathlib source at pin"
+   },
+   {
+    "i": 9,
+    "name": "Finsupp.single",
+    "arm": "D",
+    "task_id": "fresh_002",
+    "oracle": "exists",
+    "truth": "real",
+    "note": "exists; usage confirmed at pin"
+   },
+   {
+    "i": 10,
+    "name": "Orthonormal",
+    "arm": "A",
+    "task_id": "fresh_012",
+    "oracle": "exists",
+    "truth": "real",
+    "note": "root def, Analysis/InnerProductSpace/Orthonormal.lean:49"
+   },
+   {
+    "i": 11,
+    "name": "Rel",
+    "arm": "D",
+    "task_id": "fresh_071",
+    "oracle": "exists",
+    "truth": "real",
+    "note": "root abbrev Rel (Data/Rel.lean:609) at pin"
+   },
+   {
+    "i": 12,
+    "name": "Ideal.vanishingLocus",
+    "arm": "B",
+    "task_id": "fresh_077",
+    "oracle": "hallucinated",
+    "truth": "nonexistent",
+    "note": "zero 'vanishingLocus' hits at pin AND typecheck rev; real names: zeroLocus / vanishingIdeal"
+   },
+   {
+    "i": 13,
+    "name": "M.det",
+    "arm": "A",
+    "task_id": "fresh_048",
+    "oracle": "hallucinated",
+    "truth": "real",
+    "note": "dot-notation on variable M : Matrix -> resolves to Matrix.det (real); token itself is not a global name (extractor artifact, kept as real since the cited decl exists)"
+   },
+   {
+    "i": 14,
+    "name": "Continuous",
+    "arm": "B",
+    "task_id": "fresh_034",
+    "oracle": "exists",
+    "truth": "real",
+    "note": "root structure, Topology/Defs/Basic.lean:154"
+   },
+   {
+    "i": 15,
+    "name": "Mathlib.LinearAlgebra.Eigenspace.Semisimple",
+    "arm": "D",
+    "task_id": "fresh_045",
+    "oracle": "hallucinated",
+    "truth": "not_a_citation",
+    "note": "module name in an import line, not a declaration; module exists at pin"
+   },
+   {
+    "i": 16,
+    "name": "AddContent",
+    "arm": "D",
+    "task_id": "fresh_055",
+    "oracle": "hallucinated",
+    "truth": "real",
+    "note": "namespaced: MeasureTheory.AddContent (AddContent.lean:76, namespace MeasureTheory at :68)"
+   },
+   {
+    "i": 17,
+    "name": "IsImmersion",
+    "arm": "A",
+    "task_id": "fresh_037",
+    "oracle": "renamed",
+    "truth": "real",
+    "note": "same as i=0: Manifold.IsImmersion at pin"
+   },
+   {
+    "i": 18,
+    "name": "S.map",
+    "arm": "B",
+    "task_id": "fresh_076",
+    "oracle": "hallucinated",
+    "truth": "real",
+    "note": "dot-notation on variable S : ShortComplex -> ShortComplex.map (real); extractor artifact"
+   },
+   {
+    "i": 19,
+    "name": "Epi",
+    "arm": "C",
+    "task_id": "fresh_028",
+    "oracle": "hallucinated",
+    "truth": "real",
+    "note": "namespaced: CategoryTheory.Epi (Category/Basic.lean:321); bare short name standard under open CategoryTheory"
+   },
+   {
+    "i": 20,
+    "name": "Set.Ici",
+    "arm": "E",
+    "task_id": "fresh_025",
+    "oracle": "exists",
+    "truth": "real",
+    "note": "exists; usage confirmed at pin"
+   },
+   {
+    "i": 21,
+    "name": "Monotone.const_smul_nonneg",
+    "arm": "D",
+    "task_id": "fresh_006",
+    "oracle": "hallucinated",
+    "truth": "not_a_citation",
+    "note": "agent's own theorem-name declaration (task fresh_006 targets Monotone.const_smul, added post-pin); name itself absent at pin"
+   },
+   {
+    "i": 22,
+    "name": "SignedMeasure",
+    "arm": "B",
+    "task_id": "fresh_056",
+    "oracle": "hallucinated",
+    "truth": "real",
+    "note": "namespaced: MeasureTheory.SignedMeasure abbrev (VectorMeasure/Basic.lean:73)"
+   },
+   {
+    "i": 23,
+    "name": "NumberField",
+    "arm": "C",
+    "task_id": "fresh_067",
+    "oracle": "exists",
+    "truth": "real",
+    "note": "root class, NumberTheory/NumberField/Basic.lean:43"
+   },
+   {
+    "i": 24,
+    "name": "SignedMeasure.jordan",
+    "arm": "A",
+    "task_id": "fresh_056",
+    "oracle": "hallucinated",
+    "truth": "not_a_citation",
+    "note": "agent's own theorem-name declaration; no decl 'jordan' at pin (real API: toJordanDecomposition)"
+   },
+   {
+    "i": 25,
+    "name": "M.restrict",
+    "arm": "D",
+    "task_id": "fresh_055",
+    "oracle": "hallucinated",
+    "truth": "real",
+    "note": "dot-notation on variable (Measure/content) -> Measure.restrict (real); extractor artifact"
+   },
+   {
+    "i": 26,
+    "name": "Monoid",
+    "arm": "C",
+    "task_id": "fresh_001",
+    "oracle": "exists",
+    "truth": "real",
+    "note": "root class, Algebra/Group/Defs.lean:673"
+   },
+   {
+    "i": 27,
+    "name": "Ici",
+    "arm": "A",
+    "task_id": "fresh_025",
+    "oracle": "hallucinated",
+    "truth": "real",
+    "note": "bare short name of Set.Ici (also Finset.Ici); requires open Set but denotes a real decl"
+   },
+   {
+    "i": 28,
+    "name": "PseudoMetricSpace",
+    "arm": "B",
+    "task_id": "fresh_051",
+    "oracle": "exists",
+    "truth": "real",
+    "note": "root class, Topology/MetricSpace/Pseudo/Defs.lean:141"
+   },
+   {
+    "i": 29,
+    "name": "Monoid",
+    "arm": "A",
+    "task_id": "fresh_001",
+    "oracle": "exists",
+    "truth": "real",
+    "note": "root class"
+   },
+   {
+    "i": 30,
+    "name": "SignedMeasure",
+    "arm": "A",
+    "task_id": "fresh_056",
+    "oracle": "hallucinated",
+    "truth": "real",
+    "note": "namespaced: MeasureTheory.SignedMeasure"
+   },
+   {
+    "i": 31,
+    "name": "Icc",
+    "arm": "C",
+    "task_id": "fresh_087",
+    "oracle": "hallucinated",
+    "truth": "real",
+    "note": "bare short name of Set.Icc; real decl"
+   },
+   {
+    "i": 32,
+    "name": "Epi",
+    "arm": "B",
+    "task_id": "fresh_028",
+    "oracle": "hallucinated",
+    "truth": "real",
+    "note": "namespaced: CategoryTheory.Epi"
+   },
+   {
+    "i": 33,
+    "name": "BddBelow",
+    "arm": "A",
+    "task_id": "fresh_096",
+    "oracle": "exists",
+    "truth": "real",
+    "note": "@[to_dual]-generated from BddAbove (Order/Bounds/Defs.lean:38); root name"
+   },
+   {
+    "i": 34,
+    "name": "JordanDecomposition.negPart",
+    "arm": "D",
+    "task_id": "fresh_056",
+    "oracle": "hallucinated",
+    "truth": "real",
+    "note": "structure-field projection of MeasureTheory.JordanDecomposition (Jordan.lean structure fields posPart/negPart); cited without MeasureTheory prefix"
+   },
+   {
+    "i": 35,
+    "name": "Basis",
+    "arm": "D",
+    "task_id": "fresh_010",
+    "oracle": "renamed",
+    "truth": "renamed",
+    "note": "former root name; at pin the linear-algebra Basis is Module.Basis (LinearAlgebra/Basis/Defs.lean:90 inside namespace Module)"
+   },
+   {
+    "i": 36,
+    "name": "JordanDecomposition.toSignedMeasure",
+    "arm": "C",
+    "task_id": "fresh_056",
+    "oracle": "hallucinated",
+    "truth": "real",
+    "note": "MeasureTheory.JordanDecomposition.toSignedMeasure (Jordan.lean:149, namespace JordanDecomposition at :72); cited without MeasureTheory prefix"
+   },
+   {
+    "i": 37,
+    "name": "IsScalarTower",
+    "arm": "D",
+    "task_id": "fresh_041",
+    "oracle": "exists",
+    "truth": "real",
+    "note": "root class, Algebra/Group/Action/Defs.lean:210"
+   },
+   {
+    "i": 38,
+    "name": "PosMulMono",
+    "arm": "A",
+    "task_id": "fresh_005",
+    "oracle": "exists",
+    "truth": "real",
+    "note": "root class, Algebra/Order/GroupWithZero/Defs.lean:99"
+   },
+   {
+    "i": 39,
+    "name": "Matrix.det",
+    "arm": "D",
+    "task_id": "fresh_010",
+    "oracle": "exists",
+    "truth": "real",
+    "note": "def det in namespace Matrix (Matrix/Determinant/Basic.lean:60)"
+   },
+   {
+    "i": 40,
+    "name": "Then",
+    "arm": "E",
+    "task_id": "fresh_029",
+    "oracle": "hallucinated",
+    "truth": "not_a_citation",
+    "note": "comment prose: '-- Then the sixth (left) face also commutes'"
+   },
+   {
+    "i": 41,
+    "name": "Measure",
+    "arm": "D",
+    "task_id": "fresh_055",
+    "oracle": "hallucinated",
+    "truth": "real",
+    "note": "namespaced: MeasureTheory.Measure (MeasureSpaceDef.lean:77)"
+   },
+   {
+    "i": 42,
+    "name": "Finset",
+    "arm": "E",
+    "task_id": "fresh_054",
+    "oracle": "exists",
+    "truth": "real",
+    "note": "root structure, Data/Finset/Defs.lean:75"
+   },
+   {
+    "i": 43,
+    "name": "IsImmersion",
+    "arm": "C",
+    "task_id": "fresh_034",
+    "oracle": "renamed",
+    "truth": "real",
+    "note": "same as i=0: Manifold.IsImmersion at pin"
+   },
+   {
+    "i": 44,
+    "name": "Nat.divisorSum",
+    "arm": "B",
+    "task_id": "fresh_063",
+    "oracle": "hallucinated",
+    "truth": "nonexistent",
+    "note": "zero 'divisorSum' hits at pin AND typecheck rev; the divisor-sum function is sigma/ArithmeticFunction.sigma"
+   },
+   {
+    "i": 45,
+    "name": "Submodule.eq_span_of_finrank_eq_one",
+    "arm": "C",
+    "task_id": "fresh_046",
+    "oracle": "hallucinated",
+    "truth": "not_a_citation",
+    "note": "agent's own theorem-name declaration; zero hits at pin"
+   },
+   {
+    "i": 46,
+    "name": "M.det",
+    "arm": "C",
+    "task_id": "fresh_048",
+    "oracle": "hallucinated",
+    "truth": "real",
+    "note": "dot-notation on variable M : Matrix -> Matrix.det; extractor artifact"
+   },
+   {
+    "i": 47,
+    "name": "PseudoMetrizableSpace",
+    "arm": "E",
+    "task_id": "fresh_051",
+    "oracle": "hallucinated",
+    "truth": "real",
+    "note": "namespaced: TopologicalSpace.PseudoMetrizableSpace (Topology/Metrizable/Basic.lean:40); bare short name standard under open TopologicalSpace"
+   },
+   {
+    "i": 48,
+    "name": "OrderTopology",
+    "arm": "B",
+    "task_id": "fresh_096",
+    "oracle": "exists",
+    "truth": "real",
+    "note": "root class, Topology/Order/Basic.lean:79"
+   },
+   {
+    "i": 49,
+    "name": "Antitone",
+    "arm": "C",
+    "task_id": "fresh_005",
+    "oracle": "exists",
+    "truth": "real",
+    "note": "root def, Order/Monotone/Defs.lean:68"
+   },
+   {
+    "i": 50,
+    "name": "OrthonormalBasis",
+    "arm": "C",
+    "task_id": "fresh_012",
+    "oracle": "exists",
+    "truth": "real",
+    "note": "root structure, Analysis/InnerProductSpace/PiL2.lean:392"
+   },
+   {
+    "i": 51,
+    "name": "S.Exact",
+    "arm": "E",
+    "task_id": "fresh_076",
+    "oracle": "hallucinated",
+    "truth": "real",
+    "note": "dot-notation on variable S : ShortComplex -> ShortComplex.Exact structure (ShortComplex/Exact.lean:45); extractor artifact"
+   },
+   {
+    "i": 52,
+    "name": "IsImmersion",
+    "arm": "B",
+    "task_id": "fresh_034",
+    "oracle": "renamed",
+    "truth": "real",
+    "note": "same as i=0: Manifold.IsImmersion at pin"
+   },
+   {
+    "i": 53,
+    "name": "Equivalence",
+    "arm": "A",
+    "task_id": "fresh_071",
+    "oracle": "exists",
+    "truth": "real",
+    "note": "Lean-core structure Equivalence (Init.Core); CategoryTheory.Equivalence also exists namespaced"
+   },
+   {
+    "i": 54,
+    "name": "IsManifold",
+    "arm": "E",
+    "task_id": "fresh_034",
+    "oracle": "exists",
+    "truth": "real",
+    "note": "root class, Geometry/Manifold/IsManifold/Basic.lean:786"
+   },
+   {
+    "i": 55,
+    "name": "Laurent.coeff.support",
+    "arm": "E",
+    "task_id": "fresh_008",
+    "oracle": "hallucinated",
+    "truth": "not_a_citation",
+    "note": "mid-dot-chain fragment of `f.toLaurent.coeff.support` (regex starts at the capital 'L' inside toLaurent); underlying projections are real API"
+   },
+   {
+    "i": 56,
+    "name": "WithTop",
+    "arm": "B",
+    "task_id": "fresh_034",
+    "oracle": "exists",
+    "truth": "real",
+    "note": "@[to_dual]-generated from WithBot (Order/TypeTags.lean); root name, no textual def"
+   },
+   {
+    "i": 57,
+    "name": "BoundedAtFilter",
+    "arm": "E",
+    "task_id": "fresh_064",
+    "oracle": "hallucinated",
+    "truth": "real",
+    "note": "namespaced: Filter.BoundedAtFilter (Order/Filter/ZeroAndBoundedAtFilter.lean:75); used bare in mathlib under open Filter"
+   },
+   {
+    "i": 58,
+    "name": "List.find_congr",
+    "arm": "A",
+    "task_id": "fresh_032",
+    "oracle": "hallucinated",
+    "truth": "not_a_citation",
+    "note": "agent's own theorem-name declaration; List version absent at pin (Nat.find_congr and Fin.find_congr exist)"
+   },
+   {
+    "i": 59,
+    "name": "LinearIsometry.normDet_eq_one",
+    "arm": "B",
+    "task_id": "fresh_010",
+    "oracle": "exists",
+    "truth": "not_a_citation",
+    "note": "agent's own theorem-name declaration (heads `theorem LinearIsometry.normDet_eq_one`); NB the name does exist at pin: theorem _root_.LinearIsometry.normDet_eq_one, Analysis/InnerProductSpace/NormDet.lean:214"
+   }
+  ]
+ },
+ "adjusted_oracle_sensitivity": {
+  "rules": "R1 comments, R2 imports, R3 self-declarations, R4 single-letter dot-notation heads (dropped); R5 single-segment-prefix namespace resolution (reclassified to exists)",
+  "per_arm": {
+   "A": {
+    "n_runs": 100,
+    "runs_any_halluc": 37,
+    "run_rate": 0.37,
+    "run_wilson95": [
+     0.2818,
+     0.4678
+    ],
+    "citations_kept": 428,
+    "citations_halluc": 50,
+    "citation_rate": 0.1168,
+    "tokens_dropped_R1_R4": 15,
+    "tokens_reclassified_R5": 29
+   },
+   "B": {
+    "n_runs": 100,
+    "runs_any_halluc": 30,
+    "run_rate": 0.3,
+    "run_wilson95": [
+     0.2189,
+     0.3958
+    ],
+    "citations_kept": 416,
+    "citations_halluc": 38,
+    "citation_rate": 0.0913,
+    "tokens_dropped_R1_R4": 13,
+    "tokens_reclassified_R5": 25
+   },
+   "C": {
+    "n_runs": 100,
+    "runs_any_halluc": 11,
+    "run_rate": 0.11,
+    "run_wilson95": [
+     0.0625,
+     0.1863
+    ],
+    "citations_kept": 500,
+    "citations_halluc": 26,
+    "citation_rate": 0.052,
+    "tokens_dropped_R1_R4": 17,
+    "tokens_reclassified_R5": 65
+   },
+   "D": {
+    "n_runs": 100,
+    "runs_any_halluc": 6,
+    "run_rate": 0.06,
+    "run_wilson95": [
+     0.0278,
+     0.1248
+    ],
+    "citations_kept": 457,
+    "citations_halluc": 7,
+    "citation_rate": 0.0153,
+    "tokens_dropped_R1_R4": 15,
+    "tokens_reclassified_R5": 10
+   },
+   "E": {
+    "n_runs": 100,
+    "runs_any_halluc": 10,
+    "run_rate": 0.1,
+    "run_wilson95": [
+     0.0552,
+     0.1744
+    ],
+    "citations_kept": 483,
+    "citations_halluc": 14,
+    "citation_rate": 0.029,
+    "tokens_dropped_R1_R4": 22,
+    "tokens_reclassified_R5": 71
+   }
+  },
+  "mcnemar_pairs": {
+   "D_vs_E": {
+    "n_paired": 100,
+    "D_only": 6,
+    "E_only": 10,
+    "discordant": 16,
+    "p_mcnemar_exact_two_sided": 0.454
+   },
+   "D_vs_C": {
+    "n_paired": 100,
+    "D_only": 5,
+    "C_only": 10,
+    "discordant": 15,
+    "p_mcnemar_exact_two_sided": 0.302
+   },
+   "D_vs_A": {
+    "n_paired": 100,
+    "D_only": 3,
+    "A_only": 34,
+    "discordant": 37,
+    "p_mcnemar_exact_two_sided": 1.23e-07
+   },
+   "D_vs_B": {
+    "n_paired": 100,
+    "D_only": 5,
+    "B_only": 29,
+    "discordant": 34,
+    "p_mcnemar_exact_two_sided": 3.86e-05
+   },
+   "E_vs_C": {
+    "n_paired": 100,
+    "E_only": 3,
+    "C_only": 4,
+    "discordant": 7,
+    "p_mcnemar_exact_two_sided": 1.0
+   }
+  }
+ },
+ "fp_mode_decomposition_strict26": {
+  "namespace_short_name": {
+   "n": 13,
+   "items": [
+    "IntegrableOn",
+    "AddContent",
+    "Epi(x2)",
+    "SignedMeasure(x2)",
+    "Measure",
+    "Ici",
+    "Icc",
+    "PseudoMetrizableSpace",
+    "BoundedAtFilter",
+    "JordanDecomposition.negPart",
+    "JordanDecomposition.toSignedMeasure"
+   ]
+  },
+  "self_declared_theorem_name": {
+   "n": 4,
+   "items": [
+    "Monotone.const_smul_nonneg",
+    "SignedMeasure.jordan",
+    "Submodule.eq_span_of_finrank_eq_one",
+    "List.find_congr"
+   ]
+  },
+  "dot_notation_on_variable": {
+   "n": 5,
+   "items": [
+    "M.det(x2)",
+    "M.restrict",
+    "S.map",
+    "S.Exact"
+   ]
+  },
+  "comment_prose": {
+   "n": 2,
+   "items": [
+    "Bottom",
+    "Then"
+   ]
+  },
+  "import_line_module_name": {
+   "n": 1,
+   "items": [
+    "Mathlib.LinearAlgebra.Eigenspace.Semisimple"
+   ]
+  },
+  "mid_dot_chain_fragment": {
+   "n": 1,
+   "items": [
+    "Laurent.coeff.support"
+   ]
+  }
+ },
+ "confirmed_true_hallucinations_in_sample": [
+  {
+   "name": "FractionField",
+   "arm": "A",
+   "task_id": "fresh_041",
+   "real_name": "FractionRing"
+  },
+  {
+   "name": "Localization.At",
+   "arm": "B",
+   "task_id": "fresh_078",
+   "real_name": "Localization.AtPrime"
+  },
+  {
+   "name": "Ideal.vanishingLocus",
+   "arm": "B",
+   "task_id": "fresh_077",
+   "real_name": "zeroLocus/vanishingIdeal"
+  },
+  {
+   "name": "Nat.divisorSum",
+   "arm": "B",
+   "task_id": "fresh_063",
+   "real_name": "ArithmeticFunction.sigma"
+  }
+ ],
+ "adjusted_vs_blinded_truth_agreement": {
+  "agree": 59,
+  "n": 60,
+  "sole_miss": "Laurent.coeff.support (mid-dot-chain fragment, R4 does not catch)"
+ }
+}

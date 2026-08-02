@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Adds an extra hypothesis `hi : MeasurableSet i` not present in the gold statement, restricting the claim to measurable sets only; gold's inequality holds for arbitrary sets (signed measures are 0 on non-measurable sets by definition, so no measurability hypothesis is needed)",
+  "Uses `(s.totalVariation i : ℝ)`, an anonymous coercion from the ℝ≥0∞-valued `s.totalVariation i` to ℝ; Mathlib does not provide a direct `Coe ℝ≥0∞ ℝ` instance (only `ENNReal.toReal`/the `.real` accessor used in gold), so this cast likely fails to elaborate as written"
+ ],
+ "arm": "E",
+ "task_id": "fresh_058",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 48.0,
+ "judge_cost_usd": 0.144104,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "fcff02aa30e8a8c08a6fa50d5ddce80a820134e12bed49900448a039652a73a6"
+}
