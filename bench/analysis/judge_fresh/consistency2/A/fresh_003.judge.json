@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Adds hypothesis `ha0 : a0 ∈ f.support` not present in gold's `UniqueMul` hypothesis; `UniqueMul f.coeff.support g.coeff.support a0 b0` can hold vacuously (no pair a∈supp f, b∈supp g with a*b=a0*b0) without a0 ∈ supp f, so the produced statement excludes cases the gold covers.",
+  "Adds hypothesis `hb0 : b0 ∈ g.support` for the same reason — not implied by UniqueMul in the vacuous case.",
+  "Uses `[Monoid G]` instead of gold's `[Mul A]`, an unnecessarily strong typeclass assumption (requires associativity and identity) that narrows the class of algebraic structures the theorem applies to compared to the gold, which only needs a `Mul` instance for the monoid-algebra multiplication to be defined.",
+  "Adds `[DecidableEq G]`, a hypothesis with no counterpart in the gold statement.",
+  "Net effect: the produced theorem is a strictly weaker/special case of the gold theorem (restricted to nonvacuous, monoid, decidable-equality settings) rather than the same general proposition."
+ ],
+ "arm": "A",
+ "task_id": "fresh_003",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 85.0,
+ "judge_cost_usd": 0.267368,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "e75d39fb2e4e3655cb01fd32ba80f324c691f8c819c769512b97789333152d98"
+}

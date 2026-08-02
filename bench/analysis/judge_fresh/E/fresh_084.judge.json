@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Requires f to be a continuous linear map (E →L[𝕜] F) instead of a general (possibly discontinuous) linear map (E →ₗ[𝕜] F) as in gold — this is an added hypothesis not present in the gold statement, whose whole point is deriving closedness of range from a linear (not a priori continuous) map.",
+  "Weakens the field hypotheses on 𝕜 from NontriviallyNormedField + CompleteSpace (a complete nontrivially normed field) to just DivisionRing + TopologicalRing, dropping the norm structure, completeness, and commutativity — these are essential to the gold result and their absence changes the theorem materially.",
+  "Adds a full topological-vector-space requirement on E (TopologicalAddCommGroup, ContinuousSMul) whereas gold's inner theorem statement only requires E to be an AddCommGroup with a Module structure (no topology on E at all), since f need not be continuous.",
+  "Uses FiniteDimensional 𝕜 (E ⧸ M) in place of the s.CoFG typeclass; plausible match for 'finite codimension' but not verified to be definitionally the same notion as CoFG in this generality."
+ ],
+ "arm": "E",
+ "task_id": "fresh_084",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 49.9,
+ "judge_cost_usd": 0.153442,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "22f8e0b8a6ac342aeb79b055311181eaac83be9a9c806e5aa18292259b993b10"
+}

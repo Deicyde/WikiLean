@@ -1,0 +1,2379 @@
+{
+ "provenance": {
+  "run_rows": "bench/v2/runs/agent/{qr810,mpr}/{N,F,W,WF}/claude-sonnet-5/*.json",
+  "transcripts": "same dirs, *.stream.jsonl.gz (raw --output-format stream-json)",
+  "gold": "bench/v2/data/MathlibQR.json + MathlibQR_shared171.json (fair-810) and bench/v2/data/MathlibMPR.json \u2014 pinned frenzymath/LeanSearch-v2@94f4888cbaf9, CC BY 4.0",
+  "metrics": "imported unchanged from bench/v2/score_retrieval.py (exact full-name match, R@10 / nDCG@10 / group-R@10)",
+  "system_rows": "bench/v2/runs/system/{qr810,mpr}/wikibrain/*.json",
+  "deterministic": "no sampling / LLM / network; reruns are byte-identical"
+ },
+ "repair": {
+  "qr810": {
+   "N": {
+    "n_rows": 810,
+    "n_empty_ranked": 143,
+    "n_empty_from_timeout": 0,
+    "n_repaired_nonempty": 104,
+    "n_gold_recovered_top10": 12,
+    "tier_histogram": {
+     "T2_backtick": 12,
+     "T3_dotted": 9,
+     "T4_compound": 83,
+     "none": 39
+    },
+    "strict": {
+     "n_scored": 810,
+     "n_missing": 0,
+     "recall@10": 0.6333,
+     "ndcg@10": 0.5975,
+     "ndcg@10_by_style": {
+      "q1a_lean": 0.6996,
+      "q1b_latex": 0.6434,
+      "q1c_natural": 0.6908,
+      "q2_slogan": 0.4958,
+      "q3_nickname": 0.4425,
+      "q4_special_case": 0.282
+     }
+    },
+    "lenient": {
+     "n_scored": 810,
+     "n_missing": 0,
+     "recall@10": 0.6481,
+     "ndcg@10": 0.6114,
+     "ndcg@10_by_style": {
+      "q1a_lean": 0.7113,
+      "q1b_latex": 0.6434,
+      "q1c_natural": 0.6967,
+      "q2_slogan": 0.5212,
+      "q3_nickname": 0.4795,
+      "q4_special_case": 0.282
+     }
+    },
+    "oracle_ceiling": {
+     "n_scored": 810,
+     "n_missing": 0,
+     "recall@10": 0.8099,
+     "ndcg@10": 0.774,
+     "ndcg@10_by_style": {
+      "q1a_lean": 0.8055,
+      "q1b_latex": 0.7195,
+      "q1c_natural": 0.8143,
+      "q2_slogan": 0.7935,
+      "q3_nickname": 0.8036,
+      "q4_special_case": 0.369
+     }
+    }
+   },
+   "F": {
+    "n_rows": 810,
+    "n_empty_ranked": 2,
+    "n_empty_from_timeout": 0,
+    "n_repaired_nonempty": 1,
+    "n_gold_recovered_top10": 1,
+    "tier_histogram": {
+     "T2_backtick": 1,
+     "none": 1
+    },
+    "strict": {
+     "n_scored": 810,
+     "n_missing": 0,
+     "recall@10": 0.8309,
+     "ndcg@10": 0.7901,
+     "ndcg@10_by_style": {
+      "q1a_lean": 0.8756,
+      "q1b_latex": 0.759,
+      "q1c_natural": 0.824,
+      "q2_slogan": 0.7775,
+      "q3_nickname": 0.7573,
+      "q4_special_case": 0.3836
+     }
+    },
+    "lenient": {
+     "n_scored": 810,
+     "n_missing": 0,
+     "recall@10": 0.8321,
+     "ndcg@10": 0.7913,
+     "ndcg@10_by_style": {
+      "q1a_lean": 0.8756,
+      "q1b_latex": 0.7649,
+      "q1c_natural": 0.824,
+      "q2_slogan": 0.7775,
+      "q3_nickname": 0.7573,
+      "q4_special_case": 0.3836
+     }
+    },
+    "oracle_ceiling": {
+     "n_scored": 810,
+     "n_missing": 0,
+     "recall@10": 0.8333,
+     "ndcg@10": 0.7925,
+     "ndcg@10_by_style": {
+      "q1a_lean": 0.8756,
+      "q1b_latex": 0.7649,
+      "q1c_natural": 0.8299,
+      "q2_slogan": 0.7775,
+      "q3_nickname": 0.7573,
+      "q4_special_case": 0.3836
+     }
+    }
+   },
+   "W": {
+    "n_rows": 810,
+    "n_empty_ranked": 5,
+    "n_empty_from_timeout": 5,
+    "n_repaired_nonempty": 1,
+    "n_gold_recovered_top10": 0,
+    "tier_histogram": {
+     "T4_compound": 1,
+     "none": 4
+    },
+    "strict": {
+     "n_scored": 810,
+     "n_missing": 0,
+     "recall@10": 0.816,
+     "ndcg@10": 0.7806,
+     "ndcg@10_by_style": {
+      "q1a_lean": 0.8173,
+      "q1b_latex": 0.7648,
+      "q1c_natural": 0.8238,
+      "q2_slogan": 0.7526,
+      "q3_nickname": 0.7787,
+      "q4_special_case": 0.5225
+     }
+    },
+    "lenient": {
+     "n_scored": 810,
+     "n_missing": 0,
+     "recall@10": 0.816,
+     "ndcg@10": 0.7806,
+     "ndcg@10_by_style": {
+      "q1a_lean": 0.8173,
+      "q1b_latex": 0.7648,
+      "q1c_natural": 0.8238,
+      "q2_slogan": 0.7526,
+      "q3_nickname": 0.7787,
+      "q4_special_case": 0.5225
+     }
+    },
+    "oracle_ceiling": {
+     "n_scored": 810,
+     "n_missing": 0,
+     "recall@10": 0.8222,
+     "ndcg@10": 0.7868,
+     "ndcg@10_by_style": {
+      "q1a_lean": 0.8173,
+      "q1b_latex": 0.7765,
+      "q1c_natural": 0.8297,
+      "q2_slogan": 0.7645,
+      "q3_nickname": 0.7787,
+      "q4_special_case": 0.5225
+     }
+    }
+   },
+   "WF": {
+    "n_rows": 810,
+    "n_empty_ranked": 1,
+    "n_empty_from_timeout": 0,
+    "n_repaired_nonempty": 1,
+    "n_gold_recovered_top10": 0,
+    "tier_histogram": {
+     "T2_backtick": 1
+    },
+    "strict": {
+     "n_scored": 810,
+     "n_missing": 0,
+     "recall@10": 0.8852,
+     "ndcg@10": 0.8394,
+     "ndcg@10_by_style": {
+      "q1a_lean": 0.8877,
+      "q1b_latex": 0.8566,
+      "q1c_natural": 0.8562,
+      "q2_slogan": 0.8158,
+      "q3_nickname": 0.8078,
+      "q4_special_case": 0.5513
+     }
+    },
+    "lenient": {
+     "n_scored": 810,
+     "n_missing": 0,
+     "recall@10": 0.8852,
+     "ndcg@10": 0.8394,
+     "ndcg@10_by_style": {
+      "q1a_lean": 0.8877,
+      "q1b_latex": 0.8566,
+      "q1c_natural": 0.8562,
+      "q2_slogan": 0.8158,
+      "q3_nickname": 0.8078,
+      "q4_special_case": 0.5513
+     }
+    },
+    "oracle_ceiling": {
+     "n_scored": 810,
+     "n_missing": 0,
+     "recall@10": 0.8864,
+     "ndcg@10": 0.8406,
+     "ndcg@10_by_style": {
+      "q1a_lean": 0.8877,
+      "q1b_latex": 0.8566,
+      "q1c_natural": 0.8621,
+      "q2_slogan": 0.8158,
+      "q3_nickname": 0.8078,
+      "q4_special_case": 0.5513
+     }
+    }
+   }
+  },
+  "mpr": {
+   "N": {
+    "n_rows": 69,
+    "n_empty_ranked": 15,
+    "n_empty_from_timeout": 0,
+    "n_repaired_nonempty": 14,
+    "n_gold_recovered_top10": 1,
+    "tier_histogram": {
+     "T2_backtick": 1,
+     "T3_dotted": 2,
+     "T4_compound": 11,
+     "none": 1
+    },
+    "strict": {
+     "n_scored": 69,
+     "n_missing": 0,
+     "group_recall@10": 0.2025
+    },
+    "lenient": {
+     "n_scored": 69,
+     "n_missing": 0,
+     "group_recall@10": 0.2062
+    },
+    "oracle_ceiling": {
+     "n_scored": 69,
+     "n_missing": 0,
+     "group_recall@10": 0.3073
+    }
+   },
+   "F": {
+    "n_rows": 69,
+    "n_empty_ranked": 0,
+    "n_empty_from_timeout": 0,
+    "n_repaired_nonempty": 0,
+    "n_gold_recovered_top10": 0,
+    "tier_histogram": {},
+    "strict": {
+     "n_scored": 69,
+     "n_missing": 0,
+     "group_recall@10": 0.4532
+    },
+    "lenient": {
+     "n_scored": 69,
+     "n_missing": 0,
+     "group_recall@10": 0.4532
+    },
+    "oracle_ceiling": {
+     "n_scored": 69,
+     "n_missing": 0,
+     "group_recall@10": 0.4532
+    }
+   },
+   "W": {
+    "n_rows": 69,
+    "n_empty_ranked": 0,
+    "n_empty_from_timeout": 0,
+    "n_repaired_nonempty": 0,
+    "n_gold_recovered_top10": 0,
+    "tier_histogram": {},
+    "strict": {
+     "n_scored": 69,
+     "n_missing": 0,
+     "group_recall@10": 0.2721
+    },
+    "lenient": {
+     "n_scored": 69,
+     "n_missing": 0,
+     "group_recall@10": 0.2721
+    },
+    "oracle_ceiling": {
+     "n_scored": 69,
+     "n_missing": 0,
+     "group_recall@10": 0.2721
+    }
+   },
+   "WF": {
+    "n_rows": 69,
+    "n_empty_ranked": 0,
+    "n_empty_from_timeout": 0,
+    "n_repaired_nonempty": 0,
+    "n_gold_recovered_top10": 0,
+    "tier_histogram": {},
+    "strict": {
+     "n_scored": 69,
+     "n_missing": 0,
+     "group_recall@10": 0.5569
+    },
+    "lenient": {
+     "n_scored": 69,
+     "n_missing": 0,
+     "group_recall@10": 0.5569
+    },
+    "oracle_ceiling": {
+     "n_scored": 69,
+     "n_missing": 0,
+     "group_recall@10": 0.5569
+    }
+   }
+  }
+ },
+ "deficit_decomposition": {
+  "qr810": {
+   "N_strict_R@10": 0.6333,
+   "N_lenient_R@10": 0.6481,
+   "N_oracle_ceiling_R@10": 0.8099,
+   "format_repair_gain_R@10": 0.0148,
+   "format_oracle_bound_R@10": 0.1766,
+   "vs": {
+    "F": {
+     "arm_lenient_R@10": 0.8321,
+     "N_deficit_strict": 0.1988,
+     "closed_by_lenient_repair": 0.0148,
+     "closed_by_lenient_repair_pct_of_deficit": 7.4,
+     "max_closable_by_any_format_fix_pct": 88.8,
+     "residual_retrieval_gap_even_at_oracle": 0.0222
+    },
+    "W": {
+     "arm_lenient_R@10": 0.816,
+     "N_deficit_strict": 0.1827,
+     "closed_by_lenient_repair": 0.0148,
+     "closed_by_lenient_repair_pct_of_deficit": 8.1,
+     "max_closable_by_any_format_fix_pct": 96.7,
+     "residual_retrieval_gap_even_at_oracle": 0.0061
+    },
+    "WF": {
+     "arm_lenient_R@10": 0.8852,
+     "N_deficit_strict": 0.2519,
+     "closed_by_lenient_repair": 0.0148,
+     "closed_by_lenient_repair_pct_of_deficit": 5.9,
+     "max_closable_by_any_format_fix_pct": 70.1,
+     "residual_retrieval_gap_even_at_oracle": 0.0753
+    }
+   }
+  }
+ },
+ "cost_table": {
+  "qr810": [
+   {
+    "block": "agent",
+    "system": "N (Sonnet agent)",
+    "n": 810,
+    "mean_cost_usd": 0.0846,
+    "n_cost_missing": 0,
+    "mean_wall_s": 15.0798,
+    "median_wall_s": 8.9,
+    "mean_tool_calls": 0.0,
+    "mean_turns": 1.0,
+    "mean_tokens_out": 1119.684
+   },
+   {
+    "block": "agent",
+    "system": "F (Sonnet agent)",
+    "n": 810,
+    "mean_cost_usd": 0.1326,
+    "n_cost_missing": 0,
+    "mean_wall_s": 13.8675,
+    "median_wall_s": 10.8,
+    "mean_tool_calls": 2.2037,
+    "mean_turns": 3.2037,
+    "mean_tokens_out": 579.5321
+   },
+   {
+    "block": "agent",
+    "system": "W (Sonnet agent)",
+    "n": 810,
+    "mean_cost_usd": 0.1977,
+    "n_cost_missing": 5,
+    "mean_wall_s": 23.7044,
+    "median_wall_s": 11.2,
+    "mean_tool_calls": 3.4864,
+    "mean_turns": 4.3155,
+    "mean_tokens_out": 1302.1416
+   },
+   {
+    "block": "agent",
+    "system": "WF (Sonnet agent)",
+    "n": 810,
+    "mean_cost_usd": 0.2065,
+    "n_cost_missing": 0,
+    "mean_wall_s": 15.2038,
+    "median_wall_s": 12.5,
+    "mean_tool_calls": 4.1988,
+    "mean_turns": 5.1988,
+    "mean_tokens_out": 741.5198
+   },
+   {
+    "block": "retriever",
+    "system": "wikibrain (deterministic pipeline)",
+    "n": 810,
+    "mean_cost_usd": 0.0,
+    "n_cost_missing": 0,
+    "mean_wall_s": null,
+    "median_wall_s": null,
+    "mean_tool_calls": 1,
+    "mean_turns": null,
+    "mean_tokens_out": 0,
+    "note": "no LLM; wall not recorded in run rows"
+   },
+   {
+    "block": "retriever",
+    "system": "published anchors (TheoremGraph / LSv2+rerank / DIVER)",
+    "n": null,
+    "mean_cost_usd": null,
+    "n_cost_missing": null,
+    "mean_wall_s": null,
+    "median_wall_s": null,
+    "mean_tool_calls": 1,
+    "mean_turns": null,
+    "mean_tokens_out": null,
+    "note": "single-call retrievers; cost/latency not published"
+   }
+  ],
+  "mpr": [
+   {
+    "block": "agent",
+    "system": "N (Sonnet agent)",
+    "n": 69,
+    "mean_cost_usd": 0.1848,
+    "n_cost_missing": 0,
+    "mean_wall_s": 50.7014,
+    "median_wall_s": 45.2,
+    "mean_tool_calls": 0.0,
+    "mean_turns": 1.0,
+    "mean_tokens_out": 4940.1449
+   },
+   {
+    "block": "agent",
+    "system": "F (Sonnet agent)",
+    "n": 69,
+    "mean_cost_usd": 0.3291,
+    "n_cost_missing": 0,
+    "mean_wall_s": 42.1899,
+    "median_wall_s": 33.4,
+    "mean_tool_calls": 6.0435,
+    "mean_turns": 7.0435,
+    "mean_tokens_out": 3142.7101
+   },
+   {
+    "block": "agent",
+    "system": "W (Sonnet agent)",
+    "n": 69,
+    "mean_cost_usd": 0.4375,
+    "n_cost_missing": 0,
+    "mean_wall_s": 59.9159,
+    "median_wall_s": 54.3,
+    "mean_tool_calls": 9.8696,
+    "mean_turns": 10.8696,
+    "mean_tokens_out": 4906.6377
+   },
+   {
+    "block": "agent",
+    "system": "WF (Sonnet agent)",
+    "n": 69,
+    "mean_cost_usd": 0.4182,
+    "n_cost_missing": 0,
+    "mean_wall_s": 38.1957,
+    "median_wall_s": 31.9,
+    "mean_tool_calls": 9.3333,
+    "mean_turns": 10.3333,
+    "mean_tokens_out": 2729.9565
+   },
+   {
+    "block": "retriever",
+    "system": "wikibrain (deterministic pipeline)",
+    "n": 69,
+    "mean_cost_usd": 0.0,
+    "n_cost_missing": 0,
+    "mean_wall_s": null,
+    "median_wall_s": null,
+    "mean_tool_calls": 1,
+    "mean_turns": null,
+    "mean_tokens_out": 0,
+    "note": "no LLM; wall not recorded in run rows"
+   },
+   {
+    "block": "retriever",
+    "system": "published anchors (TheoremGraph / LSv2+rerank / DIVER)",
+    "n": null,
+    "mean_cost_usd": null,
+    "n_cost_missing": null,
+    "mean_wall_s": null,
+    "median_wall_s": null,
+    "mean_tool_calls": 1,
+    "mean_turns": null,
+    "mean_tokens_out": null,
+    "note": "single-call retrievers; cost/latency not published"
+   }
+  ]
+ },
+ "repaired_rows_detail": {
+  "qr810": [
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "A2__q3_nickname",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "A5__q1b_latex",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "combo_self"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "A6__q1a_lean",
+    "tier": "T4_compound",
+    "n_names": 2,
+    "gold_in_lenient_top10": true,
+    "names": [
+     "normalize_associated",
+     "associated_normalize"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "A8__q3_nickname",
+    "tier": "T4_compound",
+    "n_names": 5,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "derivedSeries",
+     "derivedSeriesOfIdeal",
+     "lieIdealBracket",
+     "instBracket",
+     "DerivedSeries"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "AG2__q2_slogan",
+    "tier": "T4_compound",
+    "n_names": 4,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "BashOutput",
+     "IsAffine",
+     "AlgebraicGeometry",
+     "AffineScheme"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "AG2__q3_nickname",
+    "tier": "T4_compound",
+    "n_names": 2,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "AffineScheme",
+     "AlgebraicGeometry"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "AG3__q1a_lean",
+    "tier": "T4_compound",
+    "n_names": 3,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "ValuativeCommSq",
+     "ValuativeCriterion",
+     "AlgebraicGeometry"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "AG3__q2_slogan",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "AG3__q3_nickname",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "AG4__q3_nickname",
+    "tier": "T4_compound",
+    "n_names": 3,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "GlueData",
+     "AlgebraicGeometry",
+     "RingedSpace"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "AG5__q1a_lean",
+    "tier": "T4_compound",
+    "n_names": 2,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "IsAffineOpen",
+     "basicOpen"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "AG5__q1c_natural",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "BashOutput"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "AG5__q2_slogan",
+    "tier": "T2_backtick",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "AlgebraicGeometry.IsAffineOpen.basicOpen"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "AG6__q1a_lean",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "AG6__q1b_latex",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "isReduced"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "AG6__q2_slogan",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "AG8__q1b_latex",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "IsOpenImmersion"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "AG8__q2_slogan",
+    "tier": "T4_compound",
+    "n_names": 3,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "IsOpenImmersion",
+     "AlgebraicGeometry",
+     "OpenImmersion"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "AT3__q1b_latex",
+    "tier": "T3_dotted",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "CategoryTheory.ModelCategory"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "AT6__q1a_lean",
+    "tier": "T4_compound",
+    "n_names": 3,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "cechNerve",
+     "CechNerve",
+     "AlgebraicTopology"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "AT6__q1c_natural",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "AT6__q2_slogan",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "AT7__q1b_latex",
+    "tier": "T4_compound",
+    "n_names": 4,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "objD_comp_objD",
+     "d_comp_d",
+     "NormalizedMooreComplex",
+     "AlgebraicTopology"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "AT7__q1c_natural",
+    "tier": "T4_compound",
+    "n_names": 4,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "d_squared",
+     "NormalizedMooreComplex",
+     "AlternatingFaceMapComplex",
+     "AlgebraicTopology"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "AT8__q1a_lean",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "KanComplex"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "AT8__q2_slogan",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "KanComplex"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "AT8__q4_special_case",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "An4__q3_nickname",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "An8__q1c_natural",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "An8__q2_slogan",
+    "tier": "T4_compound",
+    "n_names": 3,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "CStarRing",
+     "InnerProductSpace",
+     "CstarAlgebra"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "An8__q3_nickname",
+    "tier": "T4_compound",
+    "n_names": 3,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "CStarRing",
+     "CStarAlgebra",
+     "ContinuousLinearMap"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "C3__q2_slogan",
+    "tier": "T4_compound",
+    "n_names": 3,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "CategoryTheory",
+     "leftUnitor",
+     "rightUnitor"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "C3__q3_nickname",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "CategoryTheory"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "C5__q3_nickname",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "C8__q1b_latex",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "CategoryTheory"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "C8__q1c_natural",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "CategoryTheory"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Cb3__q3_nickname",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Cb4__q2_slogan",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Cb5__q2_slogan",
+    "tier": "T4_compound",
+    "n_names": 3,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "adj_symm",
+     "edge_symm",
+     "SimpleGraph"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Cb8__q1a_lean",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Cb8__q1c_natural",
+    "tier": "T3_dotted",
+    "n_names": 2,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "Before.plan",
+     "tool.execute"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Cb8__q2_slogan",
+    "tier": "T4_compound",
+    "n_names": 2,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "SimpleGraph",
+     "instFintype"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Cd2__q1c_natural",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Cd2__q2_slogan",
+    "tier": "T4_compound",
+    "n_names": 2,
+    "gold_in_lenient_top10": true,
+    "names": [
+     "CondensedSet",
+     "head_limit"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Cd3__q1a_lean",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Cd3__q1b_latex",
+    "tier": "T2_backtick",
+    "n_names": 8,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "mathlib4",
+     "git",
+     "stat",
+     "CondensedMod.isSolid_iff_yoneda_bijective",
+     "solidificationYoneda",
+     "CondensedSet",
+     "CondensedMod",
+     "IsSolid"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Cd3__q1c_natural",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Cd3__q2_slogan",
+    "tier": "T4_compound",
+    "n_names": 6,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "ChildItem",
+     "ErrorAction",
+     "SilentlyContinue",
+     "IsSolid",
+     "CategoryTheory",
+     "yonedaEquiv"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Cd3__q3_nickname",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Cd4__q1a_lean",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Cd4__q1c_natural",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "ChildItem"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Cd4__q2_slogan",
+    "tier": "T4_compound",
+    "n_names": 5,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "function_calls",
+     "SolidModule",
+     "freeSolid",
+     "profiniteSolid",
+     "FreeSolid"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Cd4__q3_nickname",
+    "tier": "T3_dotted",
+    "n_names": 2,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "search_results.txt",
+     "solid_hits.txt"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Cd5__q2_slogan",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "bash_execute"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Cd5__q3_nickname",
+    "tier": "T4_compound",
+    "n_names": 2,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "mcp_darwin_powershell",
+     "timeout_ms"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Cd6__q2_slogan",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Cd8__q1a_lean",
+    "tier": "T2_backtick",
+    "n_names": 2,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "discrete",
+     "underlying"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Cd8__q2_slogan",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "CategoryTheory"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Cp1__q1c_natural",
+    "tier": "T3_dotted",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "DFA.lean'"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Cp1__q2_slogan",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Cp1__q3_nickname",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Cp2__q2_slogan",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": true,
+    "names": [
+     "RegularExpression"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Cp2__q3_nickname",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": true,
+    "names": [
+     "RegularExpression"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Cp3__q3_nickname",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "bash_execute"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Cp5__q1c_natural",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "BashOutput"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Cp5__q2_slogan",
+    "tier": "T4_compound",
+    "n_names": 3,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "append_singleton",
+     "evalFrom_append",
+     "eval_append"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Cp6__q2_slogan",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Cp8__q1c_natural",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "D1__q3_nickname",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "D4__q3_nickname",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "TotalSpace"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "D5__q1b_latex",
+    "tier": "T2_backtick",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "singleton_injective"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "D6__q2_slogan",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "D7__q2_slogan",
+    "tier": "T2_backtick",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "holor"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Dy1__q2_slogan",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Dy1__q3_nickname",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Dy3__q1c_natural",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "search_mathlib"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Dy3__q2_slogan",
+    "tier": "T2_backtick",
+    "n_names": 3,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "M",
+     "X",
+     "G"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Dy3__q3_nickname",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "IsMinimal"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Dy5__q1a_lean",
+    "tier": "T2_backtick",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "omegaLimit"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Dy8__q1a_lean",
+    "tier": "T4_compound",
+    "n_names": 2,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "IsMinimal",
+     "TopologicalEntropy"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Dy8__q1b_latex",
+    "tier": "T4_compound",
+    "n_names": 2,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "search_code",
+     "IsPretransitive"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Dy8__q1c_natural",
+    "tier": "T2_backtick",
+    "n_names": 2,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "MulAction.IsMinimal",
+     "M"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Dy8__q2_slogan",
+    "tier": "T3_dotted",
+    "n_names": 4,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "Minimal.lean'",
+     "MulAction.isMinimal",
+     "MulAction.IsPretransitive",
+     "minimal_head.txt"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "F2__q3_nickname",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": true,
+    "names": [
+     "PerfectRing"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "F3__q3_nickname",
+    "tier": "T4_compound",
+    "n_names": 3,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "IsPurelyInseparable",
+     "FieldTheory",
+     "PurelyInseparable"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "F4__q2_slogan",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "F6__q2_slogan",
+    "tier": "T4_compound",
+    "n_names": 2,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "FieldTheory",
+     "IsCoprime"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "F7__q1a_lean",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "algHom_mk_adjoin_splits"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "F7__q1c_natural",
+    "tier": "T3_dotted",
+    "n_names": 2,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "safety.searchpartner.com",
+     "UsageError.html?utm_source"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "G6__q2_slogan",
+    "tier": "T4_compound",
+    "n_names": 2,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "StructureGroupoid",
+     "ChartedSpace"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "G7__q2_slogan",
+    "tier": "T3_dotted",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "HasFDerivWithinAt.unique"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Gr1__q1b_latex",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "GroupTheory"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Gr2__q2_slogan",
+    "tier": "T2_backtick",
+    "n_names": 1,
+    "gold_in_lenient_top10": true,
+    "names": [
+     "IsPGroup"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Gr3__q2_slogan",
+    "tier": "T4_compound",
+    "n_names": 3,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "GroupTheory",
+     "IsReduced",
+     "FreeProduct"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Gr6__q1a_lean",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "FixedPointFree"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Gr8__q3_nickname",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "GroupTheory"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "I5__q2_slogan",
+    "tier": "T4_compound",
+    "n_names": 3,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "hammingDist",
+     "InformationTheory",
+     "le_add"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "L2__q3_nickname",
+    "tier": "T4_compound",
+    "n_names": 2,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "generalizedEigenspace",
+     "GeneralizedEigenspace"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "L4__q3_nickname",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": true,
+    "names": [
+     "RootPairing"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "L5__q1c_natural",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "rank_lt_aleph0"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "L6__q1b_latex",
+    "tier": "T4_compound",
+    "n_names": 2,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "det_mul_comm",
+     "det_comm"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Lo4__q3_nickname",
+    "tier": "T3_dotted",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "CLAUDE.md"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Lo5__q2_slogan",
+    "tier": "T2_backtick",
+    "n_names": 2,
+    "gold_in_lenient_top10": true,
+    "names": [
+     "Pairwise",
+     "Pairwise.mono"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Lo8__q2_slogan",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "Lo8__q4_special_case",
+    "tier": "T2_backtick",
+    "n_names": 3,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "Denumerable",
+     "Sigma",
+     "Fin"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "M2__q3_nickname",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": true,
+    "names": [
+     "IsPiSystem"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "M3__q3_nickname",
+    "tier": "T4_compound",
+    "n_names": 2,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "VectorMeasure",
+     "MeasureTheory"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "M8__q2_slogan",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "OuterMeasureClass"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "MT1__q2_slogan",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "MT4__q3_nickname",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "MT6__q1c_natural",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "MT8__q2_slogan",
+    "tier": "T4_compound",
+    "n_names": 2,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "ModelTheory",
+     "FinitelyGenerated"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "N3__q1c_natural",
+    "tier": "T4_compound",
+    "n_names": 4,
+    "gold_in_lenient_top10": true,
+    "names": [
+     "IsCyclotomicExtension",
+     "RingTheory",
+     "RootsOfUnity",
+     "NumberTheory"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "N4__q3_nickname",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "NumberTheory"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "N6__q1a_lean",
+    "tier": "T4_compound",
+    "n_names": 2,
+    "gold_in_lenient_top10": true,
+    "names": [
+     "bernoulli'_zero",
+     "NumberTheory"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "N7__q3_nickname",
+    "tier": "T4_compound",
+    "n_names": 3,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "EulerProduct",
+     "sourceCommand",
+     "IsWindows"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "O3__q3_nickname",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "O6__q1c_natural",
+    "tier": "T4_compound",
+    "n_names": 3,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "l_sSup",
+     "l_iSup",
+     "GaloisConnection"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "O8__q1a_lean",
+    "tier": "T2_backtick",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "cocardinal"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "P2__q2_slogan",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "ConditionalProbability"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "P3__q3_nickname",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "P4__q3_nickname",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "P7__q3_nickname",
+    "tier": "T4_compound",
+    "n_names": 3,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "cond_cond",
+     "cond_mul_eq",
+     "cond_eq_cond"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "R1__q1b_latex",
+    "tier": "T4_compound",
+    "n_names": 3,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "RepresentationTheory",
+     "FdRep",
+     "character_apply"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "R1__q1c_natural",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "RepresentationTheory"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "R1__q2_slogan",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "RepresentationTheory"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "R1__q3_nickname",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "RepresentationTheory"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "R5__q1a_lean",
+    "tier": "T3_dotted",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "Character.lean.orig"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "R5__q2_slogan",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "RepresentationTheory"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "R7__q2_slogan",
+    "tier": "T4_compound",
+    "n_names": 3,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "exists_leftInverse_of_injective",
+     "IsSemisimpleModule",
+     "RepresentationTheory"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "RT3__q1a_lean",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "H1Cotangent"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "RT3__q2_slogan",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "RT4__q2_slogan",
+    "tier": "T4_compound",
+    "n_names": 2,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "CoalgebraStruct",
+     "RingTheory"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "RT4__q3_nickname",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "RT6__q1b_latex",
+    "tier": "T4_compound",
+    "n_names": 2,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "DimensionLEOne",
+     "RingTheory"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "RT8__q2_slogan",
+    "tier": "T4_compound",
+    "n_names": 3,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "UniqueFactorizationMonoid",
+     "RingTheory",
+     "UniqueFactorizationDomain"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "S1__q2_slogan",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "TuringMachine"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "S2__q3_nickname",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "SetTheory"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "S6__q2_slogan",
+    "tier": "T4_compound",
+    "n_names": 3,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "aleph0_add",
+     "add_aleph0",
+     "SetTheory"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "S8__q2_slogan",
+    "tier": "T4_compound",
+    "n_names": 3,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "SetTheory",
+     "CantorNormalForm",
+     "CantorNormal"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "T2__q2_slogan",
+    "tier": "T4_compound",
+    "n_names": 3,
+    "gold_in_lenient_top10": true,
+    "names": [
+     "ClusterPt",
+     "IsCompact",
+     "clusterPt"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "T8__q1c_natural",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "NormalSpace"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "N",
+    "qid": "T8__q3_nickname",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "F",
+    "qid": "Cd3__q1c_natural",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "F",
+    "qid": "F6__q1b_latex",
+    "tier": "T2_backtick",
+    "n_names": 1,
+    "gold_in_lenient_top10": true,
+    "names": [
+     "Polynomial.separable_def"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "W",
+    "qid": "Gr6__q2_slogan",
+    "tier": "T4_compound",
+    "n_names": 2,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "GroupTheory",
+     "FixedPointFree"
+    ]
+   },
+   {
+    "bench": "qr810",
+    "arm": "W",
+    "qid": "RT8__q1b_latex",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "W",
+    "qid": "RT8__q1c_natural",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "W",
+    "qid": "RT8__q2_slogan",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "W",
+    "qid": "S1__q1b_latex",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "qr810",
+    "arm": "WF",
+    "qid": "Cd3__q1c_natural",
+    "tier": "T2_backtick",
+    "n_names": 2,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "Condensed",
+     "CondensedMod"
+    ]
+   }
+  ],
+  "mpr": [
+   {
+    "bench": "mpr",
+    "arm": "N",
+    "qid": "mathlibmpr_021",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "mahlerMeasure"
+    ]
+   },
+   {
+    "bench": "mpr",
+    "arm": "N",
+    "qid": "mathlibmpr_023",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "sq_norm_repr"
+    ]
+   },
+   {
+    "bench": "mpr",
+    "arm": "N",
+    "qid": "mathlibmpr_029",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "search_cauchy"
+    ]
+   },
+   {
+    "bench": "mpr",
+    "arm": "N",
+    "qid": "mathlibmpr_032",
+    "tier": "none",
+    "n_names": 0,
+    "gold_in_lenient_top10": false,
+    "names": []
+   },
+   {
+    "bench": "mpr",
+    "arm": "N",
+    "qid": "mathlibmpr_034",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "IsAssociatedPrime"
+    ]
+   },
+   {
+    "bench": "mpr",
+    "arm": "N",
+    "qid": "mathlibmpr_040",
+    "tier": "T4_compound",
+    "n_names": 2,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "StdSimplex",
+     "convexCombination"
+    ]
+   },
+   {
+    "bench": "mpr",
+    "arm": "N",
+    "qid": "mathlibmpr_046",
+    "tier": "T4_compound",
+    "n_names": 3,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "setInterior",
+     "LinearAlgebra",
+     "AffineSpace"
+    ]
+   },
+   {
+    "bench": "mpr",
+    "arm": "N",
+    "qid": "mathlibmpr_050",
+    "tier": "T4_compound",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "CategoryTheory"
+    ]
+   },
+   {
+    "bench": "mpr",
+    "arm": "N",
+    "qid": "mathlibmpr_058",
+    "tier": "T4_compound",
+    "n_names": 7,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "ZariskiTopology",
+     "AlgebraicGeometry",
+     "ExtensiveTopology",
+     "extensiveTopology",
+     "isSheafFor",
+     "preservesFiniteProducts",
+     "CategoryTheory"
+    ]
+   },
+   {
+    "bench": "mpr",
+    "arm": "N",
+    "qid": "mathlibmpr_063",
+    "tier": "T4_compound",
+    "n_names": 2,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "MeromorphicNFOn",
+     "meromorphicNFOn"
+    ]
+   },
+   {
+    "bench": "mpr",
+    "arm": "N",
+    "qid": "mathlibmpr_066",
+    "tier": "T4_compound",
+    "n_names": 3,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "mulHeight",
+     "AdmissibleAbsValue",
+     "IsAdmissible"
+    ]
+   },
+   {
+    "bench": "mpr",
+    "arm": "N",
+    "qid": "mathlibmpr_071",
+    "tier": "T3_dotted",
+    "n_names": 1,
+    "gold_in_lenient_top10": true,
+    "names": [
+     "HasMFDerivAt.mul"
+    ]
+   },
+   {
+    "bench": "mpr",
+    "arm": "N",
+    "qid": "mathlibmpr_077",
+    "tier": "T2_backtick",
+    "n_names": 1,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "PointedCone"
+    ]
+   },
+   {
+    "bench": "mpr",
+    "arm": "N",
+    "qid": "mathlibmpr_078",
+    "tier": "T3_dotted",
+    "n_names": 2,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "AnalyticAt.order",
+     "AnalyticAt.order_eq_zero_iff"
+    ]
+   },
+   {
+    "bench": "mpr",
+    "arm": "N",
+    "qid": "mathlibmpr_081",
+    "tier": "T4_compound",
+    "n_names": 4,
+    "gold_in_lenient_top10": false,
+    "names": [
+     "Gamma_mul_Gamma_one_sub",
+     "Gamma_mul_Gamma_eq_betaIntegral",
+     "betaIntegral",
+     "SpecialFunctions"
+    ]
+   }
+  ]
+ }
+}

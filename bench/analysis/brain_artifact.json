@@ -1,0 +1,385 @@
+{
+ "generated_by": "bench/analysis/brain_artifact.py (deterministic; no RNG)",
+ "generated_at": "2026-08-01T19:58:31",
+ "inputs": {
+  "cells": {
+   "path": "brain/data/cells.jsonl",
+   "mtime": "2026-08-01 02:19"
+  },
+  "synapses": {
+   "path": "brain/data/synapses.jsonl",
+   "mtime": "2026-08-01 02:19"
+  },
+  "frontier": {
+   "path": "brain/data/frontier.jsonl",
+   "mtime": "2026-08-01 19:37"
+  },
+  "aliases": {
+   "path": "site/assets/brain/cells/aliases.json",
+   "mtime": "2026-08-01 19:37"
+  },
+  "source_registry": {
+   "path": "catalog/data/source_registry.json",
+   "mtime": "2026-08-01 02:08"
+  },
+  "external_dir": {
+   "path": "catalog/data/external",
+   "mtime": "2026-07-18 16:17"
+  },
+  "annotations_dir": {
+   "path": "site/annotations",
+   "mtime": "2026-07-27 03:25"
+  },
+  "oracle": {
+   "path": ".claude/skills/mathlib-search/.cache/declaration-data.json",
+   "mtime": "2026-08-01 12:36"
+  },
+  "qr171": {
+   "path": "bench/v2/data/MathlibQR_shared171.json",
+   "mtime": "2026-07-24 22:27"
+  },
+  "mpr": {
+   "path": "bench/v2/data/MathlibMPR.json",
+   "mtime": "2026-07-24 22:27"
+  },
+  "fresh": {
+   "path": "bench/data/fresh_tasks.jsonl",
+   "mtime": "2026-07-18 16:17"
+  }
+ },
+ "snapshot": {
+  "cells_generated_at": "2026-08-01T06:19:38+00:00",
+  "synapses_generated_at": "2026-08-01T06:19:38+00:00",
+  "mathlib_pins": [
+   "2026-07-04",
+   "2026-07-18",
+   "bf3266149cda603f"
+  ],
+  "oracle_mtime": "2026-08-01 12:36"
+ },
+ "cells": {
+  "n_cells": 20880,
+  "multi_organ_cells": 4095,
+  "largest_cell_organs": 28,
+  "organs_total": 29051,
+  "organs_by_kind": {
+   "concept": 2969,
+   "decl": 19611,
+   "page": 3467,
+   "article": 728,
+   "statement": 2276
+  },
+  "organ_bond_types": {
+   "exact": 2534,
+   "generalization": 127,
+   "xref": 3467,
+   "article": 728,
+   "matches": 2276,
+   "formalizes": 142,
+   "special_case": 111
+  },
+  "anchor_organs_no_prov": 19666,
+  "supercell_page_organs": 645,
+  "supercell_concept_organs": 99,
+  "builder_meta_counts": {
+   "cells": 20880,
+   "synapses": 100797,
+   "organs": 29051,
+   "multi_organ_cells": 4095,
+   "largest_cell": 28
+  }
+ },
+ "decls": {
+  "distinct_decl_organs": 19611,
+  "by_library": {
+   "TauCeti": 7858,
+   "Mathlib": 7439,
+   "FormalConjectures": 4190,
+   "Init": 118,
+   "PrimeNumberTheoremAnd": 2,
+   "Batteries": 2,
+   "PFR": 1,
+   "Toric": 1
+  },
+  "mathlib_distinct": 7439,
+  "mathlib_concept_joined": 1197,
+  "any_lib_concept_joined": 1557,
+  "aliases_decls_crosscheck": 19611
+ },
+ "concepts": {
+  "distinct_qids_in_cells": 2969,
+  "concept_organs": 2969,
+  "field_concepts_as_supercell_organs": 99
+ },
+ "synapses": {
+  "n_synapses": 100797,
+  "endpoints": {
+   "cell-cell": 89472,
+   "cell-supercell": 11325
+  },
+  "synapses_carrying_kind": {
+   "depends": 67099,
+   "mentions": 12145,
+   "invocation": 9129,
+   "links": 7706,
+   "co-page": 7146,
+   "cites": 3464,
+   "relates": 2399,
+   "co-statement": 290,
+   "related": 152,
+   "special_case": 62,
+   "generalization": 42
+  },
+  "constituent_bonds_by_kind": {
+   "depends": 85652,
+   "mentions": 12361,
+   "links": 11597,
+   "invocation": 9204,
+   "co-page": 7304,
+   "cites": 3532,
+   "relates": 2505,
+   "co-statement": 290,
+   "related": 159,
+   "special_case": 62,
+   "generalization": 42
+  },
+  "bonds_total": 132708
+ },
+ "provenance_split": {
+  "classes": [
+   "human",
+   "ai-moderated",
+   "ai",
+   "automated"
+  ],
+  "organ_attach_bonds": {
+   "counts": {
+    "ai": 8,
+    "ai-moderated": 2899,
+    "automated": 5965,
+    "human": 513
+   },
+   "fractions": {
+    "ai": 0.0009,
+    "ai-moderated": 0.3089,
+    "automated": 0.6356,
+    "human": 0.0547
+   },
+   "note": "prov-carrying organ attachments only; 19666 anchor organs are definitional (no prov)"
+  },
+  "synapse_traces": {
+   "counts": {
+    "ai-moderated": 2342,
+    "automated": 130027,
+    "human": 339
+   },
+   "fractions": {
+    "ai-moderated": 0.0176,
+    "automated": 0.9798,
+    "human": 0.0026
+   }
+  }
+ },
+ "external_dbs": {
+  "dlmf": {
+   "anchored_cell_pages": 3,
+   "anchored_supercell_pages": 10,
+   "ingested_corpus_pages": 872,
+   "fetched_at": "2026-07-10T10:27:16+00:00"
+  },
+  "eom": {
+   "anchored_cell_pages": 409,
+   "anchored_supercell_pages": 18,
+   "ingested_corpus_pages": 9985,
+   "fetched_at": "2026-07-10T09:58:30+00:00"
+  },
+  "erdos": {
+   "anchored_cell_pages": 110,
+   "anchored_supercell_pages": 392,
+   "ingested_corpus_pages": 1217,
+   "fetched_at": "2026-07-17T04:38:42+00:00"
+  },
+  "kerodon": {
+   "anchored_cell_pages": 12,
+   "anchored_supercell_pages": 1,
+   "ingested_corpus_pages": 7509,
+   "fetched_at": "2026-07-12T05:23:19+00:00"
+  },
+  "lmfdb_knowl": {
+   "anchored_cell_pages": 30,
+   "anchored_supercell_pages": 0,
+   "ingested_corpus_pages": 1717,
+   "fetched_at": "2026-07-10T10:46:18+00:00"
+  },
+  "mathworld": {
+   "anchored_cell_pages": 1360,
+   "anchored_supercell_pages": 46,
+   "ingested_corpus_pages": 1408,
+   "fetched_at": "2026-07-10T09:55:42+00:00"
+  },
+  "nlab": {
+   "anchored_cell_pages": 564,
+   "anchored_supercell_pages": 29,
+   "ingested_corpus_pages": 20057,
+   "fetched_at": "2026-07-10T09:59:57+00:00"
+  },
+  "oeis": {
+   "anchored_cell_pages": 35,
+   "anchored_supercell_pages": 2,
+   "ingested_corpus_pages": 37,
+   "fetched_at": "2026-07-10T09:56:58+00:00"
+  },
+  "planetmath": {
+   "anchored_cell_pages": 250,
+   "anchored_supercell_pages": 7,
+   "ingested_corpus_pages": 9451,
+   "fetched_at": "2026-07-10T09:58:51+00:00"
+  },
+  "proofwiki": {
+   "anchored_cell_pages": 426,
+   "anchored_supercell_pages": 34,
+   "ingested_corpus_pages": 49021,
+   "fetched_at": "2026-07-10T09:58:43+00:00"
+  },
+  "stacks": {
+   "anchored_cell_pages": 268,
+   "anchored_supercell_pages": 106,
+   "ingested_corpus_pages": 21436,
+   "fetched_at": "2026-07-10T10:00:30+00:00"
+  }
+ },
+ "mathlib_coverage": {
+  "joined_mathlib_decls": 7439,
+  "docgen4_mathlib_names": 317257,
+  "docgen4_total_names": 418630,
+  "coverage_vs_mathlib_names": 0.02345,
+  "coverage_vs_all_names": 0.01777,
+  "caveat": "oracle cache is the CURRENT doc-gen4 snapshot (see mtime), ~4 weeks after the Brain's Mathlib pin; known to miss a small number of real decls (memory: oracle incomplete)"
+ },
+ "frontier": {
+  "homeless": 1612,
+  "assigned": 1303,
+  "unsorted": 309
+ },
+ "wikilean_annotations_disk": 1552,
+ "benchmark_target_coverage": {
+  "qr171": {
+   "n": 171,
+   "in_brain": 65,
+   "in_brain_frac": 0.3801,
+   "in_current_oracle": 170,
+   "oracle_missing": [
+    "T4Space.of_paracompactSpace_t2Space"
+   ],
+   "brain_hits": [
+    "Algebra.FormallyEtale",
+    "AlgebraicGeometry.IsAffine",
+    "AlgebraicGeometry.Scheme",
+    "ArithmeticFunction.moebius",
+    "BoxIntegral.Box",
+    "BoxIntegral.Prepartition",
+    "CategoryTheory.Bicategory",
+    "CategoryTheory.Functor",
+    "CategoryTheory.GrothendieckTopology",
+    "CategoryTheory.NatTrans",
+    "ChartedSpace",
+    "CliffordAlgebra.Rel",
+    "DFA",
+    "Denumerable",
+    "Equiv",
+    "EulerProduct.eulerProduct_hasProd",
+    "FDRep.char_one",
+    "FDRep.character",
+    "FiberBundle",
+    "FirstOrder.Language",
+    "FirstOrder.Language.ElementaryEmbedding",
+    "FirstOrder.Language.Structure",
+    "FirstOrder.Language.Ultraproduct.structure",
+    "Flow",
+    "Function.cantor_surjective",
+    "Function.fixedPoints",
+    "GCDMonoid",
+    "GaloisConnection",
+    "IsCompact",
+    "IsNoetherian",
+    "IsPGroup",
+    "IsSolvable",
+    "LSeries",
+    "Lattice",
+    "LieAlgebra.ofAssociativeAlgebra",
+    "LieRing",
+    "Matroid",
+    "MeasureTheory.Martingale",
+    "MeasureTheory.OuterMeasure",
+    "MetricSpace",
+    "Module.End.genEigenspace",
+    "MonoidAlgebra.Submodule.exists_isCompl",
+    "Nat.divisors",
+    "ONote",
+    "PMF",
+    "Polynomial.Separable",
+    "ProbabilityTheory.cond",
+    "ProbabilityTheory.cond_cond_eq_cond_inter",
+    "ProbabilityTheory.cond_isProbabilityMeasure",
+    "RegularExpression",
+    "Ring.DimensionLEOne",
+    "SSet.Quasicategory",
+    "SimpleGraph",
+    "Subalgebra",
+    "Sylow",
+    "Sylow.exists_subgroup_card_pow_prime",
+    "Sylow.nonempty",
+    "UniqueFactorizationMonoid.factors_unique",
+    "YoungDiagram",
+    "ZFSet",
+    "continuous_iff_isClosed",
+    "exists_continuous_zero_one_of_isClosed",
+    "hammingDist",
+    "inner_mul_inner_self_le",
+    "isCompact_iff_finite_subcover"
+   ]
+  },
+  "mpr_premises": {
+   "n_queries": 69,
+   "n_distinct_gold_premises": 341,
+   "in_brain": 47,
+   "in_brain_frac": 0.1378,
+   "in_current_oracle": 339,
+   "oracle_missing": [
+    "Set.definable_finset_biInter",
+    "contMDiff_smul"
+   ],
+   "queries_all_groups_coverable": 4,
+   "queries_any_group_coverable": 28
+  },
+  "mpr_main_results_postcutoff": {
+   "n": 69,
+   "in_brain": 4,
+   "in_brain_names": [
+    "ContinuousLinearMap.orthogonalComplement_iSup_eigenspaces_eq_bot",
+    "Polynomial.Chebyshev.integral_eval_T_real_mul_eval_T_real_measureT_of_ne",
+    "ProbabilityTheory.tendsto_choose_mul_pow_of_tendsto_mul_atTop",
+    "Representation.IsIrreducible.bijective_or_eq_zero"
+   ],
+   "in_current_oracle": 62
+  },
+  "fresh100": {
+   "n": 100,
+   "in_brain": 1,
+   "in_current_oracle": 94,
+   "oracle_missing_root_mangled": [
+    "LinearMap._root_.LinearIsometry.normDet_eq_one",
+    "Manifold.IsImmersion._root_.ContMDiff.iff_comp_isImmersion",
+    "Manifold.IsImmersionAt._root_.ContMDiffAt.iff_comp_isImmersionAt",
+    "Manifold.IsImmersionOfComplement._root_.ContMDiff.iff_comp_isImmersionOfComplement",
+    "MeasureTheory.StronglyMeasurable._root_.ContinuousOn.stronglyMeasurable_of_countable_compl",
+    "eVariationOn._root_.BoundedVariationOn.of_finite"
+   ],
+   "brain_hits": [
+    "AntitoneOn.summable_of_integrableOn_Ioi_zero"
+   ],
+   "brain_hit_explanation": "fresh_025 AntitoneOn.summable_of_integrableOn_Ioi_zero (merged into Mathlib 2026-07-07) sits in cell:Q1155313 'integral test for convergence' with bond=exact, prov=discovery_proposals (verified) pin 2026-07-18: the discovery-proposal fold POSTDATES the fresh window (2026-07-04..07-10), so the strict-0 construction claim holds only for the 2026-07-04 harvest inputs, not the whole Brain. Corroborates bench/analysis/fresh_exposure.md which flags fresh_025 exposed on all four axes."
+  }
+ },
+ "pipeline_one_liner": "Deterministic no-LLM build: 10 external-DB ingest adapters + Wikidata/Mathlib/TheoremGraph/formal-conjectures harvests -> build_nodes/build_edges (organ layer) -> v3 cell merge (rule-1 exact fusion, single-best rule-2 attach, no transitive closure) -> synapse aggregation -> frontier partition -> layout -> shards; AI-generated joins enter only through verified proposal folding (brain/proposals -> fold_proposals.py); acceptance suites gate publish."
+}

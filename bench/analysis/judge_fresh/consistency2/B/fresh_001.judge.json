@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Adds an unnecessary hypothesis [Monoid M] not present in gold — the gold's addMonoidHom_ext holds for any type M (MonoidAlgebra R M is just M →₀ R additively, no multiplicative structure on M is needed), so restricting to Monoid M narrows the theorem to a strictly less general statement",
+  "Strengthens the codomain typeclass from [AddZeroClass N] (gold) to [AddMonoid A] (produced), requiring associativity that isn't needed, again narrowing generality beyond what the gold states"
+ ],
+ "arm": "B",
+ "task_id": "fresh_001",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 47.1,
+ "judge_cost_usd": 0.142545,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "4d386f75d3f609b2d74861478bbb758fa83159976c3c59277c4f7c8d30bea3c7"
+}

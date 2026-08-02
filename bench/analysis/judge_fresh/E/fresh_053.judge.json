@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Adds hypothesis hg_cont : Continuous g, which is not present in the gold statement (gold holds for arbitrary g with no regularity assumption)",
+  "Adds hypothesis hg_int : IntegrableOn (fun x => (g ∘ log) x * x⁻¹) (Ici a), which is not present in the gold statement (gold is an unconditional identity)",
+  "Restricts g to ℝ → ℝ instead of the general codomain g : ℝ → E for an arbitrary normed space E, losing generality (and correspondingly uses ordinary multiplication x⁻¹ * g(log x) instead of the scalar action x⁻¹ • g(log x))"
+ ],
+ "arm": "E",
+ "task_id": "fresh_053",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 14.6,
+ "judge_cost_usd": 0.059623,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "39c0de026f306a293a53ddf16490afcdae139085e8549543c097ae94beeeeb89"
+}

@@ -170,6 +170,12 @@ def main() -> int:
             "mcnemar_conjunction": mcn_set(conj, completed_ids),
         },
         "self_consistency": cons_block,
+        # D/E discordant on judge-evaluated equivalence: exactly one of the two
+        # arms judged equivalent. Owner hand-grades these first (the discordant
+        # pairs are what drive the D-vs-E McNemar, so human labels here have
+        # maximum leverage on the headline comparison).
+        "human_grading_queue": sorted(
+            t for t in fresh_ids if evald[("D", t)] != evald[("E", t)]),
     }
     OUT_JSON.write_text(json.dumps(result, indent=2) + "\n")
 
@@ -233,6 +239,14 @@ def main() -> int:
             f"({len(cons_block['evaluated_disagreements'])} flips: "
             f"{', '.join(cons_block['evaluated_disagreements']) or 'none'})",
         ]
+    hq = result["human_grading_queue"]
+    md += [
+        "\n## Human grading queue — D/E discordant on judge-evaluated "
+        f"equivalence ({len(hq)} tasks)\n",
+        "Exactly one of arms D/E judged equivalent; these drive the D-vs-E "
+        "McNemar, so hand-grade them first:\n",
+        ", ".join(hq) or "(none)",
+    ]
     md.append("")
     OUT_MD.write_text("\n".join(md))
     print(f"wrote {OUT_JSON}\nwrote {OUT_MD}")

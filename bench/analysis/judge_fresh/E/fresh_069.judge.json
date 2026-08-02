@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Drops the explicit fixed base prime ideal `p : Ideal R` entirely — the informal statement's 'lying over a fixed prime of the base' has no corresponding parameter; only the ring R and the prime q of S appear.",
+  "Missing the `P.LiesOver p` hypothesis (or any 'lying over' relation) that in the gold statement ties P to a specific fixed base prime p; the produced statement gives no explicit relation between q and any base ideal.",
+  "Uses `Ideal.inertiaDeg` (unprimed) instead of the gold's `Ideal.inertiaDeg'`; these are distinct Mathlib declarations, and it is not established that they are definitionally/propositionally the same quantity in this generality (the unprimed version may rely on an implicit contraction `q.under R` rather than an arbitrary p related by LiesOver).",
+  "Argument shape differs substantively, not just via renaming: gold quantifies over an independent pair (p, P) constrained by P.LiesOver p, while produced only quantifies over (R, q), collapsing the base prime into a derived/implicit notion rather than stating it as a hypothesis."
+ ],
+ "arm": "E",
+ "task_id": "fresh_069",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 181.6,
+ "judge_cost_usd": 0.467142,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "e41cb1d1895dedd8040ce5433dc5f9025dbb632dbb83bede6a5119b1e748073b"
+}

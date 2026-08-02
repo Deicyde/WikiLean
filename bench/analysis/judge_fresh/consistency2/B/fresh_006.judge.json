@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Uses a stronger, less general hypothesis set (OrderedSemiring R, DistribMulAction R β, OrderedSMul R β) instead of gold's minimal PosSMulMono α β assumption, so the produced statement only covers module-type scalar actions over ordered semirings rather than the general SMul-with-Preorder-and-Zero setting gold covers — not an equivalent spelling of the same typeclass, it's a strictly narrower hypothesis",
+  "Type variable R is used in the signature ([OrderedSemiring R], (a : R), etc.) but never declared/bound (no {R : Type*}), which is not well-formed as written",
+  "Argument a is explicit in the produced statement but implicit in gold (minor, but changes the calling convention)"
+ ],
+ "arm": "B",
+ "task_id": "fresh_006",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 61.2,
+ "judge_cost_usd": 0.179007,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "d6768d58225bafebcac1ffe1993ee0e6f98f6dac28fef0826a9361e43bd5fc8f"
+}

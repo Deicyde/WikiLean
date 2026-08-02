@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Hypothesis `[w.1.LiesOver v.1]` applies `LiesOver` to the underlying `AbsoluteValue` (via `.1` projection) rather than to the `InfinitePlace` values themselves as in gold's `[w.LiesOver v]`; since `IsRamified` is used directly on `InfinitePlace` (`w.IsRamified k`) without `.1` in both statements, this suggests `LiesOver` is likewise a class on `InfinitePlace`, and `w.1.LiesOver v.1` either references a different/nonexistent declaration or an unverified reinterpretation of the hypothesis, not confirmed equivalent to gold's typeclass instance",
+  "v and w are both made explicit arguments in the produced statement, whereas gold has v explicit and w implicit (minor signature/style difference, does not by itself change the proposition)"
+ ],
+ "arm": "E",
+ "task_id": "fresh_065",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 88.1,
+ "judge_cost_usd": 0.252554,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "6bb9aa42d05730360305345c1f860ba7e82ef61f7e82e9b21f527b26d5548ae6"
+}

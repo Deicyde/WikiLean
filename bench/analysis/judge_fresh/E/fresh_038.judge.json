@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": true,
+ "defects": [
+  "Finite sublevel-set condition is given as an explicit hypothesis (∀ B : ℝ, Set.Finite {x | h x ≤ B}) rather than via the gold's [Northcott h] typeclass instance; mathematically equivalent (assuming Northcott h is defined as exactly this property) but a structural mismatch rather than a pure notational one.",
+  "The existential hypothesis '∃ n b c, 1 < b ∧ ∀ x, h(x^n) ≥ b*h x - c' replaces the gold's use of n, b, c₀ as free/implicit theorem parameters with separate hypotheses hb and H; logically equivalent (since the conclusion doesn't depend on n, b, c) but a different quantifier structure, not mere renaming/reordering.",
+  "Conclusion is stated as Set.Finite (CommGroup.torsion G : Set G) (finiteness of the coerced Set) instead of gold's Finite (torsion G) (finiteness of the subtype); equivalent via Set.finite_coe_iff but syntactically a different formulation."
+ ],
+ "arm": "E",
+ "task_id": "fresh_038",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 162.2,
+ "judge_cost_usd": 0.419079,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "873079d18512f8781b991bdd5cda12e55f8caec9189971725947766b586a5568"
+}

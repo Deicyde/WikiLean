@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Adds the extra instance hypothesis [I.IsMaximal], which is not present in the gold statement (gold only requires p.IsMaximal, P.IsMaximal, P.LiesOver p, I.LiesOver P). I.LiesOver P does not imply I.IsMaximal in general commutative rings (e.g. T = S[x], I = P·S[x] lies over P but is not maximal), so this restricts the theorem to a proper subclass of cases covered by the gold.",
+  "Uses the pre-existing Mathlib declaration Ideal.inertiaDeg (via dot notation X.inertiaDeg Y) rather than the gold's newly introduced inertiaDeg'; it is not established that these coincide in the generality (non-maximal I) that the gold's inertiaDeg' is presumably designed to handle, so the produced statement may express a different, more restrictive proposition even apart from the added hypothesis."
+ ],
+ "arm": "E",
+ "task_id": "fresh_068",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 154.2,
+ "judge_cost_usd": 0.416817,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "b4bffb02b6a9cabdc6e10d0ce11d6ee71ad768aebe059c8fed6cac61f88c0ba8"
+}

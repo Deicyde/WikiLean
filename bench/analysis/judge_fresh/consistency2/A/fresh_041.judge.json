@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Conclusion uses `Module.rank` (Cardinal-valued) instead of `Module.finrank` (ℕ-valued) as in gold — rank equality is a strictly stronger/different proposition than finrank equality, not the same statement",
+  "Drops the auxiliary localized-module data present in gold: the submonoid p, the module M, the map f : M →ₗ[R] N with [IsLocalizedModule p f], and hp : p ≤ R⁰",
+  "Adds an extra hypothesis `IsDomain R` not required by gold's `IsFractionRing R S` formulation, restricting the theorem to domains only",
+  "Replaces gold's generic S (with Algebra R S, IsLocalization p S, IsFractionRing R S) by the concrete type `FractionField R`; standard Mathlib naming for this construction is `FractionRing`, not `FractionField`, so this identifier may not even exist",
+  "Loses generality: gold's S is any ring satisfying IsFractionRing R S (up to isomorphism), whereas produced hard-codes one specific construction, and gold's N is only required to admit some localized-module presentation rather than being stated directly"
+ ],
+ "arm": "A",
+ "task_id": "fresh_041",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 97.2,
+ "judge_cost_usd": 0.260082,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "94cea6c3f7b45f63e878048de21801b96fa9ff803ab1f725c18dc4ee9ba50f09"
+}
