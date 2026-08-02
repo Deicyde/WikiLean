@@ -14,7 +14,8 @@ the `contains` edges (for organ payloads and the containment tree) and writes
                    brain/data/frontier.jsonl, brain/build_frontier.py): each
                    lists the homeless cells assigned to it, so the client's
                    derived "no formal home" bucket drains to the handful of
-                   genuinely unplaceable cells
+                   genuinely unplaceable cells; each also carries its halo
+                   `shells` (hop-distance partition) VERBATIM for the halo view
   explorer.json    the whole flat graph: cells with build-time xy + synapses
   traces/<key>.json  the LAZY trace sidecar: evidence for every supercell-involving
                    synapse (cell<->path and path<->path — the rows supercells.json
@@ -523,6 +524,7 @@ def main() -> int:
     # `fa` is computed here (the ancestor walk above only sees `supercells` on
     # cell rows, which homeless cells don't have) so facet chips never grey a
     # frontier folder that holds matching cells.
+    stale_shells = []
     for row in frontier_rows:
         entry = {"label": row.get("label") or row["id"].split(":", 1)[1],
                  "frontier": True, "cells": row["cells"]}
@@ -537,7 +539,21 @@ def main() -> int:
             entry["stateability"] = row["mean_stateability"]
         if row.get("top"):
             entry["top"] = row["top"]
+        # halo shells pass through VERBATIM (HALO CONTRACT: the shard row ships
+        # frontier.jsonl's partition unchanged; test_cell_shards asserts it).
+        # On a FRESH frontier.jsonl the shells' union == cells exactly; if the
+        # stale-validation above dropped members, say so — never silently.
+        if row.get("shells"):
+            entry["shells"] = row["shells"]
+            in_shells = {c for arr in row["shells"].values() for c in arr}
+            if in_shells != set(row["cells"]):
+                stale_shells.append(row["id"])
         supercells[row["id"]] = entry
+    if stale_shells:
+        print(f"  ! STALE frontier shells on {len(stale_shells)} area(s) "
+              f"(shells' union != the kept cells after stale-drop): "
+              f"{stale_shells[:3]} — rerun python3 brain/build_frontier.py",
+              file=sys.stderr)
     n_sup_syn = sum(len(r.get("syn") or []) for r in supercells.values())
     sup_doc = {"_meta": {"schema": "brain/SCHEMA.md#v3", "generated_at": gen,
                          "traces": "supercell `syn` rows carry NO traces (byte budget: "

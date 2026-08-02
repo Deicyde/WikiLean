@@ -22,6 +22,12 @@ shard_key.
   F8  the SHARDS carry it: supercells.json frontier rows match frontier.jsonl,
       fa aggregates member facets, areas are roots, no double placement, and
       the derived "no formal home" bucket really drains (the whole point)
+  F9  HALO SHELLS: every area's `shells` partitions its cells exactly; the
+      per-cell hop distances match a BFS re-run here from the SPEC (multi-
+      source from all decl-organ cells, all synapse kinds, path: endpoints
+      excluded — never read from the builder); global sums match
+      _meta.halo.shell_counts AND the 2026-08-01 ground truth
+      855/454/13/290 (d=1/d=2/d=3/disconnected over 1,612 homeless)
 
 Run: python3 brain/test_frontier.py
      (after brain/build_frontier.py + brain/build_cell_shards.py)
@@ -32,7 +38,7 @@ import json
 import re
 import subprocess
 import sys
-from collections import Counter, defaultdict
+from collections import Counter, defaultdict, deque
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -58,6 +64,12 @@ PINS = [
      "phase-3 relates hop (Two-body problem in general relativity)"),
 ]
 UNSORTED_CEILING = 0.192 + 0.02   # recon-predicted share (309/1612) + 2pp
+
+# HALO ground truth, measured on 2026-08-01 data (HALO CONTRACT): hop distance
+# from the formalized interior over all-kinds cell<->cell synapses. If the data
+# drifts these MUST be re-measured (the F9 failure detail says how) — the
+# contract pins the exact counts against the current build.
+HALO_PIN = {"1": 855, "2": 454, "3": 13, "disc": 290}
 
 FAILURES: list[str] = []
 CHECKS = 0
@@ -296,6 +308,78 @@ def main() -> int:
                  if r["id"] not in mroots or not mroots[r["id"]].get("frontier")]
         check("F8 manifest.roots lists every area with frontier:true", not bad_m,
               f"{bad_m[:3]}")
+
+    # ---- F9: HALO SHELLS — hop distance to the formalized interior ----------
+    # Re-derived from the SPEC, never from the builder: multi-source BFS from
+    # EVERY decl-organ cell over cell<->cell synapses — ALL kinds conduct,
+    # path: (supercell) endpoints never do. d = hops to the nearest formalized
+    # cell; unreachable = "disc". (nbrs above already carries every synapse
+    # row; the `other in cells` filter is what excludes path: endpoints.)
+    dist: dict[str, int] = {cid: 0 for cid in decl_cells}
+    bq = deque(sorted(decl_cells))
+    while bq:
+        cur = bq.popleft()
+        for other, _k, _e in nbrs.get(cur, []):
+            if other in cells and other not in dist:
+                dist[other] = dist[cur] + 1
+                bq.append(other)
+    want_shell = {c: ("disc" if c not in dist else str(dist[c]))
+                  for c in homeless}
+    bfs_counts = dict(Counter(want_shell.values()))
+
+    no_shells = [r["id"] for r in rows if not isinstance(r.get("shells"), dict)]
+    check("F9 every area row carries a `shells` object", not no_shells,
+          f"{no_shells[:3]}")
+    shelled = [r for r in rows if isinstance(r.get("shells"), dict)]
+    bad_key = [(r["id"], k) for r in shelled for k in r["shells"]
+               if k != "disc" and not k.isdigit()]
+    check("F9 shell keys are str(d) or 'disc'", not bad_key, f"{bad_key[:3]}")
+    empty = [(r["id"], k) for r in shelled
+             for k, v in r["shells"].items() if not v]
+    check("F9 empty shell keys are omitted", not empty, f"{empty[:3]}")
+    # the partition, per area: shells' disjoint union == the row's cells
+    bad_part = []
+    for r in shelled:
+        ids = [c for arr in r["shells"].values() for c in arr]
+        if len(ids) != r["n"] or set(ids) != set(r["cells"]):
+            bad_part.append(r["id"])
+    check("F9 shells PARTITION each area's cells exactly (no drops, no dupes)",
+          not bad_part, f"{bad_part[:3]}")
+    unsorted_ids = [(r["id"], k) for r in shelled
+                    for k, v in r["shells"].items() if v != sorted(v)]
+    check("F9 shell member lists are sorted (deterministic bytes)",
+          not unsorted_ids, f"{unsorted_ids[:3]}")
+    # per-cell agreement with the spec BFS — every cell, not a sample
+    diverged = [(r["id"], k, c) for r in shelled
+                for k, v in r["shells"].items() for c in v
+                if want_shell.get(c) != k]
+    check(f"F9 every cell's shell matches the spec BFS distance "
+          f"({sum(len(v) for r in shelled for v in r['shells'].values())} "
+          f"cells checked)", not diverged,
+          f"{len(diverged)} diverge, e.g. {diverged[:3]}")
+    # global set math: rows aggregate == _meta.halo == the spec BFS == the pin
+    agg = Counter()
+    for r in shelled:
+        for k, v in r["shells"].items():
+            agg[k] += len(v)
+    halo_meta = meta.get("halo") or {}
+    check("F9 _meta.halo.shell_counts == the sum over area rows",
+          dict(agg) == (halo_meta.get("shell_counts") or {}),
+          f"rows say {dict(sorted(agg.items()))}, _meta says "
+          f"{halo_meta.get('shell_counts')}")
+    check("F9 _meta.halo names its method",
+          "BFS" in (halo_meta.get("method") or ""),
+          f"method={halo_meta.get('method')!r}")
+    check("F9 the spec BFS reproduces the shipped counts",
+          dict(agg) == bfs_counts,
+          f"shipped {dict(sorted(agg.items()))}, BFS re-run says "
+          f"{dict(sorted(bfs_counts.items()))}")
+    check(f"F9 ground truth holds: shells == {HALO_PIN} "
+          f"(d=1/d=2/d=3/disconnected)",
+          bfs_counts == HALO_PIN,
+          f"BFS says {dict(sorted(bfs_counts.items()))} — if brain/data "
+          f"legitimately drifted, re-measure and update HALO_PIN (and the "
+          f"HALO CONTRACT counts in brain/SCHEMA.md)")
 
     print(f"\n{CHECKS - len(FAILURES)}/{CHECKS} checks passed")
     if FAILURES:
