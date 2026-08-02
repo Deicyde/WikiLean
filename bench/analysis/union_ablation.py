@@ -179,12 +179,14 @@ def analyze_mpr(rng: np.random.Generator) -> dict:
 
 
 # ------------------------------------------------- race-row sensitivity
-# The original F/W grids predate run_agent.py's cold-start-race condemnation:
-# rows whose MCP servers never attached ran de-facto arm N (census: every
-# zero-mcp-call row in the grid has a not-connected init — F 175/810 qr +
-# 15/69 mpr, W 2/810 + 2/69; WF and U are clean by construction). Those rows
-# DEFLATE F and W, biasing U − F / U − W upward. Sensitivity: recompute each
-# contrast only on rows where the comparison arm made >= 1 mcp tool call.
+# The original F/W grids predated run_agent.py's cold-start-race condemnation:
+# 194 rows whose MCP servers never attached ran de-facto arm N (F 175/810 qr
+# + 15/69 mpr, W 2/810 + 2/69), deflating F and W. Those rows have since been
+# ARCHIVED (runs/agent/race_condemned_archive/) and RERUN with the fixed
+# harness — see bench/analysis/grid_repaired.py for before/after. This
+# sensitivity (each contrast recomputed only on rows where the comparison arm
+# made >= 1 mcp tool call) is retained as a residual guard; on the repaired
+# grid it should nearly coincide with the primary contrasts.
 
 def mcp_calls_by_qid(bench: str, arm: str) -> dict[str, int]:
     d = V2 / "runs" / "agent" / bench / arm / "claude-sonnet-5"
@@ -369,11 +371,10 @@ def write_md(res: dict, path: Path) -> None:
     A("## Race-row sensitivity (contrasts on attach-clean rows)")
     A("")
     sen = res["race_row_sensitivity"]
-    A(sen["note"] + ". The original F/W grids predate the cold-start-race "
-      "condemnation (F: 175/810 qr + 15/69 mpr de-facto-N rows; W: 2 + 2); "
-      "U and WF are attach-clean, so primary contrasts against F/W are "
-      "biased UP. These are the debiased versions (incl. the headline "
-      "WF − F / WF − W).")
+    A(sen["note"] + ". The 194 cold-start-race rows that originally deflated "
+      "F/W (F: 175 qr + 15 mpr; W: 2 + 2) have been archived and rerun "
+      "(see `grid_repaired.py`); this section is a residual guard and "
+      "should nearly coincide with the primary contrasts above.")
     A("")
     A("| contrast | bench | kept | hi | other | diff | 95% CI | sign p | "
       "Wilcoxon p |")
