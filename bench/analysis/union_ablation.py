@@ -178,6 +178,91 @@ def analyze_mpr(rng: np.random.Generator) -> dict:
             "bootstrap": {"B": B, "seed": SEED, "unit": "task"}}
 
 
+# ------------------------------------------------- race-row sensitivity
+# The original F/W grids predate run_agent.py's cold-start-race condemnation:
+# rows whose MCP servers never attached ran de-facto arm N (census: every
+# zero-mcp-call row in the grid has a not-connected init — F 175/810 qr +
+# 15/69 mpr, W 2/810 + 2/69; WF and U are clean by construction). Those rows
+# DEFLATE F and W, biasing U − F / U − W upward. Sensitivity: recompute each
+# contrast only on rows where the comparison arm made >= 1 mcp tool call.
+
+def mcp_calls_by_qid(bench: str, arm: str) -> dict[str, int]:
+    d = V2 / "runs" / "agent" / bench / arm / "claude-sonnet-5"
+    out = {}
+    for f in d.glob("*.json"):
+        r = json.loads(f.read_text())
+        out[r["qid"]] = sum(
+            v for k, v in (r["transcript_stats"]["tool_calls_by_name"] or {})
+            .items() if k.startswith("mcp__"))
+    return out
+
+
+def sensitivity(rng: np.random.Generator) -> dict:
+    out: dict = {"note": "contrasts restricted to rows where the comparison "
+                         "arm had >=1 mcp tool call (race rows dropped)"}
+    qr_all = sr.qr_rows()
+    mpr_all = sr.mpr_rows()
+    for hi, other in (("U", "F"), ("U", "W"), ("WF", "F"), ("WF", "W")):
+        qr_calls = mcp_calls_by_qid("qr810", other)
+        mpr_calls = mcp_calls_by_qid("mpr", other)
+        ranked = {a: sr.load_ranked(V2 / "runs" / "agent" / "qr810" / a)
+                  for a in (hi, other)}
+
+        # QR: per-declaration paired means on kept rows
+        rows = [r for r in qr_all if qr_calls.get(r["qid"], 0) > 0]
+        decls = sorted({r["gold"] for r in rows})
+        d_idx = {d: i for i, d in enumerate(decls)}
+        n_rows = np.zeros(len(decls))
+        hit = {a: np.zeros(len(decls)) for a in (hi, other)}
+        for r in rows:
+            i = d_idx[r["gold"]]
+            n_rows[i] += 1
+            for a in (hi, other):
+                lst = ranked[a][r["qid"]]
+                try:
+                    rank = lst[:K].index(r["gold"]) + 1
+                except ValueError:
+                    rank = 0
+                hit[a][i] += 1.0 if rank else 0.0
+        hm = {a: hit[a] / n_rows for a in (hi, other)}
+        idx = rng.integers(0, len(decls), size=(B, len(decls)))
+        tot = n_rows[idx].sum(axis=1)
+        boot_d = (hit[hi][idx].sum(axis=1) - hit[other][idx].sum(axis=1)) / tot
+        out[f"qr810_{hi}_vs_{other}"] = {
+            "rows_kept": len(rows), "rows_dropped": len(qr_all) - len(rows),
+            "n_declarations": len(decls),
+            f"recall@10_{hi}": r4(hit[hi].sum() / n_rows.sum()),
+            f"recall@10_{other}": r4(hit[other].sum() / n_rows.sum()),
+            "diff_point": r4((hit[hi].sum() - hit[other].sum()) / n_rows.sum()),
+            "diff_ci95": [r4(v) for v in pct_ci(boot_d)],
+            "sign_test": sign_test(hm[hi], hm[other]),
+            "wilcoxon": wilcoxon_test(hm[hi], hm[other]),
+        }
+
+        # MPR: per-task paired means on kept tasks
+        rankedm = {a: sr.load_ranked(V2 / "runs" / "agent" / "mpr" / a)
+                   for a in (hi, other)}
+        tasks = [r for r in mpr_all if mpr_calls.get(r["qid"], 0) > 0]
+        pt = {a: [] for a in (hi, other)}
+        for r in tasks:
+            for a in (hi, other):
+                top = set(rankedm[a][r["qid"]][:K])
+                pt[a].append(sum(1 for g in r["groups"] if top & set(g))
+                             / len(r["groups"]))
+        pt = {a: np.array(v) for a, v in pt.items()}
+        idx = rng.integers(0, len(tasks), size=(B, len(tasks)))
+        boot_d = pt[hi][idx].mean(axis=1) - pt[other][idx].mean(axis=1)
+        out[f"mpr_{hi}_vs_{other}"] = {
+            "tasks_kept": len(tasks), "tasks_dropped": len(mpr_all) - len(tasks),
+            f"gr@10_{hi}": r4(pt[hi].mean()), f"gr@10_{other}": r4(pt[other].mean()),
+            "diff_point": r4(pt[hi].mean() - pt[other].mean()),
+            "diff_ci95": [r4(v) for v in pct_ci(boot_d)],
+            "sign_test": sign_test(pt[hi], pt[other]),
+            "wilcoxon": wilcoxon_test(pt[hi], pt[other]),
+        }
+    return out
+
+
 # ---------------------------------------------------------------- U run audit
 
 def audit_u_runs() -> dict:
@@ -281,6 +366,32 @@ def write_md(res: dict, path: Path) -> None:
           f"{st['n_pos']}/{st['n_neg']} | {st['p']:.2e} | "
           f"{t['wilcoxon']['p']:.2e} |")
     A("")
+    A("## Race-row sensitivity (contrasts on attach-clean rows)")
+    A("")
+    sen = res["race_row_sensitivity"]
+    A(sen["note"] + ". The original F/W grids predate the cold-start-race "
+      "condemnation (F: 175/810 qr + 15/69 mpr de-facto-N rows; W: 2 + 2); "
+      "U and WF are attach-clean, so primary contrasts against F/W are "
+      "biased UP. These are the debiased versions (incl. the headline "
+      "WF − F / WF − W).")
+    A("")
+    A("| contrast | bench | kept | hi | other | diff | 95% CI | sign p | "
+      "Wilcoxon p |")
+    A("|---|---|---|---|---|---|---|---|---|")
+    for hi, other in (("U", "F"), ("U", "W"), ("WF", "F"), ("WF", "W")):
+        q = sen[f"qr810_{hi}_vs_{other}"]
+        A(f"| {hi} − {other} | qr810 R@10 | {q['rows_kept']} rows "
+          f"(−{q['rows_dropped']}) | {q[f'recall@10_{hi}']:.4f} | "
+          f"{q[f'recall@10_{other}']:.4f} | {q['diff_point']:+.4f} | "
+          f"[{q['diff_ci95'][0]:+.4f}, {q['diff_ci95'][1]:+.4f}] | "
+          f"{q['sign_test']['p']:.2e} | {q['wilcoxon']['p']:.2e} |")
+        m = sen[f"mpr_{hi}_vs_{other}"]
+        A(f"| {hi} − {other} | mpr gR@10 | {m['tasks_kept']} tasks "
+          f"(−{m['tasks_dropped']}) | {m[f'gr@10_{hi}']:.4f} | "
+          f"{m[f'gr@10_{other}']:.4f} | {m['diff_point']:+.4f} | "
+          f"[{m['diff_ci95'][0]:+.4f}, {m['diff_ci95'][1]:+.4f}] | "
+          f"{m['sign_test']['p']:.2e} | {m['wilcoxon']['p']:.2e} |")
+    A("")
     A("## U run audit")
     A("")
     for b in ("qr810", "mpr"):
@@ -301,6 +412,7 @@ def main() -> int:
                       "gold": "bench/v2/data/{MathlibQR,MathlibQR_shared171,"
                               "MathlibMPR}.json"},
            "qr810": analyze_qr(rng), "mpr": analyze_mpr(rng),
+           "race_row_sensitivity": sensitivity(rng),
            "u_run_audit": audit_u_runs()}
     (HERE / "union_ablation.json").write_text(json.dumps(res, indent=1) + "\n")
     write_md(res, HERE / "union_ablation.md")
