@@ -190,8 +190,8 @@ split; pinned fork of arXiv:2406.07222) and on a 100-task **fresh set**
 drawn from theorems merged into Mathlib master 2026-07-03→07-16, graded
 by REPL typecheck on pinned toolchains. The exploratory second phase
 ("v2", `claude-sonnet-5`) ran retrieval arms N (no tools), F (formal
-search), W (the Brain), WF (union + a tool manual), and U (bare union,
-in flight) on third-party-graded benchmarks (§5), and a one-shot proving
+search), W (the Brain), WF (union + a tool manual), and U (bare union)
+on third-party-graded benchmarks (§5), and a one-shot proving
 protocol on SorryDB (§6). One model per phase, one seed per (task, arm).
 
 ### 3.3 Deviations from preregistration
@@ -219,14 +219,20 @@ with E's exact code path against a read-only archive of the same tree
 CLI attaches its MCP servers without blocking the first model turn, so a
 run can "complete" having silently never had tools; the repair driver
 detects this from the stream-json init event and retries. (3) *The
-cold-start race*: under concurrent batch cold starts the same
-non-blocking attach silently detooled whole waves — 13/49 rows of the
-first U launch and 175/810 zero-tool rows of the original QR-810 F grid
-carry the pending-at-init signature (12/12 sampled confirmed) — so the
-v2 runner now condemns such rows and staggers its first wave (commit
-`834a130a`); the bias runs *against* F (those rows behaved as no-tools),
-i.e. against our own tooling conclusion, and the affected F grid is
-reported as-run with this disclosure. (4) *The REPL silent fallback*:
+cold-start race* — found and repaired: under concurrent batch cold
+starts the same non-blocking attach silently detooled whole waves —
+13/49 rows of the first U launch and 175/810 zero-tool rows of the
+original QR-810 F grid carried the pending-at-init signature (12/12
+sampled confirmed). The v2 runner now condemns such rows and staggers
+its first wave (commit `834a130a`), and all 194 affected rows (F: 175
+QR + 15 MPR; W: 2 + 2 — W's Brain server is a fast-attaching local
+worker, so the race fell almost entirely on F) were rerun
+attach-verified under the fixed harness, the originals byte-preserved
+in `bench/v2/runs/agent/race_condemned_archive/`; the final §5 grid
+audits **zero race rows** in every arm × benchmark (commits `99a2075f`,
+`f041928a`, `dd3eb689`). The bias had run *against* F — race rows
+behaved as no-tools — i.e. against our own tooling conclusion.
+(4) *The REPL silent fallback*:
 the typechecker silently fell back from the persistent REPL server to a
 ~60 s single-shot Lean boot on the Tier-1a pin, tainting a scoring pass
 with timeout failures until it was caught and rerouted with honest
@@ -330,10 +336,14 @@ unexposed half (Supplement §S11).
 
 **Layer 3 — the conjunction.** On grounded-typecheck ∧ judge-evaluated
 — the closest available analogue of the preregistered faithful@budget —
-the arms return to parity: C 16, D 15, E 18 per 100. Every between-tool
-contrast is null (D-vs-E p=0.61) and the strongest tools-versus-none
-contrast survives (E-vs-A p=0.006). (The conjunction uses the raw
-typecheck leg; the judge ran before the oracle repair.)
+the arms return to parity. Under the repaired typecheck leg
+(`conjunction_repaired.py`; the judge ran before the oracle repair, so
+Supplement §S11 reports both instruments): C 20, D 16, E 21 per 100
+(raw leg: 16/15/18). Every between-tool contrast is null (D-vs-E
+p=0.30, D-vs-C p=0.50, E-vs-C p=1.0) and the tools-versus-none
+contrasts strengthen — E-vs-A p=0.001, E-vs-B p=0.004, and D-vs-A
+crosses to p=0.039. The instrument repair moves no conclusion here:
+parity between tool packages, tools above the floor.
 
 The transferable warning is the interaction itself: with contaminated
 items in a task set, the apparent winner *flips with the endpoint* — D
@@ -373,7 +383,10 @@ The v2 phase uses graders that predate the arms: third-party expert gold
 labels from the LeanSearch-v2 release (CC BY 4.0). MathlibQR fair-810
 poses 810 paraphrase-style queries over **171 distinct gold
 declarations**, so all inference is declaration-clustered; MathlibMPR
-poses 69 post-cutoff premise-retrieval tasks, one per PR. **WF is a
+poses 69 post-cutoff premise-retrieval tasks, one per PR. All agent
+rows below are the **race-repaired grid** (§3.4): the 194 condemned
+F/W rows were rerun attach-verified, and the final grid audits
+race-free (`bench/analysis/grid_repaired.py`). **WF is a
 post-hoc, benchmark-informed condition**: its prepended manual distills
 measurements from the same evaluation queries it was then scored on
 (manual verbatim and commit timeline: Supplement §S8). Published rows
@@ -388,17 +401,23 @@ systems — context, not controlled comparison.
 | published: LSv2 retriever+reranker | 0.780 | — | 0.623 | — | — | 1 |
 | system-mode `brain_bridge` (one call, no LLM) | 0.036 | — | 0.031 | — | ~0 | 1 |
 | agent N (no tools) | 0.633 | [0.581, 0.684] | 0.598 | [0.547, 0.647] | 0.08 | 0 |
-| agent F (formal) | 0.831 | [0.792, 0.868] | 0.790 | [0.750, 0.829] | 0.13 | 2.2 |
+| agent F (formal) | 0.846 | [0.808, 0.880] | 0.809 | [0.771, 0.845] | 0.14 | 2.8 |
 | agent W (Brain) | 0.816 | [0.767, 0.862] | 0.781 | [0.731, 0.827] | 0.20 | 3.5 |
-| agent U (bare union, no manual) | [[SLOT:UNION]] | | | | | |
+| agent U (bare union, no manual) | 0.830 | [0.789, 0.868] | 0.799 | [0.758, 0.838] | 0.20 | 3.1 |
 | agent WF (union + manual; post-hoc) | 0.885 | [0.849, 0.919] | 0.839 | [0.801, 0.874] | 0.21 | 4.2 |
 
-Declaration-clustered paired contrasts: **F − W is a null** (R@10
-+0.015 [−0.028, +0.059], Wilcoxon p=0.26) with different textures — W
-wins the special-case paraphrase style (nDCG 0.523 vs 0.384), F the
-Lean-syntax styles. WF − F is +0.054 [+0.027, +0.082] (p=0.0017) and
-WF − W +0.069 [+0.032, +0.108] (p=0.0003), but WF carries the post-hoc
-label; whether the union alone explains it is exactly what U tests. The
+Declaration-clustered paired contrasts on the repaired grid: **F − W
+is a null** (R@10 +0.030 [−0.015, +0.076], Wilcoxon p=0.086, sign
+34/35) with different textures — W wins the special-case paraphrase
+style (nDCG 0.522 vs 0.356), F the Lean-syntax styles. WF − F is
++0.040 [+0.015, +0.064] (p=0.0097) and WF − W +0.069 [+0.031, +0.108]
+(p=0.0003), but WF carries the post-hoc label — and the U ablation now
+decomposes it: U, holding the identical W ∪ F toolset with no manual,
+is indistinguishable from F (U − F −0.016 [−0.039, +0.005], p=0.13),
+while WF − U is +0.056 [+0.032, +0.080] (p=1.3e-4). Note also that
+repaired F alone already exceeds both published QR anchors (R@10 0.846
+vs 0.780/0.775) — single-call systems against a multi-call agent, so
+context, not a controlled comparison. The
 system-mode row is the API deficiency in one number: a single
 `brain_bridge` call scores 0.036 where an agent iterating over the same
 API reaches 0.816 — the free-text entry point is a label/alias
@@ -421,7 +440,11 @@ chronologically first entry of the gold name into the transcript
 | WF | 717 | 273 (38.1%) | 424 (59.1%) | 12 (1.7%) |
 | F | 673 | 151 (22.4%) | 170 (25.3%) | 344 (51.1%) |
 
-(The remaining ~1% appear in the query itself.) W's score is not the
+(The remaining ~1% appear in the query itself. This trace pass
+predates the race repair: F's row includes its 175 zero-tool race
+rows, whose hits count as "pure memory", so F's memory share is an
+as-run upper bound; W and WF are materially unaffected — 2 and 0 race
+rows.) W's score is not the
 graph surfacing answers: it surfaced 10.4% of hits, and it could not
 have surfaced most — the Brain holds only 65/171 (38%) of the QR golds.
 Instead the model generates candidates and `decl_exists` confirms them,
@@ -434,21 +457,49 @@ the routing half: it greps and loogles when holding syntax, bridges when
 holding words.
 
 **MathlibMPR — premise retrieval** (group-recall@10, task-bootstrap
-CIs): N 0.203 [0.131, 0.282] · W 0.272 [0.196, 0.354] · F 0.453
-[0.365, 0.540] · WF 0.557 [0.472, 0.642]; published anchors LSv2
-reasoning-mode 0.461, DIVER 0.380, TheoremGraph 0.165; system-mode
-Brain 0.000. A generic Sonnet agent with grep and loogle matches the
-specialist premise retriever (0.453 vs 0.461). W trails F by 18 points —
-the preregistered concept ≠ premise boundary measured on our own tools.
-WF − F is marginal (+0.104 [+0.007, +0.201], sign p=0.029, Wilcoxon
-p=0.049) and carries the WF label.
+CIs): N 0.203 [0.131, 0.282] · W 0.272 [0.196, 0.354] · F 0.547
+[0.463, 0.632] · U 0.549 [0.464, 0.633] · WF 0.557 [0.472, 0.642];
+published anchors LSv2 reasoning-mode 0.461, DIVER 0.380, TheoremGraph
+0.165; system-mode Brain 0.000. A generic Sonnet agent with grep and
+loogle *exceeds* the specialist premise retriever (0.547 vs 0.461) —
+the as-run 0.453 had been deflated by F's 15 race rows. W trails F by
+27 points (F − W +0.275 [+0.185, +0.369], p=2.3e-6) — the
+preregistered concept ≠ premise boundary measured on our own tools,
+and the one decisive between-package retrieval contrast, in formal
+search's favor. The as-run grid's marginal WF − F advantage (+0.104,
+Wilcoxon p=0.049) was a race artifact: repaired, WF − F is +0.010
+[−0.068, +0.088] (p=0.73) and WF − U +0.009 (p=0.82) — neither the
+manual nor the union adds anything on MPR.
 
-[[SLOT:UNION]] — *the bare-union U arm (W ∪ F tools, no manual) is
-running now. It separates the union effect from the briefing effect:
-planned analyses are the declaration-clustered N/F/W/U/WF table plus
-U-vs-F, U-vs-W, and WF-vs-U paired contrasts. Its first launch surfaced
-the cold-start race (§3.4); U rows run under the condemn-and-retry
-protocol with a staggered first wave.*
+**The bare-union ablation and the final contrast set.** U holds the
+identical W ∪ F union toolset as WF with no manual, run entirely under
+the condemn-and-retry protocol with a staggered first wave (879
+attach-verified rows, 0 errors; its first launch is what surfaced the
+cold-start race, §3.4). The repaired-grid contrasts
+(declaration-clustered on QR, task-paired on MPR;
+`grid_repaired.py`, seed 20260727, B=10,000):
+
+| contrast | metric | diff | 95% CI | excl. 0 | Wilcoxon p |
+|---|---|---|---|---|---|
+| WF − F | QR R@10 | +0.0395 | [+0.0148, +0.0636] | **yes** | 9.7e-3 |
+| WF − F | QR nDCG@10 | +0.0305 | [+0.0099, +0.0515] | **yes** | 6.4e-3 |
+| WF − F | MPR gR@10 | +0.0101 | [−0.0679, +0.0882] | no | 0.73 |
+| WF − U | QR R@10 | +0.0556 | [+0.0320, +0.0802] | **yes** | 1.3e-4 |
+| WF − U | QR nDCG@10 | +0.0402 | [+0.0187, +0.0628] | **yes** | 1.2e-3 |
+| WF − U | MPR gR@10 | +0.0085 | [−0.0664, +0.0833] | no | 0.82 |
+| U − F | QR R@10 | −0.0161 | [−0.0385, +0.0050] | no | 0.13 |
+| U − F | QR nDCG@10 | −0.0097 | [−0.0294, +0.0095] | no | 0.50 |
+| U − F | MPR gR@10 | +0.0017 | [−0.0725, +0.0713] | no | 0.83 |
+| F − W | QR R@10 | +0.0297 | [−0.0150, +0.0756] | no | 0.086 |
+| F − W | QR nDCG@10 | +0.0283 | [−0.0110, +0.0684] | no | 0.28 |
+| F − W | MPR gR@10 | +0.2747 | [+0.1851, +0.3688] | **yes** | 2.3e-6 |
+
+The decomposition is clean: on concept retrieval the active ingredient
+is the manual — a test-set-tuned upper bound (§S8), not a portable
+prescription — while on premise retrieval formal tools are the entire
+story and the bare union is inert everywhere (U − F null on all three
+metrics). Repaired F alone already exceeds the published anchors on
+both benchmarks (QR R@10 0.846 vs 0.780; MPR 0.547 vs 0.461).
 
 ## 6. Downstream proving: SorryDB (claude-sonnet-5, exploratory)
 
@@ -479,7 +530,9 @@ and bookkeeping: Supplement §S7, §S9).
 **Statistical scope.** One model per phase, one seed per (task, arm), no
 run-to-run variance estimate anywhere. n=100 tasks in 44 commit clusters
 is underpowered for between-package contrasts — the D−E interval spans
-−0.09 to +0.28 — and nothing in this paper ranks tool packages. The
+−0.09 to +0.28 — and nothing in this paper ranks tool packages in the
+join's favor; the one decisive between-package contrast (F over W on
+premise retrieval, §5) runs the other way and is exploratory. The
 ProofNet# eval split was not re-typechecked under the repaired oracle:
 280 raw-flagged, repaired-clean rows (A 39, B 45, C 68, D 47, E 81) are
 hard per-arm upper bounds on the gains there, and the instrument bias
@@ -522,9 +575,13 @@ generate-then-verify loop, whose value survives every correction and
 converges with independent work (DDR). What it does not establish: that
 the curated join beats the same corpora unjoined — on grounded
 typecheck, judged equivalence, retrieval, or kernel-verified proving,
-every between-package contrast is inconclusive once instruments are
-repaired and clustering is respected, and the join's retrieval value
-measured here is verification and routing rather than curated content.
+every between-package contrast in the join's favor is inconclusive
+once instruments are repaired and clustering is respected; the one
+decisive retrieval contrast (premise retrieval, F − W +0.27, p=2.3e-6)
+favors plain formal search; the bare-union ablation shows the union
+itself inert and the WF gain manual-driven; and the join's retrieval
+value measured here is verification and routing rather than curated
+content.
 The decisive next experiment is the 2×2 factorial {join, no join} ×
 {verifier, none} on a frozen post-cutoff set with human-calibrated
 equivalence grading and frozen-snapshot search infrastructure.
