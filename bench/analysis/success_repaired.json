@@ -1,0 +1,3256 @@
+{
+ "generated_by": "bench/analysis/success_repaired.py",
+ "what": "Fresh-100 grounded-typecheck success recomputed under the 5-rule REPAIRED hallucination oracle (halluc_validation.py classify_adjusted); v3 candidate \u2014 bridge_summary_v2.json untouched",
+ "success_metric_raw": "produced \u2227 no-halluc \u2227 TYPECHECK (judge pending calibration)",
+ "success_metric_repaired": "produced \u2227 no-halluc(REPAIRED oracle: R1-R4 token drops + R5 namespace reclassification) \u2227 TYPECHECK (judge pending calibration)",
+ "grading_env": {
+  "project": "/Users/jack/Desktop/LEAN/bench-lean-fresh",
+  "socket": "/tmp/wikilean_tc_fresh.sock",
+  "toolchain": "leanprover/lean4:v4.33.0-rc1",
+  "mathlib_rev": "9944fe2973b8dc0b86949101ed98232c07cd54a0",
+  "pipeline": "score_bridge.score_run -> typecheck_stub -> fresh-pin REPL server; task={} (empty gold_header) \u2014 identical to score_e31_v2.py / the Part-1 fresh scoring"
+ },
+ "affected_fresh_rows_per_arm": {
+  "A": {
+   "affected": 17,
+   "tc_pass": 1,
+   "tc_pass_rate": 0.0588
+  },
+  "B": {
+   "affected": 18,
+   "tc_pass": 0,
+   "tc_pass_rate": 0.0
+  },
+  "C": {
+   "affected": 38,
+   "tc_pass": 8,
+   "tc_pass_rate": 0.2105
+  },
+  "D": {
+   "affected": 17,
+   "tc_pass": 6,
+   "tc_pass_rate": 0.3529
+  },
+  "E": {
+   "affected": 39,
+   "tc_pass": 7,
+   "tc_pass_rate": 0.1795
+  }
+ },
+ "affected_fresh_total": 129,
+ "fresh_100_table_both_instruments": {
+  "raw_oracle": {
+   "A": {
+    "k": 20,
+    "n": 100,
+    "rate": 0.2,
+    "wilson95": [
+     0.1334,
+     0.2888
+    ]
+   },
+   "B": {
+    "k": 22,
+    "n": 100,
+    "rate": 0.22,
+    "wilson95": [
+     0.15,
+     0.3107
+    ]
+   },
+   "C": {
+    "k": 25,
+    "n": 100,
+    "rate": 0.25,
+    "wilson95": [
+     0.1755,
+     0.343
+    ]
+   },
+   "D": {
+    "k": 42,
+    "n": 100,
+    "rate": 0.42,
+    "wilson95": [
+     0.328,
+     0.5179
+    ]
+   },
+   "E": {
+    "k": 30,
+    "n": 100,
+    "rate": 0.3,
+    "wilson95": [
+     0.2189,
+     0.3958
+    ]
+   }
+  },
+  "repaired_oracle": {
+   "A": {
+    "k": 21,
+    "n": 100,
+    "rate": 0.21,
+    "wilson95": [
+     0.1417,
+     0.2998
+    ]
+   },
+   "B": {
+    "k": 22,
+    "n": 100,
+    "rate": 0.22,
+    "wilson95": [
+     0.15,
+     0.3107
+    ]
+   },
+   "C": {
+    "k": 33,
+    "n": 100,
+    "rate": 0.33,
+    "wilson95": [
+     0.2456,
+     0.4269
+    ]
+   },
+   "D": {
+    "k": 48,
+    "n": 100,
+    "rate": 0.48,
+    "wilson95": [
+     0.3846,
+     0.5768
+    ]
+   },
+   "E": {
+    "k": 37,
+    "n": 100,
+    "rate": 0.37,
+    "wilson95": [
+     0.2818,
+     0.4678
+    ]
+   }
+  }
+ },
+ "mcnemar_fresh_100_raw": {
+  "D_vs_E": {
+   "pair": "D_vs_E",
+   "n_paired": 100,
+   "both_success": 17,
+   "D_only": 25,
+   "E_only": 13,
+   "neither": 45,
+   "discordant": 38,
+   "p_exact_binomial_two_sided": 0.072951,
+   "rd": 0.12,
+   "rd_ci95_paired_wald": [
+    0.001491,
+    0.238509
+   ]
+  },
+  "D_vs_C": {
+   "pair": "D_vs_C",
+   "n_paired": 100,
+   "both_success": 14,
+   "D_only": 28,
+   "C_only": 11,
+   "neither": 47,
+   "discordant": 39,
+   "p_exact_binomial_two_sided": 0.009475,
+   "rd": 0.17,
+   "rd_ci95_paired_wald": [
+    0.052223,
+    0.287777
+   ]
+  },
+  "D_vs_A": {
+   "pair": "D_vs_A",
+   "n_paired": 100,
+   "both_success": 13,
+   "D_only": 29,
+   "A_only": 7,
+   "neither": 51,
+   "discordant": 36,
+   "p_exact_binomial_two_sided": 0.000313,
+   "rd": 0.22,
+   "rd_ci95_paired_wald": [
+    0.110593,
+    0.329407
+   ]
+  },
+  "C_vs_A": {
+   "pair": "C_vs_A",
+   "n_paired": 100,
+   "both_success": 9,
+   "C_only": 16,
+   "A_only": 11,
+   "neither": 64,
+   "discordant": 27,
+   "p_exact_binomial_two_sided": 0.442068,
+   "rd": 0.05,
+   "rd_ci95_paired_wald": [
+    -0.05137,
+    0.15137
+   ]
+  },
+  "E_vs_A": {
+   "pair": "E_vs_A",
+   "n_paired": 100,
+   "both_success": 11,
+   "E_only": 19,
+   "A_only": 9,
+   "neither": 61,
+   "discordant": 28,
+   "p_exact_binomial_two_sided": 0.087159,
+   "rd": 0.1,
+   "rd_ci95_paired_wald": [
+    -0.001843,
+    0.201843
+   ]
+  }
+ },
+ "mcnemar_fresh_100_repaired": {
+  "D_vs_E": {
+   "pair": "D_vs_E",
+   "n_paired": 100,
+   "both_success": 20,
+   "D_only": 28,
+   "E_only": 17,
+   "neither": 35,
+   "discordant": 45,
+   "p_exact_binomial_two_sided": 0.135156,
+   "rd": 0.11,
+   "rd_ci95_paired_wald": [
+    -0.019699,
+    0.239699
+   ]
+  },
+  "D_vs_C": {
+   "pair": "D_vs_C",
+   "n_paired": 100,
+   "both_success": 16,
+   "D_only": 32,
+   "C_only": 17,
+   "neither": 35,
+   "discordant": 49,
+   "p_exact_binomial_two_sided": 0.044384,
+   "rd": 0.15,
+   "rd_ci95_paired_wald": [
+    0.015989,
+    0.284011
+   ]
+  },
+  "D_vs_A": {
+   "pair": "D_vs_A",
+   "n_paired": 100,
+   "both_success": 14,
+   "D_only": 34,
+   "A_only": 7,
+   "neither": 45,
+   "discordant": 41,
+   "p_exact_binomial_two_sided": 2.5e-05,
+   "rd": 0.27,
+   "rd_ci95_paired_wald": [
+    0.156204,
+    0.383796
+   ]
+  },
+  "C_vs_A": {
+   "pair": "C_vs_A",
+   "n_paired": 100,
+   "both_success": 10,
+   "C_only": 23,
+   "A_only": 11,
+   "neither": 56,
+   "discordant": 34,
+   "p_exact_binomial_two_sided": 0.057613,
+   "rd": 0.12,
+   "rd_ci95_paired_wald": [
+    0.008162,
+    0.231838
+   ]
+  },
+  "E_vs_A": {
+   "pair": "E_vs_A",
+   "n_paired": 100,
+   "both_success": 13,
+   "E_only": 24,
+   "A_only": 8,
+   "neither": 55,
+   "discordant": 32,
+   "p_exact_binomial_two_sided": 0.007,
+   "rd": 0.16,
+   "rd_ci95_paired_wald": [
+    0.053655,
+    0.266345
+   ]
+  }
+ },
+ "mcnemar_classification_changes_alpha05": {
+  "D_vs_E": {
+   "raw_significant": false,
+   "repaired_significant": false,
+   "classification_changed": false
+  },
+  "D_vs_C": {
+   "raw_significant": true,
+   "repaired_significant": true,
+   "classification_changed": false
+  },
+  "D_vs_A": {
+   "raw_significant": true,
+   "repaired_significant": true,
+   "classification_changed": false
+  },
+  "C_vs_A": {
+   "raw_significant": false,
+   "repaired_significant": false,
+   "classification_changed": false
+  },
+  "E_vs_A": {
+   "raw_significant": false,
+   "repaired_significant": true,
+   "classification_changed": true
+  }
+ },
+ "commit_clustered_bootstrap": {
+  "method": "fresh_clustered.py cluster_boot_rd, 44 commit clusters from fresh_tasks.jsonl added_in.commit, B=10000, base seed 20260801 + frozen per-job offsets (same seeds both instruments); raw replication asserted byte-identical to fresh_clustered.json",
+  "n_clusters": 44,
+  "raw_oracle": {
+   "D_vs_E": {
+    "n_clusters": 44,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260802,
+    "rd": 0.12,
+    "ci95_percentile": [
+     -0.04878,
+     0.271028
+    ],
+    "p_two_sided_percentile_inversion": 0.191981,
+    "boot_se": 0.08211,
+    "cluster_robust_se_analytic": 0.084616
+   },
+   "D_vs_C": {
+    "n_clusters": 44,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260812,
+    "rd": 0.17,
+    "ci95_percentile": [
+     0.011236,
+     0.314294
+    ],
+    "p_two_sided_percentile_inversion": 0.040396,
+    "boot_se": 0.077031,
+    "cluster_robust_se_analytic": 0.078458
+   },
+   "D_vs_A": {
+    "n_clusters": 44,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260822,
+    "rd": 0.22,
+    "ci95_percentile": [
+     0.092784,
+     0.336066
+    ],
+    "p_two_sided_percentile_inversion": 0.0014,
+    "boot_se": 0.062854,
+    "cluster_robust_se_analytic": 0.064171
+   }
+  },
+  "repaired_oracle": {
+   "D_vs_E": {
+    "n_clusters": 44,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260802,
+    "rd": 0.11,
+    "ci95_percentile": [
+     -0.088889,
+     0.278846
+    ],
+    "p_two_sided_percentile_inversion": 0.30437,
+    "boot_se": 0.09359,
+    "cluster_robust_se_analytic": 0.095661
+   },
+   "D_vs_C": {
+    "n_clusters": 44,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260812,
+    "rd": 0.15,
+    "ci95_percentile": [
+     -0.022727,
+     0.301724
+    ],
+    "p_two_sided_percentile_inversion": 0.10039,
+    "boot_se": 0.083528,
+    "cluster_robust_se_analytic": 0.084893
+   },
+   "D_vs_A": {
+    "n_clusters": 44,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260822,
+    "rd": 0.27,
+    "ci95_percentile": [
+     0.130952,
+     0.394737
+    ],
+    "p_two_sided_percentile_inversion": 0.0004,
+    "boot_se": 0.066909,
+    "cluster_robust_se_analytic": 0.067925
+   }
+  },
+  "classification_changes_alpha05": {
+   "D_vs_E": {
+    "raw_significant": false,
+    "repaired_significant": false,
+    "classification_changed": false
+   },
+   "D_vs_C": {
+    "raw_significant": true,
+    "repaired_significant": false,
+    "classification_changed": true
+   },
+   "D_vs_A": {
+    "raw_significant": true,
+    "repaired_significant": true,
+    "classification_changed": false
+   }
+  }
+ },
+ "eval_341_limitation": {
+  "affected_rows_per_arm": {
+   "A": 39,
+   "B": 45,
+   "C": 68,
+   "D": 47,
+   "E": 81
+  },
+  "affected_total": 280,
+  "typecheck_budget": 150,
+  "decision": "affected typecheck load exceeds the budget; the EVAL-341 table is NOT recomputed under the repaired instrument \u2014 disclose these per-arm affected counts (upper bounds on per-arm success gains) as a known limitation in the report",
+  "eval_341_raw_table_for_context": {
+   "A": {
+    "k": 204,
+    "n": 341,
+    "rate": 0.5982,
+    "wilson95": [
+     0.5454,
+     0.6489
+    ]
+   },
+   "B": {
+    "k": 198,
+    "n": 341,
+    "rate": 0.5806,
+    "wilson95": [
+     0.5277,
+     0.6318
+    ]
+   },
+   "C": {
+    "k": 218,
+    "n": 341,
+    "rate": 0.6393,
+    "wilson95": [
+     0.587,
+     0.6885
+    ]
+   },
+   "D": {
+    "k": 219,
+    "n": 341,
+    "rate": 0.6422,
+    "wilson95": [
+     0.59,
+     0.6913
+    ]
+   },
+   "E": {
+    "k": 208,
+    "n": 341,
+    "rate": 0.61,
+    "wilson95": [
+     0.5573,
+     0.6602
+    ]
+   }
+  },
+  "affected_task_ids": {
+   "A": [
+    "Artin|exercise_10_7_10",
+    "Axler|exercise_5_4",
+    "Axler|exercise_7_10",
+    "Axler|exercise_7_11",
+    "Axler|exercise_7_6",
+    "Axler|exercise_7_9",
+    "Dummit-Foote|exercise_1_1_4",
+    "Dummit-Foote|exercise_1_3_8",
+    "Dummit-Foote|exercise_2_4_16b",
+    "Dummit-Foote|exercise_2_4_16c",
+    "Dummit-Foote|exercise_3_1_22a",
+    "Dummit-Foote|exercise_3_1_22b",
+    "Dummit-Foote|exercise_3_4_5a",
+    "Dummit-Foote|exercise_3_4_5b",
+    "Dummit-Foote|exercise_4_2_8",
+    "Dummit-Foote|exercise_4_4_6a",
+    "Dummit-Foote|exercise_4_4_6b",
+    "Dummit-Foote|exercise_4_4_7",
+    "Dummit-Foote|exercise_4_5_13",
+    "Dummit-Foote|exercise_4_5_19",
+    "Dummit-Foote|exercise_4_5_22",
+    "Dummit-Foote|exercise_4_5_33",
+    "Herstein|exercise_2_10_1",
+    "Herstein|exercise_2_5_30",
+    "Herstein|exercise_2_5_44",
+    "Herstein|exercise_2_7_7",
+    "Munkres|exercise_13_1",
+    "Munkres|exercise_13_5a",
+    "Munkres|exercise_13_8a",
+    "Munkres|exercise_16_6",
+    "Munkres|exercise_22_2b",
+    "Munkres|exercise_23_11",
+    "Munkres|exercise_26_11",
+    "Munkres|exercise_26_12",
+    "Munkres|exercise_28_4",
+    "Munkres|exercise_34_9",
+    "Rudin|exercise_1_5",
+    "Rudin|exercise_2_29",
+    "Rudin|exercise_5_17"
+   ],
+   "B": [
+    "Artin|exercise_10_4_7a",
+    "Axler|exercise_1_7",
+    "Axler|exercise_5_4",
+    "Axler|exercise_7_10",
+    "Axler|exercise_7_11",
+    "Dummit-Foote|exercise_1_1_15",
+    "Dummit-Foote|exercise_1_1_29",
+    "Dummit-Foote|exercise_1_1_3",
+    "Dummit-Foote|exercise_2_1_13",
+    "Dummit-Foote|exercise_2_4_16a",
+    "Dummit-Foote|exercise_2_4_16c",
+    "Dummit-Foote|exercise_2_4_4",
+    "Dummit-Foote|exercise_3_1_22a",
+    "Dummit-Foote|exercise_3_2_11",
+    "Dummit-Foote|exercise_3_4_5a",
+    "Dummit-Foote|exercise_3_4_5b",
+    "Dummit-Foote|exercise_4_2_14",
+    "Dummit-Foote|exercise_4_4_6a",
+    "Dummit-Foote|exercise_4_4_7",
+    "Dummit-Foote|exercise_4_5_1a",
+    "Dummit-Foote|exercise_4_5_20",
+    "Dummit-Foote|exercise_5_4_2",
+    "Dummit-Foote|exercise_9_1_10",
+    "Dummit-Foote|exercise_9_1_6",
+    "Herstein|exercise_2_10_1",
+    "Herstein|exercise_2_11_22",
+    "Herstein|exercise_2_5_30",
+    "Herstein|exercise_2_5_31",
+    "Herstein|exercise_2_7_7",
+    "Munkres|exercise_13_8a",
+    "Munkres|exercise_13_8b",
+    "Munkres|exercise_16_6",
+    "Munkres|exercise_20_2",
+    "Munkres|exercise_26_12",
+    "Munkres|exercise_30_13",
+    "Munkres|exercise_31_3",
+    "Munkres|exercise_32_3",
+    "Munkres|exercise_34_9",
+    "Pugh|exercise_2_46",
+    "Rudin|exercise_1_5",
+    "Rudin|exercise_2_27a",
+    "Rudin|exercise_2_27b",
+    "Rudin|exercise_2_29",
+    "Rudin|exercise_3_2a",
+    "Rudin|exercise_4_24"
+   ],
+   "C": [
+    "Artin|exercise_10_7_10",
+    "Axler|exercise_1_7",
+    "Axler|exercise_5_1",
+    "Axler|exercise_5_20",
+    "Axler|exercise_6_16",
+    "Axler|exercise_7_14",
+    "Axler|exercise_7_6",
+    "Dummit-Foote|exercise_1_1_15",
+    "Dummit-Foote|exercise_1_1_4",
+    "Dummit-Foote|exercise_1_3_8",
+    "Dummit-Foote|exercise_2_1_13",
+    "Dummit-Foote|exercise_2_4_16b",
+    "Dummit-Foote|exercise_3_1_22a",
+    "Dummit-Foote|exercise_3_2_11",
+    "Dummit-Foote|exercise_3_3_3",
+    "Dummit-Foote|exercise_3_4_11",
+    "Dummit-Foote|exercise_3_4_5b",
+    "Dummit-Foote|exercise_4_2_8",
+    "Dummit-Foote|exercise_4_4_6a",
+    "Dummit-Foote|exercise_4_4_6b",
+    "Dummit-Foote|exercise_4_4_7",
+    "Dummit-Foote|exercise_4_5_13",
+    "Dummit-Foote|exercise_4_5_14",
+    "Dummit-Foote|exercise_4_5_15",
+    "Dummit-Foote|exercise_4_5_1a",
+    "Dummit-Foote|exercise_4_5_33",
+    "Dummit-Foote|exercise_5_4_2",
+    "Dummit-Foote|exercise_7_1_15",
+    "Dummit-Foote|exercise_7_2_2",
+    "Dummit-Foote|exercise_7_3_16",
+    "Dummit-Foote|exercise_8_3_6a",
+    "Dummit-Foote|exercise_9_1_6",
+    "Herstein|exercise_2_10_1",
+    "Herstein|exercise_2_11_22",
+    "Herstein|exercise_2_11_6",
+    "Herstein|exercise_2_5_23",
+    "Herstein|exercise_2_5_30",
+    "Herstein|exercise_2_5_31",
+    "Herstein|exercise_2_5_44",
+    "Herstein|exercise_2_7_7",
+    "Herstein|exercise_5_6_14",
+    "Munkres|exercise_13_3b",
+    "Munkres|exercise_13_5a",
+    "Munkres|exercise_13_8a",
+    "Munkres|exercise_16_6",
+    "Munkres|exercise_20_2",
+    "Munkres|exercise_21_6a",
+    "Munkres|exercise_21_8",
+    "Munkres|exercise_22_2b",
+    "Munkres|exercise_24_3a",
+    "Munkres|exercise_28_4",
+    "Munkres|exercise_31_1",
+    "Munkres|exercise_31_3",
+    "Munkres|exercise_32_2b",
+    "Munkres|exercise_34_9",
+    "Pugh|exercise_2_46",
+    "Pugh|exercise_3_4",
+    "Rudin|exercise_1_4",
+    "Rudin|exercise_1_5",
+    "Rudin|exercise_2_24",
+    "Rudin|exercise_2_29",
+    "Rudin|exercise_3_21",
+    "Rudin|exercise_4_24",
+    "Rudin|exercise_4_4b",
+    "Rudin|exercise_4_8a",
+    "Rudin|exercise_5_5",
+    "Rudin|exercise_5_7",
+    "Shakarchi|exercise_2_2"
+   ],
+   "D": [
+    "Artin|exercise_10_7_10",
+    "Artin|exercise_11_2_13",
+    "Axler|exercise_3_1",
+    "Axler|exercise_5_24",
+    "Axler|exercise_6_16",
+    "Axler|exercise_7_10",
+    "Axler|exercise_7_11",
+    "Axler|exercise_7_9",
+    "Dummit-Foote|exercise_1_1_3",
+    "Dummit-Foote|exercise_1_1_4",
+    "Dummit-Foote|exercise_2_4_16a",
+    "Dummit-Foote|exercise_2_4_16c",
+    "Dummit-Foote|exercise_3_1_22a",
+    "Dummit-Foote|exercise_3_2_11",
+    "Dummit-Foote|exercise_3_2_21a",
+    "Dummit-Foote|exercise_3_3_3",
+    "Dummit-Foote|exercise_3_4_11",
+    "Dummit-Foote|exercise_3_4_5a",
+    "Dummit-Foote|exercise_3_4_5b",
+    "Dummit-Foote|exercise_4_2_8",
+    "Dummit-Foote|exercise_4_4_6a",
+    "Dummit-Foote|exercise_4_4_6b",
+    "Dummit-Foote|exercise_4_4_7",
+    "Dummit-Foote|exercise_4_5_16",
+    "Dummit-Foote|exercise_4_5_17",
+    "Dummit-Foote|exercise_4_5_19",
+    "Dummit-Foote|exercise_4_5_33",
+    "Dummit-Foote|exercise_5_4_2",
+    "Dummit-Foote|exercise_7_2_2",
+    "Dummit-Foote|exercise_7_3_37",
+    "Herstein|exercise_2_11_7",
+    "Herstein|exercise_2_5_23",
+    "Herstein|exercise_2_5_31",
+    "Herstein|exercise_2_7_7",
+    "Ireland-Rosen|exercise_1_31",
+    "Munkres|exercise_13_6",
+    "Munkres|exercise_22_2b",
+    "Munkres|exercise_24_3a",
+    "Munkres|exercise_26_12",
+    "Munkres|exercise_29_1",
+    "Pugh|exercise_2_46",
+    "Rudin|exercise_1_4",
+    "Rudin|exercise_1_5",
+    "Rudin|exercise_2_28",
+    "Rudin|exercise_3_13",
+    "Rudin|exercise_3_21",
+    "Rudin|exercise_5_7"
+   ],
+   "E": [
+    "Artin|exercise_3_7_2",
+    "Axler|exercise_1_7",
+    "Axler|exercise_1_9",
+    "Axler|exercise_5_13",
+    "Axler|exercise_5_20",
+    "Axler|exercise_5_4",
+    "Axler|exercise_6_16",
+    "Axler|exercise_7_10",
+    "Axler|exercise_7_6",
+    "Axler|exercise_7_9",
+    "Dummit-Foote|exercise_1_1_15",
+    "Dummit-Foote|exercise_1_1_29",
+    "Dummit-Foote|exercise_1_1_4",
+    "Dummit-Foote|exercise_2_1_13",
+    "Dummit-Foote|exercise_2_4_16a",
+    "Dummit-Foote|exercise_2_4_16b",
+    "Dummit-Foote|exercise_3_1_22a",
+    "Dummit-Foote|exercise_3_2_11",
+    "Dummit-Foote|exercise_3_2_21a",
+    "Dummit-Foote|exercise_3_3_3",
+    "Dummit-Foote|exercise_3_4_11",
+    "Dummit-Foote|exercise_3_4_5b",
+    "Dummit-Foote|exercise_4_2_8",
+    "Dummit-Foote|exercise_4_4_6a",
+    "Dummit-Foote|exercise_4_4_6b",
+    "Dummit-Foote|exercise_4_4_7",
+    "Dummit-Foote|exercise_4_5_13",
+    "Dummit-Foote|exercise_4_5_14",
+    "Dummit-Foote|exercise_4_5_15",
+    "Dummit-Foote|exercise_4_5_16",
+    "Dummit-Foote|exercise_4_5_17",
+    "Dummit-Foote|exercise_4_5_19",
+    "Dummit-Foote|exercise_5_4_2",
+    "Dummit-Foote|exercise_7_1_15",
+    "Dummit-Foote|exercise_7_4_27",
+    "Dummit-Foote|exercise_8_2_4",
+    "Dummit-Foote|exercise_8_3_4",
+    "Herstein|exercise_2_11_22",
+    "Herstein|exercise_2_11_6",
+    "Herstein|exercise_2_11_7",
+    "Herstein|exercise_2_5_23",
+    "Herstein|exercise_2_5_30",
+    "Herstein|exercise_2_5_31",
+    "Herstein|exercise_2_5_44",
+    "Herstein|exercise_2_7_7",
+    "Herstein|exercise_4_3_1",
+    "Herstein|exercise_5_5_2",
+    "Herstein|exercise_5_6_14",
+    "Ireland-Rosen|exercise_2_4",
+    "Ireland-Rosen|exercise_4_5",
+    "Munkres|exercise_13_3b",
+    "Munkres|exercise_13_5a",
+    "Munkres|exercise_13_8a",
+    "Munkres|exercise_16_1",
+    "Munkres|exercise_16_6",
+    "Munkres|exercise_20_2",
+    "Munkres|exercise_21_8",
+    "Munkres|exercise_22_2a",
+    "Munkres|exercise_22_2b",
+    "Munkres|exercise_23_11",
+    "Munkres|exercise_24_3a",
+    "Munkres|exercise_28_4",
+    "Munkres|exercise_29_1",
+    "Munkres|exercise_33_8",
+    "Pugh|exercise_2_12a",
+    "Pugh|exercise_2_26",
+    "Pugh|exercise_2_29",
+    "Pugh|exercise_2_46",
+    "Pugh|exercise_3_4",
+    "Putnam|exercise_2018_b4",
+    "Rudin|exercise_1_4",
+    "Rudin|exercise_1_5",
+    "Rudin|exercise_2_29",
+    "Rudin|exercise_4_24",
+    "Rudin|exercise_4_4b",
+    "Rudin|exercise_5_2",
+    "Rudin|exercise_5_5",
+    "Rudin|exercise_5_7",
+    "Shakarchi|exercise_1_13c",
+    "Shakarchi|exercise_1_26",
+    "Shakarchi|exercise_2_2"
+   ]
+  }
+ },
+ "dev_30_affected_per_arm_for_the_record": {
+  "A": 5,
+  "B": 3,
+  "C": 11,
+  "D": 4,
+  "E": 7
+ },
+ "affected_rows_detail": [
+  {
+   "arm": "A",
+   "task_id": "fresh_007",
+   "raw_hallucinated_names": [
+    "StrictMono.smul_left"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 4.286,
+    "errors": [
+     "failed to synthesize instance of type class\n  AddMonoid \u03b2\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command."
+    ]
+   }
+  },
+  {
+   "arm": "A",
+   "task_id": "fresh_020",
+   "raw_hallucinated_names": [
+    "Integrable"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 4.632,
+    "errors": [
+     "Function expected at\n  Integrable\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  (Set.indicator (Set.Ici a) f)\n\nHint: The identifier `Int"
+    ]
+   }
+  },
+  {
+   "arm": "A",
+   "task_id": "fresh_023",
+   "raw_hallucinated_names": [
+    "IntegrableOn"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 4.035,
+    "errors": [
+     "unexpected token 'in'; expected ','"
+    ]
+   }
+  },
+  {
+   "arm": "A",
+   "task_id": "fresh_025",
+   "raw_hallucinated_names": [
+    "IntegrableOn",
+    "Ici"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 4.701,
+    "errors": [
+     "Function expected at\n  IntegrableOn\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  f\n\nHint: The identifier `IntegrableOn` is unknown, and"
+    ]
+   }
+  },
+  {
+   "arm": "A",
+   "task_id": "fresh_026",
+   "raw_hallucinated_names": [
+    "IntegrableOn",
+    "Ioi"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 4.346,
+    "errors": [
+     "Function expected at\n  IntegrableOn\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  f\n\nHint: The identifier `IntegrableOn` is unknown, and",
+     "Function expected at\n  Ioi\nbut this term has type\n  ?m.2\n\nNote: Expected a function because this term is being applied to the argument\n  0\n\nHint: The identifier `Ioi` is unknown, and Lean's `autoImpli"
+    ]
+   }
+  },
+  {
+   "arm": "A",
+   "task_id": "fresh_027",
+   "raw_hallucinated_names": [
+    "IntegrableOn"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 4.692,
+    "errors": [
+     "Function expected at\n  IntegrableOn\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  f\n\nHint: The identifier `IntegrableOn` is unknown, and"
+    ]
+   }
+  },
+  {
+   "arm": "A",
+   "task_id": "fresh_028",
+   "raw_hallucinated_names": [
+    "Category",
+    "CommSq",
+    "Epi"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 4.291,
+    "errors": [
+     "invalid binder annotation, type is not a class instance\n  ?m.2\n\nNote: Use the command `set_option checkBinderAnnotations false` to disable the check"
+    ]
+   }
+  },
+  {
+   "arm": "A",
+   "task_id": "fresh_029",
+   "raw_hallucinated_names": [
+    "Category",
+    "Mono"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 4.665,
+    "errors": [
+     "invalid binder annotation, type is not a class instance\n  ?m.2\n\nNote: Use the command `set_option checkBinderAnnotations false` to disable the check"
+    ]
+   }
+  },
+  {
+   "arm": "A",
+   "task_id": "fresh_034",
+   "raw_hallucinated_names": [
+    "Smooth"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 4.202,
+    "errors": [
+     "unexpected token '('; expected ')', ',' or ':'"
+    ]
+   }
+  },
+  {
+   "arm": "A",
+   "task_id": "fresh_048",
+   "raw_hallucinated_names": [
+    "M.transpose",
+    "M.det"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": true,
+   "typecheck_result": {
+    "ok": true,
+    "timed_out": false,
+    "elapsed_s": 4.734,
+    "errors": []
+   }
+  },
+  {
+   "arm": "A",
+   "task_id": "fresh_051",
+   "raw_hallucinated_names": [
+    "StronglyMeasurable"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 4.199,
+    "errors": [
+     "failed to synthesize instance of type class\n  TopologicalSpace \u03b1\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.",
+     "Function expected at\n  StronglyMeasurable\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  f\n\nHint: The identifier `StronglyMeasurable` is "
+    ]
+   }
+  },
+  {
+   "arm": "A",
+   "task_id": "fresh_052",
+   "raw_hallucinated_names": [
+    "IntegrableOn"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 4.754,
+    "errors": [
+     "Function expected at\n  IntegrableOn\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  g\n\nHint: The identifier `IntegrableOn` is unknown, and"
+    ]
+   }
+  },
+  {
+   "arm": "A",
+   "task_id": "fresh_055",
+   "raw_hallucinated_names": [
+    "Measure",
+    "IsFiniteMeasure",
+    "VectorMeasure"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 4.472,
+    "errors": [
+     "invalid binder annotation, type is not a class instance\n  ?m.21\n\nNote: Use the command `set_option checkBinderAnnotations false` to disable the check"
+    ]
+   }
+  },
+  {
+   "arm": "A",
+   "task_id": "fresh_056",
+   "raw_hallucinated_names": [
+    "SignedMeasure.jordan",
+    "SignedMeasure"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": true,
+    "elapsed_s": 90.007,
+    "errors": [
+     "typecheck exceeded 90.0s budget"
+    ],
+    "note": "verdict reproduced twice 2026-08-01 (90.007s server-side timeout on the identical fresh rig); pre-seeded on resume to avoid a third repl recycle"
+   }
+  },
+  {
+   "arm": "A",
+   "task_id": "fresh_057",
+   "raw_hallucinated_names": [
+    "SignedMeasure"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 5.003,
+    "errors": [
+     "expected token"
+    ]
+   }
+  },
+  {
+   "arm": "A",
+   "task_id": "fresh_058",
+   "raw_hallucinated_names": [
+    "SignedMeasure.abs_apply_le_totalVar",
+    "SignedMeasure"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 24.398,
+    "errors": [
+     "Function expected at\n  SignedMeasure\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  \u03b1\n\nHint: The identifier `SignedMeasure` is unknown, a"
+    ]
+   }
+  },
+  {
+   "arm": "A",
+   "task_id": "fresh_059",
+   "raw_hallucinated_names": [
+    "SignedMeasure.totalVariation_eq_hahnJordan",
+    "SignedMeasure"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 4.994,
+    "errors": [
+     "Function expected at\n  SignedMeasure\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  \u03b1\n\nHint: The identifier `SignedMeasure` is unknown, a"
+    ]
+   }
+  },
+  {
+   "arm": "B",
+   "task_id": "fresh_011",
+   "raw_hallucinated_names": [
+    "A.det"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 3.988,
+    "errors": [
+     "failed to synthesize instance of type class\n  Lattice \u2102\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.",
+     "failed to synthesize instance of type class\n  Lattice \u2102\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command."
+    ]
+   }
+  },
+  {
+   "arm": "B",
+   "task_id": "fresh_023",
+   "raw_hallucinated_names": [
+    "Integrable"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 4.434,
+    "errors": [
+     "unexpected token 'in'; expected ','"
+    ]
+   }
+  },
+  {
+   "arm": "B",
+   "task_id": "fresh_024",
+   "raw_hallucinated_names": [
+    "IntegrableOn"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 4.789,
+    "errors": [
+     "Function expected at\n  IntegrableOn\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  f\n\nHint: The identifier `IntegrableOn` is unknown, and"
+    ]
+   }
+  },
+  {
+   "arm": "B",
+   "task_id": "fresh_025",
+   "raw_hallucinated_names": [
+    "IntegrableOn",
+    "Ici"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 5.24,
+    "errors": [
+     "Function expected at\n  IntegrableOn\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  f\n\nHint: The identifier `IntegrableOn` is unknown, and"
+    ]
+   }
+  },
+  {
+   "arm": "B",
+   "task_id": "fresh_026",
+   "raw_hallucinated_names": [
+    "Integrable"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 5.396,
+    "errors": [
+     "Function expected at\n  Integrable\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  f\n\nHint: The identifier `Integrable` is unknown, and Lea"
+    ]
+   }
+  },
+  {
+   "arm": "B",
+   "task_id": "fresh_027",
+   "raw_hallucinated_names": [
+    "Integrable"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 5.757,
+    "errors": [
+     "Function expected at\n  Integrable\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  f\n\nHint: The identifier `Integrable` is unknown, and Lea"
+    ]
+   }
+  },
+  {
+   "arm": "B",
+   "task_id": "fresh_028",
+   "raw_hallucinated_names": [
+    "Category",
+    "Epi"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 5.416,
+    "errors": [
+     "expected token"
+    ]
+   }
+  },
+  {
+   "arm": "B",
+   "task_id": "fresh_029",
+   "raw_hallucinated_names": [
+    "Category",
+    "Eight",
+    "Bottom",
+    "Vertical",
+    "Five",
+    "Mono",
+    "Then"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 5.243,
+    "errors": [
+     "invalid binder annotation, type is not a class instance\n  ?m.2\n\nNote: Use the command `set_option checkBinderAnnotations false` to disable the check"
+    ]
+   }
+  },
+  {
+   "arm": "B",
+   "task_id": "fresh_048",
+   "raw_hallucinated_names": [
+    "M.transpose",
+    "J.det",
+    "M.det"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 5.31,
+    "errors": [
+     "expected token"
+    ]
+   }
+  },
+  {
+   "arm": "B",
+   "task_id": "fresh_051",
+   "raw_hallucinated_names": [
+    "StronglyMeasurable"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 5.319,
+    "errors": [
+     "Function expected at\n  StronglyMeasurable\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  f\n\nHint: The identifier `StronglyMeasurable` is "
+    ]
+   }
+  },
+  {
+   "arm": "B",
+   "task_id": "fresh_055",
+   "raw_hallucinated_names": [
+    "Measure",
+    "IsFinite"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 5.566,
+    "errors": [
+     "Function expected at\n  Pairwise Disjoint\nbut this term has type\n  Prop\n\nNote: Expected a function because this term is being applied to the argument\n  seq",
+     "Function expected at\n  Measure\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  \u03b1\n\nHint: The identifier `Measure` is unknown, and Lean's `a",
+     "Function expected at\n  IsFinite\nbut this term has type\n  ?m.2\n\nNote: Expected a function because this term is being applied to the argument\n  \u03bc\n\nHint: The identifier `IsFinite` is unknown, and Lean's "
+    ]
+   }
+  },
+  {
+   "arm": "B",
+   "task_id": "fresh_056",
+   "raw_hallucinated_names": [
+    "SignedMeasure"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 20.765,
+    "errors": [
+     "Function expected at\n  SignedMeasure\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  \u03b1\n\nHint: The identifier `SignedMeasure` is unknown, a"
+    ]
+   }
+  },
+  {
+   "arm": "B",
+   "task_id": "fresh_057",
+   "raw_hallucinated_names": [
+    "SignedMeasure.abs_apply_le_totalVar",
+    "SignedMeasure"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 5.762,
+    "errors": [
+     "Function expected at\n  SignedMeasure\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  \u03b1\n\nHint: The identifier `SignedMeasure` is unknown, a"
+    ]
+   }
+  },
+  {
+   "arm": "B",
+   "task_id": "fresh_058",
+   "raw_hallucinated_names": [
+    "SignedMeasure"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 6.375,
+    "errors": [
+     "Function expected at\n  SignedMeasure\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  \u03b1\n\nHint: The identifier `SignedMeasure` is unknown, a"
+    ]
+   }
+  },
+  {
+   "arm": "B",
+   "task_id": "fresh_059",
+   "raw_hallucinated_names": [
+    "SignedMeasure"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 6.039,
+    "errors": [
+     "Function expected at\n  SignedMeasure\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  \u03b1\n\nHint: The identifier `SignedMeasure` is unknown, a"
+    ]
+   }
+  },
+  {
+   "arm": "B",
+   "task_id": "fresh_080",
+   "raw_hallucinated_names": [
+    "MvPowerSeries.ext_of_constantCoeff_and_pderivative"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 5.86,
+    "errors": [
+     "Function expected at\n  constantCoeff\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  R\n\nHint: The identifier `constantCoeff` is unknown, a",
+     "Function expected at\n  constantCoeff\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  R\n\nHint: The identifier `constantCoeff` is unknown, a",
+     "Function expected at\n  pderivative\nbut this term has type\n  ?m.2\n\nNote: Expected a function because this term is being applied to the argument\n  i\n\nHint: The identifier `pderivative` is unknown, and L",
+     "Function expected at\n  pderivative\nbut this term has type\n  ?m.2\n\nNote: Expected a function because this term is being applied to the argument\n  i\n\nHint: The identifier `pderivative` is unknown, and L"
+    ]
+   }
+  },
+  {
+   "arm": "B",
+   "task_id": "fresh_088",
+   "raw_hallucinated_names": [
+    "Icc"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 5.769,
+    "errors": [
+     "Function expected at\n  totalVariation\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  f\n\nHint: The identifier `totalVariation` is unknown,"
+    ]
+   }
+  },
+  {
+   "arm": "B",
+   "task_id": "fresh_094",
+   "raw_hallucinated_names": [
+    "Icc"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 6.195,
+    "errors": [
+     "Function expected at\n  totalVariationOn\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  id\n\nHint: The identifier `totalVariationOn` is unk"
+    ]
+   }
+  },
+  {
+   "arm": "C",
+   "task_id": "fresh_003",
+   "raw_hallucinated_names": [
+    "MonoidAlgebra.coeff_mul_of_unique_factorization"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": true,
+   "typecheck_result": {
+    "ok": true,
+    "timed_out": false,
+    "elapsed_s": 6.175,
+    "errors": []
+   }
+  },
+  {
+   "arm": "C",
+   "task_id": "fresh_009",
+   "raw_hallucinated_names": [
+    "IsNontrivial"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": true,
+   "typecheck_result": {
+    "ok": true,
+    "timed_out": false,
+    "elapsed_s": 6.292,
+    "errors": []
+   }
+  },
+  {
+   "arm": "C",
+   "task_id": "fresh_019",
+   "raw_hallucinated_names": [
+    "Ici",
+    "IntegrableOn",
+    "Ioi"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 6.282,
+    "errors": [
+     "Function expected at\n  Ici\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  (N - 1 : \u211d)\n\nHint: The identifier `Ici` is unknown, and Lean's ",
+     "Function expected at\n  IntegrableOn\nbut this term has type\n  ?m.2\n\nNote: Expected a function because this term is being applied to the argument\n  f\n\nHint: The identifier `IntegrableOn` is unknown, and",
+     "Function expected at\n  Ioi\nbut this term has type\n  ?m.3\n\nNote: Expected a function because this term is being applied to the argument\n  (N - 1 : \u211d)\n\nHint: The identifier `Ioi` is unknown, and Lean's ",
+     "Function expected at\n  Ioi\nbut this term has type\n  ?m.3\n\nNote: Expected a function because this term is being applied to the argument\n  (N - 1 : \u211d)\n\nHint: The identifier `Ioi` is unknown, and Lean's "
+    ]
+   }
+  },
+  {
+   "arm": "C",
+   "task_id": "fresh_021",
+   "raw_hallucinated_names": [
+    "Ici",
+    "Ioi"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 6.37,
+    "errors": [
+     "Function expected at\n  Ici\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  0\n\nHint: The identifier `Ici` is unknown, and Lean's `autoImpli",
+     "Function expected at\n  Ioi\nbut this term has type\n  ?m.2\n\nNote: Expected a function because this term is being applied to the argument\n  0\n\nHint: The identifier `Ioi` is unknown, and Lean's `autoImpli",
+     "Function expected at\n  Ioi\nbut this term has type\n  ?m.2\n\nNote: Expected a function because this term is being applied to the argument\n  0\n\nHint: The identifier `Ioi` is unknown, and Lean's `autoImpli"
+    ]
+   }
+  },
+  {
+   "arm": "C",
+   "task_id": "fresh_022",
+   "raw_hallucinated_names": [
+    "Ici",
+    "Ioi",
+    "IntegrableOn"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 6.401,
+    "errors": [
+     "unexpected token 'in'; expected ','"
+    ]
+   }
+  },
+  {
+   "arm": "C",
+   "task_id": "fresh_023",
+   "raw_hallucinated_names": [
+    "Ici",
+    "IntegrableOn",
+    "Ioi"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 6.415,
+    "errors": [
+     "Function expected at\n  Ici\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  0\n\nHint: The identifier `Ici` is unknown, and Lean's `autoImpli",
+     "Function expected at\n  IntegrableOn\nbut this term has type\n  ?m.2\n\nNote: Expected a function because this term is being applied to the argument\n  f\n\nHint: The identifier `IntegrableOn` is unknown, and",
+     "Function expected at\n  Ioi\nbut this term has type\n  ?m.3\n\nNote: Expected a function because this term is being applied to the argument\n  0\n\nHint: The identifier `Ioi` is unknown, and Lean's `autoImpli",
+     "Function expected at\n  Ioi\nbut this term has type\n  ?m.3\n\nNote: Expected a function because this term is being applied to the argument\n  0\n\nHint: The identifier `Ioi` is unknown, and Lean's `autoImpli"
+    ]
+   }
+  },
+  {
+   "arm": "C",
+   "task_id": "fresh_024",
+   "raw_hallucinated_names": [
+    "IntegrableOn"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 6.562,
+    "errors": [
+     "Function expected at\n  IntegrableOn\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  f\n\nHint: The identifier `IntegrableOn` is unknown, and"
+    ]
+   }
+  },
+  {
+   "arm": "C",
+   "task_id": "fresh_025",
+   "raw_hallucinated_names": [
+    "IntegrableOn"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 6.837,
+    "errors": [
+     "Function expected at\n  IntegrableOn\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  f\n\nHint: The identifier `IntegrableOn` is unknown, and"
+    ]
+   }
+  },
+  {
+   "arm": "C",
+   "task_id": "fresh_026",
+   "raw_hallucinated_names": [
+    "Ici",
+    "IntegrableOn",
+    "Ioi"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 6.856,
+    "errors": [
+     "Function expected at\n  Ici\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  0\n\nHint: The identifier `Ici` is unknown, and Lean's `autoImpli",
+     "Function expected at\n  IntegrableOn\nbut this term has type\n  ?m.2\n\nNote: Expected a function because this term is being applied to the argument\n  f\n\nHint: The identifier `IntegrableOn` is unknown, and",
+     "Function expected at\n  Ioi\nbut this term has type\n  ?m.3\n\nNote: Expected a function because this term is being applied to the argument\n  0\n\nHint: The identifier `Ioi` is unknown, and Lean's `autoImpli",
+     "Function expected at\n  Ioi\nbut this term has type\n  ?m.3\n\nNote: Expected a function because this term is being applied to the argument\n  0\n\nHint: The identifier `Ioi` is unknown, and Lean's `autoImpli"
+    ]
+   }
+  },
+  {
+   "arm": "C",
+   "task_id": "fresh_027",
+   "raw_hallucinated_names": [
+    "Ici",
+    "IntegrableOn",
+    "Ioi"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 7.156,
+    "errors": [
+     "Function expected at\n  Ici\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  0\n\nHint: The identifier `Ici` is unknown, and Lean's `autoImpli",
+     "Function expected at\n  IntegrableOn\nbut this term has type\n  ?m.2\n\nNote: Expected a function because this term is being applied to the argument\n  f\n\nHint: The identifier `IntegrableOn` is unknown, and",
+     "Function expected at\n  Ioi\nbut this term has type\n  ?m.3\n\nNote: Expected a function because this term is being applied to the argument\n  0\n\nHint: The identifier `Ioi` is unknown, and Lean's `autoImpli",
+     "Function expected at\n  Ioi\nbut this term has type\n  ?m.3\n\nNote: Expected a function because this term is being applied to the argument\n  0\n\nHint: The identifier `Ioi` is unknown, and Lean's `autoImpli"
+    ]
+   }
+  },
+  {
+   "arm": "C",
+   "task_id": "fresh_035",
+   "raw_hallucinated_names": [
+    "IsImmersionAt"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 7.819,
+    "errors": [
+     "unexpected token '['; expected ','"
+    ]
+   }
+  },
+  {
+   "arm": "C",
+   "task_id": "fresh_040",
+   "raw_hallucinated_names": [
+    "Localization.uniqueFactorizationMonoid"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": true,
+   "typecheck_result": {
+    "ok": true,
+    "timed_out": false,
+    "elapsed_s": 7.678,
+    "errors": []
+   }
+  },
+  {
+   "arm": "C",
+   "task_id": "fresh_045",
+   "raw_hallucinated_names": [
+    "Module.End.IsSemisimple.genEigenspace_iff_eigenspace_span",
+    "IsSemisimple"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": true,
+   "typecheck_result": {
+    "ok": true,
+    "timed_out": false,
+    "elapsed_s": 8.193,
+    "errors": []
+   }
+  },
+  {
+   "arm": "C",
+   "task_id": "fresh_046",
+   "raw_hallucinated_names": [
+    "Submodule.eq_span_of_finrank_eq_one"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 7.643,
+    "errors": [
+     "Function expected at\n  finrank\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  R\n\nHint: The identifier `finrank` is unknown, and Lean's `a"
+    ]
+   }
+  },
+  {
+   "arm": "C",
+   "task_id": "fresh_047",
+   "raw_hallucinated_names": [
+    "M.rank"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 7.534,
+    "errors": [
+     "failed to synthesize instance of type class\n  CommSemiring R\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.",
+     "failed to synthesize instance of type class\n  CommSemiring R\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.",
+     "failed to synthesize instance of type class\n  Monoid (Matrix m m R)\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.",
+     "failed to synthesize instance of type class\n  Monoid (Matrix m m R)\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command."
+    ]
+   }
+  },
+  {
+   "arm": "C",
+   "task_id": "fresh_048",
+   "raw_hallucinated_names": [
+    "M.det"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": true,
+   "typecheck_result": {
+    "ok": true,
+    "timed_out": false,
+    "elapsed_s": 7.671,
+    "errors": []
+   }
+  },
+  {
+   "arm": "C",
+   "task_id": "fresh_051",
+   "raw_hallucinated_names": [
+    "PseudoMetrizableSpace",
+    "StronglyMeasurable"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 7.524,
+    "errors": [
+     "invalid binder annotation, type is not a class instance\n  ?m.7\n\nNote: Use the command `set_option checkBinderAnnotations false` to disable the check"
+    ]
+   }
+  },
+  {
+   "arm": "C",
+   "task_id": "fresh_052",
+   "raw_hallucinated_names": [
+    "Ioi",
+    "IntegrableOn",
+    "Ici"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 7.659,
+    "errors": [
+     "Function expected at\n  Ioi\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  (Real.exp a)\n\nHint: The identifier `Ioi` is unknown, and Lean's",
+     "Function expected at\n  IntegrableOn\nbut this term has type\n  ?m.2\n\nNote: Expected a function because this term is being applied to the argument\n  g\n\nHint: The identifier `IntegrableOn` is unknown, and",
+     "Function expected at\n  IntegrableOn\nbut this term has type\n  ?m.2\n\nNote: Expected a function because this term is being applied to the argument\n  (fun x => g (Real.exp x) * Real.exp x)\n\nHint: The iden",
+     "Function expected at\n  Ioi\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  a\n\nHint: The identifier `Ioi` is unknown, and Lean's `autoImpli"
+    ]
+   }
+  },
+  {
+   "arm": "C",
+   "task_id": "fresh_053",
+   "raw_hallucinated_names": [
+    "Ioi",
+    "IntegrableOn",
+    "Ici"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 8.96,
+    "errors": [
+     "Function expected at\n  Ioi\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  (log a)\n\nHint: The identifier `Ioi` is unknown, and Lean's `aut",
+     "Function expected at\n  IntegrableOn\nbut this term has type\n  ?m.2\n\nNote: Expected a function because this term is being applied to the argument\n  g\n\nHint: The identifier `IntegrableOn` is unknown, and",
+     "Function expected at\n  IntegrableOn\nbut this term has type\n  ?m.2\n\nNote: Expected a function because this term is being applied to the argument\n  (fun x => g (log x) * x\u207b\u00b9)\n\nHint: The identifier `Inte",
+     "Function expected at\n  Ioi\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  a\n\nHint: The identifier `Ioi` is unknown, and Lean's `autoImpli"
+    ]
+   }
+  },
+  {
+   "arm": "C",
+   "task_id": "fresh_054",
+   "raw_hallucinated_names": [
+    "PairwiseDisjoint"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 9.503,
+    "errors": [
+     "Function expected at\n  PairwiseDisjoint\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  (\u2191J)\n\nHint: The identifier `PairwiseDisjoint` is u"
+    ]
+   }
+  },
+  {
+   "arm": "C",
+   "task_id": "fresh_055",
+   "raw_hallucinated_names": [
+    "VectorMeasure.exists_extension_of_isSetSemiring_of_le_measure_of_generateFrom",
+    "Measure",
+    "IsFiniteMeasure",
+    "AddContent",
+    "IsSetSemiring",
+    "VectorMeasure"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 9.382,
+    "errors": [
+     "invalid binder annotation, type is not a class instance\n  ?m.5\n\nNote: Use the command `set_option checkBinderAnnotations false` to disable the check"
+    ]
+   }
+  },
+  {
+   "arm": "C",
+   "task_id": "fresh_057",
+   "raw_hallucinated_names": [
+    "SignedMeasure"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 59.422,
+    "errors": [
+     "Function expected at\n  SignedMeasure\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  \u03b1\n\nHint: The identifier `SignedMeasure` is unknown, a"
+    ]
+   }
+  },
+  {
+   "arm": "C",
+   "task_id": "fresh_058",
+   "raw_hallucinated_names": [
+    "SignedMeasure"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 70.72,
+    "errors": [
+     "failed to synthesize instance of type class\n  MeasurableSpace \u03b1\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.",
+     "Function expected at\n  SignedMeasure\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  \u03b1\n\nHint: The identifier `SignedMeasure` is unknown, a"
+    ]
+   }
+  },
+  {
+   "arm": "C",
+   "task_id": "fresh_059",
+   "raw_hallucinated_names": [
+    "SignedMeasure"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 53.45,
+    "errors": [
+     "Function expected at\n  SignedMeasure\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  \u03b1\n\nHint: The identifier `SignedMeasure` is unknown, a"
+    ]
+   }
+  },
+  {
+   "arm": "C",
+   "task_id": "fresh_064",
+   "raw_hallucinated_names": [
+    "IsBoundedAtImInfty"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 5.114,
+    "errors": [
+     "Function expected at\n  \ud835\udd62\nbut this term has type\n  ?m.2\n\nNote: Expected a function because this term is being applied to the argument\n  h\n\nHint: The identifier `\ud835\udd62` is unknown, and Lean's `autoImplicit`",
+     "Function expected at\n  IsBoundedAtImInfty\nbut this term has type\n  ?m.3\n\nNote: Expected a function because this term is being applied to the argument\n  f\n\nHint: The identifier `IsBoundedAtImInfty` is "
+    ]
+   }
+  },
+  {
+   "arm": "C",
+   "task_id": "fresh_068",
+   "raw_hallucinated_names": [
+    "P.IsMaximal",
+    "P.LiesOver",
+    "I.LiesOver",
+    "IsMaximal"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": true,
+   "typecheck_result": {
+    "ok": true,
+    "timed_out": false,
+    "elapsed_s": 5.075,
+    "errors": []
+   }
+  },
+  {
+   "arm": "C",
+   "task_id": "fresh_069",
+   "raw_hallucinated_names": [
+    "P.IsPrime",
+    "P.LiesOver"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": true,
+   "typecheck_result": {
+    "ok": true,
+    "timed_out": false,
+    "elapsed_s": 4.911,
+    "errors": []
+   }
+  },
+  {
+   "arm": "C",
+   "task_id": "fresh_071",
+   "raw_hallucinated_names": [
+    "EqvGen"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 4.847,
+    "errors": [
+     "Function expected at\n  EqvGen\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  moves\n\nHint: The identifier `EqvGen` is unknown, and Lean's "
+    ]
+   }
+  },
+  {
+   "arm": "C",
+   "task_id": "fresh_076",
+   "raw_hallucinated_names": [
+    "S.Exact",
+    "S.map",
+    "Functor.reflects_exact_of_faithful",
+    "ShortComplex",
+    "Exact"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 39.777,
+    "errors": [
+     "failed to synthesize instance of type class\n  NonAssocSemiring R\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.",
+     "Function expected at\n  ShortComplex\nbut this term has type\n  ?m.3\n\nNote: Expected a function because this term is being applied to the argument\n  (ModuleCat.{v} R')\n\nHint: The identifier `ShortComplex",
+     "Unknown constant `Functor.reflects_exact_of_faithful`"
+    ]
+   }
+  },
+  {
+   "arm": "C",
+   "task_id": "fresh_077",
+   "raw_hallucinated_names": [
+    "I.carrier"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 7.437,
+    "errors": [
+     "Type mismatch\n  PrimeSpectrum.zeroLocus I.carrier\nhas type\n  Set (PrimeSpectrum R)\nbut is expected to have type\n  (M : Type ?u.39) \u2192 [inst : CommRing N] \u2192 [inst_1 : AddCommGroup M] \u2192 [Module N M] \u2192 Se"
+    ]
+   }
+  },
+  {
+   "arm": "C",
+   "task_id": "fresh_080",
+   "raw_hallucinated_names": [
+    "MvPowerSeries.ext_of_constantCoeff_and_partialDeriv"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 8.787,
+    "errors": [
+     "Invalid field `count`: The environment does not contain `Finsupp.count`, so it is not possible to project the field `count` from an expression\n  m\nof type `\u03c3 \u2192\u2080 \u2115`",
+     "Invalid field `count`: The environment does not contain `Finsupp.count`, so it is not possible to project the field `count` from an expression\n  m\nof type `\u03c3 \u2192\u2080 \u2115`",
+     "Function expected at\n  constantCoeff\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  f\n\nHint: The identifier `constantCoeff` is unknown, a",
+     "Function expected at\n  constantCoeff\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  g\n\nHint: The identifier `constantCoeff` is unknown, a"
+    ]
+   }
+  },
+  {
+   "arm": "C",
+   "task_id": "fresh_084",
+   "raw_hallucinated_names": [
+    "LinearMap.isClosed_range_of_exists_finiteDimensional_map"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": true,
+   "typecheck_result": {
+    "ok": true,
+    "timed_out": false,
+    "elapsed_s": 7.542,
+    "errors": []
+   }
+  },
+  {
+   "arm": "C",
+   "task_id": "fresh_087",
+   "raw_hallucinated_names": [
+    "Icc"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 7.361,
+    "errors": [
+     "Function expected at\n  Icc\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  a\n\nHint: The identifier `Icc` is unknown, and Lean's `autoImpli"
+    ]
+   }
+  },
+  {
+   "arm": "C",
+   "task_id": "fresh_088",
+   "raw_hallucinated_names": [
+    "Icc"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 7.345,
+    "errors": [
+     "Function expected at\n  Icc\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  a\n\nHint: The identifier `Icc` is unknown, and Lean's `autoImpli"
+    ]
+   }
+  },
+  {
+   "arm": "C",
+   "task_id": "fresh_090",
+   "raw_hallucinated_names": [
+    "Iic"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 7.829,
+    "errors": [
+     "Function expected at\n  Iic\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  (n + 1)\n\nHint: The identifier `Iic` is unknown, and Lean's `aut"
+    ]
+   }
+  },
+  {
+   "arm": "C",
+   "task_id": "fresh_094",
+   "raw_hallucinated_names": [
+    "Icc"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 8.006,
+    "errors": [
+     "Function expected at\n  Icc\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  a\n\nHint: The identifier `Icc` is unknown, and Lean's `autoImpli",
+     "Application type mismatch: The argument\n  hab\nhas type\n  a \u2264 b\nof sort `Prop` but is expected to have type\n  \u211d\nof sort `Type` in the application\n  eVariationOn_id_Icc hab"
+    ]
+   }
+  },
+  {
+   "arm": "C",
+   "task_id": "fresh_097",
+   "raw_hallucinated_names": [
+    "Icc",
+    "IsFixedPt"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 8.602,
+    "errors": [
+     "failed to synthesize instance of type class\n  LE \u03b1\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.",
+     "failed to synthesize instance of type class\n  TopologicalSpace \u03b1\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.",
+     "Function expected at\n  Icc\nbut this term has type\n  ?m.2\n\nNote: Expected a function because this term is being applied to the argument\n  a\n\nHint: The identifier `Icc` is unknown, and Lean's `autoImpli",
+     "Function expected at\n  Icc\nbut this term has type\n  ?m.2\n\nNote: Expected a function because this term is being applied to the argument\n  a\n\nHint: The identifier `Icc` is unknown, and Lean's `autoImpli"
+    ]
+   }
+  },
+  {
+   "arm": "C",
+   "task_id": "fresh_098",
+   "raw_hallucinated_names": [
+    "IsFixedPt"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 8.072,
+    "errors": [
+     "Function expected at\n  IsFixedPt\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  f\n\nHint: The identifier `IsFixedPt` is unknown, and Lean'"
+    ]
+   }
+  },
+  {
+   "arm": "D",
+   "task_id": "fresh_006",
+   "raw_hallucinated_names": [
+    "Monotone.const_smul_nonneg"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 7.884,
+    "errors": [
+     "failed to synthesize instance of type class\n  Monoid R\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command."
+    ]
+   }
+  },
+  {
+   "arm": "D",
+   "task_id": "fresh_031",
+   "raw_hallucinated_names": [
+    "S.sum"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 8.158,
+    "errors": [
+     "failed to synthesize instance of type class\n  AddCommMonoid \u2124\u02e3\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command."
+    ]
+   }
+  },
+  {
+   "arm": "D",
+   "task_id": "fresh_033",
+   "raw_hallucinated_names": [
+    "Perm"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": true,
+   "typecheck_result": {
+    "ok": true,
+    "timed_out": false,
+    "elapsed_s": 8.035,
+    "errors": []
+   }
+  },
+  {
+   "arm": "D",
+   "task_id": "fresh_041",
+   "raw_hallucinated_names": [
+    "Module.rank_eq_of_isFractionRing_tower"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": true,
+   "typecheck_result": {
+    "ok": true,
+    "timed_out": false,
+    "elapsed_s": 8.156,
+    "errors": []
+   }
+  },
+  {
+   "arm": "D",
+   "task_id": "fresh_044",
+   "raw_hallucinated_names": [
+    "IsSemisimple"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 8.301,
+    "errors": [
+     "failed to synthesize instance of type class\n  Field K\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command."
+    ]
+   }
+  },
+  {
+   "arm": "D",
+   "task_id": "fresh_045",
+   "raw_hallucinated_names": [
+    "Mathlib.LinearAlgebra.Eigenspace.Semisimple",
+    "Mathlib.LinearAlgebra.Eigenspace.Basic",
+    "IsSemisimple"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 8.589,
+    "errors": [
+     "failed to synthesize instance of type class\n  Semiring K\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command."
+    ]
+   }
+  },
+  {
+   "arm": "D",
+   "task_id": "fresh_054",
+   "raw_hallucinated_names": [
+    "SetSemiring.diff_union_decomposition"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": true,
+   "typecheck_result": {
+    "ok": true,
+    "timed_out": false,
+    "elapsed_s": 8.478,
+    "errors": []
+   }
+  },
+  {
+   "arm": "D",
+   "task_id": "fresh_055",
+   "raw_hallucinated_names": [
+    "M.restrict",
+    "AddContent",
+    "Measure",
+    "VectorMeasure"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 31.967,
+    "errors": [
+     "Function expected at\n  AddContent\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  E\n\nHint: The identifier `AddContent` is unknown, and Lea",
+     "Function expected at\n  Measure\nbut this term has type\n  ?m.2\n\nNote: Expected a function because this term is being applied to the argument\n  \u03b1\n\nHint: The identifier `Measure` is unknown, and Lean's `a",
+     "Function expected at\n  VectorMeasure\nbut this term has type\n  ?m.3\n\nNote: Expected a function because this term is being applied to the argument\n  \u03b1\n\nHint: The identifier `VectorMeasure` is unknown, a",
+     "Application type mismatch: The argument\n  f\nhas type\n  \u2115 \u2192 Set \u03b1\nbut is expected to have type\n  ?m.86 M f \u2192 ?m.86 M f \u2192 Prop\nin the application\n  Set.Pairwise ?m.55 f"
+    ]
+   }
+  },
+  {
+   "arm": "D",
+   "task_id": "fresh_056",
+   "raw_hallucinated_names": [
+    "JordanDecomposition.posPart",
+    "JordanDecomposition.negPart"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 8.398,
+    "errors": [
+     "Type mismatch\n  s.toJordanDecomposition.posPart E\nhas type\n  ENNReal\nbut is expected to have type\n  \u211d",
+     "Type mismatch\n  s.toJordanDecomposition.negPart E\nhas type\n  ENNReal\nbut is expected to have type\n  \u211d"
+    ]
+   }
+  },
+  {
+   "arm": "D",
+   "task_id": "fresh_058",
+   "raw_hallucinated_names": [
+    "SignedMeasure"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 7.962,
+    "errors": [
+     "expected token"
+    ]
+   }
+  },
+  {
+   "arm": "D",
+   "task_id": "fresh_059",
+   "raw_hallucinated_names": [
+    "MeasureTheory.SignedMeasure.totalVariation_eq_hahn_jordan_supremum_partitions"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": true,
+   "typecheck_result": {
+    "ok": true,
+    "timed_out": false,
+    "elapsed_s": 7.87,
+    "errors": []
+   }
+  },
+  {
+   "arm": "D",
+   "task_id": "fresh_061",
+   "raw_hallucinated_names": [
+    "LSeries_eq_tsum"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": true,
+   "typecheck_result": {
+    "ok": true,
+    "timed_out": false,
+    "elapsed_s": 7.9,
+    "errors": []
+   }
+  },
+  {
+   "arm": "D",
+   "task_id": "fresh_076",
+   "raw_hallucinated_names": [
+    "Rep.resFunctor.map_shortComplex_exact",
+    "S.Exact",
+    "Exact"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 8.168,
+    "errors": [
+     "unexpected token ')'; expected ':=', 'where' or '|'",
+     "Function expected at\n  (Rep.resFunctor \u03c6).mapShortComplex\nbut this term has type\n  CategoryTheory.Functor (CategoryTheory.ShortComplex (Rep.{?u.25, ?u.24, u_3} ?m.10 G))\n    (CategoryTheory.ShortCompl"
+    ]
+   }
+  },
+  {
+   "arm": "D",
+   "task_id": "fresh_077",
+   "raw_hallucinated_names": [
+    "I.span_le.submodule.span_eq_top"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 7.841,
+    "errors": [
+     "failed to synthesize instance of type class\n  AddCommMonoid M\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command."
+    ]
+   }
+  },
+  {
+   "arm": "D",
+   "task_id": "fresh_080",
+   "raw_hallucinated_names": [
+    "MvPowerSeries.eq_of_constantCoeff_and_partialDeriv"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 7.918,
+    "errors": [
+     "Application type mismatch: The argument\n  R\nhas type\n  Type u_2\nbut is expected to have type\n  ?m.19 \u2192\u2080 \u2115\nin the application\n  MvPowerSeries.coeff R",
+     "Application type mismatch: The argument\n  R\nhas type\n  Type u_2\nbut is expected to have type\n  ?m.41 \u2192\u2080 \u2115\nin the application\n  MvPowerSeries.coeff R",
+     "failed to synthesize instance of type class\n  HAdd (\u03c3 \u2192\u2080 \u2115) (\u03c3 \u2192\u2080 \u2115) (MvPowerSeries ?m.19 ?m.20)\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthIn",
+     "failed to synthesize instance of type class\n  HAdd (\u03c3 \u2192\u2080 \u2115) (\u03c3 \u2192\u2080 \u2115) (MvPowerSeries ?m.41 ?m.42)\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthIn"
+    ]
+   }
+  },
+  {
+   "arm": "D",
+   "task_id": "fresh_084",
+   "raw_hallucinated_names": [
+    "LinearMap.closedRange_of_finiteCodim_closed_image"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 7.912,
+    "errors": [
+     "failed to synthesize instance of type class\n  HasQuotient E (Submodule R E)\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command."
+    ]
+   }
+  },
+  {
+   "arm": "D",
+   "task_id": "fresh_088",
+   "raw_hallucinated_names": [
+    "MonotoneOn.eVariationOn_Icc"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": true,
+   "typecheck_result": {
+    "ok": true,
+    "timed_out": false,
+    "elapsed_s": 8.165,
+    "errors": []
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_000",
+   "raw_hallucinated_names": [
+    "Module.FinitePresentation.exists_lift_surjective"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": true,
+   "typecheck_result": {
+    "ok": true,
+    "timed_out": false,
+    "elapsed_s": 8.119,
+    "errors": []
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_010",
+   "raw_hallucinated_names": [
+    "LinearIsometryEquiv.norm_det_eq_one"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 7.95,
+    "errors": [
+     "failed to synthesize instance of type class\n  RCLike \ud835\udd5c\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command."
+    ]
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_019",
+   "raw_hallucinated_names": [
+    "Ici",
+    "IntegrableOn",
+    "Ioi"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 8.168,
+    "errors": [
+     "Function expected at\n  Ici\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  (N - 1 : \u211d)\n\nHint: The identifier `Ici` is unknown, and Lean's ",
+     "Function expected at\n  IntegrableOn\nbut this term has type\n  ?m.2\n\nNote: Expected a function because this term is being applied to the argument\n  f\n\nHint: The identifier `IntegrableOn` is unknown, and",
+     "Function expected at\n  Ioi\nbut this term has type\n  ?m.3\n\nNote: Expected a function because this term is being applied to the argument\n  (N - 1 : \u211d)\n\nHint: The identifier `Ioi` is unknown, and Lean's ",
+     "Function expected at\n  Ioi\nbut this term has type\n  ?m.3\n\nNote: Expected a function because this term is being applied to the argument\n  (N - 1 : \u211d)\n\nHint: The identifier `Ioi` is unknown, and Lean's "
+    ]
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_020",
+   "raw_hallucinated_names": [
+    "Ici",
+    "Ioi",
+    "IntegrableOn"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 8.173,
+    "errors": [
+     "Function expected at\n  Ici\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  0\n\nHint: The identifier `Ici` is unknown, and Lean's `autoImpli",
+     "Function expected at\n  Ioi\nbut this term has type\n  ?m.2\n\nNote: Expected a function because this term is being applied to the argument\n  0\n\nHint: The identifier `Ioi` is unknown, and Lean's `autoImpli",
+     "Function expected at\n  IntegrableOn\nbut this term has type\n  ?m.3\n\nNote: Expected a function because this term is being applied to the argument\n  f\n\nHint: The identifier `IntegrableOn` is unknown, and"
+    ]
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_021",
+   "raw_hallucinated_names": [
+    "Ici",
+    "Ioi"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 9.003,
+    "errors": [
+     "Function expected at\n  Ici\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  0\n\nHint: The identifier `Ici` is unknown, and Lean's `autoImpli",
+     "Function expected at\n  Ioi\nbut this term has type\n  ?m.2\n\nNote: Expected a function because this term is being applied to the argument\n  0\n\nHint: The identifier `Ioi` is unknown, and Lean's `autoImpli",
+     "Function expected at\n  Ioi\nbut this term has type\n  ?m.2\n\nNote: Expected a function because this term is being applied to the argument\n  0\n\nHint: The identifier `Ioi` is unknown, and Lean's `autoImpli"
+    ]
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_022",
+   "raw_hallucinated_names": [
+    "Ici",
+    "IntegrableOn",
+    "Ioi"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 8.539,
+    "errors": [
+     "Function expected at\n  Ici\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  0\n\nHint: The identifier `Ici` is unknown, and Lean's `autoImpli",
+     "Function expected at\n  IntegrableOn\nbut this term has type\n  ?m.2\n\nNote: Expected a function because this term is being applied to the argument\n  f\n\nHint: The identifier `IntegrableOn` is unknown, and",
+     "Function expected at\n  Ioi\nbut this term has type\n  ?m.3\n\nNote: Expected a function because this term is being applied to the argument\n  0\n\nHint: The identifier `Ioi` is unknown, and Lean's `autoImpli",
+     "Function expected at\n  Ioi\nbut this term has type\n  ?m.3\n\nNote: Expected a function because this term is being applied to the argument\n  0\n\nHint: The identifier `Ioi` is unknown, and Lean's `autoImpli"
+    ]
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_023",
+   "raw_hallucinated_names": [
+    "Icc",
+    "IntegrableOn",
+    "Ioi"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 8.629,
+    "errors": [
+     "Function expected at\n  Icc\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  0\n\nHint: The identifier `Icc` is unknown, and Lean's `autoImpli",
+     "Function expected at\n  IntegrableOn\nbut this term has type\n  ?m.2\n\nNote: Expected a function because this term is being applied to the argument\n  f\n\nHint: The identifier `IntegrableOn` is unknown, and",
+     "Function expected at\n  Ioi\nbut this term has type\n  ?m.3\n\nNote: Expected a function because this term is being applied to the argument\n  0\n\nHint: The identifier `Ioi` is unknown, and Lean's `autoImpli",
+     "Function expected at\n  Ioi\nbut this term has type\n  ?m.3\n\nNote: Expected a function because this term is being applied to the argument\n  0\n\nHint: The identifier `Ioi` is unknown, and Lean's `autoImpli"
+    ]
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_024",
+   "raw_hallucinated_names": [
+    "Ici",
+    "Integrable"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 8.203,
+    "errors": [
+     "Function expected at\n  Ici\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  (N : \u211d)\n\nHint: The identifier `Ici` is unknown, and Lean's `aut",
+     "Function expected at\n  Integrable\nbut this term has type\n  ?m.2\n\nNote: Expected a function because this term is being applied to the argument\n  f\n\nHint: The identifier `Integrable` is unknown, and Lea",
+     "Function expected at\n  Ici\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  (N : \u211d)\n\nHint: The identifier `Ici` is unknown, and Lean's `aut"
+    ]
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_025",
+   "raw_hallucinated_names": [
+    "IntegrableOn"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 8.07,
+    "errors": [
+     "Function expected at\n  IntegrableOn\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  f\n\nHint: The identifier `IntegrableOn` is unknown, and"
+    ]
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_026",
+   "raw_hallucinated_names": [
+    "Ici",
+    "IntegrableOn",
+    "Ioi"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 8.52,
+    "errors": [
+     "Function expected at\n  Ici\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  0\n\nHint: The identifier `Ici` is unknown, and Lean's `autoImpli",
+     "Function expected at\n  IntegrableOn\nbut this term has type\n  ?m.2\n\nNote: Expected a function because this term is being applied to the argument\n  f\n\nHint: The identifier `IntegrableOn` is unknown, and",
+     "Function expected at\n  Ioi\nbut this term has type\n  ?m.3\n\nNote: Expected a function because this term is being applied to the argument\n  0\n\nHint: The identifier `Ioi` is unknown, and Lean's `autoImpli",
+     "Function expected at\n  Ioi\nbut this term has type\n  ?m.3\n\nNote: Expected a function because this term is being applied to the argument\n  0\n\nHint: The identifier `Ioi` is unknown, and Lean's `autoImpli"
+    ]
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_027",
+   "raw_hallucinated_names": [
+    "Ici",
+    "IntegrableOn",
+    "Ioi"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 7.99,
+    "errors": [
+     "Function expected at\n  Ici\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  0\n\nHint: The identifier `Ici` is unknown, and Lean's `autoImpli",
+     "Function expected at\n  IntegrableOn\nbut this term has type\n  ?m.2\n\nNote: Expected a function because this term is being applied to the argument\n  f\n\nHint: The identifier `IntegrableOn` is unknown, and",
+     "Function expected at\n  Ioi\nbut this term has type\n  ?m.3\n\nNote: Expected a function because this term is being applied to the argument\n  0\n\nHint: The identifier `Ioi` is unknown, and Lean's `autoImpli",
+     "Function expected at\n  Ioi\nbut this term has type\n  ?m.3\n\nNote: Expected a function because this term is being applied to the argument\n  0\n\nHint: The identifier `Ioi` is unknown, and Lean's `autoImpli"
+    ]
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_029",
+   "raw_hallucinated_names": [
+    "Category",
+    "Bottom",
+    "Vertical",
+    "Five",
+    "CommSq",
+    "Mono",
+    "Then"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 8.089,
+    "errors": [
+     "invalid binder annotation, type is not a class instance\n  ?m.2\n\nNote: Use the command `set_option checkBinderAnnotations false` to disable the check"
+    ]
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_035",
+   "raw_hallucinated_names": [
+    "IsImmersionAt"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 8.259,
+    "errors": [
+     "failed to synthesize instance of type class\n  NormedField \ud835\udd5c\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command."
+    ]
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_045",
+   "raw_hallucinated_names": [
+    "Module.End.IsSemisimple.triangularizable_iff_diagonalizable",
+    "End",
+    "IsSemisimple"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 8.84,
+    "errors": [
+     "failed to synthesize instance of type class\n  Field K\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command."
+    ]
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_047",
+   "raw_hallucinated_names": [
+    "M.rank"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 42.711,
+    "errors": [
+     "Function expected at\n  fromBlocks\nbut this term has type\n  ?m.3\n\nNote: Expected a function because this term is being applied to the argument\n  1\n\nHint: The identifier `fromBlocks` is unknown, and Lea"
+    ]
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_048",
+   "raw_hallucinated_names": [
+    "M.det"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": true,
+   "typecheck_result": {
+    "ok": true,
+    "timed_out": false,
+    "elapsed_s": 8.582,
+    "errors": []
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_049",
+   "raw_hallucinated_names": [
+    "A.Countable"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 8.211,
+    "errors": [
+     "failed to synthesize instance of type class\n  MeasurableSpace \u03b1\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command."
+    ]
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_051",
+   "raw_hallucinated_names": [
+    "PseudoMetrizableSpace",
+    "StronglyMeasurable"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 8.393,
+    "errors": [
+     "invalid binder annotation, type is not a class instance\n  ?m.5\n\nNote: Use the command `set_option checkBinderAnnotations false` to disable the check"
+    ]
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_052",
+   "raw_hallucinated_names": [
+    "Ioi",
+    "IntegrableOn",
+    "Ici",
+    "Tendsto"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 8.722,
+    "errors": [
+     "Function expected at\n  Ioi\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  (Real.exp a)\n\nHint: The identifier `Ioi` is unknown, and Lean's",
+     "Function expected at\n  IntegrableOn\nbut this term has type\n  ?m.2\n\nNote: Expected a function because this term is being applied to the argument\n  g\n\nHint: The identifier `IntegrableOn` is unknown, and",
+     "Function expected at\n  IntegrableOn\nbut this term has type\n  ?m.2\n\nNote: Expected a function because this term is being applied to the argument\n  (fun x => g (Real.exp x) * Real.exp x)\n\nHint: The iden",
+     "Function expected at\n  Ioi\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  a\n\nHint: The identifier `Ioi` is unknown, and Lean's `autoImpli"
+    ]
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_053",
+   "raw_hallucinated_names": [
+    "IntegrableOn",
+    "Ici",
+    "Ioi"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 8.492,
+    "errors": [
+     "Function expected at\n  IntegrableOn\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  (fun x => (g \u2218 log) x * x\u207b\u00b9)\n\nHint: The identifier `In",
+     "Function expected at\n  Ioi\nbut this term has type\n  ?m.2\n\nNote: Expected a function because this term is being applied to the argument\n  a\n\nHint: The identifier `Ioi` is unknown, and Lean's `autoImpli",
+     "Function expected at\n  Ioi\nbut this term has type\n  ?m.2\n\nNote: Expected a function because this term is being applied to the argument\n  (log a)\n\nHint: The identifier `Ioi` is unknown, and Lean's `aut"
+    ]
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_055",
+   "raw_hallucinated_names": [
+    "Measure",
+    "IsFiniteMeasure",
+    "AddContent",
+    "IsSetSemiring",
+    "VectorMeasure"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 8.467,
+    "errors": [
+     "invalid binder annotation, type is not a class instance\n  ?m.5\n\nNote: Use the command `set_option checkBinderAnnotations false` to disable the check"
+    ]
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_057",
+   "raw_hallucinated_names": [
+    "SignedMeasure"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 60.588,
+    "errors": [
+     "Function expected at\n  SignedMeasure\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  \u03b1\n\nHint: The identifier `SignedMeasure` is unknown, a"
+    ]
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_058",
+   "raw_hallucinated_names": [
+    "SignedMeasure"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 23.043,
+    "errors": [
+     "failed to synthesize instance of type class\n  MeasurableSpace \u03b1\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.",
+     "Function expected at\n  SignedMeasure\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  \u03b1\n\nHint: The identifier `SignedMeasure` is unknown, a"
+    ]
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_059",
+   "raw_hallucinated_names": [
+    "SignedMeasure.totalVariation_eq_variation",
+    "SignedMeasure"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 9.642,
+    "errors": [
+     "Function expected at\n  SignedMeasure\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  \u03b1\n\nHint: The identifier `SignedMeasure` is unknown, a"
+    ]
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_061",
+   "raw_hallucinated_names": [
+    "LSeries_eq_tsum_div_cpow"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": true,
+   "typecheck_result": {
+    "ok": true,
+    "timed_out": false,
+    "elapsed_s": 9.079,
+    "errors": []
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_062",
+   "raw_hallucinated_names": [
+    "IsBoundedAtImInfty",
+    "E2"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 9.112,
+    "errors": [
+     "Function expected at\n  IsBoundedAtImInfty\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  E2\n\nHint: The identifier `IsBoundedAtImInfty` is"
+    ]
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_064",
+   "raw_hallucinated_names": [
+    "BoundedAtFilter"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 9.071,
+    "errors": [
+     "Type mismatch\n  \u03c4\nhas type\n  \u210d\nbut is expected to have type\n  \u2102",
+     "Type mismatch\n  \u03c4\nhas type\n  \u210d\nbut is expected to have type\n  \u2102",
+     "Function expected at\n  BoundedAtFilter\nbut this term has type\n  ?m.2\n\nNote: Expected a function because this term is being applied to the argument\n  (comap (fun \u03c4 : \u210d => (\u03c4 : \u2102).im) atTop)\n\nHint: The "
+    ]
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_068",
+   "raw_hallucinated_names": [
+    "P.IsMaximal",
+    "I.IsMaximal",
+    "P.LiesOver",
+    "I.LiesOver",
+    "I.inertiaDeg",
+    "P.inertiaDeg",
+    "IsMaximal"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": true,
+   "typecheck_result": {
+    "ok": true,
+    "timed_out": false,
+    "elapsed_s": 9.027,
+    "errors": []
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_069",
+   "raw_hallucinated_names": [
+    "IsPrime"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": true,
+   "typecheck_result": {
+    "ok": true,
+    "timed_out": false,
+    "elapsed_s": 9.291,
+    "errors": []
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_071",
+   "raw_hallucinated_names": [
+    "EqvGen.eqvGen_le",
+    "EqvGen"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 9.052,
+    "errors": [
+     "Function expected at\n  EqvGen\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  r\n\nHint: The identifier `EqvGen` is unknown, and Lean's `aut",
+     "Invalid field notation: Field projection operates on types of the form `C ...` where C is a constant. The expression\n  EqvGen\nhas type `x\u271d` which does not have the necessary form."
+    ]
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_072",
+   "raw_hallucinated_names": [
+    "LinearOrder.finite_of_wellFoundedLT_wellFoundedGT"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": true,
+   "typecheck_result": {
+    "ok": true,
+    "timed_out": false,
+    "elapsed_s": 9.018,
+    "errors": []
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_076",
+   "raw_hallucinated_names": [
+    "S.map",
+    "S.Exact",
+    "ShortComplex",
+    "Exact"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 24.145,
+    "errors": [
+     "Function expected at\n  ShortComplex\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  (Rep.{w} k G)\n\nHint: The identifier `ShortComplex` is "
+    ]
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_079",
+   "raw_hallucinated_names": [
+    "IsPrime"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": true,
+   "typecheck_result": {
+    "ok": true,
+    "timed_out": false,
+    "elapsed_s": 9.914,
+    "errors": []
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_087",
+   "raw_hallucinated_names": [
+    "Icc"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 9.006,
+    "errors": [
+     "Function expected at\n  Icc\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  a\n\nHint: The identifier `Icc` is unknown, and Lean's `autoImpli"
+    ]
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_088",
+   "raw_hallucinated_names": [
+    "Icc"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 9.299,
+    "errors": [
+     "Function expected at\n  Icc\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  a\n\nHint: The identifier `Icc` is unknown, and Lean's `autoImpli"
+    ]
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_093",
+   "raw_hallucinated_names": [
+    "Icc"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 9.173,
+    "errors": [
+     "Function expected at\n  Icc\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  a\n\nHint: The identifier `Icc` is unknown, and Lean's `autoImpli"
+    ]
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_094",
+   "raw_hallucinated_names": [
+    "Icc"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 8.959,
+    "errors": [
+     "Function expected at\n  Icc\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  a\n\nHint: The identifier `Icc` is unknown, and Lean's `autoImpli"
+    ]
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_097",
+   "raw_hallucinated_names": [
+    "Icc",
+    "IsFixedPt"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 9.395,
+    "errors": [
+     "Function expected at\n  Icc\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  a\n\nHint: The identifier `Icc` is unknown, and Lean's `autoImpli",
+     "Function expected at\n  Icc\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  a\n\nHint: The identifier `Icc` is unknown, and Lean's `autoImpli",
+     "Function expected at\n  Icc\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  a\n\nHint: The identifier `Icc` is unknown, and Lean's `autoImpli",
+     "Function expected at\n  Icc\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  a\n\nHint: The identifier `Icc` is unknown, and Lean's `autoImpli"
+    ]
+   }
+  },
+  {
+   "arm": "E",
+   "task_id": "fresh_098",
+   "raw_hallucinated_names": [
+    "IsFixedPt"
+   ],
+   "repaired_hallucinated_names": [],
+   "raw_folded_success": false,
+   "repaired_folded_success": false,
+   "typecheck_result": {
+    "ok": false,
+    "timed_out": false,
+    "elapsed_s": 8.959,
+    "errors": [
+     "Function expected at\n  IsFixedPt\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to the argument\n  f\n\nHint: The identifier `IsFixedPt` is unknown, and Lean'"
+    ]
+   }
+  }
+ ]
+}

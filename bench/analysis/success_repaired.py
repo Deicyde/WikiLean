@@ -96,6 +96,39 @@ CACHE = Path(os.environ.get(
 
 MCN_PAIRS = [("D", "E"), ("D", "C"), ("D", "A"), ("C", "A"), ("E", "A")]
 
+# ---------------------------------------------------------------------------
+# Server-only typecheck routing. typecheck.typecheck silently falls back to
+# SINGLE-SHOT when the client-side socket timeout (~210s) fires — which happens
+# whenever the server is re-importing Mathlib after a repl recycle. Single-shot
+# on rows that import Mathlib wholesale then records rig-artifact timeout
+# verdicts AND competes with the re-import for memory. Patch the seam so every
+# check goes through the persistent server, retrying through re-imports; the
+# pin is asserted on every returned verdict.
+# ---------------------------------------------------------------------------
+import time as _time  # noqa: E402
+import typecheck as _tcmod  # noqa: E402
+
+
+def _server_only_typecheck(code, env, *, timeout, max_workers, wait_timeout):
+    deadline = _time.time() + 7200
+    attempt = 0
+    while True:
+        r = _tcmod._server_typecheck(code, env, timeout=timeout)
+        if r is not None:
+            assert r.get("toolchain") == EXPECT_TOOLCHAIN, r
+            assert str(r.get("mathlib_rev", "")).startswith(EXPECT_MATHLIB_PREFIX), r
+            return r
+        attempt += 1
+        if _time.time() > deadline:
+            raise SystemExit("fresh typecheck server unreachable for 2h — "
+                             "aborting (single-shot fallback is disallowed)")
+        print(f"      server busy (re-import?) — attempt {attempt}, "
+              f"waiting 30s", flush=True)
+        _time.sleep(30)
+
+
+_tcmod.typecheck = _server_only_typecheck   # score_bridge.typecheck_stub uses this
+
 
 def ping_server(sock_path: str) -> dict:
     with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as s:
@@ -211,12 +244,34 @@ def main() -> int:
                 print(f"  [{done:3d}/{n_aff}] {arm}/{tid}: cached tc={tcr['ok']}")
             else:
                 row = fresh_rows[arm][tid]
-                s = score_bridge.score_run(tasks.get(tid, {}), row, oracle)
-                assert s["typecheck"] is not None, (arm, tid)
+                # Rig-fault protection: a repl death mid-check (memory pressure)
+                # surfaces as a "repl error"/"server could not import" result —
+                # an instrument failure, NOT a typecheck verdict. Retry those
+                # (the server re-imports Mathlib into a pristine env); genuine
+                # Lean errors and 90s timeouts are verdicts, kept as in Part-1.
+                rig_fault = False
+                for attempt in range(3):
+                    s = score_bridge.score_run(tasks.get(tid, {}), row, oracle)
+                    assert s["typecheck"] is not None, (arm, tid)
+                    errs = (row.get("_typecheck") or {}).get("errors") or []
+                    rig_fault = (s["typecheck"] is False
+                                 and not s["typecheck_timed_out"]
+                                 and any("repl error" in e
+                                         or "server could not import" in e
+                                         for e in errs))
+                    if not rig_fault:
+                        break
+                    print(f"      rig fault on {arm}/{tid} "
+                          f"(attempt {attempt + 1}/3) — retrying", flush=True)
+                if rig_fault:
+                    print(f"      WARNING {arm}/{tid}: rig fault persisted; "
+                          f"recorded as tc fail (rig_fault_persisted)", flush=True)
                 tcr = {"ok": bool(s["typecheck"]),
                        "timed_out": bool(s["typecheck_timed_out"]),
                        "elapsed_s": (row.get("_typecheck") or {}).get("elapsed_s"),
                        "errors": (row.get("_typecheck") or {}).get("errors") or []}
+                if rig_fault:
+                    tcr["rig_fault_persisted"] = True
                 if tcr["ok"]:
                     tcr["errors"] = []
                 cache[key] = tcr
