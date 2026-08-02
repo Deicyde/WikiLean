@@ -40,7 +40,7 @@ claim-by-claim inventory in
 | 3 reseeds + pass@k curves | **not executed** | one run per (task, arm) everywhere | no variance estimate anywhere |
 | Second model class on primary set | **not executed** | Tier-1 all-Haiku; v2 all-Sonnet on different benchmarks | capability-band generality unknown |
 | Preregistered success criterion | **not executed** | neither half graded as specified | zero confirmatory results |
-| Tier 2 as specified (FATE-H + MPR-Prop proving, reflection loop) | **not executed** | replaced by exploratory v2: QR/MPR retrieval + one-shot SorryDB, arms N/F/W/WF(+U) | main §§5–6 exploratory |
+| Tier 2 as specified (FATE-H + MPR-Prop proving, reflection loop) | **not executed** | replaced by exploratory v2: QR/MPR retrieval + one-shot SorryDB, arms N/F/W/U/WF | main §§5–6 exploratory |
 | PutnamBench | **not executed** | — | — |
 | Tier 3a offline Erdős set | **not executed** | — | — |
 | Tier 3b live Erdős queue | **not executed** | — | — |
@@ -300,38 +300,68 @@ a declaration from a `brain_bridge`/`brain_transfer` result. Among
 rate is 35% (C), 30% (E), 13% (D).
 
 **v2 census, pooled QR+MPR** (figure: `figures/fig5_tooluse.pdf` in the
-typeset build, telemetry unchanged by the corrections): F averages 2.2
-calls/run; W 3.5 (decl_exists 1,251 + brain_bridge 608 —
-verify-then-cite made mechanical); WF 4.6 in a genuine dual-toolkit mix
-(decl_grep ~1.5k, decl_exists ~0.9k, brain_bridge ~0.7k, decl_read
-~0.5k, loogle ~0.4k). Under the manual, `brain_cell` misuse (63.3%
-failure over 482 W-arm calls) falls to a single call in WF. Same-eval-set
-caveat as the manual (§S8).
+typeset build; the figure and the per-tool counts here are the as-run
+census — the race repair raises only F's means, since its 190 condemned
+rows had zero calls): W averages 3.5 calls/run (decl_exists 1,251 +
+brain_bridge 608 — verify-then-cite made mechanical); WF 4.6 in a
+genuine dual-toolkit mix (decl_grep ~1.5k, decl_exists ~0.9k,
+brain_bridge ~0.7k, decl_read ~0.5k, loogle ~0.4k); repaired F averages
+2.8 (QR) and 8.2 (MPR) calls/run. Under the manual, `brain_cell` misuse
+(63.3% failure over 482 W-arm calls) falls to a single call in WF.
+Same-eval-set caveat as the manual (§S8).
 
-**Per-query cost/latency (QR-810)** (`retrieval_repair.md` §3; CLI cost
+**The cold-start-race repair (grid provenance).** The §3.4 race was
+found by the U launch and repaired across seven commits. `458891dc`
+built the U arm (bare W ∪ F union, no manual); its first launch showed
+13/49 rows with both MCP servers still `pending` at the init event and
+zero tool calls, and `834a130a` taught the runner to capture that init
+signature, condemn-and-retry such rows, stagger the first wave, and
+raise the attach timeout. `99a2075f` byte-archived the 194 affected
+grid rows (F: 175 QR-810 + 15 MPR; W: 2 + 2; manifest of qids
+included) to `bench/v2/runs/agent/race_condemned_archive/`;
+`f041928a` rerun all 194 attach-verified in place under the fixed
+harness (the 4 stubborn W rows against the original fast-attaching
+local worker — the asymmetry that had spared W), leaving **zero race
+rows in every arm × benchmark**; N/U/WF audit race-free before and
+after (N has no MCP by design), and pre-existing format/timeout
+failures (N 143+15, F 1, W 5, WF 1) are untouched. `c1dea98f` landed
+the 879 attach-validated U rows (26 condemned first attempts rerun;
+$187.20); `322e84f5` and `dd3eb689` are the union-ablation and
+repaired-grid analyses (`union_ablation.{py,json,md}`,
+`grid_repaired.{py,json,md}`). Repair cost $33.08. Scores moved only
+for F (QR R@10 .8309→.8457, nDCG .7901→.8089; MPR gR@10 .4532→.5468);
+N/U/WF rows are byte-identical and W's aggregates are unchanged at
+four decimals.
+
+**Per-query cost/latency (QR-810)** — repaired grid, recomputed from
+the final run rows (as-run table: `retrieval_repair.md` §3; CLI cost
 estimates under Max auth):
 
 | system | mean $/query | mean wall s | median wall s | mean calls | mean turns |
 |---|---|---|---|---|---|
 | N | 0.085 | 15.1 | 8.9 | 0.0 | 1.0 |
-| F | 0.133 | 13.9 | 10.8 | 2.2 | 3.2 |
-| W | 0.198 | 23.7 | 11.2 | 3.5 | 4.3 |
+| F | 0.143 | 13.2 | 10.6 | 2.8 | 3.8 |
+| W | 0.197 | 23.7 | 11.2 | 3.5 | 4.3 |
+| U | 0.197 | 12.4 | 9.8 | 3.1 | 4.1 |
 | WF | 0.207 | 15.2 | 12.5 | 4.2 | 5.2 |
 | retriever-mode wikibrain | ~0 | — | — | 1 | — |
 
-**MPR:** N $0.185/50.7 s/0 calls · F $0.329/42.2 s/6.0 · W $0.438/59.9
-s/9.9 · WF $0.418/38.2 s/9.3.
+**MPR (repaired grid):** N $0.185/50.7 s/0 calls · F $0.370/38.8 s/8.2
+· W $0.459/62.6 s/10.6 · U $0.403/33.1 s/7.9 · WF $0.418/38.2 s/9.3.
+U-arm totals: $159.37 (QR-810) + $27.84 (MPR) = $187.20.
 
 **N format-repair detail** (`retrieval_repair.md`): symmetric tiered
 extraction (relaxed JSON → backticked names → bare dotted identifiers →
 compound tokens) over all assistant text, identically for every arm's
 empty rows. QR: N 143 empty rows → 104 repaired ≥1 name but only 12
 recover the gold; strict 0.6333 → lenient 0.6481; oracle ceiling
-0.8099. F/W/WF have 2/5/1 empty rows and move ≤0.0012. The five W
+0.8099. F/W/WF have 1/5/1 empty rows on the repaired grid (2/5/1
+as-run) and move ≤0.0012. The five W
 empties are 420 s hard timeouts, not format failures. MPR: N 15 empty →
 1 gold recovered (0.2025 → 0.2062). Per-tool provenance detail
 (surfaced-by-tool, first-written-in, per-style tables):
-`bench/analysis/retrieval_provenance.md`.
+`bench/analysis/retrieval_provenance.md` — an as-run trace pass; its
+F row counts the 175 race rows' hits as memory (main §5 caveat).
 
 ## S7. Snapshot rot: the detailed narrative
 
@@ -505,7 +535,10 @@ for these only on ids the Brain already returned.
    scored 0 for exactly this. Re-read the output contract before replying.
 5. **Inventing tool names** (e.g. `logue`, `lookie`). Use the names above.
 
-*(End of verbatim manual.)*
+*(End of verbatim manual.)* Its bracketed measurements are the as-run
+pre-repair aggregates as WF saw them — e.g. the loogle+grep premise
+figure it quotes as 0.453 is 0.547 on the repaired grid (§S6) — and
+are preserved verbatim, not corrected.
 
 ## S9. SorryDB: full bookkeeping
 
@@ -555,12 +588,14 @@ retrieval:** per-query tables in §S6. **SorryDB:** totals in §S9.
 ## S11. Blind LLM-judge grading: full tables
 
 Source: `bench/analysis/judge_fresh_run.py` /
-`judge_fresh_summary.{py,json,md}`. Judge `claude-sonnet-5`; blind
+`judge_fresh_summary.{py,json,md}`; repaired-leg conjunction from
+`bench/analysis/conjunction_repaired.{py,json}` (deterministic — no
+sampling). Judge `claude-sonnet-5`; blind
 (informal statement + gold with binders + candidate; no arm identity,
 no tools, empty cwd); 500/500 rows, 0 errors; no-output rows auto-fail.
-**Uncalibrated; exploratory.** The conjunction below uses the
-raw-instrument grounded-typecheck leg (the judge ran before the oracle
-repair).
+**Uncalibrated; exploratory.** The judge ran before the oracle repair,
+so the conjunction is reported under both typecheck instruments; the
+judge leg is identical in both.
 
 ### S11.1 Fresh-100 rates
 
@@ -578,9 +613,19 @@ Evaluated equivalence (mathematical equivalence, high confidence):
 A 17/100 [10.9, 25.6] · B 16/100 [10.1, 24.4] · C 51/100 [41.3, 60.6] ·
 D 19/100 [12.5, 27.8] · E 53/100 [43.3, 62.5].
 
-Conjunction (grounded-typecheck ∧ evaluated): A 8/100 [4.1, 15.0] ·
-B 9/100 [4.8, 16.2] · C 16/100 [10.1, 24.4] · D 15/100 [9.3, 23.3] ·
-E 18/100 [11.7, 26.7].
+Conjunction (grounded-typecheck ∧ evaluated), both instruments:
+
+| arm | raw leg | repaired leg [Wilson 95] |
+|---|---|---|
+| A | 8/100 | 8/100 [4.1, 15.0] |
+| B | 9/100 | 9/100 [4.8, 16.2] |
+| C | 16/100 | 20/100 [13.3, 28.9] |
+| D | 15/100 | 16/100 [10.1, 24.4] |
+| E | 18/100 | 21/100 [14.2, 30.0] |
+
+Eight rows flip under the repair (C 4, E 3, D 1 — the repaired-clean
+typecheck passes that the judge also evaluated equivalent); B/A are
+essentially untouched, and between-tool parity is preserved.
 
 ### S11.2 McNemar, fresh-100
 
@@ -588,16 +633,24 @@ Evaluated equivalence: D-vs-E 1/35 p=1.1e-9 · D-vs-C 3/35 p=6.7e-8 ·
 D-vs-A 7/5 p=0.774 · E-vs-A 37/1 p=2.8e-10 · E-vs-B 39/2 p=7.8e-10 ·
 E-vs-C 13/11 p=0.839.
 
-Conjunction: D-vs-E 6/9 p=0.607 · D-vs-C 8/9 p=1.0 · D-vs-A 9/2
-p=0.065 · E-vs-A 11/1 p=0.0064 · E-vs-B 12/3 p=0.035 · E-vs-C 6/4
+Conjunction, raw leg: D-vs-E 6/9 p=0.607 · D-vs-C 8/9 p=1.0 · D-vs-A
+9/2 p=0.065 · E-vs-A 11/1 p=0.0064 · E-vs-B 12/3 p=0.035 · E-vs-C 6/4
 p=0.754.
+
+Conjunction, repaired leg (`conjunction_repaired.py`): D-vs-E 5/10
+p=0.302 · D-vs-C 8/12 p=0.503 · D-vs-A 10/2 p=0.039 · E-vs-A 14/1
+p=0.00098 · E-vs-B 14/2 p=0.0042 · E-vs-C 6/5 p=1.0. The only
+classification change at α=.05 is D-vs-A ns → sig — a strengthening of
+tools-versus-none; every between-tool conjunction contrast stays null
+under both instruments.
 
 ### S11.3 Completed-69 continuity
 
 Evaluated: A 10/69 (.145) · B 9/69 (.130) · C 37/69 (.536) · D 11/69
-(.159) · E 37/69 (.536); D-vs-E 0/26 p=3.0e-8; conjunction: C 8/69
-(.116) · D 10/69 (.145) · E 9/69 (.130), D-vs-E 4/3 p=1.0, D-vs-A 7/0
-p=0.016.
+(.159) · E 37/69 (.536); D-vs-E 0/26 p=3.0e-8; conjunction (raw leg):
+C 8/69 (.116) · D 10/69 (.145) · E 9/69 (.130), D-vs-E 4/3 p=1.0,
+D-vs-A 7/0 p=0.016; conjunction (repaired leg): C, D, and E at exactly
+11/69 (.159) each, D-vs-E 4/4 p=1.0, D-vs-A 8/0 p=0.0078.
 
 ### S11.4 Exposure split (evaluated equivalence)
 
@@ -658,11 +711,11 @@ reading and v1's error-inflated headline p=2.4e-5.
 | 1 | Lead with repaired full-100; one coherent paired inference | commit-clustered paired bootstrap is the only main-text framework; completed-69 and Wald/McNemar mismatch moved here (§S2) |
 | 2 | Cluster the fresh set by commit/family | done (`fresh_clustered.py`): 44 commits, 57 files, 59 families; all levels + collapses (§S2.3); D−E widens exactly as predicted |
 | 3 | Human semantic evaluation | full 500-row blind judge complete with self-consistency; 36-task discordant queue defined; **human grading and calibration still pending** — main §4.2 stays exploratory |
-| 4 | Factorial ablation | not yet run; bare-union U in flight ([[SLOT:UNION]]); paper reframed around the bundled intervention and the tools-vs-none result per the review's conditional |
+| 4 | Factorial ablation | 2×2 factorial not yet run; the bare-union U ablation is complete (main §5): the union is inert (U−F null everywhere), the WF gain is manual-driven on QR, and formal tools carry MPR; paper reframed around the bundled intervention and the tools-vs-none result per the review's conditional |
 | 5 | Characterize the Brain; retrieval provenance decomposition | done (`brain_artifact.py`, main §3.1; `retrieval_provenance.py`, main §5) |
 | 6 | Real related work (CRAMF, Aria, +) | done; every citation verified against arXiv on 2026-08-01 (`docs/research/review/related_work_notes.md`); comparison table in main §2 |
 | 7 | Correct two overclaims (memorization; "clean verifier finding") | memorization → benchmark-familiarity language (main §4.1); verifier finding restated after blinded oracle validation — between-tool contrast dissolves under the repaired instrument (main §4.3), DDR cited as convergent evidence |
-| 8 | Repair the retrieval evaluation | symmetric lenient extraction for every arm, cost/calls columns, retriever-vs-agent blocks, Brain-gold coverage, provenance decomposition (main §5, §S6); U pending; WF label kept |
+| 8 | Repair the retrieval evaluation | symmetric lenient extraction for every arm, cost/calls columns, retriever-vs-agent blocks, Brain-gold coverage, provenance decomposition (main §5, §S6); cold-start-race grid repair + U ablation complete; WF label kept |
 | 9 | Reproducibility and conflict disclosures | data availability (§S14), AI-use + conflict statement (main §7) |
 | cuts | move manuals, inventories, strata, response tables, file maps out | this supplement is that move |
 
@@ -686,10 +739,12 @@ reading and v1's error-inflated headline p=2.4e-5.
   completed blind judge pass (500/500) with the three-layer
   contamination×endpoint analysis; Brain artifact characterization;
   retrieval provenance decomposition (verification + routing, not
-  content); N format-failure repair; verified related work; cost
-  columns; conflict/AI-use disclosures. Still open: the U arm
-  ([[SLOT:UNION]]), human grading of the 36-task queue, judge
-  calibration, the 2×2 factorial.
+  content); N format-failure repair; the cold-start-race grid repair
+  (194 rows rerun attach-verified; F QR R@10 .831→.846, MPR .453→.547)
+  with the bare-union U ablation and final contrast set; the
+  repaired-leg judge conjunction; verified related work; cost
+  columns; conflict/AI-use disclosures. Still open: human grading of
+  the 36-task queue, judge calibration, the 2×2 factorial.
 
 ## S14. Data availability and file map
 
@@ -708,8 +763,13 @@ review-2 analyses (commit-clustered inference, blinded oracle
 validation, N format repair, Brain artifact table, provenance
 decomposition) · `3cb8fa55` blind judge grading complete (500/500,
 self-consistency, conjunction tables, human queue) · `9d10e44f`
-repaired-oracle Tier-1 recompute (`success_repaired`) · `834a130a`
-cold-start-race condemnation + staggered launches · `2a9f6b91` REPL
+repaired-oracle Tier-1 recompute (`success_repaired`) · `458891dc`
+U-arm harness (bare W ∪ F union, no manual) · `834a130a`
+cold-start-race condemnation + staggered launches · `c1dea98f` U run
+rows (879, attach-validated) · `322e84f5` union-ablation analysis ·
+`99a2075f` race-row archive (194 rows, byte-preserved) · `f041928a`
+repaired F/W run rows (zero race rows remain) · `dd3eb689`
+repaired-grid contrasts + refreshed union ablation · `2a9f6b91` REPL
 routing fix ("honest labels").
 
 | Path (preservation repo) | Contents |
@@ -725,16 +785,20 @@ routing fix ("honest labels").
 | `bench/analysis/tier1_reanalysis.*`, `fresh_exposure.*`, `retrieval_clustered.*` | v2 corrective statistics |
 | `bench/analysis/fresh_clustered.*`, `halluc_validation.*` (+`halluc_blind/`), `success_repaired.*` | v3: clustered inference; blinded oracle validation; repaired-instrument recompute |
 | `bench/analysis/judge_fresh_run.py`, `judge_fresh/`, `judge_fresh_summary.*` | blind judge pass (500 gradings + re-grade) |
-| `bench/analysis/retrieval_repair.*`, `retrieval_provenance.*`, `brain_artifact.*` | v3: format repair; provenance decomposition; artifact characterization |
-| `bench/analysis/union_ablation.py` | U-arm analysis (pending [[SLOT:UNION]]) |
-| `bench/v2/` + `bench/v2/data/` + `bench/v2/runs/` | v2 harness, AGENT_MANUAL.md, MathlibQR/MPR (CC BY 4.0), SorryDB freeze, all v2 run rows with gzipped stream transcripts, verify.jsonl (203 verdicts) |
+| `bench/analysis/conjunction_repaired.{py,json}` | judge conjunction under both typecheck instruments (deterministic) |
+| `bench/analysis/retrieval_repair.*`, `retrieval_provenance.*`, `brain_artifact.*` | v3: format repair; provenance decomposition (as-run trace pass); artifact characterization |
+| `bench/analysis/union_ablation.*`, `grid_repaired.*` | U-arm bare-union ablation; race-repaired grid, before/after tables + final contrast set |
+| `bench/v2/runs/agent/race_condemned_archive/` | the 194 original cold-start-race rows, byte-preserved with qid manifest |
+| `bench/v2/` + `bench/v2/data/` + `bench/v2/runs/` | v2 harness, AGENT_MANUAL.md, MathlibQR/MPR (CC BY 4.0), SorryDB freeze, all v2 run rows (repaired grid) with gzipped stream transcripts, verify.jsonl (203 verdicts) |
 
 **Recomputation entry points.** Tier-1 grading `bench/score_bridge.py`;
 repaired instrument `bench/analysis/halluc_validation.py` (`adjusted`)
 + `success_repaired.py`; clustered inference `fresh_clustered.py`;
-exposure `fresh_exposure.py`; judge `judge_fresh_summary.py`; retrieval
+exposure `fresh_exposure.py`; judge `judge_fresh_summary.py` +
+`conjunction_repaired.py`; retrieval
 `bench/v2/score_retrieval.py` + `retrieval_clustered.py` +
-`retrieval_repair.py` + `retrieval_provenance.py`; artifact
+`retrieval_repair.py` + `retrieval_provenance.py`; repaired grid +
+union ablation `grid_repaired.py` + `union_ablation.py`; artifact
 `brain_artifact.py`; SorryDB `bench/v2/verify_sorrydb.py`.
 
 **External sources** (fetched and verified during the v2/v3 design
