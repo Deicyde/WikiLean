@@ -16,6 +16,10 @@ the `contains` edges (for organ payloads and the containment tree) and writes
                    derived "no formal home" bucket drains to the handful of
                    genuinely unplaceable cells
   explorer.json    the whole flat graph: cells with build-time xy + synapses
+  traces/<key>.json  the LAZY trace sidecar: evidence for every supercell-involving
+                   synapse (cell<->path and path<->path — the rows supercells.json
+                   ships traceless), bucketed by the same longest-prefix scheme
+                   applied to the pair key "<src>|<dst>"; _meta = manifest `traces`
 
 Sharding is `build_shards.py`'s scheme, reused verbatim (longest-prefix keys, split
 at MAX_SHARD_BYTES): the client loads manifest.json once and any cell is then ONE
@@ -50,6 +54,11 @@ SCRATCH_DIR = ROOT / "site" / "assets"   # scratch swap dirs — OUTSIDE the cop
 
 SYN_CAP = 200         # synapses kept per cell entry (every KIND first: pick_synapses)
 SHARD_TRACE_CAP = 6   # traces kept per synapse IN THE SHARD (full set: query.py)
+# traces per synapse in the LAZY trace sidecar (traces/<key>.json) — the evidence
+# for supercell-involving synapses, which supercells.json deliberately ships
+# traceless. 24 trims nothing on live data (max observed 19); per-row `tt` keeps
+# the true total whenever it ever does.
+SIDECAR_TRACE_CAP = 24
 EXPLORER_BUDGET = 4_200_000
 SNIPPET_CAP = 400     # chars of a licensed DB snippet carried into the card
 AKA_CAP = 16          # search aliases per cell — statement titles yield first
@@ -532,9 +541,11 @@ def main() -> int:
     n_sup_syn = sum(len(r.get("syn") or []) for r in supercells.values())
     sup_doc = {"_meta": {"schema": "brain/SCHEMA.md#v3", "generated_at": gen,
                          "traces": "supercell `syn` rows carry NO traces (byte budget: "
-                                   "this file is fetched eagerly). Fetch them from "
-                                   "/api/brain/neighborhood?id=<path:…>, or "
-                                   "brain/query.py --full for the untruncated set.",
+                                   "this file is fetched eagerly). The lazy sidecar "
+                                   "traces/<key>.json ships them per synapse "
+                                   "(lookup: manifest `traces`); "
+                                   "/api/brain/neighborhood?id=<path:…> and "
+                                   "brain/query.py --full serve the untruncated set.",
                          "counts": {"supercells": len(supercells),
                                     "with_cells": sum(1 for r in supercells.values()
                                                       if r.get("cells")),
@@ -591,6 +602,98 @@ def main() -> int:
               f"the {EXPLORER_BUDGET / 1e6:.1f} MB budget — shipping it COMPLETE "
               f"anyway; compact the format or split the view", file=sys.stderr)
 
+    # ---- trace sidecar: lazy evidence for supercell-involving synapses ---------
+    # supercells.json ships its `syn` rows TRACELESS on purpose (fetched eagerly —
+    # traces would treble it), and the client can only re-hydrate a cell<->cell
+    # pair from the partner cell's shard entry. Every cell<->path and path<->path
+    # synapse therefore rendered an EMPTY evidence drawer. The sidecar ships
+    # exactly those rows' traces as lazy bucket files (traces/<key>.json) the
+    # drawer fetches on first open — the cell shards' longest-prefix scheme applied
+    # to the pair key "<src>|<dst>", so the client computes the bucket filename
+    # from the pair alone via manifest.traces.files. supercells.json itself does
+    # not grow (contract), and the cap counts what it drops: per-row `tt` is the
+    # synapse's TRUE bond total, never silent (SCHEMA).
+    sidecar: dict[str, str] = {}
+    sidecar_trimmed = 0
+    sidecar_misordered: list[tuple[str, str]] = []
+    for syn in synapses:
+        if syn["src"] in cells and syn["dst"] in cells:
+            continue        # cell<->cell: traces already ship on both cell entries
+        if not syn["src"] < syn["dst"]:
+            # the client derives the key as min(a,b)+"|"+max(a,b); a row stored
+            # out of order would be UNREACHABLE — loud here, RED in the tests
+            sidecar_misordered.append((syn["src"], syn["dst"]))
+        pair = f'{syn["src"]}|{syn["dst"]}'
+        if pair in sidecar:
+            raise SystemExit(f"duplicate synapse pair {pair!r} (C6 broken) — the "
+                             "sidecar would silently shadow one row")
+        traces = [trim_trace(t)
+                  for t in pick_traces(syn["traces"], SIDECAR_TRACE_CAP)]
+        tt = len(syn["traces"]) + syn.get("truncated", 0)  # the TRUE bond total
+        if tt > len(traces):
+            sidecar_trimmed += 1
+        sidecar[pair] = json.dumps({"tt": tt, "traces": traces},
+                                   ensure_ascii=False, separators=(",", ":"))
+    if sidecar_misordered:
+        print(f"  ! {len(sidecar_misordered)} sidecar pair keys are NOT src<dst "
+              f"(e.g. {sidecar_misordered[:2]}) — the client cannot derive their "
+              f"bucket; test_cell_shards.py will go RED", file=sys.stderr)
+    if len(sidecar) != n_sup_edges:
+        print(f"  ! sidecar rows ({len(sidecar)}) != the explorer's declared "
+              f"supercell split ({n_sup_edges}) — the accounting no longer "
+              f"reconciles; test_cell_shards.py will go RED", file=sys.stderr)
+
+    def bucket_json(pairs: list[str]) -> str:
+        return "{" + ",".join(f"{json.dumps(p, ensure_ascii=False)}:{sidecar[p]}"
+                              for p in sorted(pairs)) + "}"
+
+    trace_leaves: dict[str, list[str]] = {}
+    tqueue: list[tuple[int, list[str]]] = [(MIN_KEY_LEN, list(sidecar))]
+    while tqueue:
+        length, pairs = tqueue.pop()
+        tgroups: dict[str, list[str]] = defaultdict(list)
+        for p in pairs:
+            tgroups[shard_key(p, length)].append(p)
+        for key, arr in tgroups.items():
+            if (length < MAX_KEY_LEN and len(arr) > 1
+                    and len(bucket_json(arr).encode()) > MAX_SHARD_BYTES):
+                tqueue.append((length + 1, arr))
+            else:
+                trace_leaves[key] = sorted(arr)
+
+    # sidecar trace `prov` indexes come from synapses.jsonl; the drawer resolves
+    # them against the manifest `prov` table (cells.jsonl's). Identical today —
+    # if they ever diverge, ship the synapse table so indexes stay resolvable.
+    syn_prov = syn_meta.get("prov", [])
+    prov_skew = syn_prov != cell_meta.get("prov", [])
+    if prov_skew:
+        print("  ! synapses.jsonl prov table differs from cells.jsonl — shipping "
+              "it as manifest.traces.prov so sidecar indexes stay resolvable",
+              file=sys.stderr)
+    sidecar_meta = {
+        "caps": {"traces_per_synapse": SIDECAR_TRACE_CAP,
+                 "synapses_trimmed": sidecar_trimmed,
+                 "selection": "round-robin by kind, rarest first (pick_traces); "
+                              "depends witnesses kept to their first pair; per-row "
+                              "`tt` is the synapse's TRUE bond total, so any trim "
+                              "is counted, never silent"},
+        "rows": len(sidecar),
+        "dir": "traces",
+        "key": "<src>|<dst> exactly as stored on the synapse — src < dst "
+               "lexicographically on every row, so min(a,b)+'|'+max(a,b) derives it",
+        "lookup": "normalize the pair key exactly like a cell id (lowercase; "
+                  "[a-z0-9] kept, anything else '_'; pad with '_' to min_len), "
+                  "fetch traces/<the longest key in `files` that prefixes it>.json, "
+                  "read bucket[pair] -> {tt, traces}; trace `prov` indexes resolve "
+                  "against `prov` HERE when present, else the manifest-level `prov`.",
+        "scheme": {"kind": "prefix", "min_len": MIN_KEY_LEN,
+                   "max_len": max((len(k) for k in trace_leaves),
+                                  default=MIN_KEY_LEN),
+                   "max_bytes": MAX_SHARD_BYTES, "pad": PAD},
+        **({"prov": syn_prov} if prov_skew else {}),
+        "files": {k: len(trace_leaves[k]) for k in sorted(trace_leaves)},
+    }
+
     manifest = {
         "_meta": {
             "schema": "brain/SCHEMA.md#v3",
@@ -615,7 +718,11 @@ def main() -> int:
                                   "`truncated`; supercell rows carry it too.",
                      "evidence_trim": "depends witnesses kept to their first pair; "
                                       "full traces in brain/data/synapses.jsonl "
-                                      "(brain/query.py)"},
+                                      "(brain/query.py)",
+                     "trace_sidecar": "supercell-involving synapses (traceless in "
+                                      "supercells.json) ship their traces lazily "
+                                      "in traces/<key>.json — caps + lookup in "
+                                      "the manifest `traces` section"},
             "lookup": "normalize the cell id (lowercase; [a-z0-9] kept, anything else "
                       "'_'; pad with '_' to min_len), fetch <the longest key in "
                       "`shards` that prefixes it>.json, read shard[id]; `prov` fields "
@@ -648,6 +755,10 @@ def main() -> int:
                   for p in sup_doc["roots"]],
         "prov": cell_meta.get("prov", []),
         "shards": {k: len(leaves[k]) for k in sorted(leaves)},
+        # the trace sidecar's _meta (TRACE-SIDECAR CONTRACT): the manifest is the
+        # one file the client always holds, so the bucket key set lives here and
+        # supercells.json does not grow.
+        "traces": sidecar_meta,
     }
 
     # ---- atomic directory swap ------------------------------------------------
@@ -671,6 +782,22 @@ def main() -> int:
         payload = shard_json(ids).encode()
         sizes[key] = len(payload)
         (tmp / f"{key}.json").write_bytes(payload)
+
+    # sidecar buckets live in a SUBDIRECTORY: pair keys normalize into the same
+    # cell_/path_ prefix space as the cell shards, so a flat layout could collide
+    # a bucket filename with a shard filename.
+    trace_dir = tmp / "traces"
+    trace_dir.mkdir()
+    trace_sizes: dict[str, int] = {}
+    for key, pairs in trace_leaves.items():
+        payload = bucket_json(pairs).encode()
+        trace_sizes[key] = len(payload)
+        (trace_dir / f"{key}.json").write_bytes(payload)
+    t_oversize = [k for k, s in trace_sizes.items() if s > MAX_SHARD_BYTES]
+    if t_oversize:
+        print(f"  ! {len(t_oversize)} trace bucket(s) over {MAX_SHARD_BYTES} bytes "
+              f"(unsplittable key collisions): {t_oversize[:5]} — "
+              f"test_cell_shards.py will go RED", file=sys.stderr)
 
     def dump(name: str, doc) -> int:
         blob = json.dumps(doc, ensure_ascii=False, separators=(",", ":"))
@@ -703,6 +830,12 @@ def main() -> int:
           f"{frontier_stats['unclaimed']} unclaimed)", file=sys.stderr)
     print(f"explorer:  {len(cells)} nodes + {len(rows)} edges, complete "
           f"({len(explorer_blob.encode()) / 1e6:.1f} MB)", file=sys.stderr)
+    print(f"traces:    {len(sidecar)} supercell-synapse rows -> "
+          f"{len(trace_leaves)} bucket files "
+          f"({sum(trace_sizes.values()) / 1e6:.1f} MB), largest "
+          f"{max(trace_sizes.values(), default=0) / 1000:.0f} KB; "
+          f"{sidecar_trimmed} rows trimmed to cap {SIDECAR_TRACE_CAP} "
+          f"(per-row tt keeps true totals)", file=sys.stderr)
     print(f"-> {OUT_DIR} in {time.monotonic() - t0:.1f}s", file=sys.stderr)
     return 0
 

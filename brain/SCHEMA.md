@@ -60,7 +60,24 @@ kinds are weight-1 *by nature*. Whatever a cap drops is COUNTED, never silent:
 **`brain/query.py --full` is the only surface serving the untruncated set.**
 
 Supercell synapses ship traceless in `supercells.json` (it is fetched eagerly;
-carrying them would treble it) — declared in that file's `_meta.traces`.
+carrying them would treble it) — declared in that file's `_meta.traces`. Their
+evidence ships instead in the **trace sidecar**: `cells/traces/<key>.json` lazy
+bucket files covering EVERY supercell-involving synapse (cell↔path and
+path↔path; 11,325 rows on 2026-08-01), emitted by the same `build_cell_shards.py`
+run. The sidecar's `_meta` is the manifest's `traces` section — `{caps:
+{traces_per_synapse: 24, synapses_trimmed}, rows, dir, key, lookup, scheme,
+files}` (+ its own `prov` table ONLY if `synapses.jsonl`'s ever diverges from
+the manifest's; today they are identical, so trace `prov` indexes resolve
+against the manifest-level table the drawer already uses). Bucketing is the cell
+shards' longest-prefix scheme applied to the pair key `"<src>|<dst>"` (stored
+order; `src < dst` lexicographically on every row — builder warns and S7 goes
+red otherwise — so a client derives it as `min|max`): normalize like a cell id,
+fetch `traces/<longest key in traces.files that prefixes it>.json`, read
+`bucket[pair]` → `{tt, traces}`. Traces keep their own `src`/`dst`/`kind`/
+`evidence`/`prov`, selected round-robin by kind rarest first, witnesses to their
+first pair; per-row `tt` is the synapse's TRUE bond total, so the cap is
+counted, never silent (cap 24 trims nothing on live data — max observed 19).
+`supercells.json` itself does not grow.
 `/api/brain/neighborhood` hydrates ~67% of them from the partner cell's mirror row (a
 synapse ships on BOTH endpoints); the rest return `traces_unavailable` with a reason.
 It does NOT serve them unconditionally.
@@ -261,7 +278,7 @@ recomputation, and the shard-side drain. The nightly runs
 ### v3 shard acceptance (brain/test_cell_shards.py) — the artifact the client reads
 
 `site/assets/brain/cells/` is built by `brain/build_cell_shards.py` and can drift from
-the atom layer independently (it trims, embeds and re-indexes), so S1–S6 check the
+the atom layer independently (it trims, embeds and re-indexes), so S1–S7 check the
 shipped bytes. S1 and S6 SAMPLE (a stratified sample of cells / the first shards),
 not the full set — they are a smoke gate, not a proof: S1 the manifest's own
 documented lookup rule resolves every sampled cell and
@@ -271,7 +288,14 @@ SELF-CONTAINED (one fetch = the whole card: Lean code, Wikidata description, DB
 snippets, breadcrumb, synapse traces) · S4 every explorer edge indexes a shipped node,
 nothing is truncated, and omitted supercell edges reconcile · S5 `supercells.json` is
 a consistent tree whose leaves are cells · S6 no licensed snippet ships without its
-licence. Status: **33/33 green**.
+licence · S7 the trace sidecar: `manifest.traces` declares caps/files/rows, sidecar
+rows equal the explorer's declared supercell split (set math, zero missing against
+every `syn` row `supercells.json` ships), every pair key is `src<dst` and the
+documented lookup lands it in its own prefix-free under-budget bucket, every entry
+is `{tt, traces}` with `tt` ≥ shipped traces and resolvable `prov` indexes, and
+`supercells.json` stays traceless. A final determinism gate (when `brain/data/` is
+present) rebuilds the shards and requires `manifest.json` + the sidecar to
+reproduce byte-identically. Status: **48/48 green**.
 
 ---
 

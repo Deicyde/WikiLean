@@ -446,6 +446,7 @@ async function getEntry(id, canRetry = true) {
     try { await fetchManifest(); } catch { return null; }
     shardCache.clear();
     entryCache.clear();
+    traceBucketCache.clear();   // sidecar buckets are versioned with the same dataV
     return getEntry(id, false);
   }
   entryCache.set(id, e);
@@ -2133,19 +2134,110 @@ async function labelOf(id) {
   const e = await getEntry(id);
   return (e && e.cell.label) || id;
 }
+// ---- the lazy trace sidecar ------------------------------------------------
+// A synapse with a SUPERCELL endpoint (cell↔path / path↔path — SCHEMA rule 5)
+// ships TRACELESS in the eagerly-fetched supercells.json (carrying evidence
+// nobody has clicked yet would treble it); the traces live in sidecar bucket
+// files beside the cell shards. Buckets are keyed by the synapse pair key
+// "<src>|<dst>" (stored order — lexicographic, the same key enrich() derives),
+// normalized + longest-prefix-probed with the SAME scheme shardFor uses, so
+// opening a drawer costs exactly ONE bucket fetch, cached for the page's life.
+// `prov` indexes in sidecar traces resolve against the sidecar's own _meta.prov
+// table when it ships one, else manifest.prov (build-verified identical).
+let traceSidecarIdx = null;            // cached against the manifest that built it
+const traceBucketCache = new Map();    // bucket key -> Promise<{ok, j}>
+const synPairKey = (a, b) => (a < b ? a + "|" + b : b + "|" + a);
+// The sidecar's _meta is `manifest.traces` — the manifest is the one file the
+// client always holds, so no extra index fetch. Memoized on the meta object so
+// a mid-session manifest re-sync (getEntry's retry path) rebuilds the index.
+function traceSidecarIndex() {
+  const meta = manifest && manifest.traces;
+  if (!meta || !meta.files) return null;
+  if (traceSidecarIdx && traceSidecarIdx.meta === meta) return traceSidecarIdx;
+  const keys = Object.keys(meta.files);
+  if (!keys.length) return null;
+  const sch = meta.scheme || {};
+  let lo = sch.min_len, hi = sch.max_len;
+  if (!lo || !hi) {   // scheme missing: derive the probe bounds from the keys
+    lo = Infinity; hi = 0;
+    for (const k of keys) { lo = Math.min(lo, k.length); hi = Math.max(hi, k.length); }
+  }
+  traceSidecarIdx = {meta, keys: new Set(keys), lo, hi,
+                     dir: (meta.dir || "traces") + "/",
+                     caps: meta.caps || {}, prov: meta.prov || null};
+  return traceSidecarIdx;
+}
+// the longest declared bucket key that prefixes the normalized pair key —
+// shardFor's probe, over the sidecar's own key set (its keys are prefix-free,
+// but a fixed length cannot work: all pair keys start "cell:"/"path:")
+function sidecarBucketFor(idx, key) {
+  for (let l = Math.min(idx.hi, Math.max(key.length, idx.lo)); l >= idx.lo; l--) {
+    const k = shardKey(key, l);
+    if (idx.keys.has(k)) return k;
+  }
+  for (let l = Math.max(key.length, idx.lo) + 1; l <= idx.hi; l++) {
+    const k = shardKey(key, l);
+    if (idx.keys.has(k)) return k;
+  }
+  return null;
+}
+async function fetchSidecarTraces(a, b) {
+  const idx = traceSidecarIndex();
+  if (!idx) return {ok: false, why: "no sidecar in this build"};
+  const key = synPairKey(a, b);
+  const bk = sidecarBucketFor(idx, key);
+  if (bk === null) return {ok: false, why: "no bucket covers this synapse"};
+  if (!traceBucketCache.has(bk)) {
+    traceBucketCache.set(bk, fetch(BASE + idx.dir + bk + ".json" + vq())
+      .then(r => (r.ok ? r.json().then(j => ({ok: true, j})) : {ok: false, j: {}}))
+      .catch(() => ({ok: false, j: {}})));
+  }
+  const res = await traceBucketCache.get(bk);
+  if (!res.ok) { traceBucketCache.delete(bk); return {ok: false, why: "fetch failed"}; }
+  const row = res.j[key];
+  if (!row) return {ok: false, why: "not in this build's sidecar"};
+  const traces = row.traces || [];
+  return {ok: true, traces, tt: row.tt || traces.length,
+          prov: idx.prov || manifest.prov};
+}
+// ONE trace row — the same rendering whether the trace arrived inline in a cell
+// shard or from the lazy sidecar: kind dot, clickable src → dst endpoints
+// (data-nav → navigate → resolveId, so a decl lands on its owning cell and a
+// path on its supercell), provenance class chip, evidence prose.
+function traceRowHtml(t, provTable) {
+  const st = EDGE_STYLE[t.kind] || {color: SYN_COLOR, label: t.kind};
+  const prov = t.prov !== undefined ? (provTable || manifest.prov || [])[t.prov] : null;
+  const pc = provClass(t.kind, prov, t.evidence);
+  const ctx = {fromId: t.src, fromLabel: null, toId: t.dst, toLabel: null};
+  return `<div class="edge open"><div class="row">
+    <span style="color:${st.color}">●</span>
+    <span class="nav" data-nav="${esc(t.src)}" data-lbl="${esc(t.src)}"
+      style="color:#1a4b8f;cursor:pointer">${esc(t.src)}</span>
+    <span class="dirarrow">→</span>
+    <span class="nav" data-nav="${esc(t.dst)}" data-lbl="${esc(t.dst)}"
+      style="color:#1a4b8f;cursor:pointer">${esc(t.dst)}</span>
+    <span class="mk">${esc(st.label)}</span>
+    <span class="prov ${pc}" title="${esc(PROV_TITLE[pc])}">${pc}</span></div>
+    <div class="drawer" style="display:block">${
+      evidenceProse(t.kind, t.evidence, prov, t.dst, ctx)}</div></div>`;
+}
+let synOpenSeq = 0;   // two rapid opens both set lastPanelId = "__syn__" — the
+                      // seq keeps a stale open's async fills off the newer panel
 async function showSynapsePanel(a, b, syn) {
   lastPanelId = "__syn__";
+  const mySeq = ++synOpenSeq;
+  const live = () => lastPanelId === "__syn__" && mySeq === synOpenSeq;
   // the flat map ships [i, j, w] only — fetch the kinds + traces on demand
   if (!syn || !syn.kinds || !Object.keys(syn.kinds).length) {
     const got = await synBetween(a, b);
     syn = got || {a, b, w: (syn && syn.w) || 0, kinds: {}, traces: []};
   }
-  if (lastPanelId !== "__syn__") return;
+  if (!live()) return;
   const [la, lb] = await Promise.all([labelOf(a), labelOf(b)]);
-  const traces = syn.traces || [];
+  if (!live()) return;
   const kinds = Object.entries(syn.kinds || {}).sort((x, y) => y[1] - x[1]);
   const dom = EDGE_STYLE[dominantKind(syn.kinds)] || {color: SYN_COLOR, label: "synapse"};
-  let html = `<h2 style="font-size:1.05rem">Synapse</h2>
+  let head = `<h2 style="font-size:1.05rem">Synapse</h2>
     <div class="sub"><span style="color:${dom.color}">●</span> weight <b>${syn.w}</b> —
       every weak bond between these two atoms, collapsed into one edge. A synapse is
       <b>undirected</b>: direction lives on each trace below.</div>
@@ -2155,50 +2247,72 @@ async function showSynapsePanel(a, b, syn) {
       <span class="chip"><a data-nav="${esc(b)}">${esc(lb)}</a></span>
     </div>`;
   if (kinds.length)
-    html += `<section class="kind"><h3>Bonds <span class="cnt">(${kinds.length} kind${
+    head += `<section class="kind"><h3>Bonds <span class="cnt">(${kinds.length} kind${
       kinds.length === 1 ? "" : "s"})</span></h3><div class="chips">` +
       kinds.map(([k, v]) => {
         const st = EDGE_STYLE[k] || {color: SYN_COLOR, label: k};
         return `<span class="chip" title="${esc(st.label)}"><span style="color:${
           st.color}">●</span> ${esc(k)} <b>×${v}</b></span>`;
       }).join("") + `</div></section>`;
-  if (traces.length) {
-    html += `<section class="kind"><h3>Traces <span class="cnt">(${traces.length}${
-      syn.tt && syn.tt > traces.length ? ` of ${syn.tt}` : ""})</span></h3>`;
-    for (const t of traces) {
-      const st = EDGE_STYLE[t.kind] || {color: SYN_COLOR, label: t.kind};
-      const prov = t.prov !== undefined ? manifest.prov[t.prov] : null;
-      const pc = provClass(t.kind, prov, t.evidence);
-      const ctx = {fromId: t.src, fromLabel: null, toId: t.dst, toLabel: null};
-      html += `<div class="edge open"><div class="row">
-        <span style="color:${st.color}">●</span>
-        <span class="nav" data-nav="${esc(t.src)}" data-lbl="${esc(t.src)}"
-          style="color:#1a4b8f;cursor:pointer">${esc(t.src)}</span>
-        <span class="dirarrow">→</span>
-        <span class="nav" data-nav="${esc(t.dst)}" data-lbl="${esc(t.dst)}"
-          style="color:#1a4b8f;cursor:pointer">${esc(t.dst)}</span>
-        <span class="mk">${esc(st.label)}</span>
-        <span class="prov ${pc}" title="${esc(PROV_TITLE[pc])}">${pc}</span></div>
-        <div class="drawer" style="display:block">${
-          evidenceProse(t.kind, t.evidence, prov, t.dst, ctx)}</div></div>`;
+  // everything above the Traces section is identical across the loading /
+  // loaded / failed states, so swapping them never moves the layout above
+  const render = tracesHtml => {
+    panelEl.innerHTML = head + tracesHtml + `<p class="note">Every line on the canvas
+      is a stored synapse. Click either atom to inspect it.</p>`;
+    wirePanel();
+  };
+  // ONE Traces-section builder for both sources, so a sidecar trace (cell↔path,
+  // path↔path) renders EXACTLY like an inline cell↔cell one
+  const tracesSection = (traces, tt, provTable, viaSidecar) => {
+    let h = `<section class="kind"><h3>Traces <span class="cnt">(${traces.length}${
+      tt > traces.length ? ` of ${tt}` : ""})</span></h3>`;
+    for (const t of traces) h += traceRowHtml(t, provTable);
+    if (tt > traces.length)
+      h += viaSidecar
+        ? `<div class="more" title="brain/query.py --full serves the complete set">showing ${
+            traces.length} of ${tt} bonds</div>`
+        : `<div class="more">${tt - traces.length} further trace${
+            tt - traces.length === 1 ? " is" : "s are"} not shipped in this shard (cap:
+            ${manifest._meta.caps.traces_per_synapse}/synapse) — the full set is at
+            <code>/api/brain/*</code> or <code>brain/query.py</code>.</div>`;
+    return h + `</section>`;
+  };
+  const inline = syn.traces || [];
+  const pathInvolved = isPathId(a) || isPathId(b);
+  if (inline.length) {
+    render(tracesSection(inline, syn.tt || inline.length, manifest.prov, false));
+    // A cell↔path synapse opened from the cell card carries only the inline
+    // cap-6 set; the sidecar holds up to 24 — upgrade in place so the evidence
+    // depth doesn't depend on which panel the user came from.
+    if (pathInvolved && (syn.tt || 0) > inline.length) {
+      const got = await fetchSidecarTraces(a, b);
+      if (!live()) return;
+      if (got.ok && got.traces.length > inline.length)
+        render(tracesSection(got.traces, got.tt, got.prov, true));
     }
-    if (syn.tt && syn.tt > traces.length)
-      html += `<div class="more">${syn.tt - traces.length} further trace${
-        syn.tt - traces.length === 1 ? " is" : "s are"} not shipped in this shard (cap:
-        ${manifest._meta.caps.traces_per_synapse}/synapse) — the full set is at
-        <code>/api/brain/*</code> or <code>brain/query.py</code>.</div>`;
-    html += `</section>`;
-  } else {
-    html += `<section class="kind"><h3>Traces</h3>
-      <p class="note">This synapse's traces aren't shipped in the static view${
-      isPathId(a) || isPathId(b)
-        ? " — area-level synapses (a field concept's bonds, hanging off the folder that holds it) carry their weight and kinds here only"
-        : ""}. The full set is at <code>/api/brain/*</code> or <code>brain/query.py</code>.</p></section>`;
+    return;
   }
-  html += `<p class="note">Every line on the canvas is a stored synapse. Click either
-    atom to inspect it.</p>`;
-  panelEl.innerHTML = html;
-  wirePanel();
+  if (pathInvolved) {
+    // A supercell-level synapse ships traceless in supercells.json (byte budget);
+    // its traces are exactly ONE lazy sidecar-bucket fetch away.
+    render(`<section class="kind"><h3>Traces${
+      syn.tt ? ` <span class="cnt">(${syn.tt})</span>` : ""}</h3>
+      <div class="edge"><div class="row"><span class="mk">loading traces…</span></div></div></section>`);
+    const got = await fetchSidecarTraces(a, b);
+    if (!live()) return;
+    if (got.ok) { render(tracesSection(got.traces, got.tt, got.prov, true)); return; }
+    // a failed fetch is VISIBLE, never a silent empty (project bug-class rule)
+    render(`<section class="kind"><h3>Traces</h3>
+      <div class="edge"><div class="row"><span class="mk">traces unavailable (${
+        esc(got.why)})</span></div></div>
+      <p class="note">The full set is at <code>/api/brain/*</code> or
+        <code>brain/query.py --full</code>.</p></section>`);
+    return;
+  }
+  // a cell↔cell synapse neither endpoint's shard kept (both hit synapses_per_cell)
+  render(`<section class="kind"><h3>Traces</h3>
+    <p class="note">This synapse's traces aren't shipped in the static view. The full
+      set is at <code>/api/brain/*</code> or <code>brain/query.py</code>.</p></section>`);
 }
 // ---- panel dispatch --------------------------------------------------------
 let lastPanelId = null;
