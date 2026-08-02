@@ -5,6 +5,9 @@ Arms (tools are the ONLY difference; model fixed per Jack 2026-07-25):
   N — no tools at all (--tools "")
   W — wikibrain MCP (bench/arms/mcp-D.json -> local worker /mcp)
   F — formal search MCP (bench/arms/mcp-C.json: loogle/decl_grep/decl_read)
+  WF — W ∪ F union tools + the evidence-based manual (MANUAL_ARMS)
+  U — W ∪ F union tools, NO manual (the bare-union ablation: WF − U
+      isolates the manual's contribution on the identical toolset)
 
 Task contract (same for every arm): given a benchmark query, return a JSON
 array of <=10 fully-qualified Mathlib declaration names, most-relevant first,
@@ -77,6 +80,11 @@ ARM_CFG = {
     "WF": {"mcp": "WF", "tools": []},  # tools filled below (W + F union)
 }
 ARM_CFG["WF"]["tools"] = sorted(set(ARM_CFG["W"]["tools"] + ARM_CFG["F"]["tools"]))
+# U = the bare-union ablation foreshadowed above: the IDENTICAL W ∪ F toolset
+# (same mcp-WF.json server pair), same prompt/turn budget/model, but NOT in
+# MANUAL_ARMS — so WF − U is the manual's marginal effect and U − {W,F} is the
+# union's marginal effect without the manual.
+ARM_CFG["U"] = {"mcp": "WF", "tools": list(ARM_CFG["WF"]["tools"])}
 MANUAL_ARMS = {"WF"}
 MANUAL = (HERE / "AGENT_MANUAL.md").read_text()
 
