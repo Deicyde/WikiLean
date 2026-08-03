@@ -11,8 +11,8 @@ recomputable from the file named beside it.
 
 ## S1. Complete preregistration execution inventory
 
-Every preregistered component, its status, and the inferential
-consequence. Sources: the preregistration
+The table below lists every preregistered component, its status, and
+the inferential consequence. Its sources are the preregistration
 (`docs/research/BRIDGE-EXPERIMENT.md`, commit `0d36f266`) and the
 claim-by-claim inventory in
 `docs/research/review/verification-of-review-1.json` (prereg section).
@@ -47,8 +47,8 @@ claim-by-claim inventory in
 
 ## S2. Tier-1: raw-instrument tables and analysis bases
 
-Source: `bench/analysis/tier1_reanalysis.{py,json,md}`,
-`part1_fresh100_v2.{json,md}`, `fresh_clustered.{py,json,md}`,
+Sources for this section are `bench/analysis/tier1_reanalysis.{py,json,md}`,
+`part1_fresh100_v2.{json,md}`, `fresh_clustered.{py,json,md}`, and
 `success_repaired.{py,json,md}`. Grading pins: eval-341 on Lean
 v4.32.0-rc1 / Mathlib `a33a5ccd`; fresh-100 on Lean v4.33.0-rc1 /
 Mathlib `9944fe29`; the checkout C/E's file tools read is `61a5e4f338`
@@ -58,8 +58,8 @@ Mathlib `9944fe29`; the checkout C/E's file tools read is `61a5e4f338`
 ### S2.1 The three arm-E bases (raw instrument)
 
 E's 31 infrastructure-dead rows (fresh_069–099, contiguous session-limit
-429s; A–D verified zero errors) can be counted three ways. Cells are
-grounded typecheck, n/N = % [Wilson 95% CI], **raw oracle**:
+429s; A–D verified zero errors) can be counted three ways. Cells show
+grounded typecheck as n/N = % [Wilson 95% CI], on the **raw oracle**:
 
 | arm | errors-as-failures (n=100) | completed pairs (n=69) | post-repair (n=100) |
 |---|---|---|---|
@@ -135,8 +135,9 @@ either scale.
 
 ### S2.3 Cluster census and sensitivity collapses
 
-100 tasks = **44 distinct source commits**, **57 files**, **59
-name-stem families** (24 multi-member). Largest commit clusters:
+The 100 tasks decompose into **44 distinct source commits**, **57
+files**, and **59 name-stem families** (24 multi-member). The largest
+commit clusters are
 `87a6eccf` (9 tasks, the AntitoneOn sum–integral family), `49ed1b2d`
 (8, bounded variation), `61303857` (5), two of size 4. On the raw
 instrument, +7 of D's net +12 paired advantage over E comes from the
@@ -179,11 +180,11 @@ TheoremGraph's typecheck-is-not-a-signal finding at 15× their n.
 
 ## S3. Hallucination-oracle validation detail
 
-Source: `bench/analysis/halluc_validation.{py,json,md}`; blinded
-intermediates in `bench/analysis/halluc_blind/`.
+Sources for this section are `bench/analysis/halluc_validation.{py,json,md}`,
+with blinded intermediates in `bench/analysis/halluc_blind/`.
 
-**Blinded protocol.** Seeded (20260801) stratified sample of 60 distinct
-cited names over arm × oracle-verdict strata (per arm: 6 flagged
+**Blinded protocol.** The audit drew a seeded (20260801), stratified
+sample of 60 distinct cited names over arm × oracle-verdict strata (per arm: 6 flagged
 hallucinated, 5 exists, 1 renamed). The grader saw only the blinded
 sample (name + one context line, shuffled, no verdicts) and raw
 `git grep` evidence at the pinned trees (`61a5e4f338`, cross-checked at
@@ -298,8 +299,8 @@ as in-sample.
 
 ## S4. Fresh-set exposure strata (full)
 
-Source: `bench/analysis/fresh_exposure.{py,json,md}` (original,
-snapshot basis) recomputed on the post-repair rows by
+The source is `bench/analysis/fresh_exposure.{py,json,md}` (original,
+snapshot basis), recomputed on the post-repair rows by
 `bench/analysis/v3_gate_fixes.{py,json}` §1. Pinned tree `61a5e4f338`
 (content ~2026-07-10), the rev C/E's file tools read. Outcomes below
 are the **post-repair rows** (E's 31 outage rows replaced by their
@@ -340,8 +341,8 @@ p=0.21; unexposed 13/9 p=0.52). The judge-endpoint exposure split is
 
 ## S5. Turn-budget sensitivity
 
-Source: `tier1_reanalysis.md` §5, corrected to the post-repair rows by
-`v3_gate_fixes.py` §4. E overran the advisory 30-turn budget on
+The source is `tier1_reanalysis.md` §5, corrected to the post-repair
+rows by `v3_gate_fixes.py` §4. E overran the advisory 30-turn budget on
 **48/100** repaired rows — 16 of the 31 rerun rows plus 32 of the 69
 originals; the earlier as-run count of 32 treated E's 31 outage rows
 (turns=1) as within budget, which also inflated the old within-budget
@@ -365,10 +366,10 @@ the paper's primary evidence base — the same statistic is C 44%,
 D 34%, E 61%: verify-before-cite discipline transferred imperfectly to
 the held-out set, and worst in E.
 
-**v2 census** (figure: `figures/fig5_tooluse.pdf` in the
-typeset build; the figure and the per-tool counts here are the as-run
-census — the race repair raises only F's means, since its 190 condemned
-rows had zero calls; basis stated per clause): W averages 3.5 calls/run
+**v2 census** (figure: `figures/fig5_tooluse.pdf` in the typeset
+build, regenerated on the repaired run rows; the per-tool counts quoted
+here are the as-run census — the race repair raises only F's means,
+since its 190 condemned rows had zero calls; basis stated per clause): W averages 3.5 calls/run
 on QR-810 and 10.6 on MPR, ≈4.0 pooled (QR-810 counts: decl_exists
 1,251 + brain_bridge 608 — verify-then-cite made mechanical; pooled
 QR+MPR counts: decl_exists ~1,473 + brain_bridge ~727); WF 4.6 pooled
@@ -610,9 +611,9 @@ are preserved verbatim, not corrected.
 
 ## S9. SorryDB: full bookkeeping
 
-n=171 frozen tasks/arm across 10 repositories; all 203 candidate
-verdicts definitive — 183 kernel pass/fail plus 19 unspliceable and 1
-verify-timeout that never reached the kernel (commit `9682b3b1`; the 8
+The frozen split holds n=171 tasks/arm across 10 repositories, and all
+203 candidate verdicts are definitive — 183 kernel pass/fail plus 19
+unspliceable and 1 verify-timeout that never reached the kernel (commit `9682b3b1`; the 8
 curve25519 stragglers verified as 0 proved). `verify.jsonl` carries 2
 additional off-frozen N rows verdicted `env_broken` (205 lines total),
 correctly excluded from the 203.
@@ -658,10 +659,10 @@ retrieval:** per-query tables in §S6. **SorryDB:** totals in §S9.
 
 ## S11. Blind LLM-judge grading: full tables
 
-Source: `bench/analysis/judge_fresh_run.py` /
-`judge_fresh_summary.{py,json,md}`; repaired-leg conjunction from
-`bench/analysis/conjunction_repaired.{py,json}` (deterministic — no
-sampling). Judge `claude-sonnet-5`; blind
+Sources are `bench/analysis/judge_fresh_run.py` and
+`judge_fresh_summary.{py,json,md}`, with the repaired-leg conjunction
+from `bench/analysis/conjunction_repaired.{py,json}` (deterministic —
+no sampling). Judge `claude-sonnet-5`; blind
 (informal statement + gold with binders + candidate; no arm identity,
 no tools, empty cwd); 500/500 rows, 0 errors; no-output rows auto-fail.
 **Uncalibrated; exploratory.** The judge ran before the oracle repair,

@@ -238,3 +238,66 @@ corpora accessible but unjoined.
     reads; before final camera-ready, spot-read CRAMF and Aria PDFs for
     any claim we quote verbatim (especially CRAMF's 62.1%/29.9% relative
     numbers and Aria's 68.5%).
+
+---
+
+## 5. Published benchmark anchors used in report §5 (added 2026-08-03)
+
+The report's §5 anchor-provenance note names four anchors verified here
+(0.775, 0.780, 0.623, 0.461) and three "recorded from the papers'
+tables in the pre-run design notes". This section closes that TODO by
+recording all three with their sources and re-attempted verification.
+
+### 5.1 TheoremGraph MathlibQR nDCG@10 = 0.548 — paper table, recorded per design notes
+
+- **Value:** nDCG@10 0.548 on MathlibQR fair-810, TheoremGraph's
+  name+signature+graph-expansion configuration (the same config whose
+  R@10 0.775 is abstract-verified in §1.3 above).
+- **Source:** TheoremGraph (arXiv:2606.25363) results table for the
+  MathlibQR retrieval study — the paired column to the abstract's
+  Recall@10 0.775.
+- **Verification status:** arXiv abstract page re-fetched 2026-08-03:
+  0.775 appears verbatim ("0.775 vs. 0.780"); 0.548 does **not** appear
+  on the abstract page (table-only value). Recorded per
+  `docs/research/BRIDGE-V2-BENCHMARKS.md` as-run verification ("Published:
+  TheoremGraph 0.775/0.548", from the 2026-07-24 primary-source sweep of
+  the paper).
+
+### 5.2 TheoremGraph MathlibMPR group-recall = 0.165 — paper table, recorded per design notes
+
+- **Value:** 0.165 (16.5%) group-recall@10 on MathlibMPR for
+  TheoremGraph's concept-tuned configuration — the paper's own
+  negative-transfer result, which it frames as a scope boundary
+  (concept retrieval ≠ premise retrieval).
+- **Source:** TheoremGraph (arXiv:2606.25363) MPR comparison table, as
+  reported in the LeanSearch-v2 baseline set.
+- **Verification status:** not on the arXiv abstract page (2026-08-03
+  fetch). Recorded per `docs/research/BRIDGE-V2-BENCHMARKS.md` as-run
+  verification ("TheoremGraph's concept-tuned config 16.5 (their
+  negative transfer, framed as a scope boundary)").
+
+### 5.3 DIVER MathlibMPR group-recall = 0.380 — LSv2 baseline table; 38.0% abstract-corroborated
+
+- **Value:** 0.380 (38.0%) group-recall@10 on MathlibMPR for DIVER, the
+  strongest published non-LSv2 baseline.
+- **Source:** LeanSearch-v2 (arXiv:2605.13137) MPR baseline table
+  (DIVER row), the same table that reports LSv2 reasoning-mode 46.1%.
+- **Verification status:** the LSv2 arXiv abstract (re-fetched
+  2026-08-03) states "46.1% of ground-truth premise groups" against
+  "strong reasoning retrieval systems (38.0%)" — the 38.0% figure is
+  abstract-verified; its attribution to DIVER by name is table-only,
+  recorded per `docs/research/BRIDGE-V2-BENCHMARKS.md` as-run
+  verification ("LeanSearch-v2 reasoning 46.1, DIVER 38.0").
+
+### 5.4 LSv2 MathlibQR nDCG@10 = 0.623-as-printed — paper table; abstract rounds to 0.62
+
+- **Value:** nDCG@10 0.623 on MathlibQR for LSv2's retriever+reranker
+  (standard mode) — the value as printed in the paper's results table
+  and quoted in the report's §5 published row.
+- **Source:** LeanSearch-v2 (arXiv:2605.13137) MathlibQR results table.
+- **Verification status:** the arXiv abstract states "nDCG@10 of 0.62
+  vs. 0.53" — consistent with 0.623 at the abstract's two-decimal
+  rounding, but the three-decimal 0.623 itself is table-only. Recorded
+  per `docs/research/BRIDGE-V2-BENCHMARKS.md` as-run verification
+  ("LSv2 retriever+reranker 0.780/0.623"). The report cites it as
+  "0.623-as-printed" for exactly this reason.
