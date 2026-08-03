@@ -1,0 +1,1635 @@
+{
+ "generated_by": "bench/analysis/v3_gate_fixes.py",
+ "seed": 20260801,
+ "B": 10000,
+ "n_commit_clusters": 44,
+ "job_seed_offsets": {
+  "gtc_repaired.E_vs_A": 41,
+  "halluc_repaired.D_vs_A": 51,
+  "halluc_repaired.D_vs_E": 52,
+  "halluc_repaired.D_vs_C": 53,
+  "halluc_repaired.E_vs_A": 54,
+  "judge_evaluated.D_vs_E": 61,
+  "judge_evaluated.E_vs_A": 62,
+  "conj_repaired.D_vs_A": 71,
+  "conj_repaired.E_vs_A": 72,
+  "conj_repaired.D_vs_E": 73
+ },
+ "inputs": [
+  "bench/analysis/bridge_summary_v2.json",
+  "bench/analysis/success_repaired.json",
+  "bench/analysis/halluc_validation.json",
+  "bench/analysis/judge_fresh_summary.json",
+  "bench/analysis/conjunction_repaired.json",
+  "bench/analysis/fresh_exposure.json",
+  "bench/data/fresh_tasks.jsonl",
+  "bench/data/fresh_tasks.stats.json",
+  "bench/data/bridge_tasks.jsonl",
+  "bench/data/runs/{A..E}/fresh_*.json",
+  "bench/analysis/judge_fresh/{A..E}/*.judge.json"
+ ],
+ "1_s4_exposure_post_repair": {
+  "basis": "POST-REPAIR outcomes: bridge_summary_v2.json paired_matrix (E rows fresh_069..099 = 2026-07-27 rerun), raw oracle \u2014 replaces the snapshot-basis S4 in which E's 31 outage rows counted as failures",
+  "strata_source": "fresh_exposure.json per_task (basename_in_own_module / gold_commit_in_pin)",
+  "by_exposure": {
+   "exposed": {
+    "n": 51,
+    "arms": {
+     "A": {
+      "k": 9,
+      "n": 51,
+      "rate": 0.1765,
+      "wilson95": [
+       0.0957,
+       0.3025
+      ]
+     },
+     "B": {
+      "k": 8,
+      "n": 51,
+      "rate": 0.1569,
+      "wilson95": [
+       0.0817,
+       0.2801
+      ]
+     },
+     "C": {
+      "k": 11,
+      "n": 51,
+      "rate": 0.2157,
+      "wilson95": [
+       0.1249,
+       0.3463
+      ]
+     },
+     "D": {
+      "k": 24,
+      "n": 51,
+      "rate": 0.4706,
+      "wilson95": [
+       0.3405,
+       0.6048
+      ]
+     },
+     "E": {
+      "k": 15,
+      "n": 51,
+      "rate": 0.2941,
+      "wilson95": [
+       0.1871,
+       0.43
+      ]
+     }
+    },
+    "D_vs_E": {
+     "pair": "D_vs_E",
+     "n_paired": 51,
+     "both": 10,
+     "D_only": 14,
+     "E_only": 5,
+     "neither": 22,
+     "discordant": 19,
+     "p_exact_binomial_two_sided": 0.0636,
+     "rd": 0.176471,
+     "rd_ci95_paired_wald": [
+      0.016109,
+      0.336832
+     ]
+    },
+    "D_vs_C": {
+     "pair": "D_vs_C",
+     "n_paired": 51,
+     "both": 6,
+     "D_only": 18,
+     "C_only": 5,
+     "neither": 22,
+     "discordant": 23,
+     "p_exact_binomial_two_sided": 0.0106,
+     "rd": 0.254902,
+     "rd_ci95_paired_wald": [
+      0.084388,
+      0.425416
+     ]
+    }
+   },
+   "unexposed": {
+    "n": 49,
+    "arms": {
+     "A": {
+      "k": 11,
+      "n": 49,
+      "rate": 0.2245,
+      "wilson95": [
+       0.1302,
+       0.3588
+      ]
+     },
+     "B": {
+      "k": 14,
+      "n": 49,
+      "rate": 0.2857,
+      "wilson95": [
+       0.1785,
+       0.4241
+      ]
+     },
+     "C": {
+      "k": 14,
+      "n": 49,
+      "rate": 0.2857,
+      "wilson95": [
+       0.1785,
+       0.4241
+      ]
+     },
+     "D": {
+      "k": 18,
+      "n": 49,
+      "rate": 0.3673,
+      "wilson95": [
+       0.2467,
+       0.5073
+      ]
+     },
+     "E": {
+      "k": 15,
+      "n": 49,
+      "rate": 0.3061,
+      "wilson95": [
+       0.1952,
+       0.4453
+      ]
+     }
+    },
+    "D_vs_E": {
+     "pair": "D_vs_E",
+     "n_paired": 49,
+     "both": 7,
+     "D_only": 11,
+     "E_only": 8,
+     "neither": 23,
+     "discordant": 19,
+     "p_exact_binomial_two_sided": 0.648,
+     "rd": 0.061224,
+     "rd_ci95_paired_wald": [
+      -0.112283,
+      0.234732
+     ]
+    },
+    "D_vs_C": {
+     "pair": "D_vs_C",
+     "n_paired": 49,
+     "both": 8,
+     "D_only": 10,
+     "C_only": 6,
+     "neither": 25,
+     "discordant": 16,
+     "p_exact_binomial_two_sided": 0.454,
+     "rd": 0.081633,
+     "rd_ci95_paired_wald": [
+      -0.076723,
+      0.239989
+     ]
+    }
+   }
+  },
+  "by_merge_date": {
+   "merged_before_pin": {
+    "n": 49,
+    "arms": {
+     "A": {
+      "k": 9,
+      "n": 49,
+      "rate": 0.1837,
+      "wilson95": [
+       0.0998,
+       0.3136
+      ]
+     },
+     "B": {
+      "k": 8,
+      "n": 49,
+      "rate": 0.1633,
+      "wilson95": [
+       0.0851,
+       0.2904
+      ]
+     },
+     "C": {
+      "k": 11,
+      "n": 49,
+      "rate": 0.2245,
+      "wilson95": [
+       0.1302,
+       0.3588
+      ]
+     },
+     "D": {
+      "k": 24,
+      "n": 49,
+      "rate": 0.4898,
+      "wilson95": [
+       0.3558,
+       0.6253
+      ]
+     },
+     "E": {
+      "k": 15,
+      "n": 49,
+      "rate": 0.3061,
+      "wilson95": [
+       0.1952,
+       0.4453
+      ]
+     }
+    },
+    "D_vs_E": {
+     "pair": "D_vs_E",
+     "n_paired": 49,
+     "both": 10,
+     "D_only": 14,
+     "E_only": 5,
+     "neither": 20,
+     "discordant": 19,
+     "p_exact_binomial_two_sided": 0.0636,
+     "rd": 0.183673,
+     "rd_ci95_paired_wald": [
+      0.017078,
+      0.350269
+     ]
+    },
+    "D_vs_C": {
+     "pair": "D_vs_C",
+     "n_paired": 49,
+     "both": 6,
+     "D_only": 18,
+     "C_only": 5,
+     "neither": 20,
+     "discordant": 23,
+     "p_exact_binomial_two_sided": 0.0106,
+     "rd": 0.265306,
+     "rd_ci95_paired_wald": [
+      0.088443,
+      0.442169
+     ]
+    }
+   },
+   "merged_after_pin": {
+    "n": 51,
+    "arms": {
+     "A": {
+      "k": 11,
+      "n": 51,
+      "rate": 0.2157,
+      "wilson95": [
+       0.1249,
+       0.3463
+      ]
+     },
+     "B": {
+      "k": 14,
+      "n": 51,
+      "rate": 0.2745,
+      "wilson95": [
+       0.1711,
+       0.4095
+      ]
+     },
+     "C": {
+      "k": 14,
+      "n": 51,
+      "rate": 0.2745,
+      "wilson95": [
+       0.1711,
+       0.4095
+      ]
+     },
+     "D": {
+      "k": 18,
+      "n": 51,
+      "rate": 0.3529,
+      "wilson95": [
+       0.2363,
+       0.4901
+      ]
+     },
+     "E": {
+      "k": 15,
+      "n": 51,
+      "rate": 0.2941,
+      "wilson95": [
+       0.1871,
+       0.43
+      ]
+     }
+    },
+    "D_vs_E": {
+     "pair": "D_vs_E",
+     "n_paired": 51,
+     "both": 7,
+     "D_only": 11,
+     "E_only": 8,
+     "neither": 25,
+     "discordant": 19,
+     "p_exact_binomial_two_sided": 0.648,
+     "rd": 0.058824,
+     "rd_ci95_paired_wald": [
+      -0.107912,
+      0.225559
+     ]
+    },
+    "D_vs_C": {
+     "pair": "D_vs_C",
+     "n_paired": 51,
+     "both": 8,
+     "D_only": 10,
+     "C_only": 6,
+     "neither": 27,
+     "discordant": 16,
+     "p_exact_binomial_two_sided": 0.454,
+     "rd": 0.078431,
+     "rd_ci95_paired_wald": [
+      -0.073777,
+      0.230639
+     ]
+    }
+   }
+  },
+  "repaired_instrument_sensitivity": {
+   "by_exposure": {
+    "exposed": {
+     "n": 51,
+     "arms": {
+      "A": {
+       "k": 10,
+       "n": 51,
+       "rate": 0.1961,
+       "wilson95": [
+        0.1102,
+        0.3246
+       ]
+      },
+      "B": {
+       "k": 8,
+       "n": 51,
+       "rate": 0.1569,
+       "wilson95": [
+        0.0817,
+        0.2801
+       ]
+      },
+      "C": {
+       "k": 16,
+       "n": 51,
+       "rate": 0.3137,
+       "wilson95": [
+        0.2033,
+        0.4503
+       ]
+      },
+      "D": {
+       "k": 25,
+       "n": 51,
+       "rate": 0.4902,
+       "wilson95": [
+        0.3586,
+        0.6232
+       ]
+      },
+      "E": {
+       "k": 18,
+       "n": 51,
+       "rate": 0.3529,
+       "wilson95": [
+        0.2363,
+        0.4901
+       ]
+      }
+     },
+     "D_vs_E": {
+      "pair": "D_vs_E",
+      "n_paired": 51,
+      "both": 10,
+      "D_only": 15,
+      "E_only": 8,
+      "neither": 18,
+      "discordant": 23,
+      "p_exact_binomial_two_sided": 0.21,
+      "rd": 0.137255,
+      "rd_ci95_paired_wald": [
+       -0.043161,
+       0.317671
+      ]
+     },
+     "D_vs_C": {
+      "pair": "D_vs_C",
+      "n_paired": 51,
+      "both": 7,
+      "D_only": 18,
+      "C_only": 9,
+      "neither": 17,
+      "discordant": 27,
+      "p_exact_binomial_two_sided": 0.122,
+      "rd": 0.176471,
+      "rd_ci95_paired_wald": [
+       -0.017259,
+       0.3702
+      ]
+     }
+    },
+    "unexposed": {
+     "n": 49,
+     "arms": {
+      "A": {
+       "k": 11,
+       "n": 49,
+       "rate": 0.2245,
+       "wilson95": [
+        0.1302,
+        0.3588
+       ]
+      },
+      "B": {
+       "k": 14,
+       "n": 49,
+       "rate": 0.2857,
+       "wilson95": [
+        0.1785,
+        0.4241
+       ]
+      },
+      "C": {
+       "k": 17,
+       "n": 49,
+       "rate": 0.3469,
+       "wilson95": [
+        0.2292,
+        0.4869
+       ]
+      },
+      "D": {
+       "k": 23,
+       "n": 49,
+       "rate": 0.4694,
+       "wilson95": [
+        0.337,
+        0.6062
+       ]
+      },
+      "E": {
+       "k": 19,
+       "n": 49,
+       "rate": 0.3878,
+       "wilson95": [
+        0.2643,
+        0.5275
+       ]
+      }
+     },
+     "D_vs_E": {
+      "pair": "D_vs_E",
+      "n_paired": 49,
+      "both": 10,
+      "D_only": 13,
+      "E_only": 9,
+      "neither": 17,
+      "discordant": 22,
+      "p_exact_binomial_two_sided": 0.523,
+      "rd": 0.081633,
+      "rd_ci95_paired_wald": [
+       -0.104583,
+       0.267848
+      ]
+     },
+     "D_vs_C": {
+      "pair": "D_vs_C",
+      "n_paired": 49,
+      "both": 9,
+      "D_only": 14,
+      "C_only": 8,
+      "neither": 18,
+      "discordant": 22,
+      "p_exact_binomial_two_sided": 0.286,
+      "rd": 0.122449,
+      "rd_ci95_paired_wald": [
+       -0.062005,
+       0.306903
+      ]
+     }
+    }
+   },
+   "by_merge_date": {
+    "merged_before_pin": {
+     "n": 49,
+     "arms": {
+      "A": {
+       "k": 10,
+       "n": 49,
+       "rate": 0.2041,
+       "wilson95": [
+        0.1148,
+        0.3364
+       ]
+      },
+      "B": {
+       "k": 8,
+       "n": 49,
+       "rate": 0.1633,
+       "wilson95": [
+        0.0851,
+        0.2904
+       ]
+      },
+      "C": {
+       "k": 16,
+       "n": 49,
+       "rate": 0.3265,
+       "wilson95": [
+        0.2121,
+        0.4662
+       ]
+      },
+      "D": {
+       "k": 24,
+       "n": 49,
+       "rate": 0.4898,
+       "wilson95": [
+        0.3558,
+        0.6253
+       ]
+      },
+      "E": {
+       "k": 18,
+       "n": 49,
+       "rate": 0.3673,
+       "wilson95": [
+        0.2467,
+        0.5073
+       ]
+      }
+     },
+     "D_vs_E": {
+      "pair": "D_vs_E",
+      "n_paired": 49,
+      "both": 10,
+      "D_only": 14,
+      "E_only": 8,
+      "neither": 17,
+      "discordant": 22,
+      "p_exact_binomial_two_sided": 0.286,
+      "rd": 0.122449,
+      "rd_ci95_paired_wald": [
+       -0.062005,
+       0.306903
+      ]
+     },
+     "D_vs_C": {
+      "pair": "D_vs_C",
+      "n_paired": 49,
+      "both": 7,
+      "D_only": 17,
+      "C_only": 9,
+      "neither": 16,
+      "discordant": 26,
+      "p_exact_binomial_two_sided": 0.169,
+      "rd": 0.163265,
+      "rd_ci95_paired_wald": [
+       -0.035503,
+       0.362033
+      ]
+     }
+    },
+    "merged_after_pin": {
+     "n": 51,
+     "arms": {
+      "A": {
+       "k": 11,
+       "n": 51,
+       "rate": 0.2157,
+       "wilson95": [
+        0.1249,
+        0.3463
+       ]
+      },
+      "B": {
+       "k": 14,
+       "n": 51,
+       "rate": 0.2745,
+       "wilson95": [
+        0.1711,
+        0.4095
+       ]
+      },
+      "C": {
+       "k": 17,
+       "n": 51,
+       "rate": 0.3333,
+       "wilson95": [
+        0.2197,
+        0.4703
+       ]
+      },
+      "D": {
+       "k": 24,
+       "n": 51,
+       "rate": 0.4706,
+       "wilson95": [
+        0.3405,
+        0.6048
+       ]
+      },
+      "E": {
+       "k": 19,
+       "n": 51,
+       "rate": 0.3725,
+       "wilson95": [
+        0.2532,
+        0.5097
+       ]
+      }
+     },
+     "D_vs_E": {
+      "pair": "D_vs_E",
+      "n_paired": 51,
+      "both": 10,
+      "D_only": 14,
+      "E_only": 9,
+      "neither": 18,
+      "discordant": 23,
+      "p_exact_binomial_two_sided": 0.405,
+      "rd": 0.098039,
+      "rd_ci95_paired_wald": [
+       -0.084293,
+       0.280372
+      ]
+     },
+     "D_vs_C": {
+      "pair": "D_vs_C",
+      "n_paired": 51,
+      "both": 9,
+      "D_only": 15,
+      "C_only": 8,
+      "neither": 19,
+      "discordant": 23,
+      "p_exact_binomial_two_sided": 0.21,
+      "rd": 0.137255,
+      "rd_ci95_paired_wald": [
+       -0.043161,
+       0.317671
+      ]
+     }
+    }
+   }
+  },
+  "verdict_S4_sentence": {
+   "old_S4_claim": "\"the leak's direction favors C/E, and D's edge over E is strongest exactly where there was nothing to leak\" (snapshot basis: exposed 15/3 p=.0075, unexposed 17/3 p=.0026)",
+   "post_repair_D_vs_E": {
+    "exposed": {
+     "b_c": [
+      14,
+      5
+     ],
+     "p": 0.0636,
+     "rd": 0.176471
+    },
+    "unexposed": {
+     "b_c": [
+      11,
+      8
+     ],
+     "p": 0.648,
+     "rd": 0.061224
+    }
+   },
+   "claim_survives": false,
+   "plain_statement": "The claim does NOT survive the E repair. On the post-repair rows D's edge over E is LARGER in the exposed stratum (RD +0.176, 14/5 discordant, p=0.064) than in the unexposed stratum (RD +0.061, 11/8, p=0.648); neither stratum is significant alone. The snapshot-basis pattern was an artifact of E's 31 outage failures concentrating in the unexposed stratum."
+  }
+ },
+ "2_commit_clustered_bootstraps": {
+  "gtc_repaired.E_vs_A": {
+   "outcome_layer": "gtc_repaired",
+   "pair": "E_vs_A",
+   "unclustered_mcnemar": {
+    "pair": "E_vs_A",
+    "n_paired": 100,
+    "both": 13,
+    "E_only": 24,
+    "A_only": 8,
+    "neither": 55,
+    "discordant": 32,
+    "p_exact_binomial_two_sided": 0.007,
+    "rd": 0.16,
+    "rd_ci95_paired_wald": [
+     0.053655,
+     0.266345
+    ]
+   },
+   "commit_clustered_bootstrap": {
+    "n_clusters": 44,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260842,
+    "rd": 0.16,
+    "ci95_percentile": [
+     0.03999,
+     0.294118
+    ],
+    "p_two_sided_percentile_inversion": 0.011599,
+    "boot_se": 0.064193,
+    "cluster_robust_se_analytic": 0.064255
+   },
+   "unclustered_significant_alpha05": true,
+   "clustered_significant_alpha05": true,
+   "survives_clustering": true,
+   "classification": "sig -> sig"
+  },
+  "halluc_repaired.D_vs_A": {
+   "outcome_layer": "halluc_repaired",
+   "pair": "D_vs_A",
+   "unclustered_mcnemar": {
+    "pair": "D_vs_A",
+    "n_paired": 100,
+    "both": 3,
+    "D_only": 3,
+    "A_only": 34,
+    "neither": 60,
+    "discordant": 37,
+    "p_exact_binomial_two_sided": 1.23e-07,
+    "rd": -0.31,
+    "rd_ci95_paired_wald": [
+     -0.412576,
+     -0.207424
+    ]
+   },
+   "commit_clustered_bootstrap": {
+    "n_clusters": 44,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260852,
+    "rd": -0.31,
+    "ci95_percentile": [
+     -0.446438,
+     -0.192977
+    ],
+    "p_two_sided_percentile_inversion": 0.0002,
+    "boot_se": 0.065219,
+    "cluster_robust_se_analytic": 0.064711
+   },
+   "unclustered_significant_alpha05": true,
+   "clustered_significant_alpha05": true,
+   "survives_clustering": true,
+   "classification": "sig -> sig"
+  },
+  "halluc_repaired.D_vs_E": {
+   "outcome_layer": "halluc_repaired",
+   "pair": "D_vs_E",
+   "unclustered_mcnemar": {
+    "pair": "D_vs_E",
+    "n_paired": 100,
+    "both": 0,
+    "D_only": 6,
+    "E_only": 10,
+    "neither": 84,
+    "discordant": 16,
+    "p_exact_binomial_two_sided": 0.454,
+    "rd": -0.04,
+    "rd_ci95_paired_wald": [
+     -0.118006,
+     0.038006
+    ]
+   },
+   "commit_clustered_bootstrap": {
+    "n_clusters": 44,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260853,
+    "rd": -0.04,
+    "ci95_percentile": [
+     -0.135421,
+     0.049505
+    ],
+    "p_two_sided_percentile_inversion": 0.439956,
+    "boot_se": 0.04709,
+    "cluster_robust_se_analytic": 0.046922
+   },
+   "unclustered_significant_alpha05": false,
+   "clustered_significant_alpha05": false,
+   "survives_clustering": false,
+   "classification": "ns -> ns"
+  },
+  "halluc_repaired.D_vs_C": {
+   "outcome_layer": "halluc_repaired",
+   "pair": "D_vs_C",
+   "unclustered_mcnemar": {
+    "pair": "D_vs_C",
+    "n_paired": 100,
+    "both": 1,
+    "D_only": 5,
+    "C_only": 10,
+    "neither": 84,
+    "discordant": 15,
+    "p_exact_binomial_two_sided": 0.302,
+    "rd": -0.05,
+    "rd_ci95_paired_wald": [
+     -0.125274,
+     0.025274
+    ]
+   },
+   "commit_clustered_bootstrap": {
+    "n_clusters": 44,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260854,
+    "rd": -0.05,
+    "ci95_percentile": [
+     -0.141176,
+     0.038462
+    ],
+    "p_two_sided_percentile_inversion": 0.313769,
+    "boot_se": 0.045405,
+    "cluster_robust_se_analytic": 0.045655
+   },
+   "unclustered_significant_alpha05": false,
+   "clustered_significant_alpha05": false,
+   "survives_clustering": false,
+   "classification": "ns -> ns"
+  },
+  "halluc_repaired.E_vs_A": {
+   "outcome_layer": "halluc_repaired",
+   "pair": "E_vs_A",
+   "unclustered_mcnemar": {
+    "pair": "E_vs_A",
+    "n_paired": 100,
+    "both": 8,
+    "E_only": 2,
+    "A_only": 29,
+    "neither": 61,
+    "discordant": 31,
+    "p_exact_binomial_two_sided": 4.63e-07,
+    "rd": -0.27,
+    "rd_ci95_paired_wald": [
+     -0.365436,
+     -0.174564
+    ]
+   },
+   "commit_clustered_bootstrap": {
+    "n_clusters": 44,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260855,
+    "rd": -0.27,
+    "ci95_percentile": [
+     -0.395833,
+     -0.154639
+    ],
+    "p_two_sided_percentile_inversion": 0.0002,
+    "boot_se": 0.061747,
+    "cluster_robust_se_analytic": 0.061986
+   },
+   "unclustered_significant_alpha05": true,
+   "clustered_significant_alpha05": true,
+   "survives_clustering": true,
+   "classification": "sig -> sig"
+  },
+  "judge_evaluated.D_vs_E": {
+   "outcome_layer": "judge_evaluated",
+   "pair": "D_vs_E",
+   "unclustered_mcnemar": {
+    "pair": "D_vs_E",
+    "n_paired": 100,
+    "both": 18,
+    "D_only": 1,
+    "E_only": 35,
+    "neither": 46,
+    "discordant": 36,
+    "p_exact_binomial_two_sided": 1.08e-09,
+    "rd": -0.34,
+    "rd_ci95_paired_wald": [
+     -0.436894,
+     -0.243106
+    ]
+   },
+   "commit_clustered_bootstrap": {
+    "n_clusters": 44,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260862,
+    "rd": -0.34,
+    "ci95_percentile": [
+     -0.461538,
+     -0.21978
+    ],
+    "p_two_sided_percentile_inversion": 0.0002,
+    "boot_se": 0.060064,
+    "cluster_robust_se_analytic": 0.060515
+   },
+   "unclustered_significant_alpha05": true,
+   "clustered_significant_alpha05": true,
+   "survives_clustering": true,
+   "classification": "sig -> sig"
+  },
+  "judge_evaluated.E_vs_A": {
+   "outcome_layer": "judge_evaluated",
+   "pair": "E_vs_A",
+   "unclustered_mcnemar": {
+    "pair": "E_vs_A",
+    "n_paired": 100,
+    "both": 16,
+    "E_only": 37,
+    "A_only": 1,
+    "neither": 46,
+    "discordant": 38,
+    "p_exact_binomial_two_sided": 2.84e-10,
+    "rd": 0.36,
+    "rd_ci95_paired_wald": [
+     0.261923,
+     0.458077
+    ]
+   },
+   "commit_clustered_bootstrap": {
+    "n_clusters": 44,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260863,
+    "rd": 0.36,
+    "ci95_percentile": [
+     0.233333,
+     0.469388
+    ],
+    "p_two_sided_percentile_inversion": 0.0002,
+    "boot_se": 0.060131,
+    "cluster_robust_se_analytic": 0.059931
+   },
+   "unclustered_significant_alpha05": true,
+   "clustered_significant_alpha05": true,
+   "survives_clustering": true,
+   "classification": "sig -> sig"
+  },
+  "conj_repaired.D_vs_A": {
+   "outcome_layer": "conj_repaired",
+   "pair": "D_vs_A",
+   "unclustered_mcnemar": {
+    "pair": "D_vs_A",
+    "n_paired": 100,
+    "both": 6,
+    "D_only": 10,
+    "A_only": 2,
+    "neither": 82,
+    "discordant": 12,
+    "p_exact_binomial_two_sided": 0.0386,
+    "rd": 0.08,
+    "rd_ci95_paired_wald": [
+     0.01394,
+     0.14606
+    ]
+   },
+   "commit_clustered_bootstrap": {
+    "n_clusters": 44,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260872,
+    "rd": 0.08,
+    "ci95_percentile": [
+     0.010753,
+     0.152381
+    ],
+    "p_two_sided_percentile_inversion": 0.036596,
+    "boot_se": 0.03611,
+    "cluster_robust_se_analytic": 0.035946
+   },
+   "unclustered_significant_alpha05": true,
+   "clustered_significant_alpha05": true,
+   "survives_clustering": true,
+   "classification": "sig -> sig"
+  },
+  "conj_repaired.E_vs_A": {
+   "outcome_layer": "conj_repaired",
+   "pair": "E_vs_A",
+   "unclustered_mcnemar": {
+    "pair": "E_vs_A",
+    "n_paired": 100,
+    "both": 7,
+    "E_only": 14,
+    "A_only": 1,
+    "neither": 78,
+    "discordant": 15,
+    "p_exact_binomial_two_sided": 0.000977,
+    "rd": 0.13,
+    "rd_ci95_paired_wald": [
+     0.058495,
+     0.201505
+    ]
+   },
+   "commit_clustered_bootstrap": {
+    "n_clusters": 44,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260873,
+    "rd": 0.13,
+    "ci95_percentile": [
+     0.054945,
+     0.22619
+    ],
+    "p_two_sided_percentile_inversion": 0.0002,
+    "boot_se": 0.043568,
+    "cluster_robust_se_analytic": 0.043581
+   },
+   "unclustered_significant_alpha05": true,
+   "clustered_significant_alpha05": true,
+   "survives_clustering": true,
+   "classification": "sig -> sig"
+  },
+  "conj_repaired.D_vs_E": {
+   "outcome_layer": "conj_repaired",
+   "pair": "D_vs_E",
+   "unclustered_mcnemar": {
+    "pair": "D_vs_E",
+    "n_paired": 100,
+    "both": 11,
+    "D_only": 5,
+    "E_only": 10,
+    "neither": 74,
+    "discordant": 15,
+    "p_exact_binomial_two_sided": 0.302,
+    "rd": -0.05,
+    "rd_ci95_paired_wald": [
+     -0.125274,
+     0.025274
+    ]
+   },
+   "commit_clustered_bootstrap": {
+    "n_clusters": 44,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260874,
+    "rd": -0.05,
+    "ci95_percentile": [
+     -0.142857,
+     0.020619
+    ],
+    "p_two_sided_percentile_inversion": 0.247175,
+    "boot_se": 0.042106,
+    "cluster_robust_se_analytic": 0.043119
+   },
+   "unclustered_significant_alpha05": false,
+   "clustered_significant_alpha05": false,
+   "survives_clustering": false,
+   "classification": "ns -> ns"
+  }
+ },
+ "3_tier1_attach_audit": {
+  "question": "referee: was Tier-1 attach-audited the way the v2 grid was (init-event MCP status captured, race rows condemned)?",
+  "schema_fact": {
+   "row_keys_all_500_fresh_rows": [
+    "arm",
+    "max_turns",
+    "model",
+    "output_lean",
+    "task_id",
+    "timestamp",
+    "tool_trace",
+    "transcript_stats",
+    "wall_s"
+   ],
+   "transcript_stats_keys": [
+    "cost_usd",
+    "tokens_in",
+    "tokens_out",
+    "tool_calls_by_name",
+    "turns"
+   ],
+   "mcp_init_or_attach_evidence_in_rows": false,
+   "statement": "Tier-1 run rows (bench/run_bridge.py) record NO MCP init/attach event and no per-server status \u2014 the v2 grid runner's init-signature capture (commit 834a130a) postdates and never applied to Tier 1. Per-row attach evidence is therefore indirect: nonzero tool calls prove attachment; a zero-tool row cannot be distinguished from silent detooling by the row alone. Campaign-level evidence: arm D preflights the Wikibrain MCP (JSON-RPC initialize over HTTP) and ABORTS the run on failure, precisely because 'the claude CLI degrades SILENTLY to no-tools when the server is unreachable' (run_bridge.py); arms B/C/E use local stdio servers with no preflight."
+  },
+  "fresh_500": {
+   "n_rows_per_arm": 100,
+   "runner_error_rows_per_arm": {
+    "A": 0,
+    "B": 0,
+    "C": 0,
+    "D": 0,
+    "E": 0
+   },
+   "zero_tool_rows_per_arm": {
+    "A": 100,
+    "B": 23,
+    "C": 0,
+    "D": 1,
+    "E": 1
+   },
+   "arm_A_by_design": "A is the no-tools arm: 100/100 zero-tool is the design, not a casualty",
+   "zero_tool_rows_detail_tooled_arms": {
+    "B": [
+     {
+      "task_id": "fresh_000",
+      "turns": 1,
+      "wall_s": 84.1,
+      "tool_trace_len": 0
+     },
+     {
+      "task_id": "fresh_002",
+      "turns": 1,
+      "wall_s": 54.5,
+      "tool_trace_len": 0
+     },
+     {
+      "task_id": "fresh_007",
+      "turns": 1,
+      "wall_s": 102.6,
+      "tool_trace_len": 0
+     },
+     {
+      "task_id": "fresh_017",
+      "turns": 1,
+      "wall_s": 31.5,
+      "tool_trace_len": 0
+     },
+     {
+      "task_id": "fresh_018",
+      "turns": 1,
+      "wall_s": 25.1,
+      "tool_trace_len": 0
+     },
+     {
+      "task_id": "fresh_022",
+      "turns": 1,
+      "wall_s": 90.8,
+      "tool_trace_len": 0
+     },
+     {
+      "task_id": "fresh_024",
+      "turns": 1,
+      "wall_s": 94.0,
+      "tool_trace_len": 0
+     },
+     {
+      "task_id": "fresh_025",
+      "turns": 1,
+      "wall_s": 41.2,
+      "tool_trace_len": 0
+     },
+     {
+      "task_id": "fresh_026",
+      "turns": 1,
+      "wall_s": 107.9,
+      "tool_trace_len": 0
+     },
+     {
+      "task_id": "fresh_028",
+      "turns": 1,
+      "wall_s": 197.2,
+      "tool_trace_len": 0
+     },
+     {
+      "task_id": "fresh_032",
+      "turns": 1,
+      "wall_s": 40.2,
+      "tool_trace_len": 0
+     },
+     {
+      "task_id": "fresh_033",
+      "turns": 1,
+      "wall_s": 63.9,
+      "tool_trace_len": 0
+     },
+     {
+      "task_id": "fresh_037",
+      "turns": 1,
+      "wall_s": 63.2,
+      "tool_trace_len": 0
+     },
+     {
+      "task_id": "fresh_038",
+      "turns": 1,
+      "wall_s": 67.8,
+      "tool_trace_len": 0
+     },
+     {
+      "task_id": "fresh_041",
+      "turns": 1,
+      "wall_s": 67.8,
+      "tool_trace_len": 0
+     },
+     {
+      "task_id": "fresh_042",
+      "turns": 1,
+      "wall_s": 116.4,
+      "tool_trace_len": 0
+     },
+     {
+      "task_id": "fresh_046",
+      "turns": 1,
+      "wall_s": 55.5,
+      "tool_trace_len": 0
+     },
+     {
+      "task_id": "fresh_047",
+      "turns": 1,
+      "wall_s": 88.2,
+      "tool_trace_len": 0
+     },
+     {
+      "task_id": "fresh_054",
+      "turns": 1,
+      "wall_s": 79.6,
+      "tool_trace_len": 0
+     },
+     {
+      "task_id": "fresh_072",
+      "turns": 1,
+      "wall_s": 55.7,
+      "tool_trace_len": 0
+     },
+     {
+      "task_id": "fresh_074",
+      "turns": 1,
+      "wall_s": 51.6,
+      "tool_trace_len": 0
+     },
+     {
+      "task_id": "fresh_075",
+      "turns": 1,
+      "wall_s": 32.0,
+      "tool_trace_len": 0
+     },
+     {
+      "task_id": "fresh_079",
+      "turns": 1,
+      "wall_s": 182.1,
+      "tool_trace_len": 0
+     }
+    ],
+    "C": [],
+    "D": [
+     {
+      "task_id": "fresh_002",
+      "turns": 1,
+      "wall_s": 84.4,
+      "tool_trace_len": 0
+     }
+    ],
+    "E": [
+     {
+      "task_id": "fresh_005",
+      "turns": 1,
+      "wall_s": 85.5,
+      "tool_trace_len": 0
+     }
+    ]
+   },
+   "reading": "C: 0 zero-tool rows. D: 1 (fresh_002). E: 1 (fresh_005). B: 23 \u2014 all single-turn rows that answered without calling the wiki tools; B's toolkit (Wikipedia/nLab search, no Lean) is frequently unhelpful for a formalization task, so B's zero-tool rows are consistent with model choice, while the single D and E rows (turns=1, ~85s wall) are the plausible silent-detooling suspects \u2014 1% worst-case per tooled arm on the fresh set."
+  },
+  "eval_341": {
+   "n_rows_per_arm": 341,
+   "runner_error_rows_per_arm": {
+    "A": 0,
+    "B": 0,
+    "C": 0,
+    "D": 0,
+    "E": 0
+   },
+   "zero_tool_rows_per_arm": {
+    "A": 341,
+    "B": 160,
+    "C": 0,
+    "D": 0,
+    "E": 4
+   },
+   "zero_tool_task_ids_tooled_arms": {
+    "C": [],
+    "D": [],
+    "E": [
+     "Dummit-Foote|exercise_1_1_2a",
+     "Herstein|exercise_5_3_7",
+     "Munkres|exercise_30_13",
+     "Pugh|exercise_2_57"
+    ]
+   },
+   "note": "A 341/341 by design; B 160 (same wiki-tool-choice pattern); C 0; D 0; E 4 \u2014 the suspected-casualty upper bound for the tooled Lean arms on eval-341 is E's 4 rows (1.2%) and D's 0."
+  }
+ },
+ "4_turn_budget_corrected": {
+  "basis": "POST-REPAIR run rows in bench/data/runs (E fresh_069..099 = 2026-07-27 rerun); turns from transcript_stats.turns, advisory budget = 30 (max_turns on every row)",
+  "overruns_per_arm": {
+   "A": 0,
+   "B": 0,
+   "C": 50,
+   "D": 38,
+   "E": 48
+  },
+  "E_overruns": {
+   "total": 48,
+   "of_31_rerun_rows": 16,
+   "of_69_original_rows": 32,
+   "rerun_overrun_task_ids": [
+    "fresh_070",
+    "fresh_072",
+    "fresh_074",
+    "fresh_075",
+    "fresh_078",
+    "fresh_079",
+    "fresh_080",
+    "fresh_081",
+    "fresh_082",
+    "fresh_084",
+    "fresh_085",
+    "fresh_087",
+    "fresh_088",
+    "fresh_089",
+    "fresh_097",
+    "fresh_098"
+   ]
+  },
+  "max_turns_observed_per_arm": {
+   "A": 1,
+   "B": 13,
+   "C": 80,
+   "D": 88,
+   "E": 72
+  },
+  "corrected_within_budget_counts": {
+   "A": 100,
+   "B": 100,
+   "C": 50,
+   "D": 62,
+   "E": 52
+  },
+  "old_S5_within_budget_counts_snapshot_basis": {
+   "A": 100,
+   "B": 100,
+   "C": 50,
+   "D": 62,
+   "E": 68,
+   "why_wrong": "E's 31 outage rows had turns=1 in the snapshot and were counted within-budget; post-repair, 16 of the 31 rerun rows overran, so E's true within-budget count is 52, not 68"
+  },
+  "both_within_budget_pairs_raw_instrument": {
+   "D_vs_E": {
+    "pair": "D_vs_E",
+    "n_paired": 35,
+    "both": 11,
+    "D_only": 7,
+    "E_only": 3,
+    "neither": 14,
+    "discordant": 10,
+    "p_exact_binomial_two_sided": 0.344,
+    "rd": 0.114286,
+    "rd_ci95_paired_wald": [
+     -0.058704,
+     0.287275
+    ],
+    "arm_rates": {
+     "D": {
+      "k": 18,
+      "n": 35,
+      "rate": 0.5143,
+      "wilson95": [
+       0.3557,
+       0.6701
+      ]
+     },
+     "E": {
+      "k": 14,
+      "n": 35,
+      "rate": 0.4,
+      "wilson95": [
+       0.2555,
+       0.5643
+      ]
+     }
+    }
+   },
+   "D_vs_C": {
+    "pair": "D_vs_C",
+    "n_paired": 35,
+    "both": 8,
+    "D_only": 11,
+    "C_only": 1,
+    "neither": 15,
+    "discordant": 12,
+    "p_exact_binomial_two_sided": 0.00635,
+    "rd": 0.285714,
+    "rd_ci95_paired_wald": [
+     0.116389,
+     0.455039
+    ],
+    "arm_rates": {
+     "D": {
+      "k": 19,
+      "n": 35,
+      "rate": 0.5429,
+      "wilson95": [
+       0.3819,
+       0.6953
+      ]
+     },
+     "C": {
+      "k": 9,
+      "n": 35,
+      "rate": 0.2571,
+      "wilson95": [
+       0.1416,
+       0.4207
+      ]
+     }
+    }
+   },
+   "D_vs_A": {
+    "pair": "D_vs_A",
+    "n_paired": 62,
+    "both": 10,
+    "D_only": 19,
+    "A_only": 6,
+    "neither": 27,
+    "discordant": 25,
+    "p_exact_binomial_two_sided": 0.0146,
+    "rd": 0.209677,
+    "rd_ci95_paired_wald": [
+     0.060481,
+     0.358873
+    ],
+    "arm_rates": {
+     "D": {
+      "k": 29,
+      "n": 62,
+      "rate": 0.4677,
+      "wilson95": [
+       0.3491,
+       0.5902
+      ]
+     },
+     "A": {
+      "k": 16,
+      "n": 62,
+      "rate": 0.2581,
+      "wilson95": [
+       0.1655,
+       0.3788
+      ]
+     }
+    }
+   }
+  }
+ },
+ "5_judge_layer1_five_arm": {
+  "caveat": "UNCALIBRATED LLM judge (claude-sonnet-5, blind); exploratory \u2014 same header caveat as judge_fresh_summary.json",
+  "evaluated_equivalence_five_arm_table": {
+   "A": {
+    "k": 17,
+    "n": 100,
+    "rate": 0.17,
+    "wilson95": [
+     0.1089,
+     0.2555
+    ]
+   },
+   "B": {
+    "k": 16,
+    "n": 100,
+    "rate": 0.16,
+    "wilson95": [
+     0.101,
+     0.2442
+    ]
+   },
+   "C": {
+    "k": 51,
+    "n": 100,
+    "rate": 0.51,
+    "wilson95": [
+     0.4135,
+     0.6058
+    ]
+   },
+   "D": {
+    "k": 19,
+    "n": 100,
+    "rate": 0.19,
+    "wilson95": [
+     0.1251,
+     0.2778
+    ]
+   },
+   "E": {
+    "k": 53,
+    "n": 100,
+    "rate": 0.53,
+    "wilson95": [
+     0.4329,
+     0.6249
+    ]
+   }
+  },
+  "for_4_2_table": {
+   "A": "17/100 = 17% [10.9%, 25.6%]",
+   "B": "16/100 = 16% [10.1%, 24.4%]",
+   "C": "51/100 = 51% [41.3%, 60.6%]",
+   "D": "19/100 = 19% [12.5%, 27.8%]",
+   "E": "53/100 = 53% [43.3%, 62.5%]"
+  },
+  "mcnemar_D_vs_A": {
+   "pair": "D_vs_A",
+   "n_paired": 100,
+   "both": 12,
+   "D_only": 7,
+   "A_only": 5,
+   "neither": 76,
+   "discordant": 12,
+   "p_exact_binomial_two_sided": 0.774,
+   "rd": 0.02,
+   "rd_ci95_paired_wald": [
+    -0.047782,
+    0.087782
+   ]
+  },
+  "mcnemar_D_vs_B": {
+   "pair": "D_vs_B",
+   "n_paired": 100,
+   "both": 11,
+   "D_only": 8,
+   "B_only": 5,
+   "neither": 76,
+   "discordant": 13,
+   "p_exact_binomial_two_sided": 0.581,
+   "rd": 0.03,
+   "rd_ci95_paired_wald": [
+    -0.040422,
+    0.100422
+   ]
+  }
+ },
+ "6_fresh_task_provenance": {
+  "task_fields": {
+   "always_present": [
+    "added_in",
+    "decl_name",
+    "det2",
+    "det2_reason",
+    "determinacy_reason",
+    "determinate",
+    "gold_context",
+    "gold_formal",
+    "gold_header",
+    "id",
+    "informal_statement",
+    "module",
+    "split"
+   ],
+   "optional": {
+    "gold_repairs": 41
+   },
+   "field_meanings": {
+    "id": "fresh_000..fresh_099",
+    "decl_name": "full dotted Mathlib name of the gold theorem",
+    "module": "Mathlib module (source file) of the gold",
+    "informal_statement": "natural-language statement the arms formalize (the ONLY task input shown to the subject model)",
+    "gold_formal": "exact Mathlib master statement, ends ':= sorry'",
+    "gold_header": "'import Mathlib' on every row",
+    "gold_context": "enclosing open/variable/universe lines in scope order (needed to elaborate gold)",
+    "added_in": "{commit, date} the gold merged into master",
+    "determinate/determinacy_reason": "annotator-1 determinacy verdict + reason",
+    "det2/det2_reason": "annotator-2 (independent, informal-only) verdict + reason",
+    "split": "'eval' on all 100 rows",
+    "gold_repairs": "41 rows: ['context-reextraction'] \u2014 gold contexts rebuilt in commit 185377cc after under-extraction (namespace scope dropped, multi-line variable blocks truncated)"
+   }
+  },
+  "informal_statement_origin": {
+   "process": "Identifier-stripped natural language derived from each gold declaration's Mathlib docstring by a Claude Opus 4.8 agent session (commit df5dbf92, 2026-07-16, trailer 'Co-Authored-By: Claude Opus 4.8'); candidates were pre-filtered to the 187 docstringed additions, so every NL statement is a paraphrase of an author-written docstring with Lean identifiers removed",
+   "construction_script_in_repo": false,
+   "plain_statement": "The construction script is ABSENT from the repo: commit df5dbf92 added only fresh_tasks.jsonl + fresh_tasks.stats.json (no generator was committed), so the docstring-to-NL step is documented by the commit message and stats file, not by re-runnable code. The stated known weakness applies: formula-lemma NL is inherently close to the Lean.",
+   "second_annotator": "det2 pass (commit a0d45103) judged from informal_statement alone, locked before reading golds/annotator 1; also a Claude Opus 4.8 agent session \u2014 determinacy is two-AI-annotator, not human"
+  },
+  "selection_criteria_recorded": {
+   "window": "theorem/lemma lines added to leanprover-community/mathlib4 upstream/master between the Brain snapshot (2026-07-03T01:56:29Z) and head 9944fe2973 (2026-07-16), 44 distinct commits",
+   "funnel": {
+    "raw_added_theorem_lemma_lines": 1326,
+    "candidates_with_docstring": 187,
+    "kept_tasks": 100
+   },
+   "held_out_guarantee": "every kept decl name is ABSENT from both the pinned decl universe (statement_formal.csv, 388105 decls) and the Brain nodes (brain/data/nodes.jsonl), and was added to Mathlib master strictly after the pin date.",
+   "held_out_pins": {
+    "decl_universe": "TheoremGraph statement_formal.csv, 388,105 decls, sha256 bf3266149cda603f",
+    "brain_nodes": "brain/data/nodes.jsonl (generated 2026-07-12)"
+   },
+   "drops": "bespoke-helper / unrecoverable-hypothesis decls dropped outright (per stats determinacy_note); docstringed self-contained statements kept",
+   "determinacy": {
+    "annotator1_determinate": 86,
+    "annotator2_determinate": 83,
+    "both_determinate_PRIMARY_set": 74,
+    "kappa": "~0.20 (complementary strictness: ann1 flags sibling near-duplicates, ann2 flags semantic underdetermination)"
+   },
+   "by_area_top5": {
+    "Analysis": 19,
+    "Topology": 16,
+    "MeasureTheory": 11,
+    "NumberTheory": 10,
+    "Algebra": 9
+   }
+  },
+  "gold_verification": "gold_formal ends `:= sorry` and is the exact Mathlib master statement. It uses standard Mathlib section-variable/open style, so it typechecks standalone only after prepending gold_context (the enclosing variable/open/universe lines, given in scope order) under gold_header; a superset header `import Mathlib` also works. Grading = BEq+/equivalence vs gold (typecheck is never success), per the design.",
+  "git_history_fresh_tasks_jsonl": [
+   "a0d45103 2026-07-17 bench: second determinacy annotator \u2014 primary Tier-1b set = 74 both-determinate",
+   "185377cc 2026-07-17 bench: fresh golds 100/100 + the one-true-construction fix",
+   "df5dbf92 2026-07-16 bench: fresh-decls set \u2014 100 held-out tasks, Tier 1b"
+  ]
+ }
+}
