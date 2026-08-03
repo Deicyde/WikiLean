@@ -1269,11 +1269,19 @@ const HALO_RIM_LABELS = 12;   // the largest sectors get rim labels
 function updateHaloToggle() {
   const el = $("#viewtoggle");
   if (!el) return;
+  // visible at the ROOT too — the halo is a top-level way to read the map, and
+  // hiding its only entry point inside the Frontier dive made it undiscoverable
   const show = !explorerOn && tree && tree.halo &&
-    (focusId === FRONTIER_ID || focusId === HALO_ID);
+    (focusId === ROOTS_ID || focusId === FRONTIER_ID || focusId === HALO_ID);
   el.style.display = show ? "flex" : "none";
   const a = $("#vt-areas"), h = $("#vt-halo");
-  if (a) a.classList.toggle("on", focusId === FRONTIER_ID);
+  if (a) {
+    a.classList.toggle("on", focusId === FRONTIER_ID);
+    a.textContent = focusId === ROOTS_ID ? "frontier" : "areas";
+    a.title = focusId === ROOTS_ID
+      ? "the frontier: concepts with no Lean formalization, grouped into areas"
+      : "frontier areas as bubbles";
+  }
   if (h) h.classList.toggle("on", focusId === HALO_ID);
 }
 function renderHalo(seq, anim) {
@@ -2705,7 +2713,10 @@ function rootsPanel() {
       <p class="note">Atoms with no Lean declaration have no module to nest in — nothing
       formalizes them yet. Each is filed under the library area its synapse neighborhood
       points at, tinted by how <i>stateable</i> it already is.
-      <a data-nav="${FRONTIER_ID}">Dive into the ${tree.frontier.length} areas</a>.</p></section>`;
+      <a data-nav="${FRONTIER_ID}">Dive into the ${tree.frontier.length} areas</a>${
+        tree.halo ? ` — or see the <a data-nav="${HALO_ID}">Mathlib halo</a>: every
+        frontier concept on concentric shells by hop distance to formal code` : ""
+      }.</p></section>`;
   else if (tree.unplaced.length)
     html += `<section class="kind"><h3>No formal home <span class="cnt">(${
       tree.unplaced.length.toLocaleString()})</span></h3>
