@@ -27,7 +27,7 @@ claim-by-claim inventory in
 | McNemar D-vs-E / D-vs-C + discordant tables | executed | main §4 | run on grounded typecheck, not the preregistered endpoint |
 | 10-min wall clock | executed | 600 s timeouts | — |
 | Pre-campaign API requirements 1–8 | executed | implemented before campaign | — |
-| 30-turn budget | **modified** | advisory only; overruns C 50/D 38/E 32, max 88 | budget uncontrolled; §S5 sensitivity |
+| 30-turn budget | **modified** | advisory only; overruns C 50/D 38/E 48 on the repaired rows (E 32 as-run — outage rows masked overruns), max 88 | budget uncontrolled; §S5 sensitivity |
 | Determinacy pre-screen (exclude) | **modified** | post-hoc dual annotation (79%, κ≈0.20); 74-task subset, none excluded | subset analysis, not screened population |
 | Arm-D production server | **modified** | production Worker code served locally over shipped shards | none material |
 | Single-shot elaboration grading | **modified** | persistent REPL, same pins | none material |
@@ -205,8 +205,11 @@ noise) · renamed 1.
 
 **Binary scores** (positive = hallucinated): strict precision 4/30 =
 **13.3%** [5.3, 29.7], recall 4/4 = 100% [51.0, 100]; lenient (noise
-rows excluded) precision 18.2% [7.3, 38.5]. The oracle's *exists*
-verdicts were 30/30 correct.
+rows excluded) precision 18.2% [7.3, 38.5]. None of the oracle's 30
+negative verdicts (25 *exists* + 5 *renamed*) was a missed fabrication
+(FN=0); read as verdicts rather than a pooled negative class, 24/25
+*exists* names denoted real declarations (one was extractor noise) and
+4 of the 5 *renamed* verdicts were in truth real names.
 
 **The four confirmed fabrications** (zero-hit at both revs), all from
 arms without formal tools: `FractionField` (A; real name
@@ -240,18 +243,69 @@ inference):
 
 Raw run-level McNemar: D-vs-E p=1.6e-4, D-vs-C p=6.9e-5 (run-level
 ratio 2.13×, not the citation-level 3.1×). Repaired: D-vs-E p=0.454,
-D-vs-C p=0.302, D-vs-A p=1.23e-7, D-vs-B p=3.9e-5, E-vs-C p=1.0. The
+D-vs-C p=0.302, D-vs-A p=1.23e-7, D-vs-B p=3.9e-5, E-vs-C p=1.0.
+Commit-clustered bootstrap versions of the significant contrasts
+(`v3_gate_fixes.json`): D-vs-A −0.310 [−0.446, −0.193] p=0.0002,
+E-vs-A −0.270 [−0.396, −0.155] p=0.0002; the null D-vs-E / D-vs-C stay
+null (clustered p=0.44 / 0.31). The
 R5 column is the citation-style artifact quantified: C/E write
 namespace-short names (65/71 reclassifications), D copies
 fully-qualified names out of tool payloads (10).
 
+**Held-out revalidation of the repaired classifier (seed 20260802).**
+The five rules were formulated after the 60-name audit unsealed, so
+59/60 is an in-sample fit. A second blinded pass
+(`bench/analysis/halluc_holdout.{py,json,md}`; blinded intermediates
+in `bench/analysis/holdout_blind/`) sampled **40 distinct
+cited names disjoint from the 60** (stratified per arm: 4
+raw-hallucinated, 3 raw-exists, 1 raw-renamed; shortfalls → exists)
+from the post-repair fresh rows, graded them blind under the same
+evidence protocol (raw `git grep` at `61a5e4f338`, cross-check
+`9944fe2973`, run outputs for self-declaration/variable resolution),
+and only then unsealed both instruments' verdicts. Truth labels:
+real 31 · nonexistent 3 · not_a_citation 5 · renamed 1.
+
+| metric (strict, n=40) | raw oracle | repaired classifier |
+|---|---|---|
+| flagged-class precision | 3/20 = 15.0% [5.2, 36.0] | 3/7 = 42.9% [15.8, 75.0] |
+| recall (true fabrications) | 3/3 = 100% | 3/3 = 100% |
+| accuracy | 57.5% | 90.0% |
+| binary agreement (the in-sample 59/60 measure) | 23/40 | **36/40 = 90.0%** [76.9, 96.0] |
+
+Sensitivity: reading the borderline `OrderedSemiring` (a class removed
+by the ordered-algebra refactor; labeled renamed on the
+Basis→Module.Basis precedent) as nonexistent gives repaired precision
+4/7 = 57.1%. The verdict: **directionally replicates** — the raw
+oracle's invalidity reproduces almost exactly (13.3%→15.0% precision),
+the repair transfers most of its value (FPs on sampled flags 17→4,
+accuracy 57.5%→90.0%, zero FNs for either instrument) — but the
+in-sample fit was optimistic (98.3%→90.0% binary agreement, Fisher
+p=0.15), and a repaired flag is roughly a coin toss, not a
+confirmation. The four residual FP modes are ones R1–R5 never saw:
+multi-segment namespace short names (`IsZero` ←
+`CategoryTheory.Limits.IsZero`), dot-notation on a namespaced def
+value (`MeasureTheory.volume.restrict`), a multi-char local variable
+(`M001`), and the removed-class borderline (`OrderedSemiring`).
+Implications: the adjusted per-arm rates likely overstate true
+hallucination by roughly 2× and should be read as **upper bounds**;
+two of the four residual FP modes are namespace-style-correlated (both
+held-out instances land in C/E-style short-name arms), so the residual
+bias still runs *against* the free-text tool arms and cannot
+manufacture D's advantage; and all three held-out confirmed
+fabrications (`Subgroup.torsion`, `Localization.map`,
+`Module.GeneralizedEigenspace`) sit in the no-formal-tools arms A/B,
+as in-sample.
+
 ## S4. Fresh-set exposure strata (full)
 
-Source: `bench/analysis/fresh_exposure.{py,json,md}`. Pinned tree
-`61a5e4f338` (content ~2026-07-10), the rev C/E's file tools read.
-Outcomes below are the **snapshot basis** (E's 429 rows count as
-failures; `E attempted-only` excludes them) on the **raw** instrument —
-this analysis predates the repair and is retained as measured.
+Source: `bench/analysis/fresh_exposure.{py,json,md}` (original,
+snapshot basis) recomputed on the post-repair rows by
+`bench/analysis/v3_gate_fixes.{py,json}` §1. Pinned tree `61a5e4f338`
+(content ~2026-07-10), the rev C/E's file tools read. Outcomes below
+are the **post-repair rows** (E's 31 outage rows replaced by their
+2026-07-27 reruns) on the **raw** instrument; the superseded
+snapshot-basis table (E's 429 rows counted as failures) is preserved
+in `fresh_exposure.md`.
 
 Exposure counts (of 100): full dotted name in-tree verbatim **37**;
 basename as a declaration header anywhere **64**; basename as header in
@@ -265,48 +319,62 @@ merge commits — measured on tree bytes, not merge metadata.)
 | B | 8/51 = 15.7% [8.2, 28.0] | 14/49 = 28.6% [17.8, 42.4] |
 | C | 11/51 = 21.6% [12.5, 34.6] | 14/49 = 28.6% [17.8, 42.4] |
 | D | 24/51 = 47.1% [34.1, 60.5] | 18/49 = 36.7% [24.7, 50.7] |
-| E | 12/51 = 23.5% [14.0, 36.8] | 4/49 = 8.2% [3.2, 19.2] |
-| E attempted-only | 12/44 = 27.3% [16.4, 41.9] | 4/25 = 16.0% [6.4, 34.6] |
+| E | 15/51 = 29.4% [18.7, 43.0] | 15/49 = 30.6% [19.5, 44.5] |
 
-McNemar by stratum: D-vs-E exposed 15/3 p=0.0075, unexposed 17/3
-p=0.0026; D-vs-C exposed 18/5 p=0.0106, unexposed 10/6 p=0.454. The
-leak's direction favors C/E, and D's edge over E is strongest exactly
-where there was nothing to leak; D-over-C, by contrast, concentrates in
-the exposed stratum and is a null unexposed. The merge-date split
-(before/after pin, n=49/51) reproduces the same pattern within a point
-(`fresh_exposure.md` §"Split by merge date"). The judge-endpoint
-exposure split is §S11.4.
+McNemar by stratum, post-repair: D-vs-E exposed 14/5 p=0.064,
+unexposed 11/8 p=0.648; D-vs-C exposed 18/5 p=0.0106, unexposed 10/6
+p=0.454. The leak's direction favors C/E. **A correction to earlier
+editions:** the snapshot-basis version of this table showed D's edge
+over E strongest in the *unexposed* stratum (17/3, p=0.0026), and v2
+concluded that D's advantage was "strongest exactly where there was
+nothing to leak." That pattern does not survive the E repair — 24 of
+E's 31 outage rows fell in the unexposed stratum, so the stratum
+contrast was outage-driven. On the repaired rows D-over-E, like
+D-over-C, is *larger in the exposed stratum* (RD +0.18 vs +0.06) and
+is a null unexposed; neither stratum is significant alone. The
+merge-date split reproduces the repaired pattern (before-pin 14/5
+p=0.064; after-pin 11/8 p=0.648), and the repaired-instrument
+sensitivity gives the same qualitative picture (D-vs-E exposed 15/8
+p=0.21; unexposed 13/9 p=0.52). The judge-endpoint exposure split is
+§S11.4.
 
 ## S5. Turn-budget sensitivity
 
-Source: `tier1_reanalysis.md` §5. Restricted to pairs where both arms
-stayed within the advisory 30 turns: D-vs-E n=45, 46.7% [32.9, 60.9] vs
-24.4% [14.2, 38.7], 16 discordant, p=0.021 — but that counts E's 429
-rows (turns=1) as within-budget failures; the completed-only version is
-underpowered (n=27, 44.4% [27.6, 62.7] vs 40.7% [24.5, 59.3], 7
-discordant, p=1.0). D-vs-C within budget: n=35, 54.3% [38.2, 69.5] vs
-25.7% [14.2, 42.1], 12 discordant, p=0.0063. D-vs-A: n=62, 46.8%
-[34.9, 59.0] vs 25.8% [16.6, 37.9], 25 discordant, p=0.0146. Consistent
-in direction; for D-vs-E, inconclusive once both restrictions apply.
-Per-arm within-budget run counts: A 100, B 100, C 50, D 62, E 68.
+Source: `tier1_reanalysis.md` §5, corrected to the post-repair rows by
+`v3_gate_fixes.py` §4. E overran the advisory 30-turn budget on
+**48/100** repaired rows — 16 of the 31 rerun rows plus 32 of the 69
+originals; the earlier as-run count of 32 treated E's 31 outage rows
+(turns=1) as within budget, which also inflated the old within-budget
+count (E 68) and the old n=45 pair analysis. Corrected per-arm
+within-budget run counts: A 100, B 100, C 50, D 62, E 52. Restricted
+to pairs where both arms stayed within the advisory 30 turns
+(raw instrument, post-repair rows): D-vs-E n=35, 51.4% vs 40.0%, 7/3
+discordant, p=0.34; D-vs-C n=35, 54.3% vs 25.7%, 11/1, p=0.0063;
+D-vs-A n=62, 46.8% vs 25.8%, 19/6, p=0.0146. Consistent in direction;
+for D-vs-E, inconclusive within budget.
 
 ## S6. Tool-call census, cost/latency, and figure 5
 
-**Tier-1 fresh trace attribution** (`bench/trace_analysis.py`,
-eval-split traces): 98–100% of traced tool-arm runs cite at least one
+**Tier-1 eval-split trace attribution** (`bench/trace_analysis.py`):
+98–100% of traced tool-arm runs cite at least one
 declaration that surfaced in a tool result; 35% of arm-D eval runs cite
 a declaration from a `brain_bridge`/`brain_transfer` result. Among
 *hallucinated* citations (raw oracle), the checked-and-cited-anyway
-rate is 35% (C), 30% (E), 13% (D).
+rate on eval rows is 35% (C), 30% (E), 13% (D); on the fresh split —
+the paper's primary evidence base — the same statistic is C 44%,
+D 34%, E 61%: verify-before-cite discipline transferred imperfectly to
+the held-out set, and worst in E.
 
-**v2 census, pooled QR+MPR** (figure: `figures/fig5_tooluse.pdf` in the
+**v2 census** (figure: `figures/fig5_tooluse.pdf` in the
 typeset build; the figure and the per-tool counts here are the as-run
 census — the race repair raises only F's means, since its 190 condemned
-rows had zero calls): W averages 3.5 calls/run (decl_exists 1,251 +
-brain_bridge 608 — verify-then-cite made mechanical); WF 4.6 in a
-genuine dual-toolkit mix (decl_grep ~1.5k, decl_exists ~0.9k,
-brain_bridge ~0.7k, decl_read ~0.5k, loogle ~0.4k); repaired F averages
-2.8 (QR) and 8.2 (MPR) calls/run. Under the manual, `brain_cell` misuse
+rows had zero calls; basis stated per clause): W averages 3.5 calls/run
+on QR-810 and 10.6 on MPR, ≈4.0 pooled (QR-810 counts: decl_exists
+1,251 + brain_bridge 608 — verify-then-cite made mechanical; pooled
+QR+MPR counts: decl_exists ~1,473 + brain_bridge ~727); WF 4.6 pooled
+QR+MPR in a genuine dual-toolkit mix (decl_grep ~1.5k, decl_exists
+~0.9k, brain_bridge ~0.7k, decl_read ~0.5k, loogle ~0.4k); repaired F
+averages 2.8 (QR) and 8.2 (MPR) calls/run. Under the manual, `brain_cell` misuse
 (63.3% failure over 482 W-arm calls) falls to a single call in WF.
 Same-eval-set caveat as the manual (§S8).
 
@@ -543,8 +611,11 @@ are preserved verbatim, not corrected.
 ## S9. SorryDB: full bookkeeping
 
 n=171 frozen tasks/arm across 10 repositories; all 203 candidate
-verdicts kernel-graded (commit `9682b3b1`; the 8 curve25519 stragglers
-verified as 0 proved).
+verdicts definitive — 183 kernel pass/fail plus 19 unspliceable and 1
+verify-timeout that never reached the kernel (commit `9682b3b1`; the 8
+curve25519 stragglers verified as 0 proved). `verify.jsonl` carries 2
+additional off-frozen N rows verdicted `env_broken` (205 lines total),
+correctly excluded from the 203.
 
 | | N no tools | F formal | WF union+manual (post-hoc) |
 |---|---|---|---|
@@ -643,6 +714,14 @@ p=0.00098 · E-vs-B 14/2 p=0.0042 · E-vs-C 6/5 p=1.0. The only
 classification change at α=.05 is D-vs-A ns → sig — a strengthening of
 tools-versus-none; every between-tool conjunction contrast stays null
 under both instruments.
+
+Commit-clustered bootstrap versions (44 clusters, B=10,000;
+`v3_gate_fixes.json`): evaluated equivalence D-vs-E −0.340
+[−0.462, −0.220] p=0.0002, E-vs-A +0.360 [+0.233, +0.469] p=0.0002;
+conjunction (repaired leg) D-vs-A +0.080 [+0.011, +0.152] p=0.037,
+E-vs-A +0.130 [+0.055, +0.226] p=0.0002, D-vs-E −0.050
+[−0.143, +0.021] p=0.247. No classification changes: everything
+significant unclustered survives clustering, and the nulls stay null.
 
 ### S11.3 Completed-69 continuity
 
@@ -745,6 +824,16 @@ reading and v1's error-inflated headline p=2.4e-5.
   repaired-leg judge conjunction; verified related work; cost
   columns; conflict/AI-use disclosures. Still open: human grading of
   the 36-task queue, judge calibration, the 2×2 factorial.
+- **v3 post-gate corrections (2026-08-03).** After an adversarial
+  verification gate: held-out blinded revalidation of the repaired
+  oracle (§S3; flags become upper bounds); §S4 exposure strata and §S5
+  turn budgets recomputed on the post-repair rows (the
+  "strongest-where-nothing-to-leak" claim retracted as outage-driven;
+  E overruns 48/100); commit-clustered bootstraps extended to every
+  significant §4.2/§4.3 contrast; Tier-1 attach audit; fresh-task
+  provenance paragraph; five-arm judge Layer 1; census bases
+  relabeled; assorted number and wording corrections (681, S6 fresh
+  rates, SorryDB verdict categories, anchor provenance).
 
 ## S14. Data availability and file map
 
@@ -784,6 +873,8 @@ routing fix ("honest labels").
 | `bench/analysis/bridge_summary_v2.json` | scored fresh-500 summary + repair provenance |
 | `bench/analysis/tier1_reanalysis.*`, `fresh_exposure.*`, `retrieval_clustered.*` | v2 corrective statistics |
 | `bench/analysis/fresh_clustered.*`, `halluc_validation.*` (+`halluc_blind/`), `success_repaired.*` | v3: clustered inference; blinded oracle validation; repaired-instrument recompute |
+| `bench/analysis/halluc_holdout.*` (+`holdout_blind/`) | held-out blinded revalidation of the repaired oracle (40 disjoint names, seed 20260802) |
+| `bench/analysis/v3_gate_fixes.{py,json,md}` | post-gate analyses: post-repair S4 strata, clustered §4.2/§4.3 bootstraps, Tier-1 attach audit, corrected turn budgets, five-arm judge table, fresh-task provenance |
 | `bench/analysis/judge_fresh_run.py`, `judge_fresh/`, `judge_fresh_summary.*` | blind judge pass (500 gradings + re-grade) |
 | `bench/analysis/conjunction_repaired.{py,json}` | judge conjunction under both typecheck instruments (deterministic) |
 | `bench/analysis/retrieval_repair.*`, `retrieval_provenance.*`, `brain_artifact.*` | v3: format repair; provenance decomposition (as-run trace pass); artifact characterization |
@@ -793,7 +884,9 @@ routing fix ("honest labels").
 
 **Recomputation entry points.** Tier-1 grading `bench/score_bridge.py`;
 repaired instrument `bench/analysis/halluc_validation.py` (`adjusted`)
-+ `success_repaired.py`; clustered inference `fresh_clustered.py`;
++ `success_repaired.py` + held-out revalidation `halluc_holdout.py`;
+post-gate analyses `v3_gate_fixes.py`; clustered inference
+`fresh_clustered.py`;
 exposure `fresh_exposure.py`; judge `judge_fresh_summary.py` +
 `conjunction_repaired.py`; retrieval
 `bench/v2/score_retrieval.py` + `retrieval_clustered.py` +

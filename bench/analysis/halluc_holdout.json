@@ -1,0 +1,1190 @@
+{
+ "protocol": "held-out blinded validation; truth labels graded from blinded_sample.json + evidence.json + targeted git greps at 61a5e4f338 (cross-check 9944fe2973) BEFORE sample_key.json was read",
+ "seed": 20260802,
+ "n_sample": 40,
+ "excluded_names": 53,
+ "truth_label_counts": {
+  "nonexistent": 3,
+  "not_a_citation": 5,
+  "real": 31,
+  "renamed": 1
+ },
+ "raw_oracle": {
+  "collapsed_agreement": "23/40",
+  "collapsed_agreement_rate": 0.575,
+  "agreement_wilson95": [
+   0.422,
+   0.7149
+  ],
+  "confusion_cells": {
+   "oracle=exists|truth=real": 20,
+   "oracle=hallucinated|truth=nonexistent": 3,
+   "oracle=hallucinated|truth=not_a_citation": 5,
+   "oracle=hallucinated|truth=real": 11,
+   "oracle=hallucinated|truth=renamed": 1
+  },
+  "disagreements": [
+   {
+    "i": 1,
+    "name": "Perm",
+    "arm": "D",
+    "task_id": "fresh_033",
+    "oracle": "hallucinated",
+    "repaired": "exists",
+    "truth": "real",
+    "note": "extracted from `l.Perm l'` with l l' : List \u03b1 (output list_find_perm_of_at_most_one) -> List.Perm, real (Data/List; 63 List.Perm.* decl heads at pin); bare short name standard under open List; extractor took the post-dot fragment"
+   },
+   {
+    "i": 3,
+    "name": "Mono",
+    "arm": "A",
+    "task_id": "fresh_029",
+    "oracle": "hallucinated",
+    "repaired": "exists",
+    "truth": "real",
+    "note": "namespaced: CategoryTheory.Mono (Category/Basic.lean:328); bare short name standard under open CategoryTheory (1150 bare usages at pin)"
+   },
+   {
+    "i": 5,
+    "name": "Rep.resFunctor.map_shortComplex_exact",
+    "arm": "D",
+    "task_id": "fresh_076",
+    "oracle": "hallucinated",
+    "repaired": "noise",
+    "truth": "not_a_citation",
+    "note": "agent's own theorem-name declaration (output heads `theorem Rep.resFunctor.map_shortComplex_exact`); zero hits at pin and typecheck rev; Rep.resFunctor itself is real"
+   },
+   {
+    "i": 6,
+    "name": "MvPowerSeries.ext_of_const_and_partialDeriv",
+    "arm": "A",
+    "task_id": "fresh_080",
+    "oracle": "hallucinated",
+    "repaired": "noise",
+    "truth": "not_a_citation",
+    "note": "agent's own theorem-name declaration (output heads `theorem MvPowerSeries.ext_of_const_and_partialDeriv`); zero hits at pin and typecheck rev"
+   },
+   {
+    "i": 8,
+    "name": "M.rank",
+    "arm": "C",
+    "task_id": "fresh_047",
+    "oracle": "hallucinated",
+    "repaired": "noise",
+    "truth": "real",
+    "note": "dot-notation on variable M : Matrix m m R (output square_matrix_rank_normal_form) -> Matrix.rank (Matrix/Rank.lean:133); token itself is not a global name (extractor artifact, kept as real since the cited decl exists, per in-sample M.det precedent)"
+   },
+   {
+    "i": 9,
+    "name": "M001",
+    "arm": "C",
+    "task_id": "fresh_028",
+    "oracle": "hallucinated",
+    "repaired": "hallucinated",
+    "truth": "not_a_citation",
+    "note": "local object variable in the output's commutative-cube theorem ({M000 M001 ... : C}); incidentally the same variable block appears verbatim in Mathlib CategoryTheory/EpiMono.lean:241"
+   },
+   {
+    "i": 12,
+    "name": "LSeries_eq_tsum",
+    "arm": "D",
+    "task_id": "fresh_061",
+    "oracle": "hallucinated",
+    "repaired": "noise",
+    "truth": "not_a_citation",
+    "note": "agent's own theorem-name declaration (output heads `theorem LSeries_eq_tsum`); the name has zero hits at pin and typecheck rev (LSeries itself is real)"
+   },
+   {
+    "i": 15,
+    "name": "IsZero",
+    "arm": "E",
+    "task_id": "fresh_078",
+    "oracle": "hallucinated",
+    "repaired": "hallucinated",
+    "truth": "real",
+    "note": "namespaced: CategoryTheory.Limits.IsZero (Limits/Shapes/ZeroObjects.lean:44); bare short name standard under open CategoryTheory.Limits; context is Ext/ModuleCat category theory"
+   },
+   {
+    "i": 20,
+    "name": "MeasureTheory.volume.restrict",
+    "arm": "B",
+    "task_id": "fresh_019",
+    "oracle": "hallucinated",
+    "repaired": "hallucinated",
+    "truth": "real",
+    "note": "dot-notation on a def value: MeasureTheory.volume (export MeasureSpace (volume), MeasureSpaceDef.lean:358) : Measure \u03b1, .restrict -> MeasureTheory.Measure.restrict (Restrict.lean:48); the full token is not a declaration name but the cited construct resolves to real API (M.det precedent)"
+   },
+   {
+    "i": 22,
+    "name": "OrderedSemiring",
+    "arm": "E",
+    "task_id": "fresh_005",
+    "oracle": "hallucinated",
+    "repaired": "hallucinated",
+    "truth": "renamed",
+    "note": "former Mathlib class removed by the ordered-algebra refactor: no class/def/abbrev/alias head at pin OR typecheck rev (only `section OrderedSemiring` headers + instances named OrderedSemiring.toPosSMulMonoNat gated on the replacement); verified current equivalent = Semiring + PartialOrder + IsOrderedRing (IsOrderedRing in index). BORDERLINE: replacement is a class decomposition, not a 1:1 rename; not in catalog rename map. Labeled renamed because the name was real Mathlib for years and has a documented equivalent (Basis->Module.Basis precedent); nonexistent-reading reported as sensitivity in the md"
+   },
+   {
+    "i": 25,
+    "name": "IsSemisimple",
+    "arm": "B",
+    "task_id": "fresh_045",
+    "oracle": "hallucinated",
+    "repaired": "exists",
+    "truth": "real",
+    "note": "namespaced: Module.End.IsSemisimple (LinearAlgebra/Semisimple.lean:61, namespace Module.End); context is f : Module.End K V; bare short name usable under open (also LieAlgebra.IsSemisimple exists)"
+   },
+   {
+    "i": 29,
+    "name": "I.inertiaDeg",
+    "arm": "E",
+    "task_id": "fresh_068",
+    "oracle": "hallucinated",
+    "repaired": "noise",
+    "truth": "real",
+    "note": "dot-notation on variable I : Ideal T (output inertia_degree_tower_multiplicative) -> Ideal.inertiaDeg (RingTheory/RamificationInertia/Inertia.lean:43, namespace Ideal); extractor artifact, cited decl exists"
+   },
+   {
+    "i": 30,
+    "name": "IsBoundedAtImInfty",
+    "arm": "C",
+    "task_id": "fresh_064",
+    "oracle": "hallucinated",
+    "repaired": "exists",
+    "truth": "real",
+    "note": "namespaced: UpperHalfPlane.IsBoundedAtImInfty (Analysis/Complex/UpperHalfPlane/FunctionsBoundedAtInfty.lean:46, namespace UpperHalfPlane); bare usage standard under open UpperHalfPlane (40 bare hits)"
+   },
+   {
+    "i": 35,
+    "name": "Mono",
+    "arm": "C",
+    "task_id": "fresh_029",
+    "oracle": "hallucinated",
+    "repaired": "exists",
+    "truth": "real",
+    "note": "same as i=3: CategoryTheory.Mono, bare standard under open CategoryTheory; context [Mono f11x] is category-theoretic"
+   },
+   {
+    "i": 36,
+    "name": "Mathlib.LinearAlgebra.Eigenspace.Basic",
+    "arm": "D",
+    "task_id": "fresh_045",
+    "oracle": "hallucinated",
+    "repaired": "noise",
+    "truth": "not_a_citation",
+    "note": "module name on an import line, not a declaration; module exists at pin (13 import hits)"
+   },
+   {
+    "i": 37,
+    "name": "I.IsMaximal",
+    "arm": "A",
+    "task_id": "fresh_068",
+    "oracle": "hallucinated",
+    "repaired": "noise",
+    "truth": "real",
+    "note": "dot-notation on variable I : Ideal T (output inertiaeDegree_mul) -> Ideal.IsMaximal (RingTheory/Ideal/Maximal.lean:47, class IsMaximal in namespace Ideal); extractor artifact, cited decl exists"
+   },
+   {
+    "i": 39,
+    "name": "InfinitePlace",
+    "arm": "E",
+    "task_id": "fresh_065",
+    "oracle": "hallucinated",
+    "repaired": "exists",
+    "truth": "real",
+    "note": "namespaced: NumberField.InfinitePlace (NumberTheory/NumberField/InfinitePlace/Basic.lean:57, namespace NumberField); bare short name standard under open NumberField"
+   }
+  ],
+  "strict_noise_as_FP": {
+   "n": 40,
+   "tp": 3,
+   "fp": 17,
+   "fn": 0,
+   "tn": 20,
+   "hallucinated_precision": 0.15,
+   "hallucinated_precision_wilson95": [
+    0.0524,
+    0.3604
+   ],
+   "hallucinated_recall": 1.0,
+   "real_precision": 1.0,
+   "real_recall": 0.5405,
+   "accuracy": 0.575,
+   "errors": [
+    {
+     "i": 1,
+     "name": "Perm",
+     "arm": "D",
+     "task_id": "fresh_033",
+     "oracle": "hallucinated",
+     "repaired": "exists",
+     "truth": "real",
+     "note": "extracted from `l.Perm l'` with l l' : List \u03b1 (output list_find_perm_of_at_most_one) -> List.Perm, real (Data/List; 63 List.Perm.* decl heads at pin); bare short name standard under open List; extractor took the post-dot fragment"
+    },
+    {
+     "i": 3,
+     "name": "Mono",
+     "arm": "A",
+     "task_id": "fresh_029",
+     "oracle": "hallucinated",
+     "repaired": "exists",
+     "truth": "real",
+     "note": "namespaced: CategoryTheory.Mono (Category/Basic.lean:328); bare short name standard under open CategoryTheory (1150 bare usages at pin)"
+    },
+    {
+     "i": 5,
+     "name": "Rep.resFunctor.map_shortComplex_exact",
+     "arm": "D",
+     "task_id": "fresh_076",
+     "oracle": "hallucinated",
+     "repaired": "noise",
+     "truth": "not_a_citation",
+     "note": "agent's own theorem-name declaration (output heads `theorem Rep.resFunctor.map_shortComplex_exact`); zero hits at pin and typecheck rev; Rep.resFunctor itself is real"
+    },
+    {
+     "i": 6,
+     "name": "MvPowerSeries.ext_of_const_and_partialDeriv",
+     "arm": "A",
+     "task_id": "fresh_080",
+     "oracle": "hallucinated",
+     "repaired": "noise",
+     "truth": "not_a_citation",
+     "note": "agent's own theorem-name declaration (output heads `theorem MvPowerSeries.ext_of_const_and_partialDeriv`); zero hits at pin and typecheck rev"
+    },
+    {
+     "i": 8,
+     "name": "M.rank",
+     "arm": "C",
+     "task_id": "fresh_047",
+     "oracle": "hallucinated",
+     "repaired": "noise",
+     "truth": "real",
+     "note": "dot-notation on variable M : Matrix m m R (output square_matrix_rank_normal_form) -> Matrix.rank (Matrix/Rank.lean:133); token itself is not a global name (extractor artifact, kept as real since the cited decl exists, per in-sample M.det precedent)"
+    },
+    {
+     "i": 9,
+     "name": "M001",
+     "arm": "C",
+     "task_id": "fresh_028",
+     "oracle": "hallucinated",
+     "repaired": "hallucinated",
+     "truth": "not_a_citation",
+     "note": "local object variable in the output's commutative-cube theorem ({M000 M001 ... : C}); incidentally the same variable block appears verbatim in Mathlib CategoryTheory/EpiMono.lean:241"
+    },
+    {
+     "i": 12,
+     "name": "LSeries_eq_tsum",
+     "arm": "D",
+     "task_id": "fresh_061",
+     "oracle": "hallucinated",
+     "repaired": "noise",
+     "truth": "not_a_citation",
+     "note": "agent's own theorem-name declaration (output heads `theorem LSeries_eq_tsum`); the name has zero hits at pin and typecheck rev (LSeries itself is real)"
+    },
+    {
+     "i": 15,
+     "name": "IsZero",
+     "arm": "E",
+     "task_id": "fresh_078",
+     "oracle": "hallucinated",
+     "repaired": "hallucinated",
+     "truth": "real",
+     "note": "namespaced: CategoryTheory.Limits.IsZero (Limits/Shapes/ZeroObjects.lean:44); bare short name standard under open CategoryTheory.Limits; context is Ext/ModuleCat category theory"
+    },
+    {
+     "i": 20,
+     "name": "MeasureTheory.volume.restrict",
+     "arm": "B",
+     "task_id": "fresh_019",
+     "oracle": "hallucinated",
+     "repaired": "hallucinated",
+     "truth": "real",
+     "note": "dot-notation on a def value: MeasureTheory.volume (export MeasureSpace (volume), MeasureSpaceDef.lean:358) : Measure \u03b1, .restrict -> MeasureTheory.Measure.restrict (Restrict.lean:48); the full token is not a declaration name but the cited construct resolves to real API (M.det precedent)"
+    },
+    {
+     "i": 22,
+     "name": "OrderedSemiring",
+     "arm": "E",
+     "task_id": "fresh_005",
+     "oracle": "hallucinated",
+     "repaired": "hallucinated",
+     "truth": "renamed",
+     "note": "former Mathlib class removed by the ordered-algebra refactor: no class/def/abbrev/alias head at pin OR typecheck rev (only `section OrderedSemiring` headers + instances named OrderedSemiring.toPosSMulMonoNat gated on the replacement); verified current equivalent = Semiring + PartialOrder + IsOrderedRing (IsOrderedRing in index). BORDERLINE: replacement is a class decomposition, not a 1:1 rename; not in catalog rename map. Labeled renamed because the name was real Mathlib for years and has a documented equivalent (Basis->Module.Basis precedent); nonexistent-reading reported as sensitivity in the md"
+    },
+    {
+     "i": 25,
+     "name": "IsSemisimple",
+     "arm": "B",
+     "task_id": "fresh_045",
+     "oracle": "hallucinated",
+     "repaired": "exists",
+     "truth": "real",
+     "note": "namespaced: Module.End.IsSemisimple (LinearAlgebra/Semisimple.lean:61, namespace Module.End); context is f : Module.End K V; bare short name usable under open (also LieAlgebra.IsSemisimple exists)"
+    },
+    {
+     "i": 29,
+     "name": "I.inertiaDeg",
+     "arm": "E",
+     "task_id": "fresh_068",
+     "oracle": "hallucinated",
+     "repaired": "noise",
+     "truth": "real",
+     "note": "dot-notation on variable I : Ideal T (output inertia_degree_tower_multiplicative) -> Ideal.inertiaDeg (RingTheory/RamificationInertia/Inertia.lean:43, namespace Ideal); extractor artifact, cited decl exists"
+    },
+    {
+     "i": 30,
+     "name": "IsBoundedAtImInfty",
+     "arm": "C",
+     "task_id": "fresh_064",
+     "oracle": "hallucinated",
+     "repaired": "exists",
+     "truth": "real",
+     "note": "namespaced: UpperHalfPlane.IsBoundedAtImInfty (Analysis/Complex/UpperHalfPlane/FunctionsBoundedAtInfty.lean:46, namespace UpperHalfPlane); bare usage standard under open UpperHalfPlane (40 bare hits)"
+    },
+    {
+     "i": 35,
+     "name": "Mono",
+     "arm": "C",
+     "task_id": "fresh_029",
+     "oracle": "hallucinated",
+     "repaired": "exists",
+     "truth": "real",
+     "note": "same as i=3: CategoryTheory.Mono, bare standard under open CategoryTheory; context [Mono f11x] is category-theoretic"
+    },
+    {
+     "i": 36,
+     "name": "Mathlib.LinearAlgebra.Eigenspace.Basic",
+     "arm": "D",
+     "task_id": "fresh_045",
+     "oracle": "hallucinated",
+     "repaired": "noise",
+     "truth": "not_a_citation",
+     "note": "module name on an import line, not a declaration; module exists at pin (13 import hits)"
+    },
+    {
+     "i": 37,
+     "name": "I.IsMaximal",
+     "arm": "A",
+     "task_id": "fresh_068",
+     "oracle": "hallucinated",
+     "repaired": "noise",
+     "truth": "real",
+     "note": "dot-notation on variable I : Ideal T (output inertiaeDegree_mul) -> Ideal.IsMaximal (RingTheory/Ideal/Maximal.lean:47, class IsMaximal in namespace Ideal); extractor artifact, cited decl exists"
+    },
+    {
+     "i": 39,
+     "name": "InfinitePlace",
+     "arm": "E",
+     "task_id": "fresh_065",
+     "oracle": "hallucinated",
+     "repaired": "exists",
+     "truth": "real",
+     "note": "namespaced: NumberField.InfinitePlace (NumberTheory/NumberField/InfinitePlace/Basic.lean:57, namespace NumberField); bare short name standard under open NumberField"
+    }
+   ]
+  },
+  "lenient_noise_excluded": {
+   "n": 35,
+   "tp": 3,
+   "fp": 12,
+   "fn": 0,
+   "tn": 20,
+   "hallucinated_precision": 0.2,
+   "hallucinated_precision_wilson95": [
+    0.0705,
+    0.4519
+   ],
+   "hallucinated_recall": 1.0,
+   "real_precision": 1.0,
+   "real_recall": 0.625,
+   "accuracy": 0.6571,
+   "errors": [
+    {
+     "i": 1,
+     "name": "Perm",
+     "arm": "D",
+     "task_id": "fresh_033",
+     "oracle": "hallucinated",
+     "repaired": "exists",
+     "truth": "real",
+     "note": "extracted from `l.Perm l'` with l l' : List \u03b1 (output list_find_perm_of_at_most_one) -> List.Perm, real (Data/List; 63 List.Perm.* decl heads at pin); bare short name standard under open List; extractor took the post-dot fragment"
+    },
+    {
+     "i": 3,
+     "name": "Mono",
+     "arm": "A",
+     "task_id": "fresh_029",
+     "oracle": "hallucinated",
+     "repaired": "exists",
+     "truth": "real",
+     "note": "namespaced: CategoryTheory.Mono (Category/Basic.lean:328); bare short name standard under open CategoryTheory (1150 bare usages at pin)"
+    },
+    {
+     "i": 8,
+     "name": "M.rank",
+     "arm": "C",
+     "task_id": "fresh_047",
+     "oracle": "hallucinated",
+     "repaired": "noise",
+     "truth": "real",
+     "note": "dot-notation on variable M : Matrix m m R (output square_matrix_rank_normal_form) -> Matrix.rank (Matrix/Rank.lean:133); token itself is not a global name (extractor artifact, kept as real since the cited decl exists, per in-sample M.det precedent)"
+    },
+    {
+     "i": 15,
+     "name": "IsZero",
+     "arm": "E",
+     "task_id": "fresh_078",
+     "oracle": "hallucinated",
+     "repaired": "hallucinated",
+     "truth": "real",
+     "note": "namespaced: CategoryTheory.Limits.IsZero (Limits/Shapes/ZeroObjects.lean:44); bare short name standard under open CategoryTheory.Limits; context is Ext/ModuleCat category theory"
+    },
+    {
+     "i": 20,
+     "name": "MeasureTheory.volume.restrict",
+     "arm": "B",
+     "task_id": "fresh_019",
+     "oracle": "hallucinated",
+     "repaired": "hallucinated",
+     "truth": "real",
+     "note": "dot-notation on a def value: MeasureTheory.volume (export MeasureSpace (volume), MeasureSpaceDef.lean:358) : Measure \u03b1, .restrict -> MeasureTheory.Measure.restrict (Restrict.lean:48); the full token is not a declaration name but the cited construct resolves to real API (M.det precedent)"
+    },
+    {
+     "i": 22,
+     "name": "OrderedSemiring",
+     "arm": "E",
+     "task_id": "fresh_005",
+     "oracle": "hallucinated",
+     "repaired": "hallucinated",
+     "truth": "renamed",
+     "note": "former Mathlib class removed by the ordered-algebra refactor: no class/def/abbrev/alias head at pin OR typecheck rev (only `section OrderedSemiring` headers + instances named OrderedSemiring.toPosSMulMonoNat gated on the replacement); verified current equivalent = Semiring + PartialOrder + IsOrderedRing (IsOrderedRing in index). BORDERLINE: replacement is a class decomposition, not a 1:1 rename; not in catalog rename map. Labeled renamed because the name was real Mathlib for years and has a documented equivalent (Basis->Module.Basis precedent); nonexistent-reading reported as sensitivity in the md"
+    },
+    {
+     "i": 25,
+     "name": "IsSemisimple",
+     "arm": "B",
+     "task_id": "fresh_045",
+     "oracle": "hallucinated",
+     "repaired": "exists",
+     "truth": "real",
+     "note": "namespaced: Module.End.IsSemisimple (LinearAlgebra/Semisimple.lean:61, namespace Module.End); context is f : Module.End K V; bare short name usable under open (also LieAlgebra.IsSemisimple exists)"
+    },
+    {
+     "i": 29,
+     "name": "I.inertiaDeg",
+     "arm": "E",
+     "task_id": "fresh_068",
+     "oracle": "hallucinated",
+     "repaired": "noise",
+     "truth": "real",
+     "note": "dot-notation on variable I : Ideal T (output inertia_degree_tower_multiplicative) -> Ideal.inertiaDeg (RingTheory/RamificationInertia/Inertia.lean:43, namespace Ideal); extractor artifact, cited decl exists"
+    },
+    {
+     "i": 30,
+     "name": "IsBoundedAtImInfty",
+     "arm": "C",
+     "task_id": "fresh_064",
+     "oracle": "hallucinated",
+     "repaired": "exists",
+     "truth": "real",
+     "note": "namespaced: UpperHalfPlane.IsBoundedAtImInfty (Analysis/Complex/UpperHalfPlane/FunctionsBoundedAtInfty.lean:46, namespace UpperHalfPlane); bare usage standard under open UpperHalfPlane (40 bare hits)"
+    },
+    {
+     "i": 35,
+     "name": "Mono",
+     "arm": "C",
+     "task_id": "fresh_029",
+     "oracle": "hallucinated",
+     "repaired": "exists",
+     "truth": "real",
+     "note": "same as i=3: CategoryTheory.Mono, bare standard under open CategoryTheory; context [Mono f11x] is category-theoretic"
+    },
+    {
+     "i": 37,
+     "name": "I.IsMaximal",
+     "arm": "A",
+     "task_id": "fresh_068",
+     "oracle": "hallucinated",
+     "repaired": "noise",
+     "truth": "real",
+     "note": "dot-notation on variable I : Ideal T (output inertiaeDegree_mul) -> Ideal.IsMaximal (RingTheory/Ideal/Maximal.lean:47, class IsMaximal in namespace Ideal); extractor artifact, cited decl exists"
+    },
+    {
+     "i": 39,
+     "name": "InfinitePlace",
+     "arm": "E",
+     "task_id": "fresh_065",
+     "oracle": "hallucinated",
+     "repaired": "exists",
+     "truth": "real",
+     "note": "namespaced: NumberField.InfinitePlace (NumberTheory/NumberField/InfinitePlace/Basic.lean:57, namespace NumberField); bare short name standard under open NumberField"
+    }
+   ]
+  }
+ },
+ "repaired_classifier": {
+  "collapsed_agreement": "33/40",
+  "collapsed_agreement_rate": 0.825,
+  "agreement_wilson95": [
+   0.6805,
+   0.9125
+  ],
+  "confusion_cells": {
+   "repaired=exists|truth=real": 26,
+   "repaired=hallucinated|truth=nonexistent": 3,
+   "repaired=hallucinated|truth=not_a_citation": 1,
+   "repaired=hallucinated|truth=real": 2,
+   "repaired=hallucinated|truth=renamed": 1,
+   "repaired=noise|truth=not_a_citation": 4,
+   "repaired=noise|truth=real": 3
+  },
+  "disagreements": [
+   {
+    "i": 8,
+    "name": "M.rank",
+    "arm": "C",
+    "task_id": "fresh_047",
+    "oracle": "hallucinated",
+    "repaired": "noise",
+    "truth": "real",
+    "note": "dot-notation on variable M : Matrix m m R (output square_matrix_rank_normal_form) -> Matrix.rank (Matrix/Rank.lean:133); token itself is not a global name (extractor artifact, kept as real since the cited decl exists, per in-sample M.det precedent)"
+   },
+   {
+    "i": 9,
+    "name": "M001",
+    "arm": "C",
+    "task_id": "fresh_028",
+    "oracle": "hallucinated",
+    "repaired": "hallucinated",
+    "truth": "not_a_citation",
+    "note": "local object variable in the output's commutative-cube theorem ({M000 M001 ... : C}); incidentally the same variable block appears verbatim in Mathlib CategoryTheory/EpiMono.lean:241"
+   },
+   {
+    "i": 15,
+    "name": "IsZero",
+    "arm": "E",
+    "task_id": "fresh_078",
+    "oracle": "hallucinated",
+    "repaired": "hallucinated",
+    "truth": "real",
+    "note": "namespaced: CategoryTheory.Limits.IsZero (Limits/Shapes/ZeroObjects.lean:44); bare short name standard under open CategoryTheory.Limits; context is Ext/ModuleCat category theory"
+   },
+   {
+    "i": 20,
+    "name": "MeasureTheory.volume.restrict",
+    "arm": "B",
+    "task_id": "fresh_019",
+    "oracle": "hallucinated",
+    "repaired": "hallucinated",
+    "truth": "real",
+    "note": "dot-notation on a def value: MeasureTheory.volume (export MeasureSpace (volume), MeasureSpaceDef.lean:358) : Measure \u03b1, .restrict -> MeasureTheory.Measure.restrict (Restrict.lean:48); the full token is not a declaration name but the cited construct resolves to real API (M.det precedent)"
+   },
+   {
+    "i": 22,
+    "name": "OrderedSemiring",
+    "arm": "E",
+    "task_id": "fresh_005",
+    "oracle": "hallucinated",
+    "repaired": "hallucinated",
+    "truth": "renamed",
+    "note": "former Mathlib class removed by the ordered-algebra refactor: no class/def/abbrev/alias head at pin OR typecheck rev (only `section OrderedSemiring` headers + instances named OrderedSemiring.toPosSMulMonoNat gated on the replacement); verified current equivalent = Semiring + PartialOrder + IsOrderedRing (IsOrderedRing in index). BORDERLINE: replacement is a class decomposition, not a 1:1 rename; not in catalog rename map. Labeled renamed because the name was real Mathlib for years and has a documented equivalent (Basis->Module.Basis precedent); nonexistent-reading reported as sensitivity in the md"
+   },
+   {
+    "i": 29,
+    "name": "I.inertiaDeg",
+    "arm": "E",
+    "task_id": "fresh_068",
+    "oracle": "hallucinated",
+    "repaired": "noise",
+    "truth": "real",
+    "note": "dot-notation on variable I : Ideal T (output inertia_degree_tower_multiplicative) -> Ideal.inertiaDeg (RingTheory/RamificationInertia/Inertia.lean:43, namespace Ideal); extractor artifact, cited decl exists"
+   },
+   {
+    "i": 37,
+    "name": "I.IsMaximal",
+    "arm": "A",
+    "task_id": "fresh_068",
+    "oracle": "hallucinated",
+    "repaired": "noise",
+    "truth": "real",
+    "note": "dot-notation on variable I : Ideal T (output inertiaeDegree_mul) -> Ideal.IsMaximal (RingTheory/Ideal/Maximal.lean:47, class IsMaximal in namespace Ideal); extractor artifact, cited decl exists"
+   }
+  ],
+  "strict_noise_as_FP": {
+   "n": 40,
+   "tp": 3,
+   "fp": 4,
+   "fn": 0,
+   "tn": 33,
+   "hallucinated_precision": 0.4286,
+   "hallucinated_precision_wilson95": [
+    0.1582,
+    0.7495
+   ],
+   "hallucinated_recall": 1.0,
+   "real_precision": 1.0,
+   "real_recall": 0.8919,
+   "accuracy": 0.9,
+   "errors": [
+    {
+     "i": 9,
+     "name": "M001",
+     "arm": "C",
+     "task_id": "fresh_028",
+     "oracle": "hallucinated",
+     "repaired": "hallucinated",
+     "truth": "not_a_citation",
+     "note": "local object variable in the output's commutative-cube theorem ({M000 M001 ... : C}); incidentally the same variable block appears verbatim in Mathlib CategoryTheory/EpiMono.lean:241"
+    },
+    {
+     "i": 15,
+     "name": "IsZero",
+     "arm": "E",
+     "task_id": "fresh_078",
+     "oracle": "hallucinated",
+     "repaired": "hallucinated",
+     "truth": "real",
+     "note": "namespaced: CategoryTheory.Limits.IsZero (Limits/Shapes/ZeroObjects.lean:44); bare short name standard under open CategoryTheory.Limits; context is Ext/ModuleCat category theory"
+    },
+    {
+     "i": 20,
+     "name": "MeasureTheory.volume.restrict",
+     "arm": "B",
+     "task_id": "fresh_019",
+     "oracle": "hallucinated",
+     "repaired": "hallucinated",
+     "truth": "real",
+     "note": "dot-notation on a def value: MeasureTheory.volume (export MeasureSpace (volume), MeasureSpaceDef.lean:358) : Measure \u03b1, .restrict -> MeasureTheory.Measure.restrict (Restrict.lean:48); the full token is not a declaration name but the cited construct resolves to real API (M.det precedent)"
+    },
+    {
+     "i": 22,
+     "name": "OrderedSemiring",
+     "arm": "E",
+     "task_id": "fresh_005",
+     "oracle": "hallucinated",
+     "repaired": "hallucinated",
+     "truth": "renamed",
+     "note": "former Mathlib class removed by the ordered-algebra refactor: no class/def/abbrev/alias head at pin OR typecheck rev (only `section OrderedSemiring` headers + instances named OrderedSemiring.toPosSMulMonoNat gated on the replacement); verified current equivalent = Semiring + PartialOrder + IsOrderedRing (IsOrderedRing in index). BORDERLINE: replacement is a class decomposition, not a 1:1 rename; not in catalog rename map. Labeled renamed because the name was real Mathlib for years and has a documented equivalent (Basis->Module.Basis precedent); nonexistent-reading reported as sensitivity in the md"
+    }
+   ]
+  },
+  "lenient_noise_excluded": {
+   "n": 35,
+   "tp": 3,
+   "fp": 3,
+   "fn": 0,
+   "tn": 29,
+   "hallucinated_precision": 0.5,
+   "hallucinated_precision_wilson95": [
+    0.1876,
+    0.8124
+   ],
+   "hallucinated_recall": 1.0,
+   "real_precision": 1.0,
+   "real_recall": 0.9062,
+   "accuracy": 0.9143,
+   "errors": [
+    {
+     "i": 15,
+     "name": "IsZero",
+     "arm": "E",
+     "task_id": "fresh_078",
+     "oracle": "hallucinated",
+     "repaired": "hallucinated",
+     "truth": "real",
+     "note": "namespaced: CategoryTheory.Limits.IsZero (Limits/Shapes/ZeroObjects.lean:44); bare short name standard under open CategoryTheory.Limits; context is Ext/ModuleCat category theory"
+    },
+    {
+     "i": 20,
+     "name": "MeasureTheory.volume.restrict",
+     "arm": "B",
+     "task_id": "fresh_019",
+     "oracle": "hallucinated",
+     "repaired": "hallucinated",
+     "truth": "real",
+     "note": "dot-notation on a def value: MeasureTheory.volume (export MeasureSpace (volume), MeasureSpaceDef.lean:358) : Measure \u03b1, .restrict -> MeasureTheory.Measure.restrict (Restrict.lean:48); the full token is not a declaration name but the cited construct resolves to real API (M.det precedent)"
+    },
+    {
+     "i": 22,
+     "name": "OrderedSemiring",
+     "arm": "E",
+     "task_id": "fresh_005",
+     "oracle": "hallucinated",
+     "repaired": "hallucinated",
+     "truth": "renamed",
+     "note": "former Mathlib class removed by the ordered-algebra refactor: no class/def/abbrev/alias head at pin OR typecheck rev (only `section OrderedSemiring` headers + instances named OrderedSemiring.toPosSMulMonoNat gated on the replacement); verified current equivalent = Semiring + PartialOrder + IsOrderedRing (IsOrderedRing in index). BORDERLINE: replacement is a class decomposition, not a 1:1 rename; not in catalog rename map. Labeled renamed because the name was real Mathlib for years and has a documented equivalent (Basis->Module.Basis precedent); nonexistent-reading reported as sensitivity in the md"
+    }
+   ]
+  }
+ },
+ "in_sample_reference": {
+  "note": "seed-20260801 sample the rules were DERIVED from (halluc_validation.md)",
+  "repaired_agreement": "59/60",
+  "raw_strict_precision": "4/30 = 13.3%",
+  "raw_strict_accuracy": 0.567
+ },
+ "all_rows": [
+  {
+   "i": 0,
+   "name": "NontriviallyNormedField",
+   "arm": "E",
+   "task_id": "fresh_010",
+   "oracle": "exists",
+   "repaired": "exists",
+   "truth": "real",
+   "note": "root class, Analysis/Normed/Field/Basic.lean:166"
+  },
+  {
+   "i": 1,
+   "name": "Perm",
+   "arm": "D",
+   "task_id": "fresh_033",
+   "oracle": "hallucinated",
+   "repaired": "exists",
+   "truth": "real",
+   "note": "extracted from `l.Perm l'` with l l' : List \u03b1 (output list_find_perm_of_at_most_one) -> List.Perm, real (Data/List; 63 List.Perm.* decl heads at pin); bare short name standard under open List; extractor took the post-dot fragment"
+  },
+  {
+   "i": 2,
+   "name": "Subgroup.torsion",
+   "arm": "B",
+   "task_id": "fresh_039",
+   "oracle": "hallucinated",
+   "repaired": "hallucinated",
+   "truth": "nonexistent",
+   "note": "the torsion subgroup is CommGroup.torsion (GroupTheory/Torsion.lean:307, def torsion inside namespace CommGroup at :303); zero whole-word Subgroup.torsion hits at pin AND typecheck rev; no def torsion in namespace Subgroup"
+  },
+  {
+   "i": 3,
+   "name": "Mono",
+   "arm": "A",
+   "task_id": "fresh_029",
+   "oracle": "hallucinated",
+   "repaired": "exists",
+   "truth": "real",
+   "note": "namespaced: CategoryTheory.Mono (Category/Basic.lean:328); bare short name standard under open CategoryTheory (1150 bare usages at pin)"
+  },
+  {
+   "i": 4,
+   "name": "List",
+   "arm": "A",
+   "task_id": "fresh_032",
+   "oracle": "exists",
+   "repaired": "exists",
+   "truth": "real",
+   "note": "Lean-core inductive type List; 7688 whole-word usages in Mathlib at pin"
+  },
+  {
+   "i": 5,
+   "name": "Rep.resFunctor.map_shortComplex_exact",
+   "arm": "D",
+   "task_id": "fresh_076",
+   "oracle": "hallucinated",
+   "repaired": "noise",
+   "truth": "not_a_citation",
+   "note": "agent's own theorem-name declaration (output heads `theorem Rep.resFunctor.map_shortComplex_exact`); zero hits at pin and typecheck rev; Rep.resFunctor itself is real"
+  },
+  {
+   "i": 6,
+   "name": "MvPowerSeries.ext_of_const_and_partialDeriv",
+   "arm": "A",
+   "task_id": "fresh_080",
+   "oracle": "hallucinated",
+   "repaired": "noise",
+   "truth": "not_a_citation",
+   "note": "agent's own theorem-name declaration (output heads `theorem MvPowerSeries.ext_of_const_and_partialDeriv`); zero hits at pin and typecheck rev"
+  },
+  {
+   "i": 7,
+   "name": "IsLeast",
+   "arm": "B",
+   "task_id": "fresh_092",
+   "oracle": "exists",
+   "repaired": "exists",
+   "truth": "real",
+   "note": "root def, Order/Bounds/Defs.lean:45"
+  },
+  {
+   "i": 8,
+   "name": "M.rank",
+   "arm": "C",
+   "task_id": "fresh_047",
+   "oracle": "hallucinated",
+   "repaired": "noise",
+   "truth": "real",
+   "note": "dot-notation on variable M : Matrix m m R (output square_matrix_rank_normal_form) -> Matrix.rank (Matrix/Rank.lean:133); token itself is not a global name (extractor artifact, kept as real since the cited decl exists, per in-sample M.det precedent)"
+  },
+  {
+   "i": 9,
+   "name": "M001",
+   "arm": "C",
+   "task_id": "fresh_028",
+   "oracle": "hallucinated",
+   "repaired": "hallucinated",
+   "truth": "not_a_citation",
+   "note": "local object variable in the output's commutative-cube theorem ({M000 M001 ... : C}); incidentally the same variable block appears verbatim in Mathlib CategoryTheory/EpiMono.lean:241"
+  },
+  {
+   "i": 10,
+   "name": "ContinuousAt",
+   "arm": "E",
+   "task_id": "fresh_035",
+   "oracle": "exists",
+   "repaired": "exists",
+   "truth": "real",
+   "note": "root def, Topology/Defs/Filter.lean:179"
+  },
+  {
+   "i": 11,
+   "name": "Bool",
+   "arm": "D",
+   "task_id": "fresh_032",
+   "oracle": "exists",
+   "repaired": "exists",
+   "truth": "real",
+   "note": "Lean-core inductive type Bool; 1481 whole-word usages at pin"
+  },
+  {
+   "i": 12,
+   "name": "LSeries_eq_tsum",
+   "arm": "D",
+   "task_id": "fresh_061",
+   "oracle": "hallucinated",
+   "repaired": "noise",
+   "truth": "not_a_citation",
+   "note": "agent's own theorem-name declaration (output heads `theorem LSeries_eq_tsum`); the name has zero hits at pin and typecheck rev (LSeries itself is real)"
+  },
+  {
+   "i": 13,
+   "name": "Module.Flat",
+   "arm": "B",
+   "task_id": "fresh_079",
+   "oracle": "exists",
+   "repaired": "exists",
+   "truth": "real",
+   "note": "class Flat in namespace Module (RingTheory/Flat/Basic.lean); 316 whole-word Module.Flat usages at pin incl. Module.Flat.* lemma heads"
+  },
+  {
+   "i": 14,
+   "name": "Matrix.rank",
+   "arm": "A",
+   "task_id": "fresh_047",
+   "oracle": "exists",
+   "repaired": "exists",
+   "truth": "real",
+   "note": "def rank in namespace Matrix, Matrix/Rank.lean:133; full dotted name used in mathlib source (Rank.lean:344)"
+  },
+  {
+   "i": 15,
+   "name": "IsZero",
+   "arm": "E",
+   "task_id": "fresh_078",
+   "oracle": "hallucinated",
+   "repaired": "hallucinated",
+   "truth": "real",
+   "note": "namespaced: CategoryTheory.Limits.IsZero (Limits/Shapes/ZeroObjects.lean:44); bare short name standard under open CategoryTheory.Limits; context is Ext/ModuleCat category theory"
+  },
+  {
+   "i": 16,
+   "name": "Module.support",
+   "arm": "B",
+   "task_id": "fresh_077",
+   "oracle": "exists",
+   "repaired": "exists",
+   "truth": "real",
+   "note": "exists at pin: 45 whole-word Module.support usages (e.g. RingTheory/Depth/Rees.lean:66 `Module.support R N = ...`); in doc-gen4 index fully qualified"
+  },
+  {
+   "i": 17,
+   "name": "Set.pi",
+   "arm": "A",
+   "task_id": "fresh_085",
+   "oracle": "exists",
+   "repaired": "exists",
+   "truth": "real",
+   "note": "def pi in namespace Set; 93 whole-word Set.pi usages at pin"
+  },
+  {
+   "i": 18,
+   "name": "Semiring",
+   "arm": "C",
+   "task_id": "fresh_001",
+   "oracle": "exists",
+   "repaired": "exists",
+   "truth": "real",
+   "note": "root class, Algebra/Ring/Defs.lean:143"
+  },
+  {
+   "i": 19,
+   "name": "LinearOrder",
+   "arm": "C",
+   "task_id": "fresh_072",
+   "oracle": "exists",
+   "repaired": "exists",
+   "truth": "real",
+   "note": "root class, Order/Defs/LinearOrder.lean:61"
+  },
+  {
+   "i": 20,
+   "name": "MeasureTheory.volume.restrict",
+   "arm": "B",
+   "task_id": "fresh_019",
+   "oracle": "hallucinated",
+   "repaired": "hallucinated",
+   "truth": "real",
+   "note": "dot-notation on a def value: MeasureTheory.volume (export MeasureSpace (volume), MeasureSpaceDef.lean:358) : Measure \u03b1, .restrict -> MeasureTheory.Measure.restrict (Restrict.lean:48); the full token is not a declaration name but the cited construct resolves to real API (M.det precedent)"
+  },
+  {
+   "i": 21,
+   "name": "Localization.map",
+   "arm": "A",
+   "task_id": "fresh_000",
+   "oracle": "hallucinated",
+   "repaired": "hallucinated",
+   "truth": "nonexistent",
+   "note": "zero whole-word Localization.map hits at pin; localization maps are IsLocalization.map (RingTheory/Localization/Defs.lean:609, namespace IsLocalization) and Submonoid.LocalizationMap.map (MonoidLocalization/Maps.lean:270); no def/abbrev map inside namespace Localization; used namespace-style as `Localization.map S g` in the output"
+  },
+  {
+   "i": 22,
+   "name": "OrderedSemiring",
+   "arm": "E",
+   "task_id": "fresh_005",
+   "oracle": "hallucinated",
+   "repaired": "hallucinated",
+   "truth": "renamed",
+   "note": "former Mathlib class removed by the ordered-algebra refactor: no class/def/abbrev/alias head at pin OR typecheck rev (only `section OrderedSemiring` headers + instances named OrderedSemiring.toPosSMulMonoNat gated on the replacement); verified current equivalent = Semiring + PartialOrder + IsOrderedRing (IsOrderedRing in index). BORDERLINE: replacement is a class decomposition, not a 1:1 rename; not in catalog rename map. Labeled renamed because the name was real Mathlib for years and has a documented equivalent (Basis->Module.Basis precedent); nonexistent-reading reported as sensitivity in the md"
+  },
+  {
+   "i": 23,
+   "name": "MvPowerSeries",
+   "arm": "D",
+   "task_id": "fresh_080",
+   "oracle": "exists",
+   "repaired": "exists",
+   "truth": "real",
+   "note": "root def, RingTheory/MvPowerSeries/Basic.lean:86"
+  },
+  {
+   "i": 24,
+   "name": "RCLike",
+   "arm": "D",
+   "task_id": "fresh_011",
+   "oracle": "exists",
+   "repaired": "exists",
+   "truth": "real",
+   "note": "root class, Analysis/RCLike/Basic.lean:60"
+  },
+  {
+   "i": 25,
+   "name": "IsSemisimple",
+   "arm": "B",
+   "task_id": "fresh_045",
+   "oracle": "hallucinated",
+   "repaired": "exists",
+   "truth": "real",
+   "note": "namespaced: Module.End.IsSemisimple (LinearAlgebra/Semisimple.lean:61, namespace Module.End); context is f : Module.End K V; bare short name usable under open (also LieAlgebra.IsSemisimple exists)"
+  },
+  {
+   "i": 26,
+   "name": "InnerProductSpace",
+   "arm": "E",
+   "task_id": "fresh_010",
+   "oracle": "exists",
+   "repaired": "exists",
+   "truth": "real",
+   "note": "root class, Analysis/InnerProductSpace/Defs.lean:107"
+  },
+  {
+   "i": 27,
+   "name": "ContinuousOn",
+   "arm": "E",
+   "task_id": "fresh_049",
+   "oracle": "exists",
+   "repaired": "exists",
+   "truth": "real",
+   "note": "root def, Topology/Defs/Filter.lean:191"
+  },
+  {
+   "i": 28,
+   "name": "Summable",
+   "arm": "C",
+   "task_id": "fresh_020",
+   "oracle": "exists",
+   "repaired": "exists",
+   "truth": "real",
+   "note": "no textual def \u2014 generated by @[to_additive existing Summable] from Multipliable (Topology/Algebra/InfiniteSum/Defs.lean:114, docstring names Summable); root name, 904 bare usages"
+  },
+  {
+   "i": 29,
+   "name": "I.inertiaDeg",
+   "arm": "E",
+   "task_id": "fresh_068",
+   "oracle": "hallucinated",
+   "repaired": "noise",
+   "truth": "real",
+   "note": "dot-notation on variable I : Ideal T (output inertia_degree_tower_multiplicative) -> Ideal.inertiaDeg (RingTheory/RamificationInertia/Inertia.lean:43, namespace Ideal); extractor artifact, cited decl exists"
+  },
+  {
+   "i": 30,
+   "name": "IsBoundedAtImInfty",
+   "arm": "C",
+   "task_id": "fresh_064",
+   "oracle": "hallucinated",
+   "repaired": "exists",
+   "truth": "real",
+   "note": "namespaced: UpperHalfPlane.IsBoundedAtImInfty (Analysis/Complex/UpperHalfPlane/FunctionsBoundedAtInfty.lean:46, namespace UpperHalfPlane); bare usage standard under open UpperHalfPlane (40 bare hits)"
+  },
+  {
+   "i": 31,
+   "name": "AbsoluteValue",
+   "arm": "B",
+   "task_id": "fresh_009",
+   "oracle": "exists",
+   "repaired": "exists",
+   "truth": "real",
+   "note": "root structure, Algebra/Order/AbsoluteValue/Basic.lean:36"
+  },
+  {
+   "i": 32,
+   "name": "PowerSeries",
+   "arm": "A",
+   "task_id": "fresh_030",
+   "oracle": "exists",
+   "repaired": "exists",
+   "truth": "real",
+   "note": "root abbrev, RingTheory/PowerSeries/Basic.lean:60"
+  },
+  {
+   "i": 33,
+   "name": "Module.GeneralizedEigenspace",
+   "arm": "B",
+   "task_id": "fresh_044",
+   "oracle": "hallucinated",
+   "repaired": "hallucinated",
+   "truth": "nonexistent",
+   "note": "zero case-insensitive 'generalizedeigenspace' hits at pin AND typecheck rev \u2014 the old Module.End.generalizedEigenspace API is fully removed; current API Module.End.genEigenspace (LinearAlgebra/Eigenspace/Basic.lean:73); the cited capitalized Module.GeneralizedEigenspace never existed in this form"
+  },
+  {
+   "i": 34,
+   "name": "Complex.I",
+   "arm": "C",
+   "task_id": "fresh_063",
+   "oracle": "exists",
+   "repaired": "exists",
+   "truth": "real",
+   "note": "def I in namespace Complex (Data/Complex/Basic.lean:239); 107 whole-word Complex.I usages"
+  },
+  {
+   "i": 35,
+   "name": "Mono",
+   "arm": "C",
+   "task_id": "fresh_029",
+   "oracle": "hallucinated",
+   "repaired": "exists",
+   "truth": "real",
+   "note": "same as i=3: CategoryTheory.Mono, bare standard under open CategoryTheory; context [Mono f11x] is category-theoretic"
+  },
+  {
+   "i": 36,
+   "name": "Mathlib.LinearAlgebra.Eigenspace.Basic",
+   "arm": "D",
+   "task_id": "fresh_045",
+   "oracle": "hallucinated",
+   "repaired": "noise",
+   "truth": "not_a_citation",
+   "note": "module name on an import line, not a declaration; module exists at pin (13 import hits)"
+  },
+  {
+   "i": 37,
+   "name": "I.IsMaximal",
+   "arm": "A",
+   "task_id": "fresh_068",
+   "oracle": "hallucinated",
+   "repaired": "noise",
+   "truth": "real",
+   "note": "dot-notation on variable I : Ideal T (output inertiaeDegree_mul) -> Ideal.IsMaximal (RingTheory/Ideal/Maximal.lean:47, class IsMaximal in namespace Ideal); extractor artifact, cited decl exists"
+  },
+  {
+   "i": 38,
+   "name": "PathConnectedSpace",
+   "arm": "D",
+   "task_id": "fresh_085",
+   "oracle": "exists",
+   "repaired": "exists",
+   "truth": "real",
+   "note": "root class, Topology/Connected/PathConnected.lean:542"
+  },
+  {
+   "i": 39,
+   "name": "InfinitePlace",
+   "arm": "E",
+   "task_id": "fresh_065",
+   "oracle": "hallucinated",
+   "repaired": "exists",
+   "truth": "real",
+   "note": "namespaced: NumberField.InfinitePlace (NumberTheory/NumberField/InfinitePlace/Basic.lean:57, namespace NumberField); bare short name standard under open NumberField"
+  }
+ ],
+ "supplementary": {
+  "note": "added post-compare by the grading agent; canonical fields above are script-generated",
+  "binary_agreement_like_for_like": {
+   "definition": "agree = (pred==hallucinated) == (truth==nonexistent); this is the measure under which the in-sample fit scored 59/60 (noise-pred on artifact-truth counts as agree)",
+   "raw_oracle": {
+    "agree": 23,
+    "n": 40,
+    "wilson95": [
+     0.422,
+     0.7149
+    ]
+   },
+   "repaired": {
+    "agree": 36,
+    "n": 40,
+    "wilson95": [
+     0.7695,
+     0.9604
+    ]
+   },
+   "in_sample_repaired_reference": {
+    "agree": 59,
+    "n": 60,
+    "wilson95": [
+     0.9114,
+     0.9971
+    ]
+   },
+   "fisher_two_sided_repaired_in_vs_out": 0.1541
+  },
+  "sensitivity_OrderedSemiring_as_nonexistent": {
+   "oracle": {
+    "tp": 4,
+    "fp": 16,
+    "fn": 0,
+    "tn": 20,
+    "hallucinated_precision": 0.2,
+    "hallucinated_precision_wilson95": [
+     0.0807,
+     0.416
+    ],
+    "accuracy": 0.6
+   },
+   "repaired": {
+    "tp": 4,
+    "fp": 3,
+    "fn": 0,
+    "tn": 33,
+    "hallucinated_precision": 0.5714,
+    "hallucinated_precision_wilson95": [
+     0.2505,
+     0.8418
+    ],
+    "accuracy": 0.925
+   }
+  },
+  "new_FP_modes_beyond_R1_R5": [
+   "multi-segment namespace short name (IsZero <- CategoryTheory.Limits.IsZero; R5 only strips single-segment prefixes)",
+   "dot-notation on a namespaced def value (MeasureTheory.volume.restrict -> Measure.restrict; R4 only catches single-letter heads)",
+   "uncaught extractor noise: multi-char local variable (M001)"
+  ]
+ }
+}

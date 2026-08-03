@@ -18,23 +18,31 @@ We test whether a curated join between informal mathematical concepts and
 formal Mathlib declarations — the WikiLean Brain, served to agents as
 tools — improves language-model performance on Lean tasks, in a
 preregistered five-arm study whose controls hold the same corpora
-accessible but unjoined. After corrective reanalysis (a blinded audit
-found our hallucination oracle's flagged class only 13.3% precise, biased
-against the control arms; inference moved to a commit-clustered
-bootstrap), the robust effect is tool access versus none: on 100
-post-Brain-index tasks, the Brain arm's grounded typecheck rate is 48%
-against a 21% no-tools floor (+0.27, 95% CI [+0.13, +0.40], p=0.0004),
-and formal-tool arms collapse confirmed hallucinated citations to 6–11%
-of runs against 30–37% (p=1.2e-7). Between tool packages nothing is
-established: Brain versus unjoined tools is +0.11 (p=0.30). Trace
-decomposition locates the join's measured value in verification and
+accessible but unjoined. No preregistered confirmatory endpoint was
+graded (§3.3); every result here is exploratory or corrective. After
+corrective reanalysis (a blinded audit found our hallucination oracle's
+flagged class only 13.3% precise, biased against the control arms; a
+five-rule repair validated on a second, held-out blinded sample at 90%
+agreement; inference moved to a commit-clustered bootstrap), the robust
+effect is tool access versus none: on 100 post-Brain-index tasks, the
+Brain arm's grounded typecheck rate is 48% against a 21% no-tools floor
+(+0.27, 95% CI [+0.13, +0.40], p=0.0004), and formal-tool arms collapse
+repaired-oracle-flagged citation hallucination — an upper bound on the
+true rate — to 6–11% of runs against 30–37% (clustered p=0.0002).
+Between tool packages nothing is established in the join's favor: Brain
+versus unjoined tools is +0.11 (p=0.30), and the one decisive
+between-package contrast (premise retrieval, where formal search beats
+the Brain by 27 points, p=2.3e-6, exploratory) runs against the join.
+Trace decomposition locates the join's measured value in verification and
 routing, not retrieved content: 88% of the Brain arm's retrieval hits are
 model-generated names its existence oracle verified, 10% surfaced from
-the graph, and the graph holds only 38% of benchmark golds.
-Kernel-verified downstream proving shows no package effect (p=1.0). We
-also report transferable evaluation-design findings: instrument bias, a
-contamination-by-endpoint interaction, four infrastructure failure modes,
-and benchmark snapshot rot.
+the graph, and the graph holds only 38% of benchmark golds. The
+kernel-verified proving phase was uninformative about the package
+contrast: the union arm routed 94% of its tool calls to formal search,
+and the Brain-only arm was not run there. We also report transferable
+evaluation-design findings: instrument bias, a contamination-by-endpoint
+interaction, four infrastructure failure modes, and benchmark snapshot
+rot.
 
 ## 1. Introduction and contributions
 
@@ -59,7 +67,7 @@ out), six graph and content tools, and `decl_exists`, a batch existence
 check against an index of all of Mathlib, not just the joined subset.
 
 This paper is the corrected report of that experiment, restructured
-after two external reviews. Its contributions, stated honestly:
+after two external reviews. Its contributions:
 
 1. **The only causal-control design we could verify.** Among the
    2025–26 concept-grounding systems, this is the only evaluation whose
@@ -68,9 +76,10 @@ after two external reviews. Its contributions, stated honestly:
 2. **A robust tools-versus-none effect on grounded output** (§4). The
    Brain arm exceeds the no-tools floor by 27 points of grounded
    typecheck rate under commit-clustered inference (p=0.0004), the
-   unjoined-tools arm by 16 points (p=0.007), and formal-tool access
-   collapses confirmed citation hallucination (p=1.2e-7). These survive
-   instrument repair and clustering.
+   unjoined-tools arm by 16 points (clustered p=0.012), and formal-tool
+   access collapses repaired-oracle-flagged citation hallucination
+   (clustered p=0.0002). These survive instrument repair — including a
+   held-out blinded revalidation — and clustering.
 3. **A mechanism finding** (§5): on retrieval benchmarks the join's
    measured value is *verification and routing, not content*. 88% of the
    Brain arm's hits are generate-then-verify, only 10% are surfaced by
@@ -116,7 +125,7 @@ LeanSearch-v2 (arXiv:2605.13137) is learned declaration-level premise
 retrieval over a formal-only corpus with a fixed downstream prover loop;
 ProofNetVerif/BEq+ (arXiv:2406.07222) anchors the semantic-grader axis
 and is the ready-made instrument for the equivalence leg this study left
-ungraded — on that axis Aria and DRIFT are ahead of us, and we say so.
+ungraded — on that axis Aria and DRIFT are ahead of us.
 
 | System | Unit of retrieval | Join | Coverage | Side | Semantic grader | Downstream eval | No-join control |
 |---|---|---|---|---|---|---|---|
@@ -139,10 +148,17 @@ causal test of the join itself.
 
 ### 3.1 The system under test
 
-The Brain snapshot the experiments ran against, characterized from the
-repo artifacts (recompute: `bench/analysis/brain_artifact.py`):
+The Brain under test, characterized **post hoc from the 2026-08-01
+build** (recompute: `bench/analysis/brain_artifact.py`). No experiment
+phase queried this exact build, and the per-phase build commits were not
+recorded — a bookkeeping gap. What we can bound: the fresh-set holdout
+was checked against the 2026-07-03 snapshot universe, and the one
+documented mid-campaign change to the graph is the 2026-07-18 verified
+discovery fold of §3.5, which absorbed a single fresh gold (fresh_025);
+the table therefore characterizes the artifact family the arms queried,
+not any single run's view of it.
 
-| Quantity | Value (snapshot 2026-08-01; Mathlib pin 2026-07-04) |
+| Quantity | Value (2026-08-01 build; Mathlib pins 2026-07-04 harvest + 2026-07-18 discovery folds) |
 |---|---|
 | Cells (atoms) | 20,880 (4,095 multi-organ; largest cell 28 organs) |
 | Organs | 29,051 — decl 19,611 · concept 2,969 · article 728 · external-DB page 3,467 · arXiv statement 2,276 |
@@ -180,7 +196,8 @@ within each phase; only the tool manifest differs:
 Two design facts up front. D alone holds `decl_exists`, and
 hallucination-free citation is a conjunct of the primary metric — D
 versus E measures the *bundled Wikibrain package*, not the join (715
-`decl_exists` attempts on the 100 fresh tasks, 682 successful). And E
+`decl_exists` attempts on the 100 fresh tasks; 682 reached the tool,
+681 succeeded — the other 33 called a nonexistent bare tool name). And E
 failed its manipulation check: 4 informal-tool touches across its 100
 fresh runs against B's 345 — it behaved as a formal-search agent with a
 larger manifest.
@@ -188,7 +205,30 @@ larger manifest.
 Tier 1 ran `claude-haiku-4-5` on ProofNet# (371 tasks; 341-task eval
 split; pinned fork of arXiv:2406.07222) and on a 100-task **fresh set**
 drawn from theorems merged into Mathlib master 2026-07-03→07-16, graded
-by REPL typecheck on pinned toolchains. The exploratory second phase
+by REPL typecheck on pinned toolchains.
+
+**What a fresh task is.** Candidates were every theorem/lemma line added
+to Mathlib master between the Brain snapshot (2026-07-03) and the
+2026-07-16 head `9944fe29` — 1,326 added lines across 44 commits,
+pre-filtered to the 187 carrying an author-written docstring, of which
+100 were kept (bespoke helpers and statements with unrecoverable
+hypotheses dropped). Each task's gold is the exact Mathlib master
+statement (`:= sorry`), elaboration-checked on the fresh pin; the agent
+sees only the informal statement and must produce a Lean statement of
+the same theorem. The informal statements are identifier-stripped
+natural-language paraphrases of the golds' docstrings, written by a
+Claude Opus 4.8 agent session — the same vendor as the subject models,
+and docstring-derived NL for formula lemmas is inherently close to the
+Lean: both are validity caveats we cannot remove. Held-out guarantee:
+every kept declaration is absent from both the pinned 388k-declaration
+TheoremGraph universe and the Brain's node set. One honest gap: the
+construction script was never committed — the docstring→NL step is
+documented by the commit record and `fresh_tasks.stats.json`, not by
+re-runnable code. Determinacy was screened post hoc by two independent
+AI annotators (86 and 83 of 100 judged determinate; 74 by both — the
+primary subset, §S1).
+
+The exploratory second phase
 ("v2", `claude-sonnet-5`) ran retrieval arms N (no tools), F (formal
 search), W (the Brain), WF (union + a tool manual), and U (bare union)
 on third-party-graded benchmarks (§5), and a one-shot proving
@@ -205,7 +245,7 @@ deviations change interpretation:
 | 2 | Second model class on the primary set not run | Tier-1 all-Haiku, v2 all-Sonnet; capability-band generality unknown |
 | 3 | Three reseeds + pass@k not run | one seed everywhere; no run-to-run variance estimate |
 | 4 | tokens-to-solve never computed | P2 (the cost half of the success criterion) untested |
-| 5 | 30-turn budget advisory only (stated in prompt, no CLI cap) | overruns C 50 / D 38 / E 32 of 100, max 88 turns; sensitivity in Supplement §S5 |
+| 5 | 30-turn budget advisory only (stated in prompt, no CLI cap) | overruns on the repaired rows C 50 / D 38 / E 48 of 100, max 88 turns (the as-run count for E was 32 — its 31 outage rows died at turns=1 and masked overruns); sensitivity in Supplement §S5 |
 | 6 | Arm-E fresh block: 31 contiguous infrastructure-failed rows | repaired by rerun (below); outage-basis tables in Supplement §S2 |
 
 ### 3.4 Execution fidelity
@@ -238,6 +278,19 @@ the typechecker silently fell back from the persistent REPL server to a
 with timeout failures until it was caught and rerouted with honest
 labels (commit `2a9f6b91`).
 
+**Could the Tier-1 headline grids have run toolless?** The Tier-1 rows
+predate the init-signature capture and record no attach event, so the
+audit is indirect: nonzero tool calls prove attachment, and a zero-tool
+row is the worst case. On the fresh set the tooled Lean arms show
+C 0 / D 1 / E 1 zero-tool rows (each a single-turn, ~85 s row — the
+plausible silent-detooling suspects, ≤1% per arm), and on eval-341
+C 0 / D 0 / E 4. Arm B's 23 fresh zero-tool rows are single-turn
+answers consistent with declining a rarely useful wiki toolkit rather
+than detooling; arm D additionally preflighted its MCP server and
+aborted on failure. The Tier-1 grids are thus not attach-verified
+row-by-row as the v2 grid is, but worst-case contamination is one row
+per tooled Lean arm on the fresh set (`v3_gate_fixes.json`).
+
 ### 3.5 Fresh-set isolation status
 
 The fresh set is **post-Brain-index**: held out from the Brain's
@@ -250,15 +303,48 @@ in the checkout C and E read (own-module basis; full strata Supplement
 §S4). Exposure interacts with the choice of endpoint, and §4.2 measures
 that interaction directly.
 
+*Terminology used below.* A **verified rename** is a dead→current name
+pair (e.g. `Basis`→`Module.Basis`) from our rename ledger, each pair
+checked against the current declaration index; the union oracle accepts
+either side. A `decl_exists` attempt is **successful** when the call
+returns a verdict, not when the name exists. The judge's **strict**
+grade requires the same proposition under the same hypotheses;
+**evaluated** requires mathematical equivalence at high confidence.
+**fair-810** is the LSv2-released MathlibQR subset whose 171 gold
+declarations lie in the universe shared by all compared systems, times
+up to six paraphrase styles per gold = 810 queries.
+**group-recall@10** (MPR): each task's gold is a set of premise groups
+of interchangeable names; the score is the fraction of groups with ≥1
+member in the top 10. A **sign count** such as 34/35 counts
+gold-declaration clusters where one arm's mean beats the other's (ties
+dropped). **Own-module** exposure counts a gold as exposed when its
+declaration name appears as a header in the task's own module file in
+the pinned checkout.
+
 ## 4. Statement formalization results (claude-haiku-4-5, fresh-100)
 
 ### 4.1 Grounded typecheck under the repaired instrument
+
+Register label first: the preregistered primary endpoint
+(faithful@budget) was never graded (§3.3, deviation 1), so grounded
+typecheck is a post-hoc component of it under a post-hoc analysis plan —
+corrective-exploratory, not confirmatory.
 
 The primary metric is the **grounded typecheck rate**: the run produced
 a declaration, cited zero names absent from a union oracle (doc-gen4
 declaration data ∪ verified renames), and the declaration typechecked on
 the pinned toolchain. It does not establish that the statement
-formalizes the prompt — that is §4.2's question.
+formalizes the prompt — that is §4.2's question. The citation surface
+is the run's final Lean block (`output_lean`, the last fenced Lean
+block of the final answer — nothing else in the transcript is scanned),
+swept by a capitalized-identifier heuristic with no Lean parser, so it
+also picks up names in comments and docstrings inside that block; the
+oracle then matches exact fully-qualified strings. That is why a
+typechecking run can still carry a flagged citation: a name in a
+comment is never elaborated, and an idiomatic namespace-short name
+under `open` elaborates while failing exact-string lookup — the
+repair's main business, below. §4.3's run-level rates inherit the same
+surface.
 
 **The instrument had to be repaired first.** A blinded audit of the
 hallucination oracle (60 distinct cited names, seeded and stratified,
@@ -268,7 +354,18 @@ declarations cited by their conventional namespace-short names, plus
 extractor noise. Five mechanical repair rules (drop comment, import, and
 self-declaration tokens and single-letter dot-notation heads; resolve
 single-segment namespace prefixes) agree with the blinded truth on
-59/60. The bias was directional — false flags hit the control arms
+59/60. The rules were formulated after that audit unsealed, so 59/60 is
+an in-sample fit; a second, disjoint 40-name blinded sample (seed
+20260802) measured the repair out of sample: binary agreement 36/40 =
+90% [77, 96], recall on true fabrications 3/3, but flagged-class
+precision only 43–57%. The raw oracle's invalidity replicates almost
+exactly (15% precision held-out), the repair transfers most of its
+value, and a repaired flag remains closer to a coin toss than a
+confirmation — so repaired hallucination rates are **upper bounds** on
+true rates. The residual false-flag modes are namespace-style-correlated
+and land on the free-text tool arms, so they cannot manufacture D's
+advantage (protocol and error census: Supplement §S3). The original
+bias was directional — false flags hit the control arms
 hardest — and repairing it moves C by +8 successes, E +7, D +6, A +1,
 B 0 (per-row detail Supplement §S3). All headline numbers below use the
 repaired instrument; raw-instrument tables, the outage bases
@@ -296,7 +393,13 @@ the same resampling distribution):
 | D − C | +0.15 | [−0.023, +0.302] | 0.100 |
 | D − E | +0.11 | [−0.089, +0.279] | 0.304 |
 
-E versus A is also robust: exact McNemar 24/8, p=0.007 (unclustered).
+E versus A is also robust under the same framework: +0.16
+[+0.04, +0.29], clustered p=0.012 (exact McNemar 24/8, p=0.007). The
+same clustered framework was run on every A-floor and D/E/C contrast
+reported as significant in §§4.2–4.3 below, and all survive it
+(`v3_gate_fixes.json`); the remaining p-values there are unclustered
+McNemars, labeled as such — anti-conservative for the two significant
+B-comparisons, immaterial for the nulls.
 The picture: **tools-versus-none is solid; between tool packages the
 matched comparisons are inconclusive at this sample size.** Clustering
 is not pedantry here — on the raw instrument, 83% of D's net paired
@@ -321,10 +424,13 @@ calibration remains undone — so nothing in this subsection is
 confirmatory.** The story has three layers.
 
 **Layer 1 — the inversion.** On judge-evaluated equivalence
-(mathematical equivalence at high confidence), C scores 51.0%
-[41.3, 60.6] and E 53.0% [43.3, 62.5] against D's 19.0% [12.5, 27.8]
-(D-vs-E exact McNemar p=1.1e-9). Taken alone this says the unjoined
-arms produce far more faithful statements.
+(mathematical equivalence at high confidence), all five arms:
+A 17.0% [10.9, 25.6] · B 16.0% [10.1, 24.4] · C 51.0% [41.3, 60.6] ·
+D 19.0% [12.5, 27.8] · E 53.0% [43.3, 62.5]. D sits at the no-tools
+floor (D-vs-A McNemar 7/5, p=0.77) while C and E sit far above it
+(D-vs-E clustered −0.34 [−0.46, −0.22], p=0.0002). Taken alone this
+says the unjoined arms produce far more faithful statements — and that
+the Brain arm does not beat no tools at all on this endpoint.
 
 **Layer 2 — the exposure explanation.** C and E hold source grep over a
 checkout containing 51 of the 100 golds (§3.5), and on those tasks they
@@ -332,7 +438,12 @@ can simply transcribe: their evaluated-equivalence rates are .706 and
 .686 on exposed tasks against .306 and .367 on unexposed ones, while D
 is flat (.196/.184). The inversion concentrates exactly where the gold
 was retrievable; it narrows sharply, but does not vanish, on the
-unexposed half (Supplement §S11).
+unexposed half (Supplement §S11). The unexposed residual (C/E at
+.31/.37 against D's ~.18) is not explained by exposure, and we cannot
+exclude **verifier steering**: the generate-then-verify loop may pull D
+toward statements that are existence-verified and typecheckable but
+semantically weaker — groundedness traded against faithfulness. The
+human grading queue below is where that hypothesis gets adjudicated.
 
 **Layer 3 — the conjunction.** On grounded-typecheck ∧ judge-evaluated
 — the closest available analogue of the preregistered faithful@budget —
@@ -340,9 +451,10 @@ the arms return to parity. Under the repaired typecheck leg
 (`conjunction_repaired.py`; the judge ran before the oracle repair, so
 Supplement §S11 reports both instruments): C 20, D 16, E 21 per 100
 (raw leg: 16/15/18). Every between-tool contrast is null (D-vs-E
-p=0.30, D-vs-C p=0.50, E-vs-C p=1.0) and the tools-versus-none
-contrasts strengthen — E-vs-A p=0.001, E-vs-B p=0.004, and D-vs-A
-crosses to p=0.039. The instrument repair moves no conclusion here:
+clustered p=0.25; D-vs-C p=0.50 and E-vs-C p=1.0, unclustered) and the
+tools-versus-none contrasts strengthen — E-vs-A +0.13, clustered
+p=0.0002; E-vs-B p=0.004 (unclustered); and D-vs-A crosses to +0.08,
+clustered p=0.037. The instrument repair moves no conclusion here:
 parity between tool packages, tools above the floor.
 
 The transferable warning is the interaction itself: with contaminated
@@ -354,8 +466,8 @@ first slice of the still-owed calibration.
 
 ### 4.3 Hallucinated citations
 
-Run-level "≥1 confirmed hallucinated citation" under the repaired
-instrument, n=100/arm:
+Run-level "≥1 repaired-oracle-flagged citation" — an upper bound on
+true hallucination, per the held-out precision in §4.1 — n=100/arm:
 
 | arm | runs with ≥1 hallucination | Wilson 95% CI |
 |---|---|---|
@@ -365,9 +477,11 @@ instrument, n=100/arm:
 | D wikibrain | **6/100** | [2.8, 12.5] |
 | E B+C unjoined | 10/100 | [5.5, 17.4] |
 
-Tools-versus-none survives everything: D-vs-A p=1.2e-7, D-vs-B
-p=3.9e-5. The between-tool contrasts dissolve: D-vs-E p=0.45, D-vs-C
-p=0.30 — direction preserved, but n=100 cannot distinguish them. The
+Tools-versus-none survives everything: D-vs-A −0.31 [−0.45, −0.19],
+clustered p=0.0002 (E-vs-A −0.27, clustered p=0.0002; D-vs-B p=3.9e-5,
+unclustered). The between-tool contrasts dissolve: D-vs-E clustered
+p=0.44, D-vs-C clustered p=0.31 — direction preserved, but n=100
+cannot distinguish them. The
 raw oracle had shown D roughly 3× better at citation level; most of that
 gap was **citation style, not grounding** — D copies fully-qualified
 names out of tool payloads (10 short-name reclassifications under
@@ -375,7 +489,8 @@ repair) while C and E write idiomatic namespace-short names under
 `open` (65 and 71 reclassifications), which an exact-string oracle
 falsely flags. All four fabricated names confirmed in the blinded
 sample came from the arms without formal tools (A/B); none from C, D,
-or E.
+or E — and the held-out sample replicates this: all three of its
+confirmed fabrications sit in A/B as well (§S3).
 
 ## 5. Retrieval scope and ablations (claude-sonnet-5, exploratory)
 
@@ -390,8 +505,14 @@ race-free (`bench/analysis/grid_repaired.py`). **WF is a
 post-hoc, benchmark-informed condition**: its prepended manual distills
 measurements from the same evaluation queries it was then scored on
 (manual verbatim and commit timeline: Supplement §S8). Published rows
-are the numbers the respective papers report for their own single-call
-systems — context, not controlled comparison.
+are the numbers the respective papers report for their own systems —
+single-call retrievers on the QR anchors; on MPR, LSv2's reasoning
+mode is itself an iterative sketch-retrieve-reflect pipeline, not a
+single call — context, not controlled comparison. (Anchor provenance:
+0.775, 0.780, 0.623, and 0.461 are verified in
+`related_work_notes.md`; TheoremGraph nDCG 0.548, TheoremGraph MPR
+0.165, and DIVER 0.380 are recorded from the papers' tables in the
+pre-run design notes, `docs/research/BRIDGE-V2-BENCHMARKS.md`.)
 
 **MathlibQR fair-810 — concept retrieval:**
 
@@ -461,7 +582,8 @@ CIs): N 0.203 [0.131, 0.282] · W 0.272 [0.196, 0.354] · F 0.547
 [0.463, 0.632] · U 0.549 [0.464, 0.633] · WF 0.557 [0.472, 0.642];
 published anchors LSv2 reasoning-mode 0.461, DIVER 0.380, TheoremGraph
 0.165; system-mode Brain 0.000. A generic Sonnet agent with grep and
-loogle *exceeds* the specialist premise retriever (0.547 vs 0.461) —
+loogle *exceeds* the specialist system's reasoning mode (0.547 vs
+0.461) —
 the as-run 0.453 had been deflated by F's 15 race rows. W trails F by
 27 points (F − W +0.275 [+0.185, +0.369], p=2.3e-6) — the
 preregistered concept ≠ premise boundary measured on our own tools,
@@ -508,22 +630,34 @@ repositories; success is the repository *building* with your proof —
 kernel-graded, nothing to memorize. Our refrozen split holds 171 tasks
 across 10 repositories; the protocol is one-shot and build-free (goal
 state + a ±60-line window; explicit honest-abstention rule), and every
-one of the 203 candidate proofs has a kernel verdict. Results: N 2/171
+one of the 203 candidate proofs has a definitive verdict — 183 kernel
+pass/fail, plus 19 unspliceable rows and 1 verify-timeout that never
+reached the kernel. (Denominators reconciled: 171 frozen tasks; run
+rows N 168 / F 169 / WF 171 — 3 N and 2 F runner losses; candidates
+N 58 + F 71 + WF 74 = 203.) Results: N 2/171
 = 1.2% [0.3, 4.2] · F 9/171 = 5.3% [2.8, 9.7] · WF 10/171 = 5.8%
-[3.2, 10.4] (Wilson); repo-clustered bootstrap CIs widen to [0.0, 2.7] /
-[0.0, 10.7] / [0.0, 12.2]. **WF versus F is indistinguishable**: one
+[3.2, 10.4] (Wilson); repo-clustered bootstrap CIs are [0.0, 2.7] /
+[0.0, 10.7] / [0.0, 12.2] — F's and WF's widen, while N's upper bound
+tightens because both N successes sit in 2 of the 10 repo clusters.
+**WF versus F is indistinguishable**: one
 proof apart, exact McNemar 4/3 p=1.0, repo-clustered difference +0.58pp
 [+0.0, +1.85] with 34% of resamples at or below zero — and WF routed
 94% of its tool calls to formal search anyway, so SorryDB says
-essentially nothing about the Brain. Tools-versus-none is descriptive
-but consistent: the no-tools arm burns its budget (70 of 168 rows
+essentially nothing about the Brain. The Brain-only arm W, present in
+every other phase, was never run here — a design gap, and precisely
+the arm that would have made the phase informative about the package
+contrast; the proving phase is therefore uninformative about the
+Brain, not evidence of no effect. Tools-versus-none is descriptive
+but consistent: the no-tools arm burns its budget (70 of its 168 rows
 produce nothing), while tool arms raise proving four-to-five-fold and
 double honest abstention — with only 10 repo clusters we leave it
-descriptive. One sentence on infrastructure: the original freeze lost
-74/164 tasks (45%) in about six months to rewritten upstream history,
-invisible until every pin is actually fetched, because GitHub's archive
-endpoint answers preflight HEAD 200 for dead commits (full narrative
-and bookkeeping: Supplement §S7, §S9).
+descriptive. The benchmark itself decayed: the original freeze lost 74
+of 164 tasks (45%) in about six months to rewritten upstream history —
+pinned commits force-pushed or rebased out of existence. The rot was
+invisible to cheap checks, because GitHub's archive endpoint answers a
+preflight HEAD request with 200 for dead commits; only actually
+fetching every pin reveals it (full narrative and bookkeeping:
+Supplement §S7, §S9).
 
 ## 7. Limitations and discussion
 
@@ -543,6 +677,9 @@ only been graded by an uncalibrated LLM judge that shares a vendor with
 the subject models; the human calibration and the 36-task discordant
 queue are pending. Grounded typecheck is a grounding measure, not a
 faithfulness measure, and §4.2 shows the two can rank arms oppositely.
+The repaired hallucination oracle's flagged class is only 43–57%
+precise out of sample (recall 3/3; §4.1, §S3), so all per-arm
+hallucination rates are upper bounds on true rates.
 
 **Attribution.** D bundles the join, the verifier, curated metadata, and
 a distinct interface; the E repair ran later than D, so a time confound
@@ -569,7 +706,8 @@ models are from the same vendor as the executing agents.
 What this study establishes: giving a Lean agent formal-tool access
 lifts grounded typecheck output well above the no-tools floor (+16 to
 +27 points; clustered p=0.0004 for the Brain arm) and collapses
-confirmed citation hallucination (6–11% of runs versus 30–37%); the
+flagged citation hallucination (6–11% of runs versus 30–37%, upper
+bounds under the repaired oracle); the
 sharpest mechanism signal is the existence verifier's
 generate-then-verify loop, whose value survives every correction and
 converges with independent work (DDR). What it does not establish: that
