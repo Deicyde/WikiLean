@@ -10,6 +10,8 @@
 > verdicts, verification killed 14 (8 superseded by better designs, 6
 > overblown) and confirmed 8, deduplicating to the backlog below.
 
+(Snapshot of 2026-07-04 — see brain/SCHEMA.md and the live site for current state.)
+
 ## Confirmed high-priority backlog (verified twice)
 
 1. **Multi-library grounding is untouched.** All 1,461 grounding

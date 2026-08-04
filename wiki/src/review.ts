@@ -1794,8 +1794,9 @@ function counts(){
 }
 
 // Assemble the reviewer's pending changes/notes into a Markdown review to paste
-// as a PR comment. (Short-term, scope-free alternative to auto-posting — see
-// the GitHub-App TODO in auth.ts.)
+// as a PR comment. (The always-works fallback beside GitHub-App auto-posting,
+// which shipped 2026-06-20 — see reviewToken/installUrl above and the
+// "/review posting" row of docs/ROADMAP.md's P3 table.)
 function buildClipboardReview(){
   if(!DATA) return "";
   const meta = {};

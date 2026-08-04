@@ -331,6 +331,10 @@ into `wiki/public/assets/`. Edit sources, then run build-public, never edit
 
 ## Status log
 
+- 2026-08-02/03 — **Mathlib halo view + discoverability.** brain: halo view renders the frontier cells in distance shells around the formal core, niche topics outward (03d46a7b); made discoverable via a frontier|halo toggle at the root + a rootsPanel link (52742028).
+
+- 2026-08-02/03 — **Bridge report v3 complete.** bench: v3 paper restructure + supplement split per external review 2 (eda5d5a0) → adversarial-gate fixes, all 34 findings applied + held-out oracle validation 90% (84b097a3) → final production pass: prose gate, anchor notes, repaired-grid figures, typeset edition (215a059b). Paper + supplement complete in docs/research/ (BRIDGE-REPORT.md, BRIDGE-SUPPLEMENT.md + bridge-report/ report.pdf/supplement.pdf); harness in bench/.
+
 - 2026-08-01 — **Frontier data layer (B1).** brain/build_frontier.py partitions the 1,612 homeless (decl-less) cells into 46 deterministic `frontier:<Area>` territories (synapse vote ×3 depends/invocation → MSC xref → one relates hop → Unsorted 309 = 19.2%); build_cell_shards emits them as parentless supercells.json rows so the bubbles view's grey "no formal home" blob drains to the 5 genuinely unplaceable cells; contract doc in brain/SCHEMA.md "Frontier layer", acceptance F1–F8 (brain/test_frontier.py) nightly-wired; UI branches for `frontier:` ids (panel/status/zoomOut) are the follow-up tranche.
 
 - 2026-08-01 — **TauCeti wired into the fabric.** Deterministic decl→decl `invocation` edges (FQ-name-in-statement scan, suffix-proof, oracle-restricted: TauCeti 6,174 + FC 2,853, all surfacing as synapses — never merges) + a generic frontier-repo agent-join channel (fold_proposals `repo_link` action per frontier_sources key → catalog/data/`<key>`_links.jsonl, mentions-ONLY by moderation contract; sync_agents `linker` role + repo_link skeptic, nightly-wired via WIKILEAN_BRAIN_REPO_MODULES). First bounded TauCeti linker pass in flight; its folded joins land as `mentions` synapses once the skeptic + fold complete.
@@ -406,3 +410,5 @@ into `wiki/public/assets/`. Edit sources, then run build-public, never edit
   Worker + D1 backups. Recommend an initial commit of the backend on the `p0-hardening`
   branch before P1. (Not done autonomously — it's a large one-time decision for Jack:
   what to track, `.gitignore` for `.dev.vars`/`.wrangler/`/`backups/`, etc.)
+  [RESOLVED 2026-06-10 later that day — backend committed (bdea253f); see P0
+  "Backend committed to git".]

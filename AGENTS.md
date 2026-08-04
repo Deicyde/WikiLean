@@ -30,8 +30,9 @@ Mission = three routine AI operations: (1) generate annotations for new articles
 | Tagging bot | `bot/` + `.github/workflows/wikidata-poll.yml`; state in `bot/state/` |
 | Tag catalog | `catalog/data/*.jsonl` |
 | Management control plane | `manage/` — centrality × coverage → worklists (see `manage/README.md`) |
-| The Brain (map of mathematics) | `brain/` pipeline → `site/build_brain_page.py` + `brain/build_shards.py` → **`/brain`** (bubbles/web/ego; contract `brain/SCHEMA.md`). The old `/map` page is **retired**: `/map`, `/graph`, `/atlas` 301→`/brain`. Data builders `build_graph_page.py` (→`graph_data.json`) + `build_atlas.py` (→`atlas_data.json`) still run nightly to feed the KV-first agent endpoints `/graph_data.json` + `/atlas_data.json` + `/api/atlas`; `catalog/data/source_registry.json` = provenance single-source-of-truth. |
-| Nightly ops | `site/ops/` (launchd, 03:00 local); tunables in `site/ops/nightly.env` |
+| The Brain (map of mathematics) | `brain/` pipeline → `site/build_brain_page.py` + `brain/build_shards.py` → **`/brain`** (bubbles/web/ego/explorer; contract `brain/SCHEMA.md`; design `docs/BRAIN-V2.md`). v2 adds `ext` nodes (10 external DBs via `brain/ingest/*.py` → `catalog/data/external/`), `links` edges, `unit` cards, `f` facet bits. The old graph stack is **fully retired** (2026-07-10): `/map`, `/graph`, `/atlas`, `/article-graph` 301→`/brain`; `/graph_data.json` + `/atlas_data.json` + `/api/atlas` answer **410** (builders deleted); agents use `/api/brain/*` + `POST /mcp` (docs: GET `/mcp`). `catalog/data/source_registry.json` = provenance single-source-of-truth. |
+| Wikibrain agent API + MCP | `wiki/src/brain-api.ts` (`/api/brain/{unit,transfer,neighborhood,snippets,filter}`) + `wiki/src/mcp.ts` (stateless streamable-HTTP MCP at `POST /mcp`, 8 tools); reference `docs/BRAIN-API.md` + live `/brain/api`; benchmark harness `bench/` (no_tools vs wikibrain arms) |
+| Nightly ops | `site/ops/` (launchd; brain 02:20, newtags 03:10, moderate 03:20); tunables in `site/ops/nightly.env`. Brain nightly = `brain-nightly.sh`: cadenced ingest → `fold_proposals` → build → `test_acceptance` (red aborts publish) → shards → clean-tree+main-branch-gated deploy (`WIKILEAN_BRAIN_DEPLOY=1`); agent team `brain/sync_agents.py` (`WIKILEAN_BRAIN_AGENTS=1`) |
 | Plans/docs | `docs/` — `ROADMAP.md` canonical |
 | Mathlib checkout | `/Users/jack/Desktop/LEAN/mathlib4` — **read-only; the bot's; don't edit** |
 
@@ -64,8 +65,10 @@ python3 manage/refresh.py [--pull] # rebuild the control plane (centrality/cover
 - **`findLostHuman` 422 is the floor** — a bot save that drops/alters any `provenance:"human"`
   annotation (tombstones included) must 422. Bots can't approve/endorse (session-only; 403).
 - **Render-cache keys are manually versioned + load-bearing** (currently `render:v14:`,
-  `page:home:v3`, `page:stats:v2` in `index.ts`) — bump the prefix whenever output bytes
-  change, or readers get stale HTML for up to 30 days. Asset changes need `?v=` bumps.
+  `page:home:v8`, `page:articles:v1`, `page:sitemap:v4`, `page:stats:v3`,
+  `page:wikifunctions:v3`, `page:wikifunctions-verify:v3` — all in `index.ts`) — bump the
+  prefix whenever output bytes change, or readers get stale HTML for up to 30 days. Asset
+  changes need `?v=` bumps.
 - **The `RESERVED` set (`index.ts`) must list every non-article top-level path** or the
   `/:slug` catch-all swallows it. Provenance is matched by exact string
   (`human`/`ai-moderated`/`ai`) — don't rename.
@@ -80,15 +83,15 @@ python3 manage/refresh.py [--pull] # rebuild the control plane (centrality/cover
 **Security / credentials**
 - `.dev.vars` is gitignored and holds secrets — never commit, never print values; set Worker
   secrets via `wrangler secret put` / `gh secret set`.
-- **Max-auth gotcha**: unset `ANTHROPIC_API_KEY` before `Codex`/SDK calls or they fail silently
+- **Max-auth gotcha**: unset `ANTHROPIC_API_KEY` before `claude`/SDK calls or they fail silently
   ("error result: success", 0 tokens).
 - Never take custody of others' API keys. Never edit the mathlib4 checkout — do Lean work in
   `wikifunctions/lean/`.
 
 ## Deploy notes
 - `npm run deploy` bundles **all** of `wiki/src` — don't leave unreleased Worker WIP committed
-  if the nightly may deploy. (The nightly graph refresh uses `wrangler kv put`, NOT a deploy —
-  `/graph_data.json` is served KV-first; see `manage/README.md`.)
+  if the nightly may deploy. (The 03:20 nightly never deploys; the 02:20 brain
+  nightly deploys only behind `WIKILEAN_BRAIN_DEPLOY=1` + clean-tree + main-branch gates.)
 - Edit asset **sources** (`site/assets/*`, `wiki/assets/editor.js`), then run build-public from
   `wiki/`; never edit `wiki/public/` directly (it's generated + gitignored).
 - `index.html` / `sitemap.xml` are served dynamically from D1 — deliberately NOT copied to public.
