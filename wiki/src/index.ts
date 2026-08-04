@@ -161,7 +161,9 @@ async function renderArticleBase(env: Env, row: ArticleRow): Promise<string> {
   // header article-search box (engine/searchbox.ts) + style.css?v=9 (hides
   // Wikipedia's .mw-editsection [edit] links, which survive in the wrapped
   // body — CSS-only so anchor signatures are untouched).
-  const cacheKey = `render:v15:${slug}:${row.version}`;
+  // v16: trust signals (P2) — the N/M human-reviewed header badge + the "?"
+  // legend popover (engine/page.ts; CSS/JS inline in the page shell).
+  const cacheKey = `render:v16:${slug}:${row.version}`;
   const cached = await env.RENDER_CACHE.get(cacheKey);
   if (cached) return cached;
 
@@ -177,6 +179,23 @@ async function renderArticleBase(env: Env, row: ArticleRow): Promise<string> {
   const annotations = JSON.parse(row.annotations) as Annotation[];
   const src = absolutizeWikipediaUrls(wp.html);
   const { html: body, matched } = wrapAnnotations(src, annotations);
+  // Anchor-rot telemetry (P1): one structured line per cache-miss render,
+  // straight off the wrap engine's real match results (never recomputed).
+  // Engine contract: matched[i] is true for tombstones ("excluded, not an
+  // anchor failure"), so matched === total on a healthy page and the gap is
+  // exactly the rotted-anchor count. Log-only by design — the
+  // articles.anchored_count column (write from live-pinned renders) is
+  // deferred; this path performs no D1 write.
+  console.log(
+    JSON.stringify({
+      event: "render",
+      slug,
+      version: row.version,
+      revid: row.revid,
+      matched: matched.filter(Boolean).length,
+      total: matched.length,
+    }),
+  );
   const page = renderArticlePage({
     slug,
     displayTitle: row.displayTitle,
@@ -435,12 +454,36 @@ async function homeRows(c: Context<{ Bindings: Env }>) {
     .orderBy(articles.displayTitle);
 }
 
+// Trust signals (P2): the 8 articles that have gone longest without a human
+// review — never-reviewed first (NULL last_reviewed_at), then oldest review,
+// slug as the deterministic tiebreak. LEFT JOIN: an article with no
+// moderation_state row reads as never reviewed. Parked states
+// ('moved'/'deleted'/'needs_human') are excluded with the same predicate as
+// /api/work (F4/F11) — they need the update flow or a human decision, not a
+// review pass. One query on the small moderation_state table
+// (idx_moderation_state_reviewed).
+async function leastReviewedRows(c: Context<{ Bindings: Env }>) {
+  const db = drizzle(c.env.DB);
+  return db
+    .select({
+      slug: articles.slug,
+      displayTitle: articles.displayTitle,
+      lastReviewedAt: moderationState.lastReviewedAt,
+    })
+    .from(articles)
+    .leftJoin(moderationState, eq(moderationState.slug, articles.slug))
+    .where(sql`(${moderationState.state} IS NULL OR ${moderationState.state} NOT IN ('moved','deleted','needs_human'))`)
+    .orderBy(sql`${moderationState.lastReviewedAt} ASC NULLS FIRST`, articles.slug)
+    .limit(8);
+}
+
 // the landing page IS the Brain (embedded); the article directory moved to /articles
 app.get("/", async (c) => {
-  const cacheKey = "page:home:v9";  // v9: Stats link in the brain-landing nav
+  const cacheKey = "page:home:v10";  // v10: least-recently-reviewed strip (P2 trust signals)
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
-  const html = brainLanding(await homeRows(c));
+  const [rows, leastReviewed] = await Promise.all([homeRows(c), leastReviewedRows(c)]);
+  const html = brainLanding(rows, leastReviewed);
   await c.env.RENDER_CACHE.put(cacheKey, html, { expirationTtl: 300 });
   return c.html(html);
 });

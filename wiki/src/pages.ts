@@ -70,7 +70,10 @@ export function injectAuthAndEditor(
       // v=14: highlight-range editing — Section + Snippet are now exposed in
       // the panel with a "Use selection" button (typed anchors stay locked).
       // v=15: propose-then-approve inline banner (window.__WL_PROPOSALS__).
-      `<script src="/assets/editor.js?v=15"></script>\n`;
+      // v=16: save-UX niceties — kind/match_kind <select>s (unknown stored
+      // values preserved), comment cleared after save, label-based panel
+      // titles, alt-click → Mathlib docs, orphaned-anchor Re-anchor flow.
+      `<script src="/assets/editor.js?v=16"></script>\n`;
   } else {
     inject =
       `<a id="wl-signin" href="/login?returnTo=${ret}" ` +

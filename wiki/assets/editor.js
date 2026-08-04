@@ -4,7 +4,12 @@
 // Worker (/api/article/:slug) instead of the localhost review server.
 //
 //   - Click a highlight (no text selected) → edit that annotation.
+//   - Alt-click a highlight → open its Mathlib docs page directly (when the
+//     annotation carries a mathlib_url); plain click keeps the edit behavior.
 //   - Select text → "＋ Annotate" button → create a new annotation over it.
+//   - Orphaned annotations (anchor text no longer matches the article) are
+//     reachable from the top bar's "N orphaned" button and re-anchored from a
+//     fresh selection via the panel's Re-anchor button.
 //   - Save POSTs the full annotation array; the server re-renders + records a
 //     revision; the page reloads to show the result.
 (function () {
@@ -31,6 +36,37 @@
   annos.forEach(function (a, i) {
     if (a && a.status === "rejected") rejectedIdxs.push(i);
   });
+  // ---- orphaned-anchor detection (save-UX e) ----
+  // An annotation renders no highlight for one of TWO reasons, and the editor
+  // must not conflate them (12/773 corpus pages hit the second):
+  //   rot        — the anchor no longer matches the article text
+  //                (__WL_MATCHED__[i] === false). Re-anchor fixes it.
+  //   suppressed — the anchor MATCHED but the wrap engine's partial-overlap
+  //                protection dropped the highlight (matched true, yet the
+  //                index appears in no .anno wrap). The anchor is healthy;
+  //                Re-anchor would not restore the highlight and re-saving
+  //                would only flip provenance to human. No Re-anchor offered.
+  // The DOM is the wrap engine's real output for this page; __WL_MATCHED__ is
+  // its real per-annotation match result (tombstones report true). On older
+  // cached pages without __WL_MATCHED__ every unwrapped index degrades to the
+  // pre-split behavior (treated as rot).
+  const matchedArr = window.__WL_MATCHED__;
+  const wrappedIdxs = new Set();
+  document.querySelectorAll(".anno").forEach(function (el) {
+    const raw = el.dataset.annoIndices || el.dataset.annoIndex;
+    if (raw == null) return;
+    String(raw).split(",").forEach(function (s) {
+      const n = parseInt(s, 10);
+      if (!Number.isNaN(n)) wrappedIdxs.add(n);
+    });
+  });
+  const orphanIdxs = [];
+  const suppressedIdxs = [];
+  annos.forEach(function (a, i) {
+    if (!a || a.status === "rejected" || wrappedIdxs.has(i)) return;
+    if (Array.isArray(matchedArr) && matchedArr[i] === true) suppressedIdxs.push(i);
+    else orphanIdxs.push(i);
+  });
   const bar = document.createElement("div");
   bar.id = "wlr-bar";
   const ret = encodeURIComponent("/" + slug);
@@ -41,7 +77,20 @@
       ? '<button id="wlr-hidden" type="button" title="Rejected annotations are hidden from readers — open one, pick another status, and save to restore it">' +
         rejectedIdxs.length + " hidden annotation" + (rejectedIdxs.length === 1 ? "" : "s") + "</button>"
       : "") +
-    '<span style="opacity:.85">click a highlight to edit · select text to add</span>' +
+    // Orphaned = the anchor text no longer matches the article (anchor rot),
+    // so no highlight renders. Each click cycles to the next one so it can be
+    // re-anchored from a fresh selection (save-UX e).
+    (orphanIdxs.length
+      ? '<button id="wlr-orphans" type="button" title="These annotations&#39; anchor text no longer matches the article, so they render no highlight — open one, select the right text in the article, and click Re-anchor">' +
+        orphanIdxs.length + " orphaned" + "</button>"
+      : "") +
+    // Suppressed = anchor healthy, highlight dropped by overlap protection.
+    // Reachable for editing, but with truthful copy and no Re-anchor.
+    (suppressedIdxs.length
+      ? '<button id="wlr-suppressed" type="button" title="These annotations&#39; anchors match, but their highlights overlap another annotation&#39;s and were not drawn — the annotation itself is intact and editable">' +
+        suppressedIdxs.length + " hidden by overlap" + "</button>"
+      : "") +
+    '<span style="opacity:.85">click a highlight to edit · select text to add · alt-click a highlight opens its Mathlib docs</span>' +
     '<span class="wlr-spacer"></span>' +
     // P3: name links to /u/<id> when the id is known (older cached pages
     // without __WL_USER__.id fall back to plain text).
@@ -182,6 +231,22 @@
       hiddenCursor++;
     });
   }
+  if (suppressedIdxs.length) {
+    // Same cycling pattern for overlap-suppressed annotations.
+    let suppressedCursor = 0;
+    bar.querySelector("#wlr-suppressed").addEventListener("click", function () {
+      openEditor(suppressedIdxs[suppressedCursor % suppressedIdxs.length]);
+      suppressedCursor++;
+    });
+  }
+  if (orphanIdxs.length) {
+    // Same cycling pattern for orphaned (anchor-rot) annotations.
+    let orphanCursor = 0;
+    bar.querySelector("#wlr-orphans").addEventListener("click", function () {
+      openEditor(orphanIdxs[orphanCursor % orphanIdxs.length]);
+      orphanCursor++;
+    });
+  }
 
   // ---- P3: ★ Watch toggle ---------------------------------------------------
   const watchBtn = bar.querySelector("#wlr-watch");
@@ -230,6 +295,7 @@
     <fieldset id="wlr-f-anchor-set" class="wlr-anchor-set">
       <legend>Highlight range
         <button type="button" id="wlr-f-anchor-pick" title="Replace this annotation's range with whatever text is currently selected in the article">Use selection</button>
+        <button type="button" id="wlr-f-anchor-reanchor" style="display:none" title="This annotation's anchor no longer matches the article. Select the correct text in the article, then click to rewrite the anchor from that selection.">Re-anchor</button>
       </legend>
       <small class="wlr-help">What text in the article this annotation wraps. Edit to resize / re-anchor the box. Snippet must be a substring of the section's prose.</small>
       <label for="wlr-f-anchor-section">Section</label>
@@ -247,8 +313,14 @@
       <option value="rejected">rejected (hide)</option>
     </select>
     <label for="wlr-f-kind">Kind</label>
-    <small class="wlr-help">definition · theorem · proposition · example · corollary · lemma</small>
-    <input id="wlr-f-kind" placeholder="e.g. definition">
+    <small class="wlr-help">What sort of statement this annotates.</small>
+    <select id="wlr-f-kind">
+      <option value="">—</option>
+      <option value="definition">definition</option>
+      <option value="theorem">theorem</option>
+      <option value="proposition">proposition</option>
+      <option value="example">example</option>
+    </select>
     <label for="wlr-f-label">Label</label>
     <small class="wlr-help">Short display name shown at the top of the tooltip.</small>
     <input id="wlr-f-label" placeholder="e.g. Abelianization of a group">
@@ -261,8 +333,14 @@
     <small class="wlr-help">Dotted path, auto-filled from the decl autocomplete.</small>
     <input id="wlr-f-module" placeholder="e.g. Mathlib.RingTheory.Ideal.Prime">
     <label for="wlr-f-match">match_kind</label>
-    <small class="wlr-help">exact · generalization · special_case · invocation</small>
-    <input id="wlr-f-match" placeholder="e.g. exact">
+    <small class="wlr-help">How the Mathlib decl relates to the statement.</small>
+    <select id="wlr-f-match">
+      <option value="">—</option>
+      <option value="exact">exact</option>
+      <option value="generalization">generalization</option>
+      <option value="special_case">special_case</option>
+      <option value="invocation">invocation</option>
+    </select>
     <label for="wlr-f-note">Note</label>
     <small class="wlr-help">Optional caveats or context for readers.</small>
     <textarea id="wlr-f-note"></textarea>
@@ -294,6 +372,21 @@
         .map((s) => parseInt(s, 10))
         .filter((n) => !Number.isNaN(n) && annos[n]);
       if (idxs.length === 0) return;
+      // Alt-click: jump straight to the Mathlib docs for this highlight (the
+      // same mathlib_url the anonymous tooltip uses — computed server-side by
+      // page.ts buildClientData and index-aligned with annos, so no URL
+      // construction is forked here). Falls through to the normal editor when
+      // no annotation under the click carries a docs link.
+      if (e.altKey) {
+        const cd = window.__WL_ANNOTATIONS__ || [];
+        for (let k = 0; k < idxs.length; k++) {
+          const c = cd[idxs[k]];
+          if (c && c.mathlib_url) {
+            window.open(c.mathlib_url, "_blank", "noopener");
+            return;
+          }
+        }
+      }
       document.querySelectorAll(".anno.wlr-selected").forEach((n) => n.classList.remove("wlr-selected"));
       el.classList.add("wlr-selected");
       if (idxs.length === 1) {
@@ -676,26 +769,37 @@
   // overlay, page footer, etc.) selecting text should never pop the FAB.
   const articleBody = document.querySelector(".wl-article-body");
 
-  function maybeShowFab() {
+  // THE anchor-construction path from a live selection, shared by the
+  // ＋Annotate FAB, "Use selection", and Re-anchor (save-UX e) — one code path
+  // means one sig behavior (the parity harness pins section+snippet anchors).
+  // Returns {text, section} for a usable in-article selection, {outside:true}
+  // for a selection outside the article body, and null for no/too-short
+  // selection.
+  function selectionAnchor(minLen) {
     const sel = window.getSelection();
     const text = sel ? sel.toString().trim() : "";
-    if (!sel || sel.isCollapsed || text.length < 4) {
-      fab.style.display = "none";
-      return;
-    }
+    if (!sel || sel.isCollapsed || text.length < minLen) return null;
     // Both endpoints must be inside the article body. Without this, selecting
     // the editor panel's help text (e.g. "Status — Does Mathlib4 capture this
-    // statement?") pops a confusing "+ Annotate" button.
+    // statement?") would count as an "annotate this prose" gesture.
     if (
       !articleBody ||
       !articleBody.contains(sel.anchorNode) ||
       !articleBody.contains(sel.focusNode)
     ) {
+      return { outside: true };
+    }
+    return { text: text, section: nearestSection(sel.anchorNode) };
+  }
+
+  function maybeShowFab() {
+    const got = selectionAnchor(4);
+    if (!got || got.outside) {
       fab.style.display = "none";
       return;
     }
-    const rect = sel.getRangeAt(0).getBoundingClientRect();
-    pendingSel = { text, section: nearestSection(sel.anchorNode) };
+    const rect = window.getSelection().getRangeAt(0).getBoundingClientRect();
+    pendingSel = got;
     fab.style.left = Math.max(8, rect.left) + "px";
     fab.style.top = Math.max(44, rect.top - 34) + "px";
     fab.style.display = "block";
@@ -739,6 +843,35 @@
   }
 
   // ---- form-state helpers (fixes #8/#9/#11c) --------------------------------
+
+  // Set a <select>'s value, preserving any unknown stored value as an extra
+  // option so old data round-trips through the dropdown byte-identically
+  // (the corpus holds legacy kinds like "conjecture"/"remark" and match_kinds
+  // like "related" that predate the canonical vocabulary). Extra options are
+  // tagged data-extra and swept on the next populate so they never accumulate.
+  function setSelectValue(sel, value) {
+    sel.querySelectorAll("option[data-extra]").forEach(function (o) { o.remove(); });
+    const v = value == null ? "" : String(value);
+    let known = false;
+    for (let i = 0; i < sel.options.length; i++) {
+      if (sel.options[i].value === v) { known = true; break; }
+    }
+    if (!known) {
+      const opt = document.createElement("option");
+      opt.value = v;
+      opt.textContent = v + " (stored value)";
+      opt.setAttribute("data-extra", "1");
+      sel.appendChild(opt);
+    }
+    sel.value = v;
+  }
+
+  // Panel title: the annotation's label (or its quoted anchor text), truncated
+  // to ~40 chars — "Edit annotation #7" told a contributor nothing (save-UX c).
+  function truncateTitle(s) {
+    s = String(s == null ? "" : s).trim();
+    return s.length > 40 ? s.slice(0, 39).replace(/\s+$/, "") + "…" : s;
+  }
 
   function fieldValues() {
     return {
@@ -793,11 +926,13 @@
     } catch (_) { /* ignore */ }
     if (!d) return false;
     $("wlr-f-status").value = d.status || $("wlr-f-status").value;
-    $("wlr-f-kind").value = d.kind || "";
+    // Drafts stashed before the select conversion may hold free-typed values —
+    // setSelectValue preserves them as extra options instead of dropping them.
+    setSelectValue($("wlr-f-kind"), d.kind || "");
     $("wlr-f-label").value = d.label || "";
     $("wlr-f-decl").value = d.decl || "";
     $("wlr-f-module").value = d.module || "";
-    $("wlr-f-match").value = d.match || "";
+    setSelectValue($("wlr-f-match"), d.match || "");
     $("wlr-f-note").value = d.note || "";
     $("wlr-f-comment").value = d.comment || "";
     return true;
@@ -815,24 +950,38 @@
     editingIndex = idx;
     const a = annos[idx];
     const m = mathlib(a);
-    $("wlr-title").textContent = "Edit annotation #" + idx;
+    // Title = label (preferred) or the anchor's quoted text, truncated. The
+    // #index fallback only fires when an annotation has neither (textContent —
+    // labels and snippets are hostile user text).
+    const t = truncateTitle(a.label || quoteOf(a));
+    $("wlr-title").textContent = t ? "Edit: " + t : "Edit annotation #" + idx;
     $("wlr-quote").textContent = quoteOf(a);
     $("wlr-f-status").value = a.status || "not_formalized";
-    $("wlr-f-kind").value = a.kind || "";
+    setSelectValue($("wlr-f-kind"), a.kind || "");
     $("wlr-f-label").value = a.label || "";
     $("wlr-f-decl").value = m.decl || a.decl || "";
     $("wlr-f-module").value = m.module || a.module || "";
-    $("wlr-f-match").value = m.match_kind || a.match_kind || "";
+    setSelectValue($("wlr-f-match"), m.match_kind || a.match_kind || "");
     $("wlr-f-note").value = a.note || "";
     populateAnchorFields(a.anchor || {});
     setDeclCheck("", true);
     $("wlr-del").style.display = "";
     // Show the one-click endorsement only when there's something to flip.
     $("wlr-mark-reviewed").style.display = a.provenance !== "human" ? "" : "none";
+    // Orphaned-anchor state (save-UX e): a fresh open never inherits a stale
+    // re-anchor flag; the Re-anchor affordance shows only for orphans.
+    delete panel.dataset.reanchor;
+    const isOrphan = orphanIdxs.indexOf(idx) !== -1;
+    const isSuppressed = suppressedIdxs.indexOf(idx) !== -1;
+    $("wlr-f-anchor-reanchor").style.display = isOrphan ? "" : "none";
     $("wlr-status-msg").textContent =
       a.status === "rejected"
         ? "This annotation is rejected (hidden from readers). Pick another status and save to restore it."
-        : "";
+        : isOrphan
+          ? "⚠ This annotation's anchor no longer matches the article text, so it renders no highlight. Select the correct text in the article, then click Re-anchor."
+          : isSuppressed
+            ? "This annotation's anchor matches, but its highlight overlaps another annotation's and is not drawn. The annotation itself is intact — no re-anchoring needed."
+            : "";
     // Snapshot the canonical values first, THEN overlay any stashed 409 draft —
     // a restored draft must count as unsaved changes (fixes #9/#11c).
     setBusy(false);
@@ -848,10 +997,13 @@
     editingIndex = null;
     panel.dataset.newSnippet = text;
     panel.dataset.newSection = section;
-    $("wlr-title").textContent = "New annotation";
+    const t = truncateTitle(text);
+    $("wlr-title").textContent = t ? "New: " + t : "New annotation";
     $("wlr-quote").textContent = text + "   [§ " + section + "]";
     $("wlr-f-status").value = "not_formalized";
-    ["kind", "label", "decl", "module", "match"].forEach((f) => ($("wlr-f-" + f).value = ""));
+    ["label", "decl", "module"].forEach((f) => ($("wlr-f-" + f).value = ""));
+    setSelectValue($("wlr-f-kind"), "");
+    setSelectValue($("wlr-f-match"), "");
     $("wlr-f-note").value = "";
     // New annotations always use the section+snippet anchor type, so the
     // fields are editable from the start.
@@ -860,6 +1012,9 @@
     $("wlr-del").style.display = "none";
     // New annotations become human-curated on save, so nothing to mark separately.
     $("wlr-mark-reviewed").style.display = "none";
+    // Not an orphan flow — no Re-anchor button, no stale flag.
+    delete panel.dataset.reanchor;
+    $("wlr-f-anchor-reanchor").style.display = "none";
     $("wlr-status-msg").textContent = "";
     // Same snapshot-then-restore dance as openEditor (fixes #9/#11c); the
     // draft key includes section+snippet, so reselecting the same text after
@@ -880,6 +1035,7 @@
     editingIndex = null;
     delete panel.dataset.newSnippet;
     delete panel.dataset.newSection;
+    delete panel.dataset.reanchor;
     document.querySelectorAll(".anno.wlr-selected").forEach((n) => n.classList.remove("wlr-selected"));
     $("wlr-status-msg").textContent = "";
   }
@@ -929,26 +1085,46 @@
   // The same article-body containment guard that the FAB uses applies here.
   $("wlr-f-anchor-pick").addEventListener("click", () => {
     if ($("wlr-f-anchor-pick").disabled) return;
-    const sel = window.getSelection();
-    const text = sel ? sel.toString().trim() : "";
-    if (!sel || sel.isCollapsed || text.length < 2) {
+    const got = selectionAnchor(2);
+    if (!got) {
       $("wlr-status-msg").textContent =
         "Select the new range in the article first, then click Use selection.";
       return;
     }
-    if (
-      !articleBody ||
-      !articleBody.contains(sel.anchorNode) ||
-      !articleBody.contains(sel.focusNode)
-    ) {
+    if (got.outside) {
       $("wlr-status-msg").textContent =
         "The selection must be inside the article body (not the editor panel).";
       return;
     }
-    $("wlr-f-anchor-snippet").value = text;
-    const sec = nearestSection(sel.anchorNode);
-    if (sec) $("wlr-f-anchor-section").value = sec;
+    $("wlr-f-anchor-snippet").value = got.text;
+    if (got.section) $("wlr-f-anchor-section").value = got.section;
     $("wlr-status-msg").textContent = "Snippet updated from selection — Save to apply.";
+  });
+
+  // Re-anchor (save-UX e): for an orphaned annotation, rewrite the anchor
+  // wholesale from the current selection — the SAME {section, snippet}
+  // construction a brand-new annotation gets (selectionAnchor above). Typed
+  // anchors (math_alttext / theorem_box / prose_range) are deliberately
+  // replaceable here: the old payload stopped matching, and the replacement is
+  // a fresh plain anchor, not an in-place mutation of the typed shape. Save
+  // then goes through the normal save path (the server stamps provenance
+  // 'human' for the changed annotation — correct and expected).
+  // preventDefault on mousedown so clicking the button can't collapse the very
+  // article selection it is about to read.
+  $("wlr-f-anchor-reanchor").addEventListener("mousedown", (e) => e.preventDefault());
+  $("wlr-f-anchor-reanchor").addEventListener("click", () => {
+    const got = selectionAnchor(2);
+    if (!got || got.outside) {
+      $("wlr-status-msg").textContent = got && got.outside
+        ? "The selection must be inside the article body (not the editor panel)."
+        : "Select the annotation's correct text in the article first, then click Re-anchor.";
+      return;
+    }
+    // Unlocks the fields too when the old anchor was typed — the replacement
+    // is an ordinary section+snippet anchor.
+    populateAnchorFields({ section: got.section, snippet: got.text });
+    panel.dataset.reanchor = "1";
+    $("wlr-status-msg").textContent = "Anchor rewritten from selection — Save to apply.";
   });
 
   function headingTextOf(el) {
@@ -1114,8 +1290,15 @@
       // For section+snippet anchors (or untyped legacy anchors), accept the
       // form values — this is how a contributor resizes the highlight box.
       // For typed anchors, preserve the original payload to avoid risking a
-      // malformed write.
-      built.anchor = isTyped ? prevAnchor : { section: formSection, snippet: formSnippet };
+      // malformed write — UNLESS the user explicitly re-anchored an orphan,
+      // which replaces the whole anchor with a fresh section+snippet one.
+      const reanchored = panel.dataset.reanchor === "1";
+      built.anchor = isTyped && !reanchored ? prevAnchor : { section: formSection, snippet: formSnippet };
+      // A re-anchor also drops any v3 multi-anchor array: the wrap engine
+      // prefers anchors[] over anchor, so leaving the stale array in place
+      // would make the rewrite a no-op. (The undefined survives the spread
+      // below and JSON.stringify omits it from the POST.)
+      if (reanchored) built.anchors = undefined;
       // Spread the original first so fields the form doesn't expose (proof_note,
       // id, formalizations, tombstone markers, moderation_flag, …) survive; the
       // form-derived fields in `built` win, so explicitly cleared fields (e.g. an
@@ -1157,9 +1340,16 @@
         // Everything in `annos` has now been persisted — deleting any of them
         // from here on must tombstone, not splice.
         unsavedNew.clear();
+        // The edit summary was consumed by THIS save — clear it so the next
+        // edit in the session doesn't silently reuse a stale comment (save-UX
+        // b). Failure/409 paths keep it (the draft may be retried as-is).
+        $("wlr-f-comment").value = "";
         const m = (res.matched || "").match(/(\d+)\/(\d+)/);
         if (m && m[1] !== m[2]) {
           setBusy(false); // save DID land; allow further edits (fix #8)
+          // The panel stays open: re-baseline the unsaved-changes snapshot so
+          // Escape/× doesn't prompt to discard changes that DID persist.
+          openSnapshot = fieldSnapshot();
           $("wlr-status-msg").innerHTML =
             verb + ", but only " + res.matched + " anchored — an annotation's text didn't match the article. " +
             '<a href="#" onclick="location.reload();return false">reload anyway</a>';
