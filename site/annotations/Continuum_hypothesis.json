@@ -18,7 +18,7 @@
         "module": "Mathlib.SetTheory.Cardinal.Continuum",
         "match_kind": null
       },
-      "note": "Mathlib has the provable direction ℵ₁ ≤ 𝔠 but never defines or asserts CH itself (which is independent of ZFC).",
+      "note": "Mathlib has the provable direction ℵ₁ ≤ 𝔠 (Cardinal.aleph_one_le_continuum) but never defines or asserts CH itself, which is independent of ZFC.",
       "provenance": "ai",
       "id": "7adf578324da"
     },
@@ -31,11 +31,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Cardinal.aleph_one_le_continuum",
+        "decl": "Cardinal.two_power_aleph0",
         "module": "Mathlib.SetTheory.Cardinal.Continuum",
         "match_kind": null
       },
-      "note": "Mathlib has 𝔠 = 2^ℵ₀ (Cardinal.two_power_aleph0) and ℵ₁ ≤ 𝔠 but not the equation 2^ℵ₀ = ℵ₁.",
+      "note": "Mathlib proves 𝔠 = 2^ℵ₀ (Cardinal.two_power_aleph0) and ℵ₁ ≤ 𝔠, but the equation 2^ℵ₀ = ℵ₁ is not stated.",
       "provenance": "ai",
       "id": "d5feb75e7a72"
     },
@@ -72,6 +72,22 @@
       "note": "Cardinal.sum_lt_prod is König's theorem: (∀ i, f i < g i) → sum f < prod g.",
       "provenance": "ai",
       "id": "43463be61c9a"
+    },
+    {
+      "kind": "definition",
+      "label": "Cofinality",
+      "anchor": {
+        "section": "History",
+        "snippet": "the concept of cofinality introduced in 1908 by Felix Hausdorff"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ordinal.cof",
+        "module": "Mathlib.SetTheory.Cardinal.Cofinality.Ordinal",
+        "match_kind": "exact"
+      },
+      "note": "Ordinal.cof defines the cofinality of an ordinal in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -125,6 +141,22 @@
       "id": "716dde66202e"
     },
     {
+      "kind": "theorem",
+      "label": "Cantor's theorem (diagonal argument)",
+      "anchor": {
+        "section": "Cardinality of infinite sets",
+        "snippet": "Cantor's diagonal argument"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.cantor",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "Cardinal.cantor: a < 2^a for every cardinal a; the diagonal-argument core underlying #ℤ < #ℝ.",
+      "provenance": "ai"
+    },
+    {
       "kind": "proposition",
       "label": "Reals equinumerous with powerset of integers",
       "anchor": {
@@ -138,7 +170,8 @@
         "match_kind": "exact"
       },
       "note": "Cardinal.mk_real gives #ℝ = 𝔠 = 2^ℵ₀ = #(Set ℕ), matching the equinumerosity with the powerset of the integers.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a1ce01626dbc"
     },
     {
       "kind": "proposition",
@@ -190,6 +223,22 @@
       "note": "Mathlib has no metatheory of ZF(C) consistency or constructible-universe relative consistency results.",
       "provenance": "ai",
       "id": "7cc93c715ce9"
+    },
+    {
+      "kind": "definition",
+      "label": "Constructible universe L",
+      "anchor": {
+        "section": "Independence from ZFC",
+        "snippet": "both CH and AC hold in the constructible universe"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gödel's constructible universe L is not developed in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",
@@ -309,6 +358,22 @@
       "note": "Neither GCH nor the ZF-relative derivation of choice from it is formalized in Mathlib.",
       "provenance": "ai",
       "id": "c11f9e2404b3"
+    },
+    {
+      "kind": "definition",
+      "label": "Hartogs number",
+      "anchor": {
+        "section": "Generalized continuum hypothesis",
+        "snippet": "smaller than its own Hartogs number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Hartogs number declaration exists in Mathlib (searched for 'hartogs' and 'Ordinal.hartogs' with no match).",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",

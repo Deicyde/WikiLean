@@ -495,7 +495,8 @@
         "match_kind": null
       },
       "note": "The EPR paradox is a physics thought experiment with no Mathlib formalization.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6bde5d1f616b"
     },
     {
       "kind": "definition",
@@ -511,7 +512,8 @@
         "match_kind": null
       },
       "note": "Quantum entanglement of joint states is not defined in Mathlib; tensor products of Hilbert spaces are present, but no notion of entangled vs. separable states.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "acf168928a9b"
     },
     {
       "kind": "definition",
@@ -527,7 +529,8 @@
         "match_kind": null
       },
       "note": "Bell tests are physical experimental protocols; not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cb19c425f471"
     },
     {
       "kind": "definition",
@@ -543,7 +546,8 @@
         "match_kind": "exact"
       },
       "note": "Orthonormal Hilbert bases are formalized as `HilbertBasis` (and `OrthonormalBasis` for the finite-dimensional case in `Mathlib.Analysis.InnerProductSpace.PiL2`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "71f9b209fe29"
     },
     {
       "kind": "definition",
@@ -559,7 +563,8 @@
         "match_kind": null
       },
       "note": "The quantum prediction E(a,b) = −a·b for the singlet state is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "80341975a23c"
     },
     {
       "kind": "definition",
@@ -575,7 +580,8 @@
         "match_kind": null
       },
       "note": "Superdeterminism is a foundational/physical concept not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e4075b7ffcc8"
     },
     {
       "kind": "definition",
@@ -591,6 +597,103 @@
         "match_kind": null
       },
       "note": "Experimental loopholes are physics-experimental notions, not formalized in Mathlib.",
+      "provenance": "ai",
+      "id": "f2187f68f954"
+    },
+    {
+      "kind": "definition",
+      "label": "CHSH tuple (algebraic locality encoding)",
+      "anchor": {
+        "section": "Theorem",
+        "snippet": "Alice's choice of action cannot influence Bob's result or vice versa"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCHSHTuple",
+        "module": "Mathlib.Algebra.Star.CHSH",
+        "match_kind": "generalization"
+      },
+      "note": "The commutation and squared-to-one conditions on the four observables A₀, A₁, B₀, B₁ that formalise the locality/measurement setup are packaged as `IsCHSHTuple` in `Mathlib/Algebra/Star/CHSH.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Classical CHSH-game winning probability ≤ 3/4",
+      "anchor": {
+        "section": "Theorem",
+        "snippet": "In any theory based on local hidden variables, Alice and Bob's probability of winning is no greater than"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classical bound of 3/4 for the CHSH nonlocal game (equivalent to the CHSH inequality reformulation) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Quantum CHSH-game winning probability = cos²(π/8)",
+      "anchor": {
+        "section": "Theorem",
+        "snippet": "if they share an entangled quantum state, their probability of winning can be as large as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The optimal quantum winning probability cos²(π/8) for the CHSH game is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Stern–Gerlach measurement",
+      "anchor": {
+        "section": "Bell (1964)",
+        "snippet": "Each particle is measured by a Stern–Gerlach device"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Stern–Gerlach measurement of spin-1/2 along a chosen axis is a physical device with no Mathlib formalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bohm (pilot-wave) interpretation",
+      "anchor": {
+        "section": "Non-local hidden variables",
+        "snippet": "This is the basis of the Bohm interpretation of quantum mechanics"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The de Broglie–Bohm pilot-wave interpretation is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Many-worlds interpretation",
+      "anchor": {
+        "section": "Many-worlds interpretation of quantum mechanics",
+        "snippet": "The many-worlds interpretation , also known as the Everett interpretation, is dynamically local"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Everett / many-worlds interpretation of quantum mechanics is not formalized in Mathlib.",
       "provenance": "ai"
     }
   ]

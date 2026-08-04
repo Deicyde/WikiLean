@@ -36,7 +36,8 @@
         "match_kind": "exact"
       },
       "note": "`exists_extension_of_le_sublinear` is the Hahn–Banach extension theorem, a key application of Zorn's lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8b740f8a50a5"
     },
     {
       "kind": "theorem",
@@ -52,7 +53,8 @@
         "match_kind": "exact"
       },
       "note": "`AlgebraicClosure k` constructs an algebraic closure of any field `k`, an application of Zorn's lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7b00b2ebb12f"
     },
     {
       "kind": "theorem",
@@ -68,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "The well-ordering theorem (every set admits a well-order) is proved in Mathlib using choice.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "235402340570"
     },
     {
       "kind": "theorem",
@@ -356,7 +359,8 @@
         "match_kind": "exact"
       },
       "note": "`LinearIndependent` is the standard Mathlib predicate for linear independence of an indexed family of vectors.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e78970485cc7"
     },
     {
       "kind": "theorem",
@@ -406,7 +410,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no standalone `FiniteIntersectionProperty` definition, but the FIP characterization of compactness is expressed via `CompactSpace.iInter_nonempty`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6f62d7243a0b"
     },
     {
       "kind": "proposition",
@@ -507,7 +512,8 @@
         "match_kind": "exact"
       },
       "note": "Bourbaki–Witt: an inflationary map on a chain-complete poset has a fixed point; used here as an alternative route to Zorn's lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9ca1d883c8c8"
     },
     {
       "kind": "theorem",
@@ -523,7 +529,8 @@
         "match_kind": null
       },
       "note": "Pataraia's fixed-point theorem (monotone maps on a dcpo with a least element have a fixed point) does not have a direct Mathlib formalization.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "aa01a22e2b5c"
     },
     {
       "kind": "theorem",
@@ -762,6 +769,214 @@
       "note": "`zorn_le` is stated under `[Preorder α]`, exactly Zorn's lemma for preordered sets.",
       "provenance": "ai",
       "id": "78e1e4e9ab32"
+    },
+    {
+      "kind": "definition",
+      "label": "Axiom of choice",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "assuming the axiom of choice"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Classical.choice",
+        "module": "Init.Prelude",
+        "match_kind": "exact"
+      },
+      "note": "`Classical.choice` is Lean's built-in axiom of choice; Mathlib is developed on top of it.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Reflexive relation",
+      "anchor": {
+        "section": "Statement of the lemma",
+        "snippet": "reflexive ( x ≤ x for every x )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Reflexive",
+        "module": "Mathlib.Order.Defs.Unbundled",
+        "match_kind": "exact"
+      },
+      "note": "`Reflexive r` is the standard predicate `∀ x, r x x`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Antisymmetric relation",
+      "anchor": {
+        "section": "Statement of the lemma",
+        "snippet": "antisymmetric (if both x ≤ y and y ≤ x hold, then x = y )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsAntisymm",
+        "module": "Mathlib.Order.Defs.Unbundled",
+        "match_kind": "exact"
+      },
+      "note": "`IsAntisymm` is the typeclass encoding antisymmetry of a binary relation; underlies `PartialOrder`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Transitive relation",
+      "anchor": {
+        "section": "Statement of the lemma",
+        "snippet": "transitive (if x ≤ y and y ≤ z then x ≤ z )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Transitive",
+        "module": "Mathlib.Order.Defs.Unbundled",
+        "match_kind": "exact"
+      },
+      "note": "`Transitive r` is the standard `∀ x y z, r x y → r y z → r x z`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ideal of a ring",
+      "anchor": {
+        "section": "Every nontrivial ring with unity contains a maximal ideal",
+        "snippet": "all proper ideals in R"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal",
+        "module": "Mathlib.RingTheory.Ideal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Ideal R` is the type of (two-sided in commutative case) ideals of the ring `R`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Maximal ideal",
+      "anchor": {
+        "section": "Every nontrivial ring with unity contains a maximal ideal",
+        "snippet": "a maximal ideal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.IsMaximal",
+        "module": "Mathlib.RingTheory.Ideal.Maximal",
+        "match_kind": "exact"
+      },
+      "note": "`Ideal.IsMaximal I` states that `I` is a proper ideal that is maximal under inclusion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Compact space",
+      "anchor": {
+        "section": "A proof of Tychonoff's theorem",
+        "snippet": "a family [MATH] of compact spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompactSpace",
+        "module": "Mathlib.Topology.Defs.Filter",
+        "match_kind": "exact"
+      },
+      "note": "`CompactSpace X` says the whole space `X` is compact.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Basis of a vector space",
+      "anchor": {
+        "section": "Every vector space has a basis",
+        "snippet": "B is indeed a basis of V"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Basis",
+        "module": "Mathlib.LinearAlgebra.Basis.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Module.Basis` is the Mathlib type of bases of a module/vector space (a linearly independent spanning family).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ultrafilter",
+      "anchor": {
+        "section": "Equivalent forms of Zorn's lemma",
+        "snippet": "an ultrafilter"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ultrafilter",
+        "module": "Mathlib.Order.Filter.Ultrafilter.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Ultrafilter α` is the type of maximal proper filters on `α`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Directed set",
+      "anchor": {
+        "section": "Zorn's lemma implies the axiom of choice",
+        "snippet": "we could have used a directed set instead of a chain"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Directed",
+        "module": "Mathlib.Order.Directed",
+        "match_kind": "exact"
+      },
+      "note": "`Directed r f` / `IsDirected` encode the notion of a directed family/set with respect to `r`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Preorder",
+      "anchor": {
+        "section": "Preorder version",
+        "snippet": "There is a version of Zorn's lemma for a preordered set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Preorder",
+        "module": "Mathlib.Order.Defs.PartialOrder",
+        "match_kind": "exact"
+      },
+      "note": "`Preorder` is a reflexive and transitive binary relation, the standard preorder typeclass in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Well-ordered set / well-ordering",
+      "anchor": {
+        "section": "Proof by transfinite recursion",
+        "snippet": "the set of all well-ordered chains"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsWellOrder",
+        "module": "Mathlib.Order.RelClasses",
+        "match_kind": "exact"
+      },
+      "note": "`IsWellOrder r` says `r` is a well-order (a well-founded strict linear order).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Axiom of dependent choice",
+      "anchor": {
+        "section": "Analogs under weakenings of the axiom of choice",
+        "snippet": "the axiom of dependent choice"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib uses the full axiom of choice and does not carry a separate development against ZF+DC.",
+      "provenance": "ai"
     }
   ]
 }

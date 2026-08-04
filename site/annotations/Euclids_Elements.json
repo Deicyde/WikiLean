@@ -239,8 +239,8 @@
         "module": "Mathlib.Algebra.Field.GeomSum",
         "match_kind": "exact"
       },
-      "note": "geom_sum_eq gives ∑ xⁱ = (xⁿ − 1)/(x − 1) in a field, the standard finite geometric-series formula.",
-      "provenance": "ai",
+      "note": "geom_sum_eq gives ∑ xⁱ = (xⁿ − 1)/(x − 1) in a field, the standard finite geometric-series formula (verified module is Mathlib.Algebra.Field.GeomSum).",
+      "provenance": "ai-moderated",
       "id": "747957e93ad3"
     },
     {
@@ -256,7 +256,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The cited Nat.Perfect.two_pow_mul_mersenne_of_prime does not exist; loogle/grep show no Mathlib formalization that 2^(p−1)·(2^p−1) is perfect when 2^p−1 is prime.",
+      "note": "decl_exists confirms Nat.Perfect.two_pow_mul_mersenne_of_prime does not exist; Mathlib has Nat.Perfect and mersenne but no theorem that 2^(p−1)·(2^p−1) is perfect when 2^p−1 is prime.",
       "provenance": "ai-moderated",
       "id": "928720baa2b2"
     },
@@ -307,7 +307,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The cited Nat.even_and_perfect_iff does not exist and no Mathlib decl characterizes even perfect numbers in terms of Mersenne primes.",
+      "note": "decl_exists confirms Nat.even_and_perfect_iff does not exist; semantic search shows no Mathlib decl characterizes even perfect numbers via Mersenne primes.",
       "provenance": "ai-moderated",
       "id": "d34bb58db9d4"
     },
@@ -606,7 +606,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Pasch's axiom — that a line entering a triangle through one side must exit through another — is not stated synthetically in Mathlib.",
+      "note": "Pasch's axiom — that a line entering a triangle through one side must exit through another — is not stated synthetically in Mathlib, though Wbtw/Sbtw betweenness primitives exist.",
       "provenance": "ai",
       "id": "47e0de4b20ce"
     },
@@ -623,8 +623,9 @@
         "module": "Mathlib.NumberTheory.Real.Irrational",
         "match_kind": "generalization"
       },
-      "note": "Mathlib's Nat.Prime.irrational_sqrt yields irrationality of √p for every prime p, in particular √2; an `irrational_sqrt_two` corollary is also available.",
-      "provenance": "ai"
+      "note": "Mathlib's Nat.Prime.irrational_sqrt yields irrationality of √p for every prime p, in particular √2; a specialised irrational_sqrt_two corollary is also available.",
+      "provenance": "ai",
+      "id": "1232c5b7ff73"
     },
     {
       "kind": "proposition",
@@ -640,7 +641,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no synthetic theory of Eudoxian proportions; the alternation rule is subsumed by field arithmetic but not stated in the Euclidean form.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b269818617bd"
     },
     {
       "kind": "proposition",
@@ -656,7 +658,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no formalization of the five Platonic solids or their inscription in a sphere.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "69774eca7050"
     },
     {
       "kind": "theorem",
@@ -672,7 +675,8 @@
         "match_kind": null
       },
       "note": "Euler's polyhedron formula relating vertex, edge, and face counts of a convex polyhedron is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d7a9d32b66c9"
     },
     {
       "kind": "proposition",
@@ -688,6 +692,71 @@
         "match_kind": null
       },
       "note": "Mathlib expresses geometric progressions via exponentiation (e.g. geom_series, geom_sum_eq) rather than Euclid's synthetic 'continued proportion' definition.",
+      "provenance": "ai",
+      "id": "5e95dff195d5"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finding the center of a circle (Book III, Prop. 1)",
+      "anchor": {
+        "section": "Book III",
+        "snippet": "Proposition 1 is on finding the center of a circle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib treats circles/spheres as sets with a given center (Metric.sphere/EuclideanGeometry.Sphere), so 'recovering' the center from the point set is not stated as a construction theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Thales' theorem (mention in lead)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Thales' theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.Sphere.angle_eq_pi_div_two_iff_mem_sphere_of_isDiameter",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Sphere",
+        "match_kind": "exact"
+      },
+      "note": "Same Mathlib decl as for Book III Prop. 31; Thales' theorem is that an angle inscribed in a semicircle is a right angle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unit / the number one (Book VII, Def. 1)",
+      "anchor": {
+        "section": "Books VII to X: Number theory",
+        "snippet": "The first of these definitions is for the unit (in modern terms, the number one)"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "One",
+        "module": "Init.Prelude",
+        "match_kind": null
+      },
+      "note": "Mathlib inherits Lean's One typeclass and treats 1 : ℕ as an ordinary natural number; Euclid's separate 'unit' status is not modeled.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Similarity of parallelepipeds (Book XI)",
+      "anchor": {
+        "section": "Book XI",
+        "snippet": "perpendicularity, parallelism, volumes, and similarity of parallelepipeds"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib lacks a synthetic notion of parallelepiped as a solid figure and does not state Book XI's similarity/volume results.",
       "provenance": "ai"
     }
   ]

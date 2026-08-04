@@ -236,7 +236,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "Set.indicator",
-        "module": "Mathlib.Algebra.Indicator",
+        "module": "Mathlib.Algebra.Notation.Indicator",
         "match_kind": "generalization"
       },
       "note": "Mathlib treats relations as `Prop`-valued functions natively; `Set.indicator` provides general characteristic functions but not as a notion tied to relations specifically.",
@@ -429,6 +429,54 @@
       "note": "This illustrative example is not present in Mathlib.",
       "provenance": "ai",
       "id": "fcfb1ee8fe10"
+    },
+    {
+      "kind": "definition",
+      "label": "Cartesian product",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a subset of the Cartesian product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.prod",
+        "module": "Mathlib.Data.Set.Operations",
+        "match_kind": "exact"
+      },
+      "note": "Binary Cartesian product is `Set.prod` (with `×ˢ` notation); the n-ary product of an indexed family is `Set.pi`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "n-tuple",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "it is a set of n - tuples"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Fin",
+        "module": "Init.Prelude",
+        "match_kind": "generalization"
+      },
+      "note": "n-tuples in Mathlib are functions `Fin n → α` (homogeneous) or dependent functions `(i : Fin n) → X i` (heterogeneous).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Infinitary relation",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "generalize the concept to infinitary relations with infinite sequences"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Infinitary relations (subsets of an infinite product of sets) are not given a dedicated bundled type in Mathlib.",
+      "provenance": "ai"
     }
   ]
 }

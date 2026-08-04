@@ -87,7 +87,8 @@
         "match_kind": "special_case"
       },
       "note": "Any field of prime cardinality p is uniquely ring-isomorphic to `ZMod p`; Mathlib provides `ZMod.ringEquivOfPrime` and related uniqueness results for prime-order fields.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d0b802c5ec6b"
     },
     {
       "kind": "theorem",
@@ -103,7 +104,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib formalizes the group/ring isomorphism theorems (first: `QuotientGroup.quotientKerEquivRange`, `RingHom.quotientKerEquivRange`; second and third theorems appear as `QuotientGroup.quotientInfEquivProdNormalQuotient` and `QuotientGroup.quotientQuotientEquivQuotient`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9b1820a042c1"
     },
     {
       "kind": "definition",
@@ -206,6 +208,54 @@
       "note": "`Equiv.Perm α := α ≃ α` is the type of permutations of a set.",
       "provenance": "ai",
       "id": "ca8acc039dd1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Logarithm is a group homomorphism",
+      "anchor": {
+        "section": "Logarithm and exponential",
+        "snippet": "so it is a group homomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.log_mul",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Real.log_mul` states `log (x * y) = log x + log y` (for x,y ≠ 0), witnessing the group-homomorphism property from (ℝ>0, ·) to (ℝ, +).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exponential is a group homomorphism",
+      "anchor": {
+        "section": "Logarithm and exponential",
+        "snippet": "so it too is a homomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.exp_add",
+        "module": "Mathlib.Analysis.SpecialFunctions.Exp",
+        "match_kind": "exact"
+      },
+      "note": "`Real.exp_add` states `exp (x + y) = exp x * exp y`, witnessing the group-homomorphism property from (ℝ, +) to (ℝ>0, ·).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Log and exp are mutual inverses",
+      "anchor": {
+        "section": "Logarithm and exponential",
+        "snippet": "show that [MATH] and [MATH] are inverses of each other"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.exp_log",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Real.exp_log` (for x > 0) and `Real.log_exp` express the two inverse identities exp(log x) = x and log(exp x) = x.",
+      "provenance": "ai"
     },
     {
       "kind": "example",
@@ -425,7 +475,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not currently formalize the Laplace transform as an isomorphism between function spaces suitable for turning ODEs into algebraic equations.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a7947f5b5525"
     },
     {
       "kind": "definition",
@@ -594,7 +645,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib provides `Iso.refl`, `Iso.symm`, and `Iso.trans` on `CategoryTheory.Iso`, showing identity, inverse, and composition of isomorphisms are again isomorphisms.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8ea7bb178e82"
     },
     {
       "kind": "definition",

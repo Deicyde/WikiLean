@@ -269,11 +269,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "ProbabilityTheory.HasGaussianLaw.sum",
-        "module": "Mathlib.Probability.Distributions.Gaussian.HasGaussianLaw.Basic",
+        "decl": "ProbabilityTheory.iIndepFun.hasGaussianLaw_sum",
+        "module": "Mathlib.Probability.Distributions.Gaussian.HasGaussianLaw.Independence",
         "match_kind": null
       },
-      "note": "Mathlib proves sums and scalar multiples of Gaussian variables are Gaussian (HasGaussianLaw.sum/smul), but the standardized sample mean as exactly N(0,1) is not assembled.",
+      "note": "Mathlib proves that a finite sum of independent Gaussian variables has a Gaussian law (iIndepFun.hasGaussianLaw_sum), but the standardization to exactly N(0,1) as a sampling-distribution statement is not assembled.",
       "provenance": "ai",
       "id": "9035cf1d4822"
     },
@@ -461,7 +461,8 @@
         "match_kind": null
       },
       "note": "The noncentral t-distribution is not in Mathlib, so its asymmetry is also not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5153562a0008"
     },
     {
       "kind": "definition",
@@ -734,6 +735,102 @@
       "note": "This worked confidence-interval example is not formalized in Mathlib.",
       "provenance": "ai",
       "id": "e0a143cf0c1e"
+    },
+    {
+      "kind": "proposition",
+      "label": "V has chi-squared distribution with ν degrees of freedom",
+      "anchor": {
+        "section": "As the distribution of a test statistic",
+        "snippet": "V has a chi-squared distribution ( χ 2 -distribution ) with"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The chi-squared distribution is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Z and V are independent",
+      "anchor": {
+        "section": "As the distribution of a test statistic",
+        "snippet": "Z and V are independent ;"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.IndepFun",
+        "module": "Mathlib.Probability.Independence.Basic",
+        "match_kind": null
+      },
+      "note": "General independence of random variables is in Mathlib, but this specific normal/chi-squared independence used in the t-distribution construction is not assembled.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "PDF via beta function representation",
+      "anchor": {
+        "section": "Probability density function",
+        "snippet": "This may also be written as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Real.Beta is formalized in Mathlib, but the t-distribution PDF written in terms of it is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Infinite ν limit is normal distribution",
+      "anchor": {
+        "section": "Table of selected values",
+        "snippet": "a t distribution with infinitely many degrees of freedom is a normal distribution."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The ν→∞ limit of the t-distribution being normal is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Box–Muller extension for sampling t",
+      "anchor": {
+        "section": "Monte Carlo sampling",
+        "snippet": "an extension of the Box–Muller method and its polar form is easily deployed."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the Box–Muller transform nor its t-distribution extension is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "t distribution as Pearson type IV",
+      "anchor": {
+        "section": "History",
+        "snippet": "The t distribution also appeared in a more general form as Pearson type IV distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the Pearson type IV family nor its identification with the t-distribution is in Mathlib.",
+      "provenance": "ai"
     }
   ]
 }

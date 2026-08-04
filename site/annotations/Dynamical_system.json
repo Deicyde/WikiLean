@@ -1539,7 +1539,7 @@
       },
       "note": "Sinai–Ruelle–Bowen measures are not formalized in Mathlib.",
       "provenance": "ai",
-      "id": "b8a0a7388b5d"
+      "id": "fac386229fec"
     },
     {
       "kind": "definition",
@@ -1690,6 +1690,198 @@
       "note": "The ergodic-decomposition analogy with representation theory is not formalized in Mathlib.",
       "provenance": "ai",
       "id": "d9c9049538da"
+    },
+    {
+      "kind": "example",
+      "label": "List of chaotic maps",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "List of chaotic maps"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The catalog of chaotic maps (Hénon, Lorenz, Rössler, Tent, etc.) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Semigroup composition law for time evolution",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "A semigroup structure introduces associativity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Flow",
+        "module": "Mathlib.Dynamics.Flow",
+        "match_kind": "exact"
+      },
+      "note": "`Flow` bundles the homomorphism/composition law ϕ(t₂+t₁, x) = ϕ(t₂, ϕ(t₁, x)) as its `map_add` field.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Reversible time evolution / group action",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "it is finally possible also to model reversible time evolution"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Flow.toAddAction",
+        "module": "Mathlib.Dynamics.Flow",
+        "match_kind": "generalization"
+      },
+      "note": "When τ is a group (e.g. ℝ or ℤ), `Flow.toAddAction` gives an action with inverses, formalizing reversible time evolution.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Measure-preserving map (Σ-measurable and preserving)",
+      "anchor": {
+        "section": "Measure theoretical definition",
+        "snippet": "A map Φ is said to preserve the measure if and only if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.MeasurePreserving",
+        "module": "Mathlib.Dynamics.Ergodic.MeasurePreserving",
+        "match_kind": "exact"
+      },
+      "note": "`MeasurePreserving` combines Σ-measurability and μ(Φ⁻¹ σ) = μ(σ) — the two conditions the article lists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Iterates of a discrete dynamical system",
+      "anchor": {
+        "section": "Measure theoretical definition",
+        "snippet": "for discrete dynamical systems the iterates"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.iterate",
+        "module": "Mathlib.Logic.Function.Iterate",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.iterate` (notation `f^[n]`) is the n-fold self-composition used as the iterates Φⁿ (corrected from the non-existent `Function.iterate`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Stone–Čech compactification",
+      "anchor": {
+        "section": "Topological dynamical system",
+        "snippet": "Another more general technique is to use Stone–Čech compactification"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "StoneCech",
+        "module": "Mathlib.Topology.Compactification.StoneCech",
+        "match_kind": "exact"
+      },
+      "note": "`StoneCech` is the Stone–Čech compactification functor on Tychonoff spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "One-point compactification",
+      "anchor": {
+        "section": "Topological dynamical system",
+        "snippet": "the continuous extension Φ* of Φ to the one-point compactification X* of X"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "OnePoint",
+        "module": "Mathlib.Topology.Compactification.OnePoint.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The one-point (Alexandroff) compactification is `OnePoint X` in Mathlib (the older `Alexandroff` name has been renamed).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hamiltonian phase-space volume invariance (Liouville)",
+      "anchor": {
+        "section": "Ergodic systems",
+        "snippet": "the volume (really a ν-dimensional volume) in phase space is invariant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Liouville's theorem on the invariance of phase-space volume under Hamiltonian flow is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Attractor",
+      "anchor": {
+        "section": "Relation to geometric definition",
+        "snippet": "The measure needs to be supported on the attractor"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The notion of attractor for a dynamical system is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Stable and unstable manifolds",
+      "anchor": {
+        "section": "Chaotic systems",
+        "snippet": "one with the points that converge towards the orbit (the stable manifold ) and another of the points that diverge from the orbit (the unstable manifold )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Stable/unstable manifolds of hyperbolic dynamical systems are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fixed point of a map",
+      "anchor": {
+        "section": "Maps",
+        "snippet": "the origin is a fixed point of the map"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.IsFixedPt",
+        "module": "Mathlib.Logic.Function.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Function.IsFixedPt f x` captures `f x = x`, the fixed-point condition for a discrete dynamical map.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Periodic point / periodic orbit",
+      "anchor": {
+        "section": "Local dynamics",
+        "snippet": "a periodic orbit is a loop in phase space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.IsPeriodicPt",
+        "module": "Mathlib.Dynamics.PeriodicPts.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Function.IsPeriodicPt f n x` formalizes periodic points, from which periodic orbits are derived.",
+      "provenance": "ai"
     }
   ]
 }

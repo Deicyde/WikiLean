@@ -52,7 +52,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The Nash existence theorem for finite games is not in Mathlib, and neither Brouwer's nor Kakutani's fixed-point theorem (only Banach contraction and 1D IVT-fixed-point) is available.",
+      "note": "The Nash existence theorem for finite games is not in Mathlib, and neither Brouwer's nor Kakutani's set-valued fixed-point theorem is available (only Banach contraction and 1D IVT-fixed-point).",
       "provenance": "ai",
       "id": "aa02158bb8c9"
     },
@@ -75,6 +75,22 @@
     },
     {
       "kind": "definition",
+      "label": "Best response dynamics",
+      "anchor": {
+        "section": "History",
+        "snippet": "Cournot also introduced the concept of best response dynamics"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No best-response dynamics/adjustment process is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Mixed strategy",
       "anchor": {
         "section": "History",
@@ -87,7 +103,8 @@
         "match_kind": null
       },
       "note": "Mathlib has probability distributions (`PMF`, `MeasureTheory.ProbabilityMeasure`) but no game-theoretic notion of a mixed strategy over a player's pure-strategy set.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "df7955b3ee64"
     },
     {
       "kind": "theorem",
@@ -365,6 +382,22 @@
       "id": "4b26e22cf254"
     },
     {
+      "kind": "definition",
+      "label": "k-resilient Nash equilibrium",
+      "anchor": {
+        "section": "Equilibria for coalitions",
+        "snippet": "it is possible for a game to have a Nash equilibrium that is resilient against coalitions less than a specified size, k"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No k-resilient / bounded-coalition equilibrium concept exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
       "kind": "theorem",
       "label": "Nash existence theorem",
       "anchor": {
@@ -377,7 +410,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The Nash existence theorem is not formalized; Mathlib also lacks the Brouwer and Kakutani fixed-point theorems it relies on.",
+      "note": "The Nash existence theorem is not formalized; Mathlib also lacks the Brouwer and Kakutani fixed-point theorems it relies on (Brouwer/Kakutani hits in Mathlib are Brouwer/Heyting algebras and the Riesz–Markov–Kakutani representation theorem).",
       "provenance": "ai",
       "id": "18b7648df46b"
     },
@@ -833,7 +866,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Even the Brouwer fixed-point theorem itself is not in Mathlib (only Banach contraction and the 1D IVT-fixed-point variants like `exists_mem_Icc_isFixedPt` appear), so this Nash existence proof is not formalized.",
+      "note": "Even the Brouwer fixed-point theorem itself is not in Mathlib (only Banach contraction and the 1D IVT-fixed-point variants like `exists_mem_Icc_isFixedPt` appear; the Mathlib hits for `Brouwer` are Brouwer/Heyting algebras), so this Nash existence proof is not formalized.",
       "provenance": "ai-moderated",
       "anchors": [
         {

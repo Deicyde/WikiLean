@@ -83,7 +83,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "geom_sum_eq",
-        "module": "Mathlib.Algebra.Field.GeomSum",
+        "module": "Mathlib.Algebra.GeomSum",
         "match_kind": "invocation"
       },
       "note": "Mathlib has lemmas like `geom_sum_eq` and `tsum_geometric_of_norm_lt_one` evaluating geometric sums, but no defined notion called `GeometricSeries`.",
@@ -304,11 +304,11 @@
       "status": "partial",
       "mathlib": {
         "decl": "geom_sum_eq",
-        "module": "Mathlib.Algebra.Field.GeomSum",
+        "module": "Mathlib.Algebra.GeomSum",
         "match_kind": "invocation"
       },
       "note": "Finite geometric sums are handled by `geom_sum_eq` and infinite ones by `tsum_geometric_of_norm_lt_one`, but no umbrella definition `GeometricSeries` exists.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "d80c8b0d9f39"
     },
     {
@@ -474,11 +474,12 @@
       "status": "formalized",
       "mathlib": {
         "decl": "geom_sum_eq",
-        "module": "Mathlib.Algebra.Field.GeomSum",
+        "module": "Mathlib.Algebra.GeomSum",
         "match_kind": "exact"
       },
-      "note": "The finite closed form `∑ i ∈ range n, r^i = (r^n - 1)/(r - 1)` for `r ≠ 1` is `geom_sum_eq`; module corrected to `Mathlib.Algebra.Field.GeomSum`.",
-      "provenance": "ai"
+      "note": "The finite closed form `∑ i ∈ range n, r^i = (r^n - 1)/(r - 1)` for `r ≠ 1` is `geom_sum_eq`.",
+      "provenance": "ai-moderated",
+      "id": "708736c7b8f5"
     },
     {
       "kind": "proposition",
@@ -494,7 +495,8 @@
         "match_kind": "exact"
       },
       "note": "The infinite sum `∑' n, r^n = (1 - r)⁻¹` for `‖r‖ < 1` is `tsum_geometric_of_norm_lt_one`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "33a47726a808"
     },
     {
       "kind": "example",
@@ -510,6 +512,23 @@
         "match_kind": null
       },
       "note": "The identification of `n ↦ 2^n` as a geometric progression is not stated in Mathlib as a named example.",
+      "provenance": "ai",
+      "id": "8bd7174785d1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Absolute value of ratio via norm",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "If the absolute value of the common ratio is smaller than 1, the terms will decrease in magnitude and approach zero via an exponential decay"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tendsto_pow_atTop_nhds_zero_iff",
+        "module": "Mathlib.Analysis.SpecificLimits.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The exponential-decay characterization `Tendsto (fun n ↦ r^n) atTop (𝓝 0) ↔ |r| < 1` is captured by `tendsto_pow_atTop_nhds_zero_iff` in the ordered/normed setting.",
       "provenance": "ai"
     }
   ]

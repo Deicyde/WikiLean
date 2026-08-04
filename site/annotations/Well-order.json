@@ -201,12 +201,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "type_nat_lt",
+        "decl": "Ordinal.type_nat_lt",
         "module": "Mathlib.SetTheory.Ordinal.Basic",
         "match_kind": "special_case"
       },
       "note": "`type_nat_lt` (typeLT ℕ = ω) records that ℕ under `<` is a well order, the content of the well-ordering principle.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "81760a927823"
     },
     {
@@ -218,12 +218,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "type_nat_lt",
+        "decl": "Ordinal.type_nat_lt",
         "module": "Mathlib.SetTheory.Ordinal.Basic",
         "match_kind": "special_case"
       },
       "note": "`type_nat_lt` states ℕ's standard order is a well order of type ω (ℕ also has a `WellFoundedLT` instance).",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "38ba5e38ab7e"
     },
     {
@@ -405,12 +405,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "type_nat_lt",
+        "decl": "Ordinal.type_nat_lt",
         "module": "Mathlib.SetTheory.Ordinal.Basic",
         "match_kind": "special_case"
       },
       "note": "ℕ under its standard order is a well order (type ω), via `type_nat_lt` and the `WellFoundedLT ℕ` instance.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "1c497e8df5bd"
     },
     {
@@ -712,10 +712,10 @@
       "status": "formalized",
       "mathlib": {
         "decl": "IsCofinal",
-        "module": "Mathlib.Order.Cofinal",
+        "module": "Mathlib.Order.Bounds.Defs",
         "match_kind": "generalization"
       },
-      "note": "`IsCofinal` defines a cofinal set in any ordered type as one with elements ≥ every element (i.e. unbounded).",
+      "note": "`IsCofinal` (in Mathlib.Order.Bounds.Defs) defines a cofinal set in any ordered type as one with elements ≥ every element (i.e. unbounded).",
       "provenance": "ai",
       "id": "7e07ac34e185"
     },
@@ -803,6 +803,22 @@
       "note": "The infrastructure of ω₁ and ℵ₁ > ℵ₀ exists, but the specific statement that the countable order types form an uncountable set isn't isolated.",
       "provenance": "ai",
       "id": "5f9d09885f8d"
+    },
+    {
+      "kind": "proposition",
+      "label": "Transfinite recursion theorem",
+      "anchor": {
+        "section": "Initial segments",
+        "snippet": "Initial segments are also used in the statement of the transfinite recursion theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ordinal.limitRecOn",
+        "module": "Mathlib.SetTheory.Ordinal.Arithmetic",
+        "match_kind": "generalization"
+      },
+      "note": "Transfinite recursion is available via `Ordinal.limitRecOn` (in Mathlib.SetTheory.Ordinal.Arithmetic) and `WellFounded.fix` for defining functions on well-ordered sets by recursion on initial segments.",
+      "provenance": "ai"
     }
   ]
 }

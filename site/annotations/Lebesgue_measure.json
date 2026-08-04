@@ -121,7 +121,7 @@
         "match_kind": "exact"
       },
       "note": "Real.measureSpace gives the volume measure on ℝ, which is the Lebesgue measure (constructed as additive Haar measure).",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "ebf68e560338"
     },
     {
@@ -174,6 +174,22 @@
       "note": "volume (Ioo a b) = ofReal (b - a) equals volume (Icc a b), since the endpoints have measure zero (NoAtoms).",
       "provenance": "ai",
       "id": "bcbf35eb0552"
+    },
+    {
+      "kind": "proposition",
+      "label": "Singletons have measure zero",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "which each have measure zero"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.NullSingletonClass.measure_singleton",
+        "module": "Mathlib.MeasureTheory.Measure.Typeclasses.NullSingletonClass",
+        "match_kind": "exact"
+      },
+      "note": "For a NullSingletonClass measure (which volume is via NoAtoms), NullSingletonClass.measure_singleton gives μ {x} = 0.",
+      "provenance": "ai"
     },
     {
       "kind": "example",

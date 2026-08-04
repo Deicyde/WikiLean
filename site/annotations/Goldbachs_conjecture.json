@@ -18,7 +18,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Grep finds no Goldbach conjecture statement in Mathlib; the only 'Goldbach' hit is the unrelated Fermat-numbers reference in NumberTheory/Fermat.lean line 98.",
+      "note": "Grep confirms the only 'Goldbach' hit in Mathlib is an unrelated Fermat-numbers comment in NumberTheory/Fermat.lean; the conjecture is not stated.",
       "provenance": "ai",
       "id": "cccbb1c49952"
     },
@@ -171,8 +171,9 @@
         "module": "Mathlib.Combinatorics.Schnirelmann",
         "match_kind": "exact"
       },
-      "note": "Schnirelmann density is defined in Mathlib.Combinatorics.Schnirelmann as `schnirelmannDensity`.",
-      "provenance": "ai"
+      "note": "decl_exists confirms `schnirelmannDensity` in Mathlib.Combinatorics.Schnirelmann.",
+      "provenance": "ai",
+      "id": "fa8aaf8de896"
     },
     {
       "kind": "theorem",
@@ -474,6 +475,7 @@
       "mathlib": {
         "decl": "Nat.primeCounting",
         "module": "Mathlib.NumberTheory.PrimeCounting",
+        "module_note": null,
         "match_kind": null
       },
       "note": "Only PNT prerequisites (Nat.primeCounting, Chebyshev bounds, zeta non-vanishing) are present in Mathlib; the asymptotic π(n) ~ n/log n is not yet stated as a theorem.",
@@ -511,7 +513,8 @@
         "match_kind": null
       },
       "note": "Vinogradov's asymptotic for sums of c ≥ 3 primes is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5a377e0658c1"
     },
     {
       "kind": "definition",
@@ -560,8 +563,9 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Grep for TwinPrime/twin.prime returns no hits; the twin prime conjecture is not formalized in Mathlib.",
-      "provenance": "ai"
+      "note": "Grep for TwinPrime/twin_prime returns no hits; the twin prime conjecture is not formalized in Mathlib.",
+      "provenance": "ai",
+      "id": "461ecaf9b81b"
     },
     {
       "kind": "definition",
@@ -610,7 +614,7 @@
         "module": "Mathlib.NumberTheory.SumFourSquares",
         "match_kind": "exact"
       },
-      "note": "Nat.sum_four_squares in NumberTheory/SumFourSquares.lean states ∃ a b c d, a^2 + b^2 + c^2 + d^2 = n.",
+      "note": "decl_exists confirms Nat.sum_four_squares in Mathlib.NumberTheory.SumFourSquares.",
       "provenance": "ai",
       "id": "850222e8efeb"
     },
@@ -628,7 +632,8 @@
         "match_kind": null
       },
       "note": "Waring's problem (and the Waring–Goldbach variant) are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "745a6f5f16e7"
     },
     {
       "kind": "proposition",
@@ -697,6 +702,54 @@
       "note": "This Busy Beaver / Turing machine result is not formalized in Mathlib.",
       "provenance": "ai",
       "id": "9554d04c8c36"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hardy–Littlewood prime tuple conjecture",
+      "anchor": {
+        "section": "Heuristic justification",
+        "snippet": "as part of their Hardy–Littlewood prime tuple conjecture"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Hardy–Littlewood k-tuple conjecture is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Goldbach's comet",
+      "anchor": {
+        "section": "Goldbach partition function",
+        "snippet": "Its graph looks like a comet and is therefore called Goldbach's comet"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Goldbach's comet (the graph of the partition function) is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Busy Beaver function BB(n)",
+      "anchor": {
+        "section": "Related problems",
+        "snippet": "the Busy Beaver function, where BB( n ) is the maximum number of steps taken by any n state Turing machine that halts"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Busy Beaver function is not defined in Mathlib.",
+      "provenance": "ai"
     }
   ]
 }

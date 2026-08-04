@@ -36,7 +36,8 @@
         "match_kind": "invocation"
       },
       "note": "`cosh_sq_sub_sinh_sq : cosh x ^ 2 - sinh x ^ 2 = 1` implies (cosh t, sinh t) lies on the unit hyperbola; the surjection onto the right branch is not packaged as a dedicated Mathlib lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "be202e7ee699"
     },
     {
       "kind": "proposition",
@@ -1023,6 +1024,38 @@
       "note": "`Complex.cosh_add_sinh : cosh z + sinh z = exp z` is exactly this identity.",
       "provenance": "ai",
       "id": "5d3bde79aabe"
+    },
+    {
+      "kind": "proposition",
+      "label": "Complex trig via sinh/cosh (Euler for complex numbers)",
+      "anchor": {
+        "section": "Hyperbolic functions for complex numbers",
+        "snippet": "Relationships to ordinary trigonometric functions are given by Euler's formula for complex numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.cos_add_sin_I",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "invocation"
+      },
+      "note": "Euler's formula `exp (x*I) = cos x + sin x * I` combined with the definitions of `Complex.sinh`/`Complex.cosh` yields the sin/cos ↔ sinh/cosh relations (`Complex.sinh_mul_I`, `Complex.cosh_mul_I`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reciprocal periods for tanh and coth",
+      "anchor": {
+        "section": "Hyperbolic functions for complex numbers",
+        "snippet": "for hyperbolic tangent and cotangent"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.tanh_periodic",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`Complex.tanh_periodic` gives period `π·I` for `tanh`; the coth analogue is not formalized since `coth` is not defined.",
+      "provenance": "ai"
     }
   ]
 }

@@ -53,7 +53,8 @@
         "match_kind": "exact"
       },
       "note": "`ProbabilityTheory.variance` is defined as `𝔼[(X − 𝔼[X])²]`, matching the parenthetical definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9e1c4df53173"
     },
     {
       "kind": "definition",
@@ -103,7 +104,8 @@
         "match_kind": null
       },
       "note": "Mathlib has `IndepFun.variance_sum` for sums of independent variables but the σ/√N standard-error identity is not stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c9a8f3f07079"
     },
     {
       "kind": "example",
@@ -221,7 +223,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no Pareto distribution definition and no statement about which of its moments exist.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "198fd5d379a7"
     },
     {
       "kind": "example",
@@ -695,7 +698,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No central limit theorem declaration was found in Mathlib.",
+      "note": "Mathlib has the strong law of large numbers but no CLT statement; only `MeasureTheory.TendstoInDistribution` infrastructure exists.",
       "provenance": "ai",
       "id": "45e5eaedb4a9"
     },
@@ -723,14 +726,15 @@
         "section": "Rules for normally distributed data",
         "snippet": "The proportion that is less than or equal to a number, x , is given by the cumulative distribution function"
       },
-      "status": "not_formalized",
+      "status": "partial",
       "mathlib": {
-        "decl": null,
-        "module": null,
-        "match_kind": null
+        "decl": "ProbabilityTheory.gaussianReal",
+        "module": "Mathlib.Probability.Distributions.Gaussian.Real",
+        "match_kind": "generalization"
       },
-      "note": "Mathlib does not define the normal distribution or its CDF; `Real.erf`/the error function is also not present.",
-      "provenance": "ai"
+      "note": "The Gaussian measure `gaussianReal` and general `ProbabilityTheory.cdf` are defined, so the normal CDF can be obtained as their composition, but there is no dedicated `normalCDF` declaration.",
+      "provenance": "ai",
+      "id": "58ccf51c3d9d"
     },
     {
       "kind": "theorem",
@@ -952,6 +956,54 @@
       "note": "The average/mean absolute deviation is not defined in Mathlib.",
       "provenance": "ai",
       "id": "bc1f170a2795"
+    },
+    {
+      "kind": "definition",
+      "label": "Mahalanobis distance",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The discriminability index between two equal-covariance distributions is their Mahalanobis distance"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mahalanobis distance between distributions is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Covariance matrix",
+      "anchor": {
+        "section": "Standard deviation matrix",
+        "snippet": "It is the symmetric square root of the covariance matrix"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.covariance",
+        "module": "Mathlib.Probability.Moments.Covariance",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalises scalar `ProbabilityTheory.covariance` but no dedicated matrix-valued covariance-of-a-random-vector definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Variance of independent sum equals sum of variances",
+      "anchor": {
+        "section": "Standard deviation of the mean",
+        "snippet": "This can easily be proven with (see basic properties of the variance )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.IndepFun.variance_sum",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "exact"
+      },
+      "note": "`IndepFun.variance_sum` proves `Var(∑ Xᵢ) = ∑ Var Xᵢ` for pairwise independent variables, the identity used to derive SDOM.",
+      "provenance": "ai"
     }
   ]
 }

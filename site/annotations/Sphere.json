@@ -512,7 +512,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no theory of umbilical points or principal curvatures characterizing the sphere.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4c7e4c24b6c6"
     },
     {
       "kind": "proposition",
@@ -528,7 +529,8 @@
         "match_kind": null
       },
       "note": "Mean curvature of surfaces is not formalized in Mathlib, so the constancy on the sphere is not stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "31b7764911dd"
     },
     {
       "kind": "proposition",
@@ -680,7 +682,8 @@
         "match_kind": null
       },
       "note": "Gauss's Theorema Egregium (intrinsic invariance of Gaussian curvature) is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3199c9d1d8d9"
     },
     {
       "kind": "theorem",
@@ -961,14 +964,14 @@
         "section": "Dimensionality",
         "snippet": "the n-sphere is an example of a compact topological manifold without boundary"
       },
-      "status": "formalized",
+      "status": "partial",
       "mathlib": {
         "decl": "EuclideanSpace.instChartedSpaceSphere",
         "module": "Mathlib.Geometry.Manifold.Instances.Sphere",
-        "match_kind": "exact"
+        "match_kind": null
       },
-      "note": "The unit sphere in `EuclideanSpace ℝ (Fin (n+1))` is given a `ChartedSpace` instance over `EuclideanSpace ℝ (Fin n)` and is compact via `isCompact_sphere`.",
-      "provenance": "ai",
+      "note": "The unit sphere in `EuclideanSpace ℝ (Fin (n+1))` is given a `ChartedSpace` instance over `EuclideanSpace ℝ (Fin n)` and is compact via `isCompact_sphere`; the manifold-with-boundary/boundaryless packaging is spread across several instances.",
+      "provenance": "ai-moderated",
       "id": "8c0aaa77bf64"
     },
     {
@@ -1027,7 +1030,7 @@
       "label": "Sphere in Z^n may be empty",
       "anchor": {
         "section": "Metric spaces",
-        "snippet": "in Z"
+        "snippet": "a sphere of radius r is nonempty only if"
       },
       "status": "partial",
       "mathlib": {
@@ -1035,8 +1038,8 @@
         "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
         "match_kind": null
       },
-      "note": "Mathlib has emptiness lemmas like `sphere_eq_empty_of_subsingleton` and `sphere_eq_empty_of_neg`, but no specific example computing spheres in `ℤⁿ`.",
-      "provenance": "ai",
+      "note": "Mathlib has emptiness lemmas like `sphere_eq_empty_of_subsingleton` and `sphere_eq_empty_of_neg`, but no specific example computing spheres in `ℤⁿ` via sums of squares.",
+      "provenance": "ai-moderated",
       "id": "18694cf0065c"
     },
     {
@@ -1055,6 +1058,38 @@
       "note": "Mathlib does not identify the L¹ unit sphere with an octahedron or the L∞ unit sphere with a cube.",
       "provenance": "ai",
       "id": "2256ecca23bb"
+    },
+    {
+      "kind": "proposition",
+      "label": "Diameter equals twice the radius",
+      "anchor": {
+        "section": "Basic terminology",
+        "snippet": "their length is twice the radius"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The identity `d = 2r` for a sphere's diameter is not packaged as a named lemma; there is no `EuclideanGeometry.Sphere.diameter` field.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Spherical geometry is a form of elliptic geometry",
+      "anchor": {
+        "section": "Spherical geometry",
+        "snippet": "Spherical geometry is a form of elliptic geometry"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no formalized elliptic or spherical geometry, so this classification is not stated.",
+      "provenance": "ai"
     }
   ]
 }

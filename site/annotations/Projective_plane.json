@@ -223,7 +223,8 @@
         "match_kind": "exact"
       },
       "note": "`littleWedderburn` is an instance turning every `[DivisionRing D] [Finite D]` into a `Field D`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fe837d34cdca"
     },
     {
       "kind": "example",
@@ -494,7 +495,8 @@
         "match_kind": null
       },
       "note": "The Cayley plane (OP²) is not in Mathlib; octonions exist (`Octonion`) but no associated projective plane.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "60a3a49c55fe"
     },
     {
       "kind": "definition",
@@ -692,11 +694,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Configuration.ProjectivePlane.instProjectivePlaneDual",
+        "decl": "Configuration.ProjectivePlane.instDual",
         "module": "Mathlib.Combinatorics.Configuration",
         "match_kind": "exact"
       },
-      "note": "Mathlib provides `instance : ProjectivePlane (Dual L) (Dual P)`, witnessing that the dual of a projective plane is a projective plane.",
+      "note": "Mathlib's `Configuration.ProjectivePlane.instDual` provides the `ProjectivePlane (Dual L) (Dual P)` instance, witnessing that the dual of a projective plane is a projective plane.",
       "provenance": "ai-agent1",
       "id": "71e74246f4a2"
     },
@@ -886,6 +888,54 @@
       "note": "Depends on Desargues' theorem, which is absent from Mathlib.",
       "provenance": "ai-agent1",
       "id": "37c151477dc0"
+    },
+    {
+      "kind": "theorem",
+      "label": "Point-line incidence symmetry (order well-defined)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "the number of points"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Configuration.ProjectivePlane.lineCount_eq_pointCount",
+        "module": "Mathlib.Combinatorics.Configuration",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib proves that in a projective plane the number of lines through any point equals the number of points on any line, making the notion of order well-defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Fano plane PG(2,2)",
+      "anchor": {
+        "section": "Finite projective planes",
+        "snippet": "The projective plane of order 2 is called the Fano plane"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Configuration.ofField.instProjectivePlaneProjectivizationForallFinOfNatNatOfDecidableEq",
+        "module": "Mathlib.Combinatorics.Configuration",
+        "match_kind": "generalization"
+      },
+      "note": "Same as the earlier Fano-plane annotation: only obtainable as `K = ZMod 2` specialization of the PG(2,K) instance; no dedicated Fano-plane decl.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Higher-dimensional projective space PG(d,K)",
+      "anchor": {
+        "section": "Projective planes in higher-dimensional projective spaces",
+        "snippet": "the points of the d -dimensional projective space PG( d , K ) are the lines through the origin"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Projectivization",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`Projectivization K V` for `V = Fin (d+1) → K` gives the point set of PG(d,K); Mathlib does not have a dedicated incidence-geometric definition of higher-dimensional PG(d,K) with subspaces.",
+      "provenance": "ai"
     }
   ]
 }

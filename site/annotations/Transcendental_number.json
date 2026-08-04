@@ -1483,6 +1483,54 @@
       "note": "Only the analytical part of Lindemann–Weierstrass is formalized; π's transcendence is not concluded, though `irrational_pi` proves irrationality.",
       "provenance": "ai",
       "id": "e830065775fb"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraic independence",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "if these numbers are not algebraically independent"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgebraicIndependent",
+        "module": "Mathlib.RingTheory.AlgebraicIndependent.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`AlgebraicIndependent` in Mathlib formalizes algebraic independence of a family of elements over a base ring, matching the article's usage.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraic number (rational vs integer coefficients equivalence)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "not the root of a non-zero polynomial with integer (or, equivalently, rational ) coefficients"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isAlgebraic_iff_isIntegral",
+        "module": "Mathlib.RingTheory.Algebraic.Integral",
+        "match_kind": "generalization"
+      },
+      "note": "The equivalence between algebraicity over ℤ and over ℚ follows from `isAlgebraic_iff_isIntegral` (Mathlib.RingTheory.Algebraic.Integral) and clearing denominators; Mathlib's `IsAlgebraic` handles this uniformly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "π is irrational",
+      "anchor": {
+        "section": "History",
+        "snippet": "his 1768 paper proving the number π is irrational"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "irrational_pi",
+        "module": "Mathlib.Analysis.Real.Pi.Irrational",
+        "match_kind": "exact"
+      },
+      "note": "`irrational_pi` in Mathlib proves that π is irrational, matching Lambert's 1768 result.",
+      "provenance": "ai"
     }
   ]
 }

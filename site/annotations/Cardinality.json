@@ -18,7 +18,7 @@
         "module": "Mathlib.SetTheory.Cardinal.Defs",
         "match_kind": "exact"
       },
-      "note": "`Cardinal.mk α` (notation `#α`) is exactly the cardinality of a type/set.",
+      "note": "`Cardinal.mk α` (notation `#α`) is the cardinality of a type.",
       "provenance": "ai",
       "id": "355927815661"
     },
@@ -86,7 +86,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Functions are the primitive dependent/non-dependent arrow (`α → β`) type of Lean's type theory.",
+      "note": "Functions are the primitive non-dependent arrow (`α → β`) type of Lean's type theory; no named Mathlib decl.",
       "provenance": "ai",
       "id": "6959476fdc97"
     },
@@ -2095,6 +2095,54 @@
       "note": "Mathlib shows any two nondegenerate intervals have equal cardinality 𝔠, though Bolzano's explicit linear pairing is not named.",
       "provenance": "ai",
       "id": "a955f1ee0dc3"
+    },
+    {
+      "kind": "definition",
+      "label": "Von Neumann cardinal assignment",
+      "anchor": {
+        "section": "Aleph numbers",
+        "snippet": "The most common way this is formalized in set theory is through Von Neumann ordinals , known as Von Neumann cardinal assignment"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.aleph",
+        "module": "Mathlib.SetTheory.Cardinal.Aleph",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib's `Cardinal` and the aleph enumeration realize the von Neumann assignment via ordinals as canonical representatives.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cantor set has Lebesgue measure zero",
+      "anchor": {
+        "section": "Cardinality of the continuum",
+        "snippet": "The Cantor set has a measure or \"length\" of zero"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines `cantorSet` and Lebesgue measure separately, but a named lemma `μ cantorSet = 0` is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Empty function",
+      "anchor": {
+        "section": "Cardinal arithmetic",
+        "snippet": "since there is exactly one function from the empty set to itself: the empty function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Pi.uniqueOfIsEmpty",
+        "module": "Mathlib.Logic.Unique",
+        "match_kind": "exact"
+      },
+      "note": "`Pi.uniqueOfIsEmpty` shows the unique function from an empty domain, giving `0 ^ 0 = 1` for cardinals.",
+      "provenance": "ai"
     }
   ]
 }

@@ -53,7 +53,8 @@
         "match_kind": "exact"
       },
       "note": "Uniqueness of the two-sided matrix inverse follows from `Matrix.inv_eq_left_inv`/`inv_eq_right_inv` (and the underlying group-of-units uniqueness for `Invertible`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2a14190abbfd"
     },
     {
       "kind": "definition",
@@ -86,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "Over a field, `Matrix.isUnit_iff_isUnit_det` together with `isUnit_iff_ne_zero` gives the `det A ≠ 0` characterization of invertibility used here.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d6ffacf9f674"
     },
     {
       "kind": "example",
@@ -310,6 +312,22 @@
       "id": "81f6b3760323"
     },
     {
+      "kind": "definition",
+      "label": "Schur complement",
+      "anchor": {
+        "section": "Blockwise inversion",
+        "snippet": "is the Schur complement of A"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.fromBlocks",
+        "module": "Mathlib.LinearAlgebra.Matrix.SchurComplement",
+        "match_kind": "generalization"
+      },
+      "note": "The Schur complement `D - C A⁻¹ B` appears throughout `Mathlib.LinearAlgebra.Matrix.SchurComplement` in lemmas like `Matrix.fromBlocks_eq_of_invertible_top_left` and `Matrix.det_fromBlocks₁₁`.",
+      "provenance": "ai"
+    },
+    {
       "kind": "theorem",
       "label": "Nullity theorem",
       "anchor": {
@@ -498,6 +516,38 @@
     },
     {
       "kind": "proposition",
+      "label": "Transpose of invertible is invertible",
+      "anchor": {
+        "section": "Invertible matrix theorem",
+        "snippet": "The transpose A T is an invertible matrix."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.transpose_nonsing_inv",
+        "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.transpose_nonsing_inv : (Aᵀ)⁻¹ = (A⁻¹)ᵀ` shows invertibility is preserved by transpose.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Invertible iff trivial kernel",
+      "anchor": {
+        "section": "Invertible matrix theorem",
+        "snippet": "A has a trivial kernel : ker( A ) = { 0 }."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.ker_eq_bot",
+        "module": "Mathlib.LinearAlgebra.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Combining `Matrix.toLin'` with `LinearMap.ker_eq_bot` and `Matrix.isUnit_iff_isUnit_det` yields the trivial-kernel equivalence for a square matrix over a field.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
       "label": "Columns of invertible matrix form a basis",
       "anchor": {
         "section": "Invertible matrix theorem",
@@ -510,7 +560,8 @@
         "match_kind": "generalization"
       },
       "note": "`Matrix.linearIndependent_cols_iff_isUnit` shows column-linear-independence ↔ `IsUnit A`, which over a field gives the basis characterization.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dfaf263ff199"
     },
     {
       "kind": "proposition",
@@ -526,7 +577,8 @@
         "match_kind": "generalization"
       },
       "note": "Equivalent to `det A ≠ 0`, which is `Matrix.isUnit_iff_isUnit_det` over a field; eigenvalues of `A` are roots of `charpoly` and `0` is a root iff `det A = 0`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0d7e4d056efb"
     },
     {
       "kind": "proposition",
@@ -542,7 +594,8 @@
         "match_kind": null
       },
       "note": "Mathlib defines `Matrix.TransvectionStruct` and proves every invertible matrix is a product of diagonal and transvection matrices (`diagonal_transvection_induction`), but no statement in terms of generic elementary matrices.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b5462efbcab9"
     },
     {
       "kind": "proposition",
@@ -560,6 +613,22 @@
       "note": "Standard properties like `(AB)⁻¹ = B⁻¹A⁻¹` (`mul_inv_rev`), `(A⁻¹)⁻¹ = A` (`inv_inv_of_invertible`), `det A⁻¹ = (det A)⁻¹` (`det_nonsing_inv`), `(Aᵀ)⁻¹ = (A⁻¹)ᵀ` (`transpose_nonsing_inv`) are formalized.",
       "provenance": "ai",
       "id": "353f3b826a00"
+    },
+    {
+      "kind": "proposition",
+      "label": "Left and right inverses coincide",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "Left and right inverses are equal."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.inv_eq_left_inv",
+        "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.inv_eq_left_inv` and `Matrix.inv_eq_right_inv` show that any left or right inverse of a matrix equals `A⁻¹`, so left and right inverses agree.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -711,7 +780,8 @@
         "match_kind": null
       },
       "note": "The Moore–Penrose pseudoinverse for arbitrary `m × n` matrices is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1741937a9c44"
     },
     {
       "kind": "proposition",

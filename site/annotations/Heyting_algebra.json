@@ -58,6 +58,22 @@
     },
     {
       "kind": "proposition",
+      "label": "Ex falso: contradiction implies anything",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "corresponding to the intuition that any proposition a is implied by a contradiction 0"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "bot_himp",
+        "module": "Mathlib.Order.Heyting.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`bot_himp : ⊥ ⇨ a = ⊤` — from `⊥`, everything follows.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
       "label": "Non-contradiction and double negation in Heyting algebras",
       "anchor": {
         "section": "(Lead)",
@@ -89,6 +105,22 @@
       "note": "`BooleanAlgebra.ofRegular` builds a Boolean algebra from a Heyting algebra where every `a ⊔ aᶜ` is regular, but the full equivalence is not packaged.",
       "provenance": "ai",
       "id": "0f7600d65aae"
+    },
+    {
+      "kind": "proposition",
+      "label": "Negated elements form a Boolean lattice",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Those elements of a Heyting algebra H of the form ¬ a comprise a Boolean lattice"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Heyting.Regular.instBooleanAlgebra",
+        "module": "Mathlib.Order.Heyting.Regular",
+        "match_kind": "exact"
+      },
+      "note": "The regular elements `aᶜᶜ = a` (equivalently, the image of `¬`) form a `BooleanAlgebra`.",
+      "provenance": "ai"
     },
     {
       "kind": "example",
@@ -559,10 +591,10 @@
       "status": "formalized",
       "mathlib": {
         "decl": "IsCompl",
-        "module": "Mathlib.Order.BooleanAlgebra.Defs",
+        "module": "Mathlib.Order.Disjoint",
         "match_kind": "exact"
       },
-      "note": "`IsCompl a b` (defined in `Mathlib.Order.Disjoint`) captures complementarity by `Disjoint` and `Codisjoint`.",
+      "note": "`IsCompl a b` captures complementarity via `Disjoint` and `Codisjoint`.",
       "provenance": "ai",
       "id": "485f6b59c3a1"
     },
@@ -726,14 +758,14 @@
         "section": "Properties",
         "snippet": "Hence Heyting algebras form a category"
       },
-      "status": "not_formalized",
+      "status": "partial",
       "mathlib": {
-        "decl": null,
-        "module": null,
-        "match_kind": null
+        "decl": "HeytAlg",
+        "module": "Mathlib.Order.Category.HeytAlg",
+        "match_kind": "exact"
       },
-      "note": "No bundled `HeytAlg` category of Heyting algebras is defined in Mathlib.",
-      "provenance": "ai",
+      "note": "`HeytAlg` bundles the category of Heyting algebras with `HeytingHom` morphisms.",
+      "provenance": "ai-moderated",
       "id": "4c4ab9ed444b"
     },
     {

@@ -41,6 +41,22 @@
     },
     {
       "kind": "theorem",
+      "label": "Lagrange's theorem",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Lagrange's theorem states that for any finite group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Subgroup.card_subgroup_dvd_card",
+        "module": "Mathlib.GroupTheory.Coset.Card",
+        "match_kind": "exact"
+      },
+      "note": "`Subgroup.card_subgroup_dvd_card` states that the order of a subgroup divides the order of the group (defined in `Mathlib.GroupTheory.Coset.Card`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
       "label": "Sylow theorems (lead summary)",
       "anchor": {
         "section": "(Lead)",
@@ -87,7 +103,7 @@
         "match_kind": "exact"
       },
       "note": "`Sylow.nonempty` (with `Sylow.card_eq_multiplicity`) gives the existence of a Sylow p-subgroup of order p^n for n the p-multiplicity of |G|.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "68f36ab8bc45"
     },
     {
@@ -150,12 +166,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "exists_subgroup_card_pow_prime",
+        "decl": "Sylow.exists_subgroup_card_pow_prime",
         "module": "Mathlib.GroupTheory.Sylow",
         "match_kind": "exact"
       },
       "note": "`exists_subgroup_card_pow_prime` produces a subgroup of order p^n whenever p^n ∣ |G|.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "7ca769abcd55"
     },
     {
@@ -171,7 +187,7 @@
         "module": "Mathlib.GroupTheory.Sylow",
         "match_kind": "exact"
       },
-      "note": "`Sylow.isPretransitive_of_finite` says G acts transitively on Sylow p-subgroups; `Sylow.equiv` provides the resulting isomorphism.",
+      "note": "`Sylow.isPretransitive_of_finite` says G acts transitively on Sylow p-subgroups, whence the resulting isomorphism.",
       "provenance": "ai",
       "id": "dce80e8f7b01"
     },
@@ -432,6 +448,22 @@
     },
     {
       "kind": "theorem",
+      "label": "Frattini's argument",
+      "anchor": {
+        "section": "Fusion results",
+        "snippet": "Frattini's argument shows that a Sylow subgroup of a normal subgroup provides a factorization of a finite group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Sylow.normalizer_sup_eq_top",
+        "module": "Mathlib.GroupTheory.Sylow",
+        "match_kind": "exact"
+      },
+      "note": "`Sylow.normalizer_sup_eq_top` is Frattini's Argument: if N ⊴ G and P is a Sylow p-subgroup of N, then N_G(P) ⊔ N = ⊤.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
       "label": "Burnside's fusion theorem",
       "anchor": {
         "section": "Fusion results",
@@ -456,13 +488,29 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "ker_transferSylow_isComplement'",
+        "decl": "MonoidHom.ker_transferSylow_isComplement'",
         "module": "Mathlib.GroupTheory.Transfer",
         "match_kind": "exact"
       },
       "note": "`ker_transferSylow_isComplement'` is Burnside's normal p-complement theorem: if N(P) ≤ C(P) then P has a normal complement.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "4e2f7cc57c1c"
+    },
+    {
+      "kind": "theorem",
+      "label": "Focal subgroup theorem",
+      "anchor": {
+        "section": "Fusion results",
+        "snippet": "Less trivial applications of the Sylow theorems include the focal subgroup theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "commutator_inf_eq_focalSubgroup",
+        "module": "Mathlib.GroupTheory.Focal",
+        "match_kind": "exact"
+      },
+      "note": "`commutator_inf_eq_focalSubgroup` in `Mathlib.GroupTheory.Focal` is the Focal Subgroup Theorem: `commutator G ⊓ P = P.focalSubgroup`.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",
@@ -473,12 +521,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "exists_subgroup_card_pow_prime",
+        "decl": "Sylow.exists_subgroup_card_pow_prime",
         "module": "Mathlib.GroupTheory.Sylow",
         "match_kind": "exact"
       },
       "note": "Documented in the file as 'Sylow's first theorem', producing a subgroup of order p^n when p^n ∣ |G|.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "b6efd4feed6c"
     },
     {
@@ -497,6 +545,22 @@
       "note": "`IsPGroup.card_modEq_card_fixedPoints` says |X| ≡ |X^G| (mod p) for a finite p-group G acting on X.",
       "provenance": "ai",
       "id": "9315f2107b5e"
+    },
+    {
+      "kind": "theorem",
+      "label": "Orbit-stabilizer theorem (used in proof)",
+      "anchor": {
+        "section": "Proof of the Sylow theorems",
+        "snippet": "By the orbit-stabilizer theorem we have"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulAction.card_orbit_mul_card_stabilizer_eq_card_group",
+        "module": "Mathlib.GroupTheory.GroupAction.Quotient",
+        "match_kind": "exact"
+      },
+      "note": "Standard orbit-stabilizer theorem `|orbit| · |stabilizer| = |G|`, defined in `Mathlib.GroupTheory.GroupAction.Quotient`.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",
@@ -541,12 +605,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "exists_subgroup_card_pow_succ",
+        "decl": "Sylow.exists_subgroup_card_pow_succ",
         "module": "Mathlib.GroupTheory.Sylow",
         "match_kind": "exact"
       },
       "note": "`exists_subgroup_card_pow_succ` produces K ⊇ H of order p^(n+1) when p^(n+1) ∣ |G| and |H| = p^n.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "5b3284b64183"
     },
     {

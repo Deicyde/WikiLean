@@ -286,12 +286,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "EuclideanGeometry.angle_eq_pi_div_two_iff_mem_sphere_of_isDiameter",
+        "decl": "EuclideanGeometry.Sphere.angle_eq_pi_div_two_iff_mem_sphere_of_isDiameter",
         "module": "Mathlib.Geometry.Euclidean.Angle.Sphere",
         "match_kind": "exact"
       },
       "note": "Aliased as thales_theorem: the angle inscribed in a semicircle (on a diameter) is a right angle.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "576140c8d56b"
     },
     {
@@ -388,12 +388,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "EuclideanGeometry.angle_eq_pi_div_two_iff_mem_sphere_of_isDiameter",
+        "decl": "EuclideanGeometry.Sphere.angle_eq_pi_div_two_iff_mem_sphere_of_isDiameter",
         "module": "Mathlib.Geometry.Euclidean.Angle.Sphere",
         "match_kind": "exact"
       },
       "note": "Directly formalizes Thales' theorem about the right angle subtended by a diameter.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "df2fd0a930c5"
     },
     {
@@ -524,12 +524,12 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "AffineSpace",
+        "decl": "AddTorsor",
         "module": "Mathlib.LinearAlgebra.AffineSpace.Defs",
         "match_kind": null
       },
       "note": "AffineSpace is a scoped notation for AddTorsor and a full affine geometry library exists, capturing the field but not a single 'affine geometry' statement.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "493a12cf9db3"
     },
     {
@@ -684,6 +684,118 @@
       "note": "Mathlib does not formalize Tarski's completeness/decidability result for elementary Euclidean geometry.",
       "provenance": "ai",
       "id": "3be4edc60390"
+    },
+    {
+      "kind": "definition",
+      "label": "Quaternions",
+      "anchor": {
+        "section": "Higher dimensions",
+        "snippet": "William Rowan Hamilton developed the quaternions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Quaternion",
+        "module": "Mathlib.Algebra.Quaternion",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines the quaternion algebra Quaternion R over a commutative ring R.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Octonions",
+      "anchor": {
+        "section": "Higher dimensions",
+        "snippet": "John T. Graves and Arthur Cayley the octonions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has quaternions but no formalization of the octonions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euclidean space (higher-dimensional)",
+      "anchor": {
+        "section": "Higher dimensions",
+        "snippet": "Ludwig Schläfli developed the general concept of Euclidean space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "exact"
+      },
+      "note": "EuclideanSpace 𝕜 n is Mathlib's finite-dimensional Euclidean space with the standard inner product.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Minkowski space",
+      "anchor": {
+        "section": "20th century and relativity",
+        "snippet": "a four-dimensional space-time , the Minkowski space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no dedicated Minkowski (Lorentzian) inner-product space structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Decidability of real closed fields",
+      "anchor": {
+        "section": "Axiomatic formulations",
+        "snippet": "the decidability of real closed fields"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has the algebraic theory of real closed fields (IsRealClosed) but not Tarski's decidability algorithm for their first-order theory.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Method of exhaustion",
+      "anchor": {
+        "section": "Infinite objects",
+        "snippet": "Euclid used the method of exhaustion rather than infinitesimals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes limits and integration but does not present Eudoxus/Euclid's method of exhaustion as a named notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cartesian coordinates",
+      "anchor": {
+        "section": "17th century: Descartes",
+        "snippet": "a point on a plane is represented by its Cartesian ( x , y ) coordinates"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.equiv",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib represents the Cartesian plane as EuclideanSpace ℝ (Fin 2) with a coordinate equivalence to ℝ × ℝ.",
+      "provenance": "ai"
     }
   ]
 }

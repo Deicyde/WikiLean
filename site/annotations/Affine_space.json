@@ -555,7 +555,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "NormedAddTorsor",
-        "module": "Mathlib.Geometry.Euclidean.Basic",
+        "module": "Mathlib.Analysis.Normed.Group.AddTorsor",
         "match_kind": "special_case"
       },
       "note": "Euclidean geometry is developed over `[InnerProductSpace ℝ V] [NormedAddTorsor V P]`, i.e. affine spaces.",
@@ -572,7 +572,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "NormedAddTorsor",
-        "module": "Mathlib.Geometry.Euclidean.Basic",
+        "module": "Mathlib.Analysis.Normed.Group.AddTorsor",
         "match_kind": "exact"
       },
       "note": "Mathlib's Euclidean setting is exactly an affine space `[NormedAddTorsor V P]` with `[InnerProductSpace ℝ V]`.",
@@ -1158,6 +1158,22 @@
       "id": "f07a1154a0da"
     },
     {
+      "kind": "example",
+      "label": "Centroid of a triangle",
+      "anchor": {
+        "section": "Example of the triangle",
+        "snippet": "the centroid is the point of coordinates"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.centroid",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Centroid",
+        "match_kind": "exact"
+      },
+      "note": "`Finset.centroid` is the equal-weight affine combination of the vertices; for a triangle its barycentric coordinates are `(1/3, 1/3, 1/3)`.",
+      "provenance": "ai"
+    },
+    {
       "kind": "proposition",
       "label": "Change of barycentric basis",
       "anchor": {
@@ -1632,6 +1648,22 @@
       "note": "Triviality of (quasi-coherent) cohomology of affine space is not formalized.",
       "provenance": "ai",
       "id": "8fce3d145d1a"
+    },
+    {
+      "kind": "theorem",
+      "label": "Serre's theorem on affineness",
+      "anchor": {
+        "section": "Cohomology",
+        "snippet": "This property is also enjoyed by all other affine varieties (see Serre's theorem on affineness )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Serre's cohomological criterion for affineness of a scheme is not formalized in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",

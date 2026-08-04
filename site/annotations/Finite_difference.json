@@ -347,7 +347,7 @@
     },
     {
       "kind": "proposition",
-      "label": "Power and Leibniz rule for differences",
+      "label": "Commutation of Δ^k and ∇^n on sequences",
       "anchor": {
         "section": "Properties",
         "snippet": "For all positive k and n"
@@ -358,8 +358,8 @@
         "module": "Mathlib.Algebra.Group.ForwardDiff",
         "match_kind": "exact"
       },
-      "note": "The Leibniz/product rule `Δ(fg) = Δf · g + f · Δg + Δf · Δg` is `fwdDiff_smul`; no power rule for differences is stated.",
-      "provenance": "ai",
+      "note": "The commutation/power identity relating iterated forward and backward differences is not stated as such; the closest formalized fact is the discrete Leibniz rule `fwdDiff_smul`.",
+      "provenance": "ai-moderated",
       "id": "79a806e70c9d"
     },
     {
@@ -376,7 +376,8 @@
         "match_kind": "exact"
       },
       "note": "The discrete Leibniz rule `Δ_[h](f • g) x = Δf x • g x + f x • Δg x + Δf x • Δg x` is `fwdDiff_smul`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "525ef7a2c41e"
     },
     {
       "kind": "definition",
@@ -819,6 +820,54 @@
       "note": "Vandermonde's identity `(m + n).choose k = ∑ ij ∈ antidiagonal k, m.choose ij.1 * n.choose ij.2` is `Nat.add_choose_eq`.",
       "provenance": "ai",
       "id": "df1a55f0c0b9"
+    },
+    {
+      "kind": "definition",
+      "label": "Binomial coefficient",
+      "anchor": {
+        "section": "Higher-order differences",
+        "snippet": "These equations use binomial coefficients after the summation sign shown as"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.choose",
+        "module": "Mathlib.Data.Nat.Choose.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The binomial coefficient `n choose k` is `Nat.choose`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Shift operator",
+      "anchor": {
+        "section": "Calculus of finite differences",
+        "snippet": "where T h is the shift operator with step h"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fwdDiff_aux.shiftₗ",
+        "module": "Mathlib.Algebra.Group.ForwardDiff",
+        "match_kind": "exact"
+      },
+      "note": "The shift operator `T_h[f](x) = f(x + h)` is bundled as `shiftₗ M G h`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Taylor's theorem",
+      "anchor": {
+        "section": "Relation with derivatives",
+        "snippet": "The error in this approximation can be derived from Taylor's theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "taylor_mean_remainder_lagrange",
+        "module": "Mathlib.Analysis.Calculus.Taylor",
+        "match_kind": "exact"
+      },
+      "note": "Taylor's theorem with the Lagrange remainder is `taylor_mean_remainder_lagrange`.",
+      "provenance": "ai"
     }
   ]
 }

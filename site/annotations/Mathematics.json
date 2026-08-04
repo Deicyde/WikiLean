@@ -52,7 +52,7 @@
         "module": "Mathlib.NumberTheory.FLT.Basic",
         "match_kind": "exact"
       },
-      "note": "`FermatLastTheorem` is defined exactly as the statement that aⁿ+bⁿ=cⁿ has no positive solutions for n≥3.",
+      "note": "`FermatLastTheorem` is defined as `∀ n ≥ 3, FermatLastTheoremFor n`, i.e. no positive-integer solutions to aⁿ+bⁿ=cⁿ for n≥3.",
       "provenance": "ai",
       "id": "6e7c0bfc4d60"
     },
@@ -69,7 +69,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib's only 'Goldbach' result concerns coprimality of Fermat numbers, not the even-sum-of-two-primes conjecture.",
+      "note": "Mathlib does not state the even-sum-of-two-primes conjecture; its only 'Goldbach' hits concern Fermat-number coprimality.",
       "provenance": "ai",
       "id": "1d16c8683608"
     },
@@ -150,12 +150,12 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "AffineSpace",
+        "decl": "AddTorsor",
         "module": "Mathlib.LinearAlgebra.AffineSpace.Defs",
         "match_kind": null
       },
       "note": "`AffineSpace` (notation for `AddTorsor`) formalizes the central object, not the informal disciplinary definition.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "0b991f720464"
     },
     {
@@ -786,6 +786,342 @@
       "note": "`Nat.exists_infinite_primes` is Euclid's theorem that there exist arbitrarily large primes.",
       "provenance": "ai",
       "id": "c3c86fe48bb0"
+    },
+    {
+      "kind": "theorem",
+      "label": "Pythagorean theorem",
+      "anchor": {
+        "section": "Ancient",
+        "snippet": "the Pythagorean theorem seems to be the most ancient and widespread mathematical concept"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.dist_sq_eq_dist_sq_add_dist_sq_iff_angle_eq_pi_div_two",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.RightAngle",
+        "match_kind": "exact"
+      },
+      "note": "The right-angle Pythagorean characterization is `EuclideanGeometry.dist_sq_eq_dist_sq_add_dist_sq_iff_angle_eq_pi_div_two` in `Angle/Unoriented/RightAngle.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Kepler conjecture (sphere packing)",
+      "anchor": {
+        "section": "Computing",
+        "snippet": "the Kepler conjecture on sphere packing seemed to also be partially proven by computer"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Hales et al. formal proof of the Kepler conjecture lives in the Flyspeck project (HOL Light/Isabelle), not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Riemann hypothesis",
+      "anchor": {
+        "section": "Awards and prize problems",
+        "snippet": "Only one of them, the Riemann hypothesis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Riemann hypothesis (nontrivial zeros of ζ lie on Re s = 1/2) is not stated as a formal proposition in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Poincaré conjecture",
+      "anchor": {
+        "section": "Awards and prize problems",
+        "snippet": "the Poincaré conjecture , has been solved, by the Russian mathematician Grigori Perelman"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Perelman's theorem on 3-manifolds is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Feit–Thompson theorem",
+      "anchor": {
+        "section": "Rigor",
+        "snippet": "the 255-page Feit–Thompson theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Odd Order (Feit–Thompson) theorem was formalized in Coq's Mathematical Components library; no Mathlib formalization exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Weierstrass function",
+      "anchor": {
+        "section": "Rigor",
+        "snippet": "paradoxes (non-Euclidean geometries and Weierstrass function )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The continuous nowhere-differentiable Weierstrass function is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cyclic group of order two",
+      "anchor": {
+        "section": "Artistic expression",
+        "snippet": "the group underlying mirror symmetry is the cyclic group of two elements"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod",
+        "module": "Mathlib.Data.ZMod.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The cyclic group of two elements is `ZMod 2` (additive) or `Multiplicative (ZMod 2)`; `ZMod n` gives the general cyclic group of order n.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lotka–Volterra equations",
+      "anchor": {
+        "section": "Biology and chemistry",
+        "snippet": "coupled differential equations, such as the Lotka–Volterra equations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Lotka–Volterra predator–prey ODE system is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Parallel postulate",
+      "anchor": {
+        "section": "Geometry",
+        "snippet": "which do not follow the parallel postulate"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Euclid's parallel postulate is not stated as a formal axiom in Mathlib (which uses the analytic `EuclideanSpace` model instead).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Russell's paradox",
+      "anchor": {
+        "section": "Geometry",
+        "snippet": "this discovery has been viewed as joining Russell's paradox"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Russell's paradox (the set of all sets that do not contain themselves) is a paradox of naive set theory; Mathlib works in dependent type theory where it does not arise, and does not state it.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conic sections",
+      "anchor": {
+        "section": "Ancient",
+        "snippet": "Other notable achievements of Greek mathematics are conic sections"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has some material on quadric hypersurfaces but no general classification of conic sections (ellipse/parabola/hyperbola) as a unified object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Infinite series for π/trigonometric functions (Indian mathematics)",
+      "anchor": {
+        "section": "Ancient",
+        "snippet": "the modern definition and approximation of sine and cosine , and an early form of infinite series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.sin",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The power series definitions of sine and cosine are formalized as `Real.sin` and `Real.cos` (defined via `Complex.exp`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Group theory",
+      "anchor": {
+        "section": "Algebra",
+        "snippet": "group theory"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Group",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The `Group` typeclass directly formalizes groups.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Field theory",
+      "anchor": {
+        "section": "Algebra",
+        "snippet": "field theory"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Field",
+        "module": "Mathlib.Algebra.Field.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The `Field` typeclass directly formalizes fields.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ring theory",
+      "anchor": {
+        "section": "Algebra",
+        "snippet": "ring theory"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ring",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The `Ring` typeclass directly formalizes rings.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lie group / Lie algebra",
+      "anchor": {
+        "section": "Algebra",
+        "snippet": "Lie algebra and Lie group theory"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LieAlgebra",
+        "module": "Mathlib.Algebra.Lie.Basic",
+        "match_kind": null
+      },
+      "note": "`LieAlgebra` and `LieRing` are formalized; Lie groups are represented as (smooth) `LieGroup` structures under `Mathlib.Geometry.Manifold.Algebra.LieGroup`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homological algebra",
+      "anchor": {
+        "section": "Algebra",
+        "snippet": "homological algebra"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.ShortComplex.HomologicalComplex",
+        "module": "Mathlib.Algebra.Homology.HomologicalComplex",
+        "match_kind": null
+      },
+      "note": "Chain complexes and homology are formalized in `Mathlib.Algebra.Homology`; the discipline as a whole is not a single object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Graph theory",
+      "anchor": {
+        "section": "Discrete mathematics",
+        "snippet": "Graph theory and hypergraphs"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`SimpleGraph` directly formalizes simple graphs; multigraphs and hypergraphs have partial coverage.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Matroid theory",
+      "anchor": {
+        "section": "Discrete mathematics",
+        "snippet": "Matroid theory"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matroid",
+        "module": "Mathlib.Combinatorics.Matroid.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The `Matroid` structure in `Mathlib.Combinatorics.Matroid.Basic` directly formalizes matroids.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ordinary differential equations",
+      "anchor": {
+        "section": "Calculus and analysis",
+        "snippet": "Ordinary differential equations"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsPicardLindelof.exists_eq_forall_mem_Icc_hasDerivWithinAt",
+        "module": "Mathlib.Analysis.ODE.ExistUnique",
+        "match_kind": null
+      },
+      "note": "The Picard–Lindelöf existence theorem is formalized as `IsPicardLindelof.exists_eq_forall_mem_Icc_hasDerivWithinAt`, but a general ODE-theory framework is only partial.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Measure theory",
+      "anchor": {
+        "section": "Calculus and analysis",
+        "snippet": "Integration , measure theory and potential theory"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure",
+        "module": "Mathlib.MeasureTheory.Measure.MeasureSpaceDef",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureTheory.Measure` is defined in `Mathlib.MeasureTheory.Measure.MeasureSpaceDef`; Bochner/Lebesgue integration is fully developed under `Mathlib.MeasureTheory`.",
+      "provenance": "ai"
     }
   ]
 }

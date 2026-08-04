@@ -41,6 +41,22 @@
     },
     {
       "kind": "definition",
+      "label": "Orthogonal basis (axis directions)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The axes directions represent an orthogonal basis ."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "OrthonormalBasis",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "generalization"
+      },
+      "note": "OrthonormalBasis captures a basis of mutually perpendicular unit vectors, which are the axis direction vectors of a Cartesian frame.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Cartesian frame",
       "anchor": {
         "section": "(Lead)",
@@ -155,7 +171,8 @@
         "match_kind": null
       },
       "note": "No Mathlib lemma asserts that a real-number coordinate on a 1D affine line equals the signed distance from the origin.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ee2108e5fb57"
     },
     {
       "kind": "proposition",
@@ -258,6 +275,22 @@
       "note": "EuclideanSpace ℝ (Fin 2) is the Euclidean/Cartesian plane with chosen coordinates.",
       "provenance": "ai",
       "id": "7c36be19afc6"
+    },
+    {
+      "kind": "definition",
+      "label": "Unit circle",
+      "anchor": {
+        "section": "Two dimensions",
+        "snippet": "the unit circle (with radius equal to the length unit, and center at the origin)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.sphere",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "Metric.sphere 0 1 in EuclideanSpace ℝ (Fin 2) is the unit circle centred at the origin.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -659,12 +692,12 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "OrthonormalBasis.toMatrix_orthonormalBasis_mem_orthogonal",
-        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "decl": "Matrix.orthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
         "match_kind": "generalization"
       },
-      "note": "Change-of-orthonormal-basis matrices lie in the orthogonal group, but the iff characterization of plane Euclidean transformations is not stated.",
-      "provenance": "ai",
+      "note": "The orthogonal group Matrix.orthogonalGroup captures the matrices whose columns are orthonormal; Euclidean transformations correspond to affine maps whose linear part lies in this group, but the iff characterization is not stated.",
+      "provenance": "ai-moderated",
       "id": "2eed0558efe1"
     },
     {
@@ -885,7 +918,8 @@
         "match_kind": "generalization"
       },
       "note": "Orientation.map tracks how a linear equivalence acts on orientations; reversing a single axis has determinant -1 and so reverses orientation, but this specific corollary is not a standalone lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "82966534143e"
     },
     {
       "kind": "definition",

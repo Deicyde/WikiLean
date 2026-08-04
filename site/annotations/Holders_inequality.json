@@ -48,12 +48,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "MeasureTheory.essSup",
+        "decl": "essSup",
         "module": "Mathlib.MeasureTheory.Function.EssSup",
         "match_kind": "exact"
       },
       "note": "`essSup f μ` is defined as `(ae μ).limsup f`, capturing the essential supremum of a measurable function.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "15b59c303649"
     },
     {
@@ -65,12 +65,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "integral_mul_norm_le_Lp_mul_Lq",
+        "decl": "MeasureTheory.integral_mul_norm_le_Lp_mul_Lq",
         "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
         "match_kind": "special_case"
       },
       "note": "The L² Cauchy–Schwarz inequality is the special case p=q=2 of Mathlib's Hölder inequality for Bochner integrals; the abstract Hilbert-space version is `norm_inner_le_norm`.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "3ab10fdc1be8"
     },
     {
@@ -83,12 +83,12 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "MemLp.mono_exponent",
+        "decl": "MeasureTheory.MemLp.mono_exponent",
         "module": "Mathlib.MeasureTheory.Function.LpSeminorm.CompareExp",
         "match_kind": "invocation"
       },
       "note": "Mathlib has the underlying pieces (Hölder + `MemLp.mono_exponent` for finite measures) but no single decl stating the relaxed `1/p + 1/q ≤ 1` Hölder on a probability space.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "577a867efeaf"
     },
     {
@@ -151,12 +151,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "integral_mul_norm_le_Lp_mul_Lq",
+        "decl": "MeasureTheory.integral_mul_norm_le_Lp_mul_Lq",
         "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
         "match_kind": "special_case"
       },
       "note": "The Lebesgue-measure case follows by specializing the general Bochner Hölder inequality `integral_mul_norm_le_Lp_mul_Lq` to `volume`.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "4193c538fcce"
     },
     {
@@ -168,12 +168,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "integral_mul_norm_le_Lp_mul_Lq",
+        "decl": "MeasureTheory.integral_mul_norm_le_Lp_mul_Lq",
         "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
         "match_kind": "special_case"
       },
       "note": "The probability/random-variable formulation `E[|XY|] ≤ E[|X|^p]^{1/p}·E[|Y|^q]^{1/q}` is a special case of the general Bochner Hölder when `μ` is a probability measure.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "52efed8d356f"
     },
     {
@@ -185,12 +185,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "MemLp.mono_exponent",
+        "decl": "MeasureTheory.MemLp.mono_exponent",
         "module": "Mathlib.MeasureTheory.Function.LpSeminorm.CompareExp",
         "match_kind": "exact"
       },
       "note": "`MemLp.mono_exponent` shows that for a finite measure (in particular a probability measure), `MemLp f q μ` and `p ≤ q` imply `MemLp f p μ`, i.e. the lower absolute moment is finite.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "9e07f75e9c25"
     },
     {
@@ -219,12 +219,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "eLpNorm_le_eLpNorm_mul_eLpNorm_of_nnnorm",
+        "decl": "MeasureTheory.eLpNorm_le_eLpNorm_mul_eLpNorm_of_nnnorm",
         "module": "Mathlib.MeasureTheory.Function.LpSeminorm.CompareExp",
         "match_kind": "exact"
       },
       "note": "This abstract Hölder estimate for `‖b(f,g)‖` under a bilinear bound generalizes the vector-valued case; see also `MemLp.of_bilin` and `ContinuousLinearMap.holder`.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "206589396aac"
     },
     {
@@ -260,6 +260,22 @@
       "note": "Mathlib does not formalize the equality characterization for Hölder's inequality.",
       "provenance": "ai",
       "id": "b05062940368"
+    },
+    {
+      "kind": "theorem",
+      "label": "Young's inequality for products",
+      "anchor": {
+        "section": "Proof of Hölder's inequality",
+        "snippet": "We now use Young's inequality for products"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.young_inequality",
+        "module": "Mathlib.Analysis.MeanInequalities",
+        "match_kind": "exact"
+      },
+      "note": "`Real.young_inequality` proves `a·b ≤ aᵖ/p + bᵍ/q` for nonnegative `a, b` and conjugate exponents `p, q ∈ (1,∞)`, the key lemma invoked in the main proof.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",
@@ -328,6 +344,22 @@
       "note": "`ContinuousLinearMap.lpPairing` constructs the bounded bilinear pairing `Lp E p →L Lp F q →L G` arising from Hölder, but Mathlib does not have a dedicated `L^q → (L^p)*` operator-norm/isometry decl in this generality.",
       "provenance": "ai",
       "id": "0374ccded0f0"
+    },
+    {
+      "kind": "proposition",
+      "label": "Minkowski inequality via extremal equality",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "The extremal equality is one of the ways for proving the triangle inequality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ENNReal.lintegral_Lp_add_le",
+        "module": "Mathlib.MeasureTheory.Integral.MeanInequalities",
+        "match_kind": "exact"
+      },
+      "note": "The Minkowski (Lᵖ triangle) inequality `‖f + g‖_p ≤ ‖f‖_p + ‖g‖_p` is formalized in Mathlib and can be derived via Hölder's extremal equality.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",

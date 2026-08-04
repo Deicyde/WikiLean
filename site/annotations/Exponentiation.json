@@ -235,12 +235,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "DivInvMonoid.zpow",
+        "decl": "ZPow.zpow",
         "module": "Mathlib.Algebra.Group.Defs",
         "match_kind": "exact"
       },
       "note": "`DivInvMonoid.zpow` defines integer powers for invertible elements.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "2a6bf781248e"
     },
     {
@@ -1153,12 +1153,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "DivInvMonoid.zpow",
+        "decl": "ZPow.zpow",
         "module": "Mathlib.Algebra.Group.Defs",
         "match_kind": "exact"
       },
       "note": "`DivInvMonoid.zpow` extends to negative integer exponents.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "ed7436404a32"
     },
     {
@@ -1629,11 +1629,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "CategoryTheory.exp.adjunction",
-        "module": "Mathlib.CategoryTheory.Monoidal.Closed.Cartesian",
-        "match_kind": "exact"
+        "decl": "CategoryTheory.ihom.adjunction",
+        "module": "Mathlib.CategoryTheory.Monoidal.Closed.Basic",
+        "match_kind": "generalization"
       },
-      "note": "`CategoryTheory.exp.adjunction` is the prod ⊣ exp adjunction in Cartesian closed categories.",
+      "note": "`CategoryTheory.ihom.adjunction` gives the `tensorLeft A ⊣ ihom A` adjunction, which specialises to the product ⊣ exp adjunction in a cartesian monoidal category.",
       "provenance": "ai",
       "id": "6e223ae980ee"
     },
@@ -1644,13 +1644,13 @@
         "section": "In category theory",
         "snippet": "A category is called a Cartesian closed category"
       },
-      "status": "formalized",
+      "status": "partial",
       "mathlib": {
-        "decl": "CategoryTheory.CartesianClosed",
-        "module": "Mathlib.CategoryTheory.Monoidal.Closed.Cartesian",
-        "match_kind": "exact"
+        "decl": "CategoryTheory.MonoidalClosed",
+        "module": "Mathlib.CategoryTheory.Monoidal.Closed.Basic",
+        "match_kind": "generalization"
       },
-      "note": "`CartesianClosed` is Mathlib's typeclass for CCCs.",
+      "note": "The dedicated `CartesianClosed` class was deprecated; cartesian closed categories are now `MonoidalClosed C` with `[CartesianMonoidalCategory C]`.",
       "provenance": "ai",
       "id": "ab285dea869e"
     },

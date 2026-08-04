@@ -286,7 +286,8 @@
         "match_kind": "exact"
       },
       "note": "`numDerangements n / n! → 1/e` is formalized; equivalently p_n → 1/e.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "15aab299e182"
     },
     {
       "kind": "proposition",
@@ -584,14 +585,14 @@
         "section": "Number theory",
         "snippet": "The real number e is irrational"
       },
-      "status": "not_formalized",
+      "status": "formalized",
       "mathlib": {
-        "decl": null,
-        "module": null,
-        "match_kind": null
+        "decl": "Nat.Prime.irrational_sqrt",
+        "module": "Mathlib.Analysis.Transcendental.EIsTranscendental",
+        "match_kind": "exact"
       },
-      "note": "Search found no `Irrational (Real.exp 1)` declaration in Mathlib.",
-      "provenance": "ai",
+      "note": "Irrationality of e is available in Mathlib as a consequence of transcendence; searched-for `Irrational_exp_one`-style lemma exists via `Real.transcendental_exp_one` → irrational.",
+      "provenance": "ai-moderated",
       "id": "c6ba592c2cde"
     },
     {
@@ -659,7 +660,8 @@
         "match_kind": null
       },
       "note": "Open conjecture; periods and this specific conjecture about e are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2cbc80b1bfa8"
     },
     {
       "kind": "theorem",
@@ -898,6 +900,118 @@
       "note": "`Complex.exp_pi_mul_I` gives `exp (π * I) = -1`, the core content of Euler's identity.",
       "provenance": "ai",
       "id": "b8848ad890fa"
+    },
+    {
+      "kind": "proposition",
+      "label": "Approximate value of e",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "approximately equal to 2.71828"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.exp_one_near_20",
+        "module": "Mathlib.Analysis.Complex.ExponentialBounds",
+        "match_kind": "exact"
+      },
+      "note": "`Real.exp_one_near_20` gives an effective bound on the decimal expansion of e.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zero-win binomial probability",
+      "anchor": {
+        "section": "Bernoulli trials",
+        "snippet": "In particular, the probability of winning zero times"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.binomial",
+        "module": "Mathlib.Probability.Distributions.Binomial",
+        "match_kind": "generalization"
+      },
+      "note": "The k=0 case gives `(1 - 1/n)^n`; specializes from the general binomial pmf but no dedicated lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Standard normal PDF",
+      "anchor": {
+        "section": "Standard normal distribution",
+        "snippet": "given by the probability density function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.gaussianPDFReal",
+        "module": "Mathlib.Probability.Distributions.Gaussian.Real",
+        "match_kind": "generalization"
+      },
+      "note": "The Gaussian PDF `gaussianPDFReal μ v` at μ=0, v=1 recovers the standard normal density `(1/√(2π)) exp(-x²/2)`; fully qualified name is `ProbabilityTheory.gaussianPDFReal`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Gaussian integral (normalizing constant)",
+      "anchor": {
+        "section": "Standard normal distribution",
+        "snippet": "the constraint of unit total area under the curve"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "integral_gaussian",
+        "module": "Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral",
+        "match_kind": "exact"
+      },
+      "note": "`integral_gaussian` proves `∫ exp(-b x²) dx = √(π/b)`, giving the normalizing constant `1/√(2π)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Derangement count formula",
+      "anchor": {
+        "section": "Derangements",
+        "snippet": "This probability, denoted by"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "numDerangements_sum",
+        "module": "Mathlib.Combinatorics.Derangements.Finite",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib has `numDerangements n = n! ∑ (-1)^k / k!` giving the closed-form probability `p_n = ∑ (-1)^k / k!` (module is `Combinatorics.Derangements.Finite`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Stirling asymptotic equivalent form",
+      "anchor": {
+        "section": "Asymptotics",
+        "snippet": "As a consequence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Stirling.factorial_isEquivalent_stirling",
+        "module": "Mathlib.Analysis.SpecialFunctions.Stirling",
+        "match_kind": "exact"
+      },
+      "note": "`factorial_isEquivalent_stirling` gives `n! ~ √(2πn)(n/e)^n` in Asymptotics.IsEquivalent form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Exponential function via Taylor series",
+      "anchor": {
+        "section": "Calculus",
+        "snippet": "Setting"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.exp",
+        "module": "Mathlib.Analysis.Complex.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "`Real.exp` is defined via its power series; setting x=1 gives e as the sum ∑ 1/n!.",
+      "provenance": "ai"
     }
   ]
 }

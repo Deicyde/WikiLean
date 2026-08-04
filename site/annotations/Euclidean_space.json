@@ -151,11 +151,11 @@
       "status": "formalized",
       "mathlib": {
         "decl": "AddGroup.instAddTorsor",
-        "module": "Mathlib.Algebra.Torsor.Defs",
+        "module": "Mathlib.Algebra.AddTorsor.Defs",
         "match_kind": "exact"
       },
       "note": "Any additive group is canonically an `AddTorsor` over itself, so a Euclidean vector space carries the affine structure tautologically.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "1f8676259c82"
     },
     {
@@ -398,6 +398,22 @@
     },
     {
       "kind": "definition",
+      "label": "Positive-definite symmetric bilinear form on the direction",
+      "anchor": {
+        "section": "Metric structure",
+        "snippet": "This implies a symmetric bilinear form"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`InnerProductSpace ℝ V` packages the symmetric positive-definite bilinear form `⟪·,·⟫_ℝ` on the direction of a Euclidean space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Inner product / dot product notation",
       "anchor": {
         "section": "Metric structure",
@@ -456,12 +472,12 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "dist",
+        "decl": "Dist.dist",
         "module": "Mathlib.Topology.MetricSpace.Defs",
         "match_kind": "invocation"
       },
       "note": "There is no separate `length` of `affineSegment`, but `dist P Q` plays this role; no dedicated definition was found.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "6e1757a1196e"
     },
     {
@@ -526,10 +542,10 @@
       "mathlib": {
         "decl": "InnerProductGeometry.inner_eq_zero_iff_angle_eq_pi_div_two",
         "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.Basic",
-        "match_kind": "exact"
+        "match_kind": "invocation"
       },
-      "note": "Orthogonality is just `⟪x, y⟫ = 0`; the equivalence with `angle = π/2` is `InnerProductGeometry.inner_eq_zero_iff_angle_eq_pi_div_two`.",
-      "provenance": "ai",
+      "note": "Orthogonality of two vectors is just `⟪x, y⟫ = 0`; the equivalence with `angle = π/2` is `InnerProductGeometry.inner_eq_zero_iff_angle_eq_pi_div_two`.",
+      "provenance": "ai-moderated",
       "id": "3b57ff65009f"
     },
     {
@@ -1005,7 +1021,8 @@
         "match_kind": "exact"
       },
       "note": "`AffineIsometryEquiv.constVAdd ℝ P v` is the translation `x ↦ v +ᵥ x` as a self-isometry of `P`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "96b7e167ea19"
     },
     {
       "kind": "proposition",
@@ -1276,6 +1293,23 @@
         "match_kind": "generalization"
       },
       "note": "`ChartedSpace H M` axiomatises a space locally modelled on `H`; specialising to `H = EuclideanSpace ℝ (Fin n)` gives a topological manifold.",
+      "provenance": "ai",
+      "id": "339231c10ff5"
+    },
+    {
+      "kind": "definition",
+      "label": "Riemannian manifold",
+      "anchor": {
+        "section": "Curved spaces",
+        "snippet": "This results in a Riemannian manifold"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContMDiffRiemannianMetric",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.Riemannian",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has `ContMDiffRiemannianMetric` and `IsContMDiffRiemannianBundle` for Riemannian metrics on the tangent bundle, but no top-level `RiemannianManifold` structure.",
       "provenance": "ai"
     },
     {

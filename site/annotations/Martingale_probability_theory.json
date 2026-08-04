@@ -24,6 +24,22 @@
     },
     {
       "kind": "definition",
+      "label": "Conditional expectation",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the conditional expectation of the next value, given the past, is equal to the present value"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.condExp",
+        "module": "Mathlib.MeasureTheory.Function.ConditionalExpectation.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `condExp` is the general conditional expectation with respect to a sub-σ-algebra used to state the martingale property.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Discrete-time martingale",
       "anchor": {
         "section": "Definitions",
@@ -89,6 +105,54 @@
       "note": "`Martingale` is defined with values in any `E` that is a `NormedAddCommGroup`/`NormedSpace ℝ E`/`CompleteSpace`, i.e. Banach-space valued, on any `Preorder ι`.",
       "provenance": "ai",
       "id": "bd357090ea5b"
+    },
+    {
+      "kind": "definition",
+      "label": "Filtration",
+      "anchor": {
+        "section": "General definition",
+        "snippet": "is a filtration of the underlying probability space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Filtration",
+        "module": "Mathlib.Probability.Process.Filtration",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureTheory.Filtration ι m` is a monotone family of sub-σ-algebras of `m`, exactly the filtration used in the martingale definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Adapted process",
+      "anchor": {
+        "section": "General definition",
+        "snippet": "is adapted to the filtration"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Adapted",
+        "module": "Mathlib.Probability.Process.Adapted",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureTheory.Adapted ℱ f` states that each `f i` is `ℱ i`-strongly measurable, matching the informal adaptedness condition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "L^p integrability of process",
+      "anchor": {
+        "section": "General definition",
+        "snippet": "lies in the L p space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.MemLp",
+        "module": "Mathlib.MeasureTheory.Function.LpSpace",
+        "match_kind": "exact"
+      },
+      "note": "`MemLp f p μ` expresses membership in `L^p(Ω;E)`, used in Mathlib's martingale definition via `Integrable` (the `p = 1` case).",
+      "provenance": "ai"
     },
     {
       "kind": "example",
@@ -633,6 +697,22 @@
       "note": "Risk-neutral valuation under an equivalent martingale measure is not formalized.",
       "provenance": "ai",
       "id": "a4af6a2c8a1b"
+    },
+    {
+      "kind": "theorem",
+      "label": "Girsanov theorem",
+      "anchor": {
+        "section": "Applications in Mathematical Finance",
+        "snippet": "By finding the correct martingale measure via the Girsanov theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Girsanov's theorem (change of measure under a Brownian drift) is not formalized in Mathlib.",
+      "provenance": "ai"
     }
   ]
 }

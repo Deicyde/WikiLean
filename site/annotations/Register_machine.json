@@ -427,6 +427,104 @@
         "match_kind": null
       },
       "note": "Mathlib formalizes primitive recursive and partial/mu-recursive functions (Mathlib.Computability.Primrec, Mathlib.Computability.Partrec) but lacks the counter-machine RASP needed to state this separation result.",
+      "provenance": "ai",
+      "id": "27da6ce8f39b"
+    },
+    {
+      "kind": "definition",
+      "label": "Turing equivalence",
+      "anchor": {
+        "section": "Historical development of the register machine model",
+        "paragraph_index": 0,
+        "snippet": "with the power of a Turing machine, a so-called Turing equivalence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines Turing machines (Mathlib.Computability.TuringMachine) but has no general 'Turing-equivalent computational model' predicate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Post–Turing machine",
+      "anchor": {
+        "section": "Wang's (1954, 1957) model: Post–Turing machine",
+        "snippet": "Martin Davis eventually evolved this model into the (2-symbol) Post–Turing machine"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The 2-symbol Post–Turing machine has no formalization in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Abacus counter machine model",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "An exception to this is the abacus"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lambek's abacus model with the combined JZDEC instruction is absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Gödel numbering (as machine encoding)",
+      "anchor": {
+        "section": "Minsky, Melzak–Lambek and Shepherdson–Sturgis models \"cut the tape\" into many",
+        "snippet": "represented as a Gödel number"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.pair",
+        "module": "Mathlib.Data.Nat.Pairing",
+        "match_kind": "related"
+      },
+      "note": "Mathlib has Nat.pair/unpair and encodable-based Gödel-style codings, but no Minsky-style encoding of a tape configuration as a single natural number.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Partial recursive (mu-recursive) functions",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "it must be able to compute any partial recursive function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Partrec",
+        "module": "Mathlib.Computability.Partrec",
+        "match_kind": "exact"
+      },
+      "note": "Partial recursive functions are formalized in Mathlib as Nat.Partrec (with Mathlib.Computability.PartrecCode) — the target of the register-machine Turing-equivalence proofs discussed in this article.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Ackermann function (as mu-recursive but not primitive recursive)",
+      "anchor": {
+        "section": "Elgot–Robinson (1964) and the problem of the RASP without indirect addressing",
+        "snippet": "not all mu recursive functions (e.g. the Ackermann function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ack",
+        "module": "Mathlib.Computability.Ackermann",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines the two-argument Ackermann function `ack` and proves `not_primrec₂_ack` in Mathlib.Computability.Ackermann (verified: `Nat.ack` does not exist; the decl lives in the root namespace).",
       "provenance": "ai"
     }
   ]

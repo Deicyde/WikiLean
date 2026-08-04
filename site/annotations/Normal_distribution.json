@@ -1991,7 +1991,8 @@
         "match_kind": null
       },
       "note": "Mathlib formalizes the mean of `gaussianReal μ v` (as expectation) but neither the median nor the mode of the Gaussian are named lemmas.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2c79efe5300b"
     },
     {
       "kind": "proposition",
@@ -2007,7 +2008,8 @@
         "match_kind": null
       },
       "note": "Log-concavity of the Gaussian pdf is not stated as a named lemma in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "be60174313fd"
     },
     {
       "kind": "proposition",
@@ -2023,7 +2025,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib expresses iterated derivatives of the Gaussian pdf via probabilist Hermite polynomials.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7cf055df97fe"
     },
     {
       "kind": "theorem",
@@ -2039,7 +2042,8 @@
         "match_kind": null
       },
       "note": "Isserlis's / Wick's theorem for Gaussian moments is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "37dc07779a80"
     },
     {
       "kind": "proposition",
@@ -2055,7 +2059,8 @@
         "match_kind": "generalization"
       },
       "note": "Follows from the closed-form `cgf_gaussianReal = μt + v t²/2` being a quadratic polynomial, but no dedicated cumulant lemma is stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4dd620396633"
     },
     {
       "kind": "proposition",
@@ -2071,6 +2076,55 @@
         "match_kind": "generalization"
       },
       "note": "The eigenfunction property is an immediate consequence of the general Fourier-of-Gaussian formula, but no specialized eigenfunction lemma is stated.",
+      "provenance": "ai",
+      "id": "625c927f7374"
+    },
+    {
+      "kind": "proposition",
+      "label": "Standard normal has mean 0 and variance 1",
+      "anchor": {
+        "section": "Standard normal distribution",
+        "snippet": "The variable ⁠ ⁠ has a mean of 0 and a variance and standard deviation of 1"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.gaussianReal",
+        "module": "Mathlib.Probability.Distributions.Gaussian.Real",
+        "match_kind": "special_case"
+      },
+      "note": "Follows from `gaussianReal 0 1` and general integral/variance lemmas for the Gaussian; not a single named lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multivariate normal by linear projections",
+      "anchor": {
+        "section": "Extensions",
+        "snippet": "A vector X ∈ R k is multivariate-normally distributed if any linear combination of its components"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.IsGaussian",
+        "module": "Mathlib.Probability.Distributions.Gaussian.Multivariate",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `IsGaussian` on a finite-dimensional real inner product space is defined so that every real linear functional is univariate-Gaussian, matching this characterization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sample mean is asymptotically normal",
+      "anchor": {
+        "section": "Sample mean",
+        "snippet": "The estimator is also asymptotically normal"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.tendstoInDistribution_inv_sqrt_mul_sum_sub",
+        "module": "Mathlib.Probability.CentralLimitTheorem",
+        "match_kind": "generalization"
+      },
+      "note": "Asymptotic normality of the sample mean is a special case of the 1D CLT for i.i.d. variables in Mathlib.",
       "provenance": "ai"
     }
   ]

@@ -82,12 +82,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Basis.tensorProduct",
+        "decl": "Module.Basis.tensorProduct",
         "module": "Mathlib.LinearAlgebra.TensorProduct.Basis",
         "match_kind": "exact"
       },
       "note": "`Basis.tensorProduct` builds a basis of `M ⊗ N` from bases of `M` and `N`.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "40ebd6614177"
     },
     {
@@ -95,7 +95,7 @@
       "label": "Tensor product as space of bilinear forms",
       "anchor": {
         "section": "From bases",
-        "snippet": "we can define"
+        "snippet": "the set of bilinear forms on"
       },
       "status": "partial",
       "mathlib": {
@@ -104,7 +104,7 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib expresses the dual view through the universal property/lift equiv rather than as a definitional construction from bilinear forms.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "c7ed41a30742"
     },
     {
@@ -116,12 +116,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Basis.tensorProduct_apply",
+        "decl": "Module.Basis.tensorProduct_apply",
         "module": "Mathlib.LinearAlgebra.TensorProduct.Basis",
         "match_kind": "exact"
       },
       "note": "`Basis.tensorProduct_apply` describes how `v ⊗ w` expands in the product basis.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "6738ebc1eb8f"
     },
     {
@@ -180,7 +180,7 @@
       "label": "Tensor product of F^m and F^n",
       "anchor": {
         "section": "Linearly disjoint",
-        "snippet": "where"
+        "snippet": "are positive integers, then one may set"
       },
       "status": "partial",
       "mathlib": {
@@ -189,7 +189,7 @@
         "match_kind": "generalization"
       },
       "note": "Not stated as a standalone identification but follows from the dimension formula and basis lemmas.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "8c9b03507b65"
     },
     {
@@ -295,6 +295,22 @@
       "id": "9685c791de5b"
     },
     {
+      "kind": "proposition",
+      "label": "Symmetric group action on tensor powers",
+      "anchor": {
+        "section": "Commutativity as vector space operation",
+        "snippet": "This determines a right action of the symmetric group"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PiTensorProduct.reindex",
+        "module": "Mathlib.LinearAlgebra.PiTensorProduct",
+        "match_kind": "generalization"
+      },
+      "note": "`PiTensorProduct.reindex` implements the permutation action on tensor powers; a packaged right action of `S_n` on `V^{⊗n}` is not stated as such.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Tensor product of linear maps",
       "anchor": {
@@ -337,12 +353,12 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "ModuleCat.instMonoidalCategory",
+        "decl": "ModuleCat.monoidalCategory",
         "module": "Mathlib.Algebra.Category.ModuleCat.Monoidal.Basic",
         "match_kind": "generalization"
       },
       "note": "The monoidal-category structure on `ModuleCat R` encodes the bifunctorial behavior of tensor product.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "1277693e53ef"
     },
     {
@@ -524,12 +540,12 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "LieModule.instTensorProduct",
+        "decl": "TensorProduct.LieModule.lieModule",
         "module": "Mathlib.Algebra.Lie.TensorProduct",
         "match_kind": "generalization"
       },
       "note": "Mathlib has Lie-module structure on tensor products in `Algebra.Lie.TensorProduct`, capturing the adjoint action on `V ⊗ V*`.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "d48cdc7552a2"
     },
     {
@@ -738,10 +754,26 @@
     },
     {
       "kind": "definition",
+      "label": "Higher Tor functors and derived tensor product",
+      "anchor": {
+        "section": "Computing the tensor product",
+        "snippet": "Higher Tor functors measure the defect"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Tor",
+        "module": "Mathlib.CategoryTheory.Monoidal.Tor",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines `Tor n : C ⥤ C ⥤ C` in `CategoryTheory.Monoidal.Tor`; a single packaged 'derived tensor product' term is not standard.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Tensor product of algebras",
       "anchor": {
         "section": "Tensor product of algebras",
-        "snippet": "the tensor product"
+        "snippet": "is an R -algebra itself"
       },
       "status": "formalized",
       "mathlib": {
@@ -750,7 +782,7 @@
         "match_kind": "exact"
       },
       "note": "`Algebra.TensorProduct` equips `A ⊗[R] B` with an algebra structure.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "c5749736736e"
     },
     {
@@ -813,12 +845,12 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Rep.tensor",
-        "module": "Mathlib.RepresentationTheory.Rep.Basic",
+        "decl": "Representation.tprod",
+        "module": "Mathlib.RepresentationTheory.Basic",
         "match_kind": "generalization"
       },
       "note": "Tensor products of representations exist in `RepresentationTheory`, but Littlewood–Richardson decomposition is not formalized.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "fbd94a175ce9"
     },
     {
@@ -874,6 +906,22 @@
     },
     {
       "kind": "definition",
+      "label": "n-th exterior power",
+      "anchor": {
+        "section": "Quotient algebras",
+        "snippet": "the n th exterior power"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ExteriorAlgebra.exteriorPower",
+        "module": "Mathlib.LinearAlgebra.ExteriorAlgebra.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ExteriorAlgebra.exteriorPower R n M` (notation `⋀[R]^n M`) is the n-th exterior power of a module, sitting inside the exterior algebra.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Symmetric algebra",
       "anchor": {
         "section": "Quotient algebras",
@@ -888,6 +936,22 @@
       "note": "`SymmetricAlgebra R M := RingQuot (SymRel R M)` is the symmetric algebra.",
       "provenance": "ai",
       "id": "143184eca02c"
+    },
+    {
+      "kind": "definition",
+      "label": "Symmetric tensor",
+      "anchor": {
+        "section": "Quotient algebras",
+        "snippet": "The resulting objects are called symmetric tensors"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SymmetricAlgebra",
+        "module": "Mathlib.LinearAlgebra.SymmetricAlgebra.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Elements of `SymmetricAlgebra R M` are the symmetric tensors; no separate `SymmetricTensor` term.",
+      "provenance": "ai"
     }
   ]
 }

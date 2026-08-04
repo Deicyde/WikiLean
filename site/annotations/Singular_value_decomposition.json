@@ -36,7 +36,8 @@
         "match_kind": null
       },
       "note": "The polar decomposition itself is not formalized in Mathlib, so its relation to the SVD is not formalized either.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "27b91965e78b"
     },
     {
       "kind": "definition",
@@ -137,7 +138,8 @@
         "match_kind": null
       },
       "note": "The rank-r outer-product form M = sum_i sigma_i u_i v_i^T is not formalized (no SVD factorization is built).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f39bfd940cc0"
     },
     {
       "kind": "proposition",
@@ -255,7 +257,8 @@
         "match_kind": null
       },
       "note": "The defining SVD action M v_i = sigma_i u_i on the right-singular basis is not formalized as a packaged statement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c5c20a71355b"
     },
     {
       "kind": "proposition",
@@ -373,7 +376,8 @@
         "match_kind": null
       },
       "note": "The fact that a linear map sends the unit sphere of R^n to an ellipsoid in R^m, with semi-axes given by singular values, is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fd822aa47d79"
     },
     {
       "kind": "example",
@@ -1258,6 +1262,134 @@
       "note": "The spectral theorem for compact self-adjoint operators on Hilbert space (eigenvector diagonalization) is not formalized in Mathlib.",
       "provenance": "ai",
       "id": "a5df6ab6e00e"
+    },
+    {
+      "kind": "proposition",
+      "label": "Compact operators are closure of finite-rank operators",
+      "anchor": {
+        "section": "Singular values and compact operators",
+        "snippet": "Compact operators on a Hilbert space are the closure of finite-rank operators in the uniform operator topology"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The characterization of compact operators on a Hilbert space as the uniform-topology closure of finite-rank operators is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Semi-unitary matrix",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "semi-unitary matrix"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The notion of a semi-unitary matrix (columns orthonormal but not necessarily square) is not defined in Mathlib as a named concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unitary matrix",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "complex unitary matrix"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.unitaryGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "exact"
+      },
+      "note": "Unitary matrices are formalized as the unitary group of complex matrices in Mathlib (Matrix.unitaryGroup, lowercase).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Orthogonal matrix",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "real orthogonal matrices"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.orthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "exact"
+      },
+      "note": "Orthogonal matrices are formalized as the orthogonal group of real matrices in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conjugate transpose",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is the conjugate transpose of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.conjTranspose",
+        "module": "Mathlib.Data.Matrix.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The conjugate transpose is defined on Mathlib matrices.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rank-nullity theorem",
+      "anchor": {
+        "section": "Singular values, singular vectors, and their relation to the SVD",
+        "snippet": "which by the rank–nullity theorem cannot be the same dimension"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.finrank_range_add_finrank_ker",
+        "module": "Mathlib.LinearAlgebra.FiniteDimensional.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "The rank–nullity theorem for finite-dimensional linear maps is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Extreme value theorem",
+      "anchor": {
+        "section": "Proof of existence",
+        "snippet": "By the extreme value theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompact.exists_isMaxOn",
+        "module": "Mathlib.Topology.Order.Compact",
+        "match_kind": "exact"
+      },
+      "note": "The extreme value theorem for continuous functions on compact sets is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lagrange multipliers",
+      "anchor": {
+        "section": "Proof of existence",
+        "snippet": "By the Lagrange multipliers theorem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsLocalExtrOn.exists_multipliers_of_hasStrictFDerivAt_1d",
+        "module": "Mathlib.Analysis.Calculus.LagrangeMultipliers",
+        "match_kind": null
+      },
+      "note": "A single-constraint Lagrange multiplier statement exists (also the multi-constraint version), though not as an SVD-specialized form.",
+      "provenance": "ai"
     }
   ]
 }
