@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
-"""Generate WikiLean's static chrome: the About/methodology page, a 404 page,
-robots.txt, and a sitemap covering every rendered page.
+"""Generate WikiLean's static chrome: a 404 page, robots.txt, and a sitemap
+covering every rendered page.
+
+(The About page is no longer built here — it is served dynamically by the
+Worker at GET /about with live D1 counts; see wiki/src/home.ts aboutPage().)
 
 Run LAST, after render.py / build_index.py / export_wikidata_rdf.py, so the
 sitemap picks up index.html, concepts.html, and every article in out/.
 
 Outputs:
-    out/about.html
     out/404.html
     out/robots.txt
     out/sitemap.xml
@@ -14,12 +16,10 @@ Outputs:
 from __future__ import annotations
 
 import datetime
-import json
 import urllib.parse
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-ANNO_DIR = HERE / "annotations"
 OUT_DIR = HERE / "out"
 BASE_URL = "https://wikilean.jackmccarthy.org"
 
@@ -27,46 +27,6 @@ BASE_URL = "https://wikilean.jackmccarthy.org"
 # treatment. Everything else in out/*.html is an annotated article.
 NON_ARTICLE = {"index", "concepts", "graph", "article-graph", "about", "404"}
 # Hyphenated stems like "article-graph" survive Path.stem unchanged.
-
-
-def aggregate_stats() -> dict:
-    """Articles + status totals across annotations that have a rendered page."""
-    totals = {"formalized": 0, "partial": 0, "not_formalized": 0}
-    n_articles = 0
-    for jf in ANNO_DIR.glob("*.json"):
-        try:
-            d = json.loads(jf.read_text())
-        except Exception:
-            continue
-        slug = d.get("slug")
-        if not slug or not (OUT_DIR / f"{slug}.html").exists():
-            continue
-        c = {"formalized": 0, "partial": 0, "not_formalized": 0}
-        for a in d.get("annotations", []) or []:
-            s = a.get("status")
-            if s in c:
-                c[s] += 1
-        if sum(c.values()) == 0:
-            continue
-        n_articles += 1
-        for k in totals:
-            totals[k] += c[k]
-    grand = sum(totals.values()) or 1
-    return {
-        "n_articles": n_articles,
-        "n_results": grand,
-        "pct_f": round(100 * totals["formalized"] / grand),
-        "pct_p": round(100 * totals["partial"] / grand),
-    }
-
-
-def write_about(stats: dict) -> None:
-    # The template embeds raw CSS (with { }), so substitute with .replace
-    # rather than str.format.
-    html_out = ABOUT_TEMPLATE
-    for key, val in stats.items():
-        html_out = html_out.replace("%" + key.upper() + "%", str(val))
-    (OUT_DIR / "about.html").write_text(html_out)
 
 
 def write_404() -> None:
@@ -109,13 +69,10 @@ def write_sitemap() -> None:
 
 def main() -> None:
     OUT_DIR.mkdir(exist_ok=True)
-    stats = aggregate_stats()
-    write_about(stats)
     write_404()
     write_robots()
     write_sitemap()
-    print(f"Wrote out/about.html, out/404.html, out/robots.txt "
-          f"({stats['n_articles']} articles, {stats['n_results']} results)")
+    print("Wrote out/404.html, out/robots.txt")
 
 
 # Warm academic-minimalist palette, matching style.css / home.ts (W3 fix #6e):
@@ -192,117 +149,6 @@ THEME_TOGGLE_SCRIPT = (
     'if(!b)return;b.addEventListener("click",function(){var r=document.documentElement;'
     'var n=r.dataset.theme==="dark"?"light":"dark";r.dataset.theme=n;'
     'try{localStorage.setItem("wl-theme",n);}catch(e){}});})();</script>'
-)
-
-ABOUT_TEMPLATE = (
-    """<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>WikiLean — About &amp; method</title>
-<meta name="description" content="How WikiLean maps Wikipedia mathematics to Lean/Mathlib4 formalizations: methodology, what the formalized / partial / not-formalized statuses mean, and limitations.">
-<link rel="canonical" href="%BASE%/about">
-%NOFOUC%
-<style>%CSS%</style>
-</head>
-<body>
-<header class="wl-header">
-  <a class="wl-brand" href="/">WikiLean</a>
-  <nav class="wl-nav">
-    <a class="wl-navlink" href="/concepts">Concepts</a>
-    <a class="wl-navlink" href="/brain">Brain</a>
-    <a class="wl-navlink active" href="/about">About &amp; method</a>
-    %TOGGLE_BTN%
-  </nav>
-</header>
-<div class="wrap">
-  <h1>About &amp; method</h1>
-  <p class="lead">WikiLean is a mirror of <a href="https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Mathematics">WikiProject
-  Mathematics</a> articles, annotated inline with links into
-  <a href="https://leanprover-community.github.io/mathlib4_docs/">Mathlib4</a> and
-  color-coded by whether each definition, theorem, and proof has been formalized in
-  the <a href="https://leanprover-community.github.io/">Lean</a> proof assistant.</p>
-  <div class="stats">
-    <span><b>%N_ARTICLES%</b> articles annotated</span>
-    <span><b>%N_RESULTS%</b> tagged statements</span>
-    <span><b>%PCT_F%%</b> formalized · <b>%PCT_P%%</b> partial</span>
-  </div>
-
-  <h2>How it is built</h2>
-  <p>Three stages. <b>Catalog:</b> enumerate the WikiProject Mathematics article set
-  with its metadata and Wikidata identifiers. <b>Annotate:</b> for each article, work
-  through its definitions, theorems, and proofs and match each one to the Mathlib4
-  declaration that formalizes it, recording a status and the declaration's module path.
-  <b>Host:</b> fetch the article's rendered HTML from the MediaWiki API, wrap each
-  matched statement in place, and serve the result as a standalone page. Hovering (or
-  tapping) a highlighted statement shows its status and a direct link into the Mathlib
-  documentation.</p>
-
-  <h2>What the colors mean</h2>
-  <ul>
-    <li><span class="swatch s-f"></span><b>Formalized.</b> A Mathlib4 declaration
-      captures the statement or definition as stated.</li>
-    <li><span class="swatch s-p"></span><b>Partial.</b> Mathlib has a related, weaker,
-      or special-case form — or only part of the statement is formalized. The tooltip
-      notes where the formalization and the article diverge.</li>
-    <li><span class="swatch s-n"></span><b>Not formalized.</b> No corresponding Mathlib4
-      declaration was found at the time of annotation.</li>
-  </ul>
-
-  <h2>Provenance and pinning</h2>
-  <p>Each article is annotated against a specific Wikipedia revision, and that revision
-  id is recorded alongside the annotations, so a highlight always refers to the exact
-  prose it was made against even after the live article changes. Mathlib links point at
-  the public Mathlib4 documentation.</p>
-
-  <h2>Wikidata concept links</h2>
-  <p>Every concept matched to a <em>formalized</em> declaration is also keyed to its
-  <a href="https://www.wikidata.org/">Wikidata</a> item and published as an open
-  <a href="/concepts">RDF dataset</a>. This is the basis for a proposed Wikidata
-  property, <em>&ldquo;formalized as (Lean/Mathlib)&rdquo;</em> — the long-term goal is
-  for these links to live in Wikidata itself, maintainable by the community and queryable
-  via SPARQL.</p>
-
-  <h2>Article graph</h2>
-  <p>For AI agents, the same graph is queryable as the
-  <a href="/mcp">Wikibrain MCP server</a> and the <a href="/brain/api">Wikibrain REST
-  API</a>: resolve any informal concept to its exact Mathlib declaration (with match
-  quality and docs link), or start from a Lean name and pull the surrounding informal
-  context — the article, the Wikidata identity, and every cross-referenced external
-  database. Each answer carries provenance and confidence.</p>
-
-  <h2>The Brain</h2>
-  <p>The <a href="/brain">Brain</a> is a zoomable map over one shared node set: a
-  containment <em>bubble</em> view (libraries → areas → concepts, nesting by generality)
-  and a dependency <em>web</em>/<em>ego</em> view overlaying independent reference graphs —
-  Mathlib's declaration-level dependency edges (extracted via <code>Expr.getUsedConstants</code>
-  over the built Mathlib environment — the same data that produces hyperlinks in the
-  Mathlib docs), Wikidata's typed item-to-item statements (P279 subclass-of, P361
-  part-of, etc.), cross-database identities, and the literature. Every edge carries its
-  provenance — human / machine / AI — which is filterable, and a <em>sources</em> view
-  documents where every external link comes from, with its Wikidata property and license.</p>
-
-  <h2>Limitations</h2>
-  <p>Annotations are best-effort and cover a growing sample of WikiProject Mathematics,
-  not the whole corpus. A match reflects a judgment that a Mathlib declaration formalizes
-  a statement; it can be incomplete or wrong, and Mathlib itself evolves, so coverage is
-  a snapshot rather than a guarantee. Corrections are welcome via the source repository.</p>
-
-  <footer>
-    WikiLean &middot; <a href="https://github.com/Deicyde/WikiLean">source on GitHub</a> &middot;
-    a project by <a href="https://jackmccarthy.org">Jack McCarthy</a>
-  </footer>
-</div>
-%TOGGLE_SCRIPT%
-</body>
-</html>
-"""
-    .replace("%CSS%", SHARED_CSS)
-    .replace("%NOFOUC%", NO_FOUC)
-    .replace("%TOGGLE_BTN%", THEME_TOGGLE_BTN)
-    .replace("%TOGGLE_SCRIPT%", THEME_TOGGLE_SCRIPT)
-    .replace("%BASE%", BASE_URL)
 )
 
 NOT_FOUND_TEMPLATE = (

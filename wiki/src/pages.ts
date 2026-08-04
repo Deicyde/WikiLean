@@ -2,6 +2,7 @@
 // article pages, plus the History and Recent-changes pages.
 
 import { htmlEscape } from "./engine/html.js";
+import { SEARCHBOX_CSS, SEARCHBOX_HTML, SEARCHBOX_SCRIPT } from "./engine/searchbox.js";
 import type { AuthUser } from "./auth.js";
 import type { Annotation } from "./engine/types.js";
 
@@ -232,14 +233,15 @@ function shell(title: string, bodyInner: string, extraScript = ""): string {
 <title>WikiLean · ${htmlEscape(title, false)}</title>
 <meta name="robots" content="noindex">
 <script>(function(){try{var s=localStorage.getItem("wl-theme");var t=s==="dark"||s==="light"?s:(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.dataset.theme=t;}catch(e){}})();</script>
-<style>${SHELL_CSS}</style>
+<style>${SHELL_CSS}${SEARCHBOX_CSS}</style>
 </head>
 <body>
-<header class="wl-header"><a class="wl-brand" href="/">WikiLean</a><span><a class="wl-navlink" href="/recent-changes">Recent changes</a> · <a class="wl-navlink" href="/proposals">Proposals</a> · <a class="wl-navlink" href="/flags">Flags</a> · <a class="wl-navlink" href="/stats">Stats</a> · <a class="wl-navlink" href="/about">About</a><button id="wl-theme-toggle" class="wl-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">🌓</button></span></header>
+<header class="wl-header"><a class="wl-brand" href="/">WikiLean</a><span>${SEARCHBOX_HTML} <a class="wl-navlink" href="/articles">Articles</a> · <a class="wl-navlink" href="/brain">Brain</a> · <a class="wl-navlink" href="/recent-changes">Recent changes</a> · <a class="wl-navlink" href="/proposals">Proposals</a> · <a class="wl-navlink" href="/flags">Flags</a> · <a class="wl-navlink" href="/stats">Stats</a> · <a class="wl-navlink" href="/about">About</a><button id="wl-theme-toggle" class="wl-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">🌓</button></span></header>
 <div class="wrap">
 ${bodyInner}
 </div>
 <script>(function(){var b=document.getElementById("wl-theme-toggle");if(!b)return;b.addEventListener("click",function(){var r=document.documentElement;var n=r.dataset.theme==="dark"?"light":"dark";r.dataset.theme=n;try{localStorage.setItem("wl-theme",n);}catch(e){}});})();</script>
+${SEARCHBOX_SCRIPT}
 ${extraScript}
 </body>
 </html>`;

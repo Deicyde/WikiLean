@@ -892,6 +892,10 @@ PAGE_TEMPLATE = """<!doctype html>
     <span class="wl-sep">·</span>
     <span class="wl-article">{title}</span>
     <span class="wl-nav">
+      <a class="wl-navlink" href="/articles">Articles</a>
+      <a class="wl-navlink" href="/brain">Brain</a>
+      <a class="wl-navlink" href="/recent-changes">Recent changes</a>
+      <a class="wl-navlink" href="/stats">Stats</a>
       <a class="wl-navlink" href="/about">About</a>
       <a class="wl-wikilink" href="https://en.wikipedia.org/wiki/{wp_link}" target="_blank" rel="noopener">view on Wikipedia ↗</a>
     </span>

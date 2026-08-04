@@ -55,7 +55,9 @@ body {
 .wl-brand:hover { color: var(--accent); }
 .wl-sep      { color: var(--c-untouched); }
 .wl-article  { color: var(--ink); font-weight: 500; }
-.wl-nav      { margin-left: auto; display: flex; gap: 14px; align-items: baseline; }
+/* flex-wrap: the nav now carries the full unified link set + the search box —
+   on narrow viewports the links wrap instead of overflowing the header. */
+.wl-nav      { margin-left: auto; display: flex; gap: 6px 14px; align-items: baseline; flex-wrap: wrap; justify-content: flex-end; }
 .wl-navlink, .wl-wikilink { color: var(--accent); text-decoration: none; font-size: 12px; }
 .wl-navlink:hover, .wl-wikilink:hover { text-decoration: underline; }
 
@@ -135,6 +137,12 @@ body {
 /* MathML font sizing — the default UA size for <math> is sometimes a touch
    small; bump display math a bit so it stands out from surrounding prose. */
 math[display="block"] { font-size: 1.1em; }
+
+/* Wikipedia's section [edit] links point at wikipedia.org edit forms — dead
+   weight here. CSS-only hide (never strip the DOM: annotation anchor
+   signatures are computed over the wrapped HTML). -like is the excerpt
+   templates' variant (same self-contained bracket+link block; 81 articles). */
+.mw-editsection, .mw-editsection-like { display: none; }
 
 /* ---------- Annotation highlights ---------- */
 

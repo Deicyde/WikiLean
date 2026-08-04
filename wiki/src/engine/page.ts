@@ -4,6 +4,7 @@
 // the annotation wrapping in <main> is byte-identical to the static site.
 
 import { htmlEscape } from "./html.js";
+import { SEARCHBOX_CSS, SEARCHBOX_HTML, SEARCHBOX_SCRIPT } from "./searchbox.js";
 import type { Annotation } from "./types.js";
 
 export const BASE_URL = "https://wikilean.jackmccarthy.org";
@@ -147,7 +148,7 @@ export function renderArticlePage(input: PageInput): string {
 var t=s==="dark"||s==="light"?s:(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");
 document.documentElement.dataset.theme=t;}catch(e){}})();
 </script>
-<link rel="stylesheet" href="/assets/style.css?v=8">
+<link rel="stylesheet" href="/assets/style.css?v=9">
 <style>
 /* Use the article-stylesheet's tokens so the attribution footer recolors in
    dark mode along with the rest of the chrome. */
@@ -155,7 +156,7 @@ document.documentElement.dataset.theme=t;}catch(e){}})();
 .wl-attribution p { margin: 4px 0; }
 .wl-attribution a { color: var(--accent); text-decoration: none; }
 .wl-attribution a:hover { text-decoration: underline; }
-</style>
+${SEARCHBOX_CSS}</style>
 </head>
 <body class="show-all">
 <header class="wl-header">
@@ -164,6 +165,11 @@ document.documentElement.dataset.theme=t;}catch(e){}})();
     <span class="wl-sep">·</span>
     <span class="wl-article">${title}</span>
     <span class="wl-nav">
+      ${SEARCHBOX_HTML}
+      <a class="wl-navlink" href="/articles">Articles</a>
+      <a class="wl-navlink" href="/brain">Brain</a>
+      <a class="wl-navlink" href="/recent-changes">Recent changes</a>
+      <a class="wl-navlink" href="/stats">Stats</a>
       <a class="wl-navlink" href="/about">About</a>
       <a class="wl-navlink" href="/${encodeURIComponent(slug)}/history">History</a>
       <a class="wl-wikilink" href="https://en.wikipedia.org/wiki/${wpLink}" target="_blank" rel="noopener">view on Wikipedia ↗</a>
@@ -204,6 +210,7 @@ b.addEventListener("click",function(){var r=document.documentElement;
 var n=r.dataset.theme==="dark"?"light":"dark";r.dataset.theme=n;
 try{localStorage.setItem("wl-theme",n);}catch(e){}});})();
 </script>
+${SEARCHBOX_SCRIPT}
 <script src="/assets/script.js?v=7"></script>
 </body>
 </html>
