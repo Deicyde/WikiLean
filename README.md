@@ -4,9 +4,9 @@
 
 A reader can scan an article and see at a glance which statements are formalized (green), partially formalized (yellow), or not yet formalized (red), with a one-click link out to the Mathlib declaration. A formalizer can use the same view as a coverage map: "what's a notable concept Mathlib hasn't reached yet?"
 
-## Current status (June 2026)
+## Current status (August 2026)
 
-- **709 articles** annotated across 12 Mathlib areas (Analysis, Algebra, Topology, …), with **~29,500 individual annotations**: 28% formalized, 14% partial, 58% not formalized.
+- **778 articles** annotated across the major Mathlib areas (Analysis, Algebra, Topology, …), with **36,429 individual annotations**: 27.2% formalized, 14.2% partial, 58.6% not formalized.
 - **Live editable wiki** — sign in with GitHub at the site to add/correct/discuss annotations directly in-context on any article.
 - **Two complementary data layers** keyed to the same Wikidata entities:
   - *Annotation layer* — per-article, span-level (W3C Web Annotation Data Model export at [`site/out_w3c/`](site/out_w3c/)).

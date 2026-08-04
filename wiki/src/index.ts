@@ -501,7 +501,7 @@ app.get("/favicon.ico", (c) =>
 // is KV-cached with a long TTL; bump the cache key suffix when the page or the
 // embedded data changes.
 app.get("/wikifunctions", async (c) => {
-  const cacheKey = "page:wikifunctions:v2";  // v2: dark-mode theme script + toggle
+  const cacheKey = "page:wikifunctions:v3";  // v3: retired /article-graph nav link removed
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const html = wikifunctionsPage();
@@ -515,7 +515,7 @@ app.get("/wikifunctions", async (c) => {
 // cache pattern; bump the suffix when the page copy changes. Registered before
 // the /:slug catch-all (which only matches a single path segment anyway).
 app.get("/wikifunctions/verify", async (c) => {
-  const cacheKey = "page:wikifunctions-verify:v2";  // v2: dark-mode theme script + toggle
+  const cacheKey = "page:wikifunctions-verify:v3";  // v3: retired /article-graph nav link removed
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const html = wikifunctionsVerifyPage();

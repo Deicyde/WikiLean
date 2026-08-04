@@ -65,8 +65,10 @@ python3 manage/refresh.py [--pull] # rebuild the control plane (centrality/cover
 - **`findLostHuman` 422 is the floor** — a bot save that drops/alters any `provenance:"human"`
   annotation (tombstones included) must 422. Bots can't approve/endorse (session-only; 403).
 - **Render-cache keys are manually versioned + load-bearing** (currently `render:v14:`,
-  `page:home:v3`, `page:stats:v2` in `index.ts`) — bump the prefix whenever output bytes
-  change, or readers get stale HTML for up to 30 days. Asset changes need `?v=` bumps.
+  `page:home:v8`, `page:articles:v1`, `page:sitemap:v4`, `page:stats:v3`,
+  `page:wikifunctions:v3`, `page:wikifunctions-verify:v3` — all in `index.ts`) — bump the
+  prefix whenever output bytes change, or readers get stale HTML for up to 30 days. Asset
+  changes need `?v=` bumps.
 - **The `RESERVED` set (`index.ts`) must list every non-article top-level path** or the
   `/:slug` catch-all swallows it. Provenance is matched by exact string
   (`human`/`ai-moderated`/`ai`) — don't rename.
