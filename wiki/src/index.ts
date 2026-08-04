@@ -35,7 +35,7 @@ import {
   type StatsEventCell,
   type UserProfileRow,
 } from "./pages.js";
-import { brainLanding, homePage, sitemapXml } from "./home.js";
+import { aboutPage, brainLanding, homePage, sitemapXml } from "./home.js";
 import { wikifunctionsPage } from "./wikifunctions.js";
 import { wikifunctionsVerifyPage } from "./wikifunctions-verify.js";
 import { registerReviewRoutes } from "./review.js";
@@ -104,6 +104,20 @@ const RESERVED = new Set([
   "articles",
   "mcp",
   "repos",
+  "about",
+  // Static assets in wiki/public/ + retired-redirect paths. The asset layer /
+  // redirect routes answer these before the /:slug catch-all, but an article
+  // must never be creatable under the same name (the invariant: every
+  // non-article top-level path is listed here).
+  "concepts",
+  "map",
+  "map-v2",
+  "map_data_v2.json",
+  "atlas_data.json",
+  "wikilean.ttl",
+  "404.html",
+  "brain.html",
+  "concepts.html",
 ]);
 
 const app = new Hono<{ Bindings: Env }>();
@@ -143,7 +157,11 @@ async function renderArticleBase(env: Env, row: ArticleRow): Promise<string> {
   // sentence in the same <p> stays unannotated.
   // v14: dark mode — page template carries the no-FOUC theme script + 🌓
   // toggle button; cached HTML must reflect those + style.css?v=8.
-  const cacheKey = `render:v14:${slug}:${row.version}`;
+  // v15: unified nav (Articles/Brain/Recent changes/Stats before About) + the
+  // header article-search box (engine/searchbox.ts) + style.css?v=9 (hides
+  // Wikipedia's .mw-editsection [edit] links, which survive in the wrapped
+  // body — CSS-only so anchor signatures are untouched).
+  const cacheKey = `render:v15:${slug}:${row.version}`;
   const cached = await env.RENDER_CACHE.get(cacheKey);
   if (cached) return cached;
 
@@ -419,7 +437,7 @@ async function homeRows(c: Context<{ Bindings: Env }>) {
 
 // the landing page IS the Brain (embedded); the article directory moved to /articles
 app.get("/", async (c) => {
-  const cacheKey = "page:home:v8";  // v8: article-graph dropped, MCP link in both navs
+  const cacheKey = "page:home:v9";  // v9: Stats link in the brain-landing nav
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const html = brainLanding(await homeRows(c));
@@ -428,10 +446,67 @@ app.get("/", async (c) => {
 });
 
 app.get("/articles", async (c) => {
-  const cacheKey = "page:articles:v1";  // the former homepage: directory + search
+  const cacheKey = "page:articles:v2";  // v2: Recent changes + Stats links in the nav
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const html = homePage(await homeRows(c));
+  await c.env.RENDER_CACHE.put(cacheKey, html, { expirationTtl: 300 });
+  return c.html(html);
+});
+
+// ---- /api/articles — compact article index for the header search box -------
+// Same query shape as homeRows minus updated_at, serialized as arrays to keep
+// the payload small ([slug, display_title, n_formalized, n_partial,
+// n_not_formalized]; count columns pass through null pre-backfill). KV-cached
+// like the directory page, plus browser/CDN Cache-Control so a reader's
+// session fetches it at most once per page view.
+app.get("/api/articles", async (c) => {
+  const cacheKey = "page:articles-index:v1";  // v1: initial [slug,title,f,p,n] shape
+  const headers = {
+    "Content-Type": "application/json",
+    "Cache-Control": "public, max-age=300",
+    "X-Content-Type-Options": "nosniff",
+  };
+  const cached = await c.env.RENDER_CACHE.get(cacheKey);
+  if (cached) return c.body(cached, 200, headers);
+  const db = drizzle(c.env.DB);
+  const rows = await db
+    .select({
+      slug: articles.slug,
+      displayTitle: articles.displayTitle,
+      nFormalized: articles.nFormalized,
+      nPartial: articles.nPartial,
+      nNotFormalized: articles.nNotFormalized,
+    })
+    .from(articles)
+    .orderBy(articles.displayTitle);
+  const body = JSON.stringify({
+    v: 1,
+    articles: rows.map((r) => [r.slug, r.displayTitle, r.nFormalized, r.nPartial, r.nNotFormalized]),
+  });
+  await c.env.RENDER_CACHE.put(cacheKey, body, { expirationTtl: 300 });
+  return c.body(body, 200, headers);
+});
+
+// ---- /about — methodology page with live counts (dynamic; replaces the
+// static wiki/public/about.html asset, which used to shadow this path with
+// stats baked at build time). One aggregate over the D-C5 count columns.
+app.get("/about", async (c) => {
+  const cacheKey = "page:about:v1";  // v1: dynamic port of the static About page
+  const cached = await c.env.RENDER_CACHE.get(cacheKey);
+  if (cached) return c.html(cached);
+  const db = drizzle(c.env.DB);
+  const agg = (
+    await db
+      .select({
+        nArticles: sql<number>`COUNT(*)`,
+        nFormalized: sql<number>`COALESCE(SUM(${articles.nFormalized}), 0)`,
+        nPartial: sql<number>`COALESCE(SUM(${articles.nPartial}), 0)`,
+        nNotFormalized: sql<number>`COALESCE(SUM(${articles.nNotFormalized}), 0)`,
+      })
+      .from(articles)
+  )[0];
+  const html = aboutPage(agg);
   await c.env.RENDER_CACHE.put(cacheKey, html, { expirationTtl: 300 });
   return c.html(html);
 });
@@ -529,7 +604,7 @@ app.get("/wikifunctions/verify", async (c) => {
 // Annotation blobs are never parsed here. KV-cached with TTL-only
 // invalidation (a write can be up to 5 minutes stale — fine for a dashboard).
 app.get("/stats", async (c) => {
-  const cacheKey = "page:stats:v3"; // v3: proposals lifecycle section + Proposals navlink
+  const cacheKey = "page:stats:v4"; // v4: shell nav gains Articles + Brain + the search box
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const db = drizzle(c.env.DB);

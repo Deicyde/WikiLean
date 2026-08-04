@@ -1,7 +1,7 @@
 // /stats (P2a): the public experiment-instrumentation dashboard. Pins the
 // SQL aggregates against seeded fixtures (review states, count columns,
 // event_type × actor_type cells, flags, revisions/patrol, pipeline_runs),
-// the RQ labels, the KV cache (page:stats:v1, TTL 300), and the
+// the RQ labels, the KV cache (page:stats:v4, TTL 300), and the
 // zero-means-broken footnote.
 
 import { describe, it, expect } from "vitest";
@@ -194,10 +194,10 @@ describe("GET /stats", () => {
     expect(html).toContain('<span class="muted">—</span>');
   });
 
-  it("is KV-cached under page:stats:v3 for 300s (TTL-only invalidation)", async () => {
+  it("is KV-cached under page:stats:v4 for 300s (TTL-only invalidation)", async () => {
     const h = setup();
     const first = await (await get(h.env, "/stats")).text();
-    expect(h.renderCache.store.has("page:stats:v3")).toBe(true);
+    expect(h.renderCache.store.has("page:stats:v4")).toBe(true);
     // Mutate the DB; the cached page must still serve unchanged.
     insertArticle(h.db, "After_Cache");
     const second = await (await get(h.env, "/stats")).text();

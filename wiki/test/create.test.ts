@@ -157,7 +157,9 @@ describe("PUT /api/article/:slug (create)", () => {
 
   it("RESERVED slug → 400", async () => {
     const { db, env } = setup();
-    for (const reserved of ["flags", "sitemap.xml", "recent-changes", "api"]) {
+    // "about"/"concepts": now-dynamic + asset-shadowed pages joined RESERVED
+    // in the unified-nav wave — an article must never be creatable there.
+    for (const reserved of ["flags", "sitemap.xml", "recent-changes", "api", "about", "concepts"]) {
       const res = await botCreate(env, reserved, { wikipedia_title: "X", annotations: [] });
       expect(res.status).toBe(400);
       expect(((await res.json()) as { error: string }).error).toBe("reserved slug");

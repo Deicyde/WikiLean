@@ -1,8 +1,10 @@
-// Dynamic homepage + sitemap from D1 (Wave D, contract D-C7). Replaces the
-// static site/out/index.html + sitemap.xml that build-public.ts used to copy
-// into wiki/public/ — articles created via PUT /api/article/:slug now appear
-// without a static rebuild. index.ts serves homePage() cached in RENDER_CACHE
-// ('page:home:v2', TTL 300s) and sitemapXml() ('page:sitemap:v1', TTL 3600s).
+// Dynamic homepage + sitemap + about page from D1 (Wave D, contract D-C7).
+// Replaces the static site/out/ pages that build-public.ts used to copy into
+// wiki/public/ — articles created via PUT /api/article/:slug now appear
+// without a static rebuild. index.ts serves brainLanding() cached in
+// RENDER_CACHE ('page:home:v9', TTL 300s), homePage() ('page:articles:v2',
+// TTL 300s), aboutPage() ('page:about:v1', TTL 300s), and sitemapXml()
+// ('page:sitemap:v4', TTL 3600s).
 //
 // Visual language: warm academic-minimalist — paper background, serif display
 // headings (system stacks only, no external fonts), one deep-blue accent, and
@@ -163,6 +165,7 @@ iframe { flex:1; border:0; width:100%; min-height:420px; }
   <nav class="wl-nav" aria-label="Site">
     <a href="/articles"><b>Browse ${fmtInt(rows.length)} articles</b></a>
     <a href="/recent-changes">Recent changes</a>
+    <a href="/stats">Stats</a>
     <a href="/concepts">Concepts</a>
     <a href="/mcp" title="Wikibrain MCP — connect an AI agent to the Brain">MCP</a>
     <a href="/about">About</a>
@@ -394,6 +397,8 @@ footer a:hover { text-decoration:underline; }
     <a href="/concepts">Concepts</a>
     <a href="/wikifunctions">Wikifunctions</a>
     <a href="/brain">Brain</a>
+    <a href="/recent-changes">Recent changes</a>
+    <a href="/stats">Stats</a>
     <a href="/mcp">MCP</a>
     <a href="/about">About &amp; method</a>
     <button id="wl-theme-toggle" class="wl-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">🌓</button>
@@ -514,6 +519,194 @@ b.addEventListener("click",function(){var r=document.documentElement;
 var n=r.dataset.theme==="dark"?"light":"dark";r.dataset.theme=n;
 try{localStorage.setItem("wl-theme",n);}catch(e){}});})();
 </script>
+</body>
+</html>
+`;
+}
+
+// Aggregate for the dynamic /about page — one cheap SQL rollup over the
+// D-C5 count columns (SUM skips NULL pre-backfill rows, same as /stats).
+export interface AboutStats {
+  nArticles: number;
+  nFormalized: number;
+  nPartial: number;
+  nNotFormalized: number;
+}
+
+// The About & method page, served dynamically from D1 (KV 'page:about:v1',
+// TTL 300s). Replaces the static site/out/about.html asset (retired from
+// build_static_pages.py) whose baked stats went stale the day it was built.
+// Visual shell reproduced from that page: self-contained inline CSS, warm
+// academic-minimalist palette, shared dark-mode pattern.
+export function aboutPage(s: AboutStats): string {
+  const grand = s.nFormalized + s.nPartial + s.nNotFormalized;
+  const pctF = grand ? Math.round((100 * s.nFormalized) / grand) : 0;
+  const pctP = grand ? Math.round((100 * s.nPartial) / grand) : 0;
+  return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WikiLean — About &amp; method</title>
+<meta name="description" content="How WikiLean maps Wikipedia mathematics to Lean/Mathlib4 formalizations: methodology, what the formalized / partial / not-formalized statuses mean, how to contribute, and limitations.">
+<link rel="canonical" href="${SITE_ORIGIN}/about">
+<script>(function(){try{var s=localStorage.getItem("wl-theme");var t=s==="dark"||s==="light"?s:(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.dataset.theme=t;}catch(e){}})();</script>
+<style>
+* { box-sizing:border-box; }
+body { margin:0; background:#f7f4ee; color:#1f1d1a;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+:focus-visible { outline:2px solid #1a4b8c; outline-offset:2px; }
+.wl-header { background:#fffdf9; border-bottom:1px solid #d8d0bd; padding:14px 28px;
+  display:flex; align-items:center; justify-content:space-between; gap:8px 18px; flex-wrap:wrap; }
+.wl-brand { font-family:Charter,'Bitstream Charter','Iowan Old Style',Georgia,'Times New Roman',serif;
+  font-weight:700; color:#1f1d1a; font-size:18px; text-decoration:none; }
+.wl-brand:hover { color:#1a4b8c; }
+.wl-nav { display:flex; gap:8px 18px; flex-wrap:wrap; align-items:center; }
+.wl-navlink { color:#1a4b8c; text-decoration:none; font-size:.9rem; }
+.wl-navlink:hover { text-decoration:underline; }
+.wl-navlink.active { color:#1f1d1a; font-weight:600; }
+.wrap { max-width:760px; margin:0 auto; padding:32px 28px 64px; }
+h1, h2 { font-family:Charter,'Bitstream Charter','Iowan Old Style',Georgia,'Times New Roman',serif; }
+h1 { font-size:1.7rem; margin:0 0 .5rem; }
+h2 { font-size:1.15rem; margin:2rem 0 .6rem; }
+p, li { color:#1f1d1a; font-size:1.0rem; line-height:1.65; }
+a { color:#1a4b8c; text-decoration:none; }
+a:hover { text-decoration:underline; }
+.lead { color:#5f594e; font-size:1.05rem; }
+.swatch { display:inline-block; width:11px; height:11px; border-radius:2px;
+  margin-right:6px; vertical-align:middle; }
+.s-f { background:#2f7d4f; } .s-p { background:#b08020; } .s-n { background:#b3372f; }
+.stats { display:flex; gap:24px; margin:18px 0 8px; flex-wrap:wrap; font-size:.9rem; color:#5f594e; }
+.stats b { color:#1f1d1a; }
+footer { margin-top:48px; padding-top:20px; border-top:1px solid #d8d0bd;
+  font-size:.82rem; color:#5f594e; line-height:1.6; }
+footer p { margin:4px 0; }
+.wl-theme-toggle { background:transparent; border:1px solid #d8d0bd; color:#5f594e;
+  border-radius:50%; width:28px; height:28px; padding:0; line-height:1; font-size:14px;
+  cursor:pointer; display:inline-flex; align-items:center; justify-content:center; margin-left:10px; }
+[data-theme="dark"] .wl-theme-toggle { color:#9a9081; border-color:#4d4742; }
+
+/* Dark mode — shared palette across the site (bg #1a1816, surface #232020,
+   text #ebe5d8, muted #9a9081, accent #6e9adf, borders #4d4742). */
+[data-theme="dark"] body { background:#1a1816; color:#ebe5d8; }
+[data-theme="dark"] :focus-visible { outline-color:#6e9adf; }
+[data-theme="dark"] .wl-header { background:#232020; border-bottom-color:#4d4742; }
+[data-theme="dark"] .wl-brand { color:#ebe5d8; }
+[data-theme="dark"] .wl-brand:hover { color:#8fb4e8; }
+[data-theme="dark"] .wl-navlink { color:#6e9adf; }
+[data-theme="dark"] .wl-navlink.active { color:#ebe5d8; }
+[data-theme="dark"] h1, [data-theme="dark"] h2 { color:#ebe5d8; }
+[data-theme="dark"] p, [data-theme="dark"] li { color:#ebe5d8; }
+[data-theme="dark"] a { color:#6e9adf; }
+[data-theme="dark"] a:hover { color:#8fb4e8; }
+[data-theme="dark"] .lead { color:#9a9081; }
+[data-theme="dark"] .stats { color:#9a9081; }
+[data-theme="dark"] .stats b { color:#ebe5d8; }
+[data-theme="dark"] code { background:#2c2926; color:#ebe5d8; }
+[data-theme="dark"] footer { border-top-color:#4d4742; color:#9a9081; }
+</style>
+</head>
+<body>
+<header class="wl-header">
+  <a class="wl-brand" href="/">WikiLean</a>
+  <nav class="wl-nav" aria-label="Site">
+    <a class="wl-navlink" href="/articles">Articles</a>
+    <a class="wl-navlink" href="/brain">Brain</a>
+    <a class="wl-navlink" href="/recent-changes">Recent changes</a>
+    <a class="wl-navlink" href="/stats">Stats</a>
+    <a class="wl-navlink" href="/concepts">Concepts</a>
+    <a class="wl-navlink" href="/mcp">MCP</a>
+    <a class="wl-navlink active" href="/about">About &amp; method</a>
+    <button id="wl-theme-toggle" class="wl-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">🌓</button>
+  </nav>
+</header>
+<div class="wrap">
+  <h1>About &amp; method</h1>
+  <p class="lead">WikiLean is a mirror of <a href="https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Mathematics">WikiProject
+  Mathematics</a> articles, annotated inline with links into
+  <a href="https://leanprover-community.github.io/mathlib4_docs/">Mathlib4</a> and
+  color-coded by whether each definition, theorem, and proof has been formalized in
+  the <a href="https://leanprover-community.github.io/">Lean</a> proof assistant.</p>
+  <div class="stats">
+    <span><b>${fmtInt(s.nArticles)}</b> articles annotated</span>
+    <span><b>${fmtInt(grand)}</b> tagged statements</span>
+    <span><b>${pctF}%</b> formalized · <b>${pctP}%</b> partial</span>
+  </div>
+
+  <h2>How it is built</h2>
+  <p>Three stages. <b>Catalog:</b> enumerate the WikiProject Mathematics article set
+  with its metadata and Wikidata identifiers. <b>Annotate:</b> for each article, work
+  through its definitions, theorems, and proofs and match each one to the Mathlib4
+  declaration that formalizes it, recording a status and the declaration's module path.
+  <b>Host:</b> fetch the article's rendered HTML from the MediaWiki API, wrap each
+  matched statement in place, and serve the result as a standalone page. Hovering (or
+  tapping) a highlighted statement shows its status and a direct link into the Mathlib
+  documentation.</p>
+
+  <h2>What the colors mean</h2>
+  <ul>
+    <li><span class="swatch s-f"></span><b>Formalized.</b> A Mathlib4 declaration
+      captures the statement or definition as stated.</li>
+    <li><span class="swatch s-p"></span><b>Partial.</b> Mathlib has a related, weaker,
+      or special-case form — or only part of the statement is formalized. The tooltip
+      notes where the formalization and the article diverge.</li>
+    <li><span class="swatch s-n"></span><b>Not formalized.</b> No corresponding Mathlib4
+      declaration was found at the time of annotation.</li>
+  </ul>
+
+  <h2>Provenance and pinning</h2>
+  <p>Each article is annotated against a specific Wikipedia revision, and that revision
+  id is recorded alongside the annotations, so a highlight always refers to the exact
+  prose it was made against even after the live article changes. Mathlib links point at
+  the public Mathlib4 documentation.</p>
+
+  <h2>Wikidata concept links</h2>
+  <p>Every concept matched to a <em>formalized</em> declaration is also keyed to its
+  <a href="https://www.wikidata.org/">Wikidata</a> item and published as an open
+  <a href="/concepts">RDF dataset</a>. This is the basis for a proposed Wikidata
+  property, <em>&ldquo;formalized as (Lean/Mathlib)&rdquo;</em> — the long-term goal is
+  for these links to live in Wikidata itself, maintainable by the community and queryable
+  via SPARQL.</p>
+
+  <h2>For AI agents: the Wikibrain MCP</h2>
+  <p>For AI agents, the same graph is queryable as the
+  <a href="/mcp">Wikibrain MCP server</a> and the <a href="/brain/api">Wikibrain REST
+  API</a>: resolve any informal concept to its exact Mathlib declaration (with match
+  quality and docs link), or start from a Lean name and pull the surrounding informal
+  context — the article, the Wikidata identity, and every cross-referenced external
+  database. Each answer carries provenance and confidence.</p>
+
+  <h2>The Brain</h2>
+  <p>The <a href="/brain">Brain</a> is a zoomable map over one shared node set: a
+  containment <em>bubble</em> view (libraries → areas → concepts, nesting by generality)
+  and a dependency <em>web</em>/<em>ego</em> view overlaying independent reference graphs —
+  Mathlib's declaration-level dependency edges (extracted via <code>Expr.getUsedConstants</code>
+  over the built Mathlib environment — the same data that produces hyperlinks in the
+  Mathlib docs), Wikidata's typed item-to-item statements (P279 subclass-of, P361
+  part-of, etc.), cross-database identities, and the literature. Every edge carries its
+  provenance — human / machine / AI — which is filterable, and a <em>sources</em> view
+  documents where every external link comes from, with its Wikidata property and license.</p>
+
+  <h2>Limitations &amp; how to contribute</h2>
+  <p>Annotations are best-effort and cover a growing sample of WikiProject Mathematics,
+  not the whole corpus. A match reflects a judgment that a Mathlib declaration formalizes
+  a statement; it can be incomplete or wrong, and Mathlib itself evolves, so coverage is
+  a snapshot rather than a guarantee. Corrections happen right on the site: sign in
+  (GitHub or Google) to edit annotations in-context on any article, or — without an account — report
+  a problem from any annotation's tooltip (the ⚑ link). Human edits are patrolled by
+  moderators, and AI proposals to change a human-authored annotation are queued for
+  human approval before anything lands.</p>
+
+  <footer>
+    <p>Article text from <a href="https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Mathematics">Wikipedia</a>,
+      available under <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.
+      WikiLean annotations are released under
+      <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>.</p>
+    <p>WikiLean &middot; <a href="https://github.com/Deicyde/WikiLean">source on GitHub</a> &middot;
+      a project by <a href="https://jackmccarthy.org">Jack McCarthy</a></p>
+  </footer>
+</div>
+<script>(function(){var b=document.getElementById("wl-theme-toggle");if(!b)return;b.addEventListener("click",function(){var r=document.documentElement;var n=r.dataset.theme==="dark"?"light":"dark";r.dataset.theme=n;try{localStorage.setItem("wl-theme",n);}catch(e){}});})();</script>
 </body>
 </html>
 `;
