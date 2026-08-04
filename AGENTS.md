@@ -64,8 +64,8 @@ python3 manage/refresh.py [--pull] # rebuild the control plane (centrality/cover
   path outside the Worker must bump `version`, or readers see stale pages for up to 30 days.
 - **`findLostHuman` 422 is the floor** — a bot save that drops/alters any `provenance:"human"`
   annotation (tombstones included) must 422. Bots can't approve/endorse (session-only; 403).
-- **Render-cache keys are manually versioned + load-bearing** (currently `render:v15:`,
-  `page:home:v9`, `page:articles:v2`, `page:articles-index:v1`, `page:about:v1`,
+- **Render-cache keys are manually versioned + load-bearing** (currently `render:v16:`,
+  `page:home:v10`, `page:articles:v2`, `page:articles-index:v1`, `page:about:v1`,
   `page:sitemap:v4`, `page:stats:v4`, `page:wikifunctions:v3`,
   `page:wikifunctions-verify:v3` — all in `index.ts`) — bump the
   prefix whenever output bytes change, or readers get stale HTML for up to 30 days. Asset

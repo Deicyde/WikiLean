@@ -97,6 +97,19 @@ export function renderArticlePage(input: PageInput): string {
   }
   const nTotal = counts.formalized + counts.partial + counts.not_formalized;
 
+  // Trust signal (P2): the "N/M human-reviewed" header badge. N = non-rejected
+  // annotations whose provenance is EXACTLY 'human' (the invariant enum —
+  // 'ai-moderated' deliberately does not count), M = all non-rejected
+  // annotations. Rendered even at 0/M — honesty about AI-only pages is the
+  // point. Tombstones are excluded from both sides, mirroring `counts` above.
+  let nHuman = 0;
+  let nLive = 0;
+  for (const a of annotations) {
+    if (a.status === "rejected") continue;
+    nLive += 1;
+    if (a.provenance === "human") nHuman += 1;
+  }
+
   const nDisplayTotal = (wpHtml.match(/<span class="mwe-math-element mwe-math-element-block">/g) ?? []).length;
   let nDisplayAnnotated = 0;
   for (let i = 0; i < annotations.length; i++) {
@@ -156,6 +169,24 @@ document.documentElement.dataset.theme=t;}catch(e){}})();
 .wl-attribution p { margin: 4px 0; }
 .wl-attribution a { color: var(--accent); text-decoration: none; }
 .wl-attribution a:hover { text-decoration: underline; }
+/* Trust signals (P2): the human-reviewed badge + the header legend popover.
+   Styled with the stylesheet's tokens only, so dark mode recolors them for
+   free ([data-theme="dark"] remaps every var used here). */
+.wl-badge.wl-human-reviewed { background: transparent; border: 1px solid var(--line-strong); color: var(--muted); }
+.wl-legend { position: relative; display: inline-block; }
+.wl-legend-btn { width: 20px; height: 20px; padding: 0; border-radius: 50%; border: 1px solid var(--line-strong);
+  background: var(--surface); color: var(--muted); font-size: 12px; font-family: inherit; line-height: 1; cursor: pointer; }
+.wl-legend-btn:hover, .wl-legend-btn[aria-expanded="true"] { border-color: var(--accent); color: var(--accent); }
+.wl-legend-pop { position: absolute; top: calc(100% + 8px); left: 0; z-index: 300; width: min(320px, calc(100vw - 24px));
+  background: var(--surface); border: 1px solid var(--line-strong); border-radius: 8px; padding: 10px 14px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, .18); font-size: 12px; line-height: 1.55; color: var(--ink); font-weight: 400; text-align: left; }
+.wl-legend-pop ul { list-style: none; margin: 0; padding: 0; }
+.wl-legend-pop li { margin: 5px 0; }
+.wl-legend-pop .sw { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; }
+.wl-legend-pop .sw-f { background: var(--c-formalized); }
+.wl-legend-pop .sw-p { background: var(--c-partial); }
+.wl-legend-pop .sw-n { background: var(--c-not_formalized); }
+.wl-legend-pop .sw-u { background: var(--c-untouched); }
 ${SEARCHBOX_CSS}</style>
 </head>
 <body class="show-all">
@@ -182,6 +213,20 @@ ${SEARCHBOX_CSS}</style>
       <span class="wl-badge wl-partial">${counts.partial} partial</span>
       <span class="wl-badge wl-not_formalized">${counts.not_formalized} not formalized</span>
       ${nUntouched > 0 ? `<span class="wl-badge wl-untouched">${nUntouched} unannotated math</span>` : ""}
+      <span class="wl-badge wl-human-reviewed" title="${nHuman} of ${nLive} annotations on this page were written or verified by a human editor — the rest are AI-generated and not yet human-reviewed.">${nHuman}/${nLive} human-reviewed</span>
+    </span>
+    <span class="wl-legend">
+      <button id="wl-legend-btn" class="wl-legend-btn" type="button" aria-expanded="false" aria-controls="wl-legend-pop" aria-label="What do these labels mean?" title="What do these labels mean?">?</button>
+      <div id="wl-legend-pop" class="wl-legend-pop" role="region" aria-label="Annotation legend" hidden>
+        <ul>
+          <li><i class="sw sw-f"></i><b>Formalized</b> — a Mathlib declaration captures this statement as stated.</li>
+          <li><i class="sw sw-p"></i><b>Partial</b> — Mathlib has a related, weaker, or special-case form only.</li>
+          <li><i class="sw sw-n"></i><b>Not formalized</b> — no matching Mathlib declaration found at annotation time.</li>
+          <li><i class="sw sw-u"></i><b>Unannotated math</b> — display math with no annotation yet; the &ldquo;Dim unannotated&rdquo; toggle fades it.</li>
+          <li><b>N/M human-reviewed</b> — how many of this page&#x27;s annotations were written or verified by a human (the rest are AI-generated).</li>
+          <li><b>⚑</b> — report a problem: open any highlighted statement&#x27;s tooltip and use its ⚑ link.</li>
+        </ul>
+      </div>
     </span>
     <span class="wl-toggles" role="group" aria-label="Filter annotations by status">
       <button data-mode="all" class="active" aria-pressed="true">All</button>
@@ -201,6 +246,13 @@ ${body}
 <div id="wl-tooltip" hidden></div>
 <script>
 window.__WL_ANNOTATIONS__ = ${data};
+/* Per-annotation anchor-match results from the wrap engine, index-aligned
+   with __WL_ANNOTATIONS__ (tombstones report true — "excluded, not an anchor
+   failure"). Lets the editor tell true anchor rot (matched=false) apart from
+   a highlight the overlap-resolver dropped (matched=true but no .anno wrap)
+   — the latter must NOT be offered Re-anchor: the anchor is healthy, and
+   re-saving it would only launder provenance to human. */
+window.__WL_MATCHED__ = ${JSON.stringify(matched)};
 </script>
 <script>
 /* Theme toggle. Flips between explicit "dark" / "light" and persists in
@@ -209,6 +261,23 @@ window.__WL_ANNOTATIONS__ = ${data};
 b.addEventListener("click",function(){var r=document.documentElement;
 var n=r.dataset.theme==="dark"?"light":"dark";r.dataset.theme=n;
 try{localStorage.setItem("wl-theme",n);}catch(e){}});})();
+</script>
+<script>
+/* Legend popover (P2 trust signals). Button toggles; Escape closes and
+   returns focus to the button; clicking outside closes. Static content — no
+   state beyond aria-expanded/hidden. */
+(function(){var b=document.getElementById("wl-legend-btn"),p=document.getElementById("wl-legend-pop");
+if(!b||!p)return;
+function set(open){p.hidden=!open;b.setAttribute("aria-expanded",open?"true":"false");
+/* Clamp against the right viewport edge: the popover is left-anchored at the
+   ? button, which sits far enough right at tablet widths (~660-920px) that a
+   fixed-width box would overflow and clip mid-word. */
+if(open){p.style.left="0px";var r=p.getBoundingClientRect();
+var over=r.right-(document.documentElement.clientWidth-8);
+if(over>0)p.style.left=(-over)+"px";}}
+b.addEventListener("click",function(e){e.stopPropagation();set(p.hidden);});
+document.addEventListener("click",function(e){if(!p.hidden&&!p.contains(e.target)&&e.target!==b)set(false);});
+document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!p.hidden){set(false);b.focus();}});})();
 </script>
 ${SEARCHBOX_SCRIPT}
 <script src="/assets/script.js?v=7"></script>

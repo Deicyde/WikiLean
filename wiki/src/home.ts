@@ -2,7 +2,7 @@
 // Replaces the static site/out/ pages that build-public.ts used to copy into
 // wiki/public/ — articles created via PUT /api/article/:slug now appear
 // without a static rebuild. index.ts serves brainLanding() cached in
-// RENDER_CACHE ('page:home:v9', TTL 300s), homePage() ('page:articles:v2',
+// RENDER_CACHE ('page:home:v10', TTL 300s), homePage() ('page:articles:v2',
 // TTL 300s), aboutPage() ('page:about:v1', TTL 300s), and sitemapXml()
 // ('page:sitemap:v4', TTL 3600s).
 //
@@ -28,6 +28,15 @@ export interface HomeRow {
 export interface SitemapRow {
   slug: string;
   updatedAt: number;
+}
+
+// Trust signals (P2): one row of the landing page's "Least recently reviewed"
+// strip — articles most in need of human eyes. null lastReviewedAt = never
+// reviewed (sorts first upstream; rendered as "never reviewed").
+export interface LeastReviewedRow {
+  slug: string;
+  displayTitle: string;
+  lastReviewedAt: number | null;
 }
 
 const SITE_ORIGIN = "https://wikilean.jackmccarthy.org";
@@ -127,12 +136,30 @@ function recentItem(r: HomeRow): string {
 // The landing page IS the Brain: dark shell, headline stats from D1, and the
 // explorer embedded full-bleed (/brain?embed=1 hides its own chrome). The
 // article directory that used to live here moved to /articles.
-export function brainLanding(rows: HomeRow[]): string {
+// `leastReviewed` (P2 trust signals) renders as a compact strip under the
+// stats: the articles that have gone longest without a human review.
+export function brainLanding(rows: HomeRow[], leastReviewed: LeastReviewedRow[] = []): string {
   const nF = rows.reduce((s, r) => s + (r.nFormalized ?? 0), 0);
   const nP = rows.reduce((s, r) => s + (r.nPartial ?? 0), 0);
   const nN = rows.reduce((s, r) => s + (r.nNotFormalized ?? 0), 0);
   const grand = nF + nP + nN;
   const pct = (n: number) => (grand ? ((100 * n) / grand).toFixed(1) : "0.0");
+  // Same sink discipline as dirRow: slug URL-encoded then HTML-escaped in the
+  // href, display title HTML-escaped as text (titles are hostile input).
+  const reviewStrip = leastReviewed.length
+    ? `<div class="strip rv-strip" aria-label="Least recently reviewed articles">
+  <span class="rv-head" title="Articles whose annotations have gone longest without a human review — good places to help">Least recently reviewed:</span>
+${leastReviewed
+  .map(
+    (r) =>
+      `  <a class="rv-item" href="/${esc(encodeURIComponent(r.slug))}">${esc(r.displayTitle)}<em>${
+        r.lastReviewedAt === null ? "never reviewed" : "reviewed " + fmtRel(r.lastReviewedAt)
+      }</em></a>`,
+  )
+  .join("\n")}
+</div>
+`
+    : "";
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -154,6 +181,11 @@ a { color:#7cb3ff; text-decoration:none; } a:hover { text-decoration:underline; 
   display:flex; gap:18px; align-items:center; flex-wrap:wrap; font-size:.85rem; color:#9aa3b2; }
 .strip b { color:#e6e4de; font-size:1rem; }
 .strip .f { color:#22c55e; } .strip .p { color:#eab308; } .strip .n { color:#ef4444; }
+.rv-strip { gap:4px 14px; }
+.rv-head { color:#9aa3b2; }
+.rv-item { color:#e6e4de; white-space:nowrap; }
+.rv-item:hover { color:#7cb3ff; }
+.rv-item em { font-style:normal; color:#9aa3b2; font-size:.78rem; margin-left:5px; }
 iframe { flex:1; border:0; width:100%; min-height:420px; }
 </style>
 </head>
@@ -178,7 +210,7 @@ iframe { flex:1; border:0; width:100%; min-height:420px; }
   <span class="n"><b>${pct(nN)}%</b> not yet</span>
   <span><a href="/brain">open the Brain full-page ↗</a></span>
 </div>
-<iframe src="/brain?embed=1" title="The Brain — a zoomable map of mathematics"></iframe>
+${reviewStrip}<iframe src="/brain?embed=1" title="The Brain — a zoomable map of mathematics"></iframe>
 </body>
 </html>`;
 }

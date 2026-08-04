@@ -5,7 +5,7 @@
 // D1 shim needed.
 
 import { describe, it, expect } from "vitest";
-import { homePage, sitemapXml, type HomeRow } from "../src/home.js";
+import { brainLanding, homePage, sitemapXml, type HomeRow, type LeastReviewedRow } from "../src/home.js";
 import { computeCounts } from "../scripts/backfill-counts.js";
 
 function row(over: Partial<HomeRow> = {}): HomeRow {
@@ -151,6 +151,43 @@ describe("homePage", () => {
     expect(html).toContain('<span class="stat-num">0</span><span class="stat-label">articles</span>');
     expect(html).toContain('<span class="stat-num">0%</span><span class="stat-label">formalized</span>');
     expect(html).not.toContain("NaN");
+  });
+});
+
+describe("brainLanding least-reviewed strip (P2 trust signals)", () => {
+  const rv = (over: Partial<LeastReviewedRow> = {}): LeastReviewedRow => ({
+    slug: "Group_theory",
+    displayTitle: "Group theory",
+    lastReviewedAt: null,
+    ...over,
+  });
+
+  it("renders linked titles with 'never reviewed' or a relative review age", () => {
+    const html = brainLanding(
+      [],
+      [rv(), rv({ slug: "Ring_theory", displayTitle: "Ring theory", lastReviewedAt: Date.now() - 2 * 86400_000 })],
+    );
+    expect(html).toContain('class="rv-item" href="/Group_theory"');
+    expect(html).toContain("<em>never reviewed</em>");
+    expect(html).toContain("<em>reviewed 2d ago</em>");
+    expect(html).toContain("Least recently reviewed:");
+  });
+
+  it("omits the strip entirely when there is nothing to review", () => {
+    expect(brainLanding([], [])).not.toContain("Least recently reviewed");
+    // Callers without the second arg (pre-P2 shape) get the same page.
+    expect(brainLanding([])).not.toContain('class="strip rv-strip"');
+  });
+
+  it("escapes hostile display titles and slugs at the strip's sinks", () => {
+    const html = brainLanding(
+      [],
+      [rv({ slug: 'Weird"slug', displayTitle: "<script>alert(1)</script>" })],
+    );
+    expect(html).not.toContain("<script>alert(1)</script>");
+    expect(html).toContain("&lt;script&gt;alert(1)&lt;/script&gt;");
+    // Slug is URL-encoded then HTML-escaped, same as dirRow (W3 fix #10).
+    expect(html).toContain('href="/Weird%22slug"');
   });
 });
 
