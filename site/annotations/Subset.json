@@ -35,7 +35,7 @@
         "module": "Mathlib.Data.Set.Basic",
         "match_kind": "exact"
       },
-      "note": "Set's `⊂` (HasSSubset, characterized by ssubset_def) is proper subset: `s ⊆ t ∧ ¬t ⊆ s`.",
+      "note": "Set.ssubset_def characterizes `s ⊂ t` as `s ⊆ t ∧ ¬t ⊆ s`, the proper-subset relation.",
       "provenance": "ai",
       "id": "1b5d0d5297f7"
     },
@@ -252,11 +252,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Set.instHasSSubset",
+        "decl": "Set.ssubset_def",
         "module": "Mathlib.Data.Set.Basic",
         "match_kind": "exact"
       },
-      "note": "Mathlib follows this convention: `⊂` (Set.instHasSSubset) denotes proper subset, defined as `<`.",
+      "note": "Mathlib follows this convention: on `Set α`, `⊂` denotes proper subset (Set.ssubset_def unfolds it to `s ⊆ t ∧ ¬t ⊆ s`).",
       "provenance": "ai",
       "id": "35caef8f3347"
     },
@@ -410,7 +410,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib formalizes the reverse of any order via OrderDual; applied to `Set α` this is the reverse set-inclusion partial order.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f291648ad40c"
     },
     {
       "kind": "proposition",
@@ -523,11 +524,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Set.instBooleanAlgebra",
-        "module": "Mathlib.Order.BooleanAlgebra.Set",
-        "match_kind": "generalization"
+        "decl": "Set.le_eq_subset",
+        "module": "Mathlib.Data.Set.Basic",
+        "match_kind": "exact"
       },
-      "note": "The canonical `≤` on `Set α` is inclusion (Set.le_eq_subset), provided by its BooleanAlgebra/partial-order structure.",
+      "note": "Set.le_eq_subset proves the canonical `≤` on `Set α` is exactly `⊆`.",
       "provenance": "ai",
       "id": "d6f9505906f3"
     },
@@ -545,7 +546,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib's Ordinal type carries the canonical well-order, with ≤ corresponding (via the von Neumann encoding) to set inclusion of initial segments.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f1181df28477"
     }
   ]
 }

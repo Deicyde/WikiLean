@@ -18,7 +18,7 @@
         "module": "Mathlib.Probability.Distributions.Exponential",
         "match_kind": "exact"
       },
-      "note": "`expMeasure r` is the exponential measure on ℝ with rate `r`, defined via `gammaMeasure 1 r`.",
+      "note": "`expMeasure r` is the exponential measure on ℝ with rate `r`, defined as `gammaMeasure 1 r`.",
       "provenance": "ai",
       "id": "de6012bcb6ed"
     },
@@ -112,7 +112,7 @@
         },
         {
           "type": "math_alttext",
-          "value": "{\\displaystyle f(x;\\beta )={\\begin{cases}{\\frac {1}{\\beta }}e^{-x/\\beta }&amp;x\\geq 0,\\\\0&amp;x&lt;0.\\end{cases}}\\qquad \\qquad F(x;\\beta )={\\begin{cases}1-e^{-x/\\beta }&amp;x\\geq 0,\\\\0&amp;x&lt;0.\\end{cases}}}"
+          "value": "{\\displaystyle f(x;\\beta )={\\begin{cases}{\\frac {1}{\\beta }}e^{-x/\\beta }&amp;x\\geq 0,\\\\0&amp;x<0.\\end{cases}}\\qquad \\qquad F(x;\\beta )={\\begin{cases}1-e^{-x/\\beta }&amp;x\\geq 0,\\\\0&amp;x<0.\\end{cases}}}"
         }
       ],
       "id": "61fa8bf9eebf"
@@ -247,11 +247,11 @@
         },
         {
           "type": "math_alttext",
-          "value": "{\\displaystyle \\operatorname {m} [X]={\\frac {\\ln(2)}{\\lambda }}&lt;\\operatorname {E} [X],}"
+          "value": "{\\displaystyle \\operatorname {m} [X]={\\frac {\\ln(2)}{\\lambda }}<\\operatorname {E} [X],}"
         },
         {
           "type": "math_alttext",
-          "value": "{\\displaystyle \\left|\\operatorname {E} \\left[X\\right]-\\operatorname {m} \\left[X\\right]\\right|={\\frac {1-\\ln(2)}{\\lambda }}&lt;{\\frac {1}{\\lambda }}=\\operatorname {\\sigma } [X],}"
+          "value": "{\\displaystyle \\left|\\operatorname {E} \\left[X\\right]-\\operatorname {m} \\left[X\\right]\\right|={\\frac {1-\\ln(2)}{\\lambda }}<{\\frac {1}{\\lambda }}=\\operatorname {\\sigma } [X],}"
         }
       ],
       "id": "b478f7eefab1"
@@ -278,7 +278,7 @@
         },
         {
           "type": "math_alttext",
-          "value": "{\\displaystyle \\Pr \\left(T&gt;s+t\\mid T&gt;s\\right)=\\Pr(T&gt;t),\\qquad \\forall s,t\\geq 0.}"
+          "value": "{\\displaystyle \\Pr \\left(T>s+t\\mid T>s\\right)=\\Pr(T>t),\\qquad \\forall s,t\\geq 0.}"
         }
       ],
       "id": "08f2c75d5713"
@@ -339,7 +339,7 @@
         },
         {
           "type": "math_alttext",
-          "value": "{\\displaystyle F^{-1}(p;\\lambda )={\\frac {-\\ln(1-p)}{\\lambda }},\\qquad 0\\leq p&lt;1}"
+          "value": "{\\displaystyle F^{-1}(p;\\lambda )={\\frac {-\\ln(1-p)}{\\lambda }},\\qquad 0\\leq p<1}"
         }
       ],
       "id": "ef5e68f29055"
@@ -421,12 +421,12 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "ProbabilityTheory.klDiv",
+        "decl": "InformationTheory.klDiv",
         "module": "Mathlib.InformationTheory.KullbackLeibler.Basic",
         "match_kind": "generalization"
       },
       "note": "General KL divergence is formalized but the closed-form formula `λ₀/λ₁ − 1 − log(λ₀/λ₁)` for two exponentials is not.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "anchors": [
         {
           "section": "Kullback–Leibler divergence",
@@ -594,7 +594,7 @@
         },
         {
           "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}H(Z)&amp;=1+\\gamma +\\ln \\left({\\frac {\\lambda _{1}-\\lambda _{2}}{\\lambda _{1}\\lambda _{2}}}\\right)+\\psi \\left({\\frac {\\lambda _{1}}{\\lambda _{1}-\\lambda _{2}}}\\right),\\end{aligned}}}"
+          "value": "{\\displaystyle {\\begin{aligned}H(Z)&amp;=1+\\gamma +\\ln \\left({\\frac {\\lambda _{1}-\\lambda _{2}}{\\lambda _{1}\\lambda _{2}}}\\right)+\\psi \\left({\\frac {\\lambda _{1}}{\\lambda _{1}-\\lambda _{2}}}\\right),\\end{aligned}}"
         }
       ],
       "id": "06ce66fe3a4e"
@@ -1171,15 +1171,15 @@
         },
         {
           "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {2n}{{\\widehat {\\lambda }}_{\\textrm {mle}}\\chi _{{\\frac {\\alpha }{2}},2n}^{2}}}&lt;{\\frac {1}{\\lambda }}&lt;{\\frac {2n}{{\\widehat {\\lambda }}_{\\textrm {mle}}\\chi _{1-{\\frac {\\alpha }{2}},2n}^{2}}}\\,,}"
+          "value": "{\\displaystyle {\\frac {2n}{{\\widehat {\\lambda }}_{\\textrm {mle}}\\chi _{{\\frac {\\alpha }{2}},2n}^{2}}}<{\\frac {1}{\\lambda }}<{\\frac {2n}{{\\widehat {\\lambda }}_{\\textrm {mle}}\\chi _{1-{\\frac {\\alpha }{2}},2n}^{2}}}\\,,}"
         },
         {
           "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {2n{\\overline {x}}}{\\chi _{{\\frac {\\alpha }{2}},2n}^{2}}}&lt;{\\frac {1}{\\lambda }}&lt;{\\frac {2n{\\overline {x}}}{\\chi _{1-{\\frac {\\alpha }{2}},2n}^{2}}}\\,,}"
+          "value": "{\\displaystyle {\\frac {2n{\\overline {x}}}{\\chi _{{\\frac {\\alpha }{2}},2n}^{2}}}<{\\frac {1}{\\lambda }}<{\\frac {2n{\\overline {x}}}{\\chi _{1-{\\frac {\\alpha }{2}},2n}^{2}}}\\,,}"
         },
         {
           "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}\\lambda _{\\text{lower}}&amp;={\\widehat {\\lambda }}\\left(1-{\\frac {1.96}{\\sqrt {n}}}\\right)\\\\\\lambda _{\\text{upper}}&amp;={\\widehat {\\lambda }}\\left(1+{\\frac {1.96}{\\sqrt {n}}}\\right)\\end{aligned}}}"
+          "value": "{\\displaystyle {\\begin{aligned}\\lambda _{\\text{lower}}&amp;={\\widehat {\\lambda }}\\left(1-{\\frac {1.96}{\\sqrt {n}}}\\right)\\\\\\lambda _{\\text{upper}}&amp;={\\widehat {\\lambda }}\\left(1+{\\frac {1.96}{\\sqrt {n}}}\\right)\\end{aligned}}"
         }
       ],
       "id": "6ed0948e3c77"
@@ -1206,11 +1206,11 @@
         },
         {
           "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {2n}{{\\widehat {\\lambda }}_{\\textrm {mle}}\\chi _{{\\frac {\\alpha }{2}},2n}^{2}}}&lt;{\\frac {1}{\\lambda }}&lt;{\\frac {2n}{{\\widehat {\\lambda }}_{\\textrm {mle}}\\chi _{1-{\\frac {\\alpha }{2}},2n}^{2}}}\\,,}"
+          "value": "{\\displaystyle {\\frac {2n}{{\\widehat {\\lambda }}_{\\textrm {mle}}\\chi _{{\\frac {\\alpha }{2}},2n}^{2}}}<{\\frac {1}{\\lambda }}<{\\frac {2n}{{\\widehat {\\lambda }}_{\\textrm {mle}}\\chi _{1-{\\frac {\\alpha }{2}},2n}^{2}}}\\,,}"
         },
         {
           "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {2n{\\overline {x}}}{\\chi _{{\\frac {\\alpha }{2}},2n}^{2}}}&lt;{\\frac {1}{\\lambda }}&lt;{\\frac {2n{\\overline {x}}}{\\chi _{1-{\\frac {\\alpha }{2}},2n}^{2}}}\\,,}"
+          "value": "{\\displaystyle {\\frac {2n{\\overline {x}}}{\\chi _{{\\frac {\\alpha }{2}},2n}^{2}}}<{\\frac {1}{\\lambda }}<{\\frac {2n{\\overline {x}}}{\\chi _{1-{\\frac {\\alpha }{2}},2n}^{2}}}\\,,"
         },
         {
           "type": "math_alttext",
@@ -1544,6 +1544,102 @@
       "note": "No theorem stating `1 − U` is uniform on `(0,1)` for uniform `U` was found in `Mathlib/Probability/Distributions/Uniform.lean`.",
       "provenance": "ai",
       "id": "de4b2118ce0f"
+    },
+    {
+      "kind": "proposition",
+      "label": "Standard deviation equals mean",
+      "anchor": {
+        "section": "Mean, variance, moments, and median",
+        "snippet": "so the standard deviation is equal to the mean"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Direct consequence of Var[X] = 1/λ², but no formalization of variance/standard deviation for `expMeasure` exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Memorylessness via complementary CDF",
+      "anchor": {
+        "section": "Memorylessness property of exponential random variable",
+        "snippet": "This can be seen by considering the complementary cumulative distribution function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No proof of the memoryless property via the survival function is formalized for `expMeasure`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Minimum via complementary CDF",
+      "anchor": {
+        "section": "Distribution of the minimum of exponential random variables",
+        "snippet": "This can be seen by considering the complementary cumulative distribution function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The complementary-CDF argument for the distribution of the minimum of independent exponentials is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Median-mean inequality for exponential",
+      "anchor": {
+        "section": "Mean, variance, moments, and median",
+        "snippet": "in accordance with the median-mean inequality"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the general median-mean inequality nor its exponential-distribution instance is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Log-likelihood derivative",
+      "anchor": {
+        "section": "Parameter estimation",
+        "snippet": "The derivative of the likelihood function's logarithm is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Score function computations for the exponential family are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fisher information of rate parameter",
+      "anchor": {
+        "section": "Fisher information",
+        "snippet": "Plugging in the distribution and solving gives"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The specific Fisher information I(λ) = 1/λ² for the exponential distribution is not in Mathlib (Fisher information itself is not defined).",
+      "provenance": "ai"
     }
   ]
 }

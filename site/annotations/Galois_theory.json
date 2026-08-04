@@ -120,7 +120,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib has `KleinFour` and `Polynomial.Gal`, but no worked quartic example identifying its Galois group with the Klein four-group.",
+      "note": "Mathlib has `IsKleinFour` and `Polynomial.Gal`, but no worked quartic example identifying its Galois group with the Klein four-group.",
       "provenance": "ai",
       "id": "97fd7ac34da3"
     },
@@ -205,8 +205,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No theorem in Mathlib asserts existence of degree-`n` polynomials (for each `n > 4`) that are not solvable by radicals.",
-      "provenance": "ai",
+      "note": "Mathlib's `AbelRuffini` file only formalizes the easy direction (`solvableByRad ⇒ IsSolvable Gal`); no concrete non-solvable quintic (nor a uniform 'for every n>4' existence theorem) is present.",
+      "provenance": "ai-moderated",
       "id": "f5b85052f454"
     },
     {
@@ -218,11 +218,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Equiv.Perm.not_solvable",
+        "decl": "Equiv.Perm.not_isSolvable",
         "module": "Mathlib.GroupTheory.Solvable",
         "match_kind": "exact"
       },
-      "note": "Mathlib proves `Equiv.Perm.not_solvable` for cardinality ≥ 5, via simplicity of the alternating group `alternatingGroup.isSimple` for n ≥ 5.",
+      "note": "Mathlib proves `Equiv.Perm.not_isSolvable` for cardinality ≥ 5 (with alias `Equiv.Perm.not_solvable`), via simplicity of the alternating group `alternatingGroup.isSimpleGroup` for n ≥ 5.",
       "provenance": "ai",
       "id": "33a86b5955e8"
     },
@@ -239,8 +239,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib has no proof that `X^5 - X - 1` (or any specific quintic) has non-solvable Galois group.",
-      "provenance": "ai",
+      "note": "Mathlib has no concrete Abel–Ruffini witness polynomial (neither Van der Waerden's `X^5 - X - 1` nor any other) proved to have non-solvable Galois group.",
+      "provenance": "ai-moderated",
       "id": "504009de606d"
     },
     {
@@ -290,7 +290,7 @@
         "module": "Mathlib.Algebra.Group.Action.End",
         "match_kind": "generalization"
       },
-      "note": "Cayley's theorem is realized via the left-regular action embedding `G ↪ Equiv.Perm G`; see also `Subgroup.equivMapOfInjective` and the standard embedding into `Equiv.Perm`.",
+      "note": "Cayley's theorem is realized via the left-regular action embedding `G ↪ Equiv.Perm G` obtained from `MulAction.toPermHom` applied to the regular action.",
       "provenance": "ai",
       "id": "bfbb3e658957"
     },
@@ -410,7 +410,8 @@
         "match_kind": "exact"
       },
       "note": "`MvPolynomial.esymm σ R n` formalizes the n-th elementary symmetric polynomial; Vieta-type identities relating these to coefficients of `∏ (X - root i)` are available as `Multiset.prod_X_sub_C_coeff` and friends.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "16bc8f713ad2"
     },
     {
       "kind": "definition",
@@ -426,7 +427,8 @@
         "match_kind": "exact"
       },
       "note": "`IsKleinFour G` axiomatizes the Klein four-group; concrete instances `ZMod 2 × ZMod 2` are provided.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5736a0d53a81"
     },
     {
       "kind": "definition",
@@ -442,7 +444,8 @@
         "match_kind": "exact"
       },
       "note": "`CompositionSeries` formalizes composition series in a general lattice setting; specializing to the subgroup lattice gives composition series of groups, with Jordan–Hölder available.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "254a9af4558d"
     },
     {
       "kind": "definition",
@@ -458,7 +461,8 @@
         "match_kind": "exact"
       },
       "note": "`IntermediateField K L` is the lattice of intermediate fields of `L/K`, used as the field-side object in the Galois correspondence.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c54bb4e0f0c9"
     },
     {
       "kind": "definition",
@@ -474,7 +478,8 @@
         "match_kind": "exact"
       },
       "note": "`Derivation R A M` formalizes `R`-linear maps satisfying the Leibniz rule; specializing to `M := F` with `R := K` gives the space of `K`-linear derivations of `F` used in the Jacobson correspondence.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "49ca86e93991"
     },
     {
       "kind": "proposition",
@@ -485,11 +490,92 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "alternatingGroup.isSimpleGroup_five",
+        "decl": "alternatingGroup.isSimpleGroup",
         "module": "Mathlib.GroupTheory.SpecificGroups.Alternating.Simple",
         "match_kind": "exact"
       },
-      "note": "Simplicity of `alternatingGroup (Fin n)` for `n ≥ 5` is formalized; this is the key group-theoretic input behind `Equiv.Perm.not_solvable` and Abel–Ruffini.",
+      "note": "`alternatingGroup.isSimpleGroup` proves `IsSimpleGroup (alternatingGroup α)` whenever `5 ≤ Nat.card α`; this is the key group-theoretic input behind `Equiv.Perm.not_isSolvable` and Abel–Ruffini.",
+      "provenance": "ai",
+      "id": "c1610f10dc1e"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraic closure of a field",
+      "anchor": {
+        "section": "Modern approach by field theory",
+        "snippet": "the Galois group of K / Q where K is an algebraic closure of Q"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgebraicClosure",
+        "module": "Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure",
+        "match_kind": "exact"
+      },
+      "note": "`AlgebraicClosure K` constructs an algebraic closure of any field `K`; used as the top field for the absolute Galois group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Separable field extension",
+      "anchor": {
+        "section": "Inseparable extensions",
+        "snippet": "General field extensions can be split into a separable, followed by a purely inseparable field extension"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebra.IsSeparable",
+        "module": "Mathlib.FieldTheory.Separable",
+        "match_kind": "exact"
+      },
+      "note": "`Algebra.IsSeparable F E` formalizes separability of a field extension; together with `IsPurelyInseparable` this gives the article's separable/purely-inseparable decomposition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Rational root theorem",
+      "anchor": {
+        "section": "A non-solvable quintic example",
+        "snippet": "By the rational root theorem , this has no rational zeroes"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.num_dvd_of_is_root",
+        "module": "Mathlib.RingTheory.Polynomial.RationalRoot",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib formalizes the rational root theorem via `num_dvd_of_is_root` and `den_dvd_of_is_root`: for a polynomial with integer coefficients, the numerator of any rational root divides the constant term and the denominator divides the leading coefficient.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fixed field of a subgroup",
+      "anchor": {
+        "section": "Inverse Galois problem",
+        "snippet": "If the fixed field of this action is M , then, by the fundamental theorem of Galois theory , the Galois group of F / M is G"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FixedPoints.intermediateField",
+        "module": "Mathlib.FieldTheory.Galois.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`FixedPoints.intermediateField` gives the fixed intermediate field of a subgroup of automorphisms acting on a field; central to the Artin-style construction used in the inverse-Galois section.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Primitive n-th root of unity",
+      "anchor": {
+        "section": "Solvable groups and solution by radicals",
+        "snippet": "the field K already contains a primitive n th root of unity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsPrimitiveRoot",
+        "module": "Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots",
+        "match_kind": "exact"
+      },
+      "note": "`IsPrimitiveRoot ζ n` formalizes the property that `ζ` is a primitive n-th root of unity; required to identify radical extensions with cyclic Kummer extensions.",
       "provenance": "ai"
     }
   ]

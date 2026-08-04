@@ -32,7 +32,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "TensorProduct.tmul",
-        "module": "Mathlib.LinearAlgebra.TensorProduct.Basic",
+        "module": "Mathlib.LinearAlgebra.TensorProduct.Defs",
         "match_kind": "generalization"
       },
       "note": "Mathlib has the abstract tensor product `⊗ₜ` but no concrete entrywise outer product of multidimensional arrays.",
@@ -168,7 +168,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "TensorProduct.tmul",
-        "module": "Mathlib.LinearAlgebra.TensorProduct.Basic",
+        "module": "Mathlib.LinearAlgebra.TensorProduct.Defs",
         "match_kind": "generalization"
       },
       "note": "The abstract `⊗ₜ` exists but Mathlib has no entrywise outer product of multi-index arrays as described in the article.",
@@ -269,12 +269,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Matrix.vecMulVecBilin",
+        "decl": "vecMulVecBilin",
         "module": "Mathlib.LinearAlgebra.Matrix.ToLin",
         "match_kind": "exact"
       },
       "note": "Bilinearity is packaged as `vecMulVecBilin`, with `add_vecMulVec`, `vecMulVec_add`, `smul_vecMulVec`, `transpose_vecMulVec` covering the listed algebraic identities.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "8d9855935104"
     },
     {
@@ -287,7 +287,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "TensorProduct.assoc",
-        "module": "Mathlib.LinearAlgebra.TensorProduct.Basic",
+        "module": "Mathlib.LinearAlgebra.TensorProduct.Associator",
         "match_kind": "generalization"
       },
       "note": "Associativity holds abstractly via `TensorProduct.assoc`, but there is no concrete statement for the entrywise tensor outer product.",
@@ -321,7 +321,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "TensorProduct.tmul",
-        "module": "Mathlib.LinearAlgebra.TensorProduct.Basic",
+        "module": "Mathlib.LinearAlgebra.TensorProduct.Defs",
         "match_kind": "exact"
       },
       "note": "The abstract outer product `u ⊗ v ∈ V ⊗ W` is exactly `TensorProduct.tmul` (notation `⊗ₜ`).",

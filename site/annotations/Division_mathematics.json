@@ -159,6 +159,22 @@
       "id": "88643358b125"
     },
     {
+      "kind": "proposition",
+      "label": "Division by zero undefined (Lead)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "If b = 0 , then this is a division by zero , which is not defined"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "div_zero",
+        "module": "Mathlib.Algebra.GroupWithZero.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib chooses the convention `a / 0 = 0` in `GroupWithZero`, so the Wikipedia 'undefined' claim is not literally formalized; `div_zero`/`inv_zero` document Mathlib's total variant.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Quotition and partition",
       "anchor": {
@@ -364,6 +380,38 @@
     },
     {
       "kind": "definition",
+      "label": "Integer division rounding modes (T/F-division)",
+      "anchor": {
+        "section": "Of integers",
+        "snippet": "rounding may be toward zero (so called T-division) or toward −∞ (F-division)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.ediv",
+        "module": "Mathlib.Data.Int.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has `Int.tdiv` (truncation toward zero), `Int.fdiv` (floor toward −∞), and `Int.ediv` (Euclidean), matching the T/F-division rounding conventions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Divisibility relation",
+      "anchor": {
+        "section": "Of integers",
+        "snippet": "Divisibility rules can sometimes be used to quickly determine whether one integer divides exactly into another"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Dvd.dvd",
+        "module": "Init.Prelude",
+        "match_kind": "invocation"
+      },
+      "note": "The `Dvd` typeclass and `∣` notation formalize the 'divides exactly' relation on any monoid, including `ℤ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Division of rational numbers",
       "anchor": {
         "section": "Of rational numbers",
@@ -478,7 +526,8 @@
         "match_kind": "invocation"
       },
       "note": "Mathlib defines the Hadamard (entrywise) product `Matrix.hadamard`; entrywise division can be expressed as `A.hadamard B⁻¹` (entrywise), but no dedicated Hadamard-division operator is provided.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "acfd74f3f6fd"
     },
     {
       "kind": "definition",
@@ -647,7 +696,8 @@
         "match_kind": "invocation"
       },
       "note": "The trivial (zero) ring, characterized by `Subsingleton` / `1 = 0`, is expressible in Mathlib and trivially admits `0 / 0 = 0`. Wheels are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "73e4ebbbeec9"
     }
   ]
 }

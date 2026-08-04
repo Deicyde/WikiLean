@@ -18,7 +18,7 @@
         "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
         "match_kind": "generalization"
       },
-      "note": "The geometric triangle inequality on side lengths is the metric-space inequality dist x z ≤ dist x y + dist y z, which holds in any (pseudo)metric space including Euclidean point sets.",
+      "note": "The geometric triangle inequality on side lengths is the metric-space inequality dist x z ≤ dist x y + dist y z (dist_triangle), which specializes to Euclidean point sets.",
       "provenance": "ai",
       "id": "613a95511f2f"
     },
@@ -52,7 +52,7 @@
         "module": "Mathlib.Topology.MetricSpace.Pseudo.Basic",
         "match_kind": null
       },
-      "note": "dist_le_range_sum_dist shows the straight-line distance is a lower bound for any polygonal path, but the general curve-minimization statement is only partially captured.",
+      "note": "dist_le_range_sum_dist shows straight-line distance lower-bounds any polygonal path, but the general curve-minimization statement is only partially captured.",
       "provenance": "ai",
       "id": "4ffcfe27b157"
     },
@@ -103,7 +103,7 @@
         "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
         "match_kind": null
       },
-      "note": "The three side inequalities a+b>c, b+c>a, c+a>b are just three applications of dist_triangle; no dedicated decl encodes this triple form.",
+      "note": "The three side inequalities a+b>c, b+c>a, c+a>b are three applications of dist_triangle; no dedicated decl encodes this triple form.",
       "provenance": "ai",
       "id": "e459decd91c2"
     },
@@ -120,7 +120,7 @@
         "module": "Mathlib.Analysis.Normed.Group.Basic",
         "match_kind": null
       },
-      "note": "The compact |a−b| < c < a+b form combines the triangle inequality (norm_add_le) and reverse triangle inequality (norm_sub_norm_le), but no single decl states it for triangle sides.",
+      "note": "The compact |a−b| < c < a+b form combines norm_add_le and norm_sub_norm_le, but no single decl states it for triangle sides.",
       "provenance": "ai",
       "id": "0d4b622d6b5d"
     },
@@ -205,7 +205,7 @@
         "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.RightAngle",
         "match_kind": "generalization"
       },
-      "note": "The Pythagorean theorem is formalized as an iff characterizing the right-angle case, of which the article's equality c²=a²+b² is one direction.",
+      "note": "The Pythagorean theorem is formalized as an iff characterizing the right-angle case, one direction of which is the article's equality c²=a²+b².",
       "provenance": "ai",
       "id": "920a2ae1984b"
     },
@@ -256,7 +256,7 @@
         "module": "Mathlib.Topology.MetricSpace.Pseudo.Basic",
         "match_kind": "generalization"
       },
-      "note": "dist_le_range_sum_dist gives dist (f 0) (f n) ≤ ∑ dist (f i) (f (i+1)), the polygon/path inequality for any number of intermediate points in a metric space.",
+      "note": "dist_le_range_sum_dist gives dist (f 0) (f n) ≤ ∑ dist (f i) (f (i+1)), the polygon/path inequality in a metric space.",
       "provenance": "ai",
       "id": "d70a9ea1aa39"
     },
@@ -290,7 +290,7 @@
         "module": "Mathlib.Geometry.Manifold.Riemannian.PathELength",
         "match_kind": "generalization"
       },
-      "note": "Manifold.riemannianEDist_le_pathELength shows the Riemannian distance lower-bounds any C¹ path length, capturing the curve-minimization idea but not the specific Euclidean straight-line characterization.",
+      "note": "Manifold.riemannianEDist_le_pathELength shows the Riemannian distance lower-bounds any C¹ path length, capturing the curve-minimization idea but not the Euclidean straight-line characterization.",
       "provenance": "ai",
       "id": "18e53e76fa4a"
     },
@@ -307,7 +307,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No Mathlib decl establishes existence of a triangle (or its embedding in the plane) from three lengths satisfying the strict inequalities.",
+      "note": "No Mathlib decl establishes existence of a triangle from three lengths satisfying the strict inequalities.",
       "provenance": "ai",
       "id": "8595808230b8"
     },
@@ -375,7 +375,7 @@
         "module": "Mathlib.Analysis.Normed.Group.Basic",
         "match_kind": "exact"
       },
-      "note": "The norm's subadditivity axiom is provided as norm_add_le : ‖a + b‖ ≤ ‖a‖ + ‖b‖.",
+      "note": "The norm's subadditivity axiom is norm_add_le : ‖a + b‖ ≤ ‖a‖ + ‖b‖.",
       "provenance": "ai",
       "id": "b1f3a3f24377"
     },
@@ -558,7 +558,7 @@
         "module": "Mathlib.Topology.UniformSpace.Cauchy",
         "match_kind": "generalization"
       },
-      "note": "Filter.Tendsto.cauchySeq shows a sequence tending to a limit is a Cauchy sequence (in any uniform space, generalizing the metric case).",
+      "note": "Filter.Tendsto.cauchySeq shows a sequence tending to a limit is a Cauchy sequence, generalizing the metric case to any uniform space.",
       "provenance": "ai",
       "id": "72d7cefdb3b9"
     },
@@ -575,8 +575,9 @@
         "module": "Mathlib.Analysis.Normed.Group.Basic",
         "match_kind": "exact"
       },
-      "note": "dist_eq_norm : dist a b = ‖a - b‖ states that the metric on a (semi)normed group is induced by the norm of the difference.",
-      "provenance": "ai"
+      "note": "dist_eq_norm : dist a b = ‖a - b‖ states the metric on a (semi)normed group is induced by the norm of the difference.",
+      "provenance": "ai",
+      "id": "8ec21524115c"
     },
     {
       "kind": "theorem",
@@ -625,7 +626,7 @@
         "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
         "match_kind": "exact"
       },
-      "note": "The metric-space reverse triangle inequality |dist x z − dist y z| ≤ dist x y is captured by abs_dist_sub_le.",
+      "note": "abs_dist_sub_le captures the metric-space reverse triangle inequality |dist x z − dist y z| ≤ dist x y.",
       "provenance": "ai",
       "id": "c5c144713783"
     },
@@ -662,6 +663,70 @@
       "note": "The reversed triangle inequality for timelike vectors in Minkowski space is not formalized in Mathlib.",
       "provenance": "ai",
       "id": "64469ab64660"
+    },
+    {
+      "kind": "definition",
+      "label": "Subadditivity of the norm",
+      "anchor": {
+        "section": "Normed vector space",
+        "snippet": "This is also referred to as subadditivity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "norm_add_le",
+        "module": "Mathlib.Analysis.Normed.Group.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The subadditivity property ‖u+v‖ ≤ ‖u‖+‖v‖ of a norm is norm_add_le in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Parallelogram law fails for p ≠ 2",
+      "anchor": {
+        "section": "Example norms",
+        "snippet": "the p -norm is not an inner product norm, because it does not satisfy the parallelogram law"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "parallelogram_law_with_norm",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "parallelogram_law_with_norm gives the inner-product-space parallelogram identity ‖x+y‖²+‖x−y‖²=2(‖x‖²+‖y‖²), which the p-norm satisfies only when p=2.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "p-norm",
+      "anchor": {
+        "section": "Example norms",
+        "snippet": "The p -norm is a generalization of taxicab and Euclidean norms"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PiLp.norm_eq_sum",
+        "module": "Mathlib.Analysis.Normed.Lp.PiLp",
+        "match_kind": "exact"
+      },
+      "note": "The finite p-norm ‖v‖_p = (Σ|v_i|^p)^{1/p} is realized in Mathlib as PiLp p, with the value formula given by PiLp.norm_eq_sum.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cauchy–Schwarz inequality",
+      "anchor": {
+        "section": "Example norms",
+        "snippet": "(by the Cauchy–Schwarz inequality)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "norm_inner_le_norm",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "norm_inner_le_norm : ‖⟪x, y⟫‖ ≤ ‖x‖ * ‖y‖ is Mathlib's Cauchy–Schwarz inequality for inner-product spaces.",
+      "provenance": "ai"
     }
   ]
 }

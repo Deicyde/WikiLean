@@ -432,6 +432,22 @@
     },
     {
       "kind": "proposition",
+      "label": "Chinese remainder theorem for ideals",
+      "anchor": {
+        "section": "Non-examples",
+        "snippet": "by the Chinese remainder theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.quotientInfRingEquivPiQuotient",
+        "module": "Mathlib.RingTheory.Ideal.Quotient.Operations",
+        "match_kind": "exact"
+      },
+      "note": "`Ideal.quotientInfRingEquivPiQuotient` gives the CRT ring isomorphism `R ⧸ ⨅ i, f i ≃+* Π i, R ⧸ f i` when the ideals are pairwise coprime.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
       "label": "I is prime iff R/I is an integral domain",
       "anchor": {
         "section": "Properties",
@@ -752,6 +768,22 @@
       "note": "Mathlib formalizes `UniqueFactorizationMonoid` and Dedekind domains, and proves rings of integers are Dedekind, but the specific negative existential `∃ K, ¬UniqueFactorizationMonoid (𝓞 K)` (e.g. for `ℚ(√−5)`) is not present as a lemma.",
       "provenance": "ai",
       "id": "7094368fa499"
+    },
+    {
+      "kind": "definition",
+      "label": "Dedekind domain (factorization of ideals into primes)",
+      "anchor": {
+        "section": "Uses",
+        "snippet": "Richard Dedekind replaced elements by ideals and prime elements by prime ideals; see Dedekind domain"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsDedekindDomain",
+        "module": "Mathlib.RingTheory.DedekindDomain.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsDedekindDomain` is the Mathlib class for Dedekind domains, in which every nonzero proper ideal factors uniquely as a product of prime ideals (`UniqueFactorizationMonoid (Ideal R)`).",
+      "provenance": "ai"
     },
     {
       "kind": "definition",

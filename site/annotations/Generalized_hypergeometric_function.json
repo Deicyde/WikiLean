@@ -53,7 +53,8 @@
         "match_kind": "exact"
       },
       "note": "Formal power series are represented by `FormalMultilinearSeries` (defined in `Mathlib.Analysis.Calculus.FormalMultilinearSeries`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dadf769c761b"
     },
     {
       "kind": "definition",
@@ -69,6 +70,39 @@
         "match_kind": "invocation"
       },
       "note": "Mathlib has the identity theorem for analytic functions (`AnalyticOnNhd.eqOn_of_preconnected_of_eventuallyEq`), the basic mechanism of analytic continuation.",
+      "provenance": "ai",
+      "id": "0ccf1b299885"
+    },
+    {
+      "kind": "definition",
+      "label": "Confluent hypergeometric function (lead mention)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "include the (Gaussian) hypergeometric function and the confluent hypergeometric function as special cases"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The confluent hypergeometric function (₁F₁ / Kummer) is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bessel functions (lead mention)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Bessel functions , and the classical orthogonal polynomials"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bessel functions are not formalized in Mathlib.",
       "provenance": "ai"
     },
     {
@@ -104,6 +138,22 @@
       "note": "`NormedSpace.exp_eq_tsum` gives the standard `∑ xⁿ/n!` expansion.",
       "provenance": "ai",
       "id": "ad3b3770efdb"
+    },
+    {
+      "kind": "definition",
+      "label": "Exponential generating function",
+      "anchor": {
+        "section": "Notation",
+        "snippet": "This has the form of an exponential generating function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Exponential generating functions as such are not formalized in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -170,7 +220,8 @@
         "match_kind": "exact"
       },
       "note": "Analytic functions are formalized as `AnalyticAt`/`AnalyticOn`/`AnalyticOnNhd`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7d183302b64e"
     },
     {
       "kind": "definition",
@@ -186,7 +237,8 @@
         "match_kind": "exact"
       },
       "note": "The radius of convergence of a formal multilinear series is `FormalMultilinearSeries.radius`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "11935a0f127d"
     },
     {
       "kind": "example",
@@ -270,7 +322,8 @@
         "match_kind": "invocation"
       },
       "note": "The ratio test for series convergence is available in Mathlib as `summable_of_ratio_test_tendsto_lt_one`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c6d6a3b00104"
     },
     {
       "kind": "proposition",
@@ -645,6 +698,22 @@
       "note": "Clausen's product formula is not in Mathlib.",
       "provenance": "ai",
       "id": "37be85f956a2"
+    },
+    {
+      "kind": "theorem",
+      "label": "Bieberbach conjecture (de Branges's theorem)",
+      "anchor": {
+        "section": "Clausen's formula",
+        "snippet": "was used by de Branges to prove the Bieberbach conjecture"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "De Branges's theorem (the Bieberbach conjecture) is not formalized in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "example",
@@ -1172,6 +1241,54 @@
       "note": "Fox–Wright functions are not in Mathlib.",
       "provenance": "ai",
       "id": "5591aecadb67"
+    },
+    {
+      "kind": "definition",
+      "label": "Clebsch–Gordan coefficients as 3F2",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "Clebsch–Gordan coefficients are met, which can be written as 3 F 2 hypergeometric series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Clebsch–Gordan coefficients are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rotation group SO(3)",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "the rotations given by the Lie group SO(3)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.specialOrthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "invocation"
+      },
+      "note": "`Matrix.specialOrthogonalGroup` (defined in `Mathlib.LinearAlgebra.UnitaryGroup`) is the special orthogonal group; SO(3) is the `Fin 3` instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Meromorphic function",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "an elliptic function (a doubly periodic meromorphic function )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeromorphicOn",
+        "module": "Mathlib.Analysis.Meromorphic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Meromorphic functions are formalized as `MeromorphicAt`/`MeromorphicOn` in Mathlib.",
+      "provenance": "ai"
     }
   ]
 }

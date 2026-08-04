@@ -32,7 +32,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "StrongDual",
-        "module": "Mathlib.Topology.Algebra.Module.LinearMap",
+        "module": "Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Basic",
         "match_kind": "exact"
       },
       "note": "`StrongDual R M` abbreviates `M →L[R] R`, the space of continuous linear functionals.",
@@ -54,16 +54,6 @@
       },
       "note": "`Module.Dual R M = M →ₗ[R] R` is exactly the set of all linear maps to the base ring.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Algebraic dual space",
-          "snippet": "is defined as the set of all linear maps"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}(\\varphi +\\psi )(x)&amp;=\\varphi (x)+\\psi (x)\\\\(a\\varphi )(x)&amp;=a\\left(\\varphi (x)\\right)\\end{aligned}}}"
-        }
-      ],
       "id": "8f0f4355ddc9"
     },
     {
@@ -81,16 +71,6 @@
       },
       "note": "A concrete worked example, not a standalone formalizable statement.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Algebraic dual space",
-          "snippet": "For example, if we express the vector space"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}(\\varphi +\\psi )(x)&amp;=\\varphi (x)+\\psi (x)\\\\(a\\varphi )(x)&amp;=a\\left(\\varphi (x)\\right)\\end{aligned}}}"
-        }
-      ],
       "id": "81895c411ce7"
     },
     {
@@ -136,12 +116,12 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Basis.dualBasis",
+        "decl": "Module.Basis.dualBasis",
         "module": "Mathlib.LinearAlgebra.Dual.Basis",
         "match_kind": "special_case"
       },
       "note": "Mathlib constructs the dual family via `Basis.dualBasis` (and `Basis.coord`) for a basis, but no general 'dual set' for an arbitrary independent family is defined.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "d65020828e65"
     },
     {
@@ -153,12 +133,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Basis.dualBasis",
+        "decl": "Module.Basis.dualBasis",
         "module": "Mathlib.LinearAlgebra.Dual.Basis",
         "match_kind": "exact"
       },
       "note": "`Basis.dualBasis` is a `Basis ι R (Dual R M)` for a finite basis `b`.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "7e436a4b1c14"
     },
     {
@@ -170,26 +150,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Basis.dualBasis",
+        "decl": "Module.Basis.dualBasis",
         "module": "Mathlib.LinearAlgebra.Dual.Basis",
         "match_kind": "exact"
       },
       "note": "`Basis.dualBasis` is exactly the dual basis associated to a finite basis.",
-      "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Finite-dimensional case",
-          "snippet": "the dual basis is a set"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\mathbf {e} ^{i}(c^{1}\\mathbf {e} _{1}+\\cdots +c^{n}\\mathbf {e} _{n})=c^{i},\\quad i=1,\\ldots ,n}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\mathbf {e} ^{i}(\\mathbf {e} _{j})=\\delta _{j}^{i}}"
-        }
-      ],
+      "provenance": "ai-moderated",
       "id": "41735d4ff9d0"
     },
     {
@@ -201,26 +167,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Basis.dualBasis_apply_self",
+        "decl": "Module.Basis.dualBasis_apply_self",
         "module": "Mathlib.LinearAlgebra.Dual.Basis",
         "match_kind": "exact"
       },
       "note": "`Basis.dualBasis_apply_self` states `b.dualBasis i (b j) = if j = i then 1 else 0`, the Kronecker-delta biorthogonality.",
-      "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Finite-dimensional case",
-          "snippet": "is referred to as the bi-orthogonality property"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\mathbf {e} ^{i}(c^{1}\\mathbf {e} _{1}+\\cdots +c^{n}\\mathbf {e} _{n})=c^{i},\\quad i=1,\\ldots ,n}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\mathbf {e} ^{i}(\\mathbf {e} _{j})=\\delta _{j}^{i}}"
-        }
-      ],
+      "provenance": "ai-moderated",
       "id": "932adb08a507"
     },
     {
@@ -238,16 +190,6 @@
       },
       "note": "A concrete verification example rather than a general statement.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Finite-dimensional case",
-          "snippet": "These are a basis of"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle g(x)=g(\\alpha _{1}\\mathbf {e} _{1}+\\dots +\\alpha _{n}\\mathbf {e} _{n})=\\alpha _{1}g(\\mathbf {e} _{1})+\\dots +\\alpha _{n}g(\\mathbf {e} _{n})=\\mathbf {e} ^{1}(x)g(\\mathbf {e} _{1})+\\dots +\\mathbf {e} ^{n}(x)g(\\mathbf {e} _{n})}"
-        }
-      ],
       "id": "36dbb0166517"
     },
     {
@@ -265,16 +207,6 @@
       },
       "note": "A specific numerical worked example, not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Finite-dimensional case",
-          "snippet": "let its basis be chosen as"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{bmatrix}e^{11}&amp;e^{12}\\\\e^{21}&amp;e^{22}\\end{bmatrix}}{\\begin{bmatrix}e_{11}&amp;e_{21}\\\\e_{12}&amp;e_{22}\\end{bmatrix}}={\\begin{bmatrix}1&amp;0\\\\0&amp;1\\end{bmatrix}}.}"
-        }
-      ],
       "id": "6516474f1215"
     },
     {
@@ -286,22 +218,12 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Basis.dualBasis_apply_self",
+        "decl": "Module.Basis.dualBasis_apply_self",
         "module": "Mathlib.LinearAlgebra.Dual.Basis",
         "match_kind": "special_case"
       },
       "note": "The biorthogonality `dualBasis_apply_self` is formalized, but the explicit statement about inverse coordinate matrices of basis vs dual basis is not packaged as such.",
-      "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Finite-dimensional case",
-          "snippet": "is a matrix whose columns are the basis vectors and"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\hat {E}}^{\\textrm {T}}\\cdot E=I_{n},}"
-        }
-      ],
+      "provenance": "ai-moderated",
       "id": "fc077aacb3f1"
     },
     {
@@ -330,12 +252,12 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Basis.dualBasis",
+        "decl": "Module.Basis.dualBasis",
         "module": "Mathlib.LinearAlgebra.Dual.Basis",
         "match_kind": "special_case"
       },
       "note": "`Basis.dualBasis` functionals are linearly independent, and `lift_rank_lt_rank_dual` shows they cannot span in infinite dimension, but the combined 'not a basis' claim is not a single lemma.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "671a4272d3ee"
     },
     {
@@ -364,12 +286,12 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Basis.dualBasis",
+        "decl": "Module.Basis.dualBasis",
         "module": "Mathlib.LinearAlgebra.Dual.Basis",
         "match_kind": "special_case"
       },
       "note": "Coordinate functionals `Basis.coord`/`dualBasis` exist, but no equivalence `Dual R (ι →₀ R) ≃ (ι → R)` for the infinite-dimensional identification was found.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "25edd2ff9b0b"
     },
     {
@@ -381,12 +303,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Module.lift_rank_lt_rank_dual",
+        "decl": "lift_rank_lt_rank_dual",
         "module": "Mathlib.LinearAlgebra.Dimension.ErdosKaplansky",
         "match_kind": "exact"
       },
       "note": "`lift_rank_lt_rank_dual` states the rank of an infinite-dimensional space is strictly less than that of its dual.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "354ee36ab5aa"
     },
     {
@@ -398,22 +320,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Module.rank_dual_eq_card_dual_of_aleph0_le_rank",
+        "decl": "rank_dual_eq_card_dual_of_aleph0_le_rank",
         "module": "Mathlib.LinearAlgebra.Dimension.ErdosKaplansky",
         "match_kind": "exact"
       },
       "note": "The Erdős–Kaplansky theorem is stated as `rank_dual_eq_card_dual_of_aleph0_le_rank`.",
-      "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Infinite-dimensional case",
-          "snippet": "The exact dimension of the dual is given by the Erdős–Kaplansky theorem"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\mathrm {dim} (V)=|A|&lt;|F|^{|A|}=|V^{\\ast }|=\\mathrm {max} (|\\mathrm {dim} (V^{\\ast })|,|F|),}"
-        }
-      ],
+      "provenance": "ai-moderated",
       "id": "e7ae04001119"
     },
     {
@@ -425,12 +337,12 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Basis.toDualEquiv",
+        "decl": "Module.Basis.toDualEquiv",
         "module": "Mathlib.LinearAlgebra.Dual.Basis",
         "match_kind": "special_case"
       },
       "note": "`Basis.toDualEquiv` gives `M ≃ₗ[R] Dual R M` from a finite basis; the 'no natural isomorphism' caveat is informal/not formalized.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "70ff018e7fc9"
     },
     {
@@ -533,16 +445,6 @@
       },
       "note": "`LinearMap.dualMap` (= `Module.Dual.transpose`) is the transpose `Dual R M₂ →ₗ[R] Dual R M₁`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Transpose of a linear map",
-          "snippet": "then the transpose (or dual )"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f^{*}(\\varphi )=\\varphi \\circ f\\,}"
-        }
-      ],
       "id": "239ed389a53a"
     },
     {
@@ -560,16 +462,6 @@
       },
       "note": "`transpose_apply`/`LinearMap.dualMap_apply` state `(transpose u) l = l.comp u`, i.e. ⟨ᵗf φ, x⟩ = ⟨φ, f x⟩.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Transpose of a linear map",
-          "snippet": "This identity characterizes the transpose"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle [f^{*}(\\varphi ),\\,v]=[\\varphi ,\\,f(v)],}"
-        }
-      ],
       "id": "5386a7d60e33"
     },
     {
@@ -638,16 +530,6 @@
       },
       "note": "`dualAnnihilator` returns a `Submodule` (hence a vector space) by construction, with lemmas like `dualAnnihilator_bot`/`_top`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Quotient spaces and annihilators",
-          "snippet": "The annihilator of a subset is itself a vector space."
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\{0\\}\\subseteq T^{0}\\subseteq S^{0}\\subseteq V^{*}.}"
-        }
-      ],
       "id": "0869f6a8436c"
     },
     {
@@ -665,28 +547,6 @@
       },
       "note": "`dualAnnihilator_sup_eq` and `dualAnnihilator_iSup_eq` give the behavior under sums/suprema (with `dualAnnihilator_inf_eq` for subspaces).",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Quotient spaces and annihilators",
-          "snippet": "are two subsets of"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle A^{0}+B^{0}\\subseteq (A\\cap B)^{0}.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\left(\\bigcup _{i\\in I}A_{i}\\right)^{0}=\\bigcap _{i\\in I}A_{i}^{0}.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle (A+B)^{0}=A^{0}\\cap B^{0}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle (A\\cap B)^{0}=A^{0}+B^{0}.}"
-        }
-      ],
       "id": "ee181e1a2559"
     },
     {
@@ -698,22 +558,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Module.dualAnnihilator_gc",
+        "decl": "Submodule.dualAnnihilator_gc",
         "module": "Mathlib.LinearAlgebra.Dual.Defs",
         "match_kind": "exact"
       },
       "note": "`dualAnnihilator_gc` is the antitone Galois connection; `Subspace.dualAnnihilator_dualAnnihilator` gives the double annihilator via `mapEvalEquiv`.",
-      "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Quotient spaces and annihilators",
-          "snippet": "forming the annihilator is a Galois connection on the lattice of subsets"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle W^{00}=W}"
-        }
-      ],
+      "provenance": "ai-moderated",
       "id": "0454ae75fbe7"
     },
     {
@@ -811,7 +661,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "StrongDual",
-        "module": "Mathlib.Topology.Algebra.Module.LinearMap",
+        "module": "Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Basic",
         "match_kind": "exact"
       },
       "note": "`StrongDual R M = M →L[R] R` is the space of continuous linear functionals.",
@@ -862,7 +712,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "StrongDual.polar",
-        "module": "Mathlib.Analysis.Normed.Module.Dual",
+        "module": "Mathlib.Analysis.LocallyConvex.Polar",
         "match_kind": "special_case"
       },
       "note": "Polar sets (`StrongDual.polar`, `LinearMap.polar`) and topologies of uniform convergence exist, but the general 𝔖-polar-topology construction is not packaged as in the article.",
@@ -930,7 +780,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "StrongDual",
-        "module": "Mathlib.Topology.Algebra.Module.LinearMap",
+        "module": "Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Basic",
         "match_kind": "exact"
       },
       "note": "`StrongDual` carries the strong topology of uniform convergence on bounded subsets.",
@@ -952,16 +802,6 @@
       },
       "note": "The operator norm makes `E →SL F` (hence the strong dual) a normed space, and it is complete (Banach) when the codomain is complete.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Topologies on the dual",
-          "snippet": "is normed (in fact a Banach space if the field of scalars is complete)"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\|\\varphi \\|=\\sup _{\\|x\\|\\leq 1}|\\varphi (x)|.}"
-        }
-      ],
       "id": "798a0dc021a7"
     },
     {
@@ -1200,16 +1040,6 @@
       },
       "note": "The purely algebraic `dualQuotEquivDualAnnihilator` exists, but the normed/closed-subspace versions (`M/N)' ≅ N^⊥`, `N' ≅ M'/N^⊥`) are not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Annihilators",
-          "snippet": "Then, the dual of the quotient"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\ker(j')=W^{\\perp }}"
-        }
-      ],
       "id": "560496a1e028"
     },
     {
@@ -1296,6 +1126,54 @@
       "note": "Injectivity of the double-dual map for normed spaces follows from `inclusionInDoubleDualLi`; for Hausdorff locally convex TVS the separating-dual property (`SeparatingDual.exists_ne_zero`) gives it, but it is not stated as a double-dual injectivity result.",
       "provenance": "ai",
       "id": "eab2e78ebf11"
+    },
+    {
+      "kind": "definition",
+      "label": "Double dual space",
+      "anchor": {
+        "section": "Injection into the double-dual",
+        "snippet": "from [MATH] into the double dual"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Dual",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "The double dual `Dual R (Dual R M)` is obtained by iterating `Module.Dual`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Transpose is an antihomomorphism of algebras",
+      "anchor": {
+        "section": "Transpose of a linear map",
+        "snippet": "the assignment is then an antihomomorphism of algebras"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Dual.transpose_comp",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`transpose_comp` states `(u ∘ v)ᵀ = vᵀ ∘ uᵀ`, giving the algebra antihomomorphism structure of the transpose.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Annihilator reverses inclusions",
+      "anchor": {
+        "section": "Quotient spaces and annihilators",
+        "snippet": "the assignment of an annihilator to a subset of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.dualAnnihilator_anti",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Submodule.dualAnnihilator_anti` (and the Galois-connection order-reversal) states that a smaller subspace has a larger annihilator.",
+      "provenance": "ai"
     }
   ]
 }

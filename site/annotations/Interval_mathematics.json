@@ -41,6 +41,22 @@
     },
     {
       "kind": "definition",
+      "label": "Interval arithmetic",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Interval arithmetic consists of computing with intervals instead of real numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not provide an interval-arithmetic package (guaranteed enclosures with rounding); `NonemptyInterval` gives an algebra of intervals but not the numerical-analysis arithmetic.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Interval (subset characterization)",
       "anchor": {
         "section": "Definition of an interval",
@@ -410,7 +426,8 @@
         "match_kind": "invocation"
       },
       "note": "With `convex_iff_ordConnected`, the convex hull of `X ⊆ ℝ` is the smallest OrdConnected set containing X, matching the interval enclosure; no dedicated `intervalHull = convexHull` lemma is packaged.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "05defdbbce17"
     },
     {
       "kind": "proposition",
@@ -477,7 +494,8 @@
         "match_kind": "exact"
       },
       "note": "The `OrderTopology ℝ` instance `instOrderTopologyReal` proves the order topology agrees with the metric topology from `Real.instMetricSpace`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "58f529533ed7"
     },
     {
       "kind": "proposition",
@@ -937,6 +955,38 @@
       "note": "`Set.Icc`, `Ico`, `Ioc`, `Ioo` instantiated at `EReal` provide intervals on the extended reals, including `[−∞, +∞]`.",
       "provenance": "ai",
       "id": "20f86fa161f7"
+    },
+    {
+      "kind": "definition",
+      "label": "Extended real numbers",
+      "anchor": {
+        "section": "Infinite endpoints",
+        "snippet": "the set of all real numbers augmented with −∞ and +∞"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EReal",
+        "module": "Mathlib.Data.EReal.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`EReal` is ℝ with ±∞ adjoined, carrying the expected order and topology.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Union of two intervals is an interval iff overlapping or touching",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The union of two intervals is an interval if and only if they have a non-empty intersection or an open end-point of one interval is a closed end-point of the other"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Set.Ico_union_Ico_eq_Ico",
+        "module": "Mathlib.Order.Interval.Set.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Shape-by-shape lemmas like `Ico_union_Ico_eq_Ico` and `Icc_union_Ioc_eq_Icc` cover the touching-endpoint cases, but the general 'union of two intervals is an interval iff …' theorem is not packaged.",
+      "provenance": "ai"
     }
   ]
 }

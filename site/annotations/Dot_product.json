@@ -74,6 +74,22 @@
       "id": "a33c134c73c4"
     },
     {
+      "kind": "proposition",
+      "label": "Self dot product as sum of squares",
+      "anchor": {
+        "section": "Coordinate definition",
+        "snippet": "Likewise, the dot product of the vector"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "dotProduct",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "invocation"
+      },
+      "note": "No dedicated `dotProduct_self` lemma exists in Mathlib; the identity `v ⬝ᵥ v = ∑ i, v i * v i` follows by unfolding `dotProduct`.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Dot product (geometric)",
       "anchor": {
@@ -363,6 +379,22 @@
       "id": "5e3f292b80eb"
     },
     {
+      "kind": "proposition",
+      "label": "Scalar triple product as signed volume of parallelepiped",
+      "anchor": {
+        "section": "Triple product",
+        "snippet": "It is the signed volume of the parallelepiped defined by the three vectors"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "triple_product_eq_det",
+        "module": "Mathlib.LinearAlgebra.CrossProduct",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib identifies the scalar triple product with a 3×3 determinant via `triple_product_eq_det`; the volumetric interpretation is implicit through the determinant's signed-volume meaning but not stated as such.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Vector triple product (Lagrange's formula)",
       "anchor": {
@@ -648,7 +680,8 @@
         "match_kind": null
       },
       "note": "Numerical analysis of floating-point dot product and Kahan summation has no Mathlib formalization.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cad7c9719e3c"
     }
   ]
 }

@@ -1432,6 +1432,86 @@
       "note": "Mathlib has `Nat.primeCounting` but no lemma evaluating it on this interval to 135.",
       "provenance": "ai",
       "id": "8e4ff4d0f9c6"
+    },
+    {
+      "kind": "example",
+      "label": "1035 = 45th triangular number",
+      "anchor": {
+        "section": "1001 to 1099",
+        "snippet": "1035 = 45th triangular number"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Finset.sum_range_id",
+        "module": "Mathlib.Algebra.BigOperators.Intervals",
+        "match_kind": "generalization"
+      },
+      "note": "Triangular numbers are computable via `Finset.sum_range_id` (n·(n+1)/2), so 1035 = 45·46/2 follows; Mathlib has no named triangular-number predicate or `T 45 = 1035` lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "1225 = 35² (sum of 5 consecutive odd cubes)",
+      "anchor": {
+        "section": "1200 to 1299",
+        "snippet": "the sum of 5 consecutive odd cubes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The identity 1³+3³+5³+7³+9³ = 1225 is not recorded as a named Mathlib lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "1153 Proth prime",
+      "anchor": {
+        "section": "1100 to 1199",
+        "snippet": "1153 = super-prime , Proth prime"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Proth primes (primes of form k·2ⁿ+1 with k<2ⁿ odd) are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "1729 as sum of two cubes in two ways (Ramanujan)",
+      "anchor": {
+        "section": "1700 to 1799",
+        "snippet": "In the decimal expansion of e the first time all 10 digits appear in sequence starts at the 1729th digit"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The taxicab characterization Ta(2)=1729 (1³+12³ = 9³+10³) as well as the digit-of-e statement are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "1806 as only n = denominator of nth Bernoulli number",
+      "anchor": {
+        "section": "1800 to 1899",
+        "snippet": "only number for which n equals the denominator of the n th Bernoulli number"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "bernoulli",
+        "module": "Mathlib.NumberTheory.Bernoulli",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines `bernoulli` and the von Staudt–Clausen theorem, but the fixed-point property `denom(Bₙ) = n ⇔ n = 1806` is not recorded.",
+      "provenance": "ai"
     }
   ]
 }

@@ -150,12 +150,12 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Real.tendsto_integral_exp_inner_smul_cocompact",
+        "decl": "tendsto_integral_exp_inner_smul_cocompact",
         "module": "Mathlib.Analysis.Fourier.RiemannLebesgueLemma",
         "match_kind": null
       },
       "note": "The Riemann–Lebesgue lemma gives qualitative decay-to-zero for L¹ functions, but no quantitative `C^k ⇒ |aₙ| = O(n^{-k})` Fourier-coefficient decay statement is formalized.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "b7c948484ed5"
     },
     {
@@ -257,7 +257,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no theory of brick-wall low-pass filters or their step response; sinc/Heaviside convolution interpretation of Gibbs is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6d144372d5d2"
     },
     {
       "kind": "proposition",
@@ -273,7 +274,8 @@
         "match_kind": null
       },
       "note": "Mathlib lacks the sine integral Si and the identification of the Gibbs overshoot with a sinc tail integral.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "25dcdadf9d2f"
     },
     {
       "kind": "proposition",
@@ -289,6 +291,55 @@
         "match_kind": null
       },
       "note": "The midpoint Riemann sum → ∫₀^π sinc identification giving the Wilbraham–Gibbs limit is not formalized; Mathlib has no sinc-integral evaluation of this form.",
+      "provenance": "ai",
+      "id": "a9531153dcd3"
+    },
+    {
+      "kind": "definition",
+      "label": "Sinc function as low-pass filter impulse response",
+      "anchor": {
+        "section": "Signal processing explanation",
+        "snippet": "the impulse response of the filter (also known as the kernel ), which is the sinc function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.sinc",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Sinc",
+        "match_kind": null
+      },
+      "note": "Mathlib defines `Real.sinc` in the Trigonometric folder, but its role as the impulse response of an ideal brick-wall low-pass filter is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-negative kernel gives convex combination bounded by input range",
+      "anchor": {
+        "section": "Signal processing explanation",
+        "snippet": "the value of the filtered signal will be a convex combination of the input values"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The general convolution-with-a-probability-kernel-preserves-min/max fact is not stated as a lemma in this form in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fourier–time uncertainty: widening in one domain narrows the other",
+      "anchor": {
+        "section": "Signal processing explanation",
+        "snippet": "widening in one domain corresponds to narrowing and increasing height in the other"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The scaling identity `𝓕(f(a·))(ξ) = |a|⁻¹ 𝓕f(ξ/a)` underlying this statement is not packaged as a named lemma in Mathlib.",
       "provenance": "ai"
     }
   ]

@@ -1153,12 +1153,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "ModularGroup",
+        "decl": "Matrix.SpecialLinearGroup",
         "module": "Mathlib.NumberTheory.Modular",
         "match_kind": "exact"
       },
       "note": "The modular group `SL(2, ℤ)` and its quotient are defined in Mathlib's modular forms development.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "94d6501c536c"
     },
     {
@@ -1245,6 +1245,38 @@
       "note": "The Gaussian integers and their norm are formalized; the specific Pythagorean factorization `(a+bi)(a-bi)=c²` is not isolated as a lemma.",
       "provenance": "ai",
       "id": "f9ac28762426"
+    },
+    {
+      "kind": "definition",
+      "label": "Gaussian integers",
+      "anchor": {
+        "section": "Relation to Gaussian integers",
+        "snippet": "Gaussian integers are complex numbers of the form"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GaussianInt",
+        "module": "Mathlib.NumberTheory.Zsqrtd.GaussianInt",
+        "match_kind": "exact"
+      },
+      "note": "`GaussianInt` = `ℤ[√-1]` is defined in Mathlib, with unique factorization and the Euclidean domain structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unique factorization of Gaussian integers",
+      "anchor": {
+        "section": "Relation to Gaussian integers",
+        "snippet": "every Gaussian integer can be factored uniquely into Gaussian primes up to units"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GaussianInt",
+        "module": "Mathlib.NumberTheory.Zsqrtd.GaussianInt",
+        "match_kind": "generalization"
+      },
+      "note": "The anonymous `EuclideanDomain ℤ[i]` instance in the `GaussianInt` module makes `ℤ[i]` a UFD, giving unique factorization into Gaussian primes up to units.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -1367,6 +1399,38 @@
     },
     {
       "kind": "proposition",
+      "label": "Arithmetic progressions of three squares ↔ Pythagorean triples",
+      "anchor": {
+        "section": "Arithmetic progressions of three squares",
+        "snippet": "The arithmetic progressions of three squares are in one-to-one correspondence with Pythgorean triples"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The bijection between three-term arithmetic progressions of squares and Pythagorean triples is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Consecutive-squares difference divisible by 24",
+      "anchor": {
+        "section": "Arithmetic progressions of three squares",
+        "snippet": "the difference"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
       "label": "Jacobi–Madden equation equivalence",
       "anchor": {
         "section": "The Jacobi–Madden equation",
@@ -1446,7 +1510,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Not formalized.",
+      "note": "Follows from irrationality of √2; not stated as a Pythagorean-triple lemma in Mathlib.",
       "provenance": "ai",
       "id": "a2458e354c22"
     },

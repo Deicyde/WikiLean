@@ -35,7 +35,7 @@
         "module": "Mathlib.LinearAlgebra.Eigenspace.Basic",
         "match_kind": "exact"
       },
-      "note": "`HasEigenvalue f μ` is the scaling factor of an eigenvector.",
+      "note": "`HasEigenvalue f μ` (defined as `eigenspace f μ ≠ ⊥`) is the scaling factor of an eigenvector.",
       "provenance": "ai",
       "id": "c0a2f64affa2"
     },
@@ -52,7 +52,7 @@
         "module": "Mathlib.LinearAlgebra.Eigenspace.Matrix",
         "match_kind": "invocation"
       },
-      "note": "Matrix eigenvectors are handled by applying `HasEigenvector` to `Matrix.toLin'` or `toLin b b`, e.g. `hasEigenvector_toLin'_diagonal`.",
+      "note": "Matrix eigenvectors are handled by applying `HasEigenvector` to `Matrix.toLin'` or `toLin b b`; e.g. `hasEigenvector_toLin'_diagonal` in `Eigenspace.Matrix`.",
       "provenance": "ai",
       "id": "0a898addaa78"
     },
@@ -113,7 +113,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "This is an illustrative pictorial example not formalized in Mathlib.",
+      "note": "Illustrative pictorial example, not formalized.",
       "provenance": "ai",
       "id": "b94648eaa6a2"
     },
@@ -130,7 +130,7 @@
         "module": "Mathlib.LinearAlgebra.Eigenspace.Basic",
         "match_kind": "generalization"
       },
-      "note": "Eigenfunctions are special cases of `HasEigenvector` for a linear differential operator, but no dedicated `eigenfunction` API exists.",
+      "note": "Eigenfunctions are special cases of `HasEigenvector` applied to a linear differential operator, but no dedicated `eigenfunction` API exists.",
       "provenance": "ai",
       "anchors": [
         {
@@ -161,7 +161,7 @@
         "module": "Mathlib.LinearAlgebra.Eigenspace.Basic",
         "match_kind": "generalization"
       },
-      "note": "`eigenspace` and `Eigenvalues` are defined; `Matrix.IsHermitian.eigenvectorBasis` gives an eigenbasis in the Hermitian case, but no general `eigenbasis`/`eigensystem` term.",
+      "note": "`eigenspace` and `Eigenvalues` are defined; `Matrix.IsHermitian.eigenvectorBasis` gives an eigenbasis in the Hermitian case, but there is no general `eigenbasis`/`eigensystem` term.",
       "provenance": "ai",
       "id": "dc347363b61c"
     },
@@ -222,7 +222,7 @@
         "module": "Mathlib.LinearAlgebra.Eigenspace.Basic",
         "match_kind": "exact"
       },
-      "note": "`eigenspace_def` shows `eigenspace f μ = LinearMap.ker (f - μ • 1)`, i.e. `(A - λI)v = 0`.",
+      "note": "`eigenspace_def` shows `eigenspace f μ = LinearMap.ker (f - μ • 1)`, i.e. `(A − λI)v = 0`.",
       "provenance": "ai",
       "id": "e3fe4f617be5"
     },
@@ -273,7 +273,7 @@
         "module": "Mathlib.LinearAlgebra.Charpoly.Basic",
         "match_kind": "exact"
       },
-      "note": "`charpoly_natDegree` gives degree `n`; combined with degree bounds on root counts, this matches the at-most-n claim.",
+      "note": "`charpoly_natDegree` gives degree `n`; combined with degree bounds on root counts, this matches the at-most-`n` claim.",
       "provenance": "ai",
       "id": "2258deabe732"
     },
@@ -339,6 +339,22 @@
       "id": "f140fe9cec43"
     },
     {
+      "kind": "proposition",
+      "label": "Odd-order real matrix has a real eigenvalue",
+      "anchor": {
+        "section": "Eigenvalues and the characteristic polynomial",
+        "snippet": "any real matrix with odd order has at least one real eigenvalue"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsRealClosed.exists_isRoot_of_odd_natDegree",
+        "module": "Mathlib.FieldTheory.IsRealClosed.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`IsRealClosed.exists_isRoot_of_odd_natDegree` gives a real root for odd-degree polynomials over real-closed fields; applied to the characteristic polynomial of an odd-order real matrix, but the eigenvalue corollary is not stated directly.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Spectrum of a matrix",
       "anchor": {
@@ -385,7 +401,7 @@
         "module": "Mathlib.Algebra.Polynomial.Div",
         "match_kind": "generalization"
       },
-      "note": "`rootMultiplicity` of `charpoly` gives algebraic multiplicity but no dedicated `algebraicMultiplicity` for eigenvalues.",
+      "note": "`rootMultiplicity` of `charpoly` gives algebraic multiplicity, but there is no dedicated `algebraicMultiplicity` for eigenvalues.",
       "provenance": "ai",
       "id": "fb7068b487d5"
     },
@@ -422,6 +438,22 @@
       "note": "`eigenspace` applied to `Matrix.toLin'`; e.g. `Matrix.iSup_eigenspace_toLin'_diagonal_eq_top`.",
       "provenance": "ai",
       "id": "8f6b1cbef8f3"
+    },
+    {
+      "kind": "proposition",
+      "label": "Eigenspace is the nullspace of A − λI",
+      "anchor": {
+        "section": "Eigenspaces, geometric multiplicity, and the eigenbasis for matrices",
+        "snippet": "this set is precisely the kernel or nullspace of the matrix"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.End.eigenspace_def",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`eigenspace_def` gives `eigenspace f μ = LinearMap.ker (f - μ • 1)`, matching E = ker(A − λI).",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -474,13 +506,13 @@
         "section": "Eigenspaces, geometric multiplicity, and the eigenbasis for matrices",
         "snippet": "an eigenvalue's geometric multiplicity cannot exceed its algebraic multiplicity"
       },
-      "status": "not_formalized",
+      "status": "formalized",
       "mathlib": {
-        "decl": null,
-        "module": null,
-        "match_kind": null
+        "decl": "LinearMap.finrank_eigenspace_le",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Zero",
+        "match_kind": "exact"
       },
-      "note": "Could not locate this inequality formalized in Mathlib.",
+      "note": "`LinearMap.finrank_eigenspace_le` states `finrank K (eigenspace f μ) ≤ rootMultiplicity μ (charpoly f)`, i.e. geometric ≤ algebraic multiplicity.",
       "provenance": "ai",
       "anchors": [
         {
@@ -501,13 +533,13 @@
         "section": "Eigenspaces, geometric multiplicity, and the eigenbasis for matrices",
         "snippet": "To prove the inequality"
       },
-      "status": "not_formalized",
+      "status": "formalized",
       "mathlib": {
-        "decl": null,
-        "module": null,
-        "match_kind": null
+        "decl": "LinearMap.finrank_eigenspace_le",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Zero",
+        "match_kind": "exact"
       },
-      "note": "Proof of the geometric-vs-algebraic multiplicity inequality not located.",
+      "note": "The inequality itself is proved as `LinearMap.finrank_eigenspace_le`, from `LinearMap.finrank_genEigenspace_le` in `Eigenspace.Zero`.",
       "provenance": "ai",
       "anchors": [
         {
@@ -639,7 +671,7 @@
         "module": "Mathlib.Analysis.Matrix.Spectrum",
         "match_kind": "exact"
       },
-      "note": "`IsHermitian.eigenvalues : n → ℝ` returns real eigenvalues; `eigenvalues_mem_spectrum_real` puts them in `spectrum ℝ A`.",
+      "note": "`IsHermitian.eigenvalues : n → ℝ` returns real eigenvalues; `eigenvalues_mem_spectrum_real` places them in `spectrum ℝ A`.",
       "provenance": "ai",
       "id": "899e47b0f9e3"
     },
@@ -778,7 +810,7 @@
         "module": "Mathlib.LinearAlgebra.Matrix.Charpoly.Basic",
         "match_kind": "exact"
       },
-      "note": "`(Aᵀ).charpoly = A.charpoly`, so by `mem_spectrum_iff_isRoot_charpoly` they share eigenvalues.",
+      "note": "`(Aᵀ).charpoly = A.charpoly`, so by `Matrix.mem_spectrum_iff_isRoot_charpoly` they share eigenvalues.",
       "provenance": "ai",
       "id": "c61397839533"
     },
@@ -829,7 +861,7 @@
         "module": "Mathlib.LinearAlgebra.Eigenspace.Semisimple",
         "match_kind": "generalization"
       },
-      "note": "Captured via semisimplicity / eigenspaces spanning; no explicit `diagonalizable_iff_eigenvectors_basis` lemma.",
+      "note": "Captured via semisimplicity/eigenspaces spanning; no explicit `diagonalizable_iff_eigenvectors_basis` lemma.",
       "provenance": "ai",
       "id": "008e5f28db65"
     },
@@ -846,7 +878,7 @@
         "module": "Mathlib.LinearAlgebra.Eigenspace.Basic",
         "match_kind": "generalization"
       },
-      "note": "Generalized eigenspaces exist and Jordan–Chevalley decomposition is formalized; full Jordan normal form and `defective` predicate are not.",
+      "note": "Generalized eigenspaces exist and Jordan–Chevalley decomposition is formalized; full Jordan normal form and a `defective` predicate are not.",
       "provenance": "ai",
       "id": "52f3757be9c0"
     },
@@ -1663,9 +1695,9 @@
       "mathlib": {
         "decl": "Module.End.instFintypeEigenvalues",
         "module": "Mathlib.LinearAlgebra.Eigenspace.Minpoly",
-        "match_kind": "exact"
+        "match_kind": "generalization"
       },
-      "note": "`instFintypeEigenvalues` makes `f.Eigenvalues` a `Fintype` for an endomorphism of a finite-dimensional module.",
+      "note": "`instFintypeEigenvalues` makes `f.Eigenvalues` a `Fintype` (and `Module.End.finite_spectrum` gives finiteness in finite dimensions); the tight bound `≤ n` follows from `eigenvectors_linearIndependent` but is not stated as a single lemma.",
       "provenance": "ai",
       "id": "34e9947f1947"
     },
@@ -1682,7 +1714,7 @@
         "module": "Mathlib.Algebra.Algebra.Spectrum.Basic",
         "match_kind": "generalization"
       },
-      "note": "`spectrum.inv_mem_iff` shows `↑r ∈ spectrum R ↑a ↔ ↑r⁻¹ ∈ spectrum R ↑a⁻¹`, giving the reciprocal-eigenvalues fact for units.",
+      "note": "`spectrum.inv_mem_iff` shows `↑r ∈ spectrum R ↑a ↔ ↑r⁻¹ ∈ spectrum R ↑a⁻¹`, giving reciprocal eigenvalues for units.",
       "provenance": "ai",
       "id": "00ffc4baf231"
     },
@@ -1716,8 +1748,9 @@
         "module": "Mathlib.LinearAlgebra.Eigenspace.Basic",
         "match_kind": "exact"
       },
-      "note": "`Module.End.genEigenspace f μ k` defines the generalized eigenspaces; `iSup_genEigenspace_eq_top_of_isAlgClosed` decomposes the whole space over an algebraically closed field.",
-      "provenance": "ai"
+      "note": "`Module.End.genEigenspace f μ k` defines the generalized eigenspaces.",
+      "provenance": "ai",
+      "id": "c192c3e14a63"
     },
     {
       "kind": "proposition",
@@ -1732,8 +1765,9 @@
         "module": "Mathlib.LinearAlgebra.Eigenspace.Triangularizable",
         "match_kind": "exact"
       },
-      "note": "The decomposition into generalized eigenspaces is formalized over algebraically closed fields (in `Eigenspace.Triangularizable`); the full Jordan normal form classification itself is not yet in Mathlib.",
-      "provenance": "ai"
+      "note": "The decomposition into generalized eigenspaces is formalized over algebraically closed fields (in `Eigenspace.Triangularizable`); full Jordan normal form itself is not yet in Mathlib.",
+      "provenance": "ai",
+      "id": "f88634d6b1cf"
     },
     {
       "kind": "definition",
@@ -1749,7 +1783,8 @@
         "match_kind": null
       },
       "note": "The generalized eigenvalue problem `Av = λBv` (for a pair of matrices) is not formalized as a named concept in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "366e07c4e0fc"
     },
     {
       "kind": "definition",
@@ -1765,7 +1800,8 @@
         "match_kind": "exact"
       },
       "note": "`HasEigenvalue f μ` is defined as `eigenspace f μ ≠ ⊥`, matching the existence of a nonzero `v` with `T v = μ • v`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8aec309b271f"
     }
   ]
 }

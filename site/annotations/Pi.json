@@ -155,7 +155,8 @@
         "match_kind": null
       },
       "note": "Open problem; would follow from Schanuel's conjecture, which is itself not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a434c2e0b668"
     },
     {
       "kind": "proposition",
@@ -540,12 +541,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "buffon_short",
+        "decl": "BuffonsNeedle.buffon_short",
         "module": "Archive.Wiedijk100Theorems.BuffonsNeedle",
         "match_kind": "exact"
       },
       "note": "Proved in the Archive as `buffon_short`/`buffon_long`, giving the needle-crossing probability `2l/(πd)`.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "3bf9ec905cab"
     },
     {
@@ -1431,6 +1432,38 @@
       "note": "Stokes' law of fluid drag is not in Mathlib.",
       "provenance": "ai",
       "id": "ec4a68753d6e"
+    },
+    {
+      "kind": "proposition",
+      "label": "Numerical bound π < 22/7",
+      "anchor": {
+        "section": "Polygon approximation era",
+        "snippet": "3.1408 < π < 3.1429"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.pi_lt_d6",
+        "module": "Mathlib.Analysis.Real.Pi.Bounds",
+        "match_kind": "generalization"
+      },
+      "note": "`Real.pi_lt_d6 : Real.pi < 3.141593` (with `Real.pi_gt_d6 : 3.141592 < Real.pi`) gives rigorous numeric bounds strictly stronger than the Archimedean 3.1408 < π < 3.1429 quoted here; the AI-cited `Real.pi_lt_3141593` does not exist in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Degree-to-radian conversion 1° = π/180",
+      "anchor": {
+        "section": "Unit of angle",
+        "snippet": "1° = π /180 radians"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no dedicated degree-measure type nor a `1° = π/180` lemma; angles are represented directly in radians.",
+      "provenance": "ai"
     }
   ]
 }

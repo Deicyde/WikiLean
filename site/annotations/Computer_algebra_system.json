@@ -65,12 +65,12 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Polynomial.gcd",
-        "module": "Mathlib.Algebra.Polynomial.FieldDivision",
+        "decl": "EuclideanDomain.gcd",
+        "module": "Mathlib.Algebra.EuclideanDomain.Defs",
         "match_kind": "generalization"
       },
-      "note": "Polynomial GCD is defined in Mathlib via EuclideanDomain/Polynomial.gcd, though it is not used for fraction simplification.",
-      "provenance": "ai",
+      "note": "Polynomial GCD is defined in Mathlib via EuclideanDomain.gcd (Polynomial over a field is a EuclideanDomain), though it is not used for fraction simplification.",
+      "provenance": "ai-moderated",
       "id": "d1719c4d0b1e"
     },
     {
@@ -269,12 +269,12 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "NumberTheory.Padics.Hensel",
+        "decl": "hensels_lemma",
         "module": "Mathlib.NumberTheory.Padics.Hensel",
         "match_kind": "special_case"
       },
       "note": "Mathlib has Hensel's lemma as a root-finding theorem but no general numerical root-finding algorithm.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "736001725ffc"
     },
     {
@@ -338,7 +338,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "UniqueFactorizationMonoid.factors",
-        "module": "Mathlib.RingTheory.UniqueFactorizationDomain.Basic",
+        "module": "Mathlib.RingTheory.UniqueFactorizationDomain.Defs",
         "match_kind": "generalization"
       },
       "note": "Mathlib has existence/uniqueness of polynomial factorizations via UFM API but no algorithmic factorization routine.",
@@ -355,7 +355,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "EuclideanDomain.gcd",
-        "module": "Mathlib.RingTheory.EuclideanDomain",
+        "module": "Mathlib.Algebra.EuclideanDomain.Defs",
         "match_kind": "exact"
       },
       "note": "GCD via the Euclidean algorithm is formalized for Nat, Int, and any EuclideanDomain.",
@@ -456,12 +456,12 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "PellMatiyasevic",
+        "decl": "Pell.matiyasevic",
         "module": "Mathlib.NumberTheory.PellMatiyasevic",
         "match_kind": "special_case"
       },
       "note": "Mathlib has Pell/Matiyasevic for Diophantine sets and specific Diophantine equations, but no general decision procedure.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "b9c9cc44a365"
     },
     {
@@ -491,7 +491,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Polynomial.derivative",
-        "module": "Mathlib.Analysis.Calculus.Deriv.Basic",
+        "module": "Mathlib.Algebra.Polynomial.Derivative",
         "match_kind": "generalization"
       },
       "note": "Mathlib has extensive derivative rules for elementary (exp, log, trig) and many special functions.",
@@ -524,13 +524,77 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "FirstOrder.Language.Presburger",
+        "decl": "FirstOrder.Language.presburger",
         "module": "Mathlib.ModelTheory.Arithmetic.Presburger.Basic",
         "match_kind": "special_case"
       },
-      "note": "Mathlib has Presburger arithmetic quantifier elimination but not the Tarski–Seidenberg theorem for real-closed fields via CAD.",
+      "note": "Mathlib defines the language of Presburger arithmetic but not the Tarski–Seidenberg theorem for real-closed fields via CAD.",
       "provenance": "ai",
       "id": "19214c997456"
+    },
+    {
+      "kind": "definition",
+      "label": "Multivariable polynomials",
+      "anchor": {
+        "section": "Types of expressions",
+        "snippet": "multivariable polynomials"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MvPolynomial",
+        "module": "Mathlib.Algebra.MvPolynomial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Multivariate polynomials are formalized in Mathlib as MvPolynomial σ R.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Special functions (Γ, ζ, erf, Bessel)",
+      "anchor": {
+        "section": "Types of expressions",
+        "snippet": "various special functions ( Γ , ζ , erf , Bessel functions , etc.)"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.Gamma",
+        "module": "Mathlib.Analysis.SpecialFunctions.Gamma.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib formalizes the Gamma function (Complex.Gamma), Riemann zeta (riemannZeta), and error function; Bessel functions are not yet in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraic numbers",
+      "anchor": {
+        "section": "Types of expressions",
+        "snippet": "algebraic numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsAlgebraic",
+        "module": "Mathlib.RingTheory.Algebraic.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Algebraic numbers/elements are formalized as IsAlgebraic in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Rational numbers (exact)",
+      "anchor": {
+        "section": "Types of expressions",
+        "snippet": "rational number (exact representation)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Rat",
+        "module": "Init.Data.Rat.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Exact rational numbers are the built-in Rat type used throughout Mathlib.",
+      "provenance": "ai"
     }
   ]
 }

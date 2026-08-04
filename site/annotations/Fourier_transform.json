@@ -903,7 +903,8 @@
         "match_kind": "exact"
       },
       "note": "Linearity of the Fourier integral is formalized via `VectorFourier.fourierIntegral_add` and `VectorFourier.fourierIntegral_smul`; equivalently, the L² FT is a `LinearIsometryEquiv`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0c3f38f899bf"
     },
     {
       "kind": "proposition",
@@ -919,7 +920,8 @@
         "match_kind": "special_case"
       },
       "note": "`Fourier.fourierIntegral_comp_add_right` proves that right-translation in the input corresponds to multiplication by a phase character on the Fourier side, the time-shifting identity.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "22b1f9aef27a"
     },
     {
       "kind": "proposition",
@@ -935,7 +937,8 @@
         "match_kind": null
       },
       "note": "The dual identity `𝓕(e^{2πi a x} f)(ξ) = 𝓕(f)(ξ - a)` is not present as a named lemma in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b90a02e5d2d8"
     },
     {
       "kind": "proposition",
@@ -951,7 +954,8 @@
         "match_kind": null
       },
       "note": "The dilation identity `𝓕(f(a·))(ξ) = (1/|a|) 𝓕(f)(ξ/a)` is not packaged as a named lemma in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "513265805225"
     },
     {
       "kind": "proposition",
@@ -967,7 +971,8 @@
         "match_kind": "exact"
       },
       "note": "`fourierIntegral_gaussian` computes the Fourier transform of the Gaussian as another Gaussian, specializing to the self-Fourier-transform of e^{-π x²}.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2b7fa60c5fec"
     },
     {
       "kind": "definition",
@@ -983,7 +988,8 @@
         "match_kind": "exact"
       },
       "note": "`SchwartzMap E F` is the space of smooth functions whose derivatives decay faster than any polynomial.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "13a9b913b87b"
     },
     {
       "kind": "definition",
@@ -999,7 +1005,8 @@
         "match_kind": "exact"
       },
       "note": "`MeasureTheory.convolution` defines `(f ⋆ g)(x) = ∫ f(t) · g(x - t) dt` under suitable bilinear-multiplication setup.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cd4ba074fbc1"
     },
     {
       "kind": "definition",
@@ -1015,7 +1022,8 @@
         "match_kind": "exact"
       },
       "note": "`MeasureTheory.Measure.haarMeasure` constructs the translation-invariant Haar measure on a locally compact group.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ba470108303c"
     },
     {
       "kind": "definition",
@@ -1031,6 +1039,247 @@
         "match_kind": "exact"
       },
       "note": "`Polynomial.hermite n` defines the probabilist's Hermite polynomials in Mathlib.",
+      "provenance": "ai",
+      "id": "3da99d4054ed"
+    },
+    {
+      "kind": "definition",
+      "label": "Dirac delta distribution",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "For example, the Fourier transform of the delta function is the constant function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.dirac",
+        "module": "Mathlib.MeasureTheory.Measure.Dirac",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureTheory.Measure.dirac a` is the Dirac point mass at `a`; on tempered distributions, it induces the Dirac delta.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Characteristic function of a random variable",
+      "anchor": {
+        "section": "Units",
+        "snippet": "the characteristic function Φ of the probability density function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.charFun",
+        "module": "Mathlib.MeasureTheory.Measure.CharacteristicFunction.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureTheory.charFun μ t = ∫ x, exp(i⟪t,x⟫) dμ(x)` is the characteristic function of a measure; `ProbabilityTheory.charFun` does not exist as a separate decl.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fourier series coefficients of a periodic function",
+      "anchor": {
+        "section": "Fourier transform for periodic functions",
+        "snippet": "where [MATH] are the Fourier series coefficients of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fourierCoeff",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": "exact"
+      },
+      "note": "`fourierCoeff f n` computes the n-th Fourier coefficient of a periodic function on `AddCircle T`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Poisson summation formula",
+      "anchor": {
+        "section": "Sampling the Fourier transform",
+        "snippet": "by the Poisson summation formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.tsum_eq_tsum_fourierIntegral",
+        "module": "Mathlib.Analysis.Fourier.PoissonSummation",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib formalizes classical Poisson summation `∑ f(n) = ∑ 𝓕(f)(n)` under Schwartz-like hypotheses on `f`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Riesz–Thorin interpolation theorem",
+      "anchor": {
+        "section": "On other L p",
+        "snippet": "the Fourier transform can be defined on [MATH] by Riesz–Thorin interpolation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Riesz–Thorin complex interpolation theorem is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Heisenberg group",
+      "anchor": {
+        "section": "Connection with the Heisenberg group",
+        "snippet": "The Heisenberg group is a certain group of unitary operators"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define the Heisenberg group of triples `(x, ξ, z) ∈ R² × U(1)` with the twisted product.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Solid spherical harmonics",
+      "anchor": {
+        "section": "Spherical harmonics",
+        "snippet": "The set A k consists of the solid spherical harmonics of degree k"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no dedicated `SolidSphericalHarmonic` / space of homogeneous harmonic polynomials of degree k on Rⁿ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bessel function of the first kind",
+      "anchor": {
+        "section": "Spherical harmonics",
+        "snippet": "Here J ( n + 2 k − 2)/2 denotes the Bessel function of the first kind"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bessel functions of the first kind are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fourier cosine transform",
+      "anchor": {
+        "section": "Sine and cosine transforms",
+        "snippet": "the Fourier cosine transform"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define the Fourier cosine transform `∫ f(x) cos(2π λ x) dx`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fourier sine transform",
+      "anchor": {
+        "section": "Sine and cosine transforms",
+        "snippet": "the Fourier sine transform"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define the Fourier sine transform `∫ f(x) sin(2π λ x) dx`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Autocorrelation function",
+      "anchor": {
+        "section": "Signal processing",
+        "snippet": "The autocorrelation function R of a function f is defined by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no autocorrelation `R_f(τ) = ∫ f(t) conj(f(t+τ)) dt` operator for a general function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Wiener–Khinchin theorem (power spectral density)",
+      "anchor": {
+        "section": "Signal processing",
+        "snippet": "This Fourier transform is called the power spectral density function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The identification of the power spectral density with the Fourier transform of the autocorrelation (Wiener–Khinchin) is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Discrete Fourier transform (DFT)",
+      "anchor": {
+        "section": "Discrete Fourier transforms and fast Fourier transforms",
+        "snippet": "The discrete Fourier transform (DFT), used there, is usually computed by a fast Fourier transform (FFT) algorithm"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.dft",
+        "module": "Mathlib.Analysis.Fourier.ZMod",
+        "match_kind": "exact"
+      },
+      "note": "`ZMod.dft` defines the discrete Fourier transform of a function `ZMod N → ℂ`, the finite-abelian-group Fourier transform.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Group C*-algebra",
+      "anchor": {
+        "section": "Gelfand transform",
+        "snippet": "called the group C * -algebra C *( G ) of G"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not construct the enveloping group C*-algebra `C*(G)` from `L¹(G)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gelfand representation of an abelian C*-algebra",
+      "anchor": {
+        "section": "Gelfand transform",
+        "snippet": "the Gelfand transform gives an isomorphism between A and C 0 ( A ^)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "gelfandStarTransform",
+        "module": "Mathlib.Analysis.CStarAlgebra.GelfandDuality",
+        "match_kind": "exact"
+      },
+      "note": "`gelfandStarTransform` gives the star-algebra equivalence `A ≃⋆ₐ[ℂ] C(characterSpace ℂ A, ℂ)` for a commutative unital C*-algebra, exactly Gelfand duality.",
       "provenance": "ai"
     }
   ]

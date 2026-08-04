@@ -493,6 +493,22 @@
       "id": "df0332be8fcc"
     },
     {
+      "kind": "definition",
+      "label": "Ideal class group",
+      "anchor": {
+        "section": "Analytic objects: ζ-functions, L -functions, and class number formula",
+        "snippet": "the cardinality of the so-called ideal class group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ClassGroup",
+        "module": "Mathlib.RingTheory.ClassGroup.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ClassGroup R` is the quotient of the group of invertible fractional ideals by the principal fractional ideals; its cardinality is the class number.",
+      "provenance": "ai"
+    },
+    {
       "kind": "theorem",
       "label": "Ideal class group is finite",
       "anchor": {
@@ -501,12 +517,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "NumberField.instFintypeClassGroup",
+        "decl": "NumberField.RingOfIntegers.instFintypeClassGroup",
         "module": "Mathlib.NumberTheory.NumberField.ClassNumber",
         "match_kind": "exact"
       },
       "note": "The `Fintype (ClassGroup (𝓞 K))` instance establishes finiteness of the class group of a number field.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "4157f74544fc"
     },
     {
@@ -544,6 +560,38 @@
       "id": "7aff81c506f2"
     },
     {
+      "kind": "definition",
+      "label": "Norm of a prime ideal",
+      "anchor": {
+        "section": "Analytic objects: ζ-functions, L -functions, and class number formula",
+        "snippet": "denotes the norm of the prime ideal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.absNorm",
+        "module": "Mathlib.RingTheory.Ideal.Norm.AbsNorm",
+        "match_kind": "exact"
+      },
+      "note": "`Ideal.absNorm I` is the cardinality of the residue ring, i.e. the absolute norm of the ideal.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dedekind zeta generalizes Riemann zeta",
+      "anchor": {
+        "section": "Analytic objects: ζ-functions, L -functions, and class number formula",
+        "snippet": "The Dedekind zeta-function generalizes the Riemann zeta-function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "riemannZeta",
+        "module": "Mathlib.NumberTheory.LSeries.RiemannZeta",
+        "match_kind": "special_case"
+      },
+      "note": "`riemannZeta` is the Riemann zeta function; it is recovered as the Dedekind zeta of ℚ.",
+      "provenance": "ai"
+    },
+    {
       "kind": "theorem",
       "label": "Class number formula",
       "anchor": {
@@ -559,6 +607,22 @@
       "note": "This theorem gives the residue of the Dedekind zeta function at s=1, the analytic class number formula.",
       "provenance": "ai",
       "id": "7e8e0e2b8a03"
+    },
+    {
+      "kind": "definition",
+      "label": "Dirichlet L-function",
+      "anchor": {
+        "section": "Analytic objects: ζ-functions, L -functions, and class number formula",
+        "snippet": "Dirichlet L-functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DirichletCharacter.LFunction",
+        "module": "Mathlib.NumberTheory.LSeries.DirichletContinuation",
+        "match_kind": "exact"
+      },
+      "note": "`DirichletCharacter.LFunction` gives the L-function of a Dirichlet character, with analytic continuation.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",
@@ -788,7 +852,7 @@
         },
         {
           "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{bmatrix}a_{11}&amp;a_{12}&amp;a_{13}\\\\a_{21}&amp;a_{22}&amp;a_{23}\\\\a_{31}&amp;a_{32}&amp;a_{33}\\end{bmatrix}}{\\begin{bmatrix}y_{0}\\\\y_{1}\\\\y_{2}\\end{bmatrix}}={\\begin{bmatrix}ay_{0}+2cy_{1}+2by_{2}\\\\by_{0}+ay_{1}+2cy_{2}\\\\cy_{0}+by_{1}+ay_{2}\\end{bmatrix}}}"
+          "value": "{\\displaystyle {\\begin{bmatrix}a_{11}&amp;a_{12}&amp;a_{13}\\\\a_{21}&amp;a_{22}&amp;a_{23}\\\\a_{31}&amp;a_{32}&amp;a_{33}\\end{bmatrix}}{\\begin{bmatrix}y_{0}\\\\y_{1}\\\\y_{2}\\end{bmatrix}}={\\begin{bmatrix}ay_{0}+2cy_{1}+2by_{2}\\\\by_{0}+ay_{1}+2cy_{2}\\\\cy_{0}+by_{1}+ay_{2}\\end{bmatrix}}"
         },
         {
           "type": "math_alttext",
@@ -922,6 +986,22 @@
     },
     {
       "kind": "definition",
+      "label": "Absolute value on a field",
+      "anchor": {
+        "section": "Places",
+        "snippet": "an absolute value is a notion to measure the size"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AbsoluteValue",
+        "module": "Mathlib.Algebra.Order.AbsoluteValue.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`AbsoluteValue R S` bundles a multiplicative, subadditive, positive-definite map from a ring into an ordered semiring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Place of a number field",
       "anchor": {
         "section": "Places",
@@ -946,6 +1026,22 @@
         }
       ],
       "id": "255304f9e5dd"
+    },
+    {
+      "kind": "definition",
+      "label": "Completion at a place",
+      "anchor": {
+        "section": "Places",
+        "snippet": "the so-called completion of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "UniformSpace.Completion",
+        "module": "Mathlib.Topology.UniformSpace.Completion",
+        "match_kind": "exact"
+      },
+      "note": "`UniformSpace.Completion` gives the Cauchy-sequence completion of a uniform space; `NumberField.InfinitePlace.completion` specializes to places.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",
@@ -1315,6 +1411,22 @@
       "id": "da04f0031374"
     },
     {
+      "kind": "theorem",
+      "label": "Hensel's lemma",
+      "anchor": {
+        "section": "Lying over theorem and places",
+        "snippet": "because of Hensel's lemma"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "hensels_lemma",
+        "module": "Mathlib.NumberTheory.Padics.Hensel",
+        "match_kind": "exact"
+      },
+      "note": "`hensels_lemma` gives Hensel's lemma over ℤ_p, lifting approximate roots to true roots.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Ramification",
       "anchor": {
@@ -1400,6 +1512,22 @@
       "id": "72067048cc77"
     },
     {
+      "kind": "definition",
+      "label": "Inertia group",
+      "anchor": {
+        "section": "Ramification",
+        "snippet": "The inertia group measures the difference between the local Galois groups"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.inertia",
+        "module": "Mathlib.RingTheory.Ideal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Ideal.inertia G I` is the inertia subgroup of `G` acting trivially mod `I` — the standard inertia subgroup.",
+      "provenance": "ai"
+    },
+    {
       "kind": "example",
       "label": "Ramification index computation",
       "anchor": {
@@ -1459,12 +1587,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "absoluteGaloisGroup",
+        "decl": "Field.absoluteGaloisGroup",
         "module": "Mathlib.FieldTheory.AbsoluteGaloisGroup",
         "match_kind": "exact"
       },
       "note": "`absoluteGaloisGroup K` is defined as the automorphism group of the algebraic closure over K.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "b14284f76d97"
     },
     {
@@ -1517,6 +1645,22 @@
       "note": "The Hilbert class field is not defined in Mathlib.",
       "provenance": "ai",
       "id": "4b18d9e3e30f"
+    },
+    {
+      "kind": "definition",
+      "label": "Galois cohomology",
+      "anchor": {
+        "section": "Galois groups and Galois cohomology",
+        "snippet": "also known as Galois cohomology"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "groupCohomology",
+        "module": "Mathlib.RepresentationTheory.Homological.GroupCohomology.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`groupCohomology` is Mathlib's group cohomology, of which Galois cohomology is the special case for a Galois group acting on a module.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -1585,6 +1729,38 @@
       "note": "`NumberField.AdeleRing` formalizes the adele ring, but the idele group (its multiplicative variant) is not a named declaration.",
       "provenance": "ai",
       "id": "b510b0f1d379"
+    },
+    {
+      "kind": "theorem",
+      "label": "Dirichlet's unit theorem",
+      "anchor": {
+        "section": "Algebraic number theory",
+        "snippet": "Dirichlet's unit theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NumberField.Units.rank_modTorsion",
+        "module": "Mathlib.NumberTheory.NumberField.Units.DirichletTheorem",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's Dirichlet-unit-theorem file proves the unit group of 𝓞 K is finitely generated of rank r₁ + r₂ − 1.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Minkowski's theorem",
+      "anchor": {
+        "section": "Algebraic number theory",
+        "snippet": "Minkowski's theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.exists_ne_zero_mem_lattice_of_measure_mul_two_pow_lt_measure",
+        "module": "Mathlib.MeasureTheory.Group.GeometryOfNumbers",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's geometry-of-numbers module proves Minkowski's convex-body theorem, the key input to Dirichlet's unit theorem and class-number finiteness.",
+      "provenance": "ai"
     }
   ]
 }

@@ -48,11 +48,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Quiver",
-        "module": "Mathlib.Combinatorics.Quiver.Basic",
-        "match_kind": "generalization"
+        "decl": "Digraph",
+        "module": "Mathlib.Combinatorics.Digraph.Basic",
+        "match_kind": "exact"
       },
-      "note": "Quiver formalizes directed (multi)graphs, generalizing simple digraphs.",
+      "note": "Directed graphs are formalized directly as Digraph (structurally equivalent to Quiver.{0}) in Mathlib.Combinatorics.Digraph.Basic.",
       "provenance": "ai",
       "id": "7f720204ad7d"
     },
@@ -104,7 +104,8 @@
         "match_kind": null
       },
       "note": "SimpleGraph forbids loops by its irreflexivity axiom; loops are accommodated in the general Graph type for multigraphs but no standalone Loop predicate is defined.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "47374bfd6ec2"
     },
     {
       "kind": "definition",
@@ -307,7 +308,8 @@
         "match_kind": "exact"
       },
       "note": "The chromatic number is formalized as SimpleGraph.chromaticNumber, the infimum of n with an n-coloring.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "80ea14e6d3c1"
     },
     {
       "kind": "theorem",
@@ -493,7 +495,8 @@
         "match_kind": null
       },
       "note": "Planar graphs are not formalized in Mathlib; no embedding-into-the-plane structure exists.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a3590bc2585e"
     },
     {
       "kind": "definition",
@@ -747,7 +750,8 @@
         "match_kind": "exact"
       },
       "note": "Bipartite graphs are formalized via SimpleGraph.IsBipartite (existence of a 2-coloring) in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4657c8b7ef5f"
     },
     {
       "kind": "definition",
@@ -921,6 +925,22 @@
     },
     {
       "kind": "definition",
+      "label": "Erdős–Rényi model",
+      "anchor": {
+        "section": "Theory of random graph",
+        "snippet": "modelling generates random graphs, known as Erdős–Rényi model"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SimpleGraph.binomialRandom",
+        "module": "Mathlib.Probability.Combinatorics.BinomialRandomGraph.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "The G(n,p) binomial random graph model formalizes one of the two Erdős–Rényi models; the G(n,M) uniform-edge model is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Tree",
       "anchor": {
         "section": "Theory of random graph",
@@ -950,7 +970,8 @@
         "match_kind": "exact"
       },
       "note": "Paths in a graph are formalized as walks with no repeated vertex via SimpleGraph.Walk.IsPath.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e90e8322e4d3"
     },
     {
       "kind": "definition",
@@ -966,7 +987,8 @@
         "match_kind": null
       },
       "note": "Spanning trees of a graph are not defined as a standalone notion in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "75ddd0caadd8"
     },
     {
       "kind": "definition",
@@ -1154,6 +1176,22 @@
       "note": "Networks (attributed/flow graphs) are not formalized as such in Mathlib.",
       "provenance": "ai",
       "id": "421ed4a46f25"
+    },
+    {
+      "kind": "definition",
+      "label": "Directed acyclic graph",
+      "anchor": {
+        "section": "Linguistics",
+        "snippet": "typed feature structures , which are directed acyclic graphs"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "DAGs are not defined as a distinct structure in Mathlib (though Quiver + acyclicity conditions can express them).",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -1604,13 +1642,13 @@
         "section": "Route problems",
         "snippet": "Hamiltonian path problem"
       },
-      "status": "not_formalized",
+      "status": "partial",
       "mathlib": {
-        "decl": null,
-        "module": null,
+        "decl": "SimpleGraph.IsHamiltonian",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Hamiltonian",
         "match_kind": null
       },
-      "note": "Hamiltonian paths/cycles and the decision problem are not formalized in Mathlib.",
+      "note": "Hamiltonian walks (SimpleGraph.Walk.IsHamiltonian) and Hamiltonian graphs (SimpleGraph.IsHamiltonian) are defined, but the computational decision problem is not addressed.",
       "provenance": "ai",
       "id": "d2c6cfd91cc2"
     },
@@ -1630,6 +1668,38 @@
       "note": "Spanning trees and the minimum spanning tree problem are not formalized in Mathlib.",
       "provenance": "ai",
       "id": "b3b92a03926d"
+    },
+    {
+      "kind": "definition",
+      "label": "Route inspection problem",
+      "anchor": {
+        "section": "Route problems",
+        "snippet": "Route inspection problem (also called the \"Chinese postman problem\")"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Chinese postman / route inspection problem is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Steiner tree problem",
+      "anchor": {
+        "section": "Route problems",
+        "snippet": "Steiner tree"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Steiner trees and the Steiner tree problem are not formalized in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",

@@ -201,12 +201,12 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Subalgebra.range",
+        "decl": "AlgHom.range",
         "module": "Mathlib.Algebra.Algebra.Subalgebra.Basic",
         "match_kind": null
       },
       "note": "The general infrastructure exists (`algebraMap ℝ ℂ`, `Subalgebra.range`/`Algebra.bot`) but the specific `ℝ ⊆ ℂ` subalgebra example isn't a named decl.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "6a7fb2024d3c"
     },
     {
@@ -465,6 +465,38 @@
       "id": "32582445f7b1"
     },
     {
+      "kind": "example",
+      "label": "Banach algebras",
+      "anchor": {
+        "section": "Associative algebra",
+        "snippet": "underlying Banach space , which turns them into Banach algebras"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedAlgebra",
+        "module": "Mathlib.Analysis.Normed.Module.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes Banach algebras as `NormedAlgebra 𝕜 A` on a `NormedRing` (with completeness giving the Banach condition); decl now lives in `Analysis.Normed.Module.Basic`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "C*-algebras",
+      "anchor": {
+        "section": "Associative algebra",
+        "snippet": "If an involution is given as well, we obtain B*-algebras and C*-algebras"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CStarAlgebra",
+        "module": "Mathlib.Analysis.CStarAlgebra.Classes",
+        "match_kind": "exact"
+      },
+      "note": "`CStarAlgebra` (and `CStarRing`) formalize the C*-identity `‖star x * x‖ = ‖x‖^2` on top of a `NormedAlgebra`.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Non-associative algebra",
       "anchor": {
@@ -482,6 +514,22 @@
       "id": "577d72a8a045"
     },
     {
+      "kind": "example",
+      "label": "Lie algebra as non-associative algebra",
+      "anchor": {
+        "section": "Non-associative algebra",
+        "snippet": "Octonions Lie algebras Jordan algebras Alternative algebras"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieAlgebra",
+        "module": "Mathlib.Algebra.Lie.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`LieRing`/`LieAlgebra R L` formalize Lie algebras as (non-associative) K-algebras with the Jacobi identity and antisymmetric bracket.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Associative K-algebra via ring homomorphism",
       "anchor": {
@@ -491,7 +539,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "RingHom.toAlgebra",
-        "module": "Mathlib.Algebra.Algebra.Basic",
+        "module": "Mathlib.Algebra.Algebra.Defs",
         "match_kind": "exact"
       },
       "note": "`RingHom.toAlgebra : (R →+* A) → Algebra R A` (with image in the center) realizes this equivalent definition.",
@@ -541,12 +589,12 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Basis.constr",
+        "decl": "Module.Basis.constr",
         "module": "Mathlib.LinearAlgebra.Basis.Defs",
         "match_kind": null
       },
       "note": "Bilinearity-from-basis is available via `Basis.constr` / `TensorProduct.lift`, but no dedicated lemma about determining algebra multiplication by its action on basis elements.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "c3019a1cfd78"
     },
     {
@@ -643,12 +691,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Algebra.instSubringCenter",
+        "decl": "Algebra.instSubtypeMemSubringCenter",
         "module": "Mathlib.Algebra.Algebra.Basic",
         "match_kind": "exact"
       },
       "note": "There is an `instance : Algebra (Subring.center R) R` (and `Ring.toIntAlgebra : Algebra ℤ R`) in `Mathlib.Algebra.Algebra.Basic`.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "78da87a19fda"
     },
     {
@@ -678,12 +726,28 @@
       "status": "formalized",
       "mathlib": {
         "decl": "RingHom.toAlgebra",
-        "module": "Mathlib.Algebra.Algebra.Basic",
+        "module": "Mathlib.Algebra.Algebra.Defs",
         "match_kind": "exact"
       },
       "note": "`RingHom.toAlgebra : (R →+* A) → Algebra R A` (for `φ` landing in the center) gives this construction directly.",
       "provenance": "ai",
       "id": "750ea3b85b46"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every ring is a Z-algebra",
+      "anchor": {
+        "section": "Associative algebras over rings",
+        "snippet": "a ring comes with a natural Z -module structure, since one can take the unique homomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ring.toIntAlgebra",
+        "module": "Mathlib.Algebra.Algebra.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Ring.toIntAlgebra` provides the canonical `Algebra ℤ R` instance via the unique ring hom `ℤ → R`.",
+      "provenance": "ai"
     }
   ]
 }

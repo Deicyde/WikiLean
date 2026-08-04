@@ -18,7 +18,7 @@
         "module": "Mathlib.GroupTheory.Finiteness",
         "match_kind": null
       },
-      "note": "The field itself is not formalized, but its central object—finitely generated groups—is captured by the `Group.FG` class.",
+      "note": "The field itself is not formalized, but its central object—finitely generated groups—is captured by the `Group.FG` typeclass.",
       "provenance": "ai",
       "id": "797ca6d202a9"
     },
@@ -35,7 +35,7 @@
         "module": "Mathlib.Combinatorics.SimpleGraph.Cayley",
         "match_kind": "exact"
       },
-      "note": "`SimpleGraph.mulCayley` directly defines the Cayley graph from a generating set, though the word metric is not separately packaged.",
+      "note": "`SimpleGraph.mulCayley s` defines the Cayley graph from a generating set, though the word metric is not separately packaged.",
       "provenance": "ai",
       "id": "9cbd480ce7f3"
     },
@@ -53,7 +53,8 @@
         "match_kind": "exact"
       },
       "note": "`PresentedGroup rels` constructs the group with the given generators and relations as a quotient of the free group.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2846f9441d80"
     },
     {
       "kind": "definition",
@@ -102,7 +103,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No formalization of group growth or Gromov's theorem exists in Mathlib.",
+      "note": "No formalization of group growth or Gromov's polynomial growth theorem exists in Mathlib.",
       "provenance": "ai",
       "id": "a65f1757253b"
     },
@@ -119,7 +120,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Neither the ends of groups nor Stallings' theorem is formalized.",
+      "note": "Neither the ends of groups nor Stallings' theorem is formalized in Mathlib.",
       "provenance": "ai",
       "id": "b5d6bcd95dfb"
     },
@@ -136,7 +137,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mostow rigidity is not present in Mathlib (loogle returns zero hits for 'Mostow').",
+      "note": "Mostow rigidity is not present in Mathlib.",
       "provenance": "ai",
       "id": "e09a5cb295ea"
     },
@@ -187,8 +188,9 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Dehn functions of finitely presented groups are not formalized in Mathlib (loogle returns zero 'Dehn' hits).",
-      "provenance": "ai"
+      "note": "Dehn functions of finitely presented groups are not formalized in Mathlib.",
+      "provenance": "ai",
+      "id": "7214b9441a2e"
     },
     {
       "kind": "definition",
@@ -203,8 +205,9 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Kazhdan's property (T) for discrete groups is not formalized in Mathlib (loogle returns zero 'Kazhdan' hits).",
-      "provenance": "ai"
+      "note": "Kazhdan's property (T) for discrete groups is not formalized in Mathlib.",
+      "provenance": "ai",
+      "id": "f7c76292a9d0"
     },
     {
       "kind": "definition",
@@ -220,7 +223,8 @@
         "match_kind": null
       },
       "note": "The Bass–Serre building blocks—amalgamated free products (`Monoid.PushoutI`) and HNN extensions (`HNNExtension`)—are formalized, but the full graph-of-groups/tree-action framework is not.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5519795f7242"
     },
     {
       "kind": "example",
@@ -235,7 +239,7 @@
         "module": "Mathlib.MeasureTheory.Group.FoelnerFilter",
         "match_kind": null
       },
-      "note": "Mathlib has Følner-filter amenability (`IsFoelner.amenable`) but no standalone definition of an amenable group as a class.",
+      "note": "Mathlib has the Følner-filter amenability theorem (`IsFoelner.amenable`) but no standalone `Amenable` group typeclass.",
       "provenance": "ai",
       "id": "53e3668e776c"
     },
@@ -303,7 +307,7 @@
         "module": "Mathlib.GroupTheory.CoprodI",
         "match_kind": "exact"
       },
-      "note": "`Monoid.CoprodI` is the free product (coproduct) of a family of groups, with binary `Monoid.Coprod` as a special case.",
+      "note": "`Monoid.CoprodI` is the free product (coproduct) of a family of groups.",
       "provenance": "ai",
       "id": "ec8063f3611f"
     },
@@ -320,7 +324,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib has `MulAut` and `FreeGroup` but no `OuterAut`/Out(Fn) construction (loogle returns zero 'OuterAut' hits).",
+      "note": "Mathlib has `MulAut` and `FreeGroup` but no `OuterAut`/Out(Fn) construction.",
       "provenance": "ai",
       "id": "0d03171d0742"
     },
@@ -354,7 +358,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mapping class groups of surfaces are not formalized.",
+      "note": "Mapping class groups of surfaces are not formalized in Mathlib.",
       "provenance": "ai",
       "id": "19c36facf34d"
     },
@@ -422,7 +426,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Artin groups are not defined; Mathlib only mentions the 'Artin–Tits relation' in a comment within the Coxeter files.",
+      "note": "Artin groups are not defined; Mathlib only mentions the 'Artin–Tits relation' in comments in the Coxeter files.",
       "provenance": "ai",
       "id": "694a3995d4e6"
     },
@@ -507,7 +511,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Neither Fuchsian nor Kleinian groups are formalized.",
+      "note": "Neither Fuchsian nor Kleinian groups are formalized in Mathlib.",
       "provenance": "ai",
       "id": "7fbc36da0d22"
     },
@@ -541,7 +545,7 @@
         "module": "Mathlib.GroupTheory.HNNExtension",
         "match_kind": null
       },
-      "note": "Baumslag–Solitar groups are HNN extensions of ℤ; Mathlib has the general `HNNExtension` construction but not these specific groups (loogle returns zero 'BaumslagSolitar' hits).",
+      "note": "Baumslag–Solitar groups are HNN extensions of ℤ; Mathlib has the general `HNNExtension` construction but not these specific groups.",
       "provenance": "ai",
       "id": "f3939a5a2244"
     },
@@ -575,9 +579,137 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The Grigorchuk group is not formalized in Mathlib (loogle returns zero 'Grigorchuk' hits).",
+      "note": "The Grigorchuk group is not formalized in Mathlib.",
       "provenance": "ai",
       "id": "8f80adcf2e64"
+    },
+    {
+      "kind": "definition",
+      "label": "Small cancellation theory",
+      "anchor": {
+        "section": "History",
+        "snippet": "small cancellation theory"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Small cancellation conditions and van Kampen diagram curvature arguments are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "van Kampen diagrams",
+      "anchor": {
+        "section": "History",
+        "snippet": "It studies van Kampen diagrams"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "van Kampen diagrams for finite group presentations are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Baum–Connes conjecture",
+      "anchor": {
+        "section": "Modern themes and developments",
+        "snippet": "the Baum–Connes conjecture"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Baum–Connes conjecture is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Novikov conjecture",
+      "anchor": {
+        "section": "Modern themes and developments",
+        "snippet": "the Novikov conjecture"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Novikov conjecture is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Burnside problem",
+      "anchor": {
+        "section": "Modern themes and developments",
+        "snippet": "the Burnside problem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Burnside problem on periodic finitely generated groups is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Growth rate of a finitely generated group",
+      "anchor": {
+        "section": "Modern themes and developments",
+        "snippet": "the growth rate of a finitely generated group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Word-metric ball counts and group growth rate are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Number of ends of a group",
+      "anchor": {
+        "section": "Modern themes and developments",
+        "snippet": "the number of ends of a group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The space of ends of a Cayley graph / finitely generated group is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Asymptotic dimension",
+      "anchor": {
+        "section": "Modern themes and developments",
+        "snippet": "asymptotic dimension"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gromov's asymptotic dimension of a metric space/group is not formalized in Mathlib.",
+      "provenance": "ai"
     }
   ]
 }

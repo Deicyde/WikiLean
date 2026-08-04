@@ -18,7 +18,7 @@
         "module": "Mathlib.FieldTheory.Finite.Basic",
         "match_kind": null
       },
-      "note": "Mathlib encodes finite fields via the combination of the typeclasses `[Field K] [Finite K]` (or `[Fintype K]`); there is no dedicated `FiniteField` definition decl, but the `FiniteField` namespace in `Mathlib/FieldTheory/Finite/Basic.lean` collects all results under this assumption.",
+      "note": "Mathlib encodes finite fields via `[Field K] [Finite K]` (or `[Fintype K]`); there is no dedicated `FiniteField` definition decl, but the `FiniteField` namespace in `Mathlib/FieldTheory/Finite/Basic.lean` collects results under this assumption.",
       "provenance": "ai",
       "id": "5a7c62e5da1a"
     },
@@ -35,7 +35,7 @@
         "module": "Mathlib.Data.Fintype.Card",
         "match_kind": "exact"
       },
-      "note": "The order is the cardinality `Fintype.card K` (alias `Nat.card K`); throughout `FiniteField` results it is abbreviated `q`.",
+      "note": "The order is the cardinality `Fintype.card K`; throughout `FiniteField` results it is abbreviated `q`.",
       "provenance": "ai",
       "id": "5f4b62d0e2b4"
     },
@@ -52,7 +52,7 @@
         "module": "Mathlib.FieldTheory.Finite.GaloisField",
         "match_kind": "exact"
       },
-      "note": "Existence is given by `GaloisField p n` with `GaloisField.card`, and uniqueness up to isomorphism by `FiniteField.algEquivOfCardEq` / `FiniteField.ringEquivOfCardEq`.",
+      "note": "Existence via `GaloisField p n` with `GaloisField.card`, and uniqueness up to isomorphism by `FiniteField.algEquivOfCardEq`/`FiniteField.ringEquivOfCardEq`.",
       "provenance": "ai",
       "id": "1451f3a3c8b4"
     },
@@ -103,7 +103,7 @@
         "module": "Mathlib.FieldTheory.Finite.GaloisField",
         "match_kind": "exact"
       },
-      "note": "Any two finite fields of equal cardinality are ring-isomorphic via `FiniteField.ringEquivOfCardEq` (and algebra-isomorphic via `FiniteField.algEquivOfCardEq`).",
+      "note": "Any two finite fields of equal cardinality are ring-isomorphic via `FiniteField.ringEquivOfCardEq` (algebra-isomorphic via `FiniteField.algEquivOfCardEq`).",
       "provenance": "ai",
       "id": "494efb277eff"
     },
@@ -137,7 +137,7 @@
         "module": "Mathlib.RingTheory.IntegralDomain",
         "match_kind": "generalization"
       },
-      "note": "The general result `IsCyclic Rˣ` for finite integral domains (`isCyclic_of_subgroup_isDomain` and the `instance [Finite Rˣ] : IsCyclic Rˣ`) covers finite fields.",
+      "note": "The general result `IsCyclic Rˣ` for finite integral domains (`isCyclic_of_subgroup_isDomain`) covers finite fields.",
       "provenance": "ai",
       "id": "0eebcc5f46b2"
     },
@@ -310,7 +310,7 @@
         "module": "Mathlib.FieldTheory.Finite.GaloisField",
         "match_kind": "exact"
       },
-      "note": "`GaloisField.algEquivGaloisField` (with `FiniteField.algEquivOfCardEq`) realizes this via the universal property of the splitting field.",
+      "note": "`GaloisField.algEquivGaloisField` (with `FiniteField.algEquivOfCardEq`) realizes uniqueness via the universal property of the splitting field.",
       "provenance": "ai",
       "id": "d81bf196db30"
     },
@@ -769,7 +769,7 @@
         "module": "Mathlib.FieldTheory.Finite.Basic",
         "match_kind": "exact"
       },
-      "note": "`FiniteField.frobenius_pow` shows that `frobenius K p ^ n = 1` when `q = p^n`; `FiniteField.orderOf_frobeniusAlgHom` gives the exact order.",
+      "note": "`FiniteField.frobenius_pow` shows `frobenius K p ^ n = 1` when `q = p^n`; `FiniteField.orderOf_frobeniusAlgHom` gives the exact order.",
       "provenance": "ai",
       "anchors": [
         {
@@ -827,8 +827,9 @@
         "module": "Mathlib.FieldTheory.Finite.GaloisField",
         "match_kind": "exact"
       },
-      "note": "`GaloisField.instIsGaloisOfFinite` provides an `IsGalois K K'` instance for any finite extension between finite fields, and the cyclic-Galois-group instance for finite extensions of finite fields supplies cyclicity.",
-      "provenance": "ai"
+      "note": "`GaloisField.instIsGaloisOfFinite` provides an `IsGalois K K'` instance for any finite extension between finite fields, and the cyclic-Galois-group instance supplies cyclicity.",
+      "provenance": "ai",
+      "id": "5ac4bec4d11a"
     },
     {
       "kind": "proposition",
@@ -877,7 +878,7 @@
         "module": "Mathlib.RingTheory.Polynomial.UniqueFactorization",
         "match_kind": "generalization"
       },
-      "note": "Polynomial rings over UFDs are UFDs by the global instance in `Mathlib/RingTheory/Polynomial/UniqueFactorization.lean`, which applies to fields.",
+      "note": "Polynomial rings over UFDs are UFDs via the global instance `Polynomial.uniqueFactorizationMonoid`, which applies to fields.",
       "provenance": "ai",
       "id": "a58ca5c10f80"
     },
@@ -965,7 +966,7 @@
         "module": "Mathlib.FieldTheory.Finite.GaloisField",
         "match_kind": "generalization"
       },
-      "note": "Existence follows abstractly because `GaloisField p n` exists with degree `n` over `ZMod p`, but no direct theorem of the form `∃ f : (ZMod p)[X], Irreducible f ∧ degree f = n` is isolated.",
+      "note": "Existence follows abstractly because `GaloisField p n` exists with degree `n` over `ZMod p`, but no direct `∃ f : (ZMod p)[X], Irreducible f ∧ degree f = n` is isolated.",
       "provenance": "ai",
       "anchors": [
         {
@@ -1100,6 +1101,38 @@
       "note": "Artin–Zorn is explicitly listed as future work in the header of `Mathlib/RingTheory/LittleWedderburn.lean` and is not formalized.",
       "provenance": "ai",
       "id": "8a6c69e3ac10"
+    },
+    {
+      "kind": "proposition",
+      "label": "Characteristic of a finite field is prime",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "the characteristic of the field is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CharP.char_is_prime",
+        "module": "Mathlib.Algebra.CharP.Lemmas",
+        "match_kind": "generalization"
+      },
+      "note": "For any field of nonzero characteristic, the characteristic is prime (`CharP.char_is_prime_of_pos`); combined with `FiniteField.card` this gives the article's claim.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite field is a vector space over its prime subfield",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "This multiplication makes"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FiniteField.card",
+        "module": "Mathlib.FieldTheory.Finite.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The `ZMod p`-module/vector-space structure on a finite field of characteristic `p` is standard; `FiniteField.card` uses it to show `|K| = p^n`.",
+      "provenance": "ai"
     }
   ]
 }

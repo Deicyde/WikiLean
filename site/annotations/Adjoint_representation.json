@@ -87,7 +87,8 @@
         "match_kind": null
       },
       "note": "Since Ad_g on the Lie group side is not formalized, its Lie-algebra-automorphism property is not either.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5f3a5ec2d378"
     },
     {
       "kind": "definition",
@@ -190,6 +191,22 @@
       "note": "`LieAlgebra.ad R L : L →ₗ⁅R⁆ Module.End R L` with `ad_apply : ad R L x y = ⁅x, y⁆` formalizes ad_x.",
       "provenance": "ai",
       "id": "4f7dfddc52ec"
+    },
+    {
+      "kind": "definition",
+      "label": "Bracket on End as commutator",
+      "anchor": {
+        "section": "Adjoint representation of a Lie algebra",
+        "snippet": "Within End"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieRing.ofAssociativeRing",
+        "module": "Mathlib.Algebra.Lie.OfAssociative",
+        "match_kind": "exact"
+      },
+      "note": "`LieRing.ofAssociativeRing` equips every associative ring — including `Module.End R M` — with the commutator Lie bracket `⁅x, y⁆ = x*y - y*x`, giving the Lie ring structure on endomorphisms used to state that ad is a Lie homomorphism.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",
@@ -392,7 +409,8 @@
         "match_kind": null
       },
       "note": "Non-connected generalization of the previous kernel-of-Ad statement; not formalized in Mathlib since Ad on Lie groups is absent.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b9ddc00c33fc"
     },
     {
       "kind": "proposition",
@@ -408,7 +426,8 @@
         "match_kind": null
       },
       "note": "The identification G / ker(Ad) ≅ Ad(G) via the first isomorphism theorem is not formalized since Ad on Lie groups is absent, though `QuotientGroup.quotientKerEquivRange` gives the underlying group-theoretic statement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cdc6bc54183d"
     },
     {
       "kind": "theorem",
@@ -508,7 +527,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Searches for `coadjoint`/`co_adjoint`/`contragredient` in Mathlib return no results.",
+      "note": "Loogle for `coadjoint` and `contragredient` in Mathlib returns no results.",
       "provenance": "ai",
       "id": "57229d9cb227"
     },

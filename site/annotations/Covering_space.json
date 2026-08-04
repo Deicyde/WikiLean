@@ -70,7 +70,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no named lemma stating that a covering of a connected non-empty base is surjective with constant fiber cardinality.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fa5805191d98"
     },
     {
       "kind": "definition",
@@ -170,7 +171,7 @@
         "module": "Mathlib.Topology.Covering.AddCircle",
         "match_kind": "exact"
       },
-      "note": "`AddCircle.isCoveringMap_coe` (and `Complex.isCoveringMap_exp`) formalize the universal exponential covering of the circle.",
+      "note": "`AddCircle.isCoveringMap_coe` (and `Circle.isCoveringMap_exp`) formalize the universal exponential covering of the circle.",
       "provenance": "ai",
       "id": "9ec973b176db"
     },
@@ -663,7 +664,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Universal covers are not constructed in Mathlib (no `universalCover` declaration).",
+      "note": "Universal covers are not constructed in Mathlib (no `universalCover` declaration for topological spaces).",
       "provenance": "ai",
       "id": "d9fa0b3e75e7"
     },
@@ -681,7 +682,8 @@
         "match_kind": null
       },
       "note": "The uniqueness-of-universal-cover statement is not formalized in Mathlib (no universal cover construction).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cc8798d7c7de"
     },
     {
       "kind": "theorem",
@@ -1390,6 +1392,55 @@
         "match_kind": null
       },
       "note": "The homeomorphism SO(3) ≅ RP³ and its double cover by S³ ≅ Spin(3) (via unit quaternions) is not formalized in Mathlib.",
+      "provenance": "ai",
+      "id": "a024ebef25c2"
+    },
+    {
+      "kind": "proposition",
+      "label": "Coverings are local homeomorphisms (lead)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "coverings are special types of local homeomorphisms"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCoveringMap.isLocalHomeomorph",
+        "module": "Mathlib.Topology.Covering.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The lead's claim that coverings are local homeomorphisms is captured by `IsCoveringMap.isLocalHomeomorph`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Coverings have the homotopy lifting property",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "all coverings have the homotopy lifting property"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCoveringMap.liftHomotopy",
+        "module": "Mathlib.Topology.Homotopy.Lifting",
+        "match_kind": "exact"
+      },
+      "note": "The homotopy lifting property for covering maps is captured by `IsCoveringMap.liftHomotopy`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Étalé space",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a covering space is a special kind of étalé space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TopCat.Presheaf.EtaleSpace",
+        "module": "Mathlib.Topology.Sheaves.EtaleSpace",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib only defines the presheaf-specific `TopCat.Presheaf.EtaleSpace`; the general topological notion of an étalé space (a local homeomorphism) is not packaged, though `IsLocalHomeomorph` captures the defining property.",
       "provenance": "ai"
     }
   ]

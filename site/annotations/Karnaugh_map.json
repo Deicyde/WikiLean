@@ -35,8 +35,9 @@
         "module": "Mathlib.Order.BooleanAlgebra.Defs",
         "match_kind": "invocation"
       },
-      "note": "Boolean algebras are formalized in Mathlib as the `BooleanAlgebra` typeclass, but the notion of a symbolic Boolean-algebra expression (as a syntactic object to be simplified) is not.",
-      "provenance": "ai"
+      "note": "Boolean algebras themselves are formalized as `BooleanAlgebra` (verified via decl_exists), but the notion of a symbolic Boolean-algebra expression as a syntactic object to be simplified is not.",
+      "provenance": "ai",
+      "id": "2f59177f24d8"
     },
     {
       "kind": "definition",
@@ -51,7 +52,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The notion of a minterm (a conjunction over all input variables) is not defined in Mathlib (grep for 'minterm' yields no matches).",
+      "note": "Grep for 'minterm' in Mathlib returns no matches; the minterm notion is not formalized.",
       "provenance": "ai",
       "id": "18feeb022f9d"
     },
@@ -68,8 +69,9 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Disjunctive/conjunctive normal forms (canonical sum-of-products / product-of-sums) of Boolean functions are not formalized in Mathlib.",
-      "provenance": "ai"
+      "note": "Canonical DNF/CNF sum-of-products / product-of-sums normal forms for Boolean functions are not formalized in Mathlib.",
+      "provenance": "ai",
+      "id": "d5109aea55ca"
     },
     {
       "kind": "definition",
@@ -84,7 +86,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "SOP/POS normal forms for Boolean expressions and their gate-level implementations are not formalized in Mathlib.",
+      "note": "SOP/POS normal forms and their gate-level implementations are not formalized in Mathlib.",
       "provenance": "ai",
       "id": "0ce17cf620cf"
     },
@@ -104,6 +106,22 @@
       "note": "This worked example of 4-variable K-map simplification has no analog in Mathlib.",
       "provenance": "ai",
       "id": "82bb855b01da"
+    },
+    {
+      "kind": "definition",
+      "label": "Truth table representation",
+      "anchor": {
+        "section": "Example",
+        "snippet": "consider the Boolean function described by the following truth table"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The truth-table representation of a Boolean function as a first-class object is not formalized in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -135,9 +153,25 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Gray code is not defined in Mathlib (case-insensitive grep returns no matches).",
+      "note": "Gray code is not defined in Mathlib (case-insensitive grep for 'gray code' returns no matches).",
       "provenance": "ai",
       "id": "5586c1f64bc8"
+    },
+    {
+      "kind": "proposition",
+      "label": "Gray code single-bit adjacency",
+      "anchor": {
+        "section": "Construction",
+        "snippet": "Gray code ensures that only one variable changes between each pair of adjacent cells."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The defining single-bit-change property of Gray code is not formalized in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -288,7 +322,7 @@
         "module": "Mathlib.Order.BooleanAlgebra.Basic",
         "match_kind": "invocation"
       },
-      "note": "De Morgan's laws themselves are in Mathlib (`compl_inf : (x ⊓ y)ᶜ = xᶜ ⊔ yᶜ` and its dual), but their application to convert a SOP K-map result into POS form is not formalized.",
+      "note": "De Morgan's laws themselves are in Mathlib (`compl_inf : (x ⊓ y)ᶜ = xᶜ ⊔ yᶜ`, verified via decl_exists), but their application to convert a SOP K-map result into POS form is not formalized.",
       "provenance": "ai",
       "id": "596d9776a285"
     },
@@ -325,6 +359,22 @@
       "note": "Concrete don't-care K-map example; not present in Mathlib.",
       "provenance": "ai",
       "id": "298254fa816f"
+    },
+    {
+      "kind": "proposition",
+      "label": "De Morgan's laws (POS from don't-care inverse)",
+      "anchor": {
+        "section": "Don't cares",
+        "snippet": "Through the use of De Morgan's laws , the product of sums can be determined:"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "compl_sup",
+        "module": "Mathlib.Order.Heyting.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "De Morgan's law `compl_sup` lives in `Mathlib.Order.Heyting.Basic` (verified via decl_exists); the specific don't-care-driven POS conversion pipeline is not formalized.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",

@@ -36,7 +36,8 @@
         "match_kind": null
       },
       "note": "The PAC learning framework is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "df00f41af48d"
     },
     {
       "kind": "definition",
@@ -52,7 +53,8 @@
         "match_kind": null
       },
       "note": "Empirical risk minimisation is a statistical-learning framework not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6109cbfd9d88"
     },
     {
       "kind": "definition",
@@ -102,7 +104,8 @@
         "match_kind": null
       },
       "note": "The bias–variance decomposition of generalisation error is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0f6d3d2f7f46"
     },
     {
       "kind": "definition",
@@ -237,7 +240,8 @@
         "match_kind": null
       },
       "note": "No `PrincipalComponent`-named decl exists; PCA as a statistical procedure is not formalized in Mathlib (related linear-algebra primitives like SVD exist).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1129d3d0b920"
     },
     {
       "kind": "definition",
@@ -321,7 +325,8 @@
         "match_kind": null
       },
       "note": "No `MarkovDecisionProcess` decl exists; Markov kernels exist but the full MDP framework is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1bd357bf2adf"
     },
     {
       "kind": "definition",
@@ -643,7 +648,8 @@
         "match_kind": null
       },
       "note": "No `LinearRegression`-named decl exists; linear regression / OLS as a statistical procedure is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "277beb3f1e0d"
     },
     {
       "kind": "definition",
@@ -899,6 +905,86 @@
       "note": "Embedded machine learning is outside Mathlib's scope.",
       "provenance": "ai",
       "id": "c42e289aacb1"
+    },
+    {
+      "kind": "definition",
+      "label": "Stochastic process",
+      "anchor": {
+        "section": "Gaussian processes",
+        "snippet": "A Gaussian process is a stochastic process in which every finite collection of the random variables in the process has a multivariate normal distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has various random-process constructions but no single canonical `StochasticProcess` definition covering the general notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multivariate normal distribution",
+      "anchor": {
+        "section": "Gaussian processes",
+        "snippet": "every finite collection of the random variables in the process has a multivariate normal distribution"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.multivariateGaussian",
+        "module": "Mathlib.Probability.Distributions.Gaussian.Multivariate",
+        "match_kind": "close"
+      },
+      "note": "Confirmed via decl_exists: `ProbabilityTheory.multivariateGaussian` formalizes the multivariate Gaussian distribution (module `Mathlib.Probability.Distributions.Gaussian.Multivariate`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Directed acyclic graph",
+      "anchor": {
+        "section": "Bayesian networks",
+        "snippet": "represents a set of random variables and their conditional independence with a directed acyclic graph (DAG)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.IsAcyclic",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Acyclic",
+        "match_kind": "close"
+      },
+      "note": "Confirmed via decl_exists: `SimpleGraph.IsAcyclic` formalizes acyclicity of graphs; directed-graph variants (e.g. `Quiver`) exist though a single canonical DAG structure does not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Arithmetic coding",
+      "anchor": {
+        "section": "Data compression",
+        "snippet": "can be used for optimal data compression (by using arithmetic coding on the output distribution)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Arithmetic coding is an information-theoretic algorithm not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "k-means clustering",
+      "anchor": {
+        "section": "Data compression",
+        "snippet": "k-means clustering can be utilized to compress data by grouping similar data points into clusters"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "k-means clustering is an unsupervised-learning algorithm not formalized in Mathlib.",
+      "provenance": "ai"
     }
   ]
 }

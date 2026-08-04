@@ -114,14 +114,14 @@
         "section": "Definitions",
         "snippet": "The harmonic mean , defined as the reciprocal of the mean of the reciprocals"
       },
-      "status": "partial",
+      "status": "not_formalized",
       "mathlib": {
-        "decl": "Real.inner_mul_le_norm_mul_norm",
-        "module": "Mathlib.Analysis.MeanInequalities",
+        "decl": null,
+        "module": null,
         "match_kind": null
       },
-      "note": "The harmonic mean appears informally in the HM-GM inequality discussion but is not given a top-level definition.",
-      "provenance": "ai",
+      "note": "No top-level definition of the harmonic mean of a finite family exists in `Mathlib/`; it only appears implicitly inside inequality lemmas.",
+      "provenance": "ai-moderated",
       "id": "8ff90d2dbeec"
     },
     {
@@ -344,6 +344,38 @@
       "note": "No moving/rolling average function is defined in `Mathlib/`.",
       "provenance": "ai",
       "id": "c9e807dc8640"
+    },
+    {
+      "kind": "definition",
+      "label": "Weighted average",
+      "anchor": {
+        "section": "Moving average",
+        "snippet": "More complicated forms involve using a weighted average"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Finset.centerMass",
+        "module": "Mathlib.Analysis.Convex.Combination",
+        "match_kind": "special_case"
+      },
+      "note": "`Finset.centerMass` computes a weighted average of points, which specializes the moving average's weighted form; a top-level `weightedMean` is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Constant-collection average equals that constant",
+      "anchor": {
+        "section": "General properties",
+        "snippet": "if a collection consists entirely of the same value, any average of it is that value"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Finset.expect_const",
+        "module": "Mathlib.Algebra.BigOperators.Expect",
+        "match_kind": "special_case"
+      },
+      "note": "`Finset.expect_const` proves the arithmetic average of a constant function is that constant; the general statement quantifies over the unformalized class of all averages.",
+      "provenance": "ai"
     }
   ]
 }

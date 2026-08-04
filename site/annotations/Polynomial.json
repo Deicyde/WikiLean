@@ -1396,7 +1396,8 @@
         "match_kind": "exact"
       },
       "note": "Closure of polynomials under addition is the additive structure on `R[X]`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "55a555c5d388"
     },
     {
       "kind": "proposition",
@@ -1412,7 +1413,8 @@
         "match_kind": "exact"
       },
       "note": "Closure of polynomials under multiplication is the multiplicative structure on `R[X]`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5c5257f15bc8"
     },
     {
       "kind": "proposition",
@@ -1428,7 +1430,8 @@
         "match_kind": "exact"
       },
       "note": "`Polynomial.comp p q : R[X]` lives in the polynomial ring, so composition is closed.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d578692ea59d"
     },
     {
       "kind": "definition",
@@ -1444,7 +1447,8 @@
         "match_kind": "exact"
       },
       "note": "`Polynomial.rootMultiplicity a p` is the largest `m` with `(X - C a) ^ m ∣ p`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3f09bf54af2e"
     },
     {
       "kind": "theorem",
@@ -1460,7 +1464,8 @@
         "match_kind": "generalization"
       },
       "note": "`Polynomial.Splits.natDegree_eq_card_roots` shows for a splitting polynomial the multiset of roots has cardinality equal to the degree (FTA gives this over `ℂ`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cc3818a810ac"
     },
     {
       "kind": "definition",
@@ -1476,6 +1481,71 @@
         "match_kind": "exact"
       },
       "note": "`Polynomial.aeval A p` evaluates a scalar polynomial at a matrix (or any algebra element), substituting `I` for the constant.",
+      "provenance": "ai",
+      "id": "ee6b7f915094"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gaussian elimination for linear systems",
+      "anchor": {
+        "section": "Solving equations",
+        "snippet": "including the classical Gaussian elimination"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.exists_list_transvec_mul_diagonal_mul_list_transvec",
+        "module": "Mathlib.LinearAlgebra.Matrix.Transvection",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib formalizes Gaussian-elimination-style reductions via transvection decompositions and row echelon reductions on matrices.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hilbert's tenth problem",
+      "anchor": {
+        "section": "Solving equations",
+        "snippet": "there cannot be any general algorithm for solving them, or even for deciding whether the set of solutions is empty (see Hilbert's tenth problem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Full Hilbert's tenth problem (undecidability of Diophantine solvability over ℤ) is not yet formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fermat's Last Theorem",
+      "anchor": {
+        "section": "Solving equations",
+        "snippet": "such as Fermat's Last Theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fermat's Last Theorem is not formalized in Mathlib (only special cases like `n = 3, 4`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ruffini's rule (synthetic division by X − c)",
+      "anchor": {
+        "section": "Division",
+        "snippet": "the quotient may be computed by Ruffini's rule"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.divByMonic",
+        "module": "Mathlib.Algebra.Polynomial.Div",
+        "match_kind": "special_case"
+      },
+      "note": "Ruffini's rule is the special case of `Polynomial.divByMonic` with divisor `X - C a`; the quotient is characterized by `modByMonic_add_div`.",
       "provenance": "ai"
     }
   ]

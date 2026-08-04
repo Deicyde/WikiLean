@@ -35,7 +35,7 @@
         "module": "Mathlib.Analysis.Calculus.Deriv.Basic",
         "match_kind": null
       },
-      "note": "Mathlib has no named `antiderivative` definition; antiderivatives are stated via `HasDerivAt F' = f` hypotheses.",
+      "note": "Mathlib has no named `antiderivative` constant; antiderivatives are expressed via `HasDerivAt F (f x) x` hypotheses.",
       "provenance": "ai",
       "id": "f78185eb80d5"
     },
@@ -69,7 +69,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No general line integral over a curve is defined in Mathlib (no `curveIntegral` decl exists); only `intervalIntegral` over an interval and `circleIntegral` for circles.",
+      "note": "No general line integral over a curve exists in Mathlib; only `intervalIntegral` (over an interval) and `circleIntegral` (over a circle).",
       "provenance": "ai-moderated",
       "id": "4ab2c3ff01e4"
     },
@@ -106,6 +106,23 @@
       "note": "`∫ x in a..b, x^n = (b^(n+1) - a^(n+1))/(n+1)`.",
       "provenance": "ai",
       "id": "9c0637e57da2"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum of fourth powers formula",
+      "anchor": {
+        "section": "Pre-calculus integration",
+        "snippet": "Alhazen, Latinized as Alhazen ( c. 965 – c. 1040 AD) derived a formula for the sum of fourth powers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "sum_range_pow",
+        "module": "Mathlib.NumberTheory.Bernoulli",
+        "match_kind": "generalization"
+      },
+      "note": "Faulhaber's theorem `sum_range_pow` gives ∑ k^p in terms of Bernoulli numbers; the fourth-power case is a corollary.",
+      "provenance": "ai",
+      "moderation_flag": "snippet may not exactly match source text; verify anchor"
     },
     {
       "kind": "definition",
@@ -222,7 +239,7 @@
         "module": "Mathlib.Analysis.BoxIntegral.Partition.Basic",
         "match_kind": null
       },
-      "note": "Mathlib's BoxIntegral uses `distortion` and `isSubordinate` rather than a scalar mesh.",
+      "note": "Mathlib's `BoxIntegral` uses `distortion` and `isSubordinate` rather than a scalar mesh.",
       "provenance": "ai",
       "id": "7b6ae7fbe1f8"
     },
@@ -392,7 +409,7 @@
         "module": "Mathlib.Analysis.BoxIntegral.Basic",
         "match_kind": "generalization"
       },
-      "note": "BoxIntegral with the Henstock filter is the gauge / Henstock–Kurzweil integral.",
+      "note": "`BoxIntegral` with the Henstock filter is the gauge / Henstock–Kurzweil integral.",
       "provenance": "ai",
       "id": "e47c3630a08d"
     },
@@ -1095,6 +1112,22 @@
     },
     {
       "kind": "definition",
+      "label": "Rectangle method",
+      "anchor": {
+        "section": "Numerical",
+        "snippet": "The rectangle method relies on dividing the region under the function into a series of rectangles corresponding to function values and multiplies by the step width to find the sum"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The rectangle/midpoint quadrature rule is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Trapezoidal rule",
       "anchor": {
         "section": "Numerical",
@@ -1146,6 +1179,22 @@
     },
     {
       "kind": "definition",
+      "label": "Clenshaw–Curtis quadrature",
+      "anchor": {
+        "section": "Numerical",
+        "snippet": "One solution to this problem is Clenshaw–Curtis quadrature , in which the integrand is approximated by expanding it in terms of Chebyshev polynomials"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Clenshaw–Curtis quadrature is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Romberg's method",
       "anchor": {
         "section": "Numerical",
@@ -1194,6 +1243,22 @@
       "note": "No statement about Gaussian quadrature exactness exists in Mathlib.",
       "provenance": "ai",
       "id": "b1aca2ad8041"
+    },
+    {
+      "kind": "definition",
+      "label": "Monte Carlo integration",
+      "anchor": {
+        "section": "Numerical",
+        "snippet": "The computation of higher-dimensional integrals (for example, volume calculations) makes important use of such alternatives as Monte Carlo integration"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Monte Carlo integration is not formalized in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",

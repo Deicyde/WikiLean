@@ -35,7 +35,7 @@
         "module": "Mathlib.Algebra.Lie.OfAssociative",
         "match_kind": "exact"
       },
-      "note": "An associative algebra is given a Lie algebra instance via the ring commutator bracket.",
+      "note": "`LieAlgebra.ofAssociativeAlgebra` gives every associative algebra a Lie algebra instance via the ring commutator.",
       "provenance": "ai",
       "id": "0460518f321a"
     },
@@ -69,7 +69,7 @@
         "module": "Mathlib.Algebra.Lie.OfAssociative",
         "match_kind": "special_case"
       },
-      "note": "`Module.End R V` is a ring, hence a Lie algebra via the commutator instance.",
+      "note": "`Module.End R V` is a ring, hence a Lie algebra via the `LieRing.ofAssociativeRing`/`LieAlgebra.ofAssociativeAlgebra` commutator instance.",
       "provenance": "ai",
       "id": "7359f01f0832"
     },
@@ -140,6 +140,22 @@
       "note": "The axiom `leibniz_lie` states the Jacobi identity in Leibniz/derivation form `⁅x,⁅y,z⁆⁆ = ⁅⁅x,y⁆,z⁆ + ⁅y,⁅x,z⁆⁆`.",
       "provenance": "ai",
       "id": "5ecdc88c1082"
+    },
+    {
+      "kind": "proposition",
+      "label": "Jacobi identity",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The Jacobi identity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "lie_lie",
+        "module": "Mathlib.Algebra.Lie.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The Jacobi identity is packaged as `lie_lie`/`leibniz_lie` in the `LieRing` class.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -460,8 +476,9 @@
         "module": "Mathlib.Algebra.Lie.CartanSubalgebra",
         "match_kind": "exact"
       },
-      "note": "`IsCartanSubalgebra` is a nilpotent, self-normalizing Lie subalgebra in Mathlib.",
-      "provenance": "ai"
+      "note": "`LieSubalgebra.IsCartanSubalgebra` is a nilpotent, self-normalizing Lie subalgebra in Mathlib.",
+      "provenance": "ai",
+      "id": "7d9c2404c8f2"
     },
     {
       "kind": "example",
@@ -664,7 +681,8 @@
         "match_kind": "generalization"
       },
       "note": "The exponential of a matrix is the special case of `NormedSpace.exp` on the Banach algebra of matrices.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5554c355da59"
     },
     {
       "kind": "example",
@@ -903,6 +921,22 @@
       "note": "sl(2) is `sl (Fin 2) F`; `IsSl2Triple` also captures the sl₂ relations.",
       "provenance": "ai",
       "id": "830b0f94b0ff"
+    },
+    {
+      "kind": "definition",
+      "label": "sl₂ triple",
+      "anchor": {
+        "section": "Three dimensions",
+        "snippet": "In the terminology of quantum mechanics, one can think of E and F as raising and lowering operators"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsSl2Triple",
+        "module": "Mathlib.Algebra.Lie.Sl2",
+        "match_kind": "exact"
+      },
+      "note": "`IsSl2Triple h e f` bundles the standard `⁅h,e⁆=2e`, `⁅h,f⁆=-2f`, `⁅e,f⁆=h` relations characterizing sl₂ subalgebras.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -1404,13 +1438,13 @@
         "section": "Cartan's criterion",
         "snippet": "is solvable if and only if"
       },
-      "status": "not_formalized",
+      "status": "partial",
       "mathlib": {
-        "decl": null,
-        "module": null,
-        "match_kind": null
+        "decl": "LieAlgebra.isSolvable_of_killingForm_apply_lie_eq_zero",
+        "module": "Mathlib.Algebra.Lie.CartanCriterion",
+        "match_kind": "special_case"
       },
-      "note": "The solvability half of Cartan's criterion (Killing form vanishes on [L,L]) is not formalized.",
+      "note": "The `Killing form vanishes on [L,L] ⟹ L solvable` direction is formalized (in char 0); the converse is an explicit TODO in the file.",
       "provenance": "ai",
       "id": "fa4c328d976a"
     },
@@ -1479,7 +1513,8 @@
         "match_kind": null
       },
       "note": "The BCH formula expressing log(exp X · exp Y) as a Lie series in X, Y is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7e9bacd1efff"
     },
     {
       "kind": "theorem",

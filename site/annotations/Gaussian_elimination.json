@@ -14,12 +14,12 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Matrix.exists_list_transvec_mul_diagonal_mul_list_transvec",
+        "decl": "Matrix.Pivot.exists_list_transvec_mul_diagonal_mul_list_transvec",
         "module": "Mathlib.LinearAlgebra.Matrix.Transvection",
         "match_kind": "generalization"
       },
       "note": "Mathlib has no general row-reduction algorithm, but proves over a field every matrix factors as transvections·diagonal·transvections (a Gauss-pivot variant).",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "d066cdee8e39"
     },
     {
@@ -54,16 +54,6 @@
       },
       "note": "No definition of (reduced) row echelon form was found in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "(Lead)",
-          "snippet": "a matrix can always be transformed into reduced row echelon form"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{bmatrix}1&amp;3&amp;1&amp;9\\\\1&amp;1&amp;-1&amp;1\\\\3&amp;11&amp;5&amp;35\\end{bmatrix}}\\to {\\begin{bmatrix}1&amp;3&amp;1&amp;9\\\\0&amp;-2&amp;-2&amp;-8\\\\0&amp;2&amp;2&amp;8\\end{bmatrix}}\\to {\\begin{bmatrix}1&amp;3&amp;1&amp;9\\\\0&amp;-2&amp;-2&amp;-8\\\\0&amp;0&amp;0&amp;0\\end{bmatrix}}\\to {\\begin{bmatrix}1&amp;0&amp;-2&amp;-3\\\\0&amp;1&amp;1&amp;4\\\\0&amp;0&amp;0&amp;0\\end{bmatrix}}}"
-        }
-      ],
       "id": "37cf991fe4a5"
     },
     {
@@ -81,16 +71,6 @@
       },
       "note": "Without an RREF definition in Mathlib, uniqueness is not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "(Lead)",
-          "snippet": "This final form is unique"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{bmatrix}1&amp;3&amp;1&amp;9\\\\1&amp;1&amp;-1&amp;1\\\\3&amp;11&amp;5&amp;35\\end{bmatrix}}\\to {\\begin{bmatrix}1&amp;3&amp;1&amp;9\\\\0&amp;-2&amp;-2&amp;-8\\\\0&amp;2&amp;2&amp;8\\end{bmatrix}}\\to {\\begin{bmatrix}1&amp;3&amp;1&amp;9\\\\0&amp;-2&amp;-2&amp;-8\\\\0&amp;0&amp;0&amp;0\\end{bmatrix}}\\to {\\begin{bmatrix}1&amp;0&amp;-2&amp;-3\\\\0&amp;1&amp;1&amp;4\\\\0&amp;0&amp;0&amp;0\\end{bmatrix}}}"
-        }
-      ],
       "id": "5828570cbe8b"
     },
     {
@@ -128,6 +108,22 @@
       "id": "73f9e83029ca"
     },
     {
+      "kind": "definition",
+      "label": "Elementary matrix",
+      "anchor": {
+        "section": "Definitions and example of algorithm",
+        "snippet": "The elementary row operations may be viewed as the multiplication on the left of the original matrix by elementary matrices"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.TransvectionStruct",
+        "module": "Mathlib.LinearAlgebra.Matrix.Transvection",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has `TransvectionStruct` (add-multiple-of-row elementary matrices) and permutation-matrix machinery, but no unified `ElementaryMatrix` type collecting all three kinds.",
+      "provenance": "ai"
+    },
+    {
       "kind": "proposition",
       "label": "Row reduction as matrix decomposition",
       "anchor": {
@@ -136,12 +132,12 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Matrix.exists_list_transvec_mul_diagonal_mul_list_transvec",
+        "decl": "Matrix.Pivot.exists_list_transvec_mul_diagonal_mul_list_transvec",
         "module": "Mathlib.LinearAlgebra.Matrix.Transvection",
         "match_kind": "generalization"
       },
       "note": "Mathlib provides a related decomposition M = L·D·L' with L, L' products of transvections and D diagonal, rather than the precise LU/PLU statement.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "413626076c35"
     },
     {
@@ -244,16 +240,6 @@
       },
       "note": "Without a row-echelon-form definition, the example is not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Echelon form",
-          "snippet": "the following matrix is in row echelon form"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{bmatrix}0&amp;\\color {red}{\\mathbf {2} }&amp;1&amp;-1\\\\0&amp;0&amp;\\color {red}{\\mathbf {3} }&amp;1\\\\0&amp;0&amp;0&amp;0\\end{bmatrix}}.}"
-        }
-      ],
       "id": "72ce5991f9ab"
     },
     {
@@ -288,16 +274,6 @@
       },
       "note": "This worked numerical example is not formalized in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Example of the algorithm",
-          "snippet": "Suppose the goal is to find and describe the set of solutions"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{alignedat}{4}2x&amp;{}+{}&amp;y&amp;{}-{}&amp;z&amp;{}={}&amp;8&amp;\\qquad (L_{1})\\\\-3x&amp;{}-{}&amp;y&amp;{}+{}&amp;2z&amp;{}={}&amp;-11&amp;\\qquad (L_{2})\\\\-2x&amp;{}+{}&amp;y&amp;{}+{}&amp;2z&amp;{}={}&amp;-3&amp;\\qquad (L_{3})\\end{alignedat}}}"
-        }
-      ],
       "id": "95e48b93955c"
     },
     {
@@ -332,16 +308,6 @@
       },
       "note": "Mathlib proves the determinant of a (block-)upper-triangular matrix is the product of diagonal entries, but doesn't tie this to a Gaussian-elimination reduction algorithm.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Computing determinants",
-          "snippet": "the determinant of A is the quotient by d of the product of the elements of the diagonal of B"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\det(A)={\\frac {\\prod \\operatorname {diag} (B)}{d}}.}"
-        }
-      ],
       "id": "ed4e4ea81dec"
     },
     {
@@ -393,16 +359,6 @@
       },
       "note": "The worked augmented-matrix inverse example is not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Finding the inverse of a matrix",
-          "snippet": "To find the inverse of this matrix, one takes the following matrix augmented by the identity"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle [A|I]=\\left[{\\begin{array}{ccc|ccc}2&amp;-1&amp;0&amp;1&amp;0&amp;0\\\\-1&amp;2&amp;-1&amp;0&amp;1&amp;0\\\\0&amp;-1&amp;2&amp;0&amp;0&amp;1\\end{array}}\\right].}"
-        }
-      ],
       "id": "c38e38d75c30"
     },
     {
@@ -420,16 +376,6 @@
       },
       "note": "Without an echelon-form predicate, the rank-equals-number-of-nonzero-rows result is not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Computing ranks and bases",
-          "snippet": "the rank of A is 5, since there are 5 nonzero rows in T"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle T={\\begin{bmatrix}a&amp;*&amp;*&amp;*&amp;*&amp;*&amp;*&amp;*&amp;*\\\\0&amp;0&amp;b&amp;*&amp;*&amp;*&amp;*&amp;*&amp;*\\\\0&amp;0&amp;0&amp;c&amp;*&amp;*&amp;*&amp;*&amp;*\\\\0&amp;0&amp;0&amp;0&amp;0&amp;0&amp;d&amp;*&amp;*\\\\0&amp;0&amp;0&amp;0&amp;0&amp;0&amp;0&amp;0&amp;e\\\\0&amp;0&amp;0&amp;0&amp;0&amp;0&amp;0&amp;0&amp;0\\end{bmatrix}},}"
-        }
-      ],
       "id": "22cb43804b7d"
     },
     {
@@ -485,6 +431,22 @@
     },
     {
       "kind": "proposition",
+      "label": "Hadamard bound for Bareiss entries",
+      "anchor": {
+        "section": "Bareiss algorithm",
+        "snippet": "Hadamard's inequality provides an upper bound on the absolute values of the intermediate and final entries"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The cited `Matrix.det_le_prod_norm` does not exist in Mathlib and no direct Hadamard's inequality (|det A| ≤ ∏‖aᵢ‖) was found; only weaker entrywise bounds like `Matrix.det_le` are present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
       "label": "Numerical stability conditions",
       "anchor": {
         "section": "Numeric instability",
@@ -509,12 +471,12 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Matrix.exists_list_transvec_mul_mul_list_transvec_eq_diagonal",
+        "decl": "Matrix.Pivot.exists_list_transvec_mul_mul_list_transvec_eq_diagonal",
         "module": "Mathlib.LinearAlgebra.Matrix.Transvection",
         "match_kind": "generalization"
       },
       "note": "The transvection reduction to diagonal form is proved for matrices over an arbitrary field, capturing the field-generality claim.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "15cab32f84b0"
     },
     {
@@ -550,6 +512,22 @@
       "note": "Computational-complexity statements about tensor rank are absent from Mathlib.",
       "provenance": "ai",
       "id": "8ecacbc29973"
+    },
+    {
+      "kind": "definition",
+      "label": "Partial pivoting",
+      "anchor": {
+        "section": "Pseudocode",
+        "snippet": "choosing a pivot with largest absolute value . Such a partial pivoting"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize the partial-pivoting rule (choose the largest-absolute-value entry in the pivot column).",
+      "provenance": "ai"
     }
   ]
 }

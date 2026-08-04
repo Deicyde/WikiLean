@@ -23,6 +23,54 @@
       "id": "d6370d033a53"
     },
     {
+      "kind": "example",
+      "label": "Category of rings (Ring)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Ring , the category of rings and ring homomorphisms"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RingCat",
+        "module": "Mathlib.Algebra.Category.Ring.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`RingCat` is the bundled large category of rings with ring homomorphisms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Category of topological spaces (Top)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Top , the category of topological spaces and continuous maps"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopCat",
+        "module": "Mathlib.Topology.Category.TopCat.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`TopCat` is the large category of topological spaces with continuous maps as morphisms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equivalence of categories",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "considered \" equivalent \" for purposes of category theory"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Equivalence",
+        "module": "Mathlib.CategoryTheory.Equivalence",
+        "match_kind": "exact"
+      },
+      "note": "`Equivalence C D` bundles functors `C ⥤ D` and `D ⥤ C` with natural isomorphisms witnessing the equivalence.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Functor",
       "anchor": {
@@ -312,6 +360,22 @@
       "id": "776760246dc2"
     },
     {
+      "kind": "definition",
+      "label": "Fundamental group",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "is the fundamental group of the topological space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FundamentalGroup",
+        "module": "Mathlib.AlgebraicTopology.FundamentalGroupoid.FundamentalGroup",
+        "match_kind": "exact"
+      },
+      "note": "`FundamentalGroup X x` is the group of homotopy classes of loops at basepoint `x`.",
+      "provenance": "ai"
+    },
+    {
       "kind": "example",
       "label": "Fundamental groupoid",
       "anchor": {
@@ -327,6 +391,22 @@
       "note": "`FundamentalGroupoid X` has a `Groupoid` instance with homotopy classes of paths as morphisms.",
       "provenance": "ai",
       "id": "6f24402c0dc2"
+    },
+    {
+      "kind": "definition",
+      "label": "Quiver (directed graph)",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Any directed graph (or, more generally, a quiver )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Quiver",
+        "module": "Mathlib.Combinatorics.Quiver.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Quiver V` is a directed multigraph: a type of vertices `V` with a family `V → V → Sort*` of edge types.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -414,6 +494,22 @@
       "id": "6ddd788ce789"
     },
     {
+      "kind": "definition",
+      "label": "Full subcategory",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "is a full subcategory of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.ObjectProperty.FullSubcategory",
+        "module": "Mathlib.CategoryTheory.ObjectProperty.FullSubcategory",
+        "match_kind": "exact"
+      },
+      "note": "`ObjectProperty.FullSubcategory` is the full subcategory on objects satisfying a predicate, with hom-sets induced from the ambient category.",
+      "provenance": "ai"
+    },
+    {
       "kind": "example",
       "label": "Category of graphs",
       "anchor": {
@@ -480,6 +576,22 @@
       "note": "`Functor.category` is the category `C ⥤ D` with natural transformations as morphisms.",
       "provenance": "ai",
       "id": "31571a0ef0a3"
+    },
+    {
+      "kind": "definition",
+      "label": "Natural transformation",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "as morphisms natural transformations between them"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.NatTrans",
+        "module": "Mathlib.CategoryTheory.NatTrans",
+        "match_kind": "exact"
+      },
+      "note": "`NatTrans F G` is the type of natural transformations between functors `F, G : C ⥤ D`.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -575,12 +687,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "CategoryTheory.Localization",
+        "decl": "CategoryTheory.MorphismProperty.Localization",
         "module": "Mathlib.CategoryTheory.Localization.Construction",
         "match_kind": "exact"
       },
       "note": "`Localization W` constructs the category where morphisms in `W` become isomorphisms, with the `IsLocalization` predicate characterizing it.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "ec02e8d08947"
     },
     {
@@ -840,6 +952,38 @@
     },
     {
       "kind": "definition",
+      "label": "Kernel",
+      "anchor": {
+        "section": "Types of categories",
+        "snippet": "If all morphisms have a kernel and a cokernel"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Limits.kernel",
+        "module": "Mathlib.CategoryTheory.Limits.Shapes.Kernels",
+        "match_kind": "exact"
+      },
+      "note": "`Limits.kernel f` is the categorical kernel of `f`; `HasKernels` asserts every morphism has one.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cokernel",
+      "anchor": {
+        "section": "Types of categories",
+        "snippet": "a kernel and a cokernel"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Limits.cokernel",
+        "module": "Mathlib.CategoryTheory.Limits.Shapes.Kernels",
+        "match_kind": "exact"
+      },
+      "note": "`Limits.cokernel f` is the categorical cokernel of `f`; `HasCokernels` asserts every morphism has one.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Abelian category",
       "anchor": {
         "section": "Types of categories",
@@ -932,11 +1076,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "CategoryTheory.CartesianClosed",
+        "decl": "CategoryTheory.MonoidalClosed",
         "module": "Mathlib.CategoryTheory.Monoidal.Closed.Cartesian",
         "match_kind": "exact"
       },
-      "note": "`CartesianClosed` is now an alias for `MonoidalClosed` with respect to the cartesian monoidal structure.",
+      "note": "Cartesian-closed categories are formalized as `MonoidalClosed` over a `CartesianMonoidalCategory` (there is no longer a standalone `CartesianClosed` class).",
       "provenance": "ai",
       "id": "6cd55734e001"
     },

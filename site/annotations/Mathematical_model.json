@@ -41,6 +41,22 @@
     },
     {
       "kind": "definition",
+      "label": "Dynamical systems",
+      "anchor": {
+        "section": "Elements of a mathematical model",
+        "snippet": "including dynamical systems"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Flow",
+        "module": "Mathlib.Dynamics.Flow",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has `Flow` (continuous-time dynamical systems on a topological space) plus orbits and ergodic theory as special cases; no single umbrella typeclass captures the broad modeling notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Linear vs. nonlinear model",
       "anchor": {
         "section": "Linear vs. nonlinear",
@@ -69,7 +85,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib has ODE infrastructure but no dedicated definition of a linear differential equation; the 'linear differential' hits found are Kähler differentials, not ODEs.",
+      "note": "Mathlib has ODE infrastructure but no dedicated definition of a linear differential equation as such.",
       "provenance": "ai",
       "id": "253f44b1e951"
     },
@@ -92,6 +108,38 @@
     },
     {
       "kind": "definition",
+      "label": "Linearization",
+      "anchor": {
+        "section": "Linear vs. nonlinear",
+        "snippet": "A common approach to nonlinear problems is linearization"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "fderiv",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "Local linearization of a smooth map at a point is captured by the Fréchet derivative `fderiv`; the general modeling notion of linearizing a nonlinear system is not a single Mathlib object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Chaos and irreversibility",
+      "anchor": {
+        "section": "Linear vs. nonlinear",
+        "snippet": "phenomena such as chaos and irreversibility"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Physical/dynamical phenomena associated with nonlinearity; not formalized as such in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Static vs. dynamic model",
       "anchor": {
         "section": "Static vs. dynamic",
@@ -106,6 +154,22 @@
       "note": "Informal modeling taxonomy with no corresponding Mathlib definition.",
       "provenance": "ai",
       "id": "c0c000695ff3"
+    },
+    {
+      "kind": "definition",
+      "label": "Differential and difference equations",
+      "anchor": {
+        "section": "Static vs. dynamic",
+        "snippet": "typically represented by differential equations or difference equations"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsPicardLindelof",
+        "module": "Mathlib.Analysis.ODE.PicardLindelof",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib formalizes ODE well-posedness via `IsPicardLindelof` (existence) and `ODE_solution_unique` (Grönwall uniqueness); the umbrella of 'difference equations' as a modeling formalism is not a distinct definition.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -140,6 +204,22 @@
       "note": "Informal notion; Mathlib's implicit function theorem is unrelated to this modeling classification.",
       "provenance": "ai",
       "id": "2fd1a033a0f2"
+    },
+    {
+      "kind": "definition",
+      "label": "Newton's method",
+      "anchor": {
+        "section": "Explicit vs. implicit",
+        "snippet": "such as Newton's method"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Standard iterative root-finding scheme referenced as an example of an implicit-model solver; not formalized as a general procedure in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -274,7 +354,8 @@
         "match_kind": null
       },
       "note": "Game-theoretic solution concept referenced as a key challenge of strategic models; no Nash equilibrium definition found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "042ca3be4cc3"
     },
     {
       "kind": "definition",
@@ -341,7 +422,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib formalizes general probability measures usable as Bayesian priors, but not the Bayesian-updating framework as a named construction.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4b2dfc67d513"
     },
     {
       "kind": "example",
@@ -359,6 +441,22 @@
       "note": "An illustrative scenario about subjective/Bayesian priors, not a formalized statement (despite Mathlib having Bernoulli PMFs).",
       "provenance": "ai",
       "id": "cd305c398470"
+    },
+    {
+      "kind": "definition",
+      "label": "Occam's razor",
+      "anchor": {
+        "section": "Complexity",
+        "snippet": "Occam's razor is a principle particularly relevant to modeling"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Philosophical principle of parsimony; not a mathematical statement formalized in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "example",
@@ -447,6 +545,70 @@
     },
     {
       "kind": "definition",
+      "label": "Newton's laws",
+      "anchor": {
+        "section": "Significance in the natural sciences",
+        "snippet": "Newton's laws accurately describe many everyday phenomena"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Physical laws referenced as archetypal accurate mathematical models; not formalized as physical postulates in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Maxwell's equations",
+      "anchor": {
+        "section": "Significance in the natural sciences",
+        "snippet": "Newton's laws, Maxwell's equations and the Schrödinger equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Electromagnetic field equations; not formalized as a physical model in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Schrödinger equation",
+      "anchor": {
+        "section": "Significance in the natural sciences",
+        "snippet": "and the Schrödinger equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Quantum-mechanical evolution equation; not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euclidean geometry",
+      "anchor": {
+        "section": "Significance in the natural sciences",
+        "snippet": "Euclidean geometry is much used in classical physics"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib formalizes Euclidean spaces (as real inner product spaces) and has an EuclideanGeometry namespace with basic synthetic results, though classical Euclidean geometry axioms are not fully developed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Computational models",
       "anchor": {
         "section": "Significance in the natural sciences",
@@ -498,6 +660,22 @@
     },
     {
       "kind": "definition",
+      "label": "Regular expression",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "given by the regular expression"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RegularExpression",
+        "module": "Mathlib.Computability.RegularExpressions",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines `RegularExpression α` inductively with the standard constructors (0, 1, char, +, *, star) and a `matches'` semantics.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Kleene star",
       "anchor": {
         "section": "Examples",
@@ -510,7 +688,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib formalizes the Kleene star on formal languages via the `KStar (Language α)` instance characterized by `Language.kstar_def`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a04fe70a010c"
     },
     {
       "kind": "example",
@@ -559,7 +738,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No Malthusian/exponential population growth model is formalized in Mathlib (the exp-growth files found concern asymptotic growth rates, not this model).",
+      "note": "No Malthusian/exponential population growth model is formalized in Mathlib.",
       "provenance": "ai",
       "id": "90c0d78314d0"
     },
@@ -577,7 +756,8 @@
         "match_kind": null
       },
       "note": "The logistic function as a population-growth model is referenced but not formalized as such in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f1e041494094"
     },
     {
       "kind": "example",
@@ -644,6 +824,38 @@
         }
       ],
       "id": "03cc1e0441b0"
+    },
+    {
+      "kind": "definition",
+      "label": "Ordinal utility function",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The consumer is assumed to have an ordinal utility function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ordinal (as opposed to cardinal) utility function used in the consumer-choice example; not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pareto efficiency",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Pareto efficiency of economic equilibria"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Standard welfare-economics notion referenced in the general-equilibrium application; not formalized in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "example",

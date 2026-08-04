@@ -1039,7 +1039,8 @@
         "match_kind": null
       },
       "note": "Mathlib treats indeterminate forms operationally via L'Hôpital and limit-arithmetic lemmas, but does not define `IndeterminateForm` as a named concept.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "212d4ebb9ad4"
     },
     {
       "kind": "proposition",
@@ -1055,7 +1056,8 @@
         "match_kind": "exact"
       },
       "note": "`tendsto_nhds_unique` states that in a T2 (Hausdorff) space, if `Tendsto f l (𝓝 a)` and `Tendsto f l (𝓝 b)` with `l ≠ ⊥`, then `a = b`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "82f2de18e71f"
     },
     {
       "kind": "proposition",
@@ -1071,6 +1073,55 @@
         "match_kind": "exact"
       },
       "note": "`continuousAt_iff_punctured_nhds` characterizes `ContinuousAt f a` as `Tendsto f (𝓝[≠] a) (𝓝 (f a))`, the limit-from-punctured-nhds form.",
+      "provenance": "ai",
+      "id": "3504161dd3e1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sandwich (squeeze) theorem",
+      "anchor": {
+        "section": "Ordinary limits",
+        "snippet": "by the sandwich theorem , this limit tends to 0"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.Tendsto.squeeze",
+        "module": "Mathlib.Topology.Order.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The sandwich/squeeze theorem is formalized as `Filter.Tendsto.squeeze` (alias of `tendsto_of_tendsto_of_tendsto_of_le_of_le`) in `Mathlib.Topology.Order.Basic`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Limit via nets/filters",
+      "anchor": {
+        "section": "Functions on topological spaces",
+        "snippet": "generalized sequences known as nets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.Tendsto",
+        "module": "Mathlib.Order.Filter.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib formalizes generalized limits via `Filter.Tendsto`, subsuming both nets and filters as the topological notion of convergence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sequential characterization for metrizable spaces",
+      "anchor": {
+        "section": "Functions on topological spaces",
+        "snippet": "If in addition X is metrizable , then L is the sequential limit of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.tendsto_iff_seq_tendsto",
+        "module": "Mathlib.Order.Filter.AtTopBot.CountablyGenerated",
+        "match_kind": "exact"
+      },
+      "note": "For first-countable (in particular metrizable) spaces, `tendsto_iff_seq_tendsto` gives equivalence between filter-limit and sequential-limit definitions.",
       "provenance": "ai"
     }
   ]

@@ -155,7 +155,8 @@
         "match_kind": "exact"
       },
       "note": "Verified: `Complex.I_sq : I ^ 2 = -1` (companion `Complex.I_mul_I` also exists).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0b6594ac3e80"
     },
     {
       "kind": "proposition",
@@ -204,7 +205,7 @@
         "module": "Mathlib.Algebra.Star.Basic",
         "match_kind": "exact"
       },
-      "note": "Verified: `Complex.conj_conj` (alias of `starRingEnd_self_apply`) gives `conj (conj x) = x`.",
+      "note": "Verified: `Complex.conj_conj` is an alias of `starRingEnd_self_apply` giving `conj (conj x) = x`.",
       "provenance": "ai",
       "id": "b77546f80947"
     },
@@ -224,6 +225,22 @@
       "note": "Verified: `conj z = z ↔ ∃ r : ℝ, z = r`.",
       "provenance": "ai",
       "id": "5528ea52d934"
+    },
+    {
+      "kind": "definition",
+      "label": "Norm-squared (z · conj z)",
+      "anchor": {
+        "section": "Complex conjugate, absolute value, argument and division",
+        "snippet": "is a non-negative real number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.normSq",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Verified: `Complex.normSq z = z.re^2 + z.im^2 = z * conj z`, the quantity whose square root is `|z|`.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -278,6 +295,22 @@
         }
       ],
       "id": "a5f0e5bc1f01"
+    },
+    {
+      "kind": "definition",
+      "label": "Unit circle (unit complex numbers)",
+      "anchor": {
+        "section": "Complex conjugate, absolute value, argument and division",
+        "snippet": "known as the unit complex numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Circle",
+        "module": "Mathlib.Analysis.Complex.Circle",
+        "match_kind": "exact"
+      },
+      "note": "Verified: `Circle := Submonoid.unitSphere ℂ` is the multiplicative subgroup of unit-modulus complex numbers.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -471,7 +504,7 @@
         "module": "Mathlib.Algebra.Polynomial.Roots",
         "match_kind": "generalization"
       },
-      "note": "Verified: `Polynomial.nthRoots` (general definition) exists, but no single lemma enumerating the n distinct nth roots of an arbitrary complex number in polar form.",
+      "note": "Verified: `Polynomial.nthRoots` exists generally, but no single lemma enumerates the n distinct nth roots of an arbitrary complex number in polar form.",
       "provenance": "ai",
       "anchors": [
         {
@@ -586,7 +619,7 @@
         "module": "Mathlib.Algebra.Polynomial.Basic",
         "match_kind": "exact"
       },
-      "note": "Verified: `Polynomial R` is the standard polynomial-ring type over a semiring R.",
+      "note": "Verified: `Polynomial R` is the standard polynomial-ring structure over a semiring R.",
       "provenance": "ai",
       "anchors": [
         {
@@ -737,7 +770,8 @@
         "match_kind": "generalization"
       },
       "note": "Verified: `norm_add_le : ‖a + b‖ ≤ ‖a‖ + ‖b‖` holds in any seminormed group, applied to ℂ.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6684e1106a18"
     },
     {
       "kind": "definition",
@@ -979,6 +1013,22 @@
     },
     {
       "kind": "definition",
+      "label": "Analytic continuation",
+      "anchor": {
+        "section": "Complex sine and cosine",
+        "snippet": "by using the method of analytic continuation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AnalyticOn",
+        "module": "Mathlib.Analysis.Analytic.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Analytic continuation is captured in Mathlib via `AnalyticOn` plus the identity theorem; there is no single named `AnalyticContinuation` decl.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Holomorphic function",
       "anchor": {
         "section": "Holomorphic functions",
@@ -1024,7 +1074,7 @@
         "module": "Mathlib.Analysis.Complex.Conformal",
         "match_kind": "exact"
       },
-      "note": "Verified via semantic search: this lemma states complex-differentiability ↔ real-differentiability + the Cauchy–Riemann identity `D f (i) = i · D f (1)`.",
+      "note": "Verified: this lemma states complex-differentiability ↔ real-differentiability + the Cauchy–Riemann identity `D f (i) = i · D f (1)`.",
       "provenance": "ai",
       "id": "44e1f1a056c4"
     },
@@ -1188,7 +1238,8 @@
         "match_kind": "exact"
       },
       "note": "Verified: `riemannZeta : ℂ → ℂ` is the analytically continued zeta function.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f34ef91aab12"
     },
     {
       "kind": "proposition",
@@ -1221,7 +1272,8 @@
         "match_kind": "exact"
       },
       "note": "Verified: `Matrix.IsHermitian A ↔ Aᴴ = A`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b3a67d76a9ce"
     },
     {
       "kind": "definition",
@@ -1236,7 +1288,24 @@
         "module": "Mathlib.LinearAlgebra.UnitaryGroup",
         "match_kind": "exact"
       },
-      "note": "Verified: `Matrix.unitaryGroup n α` (lowercase u) is the group of unitary matrices; cited `Matrix.UnitaryGroup` is only a namespace.",
+      "note": "Verified: `Matrix.unitaryGroup n α` is the group of unitary matrices.",
+      "provenance": "ai",
+      "id": "9ff1316cc46f"
+    },
+    {
+      "kind": "definition",
+      "label": "Fourier transform",
+      "anchor": {
+        "section": "Signal analysis",
+        "snippet": "If Fourier analysis is employed to write a given real-valued signal as a sum of periodic functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "VectorFourier.fourierIntegral",
+        "module": "Mathlib.Analysis.Fourier.FourierTransform",
+        "match_kind": "exact"
+      },
+      "note": "Verified: `VectorFourier.fourierIntegral e μ L f w = ∫ v, e (-(L v w)) • f v ∂μ` is Mathlib's general Fourier integral; there is no bare `Real.fourierIntegral` decl.",
       "provenance": "ai"
     },
     {
@@ -1304,7 +1373,8 @@
         "match_kind": "exact"
       },
       "note": "Verified: `Quaternion R` is the standard quaternion algebra.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "146ecf0f97a0"
     },
     {
       "kind": "proposition",
@@ -1371,7 +1441,8 @@
         "match_kind": "exact"
       },
       "note": "Verified: `Padic p` is the completion of ℚ at the p-adic absolute value.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "605a3984454a"
     },
     {
       "kind": "definition",

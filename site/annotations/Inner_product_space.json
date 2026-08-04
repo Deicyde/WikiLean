@@ -278,12 +278,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Matrix.PosDef.toInnerProductSpace",
+        "decl": "Matrix.toInnerProductSpace",
         "module": "Mathlib.Analysis.Matrix.PosDef",
         "match_kind": "exact"
       },
       "note": "`Matrix.toInnerProductSpace` constructs the inner product on `n → 𝕜` induced by a positive-(semi)definite matrix.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "anchors": [
         {
           "section": "Euclidean vector space",
@@ -305,12 +305,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Matrix.PosDef.toInnerProductSpace",
+        "decl": "Matrix.toInnerProductSpace",
         "module": "Mathlib.Analysis.Matrix.PosDef",
         "match_kind": "exact"
       },
       "note": "`Matrix.toInnerProductSpace` (over `RCLike 𝕜 = ℂ`) gives the general `⟪x, y⟫ = xᴴ M y` form on `n → ℂ`.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "anchors": [
         {
           "section": "Complex coordinate space",
@@ -394,7 +394,7 @@
         "module": "Mathlib.Analysis.Matrix.Order",
         "match_kind": "generalization"
       },
-      "note": "Mathlib has matrix-induced inner products and Matrix.trace, and EuclideanSpace gives a Frobenius-like form, but there is no dedicated `Matrix.frobeniusInner` decl.",
+      "note": "`Matrix.toMatrixInnerProductSpace` (with `M = 1`) yields the Frobenius trace inner product, but Mathlib has no dedicated `Matrix.frobeniusInner` decl.",
       "provenance": "ai",
       "anchors": [
         {
@@ -576,10 +576,10 @@
       "status": "partial",
       "mathlib": {
         "decl": "EuclideanGeometry.mul_dist_le_mul_dist_add_mul_dist",
-        "module": "Mathlib.Geometry.Euclidean.Sphere.Ptolemy",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.Basic",
         "match_kind": "invocation"
       },
-      "note": "Mathlib proves Ptolemy's inequality in Euclidean geometry but not the characterization that Ptolemy's inequality detects inner-product norms among general normed spaces.",
+      "note": "Mathlib proves Ptolemy's inequality in Euclidean geometry (`Inversion.Basic`) but not the characterization that it detects inner-product norms among general normed spaces.",
       "provenance": "ai",
       "anchors": [
         {
@@ -622,12 +622,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Submodule.isOrtho",
+        "decl": "Submodule.IsOrtho",
         "module": "Mathlib.Analysis.InnerProductSpace.Orthogonal",
         "match_kind": "exact"
       },
       "note": "Orthogonality of two vectors is `⟪x, y⟫ = 0`; Mathlib has lemmas like `inner_eq_zero_symm` and `Submodule.isOrtho` for sets.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "anchors": [
         {
           "section": "Orthogonality",
@@ -778,12 +778,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "OrthogonalFamily.norm_sum_sq",
+        "decl": "OrthogonalFamily.norm_sum",
         "module": "Mathlib.Analysis.InnerProductSpace.Subspace",
         "match_kind": "exact"
       },
-      "note": "Mathlib's `OrthogonalFamily` / `Orthonormal.norm_sum_sq`-style lemmas extend Pythagoras to finite orthogonal sums.",
-      "provenance": "ai",
+      "note": "Mathlib's `OrthogonalFamily.norm_sum` extends Pythagoras to finite orthogonal sums via `Subspace.lean`.",
+      "provenance": "ai-moderated",
       "anchors": [
         {
           "section": "Orthogonality",
@@ -1024,13 +1024,13 @@
         "section": "Orthonormal sequences",
         "snippet": "Any separable inner product space has an orthonormal basis"
       },
-      "status": "not_formalized",
+      "status": "partial",
       "mathlib": {
-        "decl": null,
-        "module": null,
-        "match_kind": null
+        "decl": "exists_hilbertBasis",
+        "module": "Mathlib.Analysis.InnerProductSpace.l2Space",
+        "match_kind": "special_case"
       },
-      "note": "Mathlib has `exists_orthonormalBasis` only in finite dimensions; no general existence theorem for separable Hilbert spaces is stated.",
+      "note": "Mathlib's `exists_hilbertBasis` gives a Hilbert basis for any Hilbert space (assumes completeness); the general separable-but-not-necessarily-complete case is not stated.",
       "provenance": "ai",
       "id": "017161e799ee"
     },
@@ -1041,13 +1041,13 @@
         "section": "Orthonormal sequences",
         "snippet": "Any complete inner product space has an orthonormal basis"
       },
-      "status": "partial",
+      "status": "formalized",
       "mathlib": {
-        "decl": "exists_orthonormalBasis",
-        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
-        "match_kind": "special_case"
+        "decl": "exists_hilbertBasis",
+        "module": "Mathlib.Analysis.InnerProductSpace.l2Space",
+        "match_kind": "exact"
       },
-      "note": "`exists_orthonormalBasis` covers the finite-dimensional case; the general Zorn-based existence of a `HilbertBasis` in any Hilbert space is not formalized.",
+      "note": "`exists_hilbertBasis` proves any Hilbert space admits a `HilbertBasis` via Zorn.",
       "provenance": "ai",
       "id": "351e8a8d4817"
     },
@@ -1111,6 +1111,38 @@
     },
     {
       "kind": "definition",
+      "label": "Gram–Schmidt process",
+      "anchor": {
+        "section": "Orthonormal sequences",
+        "snippet": "Using the Gram–Schmidt process"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "gramSchmidt",
+        "module": "Mathlib.Analysis.InnerProductSpace.GramSchmidtOrtho",
+        "match_kind": "exact"
+      },
+      "note": "`gramSchmidt 𝕜 f` produces the orthogonal sequence from a linearly independent one; `gramSchmidtNormed` gives the orthonormal version.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Orthogonal projection onto a subspace",
+      "anchor": {
+        "section": "Orthonormal sequences",
+        "snippet": "orthogonal projection onto linear subspaces is well-defined"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "orthogonalProjectionOnto",
+        "module": "Mathlib.Analysis.InnerProductSpace.Projection.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Submodule.orthogonalProjectionOnto K` (with legacy alias `orthogonalProjection`) is the continuous linear projection of a Hilbert space onto a complete subspace `K`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Continuous linear maps between inner product spaces",
       "anchor": {
         "section": "Operators on inner product spaces",
@@ -1153,7 +1185,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "LinearIsometry",
-        "module": "Mathlib.Analysis.NormedSpace.LinearIsometry",
+        "module": "Mathlib.Analysis.Normed.Operator.LinearIsometry",
         "match_kind": "exact"
       },
       "note": "`LinearIsometry 𝕜 E F` (notation `E →ₗᵢ[𝕜] F`) is the norm-preserving linear map; `LinearIsometry.inner_map_map` gives inner-product preservation.",
@@ -1169,12 +1201,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Isometric.toAffineIsometryEquiv",
+        "decl": "IsometryEquiv.toRealAffineIsometryEquiv",
         "module": "Mathlib.Analysis.Normed.Affine.MazurUlam",
         "match_kind": "exact"
       },
       "note": "The Mazur–Ulam theorem is in `Mathlib.Analysis.Normed.Affine.MazurUlam`, asserting surjective isometries between normed real spaces are affine.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "d158a39e7443"
     },
     {
@@ -1187,7 +1219,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "LinearIsometryEquiv",
-        "module": "Mathlib.Analysis.NormedSpace.LinearIsometry",
+        "module": "Mathlib.Analysis.Normed.Operator.LinearIsometry",
         "match_kind": "exact"
       },
       "note": "`LinearIsometryEquiv` (notation `E ≃ₗᵢ[𝕜] F`) is the surjective linear isometry, i.e. the unitary in the inner-product setting.",
@@ -1264,12 +1296,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "QuadraticForm.sigPos_eq_of_basis",
+        "decl": "QuadraticForm.sigPos_of_equiv_weightedSumSquares",
         "module": "Mathlib.LinearAlgebra.QuadraticForm.Signature",
         "match_kind": "exact"
       },
       "note": "Sylvester's law of inertia (uniqueness of the signature) is proved in `Mathlib.LinearAlgebra.QuadraticForm.Signature`.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "9fde22c74b28"
     },
     {
