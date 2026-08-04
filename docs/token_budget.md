@@ -1,125 +1,111 @@
 # Token-budget memo: is "primarily AI-moderated" feasible solo?
 
-> P1 Wave A deliverable. Gates the "AI-moderated" claim and sizes the donations ask.
+> Refreshed 2026-08-04 with live telemetry (supersedes the 2026-06-10 estimate memo).
 > All dollar figures are **API-equivalent** (`cost_usd_equiv` from claude-agent-sdk's
 > `total_cost_usd`); under Max-plan auth no per-token dollars are billed — it is a
-> usage proxy at published API prices. Model: `claude-opus-4-7` (batch_annotate.py:210),
-> currently $5 / $25 per MTok input/output (cache reads ~0.1×, cache writes 1.25×,
-> Batches API −50%).
+> usage proxy at published API prices. Review cohort pinned to `claude-opus-4-7`;
+> newtags configured for `claude-sonnet-5` (nightly.env) but measured runs were opus.
+> **Calibration (confirmed, sharper):** the binding constraint is the **Max 5-hour
+> window** shared by the 03:20 moderate job, manual runs, and Jack's daytime usage —
+> not dollars. The retry fix (`site/ops/retry-lib.sh`) makes limit-nights re-queue
+> cleanly instead of burning batches; 3–4 of the last 19 review nights were
+> zero-token limit nights that cost nothing.
 
-## 1. Measured per-article cost (regen pipeline)
+## 1. Measured per-article cost (run_id-stamped, replaces §1 estimates)
 
-Source: `site/cache/.batch_run.log` (JSONL, created 2026-05-27, last write 2026-06-02
-— a ~6-day run window). **n = 610** success records with full telemetry (all
-regen-style; no `moderate` mode exists yet), plus 46 older cost-only records
-(mean $1.65, total $75.87). Caveat: the `tokens` field is **input+output only** —
-it excludes cache-read/cache-creation tokens, which dominate agentic loops (implied
-$47/MTok vs the $5/$25 list rate proves this). Treat `tokens` as a floor; budget in
-dollars.
+Source: `site/cache/.decisions.jsonl` (4,822 records, 2026-06-14 → 2026-08-04),
+cross-checked against live `/stats` pipeline_runs (2026-08-04: review 54 runs /
+816 articles / 14.07M tokens / $751.51; new 7 / 355 / 1.07M / $71.06; wp-update
+37 / 3,603 / 0 tokens / $0.00). Caveat **confirmed**: `tokens` is still the
+in+out floor excluding cache traffic (implied $53/MTok vs the $5/$25 list rate);
+budget in dollars or budget-tokens, not list-price arithmetic.
 
-| Metric (per article)            | median | mean   | p90    | total (n=610) |
-|---------------------------------|-------:|-------:|-------:|--------------:|
-| Cost, USD-equiv                 | $1.13  | $1.34  | $2.60  | $818          |
-| — Agent 1 (enumerate, tool-free)| $0.26  | $0.33  | $0.64  | $199 (24%)    |
-| — Agent 2 (Mathlib grep, tools) | $0.81  | $1.02  | $2.04  | $620 (76%)    |
-| Tokens (in+out floor)           | 22.8k  | 28.4k  | 56.2k  | 17.3M         |
-| Agent 2 tool calls              | 24     | 31.7   | 60     | 19,316        |
-| Wall-clock, s                   | 818    | 1,229  | 2,791  | 750k (~8.7 d) |
-| Annotations produced            | 39     | 44.1   | 79     | 26,905        |
+| Mode (posted records)   | n     | tokens/article (mean / median) | cost/article | 30-day mean      |
+|-------------------------|------:|-------------------------------:|-------------:|-----------------:|
+| review (opus)           | 498   | 28.9k / 26.9k                  | $1.54        | 29.6k / $1.57    |
+| new (newtags one-offs)  | 55    | 19.7k / 16.8k                  | $1.32        | — (none in 30 d) |
+| wp-update (stage-0)     | 768   | **0 / 0**                      | $0.00        | 0 / $0.00        |
 
-Failures: 21 `extract_failed`, 5 `agent2_no_json`, 5 max-turns among terminal errors.
-The log also contains **11,258** `"error result: success"` lines across 1,310 slugs —
-SDK/rate-limit churn, not real failures (wall-clock mean 20 min/article vs ~4.5 min
-of agent compute is the same throttling signature). 713 slugs appear only as errors
-in this log; most were completed in runs/pipelines not captured here, so a true
-terminal-failure rate **cannot be computed from this log** — re-measure (see §5).
+Errors are near-free: review errors average 329 tokens, new/wp-update errors 0 —
+failures cost retriable time, not window budget. **Stage-0 wp-update re-measure is
+answered: 3,603 / 3,603 drift records ran deterministic (0 tokens), 768 re-pins
+posted, 2,624 noop.** The old 0.5×–1.0× review-vs-regen bracket was optimistic:
+review ($1.54) runs ≈ **1.15× the old regen mean** ($1.34) — seed-decl hints did
+not beat regen cost, they bought correction quality instead.
 
-## 2. Scenario table
+## 2. What a steady-state night costs vs what we observe
 
-Corpus sizes (verified 2026-06-10): **709** D1 rows (canonical; 662 disk
-`site/annotations/*.json` non-`.agent1`); concept-tagged catalog **1,377**
-(`pilot_tagged.jsonl` 354 + `tier2_tagged.jsonl` 1,023); Wikidata universe
-**11,681** (`wikidata_universe.jsonl`); full WikiProject Math snapshot **29,135**
-(`articles.jsonl`).
+Configured night (nightly.env + nightly-moderate.sh defaults):
 
-**One-time annotation** at measured mean $1.34/article (regen):
+| Step                      | budget/limit                | expected tokens             | USD-equiv |
+|---------------------------|-----------------------------|-----------------------------:|----------:|
+| review, 15 articles       | `WIKILEAN_BUDGET_TOKENS` 700k (default) | 15 × 29.6k ≈ **443k** | ~$23.60 |
+| wp-update drift sweep     | limit 300                   | **0** (stage-0)             | $0.00     |
+| formalize backlog drain   | `FORMALIZE_BUDGET` 800k cap | ≤800k while backlog exists (~14–16 art/night); backlog ~25 as of 2026-07-01, essentially drained → **~0 steady-state** | ~$0–43 |
+| brain agents (OFF)        | 500k cap, `AGENTS=0`        | 0                           | $0.00     |
 
-| Target                          | new articles | USD-equiv | tokens (floor) |
-|---------------------------------|-------------:|----------:|---------------:|
-| 709 → concept layer (1,377)     | 668          | ~$0.9k    | ~19M           |
-| 709 → Wikidata universe (11,681)| 10,972       | ~$14.7k   | ~312M          |
-| 709 → full catalog (29,135)     | 28,426       | ~$38.1k   | ~807M          |
+Steady-state total ≈ **0.44M tokens/night (~$24)**; worst case with a full
+formalize batch ≈ 1.24M (~$66). **Observed** (last 30 d): 19 review nights;
+clean 15-article nights averaged **386k tokens / $20.60** (range 285–535k) —
+the model matches reality within ~15%, and review is ~100% of nightly spend.
 
-**Steady-state review loop.** Review cost is *unmeasured* (moderate.py not shipped);
-assume **0.5×–1.0× of regen** = $0.67–$1.34/article (review re-reads the article +
-existing annotations but should grep less). Tokens/day uses the 28.4k floor.
+## 3. Draining the 610-article annotate backlog (sizes the newtags-launchd decision)
 
-| Corpus × cadence        | articles/day | tokens/day (floor) | USD-equiv/day | /month        |
-|-------------------------|-------------:|-------------------:|--------------:|--------------:|
-| 709 every 30 d          | 23.6         | 0.67M              | $16–32        | $475–950      |
-| 709 every 90 d          | 7.9          | 0.22M              | $5–11         | $160–320      |
-| 709 every 180 d         | 3.9          | 0.11M              | $2.60–5.30    | $79–158       |
-| 1,377 every 90 d        | 15.3         | 0.43M              | $10–21        | $310–620      |
-| 11,681 every 90 d       | 130          | 3.7M               | $87–174       | $2.6k–5.2k    |
-| 29,135 every 90 d       | 324          | 9.2M               | $217–434      | $6.5k–13k     |
+The annotate worklist holds **610 candidates**. newtags caps at 40 articles/night
+under a 2M-token budget — but **newtags is NOT currently scheduled**: the plist
+exists (`site/ops/org.wikilean.newtags.plist`) but is not installed in launchd
+(only `org.wikilean.moderate` + `org.wikilean.poll` are loaded); last new-mode
+record 2026-07-03.
 
-## 3. Subscription reality
+- Nights: 610 ÷ 40 = 15.25 → **≥16 nightly runs (~3 weeks)**.
+- Tokens: 610 × 19.7k ≈ **12.0M total ≈ $806 equiv**; per night 40 × 19.7k ≈
+  789k — **the 40-article LIMIT binds, not the 2M budget**. Raising LIMIT to
+  ~100 saturates the budget (100 × 19.7k ≈ 1.97M) and drains in **~7 nights**,
+  if the shared Max window tolerates +2M on top of review's ~0.4M.
+- Caveats: the 19.7k figure is opus-calibrated (only 4 sonnet records); and
+  historical new-mode yield was low (55 posted / 375 attempts — errors are
+  token-free but each failed candidate stays unannotated). Installing the job is
+  cheap in tokens; watch yield, not spend.
 
-**Empirical anchor:** the measured run burned ~$894 API-equiv in ~6 days on Jack's
-one Max plan — **~$150/day burst**, achieved *with* visible throttling (the 11k
-retry lines; 4× wall-clock vs compute time).
+## 4. Corpus-wide 30-day review freshness
 
-**Assumptions (stated as assumptions — exact Max quotas are unpublished and shift):**
-Max plans meter usage in 5-hour rolling session windows plus a weekly cap; the
-6-day burst above may have leaned on headroom that a weekly cap won't sustain
-indefinitely, and the same plan also covers Jack's interactive dev work. Bracket
-sustainable steady-state at **$20/day (low) – $100/day (high)** API-equivalent of
-Opus usage from one Max plan.
+Corpus (live 2026-08-04): **778 articles; 552 fresh (≤30 d), 126 stale, 100
+never reviewed** — the current 15/night cadence covers 450/month = 58% of the
+corpus, which is exactly why the stale+never pool exists.
 
-**Conclusions:**
-- **Fits one Max plan comfortably:** 709 @ 90 d or 180 d ($3–11/day) — even at the
-  low bracket, with room left for dev. The "primarily AI-moderated" claim is
-  **feasible solo at quarterly cadence for the current corpus.**
-- **Fits at the high bracket / marginal at low:** 709 @ 30 d ($16–32/day) and
-  1,377 @ 90 d ($10–21/day). Doable solo but eats a large share of the plan.
-- **Needs donated compute or a cheaper pipeline:** anything at Wikidata-universe
-  scale or beyond — $2.6k–13k/month quarterly review, plus $15k–38k one-time
-  annotation.
-- **Headline for the donations ask:** *"Reviewing all 709 live articles quarterly
-  ≈ $160–320/month API-equivalent; the 1,377-article concept layer ≈ $310–620/month;
-  the full 29k-article WikiProject Math universe ≈ $6.5k–13k/month."*
+- Required rate: 778 ÷ 30 = **25.9 articles/night** (set `WIKILEAN_REVIEW_LIMIT≈26`).
+- Tokens: 25.9 × 29.6k ≈ **768k/night → ~23.0M/month**.
+- USD-equiv: 778 × $1.57 ≈ **$1,221/month** (~$41/night). At a 90-day cadence:
+  778 × $1.57 ÷ 3 ≈ **$407/month** — the old memo's "quarterly ≈ $160–320/month"
+  bracket was ~1.5× too low because review landed at 1.15× regen, not 0.5–1.0×.
 
-## 4. Levers (multipliers on the $1.34 mean)
+**Conclusion (confirmed, updated):** solo feasibility holds. Today's 15/night
+uses ~0.4M of the night's window with a ~20% limit-night rate; full 30-day
+freshness needs ~0.77M/night — plausible on one Max plan, but expect more
+re-queue nights, which the retry fix now makes safe rather than wasteful.
 
-1. **Agent 1 on a smaller model + Batches API.** Agent 1 is tool-free
-   (`run_agent(..., [], 12)`, batch_annotate.py:349) → trivially portable to a
-   direct Messages/Batches call. Sonnet 4.6 ($3/$15) = 0.6×, Haiku 4.5 ($1/$5) =
-   0.2×, Batches −50% on top → Agent 1 at 0.3× (Sonnet+batch) or 0.1×
-   (Haiku+batch). Saves $0.23–0.30/article (**17–22% of total**). Note: Batches
-   does not apply to the current interactive agent-SDK loop as-is.
-2. **Seed-decl hints for Agent 2.** Agent 2 is 76% of cost; median 24 grep turns
-   over mathlib4. Feeding prior decls / the @[wikidata]-tag index / the ~300k-name
-   decl index as candidates should cut grep turns substantially; halving Agent 2
-   saves ~$0.51/article (**~38%**). Review mode gets this for free (existing
-   annotations are the hints) — the basis for the 0.5× bracket.
-3. **Stage-0 deterministic wp-update: zero tokens.** Re-pin + dry-run wrap handles
-   anchor-preserving Wikipedia drift with no model call. If most drift is stage-0
-   (re-measure!), operation (3) is nearly free and the review cadence dominates.
-4. **Combined optimistic floor:** ~$0.50/article review → 709 quarterly ≈
-   **$120/month**, 29k quarterly ≈ **$4.9k/month**.
+## 5. The donations ask (API dollars, if someone donated compute)
 
-## 5. Numbers to re-measure after moderate.py ships
+At api-key pricing the standing bill is: **~$1.2k/month** for corpus-wide 30-day
+freshness (778 × $1.57), **+~$0.8k one-time** to drain the 610-article annotate
+backlog, + ~$0.9k one-time per further ~670 new articles (concept-layer scale).
+Quarterly-cadence fallback: **~$410/month**. Wikidata-universe scale (≈11.7k
+articles) remains out of solo reach: ≈ $18.4k/month at 30-day freshness.
 
-run_id-stamped telemetry replaces this memo's estimates. Per record, log:
+**One donor, one Max plan:** the runner is local and self-contained — a donor
+running the 03:20 job overnight on their own Max plan contributes 15–25 reviewed
+articles/night ≈ 0.44–0.74M tokens ≈ **$24–39/night ($700–1,200/month
+API-equivalent)** without touching their daytime usage. One donor closes the
+30-day-freshness gap (Jack covers 15/night; the corpus needs 26); a second could
+own the newtags drain (≥16 nights, then new-article growth). The pitch: *"one
+spare overnight Max window keeps 778 articles of formalized mathematics fresh."*
 
-- [ ] `run_id`, ISO timestamp, `mode` (new|review|wp-update), model, prompt_sha,
-      mathlib_sha (already planned in P1)
-- [ ] **Full usage dict** incl. `cache_read_input_tokens` / cache-creation — fixes
-      the in+out-only floor (batch_annotate.py:234)
-- [ ] **Review-mode cost vs regen** — replaces the assumed 0.5×–1.0× bracket
-- [ ] **wp-update stage-0 hit rate** — fraction of drift resolved with 0 tokens
-- [ ] **True terminal failure rate** + retries (net of the SDK "success" churn)
-- [ ] **Max-plan duty cycle:** sustained $/day over ≥1 full week — validates the
-      $20–100/day bracket and the solo-feasibility conclusion
-- [ ] Agent 2 tool-call count with vs without seed-decl hints (lever 2)
-- [ ] Per-agent cost split once Agent 1 moves off Opus (lever 1)
+## 6. Numbers still to re-measure
+
+- [x] Review-mode cost vs regen — **1.15×**, replaces the 0.5×–1.0× bracket (§1)
+- [x] wp-update stage-0 hit rate — **100%** of 3,603 drift records (§1)
+- [x] Max-plan duty cycle at 15/night — ~0.4M/night with ~20% limit-nights (§2)
+- [ ] Sonnet-5 newtags tokens+cost/article (only 4 records; §3 uses opus figures)
+- [ ] New-mode terminal yield net of limit-night churn (55/375 looks worse than it is)
+- [ ] Full usage dict (cache read/creation) — `tokens` remains an in+out floor
+- [ ] Duty cycle at 26/night before recommending `REVIEW_LIMIT=26` permanently
