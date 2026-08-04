@@ -1,0 +1,1771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>WikiLean ↔ Mathlib · batch 2 candidates</title>
+<style>:root { --bg:#fafaf8; --card:#fff; --rule:#e3e0d8; --ink:#1a1a1a; --muted:#666;
+        --accent:#7a3d2a; --code:#f3f3f3; --code-ink:#0a0a0a;
+        --ml-def:#1F497F; --ml-thm:#134E2D; --ml-ax:#6B1B1A; --ml-struct:#73461C;
+        --ml-doc:#4a5e2a; --ml-comment:#5d6b50;
+        --st-approve:#2d7a4a; --st-revise:#b77a14; --st-reject:#a02828;
+        --st-approve-bg:#e8f4ec; --st-revise-bg:#fbf3e0; --st-reject-bg:#fbe8e8; }
+* { box-sizing: border-box; }
+body { font:15px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+       color:var(--ink); background:var(--bg); margin:0; padding:2rem 1rem 6rem; }
+.wrap { max-width:1480px; margin:0 auto; }
+h1 { font-size:1.5rem; margin:0 0 .25rem; }
+.lede { color:var(--muted); margin:0 0 2rem; }
+.lede a, .lede code, .lede strong { color:var(--accent); }
+.banner { background:#fef3e0; border:1px solid #f0c878; padding:.8rem 1rem;
+          border-radius:5px; margin:0 0 1.5rem; color:#5a3a14; font-size:.93rem; }
+.banner strong { color:#3a2a14; }
+.entry { background:var(--card); border:1px solid var(--rule); border-left:5px solid var(--rule);
+         border-radius:6px; margin:1.25rem 0; overflow:hidden;
+         transition:border-left-color .15s; }
+.entry[data-status="approve"] { border-left-color:var(--st-approve); }
+.entry[data-status="revise"]  { border-left-color:var(--st-revise);  }
+.entry[data-status="reject"]  { border-left-color:var(--st-reject);  }
+header { display:flex; align-items:baseline; gap:.6rem; padding:.7rem 1rem;
+         border-bottom:1px solid var(--rule); background:#f6f4ee; flex-wrap:wrap; }
+.num { font-variant-numeric:tabular-nums; color:var(--muted); font-size:.85rem; }
+header h2 { font-size:1.05rem; margin:0; font-weight:600; }
+header h2 a { color:var(--ink); text-decoration:none; }
+header h2 a:hover { text-decoration:underline; }
+.qid a { font-family:"SF Mono","Menlo",monospace; font-size:.82rem;
+         color:var(--accent); text-decoration:none; }
+.decl { color:var(--muted); font-size:.9rem; }
+.decl code { background:var(--code); padding:.05em .35em; border-radius:3px;
+             font-family:"SF Mono","Menlo",monospace; }
+.proposed-tag { font-family:"SF Mono","Menlo",monospace; font-size:.78rem;
+                background:#e8f0e8; color:#1F497F; padding:.1em .45em;
+                border-radius:3px; border:1px solid #c5d8c5; }
+.panes { display:grid; grid-template-columns:1fr 1fr; }
+.panes section { padding:.85rem 1rem; }
+.mathlib { border-right:1px solid var(--rule); background:#fdfcf8; }
+.panes h3 { font-size:.78rem; color:var(--muted); margin:0 0 .5rem; font-weight:600;
+            display:flex; justify-content:space-between; align-items:baseline;
+            gap:.5rem; flex-wrap:wrap;
+            font-family:"SF Mono","Menlo",monospace; }
+.open { font-size:.78rem; color:var(--accent); text-decoration:none;
+        font-family:-apple-system, BlinkMacSystemFont, sans-serif; }
+.open:hover { text-decoration:underline; }
+.mathlib pre { font-family:"JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+               font-size:.82rem; margin:0; white-space:pre-wrap; background:var(--code);
+               padding:.8rem .95rem; border-radius:4px; overflow:auto;
+               max-height:560px; line-height:1.55; color:var(--code-ink);
+               border:1px solid #e5e5e5; }
+.lean .sd { color:var(--ml-doc); font-style:italic; }
+.lean .c, .lean .c1, .lean .cm, .lean .cp, .lean .cs
+          { color:var(--ml-comment); font-style:italic; }
+.lean .kd, .lean .kn, .lean .kr, .lean .k, .lean .kc, .lean .kp
+          { color:var(--ml-def); font-weight:700; }
+.lean .kt { color:var(--ml-struct); font-weight:700; }
+.lean .nb { color:var(--ml-def); }
+.lean .nf, .lean .nc, .lean .na { color:var(--ml-thm); font-weight:500; }
+.lean .nv, .lean .vc, .lean .vi { color:var(--ml-thm); }
+.lean .o, .lean .bp { color:#262626; }
+.lean .s, .lean .s1, .lean .s2, .lean .se { color:var(--ml-ax); }
+.lean .mi, .lean .mf, .lean .mh, .lean .mb, .lean .m { color:var(--ml-ax); font-weight:500; }
+.lean .n { color:var(--code-ink); }
+.lean .err { color:var(--code-ink); }
+.wiki .desc { font-size:.97rem; line-height:1.45; margin:0 0 .9rem;
+              padding:.55rem .75rem; background:#fbf6ec; border-left:3px solid var(--accent);
+              border-radius:0 3px 3px 0; color:#3a2a20; font-style:italic; }
+.wiki .desc.empty, .lead-fallback.empty { color:var(--muted); font-style:italic; }
+.lead { font-size:.88rem; margin:0; }
+.lead summary { cursor:pointer; color:var(--accent); font-weight:500; padding:.2rem 0; }
+.lead summary:hover { text-decoration:underline; }
+.lead-body { padding:.5rem 0 0; }
+.lead-body p { margin:0 0 .5rem; line-height:1.5; }
+.lead .more { font-size:.82rem; }
+.lead .more a { color:var(--accent); }
+.lead-fallback { font-size:.85rem; margin:0; }
+/* Review form */
+.review { padding:.85rem 1rem; border-top:1px solid var(--rule); background:#fafaf6; }
+.review-row { display:flex; gap:.6rem; align-items:center; flex-wrap:wrap;
+              margin-bottom:.6rem; font-size:.88rem; }
+.review-row strong { font-size:.78rem; text-transform:uppercase; letter-spacing:.05em;
+                     color:var(--muted); margin-right:.4rem; }
+.review-row label { display:inline-flex; align-items:center; gap:.3rem; cursor:pointer;
+                    padding:.2rem .65rem; border-radius:14px; border:1px solid #d4d0c8;
+                    background:#fff; transition:all .12s; user-select:none; }
+.review-row label:hover { border-color:#999; }
+.review-row input[type="radio"] { margin:0; }
+.review-row label:has(input[value="approve"]:checked)
+            { background:var(--st-approve-bg); border-color:var(--st-approve); color:var(--st-approve); }
+.review-row label:has(input[value="approve"]:checked) .pill-text { font-weight:600; }
+.review-row label:has(input[value="revise"]:checked)
+            { background:var(--st-revise-bg);  border-color:var(--st-revise);  color:var(--st-revise); }
+.review-row label:has(input[value="revise"]:checked) .pill-text { font-weight:600; }
+.review-row label:has(input[value="reject"]:checked)
+            { background:var(--st-reject-bg);  border-color:var(--st-reject);  color:var(--st-reject); }
+.review-row label:has(input[value="reject"]:checked) .pill-text { font-weight:600; }
+.review textarea { width:100%; min-height:50px; padding:.5rem .6rem;
+                   font-family:-apple-system, BlinkMacSystemFont, sans-serif; font-size:.88rem;
+                   border:1px solid var(--rule); border-radius:4px; resize:vertical;
+                   background:#fff; color:var(--ink); }
+.review textarea:focus { outline:2px solid var(--accent); outline-offset:-1px; }
+/* Sticky review summary */
+#review-bar { position:fixed; bottom:0; left:0; right:0; background:var(--card);
+              border-top:1px solid var(--rule); padding:.6rem 1.5rem;
+              display:flex; align-items:center; justify-content:space-between; gap:1rem;
+              box-shadow:0 -2px 8px rgba(0,0,0,.06); z-index:100; flex-wrap:wrap; }
+#review-bar .counts { display:flex; gap:.6rem; font-size:.9rem; font-variant-numeric:tabular-nums; }
+#review-bar .counts span { padding:.15rem .6rem; border-radius:12px; }
+#review-bar .c-pending { background:#eee; color:var(--muted); }
+#review-bar .c-approve { background:var(--st-approve-bg); color:var(--st-approve); font-weight:600; }
+#review-bar .c-revise  { background:var(--st-revise-bg);  color:var(--st-revise);  font-weight:600; }
+#review-bar .c-reject  { background:var(--st-reject-bg);  color:var(--st-reject);  font-weight:600; }
+#review-bar .actions { display:flex; gap:.5rem; align-items:center; }
+#review-bar button { font:inherit; font-size:.88rem; padding:.4rem .9rem;
+                     border:1px solid var(--accent); background:var(--accent); color:#fff;
+                     border-radius:4px; cursor:pointer; }
+#review-bar button:hover { background:#5a2a1a; }
+#review-bar button.ghost { background:#fff; color:var(--accent); }
+#review-bar button.ghost:hover { background:#fbf6ec; }
+#review-bar .toast { font-size:.85rem; color:var(--st-approve); margin-left:.3rem;
+                     opacity:0; transition:opacity .25s; }
+#review-bar .toast.show { opacity:1; }
+footer { color:var(--muted); font-size:.82rem; margin:2rem 0 1rem; }
+@media (max-width:900px) { .panes { grid-template-columns:1fr; }
+                           .mathlib { border-right:none; border-bottom:1px solid var(--rule); } }
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>WikiLean ↔ Mathlib · batch 2 candidates</h1>
+<p class="lede">25 proposed <code>@[wikidata Q…]</code> cross-references for batch 2.
+Mark each entry <strong>approve / revise / reject</strong> and add notes if needed —
+your input persists in this browser (localStorage). When done, hit
+<strong>"Copy review for Claude"</strong> in the bar at the bottom and paste the result
+into your Claude chat.</p>
+
+<div class="banner"><strong>Pre-PR review.</strong> These tags are NOT yet in
+Mathlib source. The "proposed: @[wikidata Q…]" badge in each card's header
+shows what would be added immediately above the decl signature on approval.</div>
+
+
+<article class="entry" id="entry-Q213363" data-qid="Q213363" data-status="">
+  <header>
+    <span class="num">1</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Open_set" target="_blank">Open set</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q213363" target="_blank">Q213363</a></span>
+    <span class="decl">↔ <code>IsOpen</code></span>
+    <span class="proposed-tag">proposed: @[wikidata Q213363]</span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · Topology/Defs/Basic.lean:91–92 <a class="open" href="https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Topology/Defs/Basic.lean#L91-L92" target="_blank">open ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- `IsOpen s` means that `s` is open in the ambient topological space on `X` -/</span>
+<span class="kn">def</span><span class="w"> </span><span class="n">IsOpen</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">Set</span><span class="w"> </span><span class="n">X</span><span class="w"> </span><span class="bp">→</span><span class="w"> </span><span class="kt">Prop</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="n">TopologicalSpace</span><span class="bp">.</span><span class="n">IsOpen</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">set that does not contain any of its boundary points</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In general topology and mathematical analysis, an open set is a generalization of an open interval in the real line.
+In a metric space (a set with a distance defined between every two points), an open set is a set that, with every point P in it, contains all points of the metric space that are sufficiently near to P (that is, all points whose distance to P is less than some value depending on P).
+More generally, an open set is a member of a given collection of subsets of a given set, a collection that has the property of containing every union of its members, every finite intersection of its members, the empty set, and the whole set itself. A set in which such a collection is given is called a topological space, and the collection is called a topology. These conditions are very loose, and allow enormous flexibility in the choice of open sets. For example, every subset can be open (the…</p><p class="more"><a href="https://en.wikipedia.org/wiki/Open_set" target="_blank">Read full article ↗</a></p></div></details>
+    </section>
+  </div>
+  <div class="review">
+    <div class="review-row">
+      <strong>Decision:</strong>
+      <label><input type="radio" name="r-Q213363" value="approve" data-qid="Q213363"><span class="pill-text">✓ Approve</span></label>
+      <label><input type="radio" name="r-Q213363" value="revise"  data-qid="Q213363"><span class="pill-text">⚠ Revise</span></label>
+      <label><input type="radio" name="r-Q213363" value="reject"  data-qid="Q213363"><span class="pill-text">✗ Reject</span></label>
+    </div>
+    <textarea data-qid="Q213363" placeholder="Notes for Claude (optional): swap suggestions, semantic concerns, alternative decl, etc."></textarea>
+  </div>
+</article>
+<article class="entry" id="entry-Q170058" data-qid="Q170058" data-status="">
+  <header>
+    <span class="num">2</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Continuous_function" target="_blank">Continuous function</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q170058" target="_blank">Q170058</a></span>
+    <span class="decl">↔ <code>Continuous</code></span>
+    <span class="proposed-tag">proposed: @[wikidata Q170058]</span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · Topology/Defs/Basic.lean:148–154 <a class="open" href="https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Topology/Defs/Basic.lean#L148-L154" target="_blank">open ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- A function between topological spaces is continuous if the preimage</span>
+<span class="sd">  of every open set is open. Registered as a structure to make sure it is not unfolded by Lean. -/</span>
+<span class="kd">@[</span><span class="n">fun_prop</span><span class="kd">]</span>
+<span class="kn">structure</span><span class="w"> </span><span class="n">Continuous</span><span class="w"> </span><span class="o">(</span><span class="n">f</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">X</span><span class="w"> </span><span class="bp">→</span><span class="w"> </span><span class="n">Y</span><span class="o">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">Prop</span><span class="w"> </span><span class="kn">where</span>
+<span class="w">  </span><span class="sd">/-- The preimage of an open set under a continuous function is an open set. Use `IsOpen.preimage`</span>
+<span class="sd">  instead. -/</span>
+<span class="w">  </span><span class="n">isOpen_preimage</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="bp">∀</span><span class="w"> </span><span class="n">s</span><span class="o">,</span><span class="w"> </span><span class="n">IsOpen</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="bp">→</span><span class="w"> </span><span class="n">IsOpen</span><span class="w"> </span><span class="o">(</span><span class="n">f</span><span class="w"> </span><span class="bp">⁻¹&#39;</span><span class="w"> </span><span class="n">s</span><span class="o">)</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">function such that the preimage of an open set is open</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In mathematics, a continuous function is a function such that a small variation of the argument induces a small variation of the value of the function. This implies there are no abrupt changes in value, known as discontinuities. More precisely, a function is continuous if arbitrarily small changes in its value can be assured by restricting to sufficiently small changes of its argument. A discontinuous function is a function that is not continuous. Until the 19th century, mathematicians largely relied on intuitive notions of continuity and considered only continuous functions. The epsilon–delta definition of a limit was introduced to formalize the definition of continuity.
+Continuity is one of the core concepts of calculus and mathematical analysis, where arguments and values of functions are real and complex numbers. The concept has been generalized to functions between metric spaces…</p><p class="more"><a href="https://en.wikipedia.org/wiki/Continuous_function" target="_blank">Read full article ↗</a></p></div></details>
+    </section>
+  </div>
+  <div class="review">
+    <div class="review-row">
+      <strong>Decision:</strong>
+      <label><input type="radio" name="r-Q170058" value="approve" data-qid="Q170058"><span class="pill-text">✓ Approve</span></label>
+      <label><input type="radio" name="r-Q170058" value="revise"  data-qid="Q170058"><span class="pill-text">⚠ Revise</span></label>
+      <label><input type="radio" name="r-Q170058" value="reject"  data-qid="Q170058"><span class="pill-text">✗ Reject</span></label>
+    </div>
+    <textarea data-qid="Q170058" placeholder="Notes for Claude (optional): swap suggestions, semantic concerns, alternative decl, etc."></textarea>
+  </div>
+</article>
+<article class="entry" id="entry-Q44337" data-qid="Q44337" data-status="">
+  <header>
+    <span class="num">3</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Matrix_(mathematics)" target="_blank">Matrix (mathematics)</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q44337" target="_blank">Q44337</a></span>
+    <span class="decl">↔ <code>Matrix</code></span>
+    <span class="proposed-tag">proposed: @[wikidata Q44337]</span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · LinearAlgebra/Matrix/Defs.lean:51–54 <a class="open" href="https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/LinearAlgebra/Matrix/Defs.lean#L51-L54" target="_blank">open ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- `Matrix m n R` is the type of matrices with entries in `R`, whose rows are indexed by `m`</span>
+<span class="sd">and whose columns are indexed by `n`. -/</span>
+<span class="kn">def</span><span class="w"> </span><span class="n">Matrix</span><span class="w"> </span><span class="o">(</span><span class="n">m</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">Type</span><span class="w"> </span><span class="n">u</span><span class="o">)</span><span class="w"> </span><span class="o">(</span><span class="n">n</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">Type</span><span class="w"> </span><span class="n">u&#39;</span><span class="o">)</span><span class="w"> </span><span class="o">(</span><span class="n">α</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">Type</span><span class="w"> </span><span class="n">v</span><span class="o">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">Type</span><span class="w"> </span><span class="n">max</span><span class="w"> </span><span class="n">u</span><span class="w"> </span><span class="n">u&#39;</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">:=</span>
+<span class="w">  </span><span class="n">m</span><span class="w"> </span><span class="bp">→</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="bp">→</span><span class="w"> </span><span class="n">α</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">rectangular array of numbers, symbols, or expressions, arranged in rows and columns</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In mathematics, a matrix (pl.: matrices) is a rectangular array of numbers or other mathematical objects with elements or entries arranged in rows and columns, usually satisfying certain properties of addition and multiplication. 
+For example, 
+
+  
+    
+      
+        
+          
+            [
+            
+              
+                
+                  1
+                
+                
+                  9
+                
+                
+                  −
+                  13
+                
+              
+              
+                
+                  20
+                
+                
+                  5
+                
+                
+                  −
+                  6
+                
+              
+            
+            ]
+          
+        
+      
+    
+    {\displaystyle {\begin{bmatrix}1&amp;9&amp;-13\\20&amp;5&amp;-6\end{bmatrix}}}
+  
+
+denotes a matrix with two rows and…</p><p class="more"><a href="https://en.wikipedia.org/wiki/Matrix_(mathematics)" target="_blank">Read full article ↗</a></p></div></details>
+    </section>
+  </div>
+  <div class="review">
+    <div class="review-row">
+      <strong>Decision:</strong>
+      <label><input type="radio" name="r-Q44337" value="approve" data-qid="Q44337"><span class="pill-text">✓ Approve</span></label>
+      <label><input type="radio" name="r-Q44337" value="revise"  data-qid="Q44337"><span class="pill-text">⚠ Revise</span></label>
+      <label><input type="radio" name="r-Q44337" value="reject"  data-qid="Q44337"><span class="pill-text">✗ Reject</span></label>
+    </div>
+    <textarea data-qid="Q44337" placeholder="Notes for Claude (optional): swap suggestions, semantic concerns, alternative decl, etc."></textarea>
+  </div>
+</article>
+<article class="entry" id="entry-Q516776" data-qid="Q516776" data-status="">
+  <header>
+    <span class="num">4</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Measurable_function" target="_blank">Measurable function</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q516776" target="_blank">Q516776</a></span>
+    <span class="decl">↔ <code>Measurable</code></span>
+    <span class="proposed-tag">proposed: @[wikidata Q516776]</span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · MeasureTheory/MeasurableSpace/Defs.lean:490–499 <a class="open" href="https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/MeasureTheory/MeasurableSpace/Defs.lean#L490-L499" target="_blank">open ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- A function `f` between measurable spaces is measurable if the preimage of every</span>
+<span class="sd">  measurable set is measurable. -/</span>
+<span class="kd">@[</span><span class="n">fun_prop</span><span class="kd">]</span>
+<span class="kn">def</span><span class="w"> </span><span class="n">Measurable</span><span class="w"> </span><span class="o">[</span><span class="n">MeasurableSpace</span><span class="w"> </span><span class="n">α</span><span class="o">]</span><span class="w"> </span><span class="o">[</span><span class="n">MeasurableSpace</span><span class="w"> </span><span class="n">β</span><span class="o">]</span><span class="w"> </span><span class="o">(</span><span class="n">f</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">α</span><span class="w"> </span><span class="bp">→</span><span class="w"> </span><span class="n">β</span><span class="o">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">Prop</span><span class="w"> </span><span class="o">:=</span>
+<span class="w">  </span><span class="bp">∀</span><span class="w"> </span><span class="o">⦃</span><span class="n">t</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">Set</span><span class="w"> </span><span class="n">β</span><span class="o">⦄,</span><span class="w"> </span><span class="n">MeasurableSet</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="bp">→</span><span class="w"> </span><span class="n">MeasurableSet</span><span class="w"> </span><span class="o">(</span><span class="n">f</span><span class="w"> </span><span class="bp">⁻¹&#39;</span><span class="w"> </span><span class="n">t</span><span class="o">)</span>
+
+<span class="n">add_aesop_rules</span><span class="w"> </span><span class="n">safe</span><span class="w"> </span><span class="n">tactic</span>
+<span class="w">  </span><span class="o">(</span><span class="n">rule_sets</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="o">[</span><span class="n">Measurable</span><span class="o">])</span>
+<span class="w">  </span><span class="o">(</span><span class="n">index</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="o">[</span><span class="n">target</span><span class="w"> </span><span class="bp">@</span><span class="n">Measurable</span><span class="w"> </span><span class="bp">..</span><span class="o">])</span>
+<span class="w">  </span><span class="o">(</span><span class="k">by</span><span class="w"> </span><span class="n">fun_prop</span><span class="w"> </span><span class="o">(</span><span class="n">disch</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="n">measurability</span><span class="o">))</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">function between measurable spaces</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In mathematics, and in particular measure theory, a measurable function is a function between the underlying sets of two measurable spaces that preserves the structure of the spaces: the preimage of any measurable set is measurable. This is in direct analogy to the definition that a continuous function between topological spaces preserves the topological structure: the preimage of any open set is open. In real analysis, measurable functions are used in the definition of the Lebesgue integral. In probability theory, a measurable function on a probability space is known as a random variable.</p><p class="more"><a href="https://en.wikipedia.org/wiki/Measurable_function" target="_blank">Read full article ↗</a></p></div></details>
+    </section>
+  </div>
+  <div class="review">
+    <div class="review-row">
+      <strong>Decision:</strong>
+      <label><input type="radio" name="r-Q516776" value="approve" data-qid="Q516776"><span class="pill-text">✓ Approve</span></label>
+      <label><input type="radio" name="r-Q516776" value="revise"  data-qid="Q516776"><span class="pill-text">⚠ Revise</span></label>
+      <label><input type="radio" name="r-Q516776" value="reject"  data-qid="Q516776"><span class="pill-text">✗ Reject</span></label>
+    </div>
+    <textarea data-qid="Q516776" placeholder="Notes for Claude (optional): swap suggestions, semantic concerns, alternative decl, etc."></textarea>
+  </div>
+</article>
+<article class="entry" id="entry-Q66707394" data-qid="Q66707394" data-status="">
+  <header>
+    <span class="num">5</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Countable_set" target="_blank">Countable set</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q66707394" target="_blank">Q66707394</a></span>
+    <span class="decl">↔ <code>Countable</code></span>
+    <span class="proposed-tag">proposed: @[wikidata Q66707394]</span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · Data/Countable/Defs.lean:38–42 <a class="open" href="https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Data/Countable/Defs.lean#L38-L42" target="_blank">open ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- A type `α` is countable if there exists an injective map `α → ℕ`. -/</span>
+<span class="kd">@[</span><span class="n">mk_iff</span><span class="w"> </span><span class="n">countable_iff_exists_injective</span><span class="kd">]</span>
+<span class="kn">class</span><span class="w"> </span><span class="n">Countable</span><span class="w"> </span><span class="o">(</span><span class="n">α</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">Sort</span><span class="w"> </span><span class="n">u</span><span class="o">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">Prop</span><span class="w"> </span><span class="kn">where</span>
+<span class="w">  </span><span class="sd">/-- A type `α` is countable if there exists an injective map `α → ℕ`. -/</span>
+<span class="w">  </span><span class="n">exists_injective_nat&#39;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="bp">∃</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">α</span><span class="w"> </span><span class="bp">→</span><span class="w"> </span><span class="n">ℕ</span><span class="o">,</span><span class="w"> </span><span class="n">Injective</span><span class="w"> </span><span class="n">f</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">set with the same cardinality as some subset of the set of natural numbers</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In mathematics, a set is countable if either it is finite or it can be made in one to one correspondence with the set of natural numbers. Equivalently, a set is countable if there exists an injective function from it into the natural numbers; this means that each element in the set may be associated to a unique natural number, or that the elements of the set can be counted one at a time, although the counting may never finish due to an infinite number of elements.
+In more technical terms, assuming the axiom of countable choice, a set is countable if its cardinality (the number of elements of the set) is not greater than that of the natural numbers. A countable set that is not finite is said to be countably infinite; for example the set of all natural numbers 
+  
+    
+      
+        
+          N
+        
+      
+    
+    {\displaystyle \mathbb {N} }
+  
+ or all rational numbers 
+  
+    
+  …</p><p class="more"><a href="https://en.wikipedia.org/wiki/Countable_set" target="_blank">Read full article ↗</a></p></div></details>
+    </section>
+  </div>
+  <div class="review">
+    <div class="review-row">
+      <strong>Decision:</strong>
+      <label><input type="radio" name="r-Q66707394" value="approve" data-qid="Q66707394"><span class="pill-text">✓ Approve</span></label>
+      <label><input type="radio" name="r-Q66707394" value="revise"  data-qid="Q66707394"><span class="pill-text">⚠ Revise</span></label>
+      <label><input type="radio" name="r-Q66707394" value="reject"  data-qid="Q66707394"><span class="pill-text">✗ Reject</span></label>
+    </div>
+    <textarea data-qid="Q66707394" placeholder="Notes for Claude (optional): swap suggestions, semantic concerns, alternative decl, etc."></textarea>
+  </div>
+</article>
+<article class="entry" id="entry-Q120812" data-qid="Q120812" data-status="">
+  <header>
+    <span class="num">6</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Absolute_value" target="_blank">Absolute value</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q120812" target="_blank">Q120812</a></span>
+    <span class="decl">↔ <code>AbsoluteValue</code></span>
+    <span class="proposed-tag">proposed: @[wikidata Q120812]</span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · Algebra/Order/AbsoluteValue/Basic.lean:33–43 <a class="open" href="https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Algebra/Order/AbsoluteValue/Basic.lean#L33-L43" target="_blank">open ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- `AbsoluteValue R S` is the type of absolute values on `R` mapping to `S`:</span>
+<span class="sd">the maps that preserve `*`, are nonnegative, positive definite and satisfy</span>
+<span class="sd">the triangle inequality. -/</span>
+<span class="kn">structure</span><span class="w"> </span><span class="n">AbsoluteValue</span><span class="w"> </span><span class="o">(</span><span class="n">R</span><span class="w"> </span><span class="n">S</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">Type</span><span class="bp">*</span><span class="o">)</span><span class="w"> </span><span class="o">[</span><span class="n">Semiring</span><span class="w"> </span><span class="n">R</span><span class="o">]</span><span class="w"> </span><span class="o">[</span><span class="n">Semiring</span><span class="w"> </span><span class="n">S</span><span class="o">]</span><span class="w"> </span><span class="o">[</span><span class="n">PartialOrder</span><span class="w"> </span><span class="n">S</span><span class="o">]</span>
+<span class="w">    </span><span class="kn">extends</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="bp">→ₙ*</span><span class="w"> </span><span class="n">S</span><span class="w"> </span><span class="kn">where</span>
+<span class="w">  </span><span class="sd">/-- The absolute value is nonnegative -/</span>
+<span class="w">  </span><span class="n">nonneg&#39;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="bp">∀</span><span class="w"> </span><span class="n">x</span><span class="o">,</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="bp">≤</span><span class="w"> </span><span class="n">toFun</span><span class="w"> </span><span class="n">x</span>
+<span class="w">  </span><span class="sd">/-- The absolute value is positive definitive -/</span>
+<span class="w">  </span><span class="n">eq_zero&#39;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="bp">∀</span><span class="w"> </span><span class="n">x</span><span class="o">,</span><span class="w"> </span><span class="n">toFun</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="bp">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="bp">↔</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="bp">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">  </span><span class="sd">/-- The absolute value satisfies the triangle inequality -/</span>
+<span class="w">  </span><span class="n">add_le&#39;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="bp">∀</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="n">y</span><span class="o">,</span><span class="w"> </span><span class="n">toFun</span><span class="w"> </span><span class="o">(</span><span class="n">x</span><span class="w"> </span><span class="bp">+</span><span class="w"> </span><span class="n">y</span><span class="o">)</span><span class="w"> </span><span class="bp">≤</span><span class="w"> </span><span class="n">toFun</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="bp">+</span><span class="w"> </span><span class="n">toFun</span><span class="w"> </span><span class="n">y</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">nonnegative number with the same magnitude as a given real number</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In mathematics, the absolute value or modulus of a real number 
+  
+    
+      
+        x
+      
+    
+    {\displaystyle x}
+  
+, denoted 
+  
+    
+      
+        
+          |
+        
+        x
+        
+          |
+        
+      
+    
+    {\displaystyle |x|}
+  
+, is the (non-negative) magnitude of 
+  
+    
+      
+        x
+      
+    
+    {\displaystyle x}
+  
+ measured without regard to its sign. Namely, 
+  
+    
+      
+        
+          |
+        
+        x
+        
+          |
+        
+        =
+        x
+      
+    
+    {\displaystyle |x|=x}
+  
+ if 
+  
+    
+      
+        x
+      
+    
+    {\displaystyle x}
+  
+ is a positive number, and 
+  
+    
+      
+        
+          |
+        
+        x
+        
+          |
+        
+        =
+        −
+        x
+      
+    
+    {\displaystyle |x|=-x}
+  
+ if 
+  
+    
+      
+        x
+      
+    
+    {\displaystyle x}
+  
+ is negative (in which…</p><p class="more"><a href="https://en.wikipedia.org/wiki/Absolute_value" target="_blank">Read full article ↗</a></p></div></details>
+    </section>
+  </div>
+  <div class="review">
+    <div class="review-row">
+      <strong>Decision:</strong>
+      <label><input type="radio" name="r-Q120812" value="approve" data-qid="Q120812"><span class="pill-text">✓ Approve</span></label>
+      <label><input type="radio" name="r-Q120812" value="revise"  data-qid="Q120812"><span class="pill-text">⚠ Revise</span></label>
+      <label><input type="radio" name="r-Q120812" value="reject"  data-qid="Q120812"><span class="pill-text">✗ Reject</span></label>
+    </div>
+    <textarea data-qid="Q120812" placeholder="Notes for Claude (optional): swap suggestions, semantic concerns, alternative decl, etc."></textarea>
+  </div>
+</article>
+<article class="entry" id="entry-Q141488" data-qid="Q141488" data-status="">
+  <header>
+    <span class="num">7</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)" target="_blank">Graph (discrete mathematics)</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q141488" target="_blank">Q141488</a></span>
+    <span class="decl">↔ <code>SimpleGraph</code></span>
+    <span class="proposed-tag">proposed: @[wikidata Q141488]</span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · Combinatorics/SimpleGraph/Basic.lean:86–98 <a class="open" href="https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Combinatorics/SimpleGraph/Basic.lean#L86-L98" target="_blank">open ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- A simple graph is an irreflexive symmetric relation `Adj` on a vertex type `V`.</span>
+<span class="sd">The relation describes which pairs of vertices are adjacent.</span>
+<span class="sd">There is exactly one edge for every pair of adjacent vertices;</span>
+<span class="sd">see `SimpleGraph.edgeSet` for the corresponding edge set.</span>
+<span class="sd">-/</span>
+<span class="kd">@[</span><span class="n">ext</span><span class="o">,</span><span class="w"> </span><span class="n">aesop</span><span class="w"> </span><span class="n">safe</span><span class="w"> </span><span class="n">constructors</span><span class="w"> </span><span class="o">(</span><span class="n">rule_sets</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="o">[</span><span class="n">SimpleGraph</span><span class="kd">]</span><span class="o">)]</span>
+<span class="kn">structure</span><span class="w"> </span><span class="n">SimpleGraph</span><span class="w"> </span><span class="o">(</span><span class="n">V</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">Type</span><span class="w"> </span><span class="n">u</span><span class="o">)</span><span class="w"> </span><span class="kn">where</span>
+<span class="w">  </span><span class="sd">/-- The adjacency relation of a simple graph. -/</span>
+<span class="w">  </span><span class="n">Adj</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">V</span><span class="w"> </span><span class="bp">→</span><span class="w"> </span><span class="n">V</span><span class="w"> </span><span class="bp">→</span><span class="w"> </span><span class="kt">Prop</span>
+<span class="w">  </span><span class="n">symm</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">Std</span><span class="bp">.</span><span class="n">Symm</span><span class="w"> </span><span class="n">Adj</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">aesop_graph</span>
+<span class="w">  </span><span class="n">loopless</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">Std</span><span class="bp">.</span><span class="n">Irrefl</span><span class="w"> </span><span class="n">Adj</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">aesop_graph</span>
+
+<span class="n">initialize_simps_projections</span><span class="w"> </span><span class="n">SimpleGraph</span><span class="w"> </span><span class="o">(</span><span class="n">Adj</span><span class="w"> </span><span class="bp">→</span><span class="w"> </span><span class="n">adj</span><span class="o">)</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">mathematical structure made of vertices connected in pairs by edges</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In discrete mathematics, particularly in graph theory, a graph is a structure consisting of a set of objects where some pairs of the objects are in some sense &quot;related&quot;. The objects are represented by abstractions called vertices (also called nodes or points) and each of the related pairs of vertices is called an edge (also called link or line). Typically, a graph is depicted in diagrammatic form as a set of dots or circles for the vertices, joined by lines or curves for the edges.
+The edges may be directed or undirected. For example, if the vertices represent people at a party, and there is an edge between two people if they shake hands, then this graph is undirected because any person A can shake hands with a person B only if B also shakes hands with A. In contrast, if an edge from a person A to a person B means that A owes money to B, then this graph is directed, because owing money…</p><p class="more"><a href="https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)" target="_blank">Read full article ↗</a></p></div></details>
+    </section>
+  </div>
+  <div class="review">
+    <div class="review-row">
+      <strong>Decision:</strong>
+      <label><input type="radio" name="r-Q141488" value="approve" data-qid="Q141488"><span class="pill-text">✓ Approve</span></label>
+      <label><input type="radio" name="r-Q141488" value="revise"  data-qid="Q141488"><span class="pill-text">⚠ Revise</span></label>
+      <label><input type="radio" name="r-Q141488" value="reject"  data-qid="Q141488"><span class="pill-text">✗ Reject</span></label>
+    </div>
+    <textarea data-qid="Q141488" placeholder="Notes for Claude (optional): swap suggestions, semantic concerns, alternative decl, etc."></textarea>
+  </div>
+</article>
+<article class="entry" id="entry-Q104752" data-qid="Q104752" data-status="">
+  <header>
+    <span class="num">8</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Coprime_integers" target="_blank">Coprime integers</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q104752" target="_blank">Q104752</a></span>
+    <span class="decl">↔ <code>IsCoprime</code></span>
+    <span class="proposed-tag">proposed: @[wikidata Q104752]</span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · RingTheory/Coprime/Basic.lean:40–44 <a class="open" href="https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/RingTheory/Coprime/Basic.lean#L40-L44" target="_blank">open ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- The proposition that `x` and `y` are coprime, defined to be the existence of `a` and `b` such</span>
+<span class="sd">that `a * x + b * y = 1`. Note that elements with no common divisors are not necessarily coprime,</span>
+<span class="sd">e.g., the multivariate polynomials `x₁` and `x₂` are not coprime. -/</span>
+<span class="kn">def</span><span class="w"> </span><span class="n">IsCoprime</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">Prop</span><span class="w"> </span><span class="o">:=</span>
+<span class="w">  </span><span class="bp">∃</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span><span class="o">,</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="bp">*</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="bp">+</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="bp">*</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="bp">=</span><span class="w"> </span><span class="mi">1</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">two numbers whose only common factor is 1</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In number theory, two integers a and b are coprime, relatively prime or mutually prime if the only positive integer that is a divisor of both of them is 1. Consequently, any prime number that divides a does not divide b, and vice versa. This is equivalent to their greatest common divisor (GCD) being 1. One says also a is prime to b or a is coprime with b.
+The numbers 8 and 9 are coprime, despite the fact that neither—considered individually—is a prime number, since 1 is their only common divisor. On the other hand, 6 and 9 are not coprime, because they are both divisible by 3. The numerator and denominator of a reduced fraction are coprime, by definition.</p><p class="more"><a href="https://en.wikipedia.org/wiki/Coprime_integers" target="_blank">Read full article ↗</a></p></div></details>
+    </section>
+  </div>
+  <div class="review">
+    <div class="review-row">
+      <strong>Decision:</strong>
+      <label><input type="radio" name="r-Q104752" value="approve" data-qid="Q104752"><span class="pill-text">✓ Approve</span></label>
+      <label><input type="radio" name="r-Q104752" value="revise"  data-qid="Q104752"><span class="pill-text">⚠ Revise</span></label>
+      <label><input type="radio" name="r-Q104752" value="reject"  data-qid="Q104752"><span class="pill-text">✗ Reject</span></label>
+    </div>
+    <textarea data-qid="Q104752" placeholder="Notes for Claude (optional): swap suggestions, semantic concerns, alternative decl, etc."></textarea>
+  </div>
+</article>
+<article class="entry" id="entry-Q838611" data-qid="Q838611" data-status="">
+  <header>
+    <span class="num">9</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Ball_(mathematics)" target="_blank">Ball (mathematics)</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q838611" target="_blank">Q838611</a></span>
+    <span class="decl">↔ <code>Metric.ball</code></span>
+    <span class="proposed-tag">proposed: @[wikidata Q838611]</span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · Topology/MetricSpace/Pseudo/Defs.lean:366–368 <a class="open" href="https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean#L366-L368" target="_blank">open ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- `ball x ε` is the set of all points `y` with `dist y x &lt; ε` -/</span>
+<span class="kn">def</span><span class="w"> </span><span class="n">ball</span><span class="w"> </span><span class="o">(</span><span class="n">x</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">α</span><span class="o">)</span><span class="w"> </span><span class="o">(</span><span class="n">ε</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">ℝ</span><span class="o">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">Set</span><span class="w"> </span><span class="n">α</span><span class="w"> </span><span class="o">:=</span>
+<span class="w">  </span><span class="o">{</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="bp">|</span><span class="w"> </span><span class="n">dist</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="bp">&lt;</span><span class="w"> </span><span class="n">ε</span><span class="w"> </span><span class="o">}</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">in mathematics, space bounded by a sphere</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In mathematics, a ball is the solid figure bounded by a sphere; it is also called a solid sphere. It may be a closed ball (including the boundary points that constitute the sphere) or an open ball (excluding them).
+These concepts are defined not only in three-dimensional Euclidean space but also for lower and higher dimensions, and for metric spaces in general. A ball in n dimensions is called a hyperball or n-ball and is bounded by a hypersphere or (n−1)-sphere. Thus, for example, a ball in the Euclidean plane is the same thing as a disk, the planar region bounded by a circle. In Euclidean 3-space, a ball is taken to be the region of space bounded by a 2-dimensional sphere. In a one-dimensional space, a ball is a line segment.
+In other contexts, such as in Euclidean geometry and informal use, sphere is sometimes used to mean ball. In the field of topology the closed 
+  
+    
+      
+   …</p><p class="more"><a href="https://en.wikipedia.org/wiki/Ball_(mathematics)" target="_blank">Read full article ↗</a></p></div></details>
+    </section>
+  </div>
+  <div class="review">
+    <div class="review-row">
+      <strong>Decision:</strong>
+      <label><input type="radio" name="r-Q838611" value="approve" data-qid="Q838611"><span class="pill-text">✓ Approve</span></label>
+      <label><input type="radio" name="r-Q838611" value="revise"  data-qid="Q838611"><span class="pill-text">⚠ Revise</span></label>
+      <label><input type="radio" name="r-Q838611" value="reject"  data-qid="Q838611"><span class="pill-text">✗ Reject</span></label>
+    </div>
+    <textarea data-qid="Q838611" placeholder="Notes for Claude (optional): swap suggestions, semantic concerns, alternative decl, etc."></textarea>
+  </div>
+</article>
+<article class="entry" id="entry-Q1003025" data-qid="Q1003025" data-status="">
+  <header>
+    <span class="num">10</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Formal_power_series" target="_blank">Formal power series</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q1003025" target="_blank">Q1003025</a></span>
+    <span class="decl">↔ <code>PowerSeries</code></span>
+    <span class="proposed-tag">proposed: @[wikidata Q1003025]</span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · RingTheory/PowerSeries/Basic.lean:57–59 <a class="open" href="https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/RingTheory/PowerSeries/Basic.lean#L57-L59" target="_blank">open ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- Formal power series over a coefficient type `R` -/</span>
+<span class="kn">abbrev</span><span class="w"> </span><span class="n">PowerSeries</span><span class="w"> </span><span class="o">(</span><span class="n">R</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">Type</span><span class="bp">*</span><span class="o">)</span><span class="w"> </span><span class="o">:=</span>
+<span class="w">  </span><span class="n">MvPowerSeries</span><span class="w"> </span><span class="n">Unit</span><span class="w"> </span><span class="n">R</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">generalization of a polynomial, where the number of terms is allowed to be infinite, defined algebraically without consideration of convergence (so that e.g. evaluation is not always defined)</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In mathematics, a formal series is an infinite sum that is considered independently from any notion of convergence, and can be manipulated with the usual algebraic operations on series (addition, subtraction, multiplication, division, partial sums, etc.).
+A formal power series is a special kind of formal series, of the form 
+
+  
+    
+      
+        
+          ∑
+          
+            n
+            =
+            0
+          
+          
+            ∞
+          
+        
+        
+          a
+          
+            n
+          
+        
+        
+          x
+          
+            n
+          
+        
+        =
+        
+          a
+          
+            0
+          
+        
+        +
+        
+          a
+          
+            1
+          
+        
+        x
+        +
+        
+          a
+          
+            2
+          
+        
+        
+          x
+          
+            2
+         …</p><p class="more"><a href="https://en.wikipedia.org/wiki/Formal_power_series" target="_blank">Read full article ↗</a></p></div></details>
+    </section>
+  </div>
+  <div class="review">
+    <div class="review-row">
+      <strong>Decision:</strong>
+      <label><input type="radio" name="r-Q1003025" value="approve" data-qid="Q1003025"><span class="pill-text">✓ Approve</span></label>
+      <label><input type="radio" name="r-Q1003025" value="revise"  data-qid="Q1003025"><span class="pill-text">⚠ Revise</span></label>
+      <label><input type="radio" name="r-Q1003025" value="reject"  data-qid="Q1003025"><span class="pill-text">✗ Reject</span></label>
+    </div>
+    <textarea data-qid="Q1003025" placeholder="Notes for Claude (optional): swap suggestions, semantic concerns, alternative decl, etc."></textarea>
+  </div>
+</article>
+<article class="entry" id="entry-Q1063579" data-qid="Q1063579" data-status="">
+  <header>
+    <span class="num">11</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Dirichlet_character" target="_blank">Dirichlet character</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q1063579" target="_blank">Q1063579</a></span>
+    <span class="decl">↔ <code>DirichletCharacter</code></span>
+    <span class="proposed-tag">proposed: @[wikidata Q1063579]</span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · NumberTheory/DirichletCharacter/Basic.lean:37–38 <a class="open" href="https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/NumberTheory/DirichletCharacter/Basic.lean#L37-L38" target="_blank">open ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- The type of Dirichlet characters of level `n`. -/</span>
+<span class="kn">abbrev</span><span class="w"> </span><span class="n">DirichletCharacter</span><span class="w"> </span><span class="o">(</span><span class="n">R</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">Type</span><span class="bp">*</span><span class="o">)</span><span class="w"> </span><span class="o">[</span><span class="n">CommMonoidWithZero</span><span class="w"> </span><span class="n">R</span><span class="o">]</span><span class="w"> </span><span class="o">(</span><span class="n">n</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">ℕ</span><span class="o">)</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="n">MulChar</span><span class="w"> </span><span class="o">(</span><span class="n">ZMod</span><span class="w"> </span><span class="n">n</span><span class="o">)</span><span class="w"> </span><span class="n">R</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">certain arithmetic functions</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In analytic number theory and related branches of mathematics, a complex-valued arithmetic function  
+  
+    
+      
+        χ
+        :
+        
+          Z
+        
+        →
+        
+          C
+        
+      
+    
+    {\displaystyle \chi :\mathbb {Z} \rightarrow \mathbb {C} }
+  
+ is a Dirichlet character of modulus 
+  
+    
+      
+        m
+      
+    
+    {\displaystyle m}
+  
+ (where 
+  
+    
+      
+        m
+      
+    
+    {\displaystyle m}
+  
+ is a positive integer) if for all integers 
+  
+    
+      
+        a
+      
+    
+    {\displaystyle a}
+  
+ and 
+  
+    
+      
+        b
+      
+    
+    {\displaystyle b}
+  
+:
+
+1. 
+  
+    
+      
+        χ
+        (
+        a
+        b
+        )
+        =
+        χ
+        (
+        a
+        )
+        χ
+        (
+        b
+        )
+        ;
+      
+    
+    {\displaystyle \chi (ab)=\chi (a)\chi (b);}
+  
+ that is, 
+  
+    
+      
+       …</p><p class="more"><a href="https://en.wikipedia.org/wiki/Dirichlet_character" target="_blank">Read full article ↗</a></p></div></details>
+    </section>
+  </div>
+  <div class="review">
+    <div class="review-row">
+      <strong>Decision:</strong>
+      <label><input type="radio" name="r-Q1063579" value="approve" data-qid="Q1063579"><span class="pill-text">✓ Approve</span></label>
+      <label><input type="radio" name="r-Q1063579" value="revise"  data-qid="Q1063579"><span class="pill-text">⚠ Revise</span></label>
+      <label><input type="radio" name="r-Q1063579" value="reject"  data-qid="Q1063579"><span class="pill-text">✗ Reject</span></label>
+    </div>
+    <textarea data-qid="Q1063579" placeholder="Notes for Claude (optional): swap suggestions, semantic concerns, alternative decl, etc."></textarea>
+  </div>
+</article>
+<article class="entry" id="entry-Q1783179" data-qid="Q1783179" data-status="">
+  <header>
+    <span class="num">12</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Orthogonal_group" target="_blank">Orthogonal group</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q1783179" target="_blank">Q1783179</a></span>
+    <span class="decl">↔ <code>Matrix.orthogonalGroup</code></span>
+    <span class="proposed-tag">proposed: @[wikidata Q1783179]</span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · LinearAlgebra/UnitaryGroup.lean:293–295 <a class="open" href="https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/LinearAlgebra/UnitaryGroup.lean#L293-L295" target="_blank">open ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- `Matrix.orthogonalGroup n` is the group of `n` by `n` matrices where the transpose is the</span>
+<span class="sd">inverse. -/</span>
+<span class="kn">abbrev</span><span class="w"> </span><span class="n">orthogonalGroup</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="n">unitaryGroup</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="n">R</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">mathematical group consisting of transformations of a Euclidean space which preserve distance and a fixed point</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In mathematics, the orthogonal group in dimension n, denoted O(n), is the group of distance-preserving transformations of a Euclidean space of dimension n that preserve a fixed point (the origin), where the group operation is given by composing transformations. The orthogonal group is sometimes called the general orthogonal group, by analogy with the general linear group. Equivalently, it is the group of n × n orthogonal matrices, where the group operation is given by matrix multiplication (an orthogonal matrix is a real matrix whose inverse equals its transpose). The orthogonal group is an algebraic group and a Lie group. It is compact.
+The orthogonal group in dimension n has two connected components. The one that contains the identity element is a normal subgroup, called the special orthogonal group, and denoted SO(n). It consists of all orthogonal matrices of determinant 1. This…</p><p class="more"><a href="https://en.wikipedia.org/wiki/Orthogonal_group" target="_blank">Read full article ↗</a></p></div></details>
+    </section>
+  </div>
+  <div class="review">
+    <div class="review-row">
+      <strong>Decision:</strong>
+      <label><input type="radio" name="r-Q1783179" value="approve" data-qid="Q1783179"><span class="pill-text">✓ Approve</span></label>
+      <label><input type="radio" name="r-Q1783179" value="revise"  data-qid="Q1783179"><span class="pill-text">⚠ Revise</span></label>
+      <label><input type="radio" name="r-Q1783179" value="reject"  data-qid="Q1783179"><span class="pill-text">✗ Reject</span></label>
+    </div>
+    <textarea data-qid="Q1783179" placeholder="Notes for Claude (optional): swap suggestions, semantic concerns, alternative decl, etc."></textarea>
+  </div>
+</article>
+<article class="entry" id="entry-Q759832" data-qid="Q759832" data-status="">
+  <header>
+    <span class="num">13</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Solvable_group" target="_blank">Solvable group</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q759832" target="_blank">Q759832</a></span>
+    <span class="decl">↔ <code>IsSolvable</code></span>
+    <span class="proposed-tag">proposed: @[wikidata Q759832]</span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · GroupTheory/Solvable.lean:103–108 <a class="open" href="https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/GroupTheory/Solvable.lean#L103-L108" target="_blank">open ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- A group `G` is solvable if its derived series is eventually trivial. We use this definition</span>
+<span class="sd">  because it&#39;s the most convenient one to work with. -/</span>
+<span class="kd">@[</span><span class="n">mk_iff</span><span class="w"> </span><span class="n">isSolvable_def</span><span class="kd">]</span>
+<span class="kn">class</span><span class="w"> </span><span class="n">IsSolvable</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">Prop</span><span class="w"> </span><span class="kn">where</span>
+<span class="w">  </span><span class="sd">/-- A group `G` is solvable if its derived series is eventually trivial. -/</span>
+<span class="w">  </span><span class="n">solvable</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="bp">∃</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">ℕ</span><span class="o">,</span><span class="w"> </span><span class="n">derivedSeries</span><span class="w"> </span><span class="n">G</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="bp">=</span><span class="w"> </span><span class="bp">⊥</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">group that can be constructed from abelian groups using extensions; a group whose derived series terminates in the trivial subgroup</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In mathematics, more specifically in the field of group theory, a solvable group or soluble group is a group that can be constructed from abelian groups using extensions.  Equivalently, a solvable group is a group whose derived series terminates in the trivial subgroup.</p><p class="more"><a href="https://en.wikipedia.org/wiki/Solvable_group" target="_blank">Read full article ↗</a></p></div></details>
+    </section>
+  </div>
+  <div class="review">
+    <div class="review-row">
+      <strong>Decision:</strong>
+      <label><input type="radio" name="r-Q759832" value="approve" data-qid="Q759832"><span class="pill-text">✓ Approve</span></label>
+      <label><input type="radio" name="r-Q759832" value="revise"  data-qid="Q759832"><span class="pill-text">⚠ Revise</span></label>
+      <label><input type="radio" name="r-Q759832" value="reject"  data-qid="Q759832"><span class="pill-text">✗ Reject</span></label>
+    </div>
+    <textarea data-qid="Q759832" placeholder="Notes for Claude (optional): swap suggestions, semantic concerns, alternative decl, etc."></textarea>
+  </div>
+</article>
+<article class="entry" id="entry-Q942423" data-qid="Q942423" data-status="">
+  <header>
+    <span class="num">14</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Projective_module" target="_blank">Projective module</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q942423" target="_blank">Q942423</a></span>
+    <span class="decl">↔ <code>Module.Projective</code></span>
+    <span class="proposed-tag">proposed: @[wikidata Q942423]</span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · Algebra/Module/Projective.lean:120–128 <a class="open" href="https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Algebra/Module/Projective.lean#L120-L128" target="_blank">open ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- A module which satisfies the universal property is projective: If all surjections of</span>
+<span class="sd">`R`-modules `(P →₀ R) →ₗ[R] P` have `R`-linear left inverse maps, then `P` is</span>
+<span class="sd">projective. -/</span>
+<span class="kn">theorem</span><span class="w"> </span><span class="n">Projective</span><span class="bp">.</span><span class="n">of_lifting_property&#39;&#39;</span><span class="w"> </span><span class="o">{</span><span class="n">R</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">Type</span><span class="w"> </span><span class="n">u</span><span class="o">}</span><span class="w"> </span><span class="o">[</span><span class="n">Semiring</span><span class="w"> </span><span class="n">R</span><span class="o">]</span><span class="w"> </span><span class="o">{</span><span class="n">P</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">Type</span><span class="w"> </span><span class="n">v</span><span class="o">}</span><span class="w"> </span><span class="o">[</span><span class="n">AddCommMonoid</span><span class="w"> </span><span class="n">P</span><span class="o">]</span>
+<span class="w">    </span><span class="o">[</span><span class="n">Module</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="n">P</span><span class="o">]</span><span class="w"> </span><span class="o">(</span><span class="n">huniv</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="bp">∀</span><span class="w"> </span><span class="o">(</span><span class="n">f</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">(</span><span class="n">P</span><span class="w"> </span><span class="bp">→₀</span><span class="w"> </span><span class="n">R</span><span class="o">)</span><span class="w"> </span><span class="bp">→ₗ</span><span class="o">[</span><span class="n">R</span><span class="o">]</span><span class="w"> </span><span class="n">P</span><span class="o">),</span><span class="w"> </span><span class="n">Function</span><span class="bp">.</span><span class="n">Surjective</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="bp">→</span>
+<span class="w">      </span><span class="bp">∃</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">P</span><span class="w"> </span><span class="bp">→ₗ</span><span class="o">[</span><span class="n">R</span><span class="o">]</span><span class="w"> </span><span class="o">(</span><span class="n">P</span><span class="w"> </span><span class="bp">→₀</span><span class="w"> </span><span class="n">R</span><span class="o">),</span><span class="w"> </span><span class="n">f</span><span class="bp">.</span><span class="n">comp</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="bp">=</span><span class="w"> </span><span class="bp">.</span><span class="n">id</span><span class="o">)</span><span class="w"> </span><span class="o">:</span>
+<span class="w">    </span><span class="n">Projective</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="n">P</span><span class="w"> </span><span class="o">:=</span>
+<span class="w">  </span><span class="n">projective_def&#39;</span><span class="bp">.</span><span class="m">2</span><span class="w"> </span><span class="bp">&lt;|</span><span class="w"> </span><span class="n">huniv</span><span class="w"> </span><span class="o">(</span><span class="n">Finsupp</span><span class="bp">.</span><span class="n">linearCombination</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="o">(</span><span class="n">id</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">P</span><span class="w"> </span><span class="bp">→</span><span class="w"> </span><span class="n">P</span><span class="o">))</span>
+<span class="w">    </span><span class="o">(</span><span class="n">linearCombination_surjective</span><span class="w"> </span><span class="bp">_</span><span class="w"> </span><span class="n">Function</span><span class="bp">.</span><span class="n">surjective_id</span><span class="o">)</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">in algebra, a module that is the direct summand of a free module</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In mathematics, particularly in algebra, the class of projective modules enlarges the class of free modules (that is, modules with basis vectors) over a ring, keeping some of the main properties of free modules. Various equivalent characterizations of these modules appear below.
+Every free module is a projective module, but the converse fails to hold over some rings, such as Dedekind rings that are not principal ideal domains. However, every projective module is a free module if the ring is a principal ideal domain such as the integers, or a (multivariate) polynomial ring over a field (this is the Quillen–Suslin theorem).
+Projective modules were first introduced in 1956 in the influential book Homological Algebra by Henri Cartan and Samuel Eilenberg.</p><p class="more"><a href="https://en.wikipedia.org/wiki/Projective_module" target="_blank">Read full article ↗</a></p></div></details>
+    </section>
+  </div>
+  <div class="review">
+    <div class="review-row">
+      <strong>Decision:</strong>
+      <label><input type="radio" name="r-Q942423" value="approve" data-qid="Q942423"><span class="pill-text">✓ Approve</span></label>
+      <label><input type="radio" name="r-Q942423" value="revise"  data-qid="Q942423"><span class="pill-text">⚠ Revise</span></label>
+      <label><input type="radio" name="r-Q942423" value="reject"  data-qid="Q942423"><span class="pill-text">✗ Reject</span></label>
+    </div>
+    <textarea data-qid="Q942423" placeholder="Notes for Claude (optional): swap suggestions, semantic concerns, alternative decl, etc."></textarea>
+  </div>
+</article>
+<article class="entry" id="entry-Q607728" data-qid="Q607728" data-status="">
+  <header>
+    <span class="num">15</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Irrational_number" target="_blank">Irrational number</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q607728" target="_blank">Q607728</a></span>
+    <span class="decl">↔ <code>Irrational</code></span>
+    <span class="proposed-tag">proposed: @[wikidata Q607728]</span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · NumberTheory/Real/Irrational.lean:34–36 <a class="open" href="https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/NumberTheory/Real/Irrational.lean#L34-L36" target="_blank">open ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- A real number is irrational if it is not equal to any rational number. -/</span>
+<span class="kn">def</span><span class="w"> </span><span class="n">Irrational</span><span class="w"> </span><span class="o">(</span><span class="n">x</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">ℝ</span><span class="o">)</span><span class="w"> </span><span class="o">:=</span>
+<span class="w">  </span><span class="n">x</span><span class="w"> </span><span class="bp">∉</span><span class="w"> </span><span class="n">Set</span><span class="bp">.</span><span class="n">range</span><span class="w"> </span><span class="o">((</span><span class="bp">↑</span><span class="o">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">ℚ</span><span class="w"> </span><span class="bp">→</span><span class="w"> </span><span class="n">ℝ</span><span class="o">)</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">real number that cannot be expressed as a ratio of integers</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In mathematics, the irrational numbers are all the real numbers that are not rational numbers; that is, irrational numbers are those that cannot be expressed as the ratio of two integers. Geometrically, when the ratio of lengths of two line segments is an irrational number, the line segments are also described as being incommensurable, meaning that they share no &quot;measure&quot; in common; that is, there is no length (&quot;the measure&quot;), no matter how short, that could be used to express the lengths of both of the two given segments as integer multiples of itself.
+Among irrational numbers are the ratio π of a circle&#x27;s circumference to its diameter, Euler&#x27;s number e, the golden ratio φ, and the square root of two.  In fact, all square roots of natural numbers, other than of perfect squares, are irrational.
+Like all real numbers, irrational numbers can be expressed in positional notation, notably as…</p><p class="more"><a href="https://en.wikipedia.org/wiki/Irrational_number" target="_blank">Read full article ↗</a></p></div></details>
+    </section>
+  </div>
+  <div class="review">
+    <div class="review-row">
+      <strong>Decision:</strong>
+      <label><input type="radio" name="r-Q607728" value="approve" data-qid="Q607728"><span class="pill-text">✓ Approve</span></label>
+      <label><input type="radio" name="r-Q607728" value="revise"  data-qid="Q607728"><span class="pill-text">⚠ Revise</span></label>
+      <label><input type="radio" name="r-Q607728" value="reject"  data-qid="Q607728"><span class="pill-text">✗ Reject</span></label>
+    </div>
+    <textarea data-qid="Q607728" placeholder="Notes for Claude (optional): swap suggestions, semantic concerns, alternative decl, etc."></textarea>
+  </div>
+</article>
+<article class="entry" id="entry-Q311627" data-qid="Q311627" data-status="">
+  <header>
+    <span class="num">16</span>
+    <h2><a href="https://en.wikipedia.org/wiki/P-adic_number" target="_blank">P-adic number</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q311627" target="_blank">Q311627</a></span>
+    <span class="decl">↔ <code>Padic</code></span>
+    <span class="proposed-tag">proposed: @[wikidata Q311627]</span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · NumberTheory/Padics/PadicNumbers.lean:527–531 <a class="open" href="https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/NumberTheory/Padics/PadicNumbers.lean#L527-L531" target="_blank">open ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- The `p`-adic numbers `ℚ_[p]` are the Cauchy completion of `ℚ` with respect to the `p`-adic norm.</span>
+<span class="sd">-/</span>
+<span class="kn">def</span><span class="w"> </span><span class="n">Padic</span><span class="w"> </span><span class="o">(</span><span class="n">p</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">ℕ</span><span class="o">)</span><span class="w"> </span><span class="o">[</span><span class="n">Fact</span><span class="w"> </span><span class="n">p</span><span class="bp">.</span><span class="n">Prime</span><span class="o">]</span><span class="w"> </span><span class="o">:=</span>
+<span class="w">  </span><span class="n">CauSeq</span><span class="bp">.</span><span class="n">Completion</span><span class="bp">.</span><span class="n">Cauchy</span><span class="w"> </span><span class="o">(</span><span class="n">padicNorm</span><span class="w"> </span><span class="n">p</span><span class="o">)</span>
+<span class="n">deriving</span><span class="w"> </span><span class="n">Zero</span><span class="o">,</span><span class="w"> </span><span class="n">One</span><span class="o">,</span><span class="w"> </span><span class="n">Add</span><span class="o">,</span><span class="w"> </span><span class="n">Neg</span><span class="o">,</span><span class="w"> </span><span class="n">Sub</span><span class="o">,</span><span class="w"> </span><span class="n">Mul</span><span class="o">,</span><span class="w"> </span><span class="n">Div</span><span class="o">,</span><span class="w"> </span><span class="n">AddCommGroup</span><span class="o">,</span><span class="w"> </span><span class="n">Ring</span><span class="o">,</span><span class="w"> </span><span class="n">CommRing</span><span class="o">,</span><span class="w"> </span><span class="n">Field</span><span class="o">,</span><span class="w"> </span><span class="n">Inhabited</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">number system for a prime p which extends the ordinary arithmetic of the rational numbers in a different way from the extension of the rational number system to the real and complex number systems</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In number theory, given a prime number p, the p-adic numbers form an extension of the rational numbers that is distinct from the real numbers, though with some similar properties; p-adic numbers can be written in a form similar to (possibly infinite) decimals, but with digits based on a prime number p rather than ten, and extending to the left rather than to the right.
+For example, comparing the expansion of the rational number 
+  
+    
+      
+        
+          
+            
+              1
+              5
+            
+          
+        
+      
+    
+    {\displaystyle {\tfrac {1}{5}}}
+  
+ in base 3 vs. the 3-adic expansion,
+
+  
+    
+      
+        
+          
+            
+              
+                
+                  
+                    
+                      1
+                      5
+                    
+                  
+                
+              
+              
+         …</p><p class="more"><a href="https://en.wikipedia.org/wiki/P-adic_number" target="_blank">Read full article ↗</a></p></div></details>
+    </section>
+  </div>
+  <div class="review">
+    <div class="review-row">
+      <strong>Decision:</strong>
+      <label><input type="radio" name="r-Q311627" value="approve" data-qid="Q311627"><span class="pill-text">✓ Approve</span></label>
+      <label><input type="radio" name="r-Q311627" value="revise"  data-qid="Q311627"><span class="pill-text">⚠ Revise</span></label>
+      <label><input type="radio" name="r-Q311627" value="reject"  data-qid="Q311627"><span class="pill-text">✗ Reject</span></label>
+    </div>
+    <textarea data-qid="Q311627" placeholder="Notes for Claude (optional): swap suggestions, semantic concerns, alternative decl, etc."></textarea>
+  </div>
+</article>
+<article class="entry" id="entry-Q187235" data-qid="Q187235" data-status="">
+  <header>
+    <span class="num">17</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Riemann_zeta_function" target="_blank">Riemann zeta function</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q187235" target="_blank">Q187235</a></span>
+    <span class="decl">↔ <code>riemannZeta</code></span>
+    <span class="proposed-tag">proposed: @[wikidata Q187235]</span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · NumberTheory/LSeries/RiemannZeta.lean:118–119 <a class="open" href="https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/NumberTheory/LSeries/RiemannZeta.lean#L118-L119" target="_blank">open ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- The Riemann zeta function `ζ(s)`. -/</span>
+<span class="kn">def</span><span class="w"> </span><span class="n">riemannZeta</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="n">hurwitzZetaEven</span><span class="w"> </span><span class="mi">0</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">analytic function</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>The Riemann zeta function or Euler–Riemann zeta function, denoted by the lowercase Greek letter ζ (zeta), is a mathematical function of a complex variable defined as 
+  
+    
+      
+        ζ
+        (
+        s
+        )
+        =
+        
+          ∑
+          
+            n
+            =
+            1
+          
+          
+            ∞
+          
+        
+        
+          
+            1
+            
+              n
+              
+                s
+              
+            
+          
+        
+        =
+        
+          
+            1
+            
+              1
+              
+                s
+              
+            
+          
+        
+        +
+        
+          
+            1
+            
+              2
+              
+                s
+              
+            
+          
+        
+        +
+        
+          
+            1
+            
+              3
+            …</p><p class="more"><a href="https://en.wikipedia.org/wiki/Riemann_zeta_function" target="_blank">Read full article ↗</a></p></div></details>
+    </section>
+  </div>
+  <div class="review">
+    <div class="review-row">
+      <strong>Decision:</strong>
+      <label><input type="radio" name="r-Q187235" value="approve" data-qid="Q187235"><span class="pill-text">✓ Approve</span></label>
+      <label><input type="radio" name="r-Q187235" value="revise"  data-qid="Q187235"><span class="pill-text">⚠ Revise</span></label>
+      <label><input type="radio" name="r-Q187235" value="reject"  data-qid="Q187235"><span class="pill-text">✗ Reject</span></label>
+    </div>
+    <textarea data-qid="Q187235" placeholder="Notes for Claude (optional): swap suggestions, semantic concerns, alternative decl, etc."></textarea>
+  </div>
+</article>
+<article class="entry" id="entry-Q1411887" data-qid="Q1411887" data-status="">
+  <header>
+    <span class="num">18</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Uniform_convergence" target="_blank">Uniform convergence</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q1411887" target="_blank">Q1411887</a></span>
+    <span class="decl">↔ <code>TendstoUniformly</code></span>
+    <span class="proposed-tag">proposed: @[wikidata Q1411887]</span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · Topology/UniformSpace/UniformConvergence.lean:110–114 <a class="open" href="https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Topology/UniformSpace/UniformConvergence.lean#L110-L114" target="_blank">open ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- A sequence of functions `Fₙ` converges uniformly to a limiting function `f` with respect to a</span>
+<span class="sd">filter `p` if, for any entourage of the diagonal `u`, one has `p`-eventually</span>
+<span class="sd">`(f x, Fₙ x) ∈ u` for all `x`. -/</span>
+<span class="kn">def</span><span class="w"> </span><span class="n">TendstoUniformly</span><span class="w"> </span><span class="o">(</span><span class="n">F</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">ι</span><span class="w"> </span><span class="bp">→</span><span class="w"> </span><span class="n">α</span><span class="w"> </span><span class="bp">→</span><span class="w"> </span><span class="n">β</span><span class="o">)</span><span class="w"> </span><span class="o">(</span><span class="n">f</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">α</span><span class="w"> </span><span class="bp">→</span><span class="w"> </span><span class="n">β</span><span class="o">)</span><span class="w"> </span><span class="o">(</span><span class="n">p</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">Filter</span><span class="w"> </span><span class="n">ι</span><span class="o">)</span><span class="w"> </span><span class="o">:=</span>
+<span class="w">  </span><span class="bp">∀</span><span class="w"> </span><span class="n">u</span><span class="w"> </span><span class="bp">∈</span><span class="w"> </span><span class="n">𝓤</span><span class="w"> </span><span class="n">β</span><span class="o">,</span><span class="w"> </span><span class="bp">∀ᶠ</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">p</span><span class="o">,</span><span class="w"> </span><span class="bp">∀</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">α</span><span class="o">,</span><span class="w"> </span><span class="o">(</span><span class="n">f</span><span class="w"> </span><span class="n">x</span><span class="o">,</span><span class="w"> </span><span class="n">F</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="n">x</span><span class="o">)</span><span class="w"> </span><span class="bp">∈</span><span class="w"> </span><span class="n">u</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">mode of convergence of a function sequence</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In the mathematical field of analysis, uniform convergence is a mode of convergence of functions stronger than pointwise convergence. A sequence of functions 
+  
+    
+      
+        (
+        
+          f
+          
+            n
+          
+        
+        )
+      
+    
+    {\displaystyle (f_{n})}
+  
+ converges uniformly to a limiting function 
+  
+    
+      
+        f
+      
+    
+    {\displaystyle f}
+  
+ if, roughly speaking, they uniformly approximate the function 
+  
+    
+      
+        f
+      
+    
+    {\displaystyle f}
+  
+ over the whole domain, meaning that all but finitely many of the functions of the sequence lie in a uniform error bar of the original function. Graphically this means that, given any thin band around the graph of 
+  
+    
+      
+        f
+      
+    
+    {\displaystyle f}
+  
+, the graphs of all but finitely many of the functions 
+  
+    
+      
+        
+      …</p><p class="more"><a href="https://en.wikipedia.org/wiki/Uniform_convergence" target="_blank">Read full article ↗</a></p></div></details>
+    </section>
+  </div>
+  <div class="review">
+    <div class="review-row">
+      <strong>Decision:</strong>
+      <label><input type="radio" name="r-Q1411887" value="approve" data-qid="Q1411887"><span class="pill-text">✓ Approve</span></label>
+      <label><input type="radio" name="r-Q1411887" value="revise"  data-qid="Q1411887"><span class="pill-text">⚠ Revise</span></label>
+      <label><input type="radio" name="r-Q1411887" value="reject"  data-qid="Q1411887"><span class="pill-text">✗ Reject</span></label>
+    </div>
+    <textarea data-qid="Q1411887" placeholder="Notes for Claude (optional): swap suggestions, semantic concerns, alternative decl, etc."></textarea>
+  </div>
+</article>
+<article class="entry" id="entry-Q1154787" data-qid="Q1154787" data-status="">
+  <header>
+    <span class="num">19</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Theta_function" target="_blank">Theta function</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q1154787" target="_blank">Q1154787</a></span>
+    <span class="decl">↔ <code>jacobiTheta₂</code></span>
+    <span class="proposed-tag">proposed: @[wikidata Q1154787]</span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · NumberTheory/ModularForms/JacobiTheta/TwoVariable.lean:61–62 <a class="open" href="https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/NumberTheory/ModularForms/JacobiTheta/TwoVariable.lean#L61-L62" target="_blank">open ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- Summand in the series for the `z`-derivative of the Jacobi theta function. -/</span>
+<span class="kn">def</span><span class="w"> </span><span class="n">jacobiTheta₂&#39;_term</span><span class="w"> </span><span class="o">(</span><span class="n">n</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">ℤ</span><span class="o">)</span><span class="w"> </span><span class="o">(</span><span class="n">z</span><span class="w"> </span><span class="n">τ</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">ℂ</span><span class="o">)</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="bp">*</span><span class="w"> </span><span class="n">π</span><span class="w"> </span><span class="bp">*</span><span class="w"> </span><span class="n">I</span><span class="w"> </span><span class="bp">*</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="bp">*</span><span class="w"> </span><span class="n">jacobiTheta₂_term</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="n">τ</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">special functions of several complex variables</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In mathematics, theta functions are special functions of several complex variables. Fundamentally, they are a family of continuous functions which encode the behavior of discrete multi-dimensional periodic systems, such as crystal lattices or points on a torus. Because they are smooth, they allow the study and manipulation of discrete combinatorial systems using the tools of analysis. 
+For this reason, theta functions have useful applications in topics such as
+
+number theory: &quot;in how many ways can a number be written as a sum of squares?&quot;
+physics: &quot;how does heat flow on a toroidal ring?&quot;, &quot;how do quantum particles behave when arranged in a lattice?&quot;
+geometry: &quot;what are the shape properties of elliptic curves?&quot;
+and others, including abelian varieties, moduli spaces, quadratic forms, and solitons.
+Theta functions in two dimensions are functions of two complex arguments. In one choice of…</p><p class="more"><a href="https://en.wikipedia.org/wiki/Theta_function" target="_blank">Read full article ↗</a></p></div></details>
+    </section>
+  </div>
+  <div class="review">
+    <div class="review-row">
+      <strong>Decision:</strong>
+      <label><input type="radio" name="r-Q1154787" value="approve" data-qid="Q1154787"><span class="pill-text">✓ Approve</span></label>
+      <label><input type="radio" name="r-Q1154787" value="revise"  data-qid="Q1154787"><span class="pill-text">⚠ Revise</span></label>
+      <label><input type="radio" name="r-Q1154787" value="reject"  data-qid="Q1154787"><span class="pill-text">✗ Reject</span></label>
+    </div>
+    <textarea data-qid="Q1154787" placeholder="Notes for Claude (optional): swap suggestions, semantic concerns, alternative decl, etc."></textarea>
+  </div>
+</article>
+<article class="entry" id="entry-Q205966" data-qid="Q205966" data-status="">
+  <header>
+    <span class="num">20</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Riemann_hypothesis" target="_blank">Riemann hypothesis</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q205966" target="_blank">Q205966</a></span>
+    <span class="decl">↔ <code>RiemannHypothesis</code></span>
+    <span class="proposed-tag">proposed: @[wikidata Q205966]</span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · NumberTheory/LSeries/RiemannZeta.lean:180–183 <a class="open" href="https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/NumberTheory/LSeries/RiemannZeta.lean#L180-L183" target="_blank">open ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- A formal statement of the **Riemann hypothesis** – constructing a term of this type is worth a</span>
+<span class="sd">million dollars. -/</span>
+<span class="kn">def</span><span class="w"> </span><span class="n">RiemannHypothesis</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">Prop</span><span class="w"> </span><span class="o">:=</span>
+<span class="w">  </span><span class="bp">∀</span><span class="w"> </span><span class="o">(</span><span class="n">s</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">ℂ</span><span class="o">)</span><span class="w"> </span><span class="o">(</span><span class="bp">_</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">riemannZeta</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="bp">=</span><span class="w"> </span><span class="mi">0</span><span class="o">)</span><span class="w"> </span><span class="o">(</span><span class="bp">_</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="bp">¬∃</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">ℕ</span><span class="o">,</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="bp">=</span><span class="w"> </span><span class="bp">-</span><span class="mi">2</span><span class="w"> </span><span class="bp">*</span><span class="w"> </span><span class="o">(</span><span class="n">n</span><span class="w"> </span><span class="bp">+</span><span class="w"> </span><span class="mi">1</span><span class="o">))</span><span class="w"> </span><span class="o">(</span><span class="bp">_</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="bp">≠</span><span class="w"> </span><span class="mi">1</span><span class="o">),</span><span class="w"> </span><span class="n">s</span><span class="bp">.</span><span class="n">re</span><span class="w"> </span><span class="bp">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="bp">/</span><span class="w"> </span><span class="mi">2</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">conjecture in mathematics linked to the repartition of prime numbers</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In mathematics, the Riemann hypothesis is the conjecture that the Riemann zeta function has its zeros only at the negative even integers and complex numbers with real part ⁠1/2⁠. Many consider it to be the most important unsolved problem in pure mathematics. It is of great interest in number theory because it implies results about the distribution of prime numbers. It was proposed by Bernhard Riemann, after whom it is named. According to a 2026 survey, there is overwhelming numerical evidence for the hypothesis, but no proof is known.
+The Riemann hypothesis and some of its generalizations, along with Goldbach&#x27;s conjecture and the twin prime conjecture, make up Hilbert&#x27;s eighth problem in David Hilbert&#x27;s list of twenty-three unsolved problems; it is also one of the Millennium Prize Problems of the Clay Mathematics Institute, which offers US$1 million for a solution to any of them. The…</p><p class="more"><a href="https://en.wikipedia.org/wiki/Riemann_hypothesis" target="_blank">Read full article ↗</a></p></div></details>
+    </section>
+  </div>
+  <div class="review">
+    <div class="review-row">
+      <strong>Decision:</strong>
+      <label><input type="radio" name="r-Q205966" value="approve" data-qid="Q205966"><span class="pill-text">✓ Approve</span></label>
+      <label><input type="radio" name="r-Q205966" value="revise"  data-qid="Q205966"><span class="pill-text">⚠ Revise</span></label>
+      <label><input type="radio" name="r-Q205966" value="reject"  data-qid="Q205966"><span class="pill-text">✗ Reject</span></label>
+    </div>
+    <textarea data-qid="Q205966" placeholder="Notes for Claude (optional): swap suggestions, semantic concerns, alternative decl, etc."></textarea>
+  </div>
+</article>
+<article class="entry" id="entry-Q133871" data-qid="Q133871" data-status="">
+  <header>
+    <span class="num">21</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Normal_distribution" target="_blank">Normal distribution</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q133871" target="_blank">Q133871</a></span>
+    <span class="decl">↔ <code>gaussianReal</code></span>
+    <span class="proposed-tag">proposed: @[wikidata Q133871]</span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · Probability/Distributions/Gaussian/Real.lean:220–221 <a class="open" href="https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Probability/Distributions/Gaussian/Real.lean#L220-L221" target="_blank">open ↗</a></h3>
+      <pre class="lean"><span class="kn">def</span><span class="w"> </span><span class="n">gaussianReal</span><span class="w"> </span><span class="o">(</span><span class="n">μ</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">ℝ</span><span class="o">)</span><span class="w"> </span><span class="o">(</span><span class="n">v</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">ℝ</span><span class="bp">≥</span><span class="mi">0</span><span class="o">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">Measure</span><span class="w"> </span><span class="n">ℝ</span><span class="w"> </span><span class="o">:=</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="bp">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="k">then</span><span class="w"> </span><span class="n">Measure</span><span class="bp">.</span><span class="n">dirac</span><span class="w"> </span><span class="n">μ</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="n">volume</span><span class="bp">.</span><span class="n">withDensity</span><span class="w"> </span><span class="o">(</span><span class="n">gaussianPDF</span><span class="w"> </span><span class="n">μ</span><span class="w"> </span><span class="n">v</span><span class="o">)</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">probability distribution</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In probability theory and statistics, a normal distribution or Gaussian distribution is a type of continuous probability distribution for a real-valued random variable. The general form of its probability density function is
+
+  
+    
+      
+        f
+        (
+        x
+        )
+        =
+        
+          
+            1
+            
+              2
+              π
+              
+                σ
+                
+                  2
+                
+              
+            
+          
+        
+        exp
+        ⁡
+        
+          
+            (
+            
+              −
+              
+                
+                  
+                    (
+                    x
+                    −
+                    μ
+                    
+                      )
+                      
+                        2
+                      
+                    
+                  
+             …</p><p class="more"><a href="https://en.wikipedia.org/wiki/Normal_distribution" target="_blank">Read full article ↗</a></p></div></details>
+    </section>
+  </div>
+  <div class="review">
+    <div class="review-row">
+      <strong>Decision:</strong>
+      <label><input type="radio" name="r-Q133871" value="approve" data-qid="Q133871"><span class="pill-text">✓ Approve</span></label>
+      <label><input type="radio" name="r-Q133871" value="revise"  data-qid="Q133871"><span class="pill-text">⚠ Revise</span></label>
+      <label><input type="radio" name="r-Q133871" value="reject"  data-qid="Q133871"><span class="pill-text">✗ Reject</span></label>
+    </div>
+    <textarea data-qid="Q133871" placeholder="Notes for Claude (optional): swap suggestions, semantic concerns, alternative decl, etc."></textarea>
+  </div>
+</article>
+<article class="entry" id="entry-Q205692" data-qid="Q205692" data-status="">
+  <header>
+    <span class="num">22</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Poisson_distribution" target="_blank">Poisson distribution</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q205692" target="_blank">Q205692</a></span>
+    <span class="decl">↔ <code>poissonMeasure</code></span>
+    <span class="proposed-tag">proposed: @[wikidata Q205692]</span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · Probability/Distributions/Poisson/Basic.lean:39–40 <a class="open" href="https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Probability/Distributions/Poisson/Basic.lean#L39-L40" target="_blank">open ↗</a></h3>
+      <pre class="lean"><span class="kn">def</span><span class="w"> </span><span class="n">poissonMeasure</span><span class="w"> </span><span class="o">(</span><span class="n">r</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">ℝ</span><span class="bp">≥</span><span class="mi">0</span><span class="o">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">Measure</span><span class="w"> </span><span class="n">ℕ</span><span class="w"> </span><span class="o">:=</span>
+<span class="w">  </span><span class="n">Measure</span><span class="bp">.</span><span class="n">sum</span><span class="w"> </span><span class="o">(</span><span class="k">fun</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="bp">↦</span><span class="w"> </span><span class="n">ENNReal</span><span class="bp">.</span><span class="n">ofReal</span><span class="w"> </span><span class="o">(</span><span class="n">exp</span><span class="w"> </span><span class="o">(</span><span class="bp">-</span><span class="n">r</span><span class="o">)</span><span class="w"> </span><span class="bp">*</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="bp">^</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="bp">/</span><span class="w"> </span><span class="o">(</span><span class="n">n</span><span class="o">)</span><span class="bp">!</span><span class="o">)</span><span class="w"> </span><span class="bp">•</span><span class="w"> </span><span class="o">(</span><span class="bp">.</span><span class="n">dirac</span><span class="w"> </span><span class="n">n</span><span class="o">))</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">discrete probability distribution</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In probability theory and statistics, the Poisson distribution () is a discrete probability distribution that expresses the probability of a given number of events occurring in a fixed interval of time if these events occur with a known constant mean rate and independently of the time since the last event. It can also be used for the number of events in other types of intervals than time, and in dimension greater than 1 (e.g., number of events in a given area or volume).
+The Poisson distribution is named after French mathematician Siméon Denis Poisson. It plays an important role for discrete-stable distributions.
+Under a Poisson distribution with the expectation of λ events in a given interval, the probability of k events in the same interval is:
+
+  
+    
+      
+        
+          
+            
+              
+                λ
+                
+                  k
+                
+      …</p><p class="more"><a href="https://en.wikipedia.org/wiki/Poisson_distribution" target="_blank">Read full article ↗</a></p></div></details>
+    </section>
+  </div>
+  <div class="review">
+    <div class="review-row">
+      <strong>Decision:</strong>
+      <label><input type="radio" name="r-Q205692" value="approve" data-qid="Q205692"><span class="pill-text">✓ Approve</span></label>
+      <label><input type="radio" name="r-Q205692" value="revise"  data-qid="Q205692"><span class="pill-text">⚠ Revise</span></label>
+      <label><input type="radio" name="r-Q205692" value="reject"  data-qid="Q205692"><span class="pill-text">✗ Reject</span></label>
+    </div>
+    <textarea data-qid="Q205692" placeholder="Notes for Claude (optional): swap suggestions, semantic concerns, alternative decl, etc."></textarea>
+  </div>
+</article>
+<article class="entry" id="entry-Q386228" data-qid="Q386228" data-status="">
+  <header>
+    <span class="num">23</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Cumulative_distribution_function" target="_blank">Cumulative distribution function</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q386228" target="_blank">Q386228</a></span>
+    <span class="decl">↔ <code>ProbabilityTheory.cdf</code></span>
+    <span class="proposed-tag">proposed: @[wikidata Q386228]</span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · Probability/CDF.lean:55–56 <a class="open" href="https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Probability/CDF.lean#L55-L56" target="_blank">open ↗</a></h3>
+      <pre class="lean"><span class="kn">def</span><span class="w"> </span><span class="n">cdf</span><span class="w"> </span><span class="o">(</span><span class="n">μ</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">Measure</span><span class="w"> </span><span class="n">ℝ</span><span class="o">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">StieltjesFunction</span><span class="w"> </span><span class="n">ℝ</span><span class="w"> </span><span class="o">:=</span>
+<span class="w">  </span><span class="n">condCDF</span><span class="w"> </span><span class="o">((</span><span class="n">dirac</span><span class="w"> </span><span class="n">Unit</span><span class="bp">.</span><span class="n">unit</span><span class="o">)</span><span class="bp">.</span><span class="n">prod</span><span class="w"> </span><span class="n">μ</span><span class="o">)</span><span class="w"> </span><span class="n">Unit</span><span class="bp">.</span><span class="n">unit</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">function that defines a probability distribution by specifying the probability of being ≤ each value</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In probability theory and statistics, the cumulative distribution function (CDF) of a real-valued random variable 
+  
+    
+      
+        X
+      
+    
+    {\displaystyle X}
+  
+, or just distribution function of 
+  
+    
+      
+        X
+      
+    
+    {\displaystyle X}
+  
+, evaluated at 
+  
+    
+      
+        x
+      
+    
+    {\displaystyle x}
+  
+, is the probability that 
+  
+    
+      
+        X
+      
+    
+    {\displaystyle X}
+  
+ will take a value less than or equal to 
+  
+    
+      
+        x
+      
+    
+    {\displaystyle x}
+  
+.
+Every probability distribution supported on the real numbers, discrete or &quot;mixed&quot; as well as continuous, is uniquely identified by a right-continuous monotone increasing function (a càdlàg function) 
+  
+    
+      
+        F
+        :
+        
+          R
+        
+        →
+        [
+        0
+        ,
+        1
+        ]
+      
+    
+   …</p><p class="more"><a href="https://en.wikipedia.org/wiki/Cumulative_distribution_function" target="_blank">Read full article ↗</a></p></div></details>
+    </section>
+  </div>
+  <div class="review">
+    <div class="review-row">
+      <strong>Decision:</strong>
+      <label><input type="radio" name="r-Q386228" value="approve" data-qid="Q386228"><span class="pill-text">✓ Approve</span></label>
+      <label><input type="radio" name="r-Q386228" value="revise"  data-qid="Q386228"><span class="pill-text">⚠ Revise</span></label>
+      <label><input type="radio" name="r-Q386228" value="reject"  data-qid="Q386228"><span class="pill-text">✗ Reject</span></label>
+    </div>
+    <textarea data-qid="Q386228" placeholder="Notes for Claude (optional): swap suggestions, semantic concerns, alternative decl, etc."></textarea>
+  </div>
+</article>
+<article class="entry" id="entry-Q746550" data-qid="Q746550" data-status="">
+  <header>
+    <span class="num">24</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Tangent_bundle" target="_blank">Tangent bundle</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q746550" target="_blank">Q746550</a></span>
+    <span class="decl">↔ <code>TangentBundle</code></span>
+    <span class="proposed-tag">proposed: @[wikidata Q746550]</span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · Geometry/Manifold/IsManifold/Basic.lean:1071–1073 <a class="open" href="https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Geometry/Manifold/IsManifold/Basic.lean#L1071-L1073" target="_blank">open ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- The tangent bundle to a manifold, as a Sigma type. Defined in terms of</span>
+<span class="sd">`Bundle.TotalSpace` to be able to put a suitable topology on it. -/</span>
+<span class="kn">abbrev</span><span class="w"> </span><span class="n">TangentBundle</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="n">Bundle</span><span class="bp">.</span><span class="n">TotalSpace</span><span class="w"> </span><span class="n">E</span><span class="w"> </span><span class="o">(</span><span class="n">TangentSpace</span><span class="w"> </span><span class="n">I</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">M</span><span class="w"> </span><span class="bp">→</span><span class="w"> </span><span class="kt">Type</span><span class="w"> </span><span class="bp">_</span><span class="o">)</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">tangent spaces of a manifold considered together</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>A tangent bundle is the collection of all of the tangent spaces for all points on a manifold, structured in a way that it forms a new manifold itself. Formally, in differential geometry, the tangent bundle of a differentiable manifold 
+  
+    
+      
+        M
+      
+    
+    {\displaystyle M}
+  
+ is a manifold 
+  
+    
+      
+        T
+        M
+      
+    
+    {\displaystyle TM}
+  
+ which assembles all the tangent vectors in 
+  
+    
+      
+        M
+      
+    
+    {\displaystyle M}
+  
+. As a set, it is given by the disjoint union of the tangent spaces of 
+  
+    
+      
+        M
+      
+    
+    {\displaystyle M}
+  
+.  That is,
+
+  
+    
+      
+        
+          
+            
+              
+                T
+                M
+              
+              
+                
+                =
+                
+                  ⨆
+                  
+                    x
+                …</p><p class="more"><a href="https://en.wikipedia.org/wiki/Tangent_bundle" target="_blank">Read full article ↗</a></p></div></details>
+    </section>
+  </div>
+  <div class="review">
+    <div class="review-row">
+      <strong>Decision:</strong>
+      <label><input type="radio" name="r-Q746550" value="approve" data-qid="Q746550"><span class="pill-text">✓ Approve</span></label>
+      <label><input type="radio" name="r-Q746550" value="revise"  data-qid="Q746550"><span class="pill-text">⚠ Revise</span></label>
+      <label><input type="radio" name="r-Q746550" value="reject"  data-qid="Q746550"><span class="pill-text">✗ Reject</span></label>
+    </div>
+    <textarea data-qid="Q746550" placeholder="Notes for Claude (optional): swap suggestions, semantic concerns, alternative decl, etc."></textarea>
+  </div>
+</article>
+<article class="entry" id="entry-Q652446" data-qid="Q652446" data-status="">
+  <header>
+    <span class="num">25</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Uniform_space" target="_blank">Uniform space</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q652446" target="_blank">Q652446</a></span>
+    <span class="decl">↔ <code>UniformSpace</code></span>
+    <span class="proposed-tag">proposed: @[wikidata Q652446]</span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · Topology/UniformSpace/Defs.lean:127–138 <a class="open" href="https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Topology/UniformSpace/Defs.lean#L127-L138" target="_blank">open ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- This core description of a uniform space is outside of the type class hierarchy. It is useful</span>
+<span class="sd">  for constructions of uniform spaces, when the topology is derived from the uniform space. -/</span>
+<span class="kn">structure</span><span class="w"> </span><span class="n">UniformSpace</span><span class="bp">.</span><span class="n">Core</span><span class="w"> </span><span class="o">(</span><span class="n">α</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">Type</span><span class="w"> </span><span class="n">u</span><span class="o">)</span><span class="w"> </span><span class="kn">where</span>
+<span class="w">  </span><span class="sd">/-- The uniformity filter. Once `UniformSpace` is defined, `𝓤 α` (`_root_.uniformity`) becomes the</span>
+<span class="sd">  normal form. -/</span>
+<span class="w">  </span><span class="n">uniformity</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">Filter</span><span class="w"> </span><span class="o">(</span><span class="n">α</span><span class="w"> </span><span class="bp">×</span><span class="w"> </span><span class="n">α</span><span class="o">)</span>
+<span class="w">  </span><span class="sd">/-- Every set in the uniformity filter includes the diagonal. -/</span>
+<span class="w">  </span><span class="n">refl</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">𝓟</span><span class="w"> </span><span class="n">SetRel</span><span class="bp">.</span><span class="n">id</span><span class="w"> </span><span class="bp">≤</span><span class="w"> </span><span class="n">uniformity</span>
+<span class="w">  </span><span class="sd">/-- If `s ∈ uniformity`, then `Prod.swap ⁻¹&#39; s ∈ uniformity`. -/</span>
+<span class="w">  </span><span class="n">symm</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">Tendsto</span><span class="w"> </span><span class="n">Prod</span><span class="bp">.</span><span class="n">swap</span><span class="w"> </span><span class="n">uniformity</span><span class="w"> </span><span class="n">uniformity</span>
+<span class="w">  </span><span class="sd">/-- For every set `u ∈ uniformity`, there exists `v ∈ uniformity` such that `v ○ v ⊆ u`. -/</span>
+<span class="w">  </span><span class="n">comp</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">(</span><span class="n">uniformity</span><span class="bp">.</span><span class="n">lift&#39;</span><span class="w"> </span><span class="k">fun</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="bp">=&gt;</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="bp">○</span><span class="w"> </span><span class="n">s</span><span class="o">)</span><span class="w"> </span><span class="bp">≤</span><span class="w"> </span><span class="n">uniformity</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">set given a measure of &quot;closedness&quot; of two points</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In the mathematical field of topology, a uniform space is a set with additional structure that is used to define uniform properties, such as completeness, uniform continuity and uniform convergence. Uniform spaces generalize metric spaces and topological groups, but the concept is designed to formulate the weakest axioms needed for most proofs in analysis.
+In addition to the usual properties of a topological structure, in a uniform space one formalizes the notions of relative closeness and closeness of points.  In other words, ideas like &quot;x is closer to a than y is to b&quot; make sense in uniform spaces.  By comparison, in a general topological space, given sets A,B it is meaningful to say that a point x is arbitrarily close to A (i.e., in the closure of A), or perhaps that A is a smaller neighborhood of x than B, but notions of closeness of points and relative closeness are not described…</p><p class="more"><a href="https://en.wikipedia.org/wiki/Uniform_space" target="_blank">Read full article ↗</a></p></div></details>
+    </section>
+  </div>
+  <div class="review">
+    <div class="review-row">
+      <strong>Decision:</strong>
+      <label><input type="radio" name="r-Q652446" value="approve" data-qid="Q652446"><span class="pill-text">✓ Approve</span></label>
+      <label><input type="radio" name="r-Q652446" value="revise"  data-qid="Q652446"><span class="pill-text">⚠ Revise</span></label>
+      <label><input type="radio" name="r-Q652446" value="reject"  data-qid="Q652446"><span class="pill-text">✗ Reject</span></label>
+    </div>
+    <textarea data-qid="Q652446" placeholder="Notes for Claude (optional): swap suggestions, semantic concerns, alternative decl, etc."></textarea>
+  </div>
+</article>
+<footer>Generator: pre-PR variant of
+<a href="https://github.com/Deicyde/mathlib-wikidata-pr-report">Deicyde/mathlib-wikidata-pr-report</a>.
+Review state stored under <code>localStorage["wikilean-batch2-review-v1"]</code>.</footer>
+</div>
+
+<div id="review-bar">
+  <div class="counts">
+    <span id="bar-approve" class="c-approve">✓ 0</span>
+    <span id="bar-revise"  class="c-revise" >⚠ 0</span>
+    <span id="bar-reject"  class="c-reject" >✗ 0</span>
+    <span id="bar-pending" class="c-pending">· pending 25</span>
+  </div>
+  <div class="actions">
+    <button onclick="copyForClaude()">📋 Copy review for Claude</button>
+    <button class="ghost" onclick="downloadJSON()">⬇ JSON</button>
+    <button class="ghost" onclick="clearAll()">Clear all</button>
+    <span id="bar-toast" class="toast"></span>
+  </div>
+</div>
+
+<script>(function () {
+  const ENTRIES = [{"n": 1, "qid": "Q213363", "title": "Open set", "decl": "IsOpen", "file": "Mathlib/Topology/Defs/Basic.lean"}, {"n": 2, "qid": "Q170058", "title": "Continuous function", "decl": "Continuous", "file": "Mathlib/Topology/Defs/Basic.lean"}, {"n": 3, "qid": "Q44337", "title": "Matrix (mathematics)", "decl": "Matrix", "file": "Mathlib/LinearAlgebra/Matrix/Defs.lean"}, {"n": 4, "qid": "Q516776", "title": "Measurable function", "decl": "Measurable", "file": "Mathlib/MeasureTheory/MeasurableSpace/Defs.lean"}, {"n": 5, "qid": "Q66707394", "title": "Countable set", "decl": "Countable", "file": "Mathlib/Data/Countable/Defs.lean"}, {"n": 6, "qid": "Q120812", "title": "Absolute value", "decl": "AbsoluteValue", "file": "Mathlib/Algebra/Order/AbsoluteValue/Basic.lean"}, {"n": 7, "qid": "Q141488", "title": "Graph (discrete mathematics)", "decl": "SimpleGraph", "file": "Mathlib/Combinatorics/SimpleGraph/Basic.lean"}, {"n": 8, "qid": "Q104752", "title": "Coprime integers", "decl": "IsCoprime", "file": "Mathlib/RingTheory/Coprime/Basic.lean"}, {"n": 9, "qid": "Q838611", "title": "Ball (mathematics)", "decl": "Metric.ball", "file": "Mathlib/Topology/MetricSpace/Pseudo/Defs.lean"}, {"n": 10, "qid": "Q1003025", "title": "Formal power series", "decl": "PowerSeries", "file": "Mathlib/RingTheory/PowerSeries/Basic.lean"}, {"n": 11, "qid": "Q1063579", "title": "Dirichlet character", "decl": "DirichletCharacter", "file": "Mathlib/NumberTheory/DirichletCharacter/Basic.lean"}, {"n": 12, "qid": "Q1783179", "title": "Orthogonal group", "decl": "Matrix.orthogonalGroup", "file": "Mathlib/LinearAlgebra/UnitaryGroup.lean"}, {"n": 13, "qid": "Q759832", "title": "Solvable group", "decl": "IsSolvable", "file": "Mathlib/GroupTheory/Solvable.lean"}, {"n": 14, "qid": "Q942423", "title": "Projective module", "decl": "Module.Projective", "file": "Mathlib/Algebra/Module/Projective.lean"}, {"n": 15, "qid": "Q607728", "title": "Irrational number", "decl": "Irrational", "file": "Mathlib/NumberTheory/Real/Irrational.lean"}, {"n": 16, "qid": "Q311627", "title": "P-adic number", "decl": "Padic", "file": "Mathlib/NumberTheory/Padics/PadicNumbers.lean"}, {"n": 17, "qid": "Q187235", "title": "Riemann zeta function", "decl": "riemannZeta", "file": "Mathlib/NumberTheory/LSeries/RiemannZeta.lean"}, {"n": 18, "qid": "Q1411887", "title": "Uniform convergence", "decl": "TendstoUniformly", "file": "Mathlib/Topology/UniformSpace/UniformConvergence.lean"}, {"n": 19, "qid": "Q1154787", "title": "Theta function", "decl": "jacobiTheta\u2082", "file": "Mathlib/NumberTheory/ModularForms/JacobiTheta/TwoVariable.lean"}, {"n": 20, "qid": "Q205966", "title": "Riemann hypothesis", "decl": "RiemannHypothesis", "file": "Mathlib/NumberTheory/LSeries/RiemannZeta.lean"}, {"n": 21, "qid": "Q133871", "title": "Normal distribution", "decl": "gaussianReal", "file": "Mathlib/Probability/Distributions/Gaussian/Real.lean"}, {"n": 22, "qid": "Q205692", "title": "Poisson distribution", "decl": "poissonMeasure", "file": "Mathlib/Probability/Distributions/Poisson/Basic.lean"}, {"n": 23, "qid": "Q386228", "title": "Cumulative distribution function", "decl": "ProbabilityTheory.cdf", "file": "Mathlib/Probability/CDF.lean"}, {"n": 24, "qid": "Q746550", "title": "Tangent bundle", "decl": "TangentBundle", "file": "Mathlib/Geometry/Manifold/IsManifold/Basic.lean"}, {"n": 25, "qid": "Q652446", "title": "Uniform space", "decl": "UniformSpace", "file": "Mathlib/Topology/UniformSpace/Defs.lean"}];
+  const STORAGE_KEY = 'wikilean-batch2-review-v1';
+
+  function load() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch (e) { return {}; } }
+  function save(state) { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+  const state = load();
+
+  // Restore form state on page load.
+  ENTRIES.forEach(function (e) {
+    const s = state[e.qid] || {};
+    if (s.status) {
+      const radio = document.querySelector('input[name="r-' + e.qid + '"][value="' + s.status + '"]');
+      if (radio) radio.checked = true;
+      const entry = document.getElementById('entry-' + e.qid);
+      if (entry) entry.dataset.status = s.status;
+    }
+    if (s.notes) {
+      const ta = document.querySelector('textarea[data-qid="' + e.qid + '"]');
+      if (ta) ta.value = s.notes;
+    }
+  });
+
+  function update(qid, field, value) {
+    if (!state[qid]) state[qid] = {};
+    state[qid][field] = value;
+    save(state);
+    renderCounts();
+    if (field === 'status') {
+      const entry = document.getElementById('entry-' + qid);
+      if (entry) entry.dataset.status = value;
+    }
+  }
+
+  document.querySelectorAll('input[type="radio"][data-qid]').forEach(function (r) {
+    r.addEventListener('change', function (ev) { update(ev.target.dataset.qid, 'status', ev.target.value); });
+  });
+  document.querySelectorAll('textarea[data-qid]').forEach(function (t) {
+    t.addEventListener('input', function (ev) { update(ev.target.dataset.qid, 'notes', ev.target.value); });
+  });
+
+  function counts() {
+    const c = { approve: 0, revise: 0, reject: 0, pending: 0 };
+    ENTRIES.forEach(function (e) {
+      const s = (state[e.qid] || {}).status;
+      if (s) c[s]++; else c.pending++;
+    });
+    return c;
+  }
+  function renderCounts() {
+    const c = counts();
+    document.getElementById('bar-approve').textContent = '✓ ' + c.approve;
+    document.getElementById('bar-revise').textContent  = '⚠ ' + c.revise;
+    document.getElementById('bar-reject').textContent  = '✗ ' + c.reject;
+    document.getElementById('bar-pending').textContent = '· pending ' + c.pending;
+  }
+
+  function statusLabel(s) {
+    return s === 'approve' ? 'APPROVE'
+         : s === 'revise'  ? 'REVISE'
+         : s === 'reject'  ? 'REJECT'
+         : 'PENDING';
+  }
+
+  function buildClaudeText() {
+    const c = counts();
+    const lines = [];
+    lines.push('# Batch 2 review notes');
+    lines.push('');
+    lines.push('Status: ' + c.approve + ' approve · ' + c.revise + ' revise · ' +
+               c.reject + ' reject · ' + c.pending + ' pending');
+    lines.push('');
+    lines.push('Per-entry decisions and notes follow. APPROVE means take as-is.');
+    lines.push('REVISE / REJECT entries include notes below for what to do.');
+    lines.push('');
+    ENTRIES.forEach(function (e) {
+      const s = state[e.qid] || {};
+      const status = statusLabel(s.status);
+      lines.push('## #' + e.n + '  ' + e.qid + '  ' + e.title + '  →  ' + e.decl);
+      lines.push('File: ' + e.file);
+      lines.push('Status: ' + status);
+      if (s.notes && s.notes.trim()) {
+        lines.push('Notes:');
+        s.notes.trim().split('\n').forEach(function (ln) { lines.push('  ' + ln); });
+      }
+      lines.push('');
+    });
+    return lines.join('\n');
+  }
+
+  async function copyForClaude() {
+    const text = buildClaudeText();
+    try {
+      await navigator.clipboard.writeText(text);
+      showToast('Copied review to clipboard ✓');
+    } catch (e) {
+      const ta = document.createElement('textarea');
+      ta.value = text; document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+      showToast('Copied (fallback) ✓');
+    }
+  }
+
+  function downloadJSON() {
+    const data = {
+      generated_at: new Date().toISOString(),
+      entries: ENTRIES.map(function (e) {
+        return {
+          n: e.n, qid: e.qid, title: e.title, decl: e.decl, file: e.file,
+          status: (state[e.qid] || {}).status || 'pending',
+          notes:  (state[e.qid] || {}).notes  || ''
+        };
+      })
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'batch2-review.json';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    showToast('Downloaded batch2-review.json ✓');
+  }
+
+  function clearAll() {
+    if (!confirm('Clear all review decisions and notes for this page? (Cannot be undone.)')) return;
+    localStorage.removeItem(STORAGE_KEY);
+    location.reload();
+  }
+
+  let toastTimer = null;
+  function showToast(msg) {
+    const t = document.getElementById('bar-toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.classList.remove('show'); }, 2200);
+  }
+
+  // Expose to window for inline onclick handlers.
+  window.copyForClaude = copyForClaude;
+  window.downloadJSON  = downloadJSON;
+  window.clearAll      = clearAll;
+
+  renderCounts();
+})();
+</script>
+</body>
+</html>

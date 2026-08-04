@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Wikidata reviewer report · Deicyde/mathlib4#6</title>
+<style>
+:root { --bg:#fafaf8; --card:#fff; --rule:#e3e0d8; --ink:#1a1a1a; --muted:#666;
+        --accent:#7a3d2a; --code:#f3f3f3; --code-ink:#0a0a0a;
+        /* Mathlib-docs-derived syntax token colors */
+        --ml-def:#1F497F; --ml-thm:#134E2D; --ml-ax:#6B1B1A; --ml-struct:#73461C;
+        --ml-doc:#4a5e2a; --ml-comment:#5d6b50; }
+* { box-sizing: border-box; }
+body { font:15px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+       color:var(--ink); background:var(--bg); margin:0; padding:2rem 1rem; }
+.wrap { max-width:1480px; margin:0 auto; }
+h1 { font-size:1.5rem; margin:0 0 .25rem; }
+.lede { color:var(--muted); margin:0 0 2rem; }
+.lede a, .lede code { color:var(--accent); }
+.entry { background:var(--card); border:1px solid var(--rule); border-radius:6px;
+         margin:1.25rem 0; overflow:hidden; }
+header { display:flex; align-items:baseline; gap:.6rem; padding:.7rem 1rem;
+         border-bottom:1px solid var(--rule); background:#f6f4ee; flex-wrap:wrap; }
+.num { font-variant-numeric:tabular-nums; color:var(--muted); font-size:.85rem; }
+header h2 { font-size:1.05rem; margin:0; font-weight:600; }
+header h2 a { color:var(--ink); text-decoration:none; }
+header h2 a:hover { text-decoration:underline; }
+.qid a { font-family:"SF Mono","Menlo",monospace; font-size:.82rem;
+         color:var(--accent); text-decoration:none; }
+.decl { color:var(--muted); font-size:.9rem; }
+.decl code { background:var(--code); padding:.05em .35em; border-radius:3px;
+             font-family:"SF Mono","Menlo",monospace; }
+.panes { display:grid; grid-template-columns:1fr 1fr; }
+.panes section { padding:.85rem 1rem; }
+.mathlib { border-right:1px solid var(--rule); background:#fdfcf8; }
+.panes h3 { font-size:.78rem; color:var(--muted); margin:0 0 .5rem; font-weight:600;
+            display:flex; justify-content:space-between; align-items:baseline;
+            gap:.5rem; flex-wrap:wrap;
+            font-family:"SF Mono","Menlo",monospace; }
+.open { font-size:.78rem; color:var(--accent); text-decoration:none;
+        font-family:-apple-system, BlinkMacSystemFont, sans-serif; }
+.open:hover { text-decoration:underline; }
+.mathlib pre { font-family:"JuliaMono","JetBrains Mono","Cascadia Code","Cascadia Mono","Fira Code","DejaVu Sans Mono","SF Mono","Menlo","Consolas",monospace;
+               font-size:.82rem; margin:0; white-space:pre-wrap; background:var(--code);
+               padding:.8rem .95rem; border-radius:4px; overflow:auto;
+               max-height:560px; line-height:1.55; color:var(--code-ink);
+               border:1px solid #e5e5e5; }
+.lean .sd { color:var(--ml-doc); font-style:italic; }
+.lean .c, .lean .c1, .lean .cm, .lean .cp, .lean .cs
+          { color:var(--ml-comment); font-style:italic; }
+.lean .kd, .lean .kn, .lean .kr, .lean .k, .lean .kc, .lean .kp
+          { color:var(--ml-def); font-weight:700; }
+.lean .kt { color:var(--ml-struct); font-weight:700; }
+.lean .nb { color:var(--ml-def); }
+.lean .nf, .lean .nc, .lean .na
+          { color:var(--ml-thm); font-weight:500; }
+.lean .nv, .lean .vc, .lean .vi { color:var(--ml-thm); }
+.lean .o, .lean .bp { color:#262626; }
+.lean .s, .lean .s1, .lean .s2, .lean .se { color:var(--ml-ax); }
+.lean .mi, .lean .mf, .lean .mh, .lean .mb, .lean .m
+          { color:var(--ml-ax); font-weight:500; }
+.lean .n { color:var(--code-ink); }
+.lean .err { color:var(--code-ink); }
+.wiki .desc { font-size:.97rem; line-height:1.45; margin:0 0 .9rem;
+              padding:.55rem .75rem; background:#fbf6ec; border-left:3px solid var(--accent);
+              border-radius:0 3px 3px 0; color:#3a2a20; font-style:italic; }
+.wiki .desc.empty, .lead-fallback.empty { color:var(--muted); font-style:italic;
+                                          background:none; border-left:none; padding:0; }
+.lead { font-size:.88rem; margin:0; }
+.lead summary { cursor:pointer; color:var(--accent); font-weight:500;
+                user-select:none; padding:.2rem 0; }
+.lead summary:hover { text-decoration:underline; }
+.lead-body { padding:.5rem 0 0; }
+.lead-body p { margin:0 0 .5rem; line-height:1.5; }
+.lead .more { font-size:.82rem; }
+.lead .more a { color:var(--accent); }
+.lead-fallback { font-size:.85rem; margin:0; }
+.lead-fallback a { color:var(--accent); }
+footer { color:var(--muted); font-size:.82rem; margin:2rem 0 1rem; }
+@media (max-width:900px) { .panes { grid-template-columns:1fr; }
+                           .mathlib { border-right:none; border-bottom:1px solid var(--rule); } }
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Wikidata reviewer report · <a href="https://github.com/Deicyde/mathlib4/pull/6">Deicyde/mathlib4#6</a></h1>
+<p class="lede">25 <code>@[wikidata Q…]</code> cross-references introduced by
+this PR. For each entry: the Wikidata description (always present, italic block)
+gives the essence; the Wikipedia lead is collapsed below for fuller context. The
+Mathlib pane shows the full declaration — docstring, attributes, signature, and
+body — at commit <code>58721d32a3</code>.</p>
+
+<article class="entry">
+  <header>
+    <span class="num">1</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Projective_module" target="_blank">Projective module</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q942423" target="_blank">Q942423</a></span>
+    <span class="decl">↔ <code>Module.Projective</code></span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · Mathlib/Algebra/Module/Projective.lean:68–74 <a class="open" href="https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Module/Projective.html#Module.Projective" target="_blank">docs ↗</a> · <a class="open" href="https://github.com/Deicyde/mathlib4/blob/58721d32a350bd5c966be52e21892a4692ce852e/Mathlib/Algebra/Module/Projective.lean#L68-L74" target="_blank">source ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- An R-module is projective if it is a direct summand of a free module, or equivalently</span>
+<span class="sd">if maps from the module lift along surjections. There are several other equivalent</span>
+<span class="sd">definitions. -/</span>
+<span class="kd">@[</span><span class="n">wikidata</span><span class="w"> </span><span class="n">Q942423</span><span class="kd">]</span>
+<span class="kn">class</span><span class="w"> </span><span class="n">Module</span><span class="bp">.</span><span class="n">Projective</span><span class="w"> </span><span class="o">(</span><span class="n">R</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">Type</span><span class="bp">*</span><span class="o">)</span><span class="w"> </span><span class="o">[</span><span class="n">Semiring</span><span class="w"> </span><span class="n">R</span><span class="o">]</span><span class="w"> </span><span class="o">(</span><span class="n">P</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">Type</span><span class="bp">*</span><span class="o">)</span><span class="w"> </span><span class="o">[</span><span class="n">AddCommMonoid</span><span class="w"> </span><span class="n">P</span><span class="o">]</span><span class="w"> </span><span class="o">[</span><span class="n">Module</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="n">P</span><span class="o">]</span><span class="w"> </span><span class="o">:</span>
+<span class="w">    </span><span class="kt">Prop</span><span class="w"> </span><span class="kn">where</span>
+<span class="w">  </span><span class="n">out</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="bp">∃</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">P</span><span class="w"> </span><span class="bp">→ₗ</span><span class="o">[</span><span class="n">R</span><span class="o">]</span><span class="w"> </span><span class="n">P</span><span class="w"> </span><span class="bp">→₀</span><span class="w"> </span><span class="n">R</span><span class="o">,</span><span class="w"> </span><span class="n">Function</span><span class="bp">.</span><span class="n">LeftInverse</span><span class="w"> </span><span class="o">(</span><span class="n">Finsupp</span><span class="bp">.</span><span class="n">linearCombination</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="n">id</span><span class="o">)</span><span class="w"> </span><span class="n">s</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">in algebra, a module that is the direct summand of a free module</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In mathematics, particularly in algebra, the class of projective modules enlarges the class of free modules (that is, modules with basis vectors) over a ring, keeping some of the main properties of free modules. Various equivalent characterizations of these modules appear below.
+Every free module is a projective module, but the converse fails to hold over some rings, such as Dedekind rings that are not principal ideal domains. However, every projective module is a free module if the ring is a principal ideal domain such as the integers, or a (multivariate) polynomial ring over a field (this is the Quillen–Suslin theorem).
+Projective modules were first introduced in 1956 in the influential book Homological Algebra by Henri Cartan and Samuel Eilenberg.</p><p class="more"><a href="https://en.wikipedia.org/wiki/Projective_module" target="_blank">Read full article on Wikipedia ↗</a></p></div></details>
+    </section>
+  </div>
+</article>
+<article class="entry">
+  <header>
+    <span class="num">2</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Absolute_value" target="_blank">Absolute value</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q120812" target="_blank">Q120812</a></span>
+    <span class="decl">↔ <code>AbsoluteValue</code></span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · Mathlib/Algebra/Order/AbsoluteValue/Basic.lean:34–45 <a class="open" href="https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Order/AbsoluteValue/Basic.html#AbsoluteValue" target="_blank">docs ↗</a> · <a class="open" href="https://github.com/Deicyde/mathlib4/blob/58721d32a350bd5c966be52e21892a4692ce852e/Mathlib/Algebra/Order/AbsoluteValue/Basic.lean#L34-L45" target="_blank">source ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- `AbsoluteValue R S` is the type of absolute values on `R` mapping to `S`:</span>
+<span class="sd">the maps that preserve `*`, are nonnegative, positive definite and satisfy</span>
+<span class="sd">the triangle inequality. -/</span>
+<span class="kd">@[</span><span class="n">wikidata</span><span class="w"> </span><span class="n">Q120812</span><span class="kd">]</span>
+<span class="kn">structure</span><span class="w"> </span><span class="n">AbsoluteValue</span><span class="w"> </span><span class="o">(</span><span class="n">R</span><span class="w"> </span><span class="n">S</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">Type</span><span class="bp">*</span><span class="o">)</span><span class="w"> </span><span class="o">[</span><span class="n">Semiring</span><span class="w"> </span><span class="n">R</span><span class="o">]</span><span class="w"> </span><span class="o">[</span><span class="n">Semiring</span><span class="w"> </span><span class="n">S</span><span class="o">]</span><span class="w"> </span><span class="o">[</span><span class="n">PartialOrder</span><span class="w"> </span><span class="n">S</span><span class="o">]</span>
+<span class="w">    </span><span class="kn">extends</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="bp">→ₙ*</span><span class="w"> </span><span class="n">S</span><span class="w"> </span><span class="kn">where</span>
+<span class="w">  </span><span class="sd">/-- The absolute value is nonnegative -/</span>
+<span class="w">  </span><span class="n">nonneg&#39;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="bp">∀</span><span class="w"> </span><span class="n">x</span><span class="o">,</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="bp">≤</span><span class="w"> </span><span class="n">toFun</span><span class="w"> </span><span class="n">x</span>
+<span class="w">  </span><span class="sd">/-- The absolute value is positive definitive -/</span>
+<span class="w">  </span><span class="n">eq_zero&#39;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="bp">∀</span><span class="w"> </span><span class="n">x</span><span class="o">,</span><span class="w"> </span><span class="n">toFun</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="bp">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="bp">↔</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="bp">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">  </span><span class="sd">/-- The absolute value satisfies the triangle inequality -/</span>
+<span class="w">  </span><span class="n">add_le&#39;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="bp">∀</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="n">y</span><span class="o">,</span><span class="w"> </span><span class="n">toFun</span><span class="w"> </span><span class="o">(</span><span class="n">x</span><span class="w"> </span><span class="bp">+</span><span class="w"> </span><span class="n">y</span><span class="o">)</span><span class="w"> </span><span class="bp">≤</span><span class="w"> </span><span class="n">toFun</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="bp">+</span><span class="w"> </span><span class="n">toFun</span><span class="w"> </span><span class="n">y</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">nonnegative number with the same magnitude as a given real number</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In mathematics, the absolute value or modulus of a real number 
+  
+    
+      
+        x
+      
+    
+    {\displaystyle x}
+  
+, denoted 
+  
+    
+      
+        
+          |
+        
+        x
+        
+          |
+        
+      
+    
+    {\displaystyle |x|}
+  
+, is the (non-negative) magnitude of 
+  
+    
+      
+        x
+      
+    
+    {\displaystyle x}
+  
+ measured without regard to its sign. Namely, 
+  
+    
+      
+        
+          |
+        
+        x
+        
+          |
+        
+        =
+        x
+      
+    
+    {\displaystyle |x|=x}
+  
+ if 
+  
+    
+      
+        x
+      
+    
+    {\displaystyle x}
+  
+ is a positive number, and 
+  
+    
+      
+        
+          |
+        
+        x
+        
+          |
+        
+        =
+        −
+        x
+      
+    
+    {\displaystyle |x|=-x}
+  
+ if 
+  
+    
+      
+        x
+      
+    
+    {\displaystyle x}
+  
+ is negative (in which…</p><p class="more"><a href="https://en.wikipedia.org/wiki/Absolute_value" target="_blank">Read full article on Wikipedia ↗</a></p></div></details>
+    </section>
+  </div>
+</article>
+<article class="entry">
+  <header>
+    <span class="num">3</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)" target="_blank">Graph (discrete mathematics)</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q141488" target="_blank">Q141488</a></span>
+    <span class="decl">↔ <code>SimpleGraph</code></span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · Mathlib/Combinatorics/SimpleGraph/Basic.lean:87–99 <a class="open" href="https://leanprover-community.github.io/mathlib4_docs/Mathlib/Combinatorics/SimpleGraph/Basic.html#SimpleGraph" target="_blank">docs ↗</a> · <a class="open" href="https://github.com/Deicyde/mathlib4/blob/58721d32a350bd5c966be52e21892a4692ce852e/Mathlib/Combinatorics/SimpleGraph/Basic.lean#L87-L99" target="_blank">source ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- A simple graph is an irreflexive symmetric relation `Adj` on a vertex type `V`.</span>
+<span class="sd">The relation describes which pairs of vertices are adjacent.</span>
+<span class="sd">There is exactly one edge for every pair of adjacent vertices;</span>
+<span class="sd">see `SimpleGraph.edgeSet` for the corresponding edge set.</span>
+<span class="sd">-/</span>
+<span class="kd">@[</span><span class="n">ext</span><span class="o">,</span><span class="w"> </span><span class="n">aesop</span><span class="w"> </span><span class="n">safe</span><span class="w"> </span><span class="n">constructors</span><span class="w"> </span><span class="o">(</span><span class="n">rule_sets</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="o">[</span><span class="n">SimpleGraph</span><span class="kd">]</span><span class="o">),</span><span class="w"> </span><span class="n">wikidata</span><span class="w"> </span><span class="n">Q141488</span><span class="o">]</span>
+<span class="kn">structure</span><span class="w"> </span><span class="n">SimpleGraph</span><span class="w"> </span><span class="o">(</span><span class="n">V</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">Type</span><span class="w"> </span><span class="n">u</span><span class="o">)</span><span class="w"> </span><span class="kn">where</span>
+<span class="w">  </span><span class="sd">/-- The adjacency relation of a simple graph. -/</span>
+<span class="w">  </span><span class="n">Adj</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">V</span><span class="w"> </span><span class="bp">→</span><span class="w"> </span><span class="n">V</span><span class="w"> </span><span class="bp">→</span><span class="w"> </span><span class="kt">Prop</span>
+<span class="w">  </span><span class="n">symm</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">Std</span><span class="bp">.</span><span class="n">Symm</span><span class="w"> </span><span class="n">Adj</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">aesop_graph</span>
+<span class="w">  </span><span class="n">loopless</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">Std</span><span class="bp">.</span><span class="n">Irrefl</span><span class="w"> </span><span class="n">Adj</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">aesop_graph</span>
+
+<span class="n">initialize_simps_projections</span><span class="w"> </span><span class="n">SimpleGraph</span><span class="w"> </span><span class="o">(</span><span class="n">Adj</span><span class="w"> </span><span class="bp">→</span><span class="w"> </span><span class="n">adj</span><span class="o">)</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">mathematical structure made of vertices connected in pairs by edges</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In discrete mathematics, particularly in graph theory, a graph is a structure consisting of a set of objects where some pairs of the objects are in some sense &quot;related&quot;. The objects are represented by abstractions called vertices (also called nodes or points) and each of the related pairs of vertices is called an edge (also called link or line). Typically, a graph is depicted in diagrammatic form as a set of dots or circles for the vertices, joined by lines or curves for the edges.
+The edges may be directed or undirected. For example, if the vertices represent people at a party, and there is an edge between two people if they shake hands, then this graph is undirected because any person A can shake hands with a person B only if B also shakes hands with A. In contrast, if an edge from a person A to a person B means that A owes money to B, then this graph is directed, because owing money…</p><p class="more"><a href="https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)" target="_blank">Read full article on Wikipedia ↗</a></p></div></details>
+    </section>
+  </div>
+</article>
+<article class="entry">
+  <header>
+    <span class="num">4</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Countable_set" target="_blank">Countable set</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q66707394" target="_blank">Q66707394</a></span>
+    <span class="decl">↔ <code>Countable</code></span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · Mathlib/Data/Countable/Defs.lean:39–43 <a class="open" href="https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Countable/Defs.html#Countable" target="_blank">docs ↗</a> · <a class="open" href="https://github.com/Deicyde/mathlib4/blob/58721d32a350bd5c966be52e21892a4692ce852e/Mathlib/Data/Countable/Defs.lean#L39-L43" target="_blank">source ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- A type `α` is countable if there exists an injective map `α → ℕ`. -/</span>
+<span class="kd">@[</span><span class="n">mk_iff</span><span class="w"> </span><span class="n">countable_iff_exists_injective</span><span class="o">,</span><span class="w"> </span><span class="n">wikidata</span><span class="w"> </span><span class="n">Q66707394</span><span class="kd">]</span>
+<span class="kn">class</span><span class="w"> </span><span class="n">Countable</span><span class="w"> </span><span class="o">(</span><span class="n">α</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">Sort</span><span class="w"> </span><span class="n">u</span><span class="o">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">Prop</span><span class="w"> </span><span class="kn">where</span>
+<span class="w">  </span><span class="sd">/-- A type `α` is countable if there exists an injective map `α → ℕ`. -/</span>
+<span class="w">  </span><span class="n">exists_injective_nat&#39;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="bp">∃</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">α</span><span class="w"> </span><span class="bp">→</span><span class="w"> </span><span class="n">ℕ</span><span class="o">,</span><span class="w"> </span><span class="n">Injective</span><span class="w"> </span><span class="n">f</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">set with the same cardinality as some subset of the set of natural numbers</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In mathematics, a set is countable if either it is finite or it can be made in one to one correspondence with the set of natural numbers. Equivalently, a set is countable if there exists an injective function from it into the natural numbers; this means that each element in the set may be associated to a unique natural number, or that the elements of the set can be counted one at a time, although the counting may never finish due to an infinite number of elements.
+In more technical terms, assuming the axiom of countable choice, a set is countable if its cardinality (the number of elements of the set) is not greater than that of the natural numbers. A countable set that is not finite is said to be countably infinite; for example the set of all natural numbers 
+  
+    
+      
+        
+          N
+        
+      
+    
+    {\displaystyle \mathbb {N} }
+  
+ or all rational numbers 
+  
+    
+  …</p><p class="more"><a href="https://en.wikipedia.org/wiki/Countable_set" target="_blank">Read full article on Wikipedia ↗</a></p></div></details>
+    </section>
+  </div>
+</article>
+<article class="entry">
+  <header>
+    <span class="num">5</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Tangent_bundle" target="_blank">Tangent bundle</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q746550" target="_blank">Q746550</a></span>
+    <span class="decl">↔ <code>TangentBundle</code></span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · Mathlib/Geometry/Manifold/IsManifold/Basic.lean:1072–1075 <a class="open" href="https://leanprover-community.github.io/mathlib4_docs/Mathlib/Geometry/Manifold/IsManifold/Basic.html#TangentBundle" target="_blank">docs ↗</a> · <a class="open" href="https://github.com/Deicyde/mathlib4/blob/58721d32a350bd5c966be52e21892a4692ce852e/Mathlib/Geometry/Manifold/IsManifold/Basic.lean#L1072-L1075" target="_blank">source ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- The tangent bundle to a manifold, as a Sigma type. Defined in terms of</span>
+<span class="sd">`Bundle.TotalSpace` to be able to put a suitable topology on it. -/</span>
+<span class="kd">@[</span><span class="n">wikidata</span><span class="w"> </span><span class="n">Q746550</span><span class="kd">]</span>
+<span class="kn">abbrev</span><span class="w"> </span><span class="n">TangentBundle</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="n">Bundle</span><span class="bp">.</span><span class="n">TotalSpace</span><span class="w"> </span><span class="n">E</span><span class="w"> </span><span class="o">(</span><span class="n">TangentSpace</span><span class="w"> </span><span class="n">I</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">M</span><span class="w"> </span><span class="bp">→</span><span class="w"> </span><span class="kt">Type</span><span class="w"> </span><span class="bp">_</span><span class="o">)</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">tangent spaces of a manifold considered together</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>A tangent bundle is the collection of all of the tangent spaces for all points on a manifold, structured in a way that it forms a new manifold itself. Formally, in differential geometry, the tangent bundle of a differentiable manifold 
+  
+    
+      
+        M
+      
+    
+    {\displaystyle M}
+  
+ is a manifold 
+  
+    
+      
+        T
+        M
+      
+    
+    {\displaystyle TM}
+  
+ which assembles all the tangent vectors in 
+  
+    
+      
+        M
+      
+    
+    {\displaystyle M}
+  
+. As a set, it is given by the disjoint union of the tangent spaces of 
+  
+    
+      
+        M
+      
+    
+    {\displaystyle M}
+  
+.  That is,
+
+  
+    
+      
+        
+          
+            
+              
+                T
+                M
+              
+              
+                
+                =
+                
+                  ⨆
+                  
+                    x
+                …</p><p class="more"><a href="https://en.wikipedia.org/wiki/Tangent_bundle" target="_blank">Read full article on Wikipedia ↗</a></p></div></details>
+    </section>
+  </div>
+</article>
+<article class="entry">
+  <header>
+    <span class="num">6</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Solvable_group" target="_blank">Solvable group</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q759832" target="_blank">Q759832</a></span>
+    <span class="decl">↔ <code>IsSolvable</code></span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · Mathlib/GroupTheory/Solvable.lean:104–109 <a class="open" href="https://leanprover-community.github.io/mathlib4_docs/Mathlib/GroupTheory/Solvable.html#IsSolvable" target="_blank">docs ↗</a> · <a class="open" href="https://github.com/Deicyde/mathlib4/blob/58721d32a350bd5c966be52e21892a4692ce852e/Mathlib/GroupTheory/Solvable.lean#L104-L109" target="_blank">source ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- A group `G` is solvable if its derived series is eventually trivial. We use this definition</span>
+<span class="sd">  because it&#39;s the most convenient one to work with. -/</span>
+<span class="kd">@[</span><span class="n">mk_iff</span><span class="w"> </span><span class="n">isSolvable_def</span><span class="o">,</span><span class="w"> </span><span class="n">wikidata</span><span class="w"> </span><span class="n">Q759832</span><span class="kd">]</span>
+<span class="kn">class</span><span class="w"> </span><span class="n">IsSolvable</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">Prop</span><span class="w"> </span><span class="kn">where</span>
+<span class="w">  </span><span class="sd">/-- A group `G` is solvable if its derived series is eventually trivial. -/</span>
+<span class="w">  </span><span class="n">solvable</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="bp">∃</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">ℕ</span><span class="o">,</span><span class="w"> </span><span class="n">derivedSeries</span><span class="w"> </span><span class="n">G</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="bp">=</span><span class="w"> </span><span class="bp">⊥</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">group that can be constructed from abelian groups using extensions; a group whose derived series terminates in the trivial subgroup</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In mathematics, more specifically in the field of group theory, a solvable group or soluble group is a group that can be constructed from abelian groups using extensions.  Equivalently, a solvable group is a group whose derived series terminates in the trivial subgroup.</p><p class="more"><a href="https://en.wikipedia.org/wiki/Solvable_group" target="_blank">Read full article on Wikipedia ↗</a></p></div></details>
+    </section>
+  </div>
+</article>
+<article class="entry">
+  <header>
+    <span class="num">7</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Matrix_(mathematics)" target="_blank">Matrix (mathematics)</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q44337" target="_blank">Q44337</a></span>
+    <span class="decl">↔ <code>Matrix</code></span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · Mathlib/LinearAlgebra/Matrix/Defs.lean:52–56 <a class="open" href="https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Matrix/Defs.html#Matrix" target="_blank">docs ↗</a> · <a class="open" href="https://github.com/Deicyde/mathlib4/blob/58721d32a350bd5c966be52e21892a4692ce852e/Mathlib/LinearAlgebra/Matrix/Defs.lean#L52-L56" target="_blank">source ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- `Matrix m n R` is the type of matrices with entries in `R`, whose rows are indexed by `m`</span>
+<span class="sd">and whose columns are indexed by `n`. -/</span>
+<span class="kd">@[</span><span class="n">wikidata</span><span class="w"> </span><span class="n">Q44337</span><span class="kd">]</span>
+<span class="kn">def</span><span class="w"> </span><span class="n">Matrix</span><span class="w"> </span><span class="o">(</span><span class="n">m</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">Type</span><span class="w"> </span><span class="n">u</span><span class="o">)</span><span class="w"> </span><span class="o">(</span><span class="n">n</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">Type</span><span class="w"> </span><span class="n">u&#39;</span><span class="o">)</span><span class="w"> </span><span class="o">(</span><span class="n">α</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">Type</span><span class="w"> </span><span class="n">v</span><span class="o">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">Type</span><span class="w"> </span><span class="n">max</span><span class="w"> </span><span class="n">u</span><span class="w"> </span><span class="n">u&#39;</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">:=</span>
+<span class="w">  </span><span class="n">m</span><span class="w"> </span><span class="bp">→</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="bp">→</span><span class="w"> </span><span class="n">α</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">rectangular array of numbers, symbols, or expressions, arranged in rows and columns</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In mathematics, a matrix (pl.: matrices) is a rectangular array of numbers or other mathematical objects with elements or entries arranged in rows and columns, usually satisfying certain properties of addition and multiplication. 
+For example, 
+
+  
+    
+      
+        
+          
+            [
+            
+              
+                
+                  1
+                
+                
+                  9
+                
+                
+                  −
+                  13
+                
+              
+              
+                
+                  20
+                
+                
+                  5
+                
+                
+                  −
+                  6
+                
+              
+            
+            ]
+          
+        
+      
+    
+    {\displaystyle {\begin{bmatrix}1&amp;9&amp;-13\\20&amp;5&amp;-6\end{bmatrix}}}
+  
+
+denotes a matrix with two rows and…</p><p class="more"><a href="https://en.wikipedia.org/wiki/Matrix_(mathematics)" target="_blank">Read full article on Wikipedia ↗</a></p></div></details>
+    </section>
+  </div>
+</article>
+<article class="entry">
+  <header>
+    <span class="num">8</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Orthogonal_group" target="_blank">Orthogonal group</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q1783179" target="_blank">Q1783179</a></span>
+    <span class="decl">↔ <code>Matrix.orthogonalGroup</code></span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · Mathlib/LinearAlgebra/UnitaryGroup.lean:294–297 <a class="open" href="https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/UnitaryGroup.html#Matrix.orthogonalGroup" target="_blank">docs ↗</a> · <a class="open" href="https://github.com/Deicyde/mathlib4/blob/58721d32a350bd5c966be52e21892a4692ce852e/Mathlib/LinearAlgebra/UnitaryGroup.lean#L294-L297" target="_blank">source ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- `Matrix.orthogonalGroup n` is the group of `n` by `n` matrices where the transpose is the</span>
+<span class="sd">inverse. -/</span>
+<span class="kd">@[</span><span class="n">wikidata</span><span class="w"> </span><span class="n">Q1783179</span><span class="kd">]</span>
+<span class="kn">abbrev</span><span class="w"> </span><span class="n">orthogonalGroup</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="n">unitaryGroup</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="n">R</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">mathematical group consisting of transformations of a Euclidean space which preserve distance and a fixed point</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In mathematics, the orthogonal group in dimension n, denoted O(n), is the group of distance-preserving transformations of a Euclidean space of dimension n that preserve a fixed point (the origin), where the group operation is given by composing transformations. The orthogonal group is sometimes called the general orthogonal group, by analogy with the general linear group. Equivalently, it is the group of n × n orthogonal matrices, where the group operation is given by matrix multiplication (an orthogonal matrix is a real matrix whose inverse equals its transpose). The orthogonal group is an algebraic group and a Lie group. It is compact.
+The orthogonal group in dimension n has two connected components. The one that contains the identity element is a normal subgroup, called the special orthogonal group, and denoted SO(n). It consists of all orthogonal matrices of determinant 1. This…</p><p class="more"><a href="https://en.wikipedia.org/wiki/Orthogonal_group" target="_blank">Read full article on Wikipedia ↗</a></p></div></details>
+    </section>
+  </div>
+</article>
+<article class="entry">
+  <header>
+    <span class="num">9</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Measurable_function" target="_blank">Measurable function</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q516776" target="_blank">Q516776</a></span>
+    <span class="decl">↔ <code>Measurable</code></span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · Mathlib/MeasureTheory/MeasurableSpace/Defs.lean:491–500 <a class="open" href="https://leanprover-community.github.io/mathlib4_docs/Mathlib/MeasureTheory/MeasurableSpace/Defs.html#Measurable" target="_blank">docs ↗</a> · <a class="open" href="https://github.com/Deicyde/mathlib4/blob/58721d32a350bd5c966be52e21892a4692ce852e/Mathlib/MeasureTheory/MeasurableSpace/Defs.lean#L491-L500" target="_blank">source ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- A function `f` between measurable spaces is measurable if the preimage of every</span>
+<span class="sd">  measurable set is measurable. -/</span>
+<span class="kd">@[</span><span class="n">fun_prop</span><span class="o">,</span><span class="w"> </span><span class="n">wikidata</span><span class="w"> </span><span class="n">Q516776</span><span class="kd">]</span>
+<span class="kn">def</span><span class="w"> </span><span class="n">Measurable</span><span class="w"> </span><span class="o">[</span><span class="n">MeasurableSpace</span><span class="w"> </span><span class="n">α</span><span class="o">]</span><span class="w"> </span><span class="o">[</span><span class="n">MeasurableSpace</span><span class="w"> </span><span class="n">β</span><span class="o">]</span><span class="w"> </span><span class="o">(</span><span class="n">f</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">α</span><span class="w"> </span><span class="bp">→</span><span class="w"> </span><span class="n">β</span><span class="o">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">Prop</span><span class="w"> </span><span class="o">:=</span>
+<span class="w">  </span><span class="bp">∀</span><span class="w"> </span><span class="o">⦃</span><span class="n">t</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">Set</span><span class="w"> </span><span class="n">β</span><span class="o">⦄,</span><span class="w"> </span><span class="n">MeasurableSet</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="bp">→</span><span class="w"> </span><span class="n">MeasurableSet</span><span class="w"> </span><span class="o">(</span><span class="n">f</span><span class="w"> </span><span class="bp">⁻¹&#39;</span><span class="w"> </span><span class="n">t</span><span class="o">)</span>
+
+<span class="n">add_aesop_rules</span><span class="w"> </span><span class="n">safe</span><span class="w"> </span><span class="n">tactic</span>
+<span class="w">  </span><span class="o">(</span><span class="n">rule_sets</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="o">[</span><span class="n">Measurable</span><span class="o">])</span>
+<span class="w">  </span><span class="o">(</span><span class="n">index</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="o">[</span><span class="n">target</span><span class="w"> </span><span class="bp">@</span><span class="n">Measurable</span><span class="w"> </span><span class="bp">..</span><span class="o">])</span>
+<span class="w">  </span><span class="o">(</span><span class="k">by</span><span class="w"> </span><span class="n">fun_prop</span><span class="w"> </span><span class="o">(</span><span class="n">disch</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="n">measurability</span><span class="o">))</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">function between measurable spaces</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In mathematics, and in particular measure theory, a measurable function is a function between the underlying sets of two measurable spaces that preserves the structure of the spaces: the preimage of any measurable set is measurable. This is in direct analogy to the definition that a continuous function between topological spaces preserves the topological structure: the preimage of any open set is open. In real analysis, measurable functions are used in the definition of the Lebesgue integral. In probability theory, a measurable function on a probability space is known as a random variable.</p><p class="more"><a href="https://en.wikipedia.org/wiki/Measurable_function" target="_blank">Read full article on Wikipedia ↗</a></p></div></details>
+    </section>
+  </div>
+</article>
+<article class="entry">
+  <header>
+    <span class="num">10</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Dirichlet_character" target="_blank">Dirichlet character</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q1063579" target="_blank">Q1063579</a></span>
+    <span class="decl">↔ <code>DirichletCharacter</code></span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · Mathlib/NumberTheory/DirichletCharacter/Basic.lean:38–40 <a class="open" href="https://leanprover-community.github.io/mathlib4_docs/Mathlib/NumberTheory/DirichletCharacter/Basic.html#DirichletCharacter" target="_blank">docs ↗</a> · <a class="open" href="https://github.com/Deicyde/mathlib4/blob/58721d32a350bd5c966be52e21892a4692ce852e/Mathlib/NumberTheory/DirichletCharacter/Basic.lean#L38-L40" target="_blank">source ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- The type of Dirichlet characters of level `n`. -/</span>
+<span class="kd">@[</span><span class="n">wikidata</span><span class="w"> </span><span class="n">Q1063579</span><span class="kd">]</span>
+<span class="kn">abbrev</span><span class="w"> </span><span class="n">DirichletCharacter</span><span class="w"> </span><span class="o">(</span><span class="n">R</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">Type</span><span class="bp">*</span><span class="o">)</span><span class="w"> </span><span class="o">[</span><span class="n">CommMonoidWithZero</span><span class="w"> </span><span class="n">R</span><span class="o">]</span><span class="w"> </span><span class="o">(</span><span class="n">n</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">ℕ</span><span class="o">)</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="n">MulChar</span><span class="w"> </span><span class="o">(</span><span class="n">ZMod</span><span class="w"> </span><span class="n">n</span><span class="o">)</span><span class="w"> </span><span class="n">R</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">certain arithmetic functions</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In analytic number theory and related branches of mathematics, a complex-valued arithmetic function  
+  
+    
+      
+        χ
+        :
+        
+          Z
+        
+        →
+        
+          C
+        
+      
+    
+    {\displaystyle \chi :\mathbb {Z} \rightarrow \mathbb {C} }
+  
+ is a Dirichlet character of modulus 
+  
+    
+      
+        m
+      
+    
+    {\displaystyle m}
+  
+ (where 
+  
+    
+      
+        m
+      
+    
+    {\displaystyle m}
+  
+ is a positive integer) if for all integers 
+  
+    
+      
+        a
+      
+    
+    {\displaystyle a}
+  
+ and 
+  
+    
+      
+        b
+      
+    
+    {\displaystyle b}
+  
+:
+
+1. 
+  
+    
+      
+        χ
+        (
+        a
+        b
+        )
+        =
+        χ
+        (
+        a
+        )
+        χ
+        (
+        b
+        )
+        ;
+      
+    
+    {\displaystyle \chi (ab)=\chi (a)\chi (b);}
+  
+ that is, 
+  
+    
+      
+       …</p><p class="more"><a href="https://en.wikipedia.org/wiki/Dirichlet_character" target="_blank">Read full article on Wikipedia ↗</a></p></div></details>
+    </section>
+  </div>
+</article>
+<article class="entry">
+  <header>
+    <span class="num">11</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Riemann_zeta_function" target="_blank">Riemann zeta function</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q187235" target="_blank">Q187235</a></span>
+    <span class="decl">↔ <code>riemannZeta</code></span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · Mathlib/NumberTheory/LSeries/RiemannZeta.lean:119–121 <a class="open" href="https://leanprover-community.github.io/mathlib4_docs/Mathlib/NumberTheory/LSeries/RiemannZeta.html#riemannZeta" target="_blank">docs ↗</a> · <a class="open" href="https://github.com/Deicyde/mathlib4/blob/58721d32a350bd5c966be52e21892a4692ce852e/Mathlib/NumberTheory/LSeries/RiemannZeta.lean#L119-L121" target="_blank">source ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- The Riemann zeta function `ζ(s)`. -/</span>
+<span class="kd">@[</span><span class="n">wikidata</span><span class="w"> </span><span class="n">Q187235</span><span class="kd">]</span>
+<span class="kn">def</span><span class="w"> </span><span class="n">riemannZeta</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="n">hurwitzZetaEven</span><span class="w"> </span><span class="mi">0</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">analytic function</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>The Riemann zeta function or Euler–Riemann zeta function, denoted by the lowercase Greek letter ζ (zeta), is a mathematical function of a complex variable defined as 
+  
+    
+      
+        ζ
+        (
+        s
+        )
+        =
+        
+          ∑
+          
+            n
+            =
+            1
+          
+          
+            ∞
+          
+        
+        
+          
+            1
+            
+              n
+              
+                s
+              
+            
+          
+        
+        =
+        
+          
+            1
+            
+              1
+              
+                s
+              
+            
+          
+        
+        +
+        
+          
+            1
+            
+              2
+              
+                s
+              
+            
+          
+        
+        +
+        
+          
+            1
+            
+              3
+            …</p><p class="more"><a href="https://en.wikipedia.org/wiki/Riemann_zeta_function" target="_blank">Read full article on Wikipedia ↗</a></p></div></details>
+    </section>
+  </div>
+</article>
+<article class="entry">
+  <header>
+    <span class="num">12</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Riemann_hypothesis" target="_blank">Riemann hypothesis</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q205966" target="_blank">Q205966</a></span>
+    <span class="decl">↔ <code>RiemannHypothesis</code></span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · Mathlib/NumberTheory/LSeries/RiemannZeta.lean:182–186 <a class="open" href="https://leanprover-community.github.io/mathlib4_docs/Mathlib/NumberTheory/LSeries/RiemannZeta.html#RiemannHypothesis" target="_blank">docs ↗</a> · <a class="open" href="https://github.com/Deicyde/mathlib4/blob/58721d32a350bd5c966be52e21892a4692ce852e/Mathlib/NumberTheory/LSeries/RiemannZeta.lean#L182-L186" target="_blank">source ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- A formal statement of the **Riemann hypothesis** – constructing a term of this type is worth a</span>
+<span class="sd">million dollars. -/</span>
+<span class="kd">@[</span><span class="n">wikidata</span><span class="w"> </span><span class="n">Q205966</span><span class="kd">]</span>
+<span class="kn">def</span><span class="w"> </span><span class="n">RiemannHypothesis</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">Prop</span><span class="w"> </span><span class="o">:=</span>
+<span class="w">  </span><span class="bp">∀</span><span class="w"> </span><span class="o">(</span><span class="n">s</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">ℂ</span><span class="o">)</span><span class="w"> </span><span class="o">(</span><span class="bp">_</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">riemannZeta</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="bp">=</span><span class="w"> </span><span class="mi">0</span><span class="o">)</span><span class="w"> </span><span class="o">(</span><span class="bp">_</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="bp">¬∃</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">ℕ</span><span class="o">,</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="bp">=</span><span class="w"> </span><span class="bp">-</span><span class="mi">2</span><span class="w"> </span><span class="bp">*</span><span class="w"> </span><span class="o">(</span><span class="n">n</span><span class="w"> </span><span class="bp">+</span><span class="w"> </span><span class="mi">1</span><span class="o">))</span><span class="w"> </span><span class="o">(</span><span class="bp">_</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="bp">≠</span><span class="w"> </span><span class="mi">1</span><span class="o">),</span><span class="w"> </span><span class="n">s</span><span class="bp">.</span><span class="n">re</span><span class="w"> </span><span class="bp">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="bp">/</span><span class="w"> </span><span class="mi">2</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">conjecture in mathematics linked to the repartition of prime numbers</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In mathematics, the Riemann hypothesis is the conjecture that the Riemann zeta function has its zeros only at the negative even integers and complex numbers with real part ⁠1/2⁠. Many consider it to be the most important unsolved problem in pure mathematics. It is of great interest in number theory because it implies results about the distribution of prime numbers. It was proposed by Bernhard Riemann, after whom it is named. According to a 2026 survey, there is overwhelming numerical evidence for the hypothesis, but no proof is known.
+The Riemann hypothesis and some of its generalizations, along with Goldbach&#x27;s conjecture and the twin prime conjecture, make up Hilbert&#x27;s eighth problem in David Hilbert&#x27;s list of twenty-three unsolved problems; it is also one of the Millennium Prize Problems of the Clay Mathematics Institute, which offers US$1 million for a solution to any of them. The…</p><p class="more"><a href="https://en.wikipedia.org/wiki/Riemann_hypothesis" target="_blank">Read full article on Wikipedia ↗</a></p></div></details>
+    </section>
+  </div>
+</article>
+<article class="entry">
+  <header>
+    <span class="num">13</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Theta_function" target="_blank">Theta function</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q1154787" target="_blank">Q1154787</a></span>
+    <span class="decl">↔ <code>jacobiTheta₂</code></span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · Mathlib/NumberTheory/ModularForms/JacobiTheta/TwoVariable.lean:250–254 <a class="open" href="https://leanprover-community.github.io/mathlib4_docs/Mathlib/NumberTheory/ModularForms/JacobiTheta/TwoVariable.html#jacobiTheta₂" target="_blank">docs ↗</a> · <a class="open" href="https://github.com/Deicyde/mathlib4/blob/58721d32a350bd5c966be52e21892a4692ce852e/Mathlib/NumberTheory/ModularForms/JacobiTheta/TwoVariable.lean#L250-L254" target="_blank">source ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- The two-variable Jacobi theta function,</span>
+<span class="sd">`θ z τ = ∑&#39; (n : ℤ), cexp (2 * π * I * n * z + π * I * n ^ 2 * τ)`.</span>
+<span class="sd">-/</span>
+<span class="kd">@[</span><span class="n">wikidata</span><span class="w"> </span><span class="n">Q1154787</span><span class="kd">]</span>
+<span class="kn">def</span><span class="w"> </span><span class="n">jacobiTheta₂</span><span class="w"> </span><span class="o">(</span><span class="n">z</span><span class="w"> </span><span class="n">τ</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">ℂ</span><span class="o">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">ℂ</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="bp">∑&#39;</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">ℤ</span><span class="o">,</span><span class="w"> </span><span class="n">jacobiTheta₂_term</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="n">τ</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">special functions of several complex variables</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In mathematics, theta functions are special functions of several complex variables. Fundamentally, they are a family of continuous functions which encode the behavior of discrete multi-dimensional periodic systems, such as crystal lattices or points on a torus. Because they are smooth, they allow the study and manipulation of discrete combinatorial systems using the tools of analysis. 
+For this reason, theta functions have useful applications in topics such as
+
+number theory: &quot;in how many ways can a number be written as a sum of squares?&quot;
+physics: &quot;how does heat flow on a toroidal ring?&quot;, &quot;how do quantum particles behave when arranged in a lattice?&quot;
+geometry: &quot;what are the shape properties of elliptic curves?&quot;
+and others, including abelian varieties, moduli spaces, quadratic forms, and solitons.
+Theta functions in two dimensions are functions of two complex arguments. In one choice of…</p><p class="more"><a href="https://en.wikipedia.org/wiki/Theta_function" target="_blank">Read full article on Wikipedia ↗</a></p></div></details>
+    </section>
+  </div>
+</article>
+<article class="entry">
+  <header>
+    <span class="num">14</span>
+    <h2><a href="https://en.wikipedia.org/wiki/P-adic_number" target="_blank">P-adic number</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q311627" target="_blank">Q311627</a></span>
+    <span class="decl">↔ <code>Padic</code></span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · Mathlib/NumberTheory/Padics/PadicNumbers.lean:528–533 <a class="open" href="https://leanprover-community.github.io/mathlib4_docs/Mathlib/NumberTheory/Padics/PadicNumbers.html#Padic" target="_blank">docs ↗</a> · <a class="open" href="https://github.com/Deicyde/mathlib4/blob/58721d32a350bd5c966be52e21892a4692ce852e/Mathlib/NumberTheory/Padics/PadicNumbers.lean#L528-L533" target="_blank">source ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- The `p`-adic numbers `ℚ_[p]` are the Cauchy completion of `ℚ` with respect to the `p`-adic norm.</span>
+<span class="sd">-/</span>
+<span class="kd">@[</span><span class="n">wikidata</span><span class="w"> </span><span class="n">Q311627</span><span class="kd">]</span>
+<span class="kn">def</span><span class="w"> </span><span class="n">Padic</span><span class="w"> </span><span class="o">(</span><span class="n">p</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">ℕ</span><span class="o">)</span><span class="w"> </span><span class="o">[</span><span class="n">Fact</span><span class="w"> </span><span class="n">p</span><span class="bp">.</span><span class="n">Prime</span><span class="o">]</span><span class="w"> </span><span class="o">:=</span>
+<span class="w">  </span><span class="n">CauSeq</span><span class="bp">.</span><span class="n">Completion</span><span class="bp">.</span><span class="n">Cauchy</span><span class="w"> </span><span class="o">(</span><span class="n">padicNorm</span><span class="w"> </span><span class="n">p</span><span class="o">)</span>
+<span class="n">deriving</span><span class="w"> </span><span class="n">Zero</span><span class="o">,</span><span class="w"> </span><span class="n">One</span><span class="o">,</span><span class="w"> </span><span class="n">Add</span><span class="o">,</span><span class="w"> </span><span class="n">Neg</span><span class="o">,</span><span class="w"> </span><span class="n">Sub</span><span class="o">,</span><span class="w"> </span><span class="n">Mul</span><span class="o">,</span><span class="w"> </span><span class="n">Div</span><span class="o">,</span><span class="w"> </span><span class="n">AddCommGroup</span><span class="o">,</span><span class="w"> </span><span class="n">Ring</span><span class="o">,</span><span class="w"> </span><span class="n">CommRing</span><span class="o">,</span><span class="w"> </span><span class="n">Field</span><span class="o">,</span><span class="w"> </span><span class="n">Inhabited</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">number system for a prime p which extends the ordinary arithmetic of the rational numbers in a different way from the extension of the rational number system to the real and complex number systems</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In number theory, given a prime number p, the p-adic numbers form an extension of the rational numbers that is distinct from the real numbers, though with some similar properties; p-adic numbers can be written in a form similar to (possibly infinite) decimals, but with digits based on a prime number p rather than ten, and extending to the left rather than to the right.
+For example, comparing the expansion of the rational number 
+  
+    
+      
+        
+          
+            
+              1
+              5
+            
+          
+        
+      
+    
+    {\displaystyle {\tfrac {1}{5}}}
+  
+ in base 3 vs. the 3-adic expansion,
+
+  
+    
+      
+        
+          
+            
+              
+                
+                  
+                    
+                      1
+                      5
+                    
+                  
+                
+              
+              
+         …</p><p class="more"><a href="https://en.wikipedia.org/wiki/P-adic_number" target="_blank">Read full article on Wikipedia ↗</a></p></div></details>
+    </section>
+  </div>
+</article>
+<article class="entry">
+  <header>
+    <span class="num">15</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Irrational_number" target="_blank">Irrational number</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q607728" target="_blank">Q607728</a></span>
+    <span class="decl">↔ <code>Irrational</code></span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · Mathlib/NumberTheory/Real/Irrational.lean:35–38 <a class="open" href="https://leanprover-community.github.io/mathlib4_docs/Mathlib/NumberTheory/Real/Irrational.html#Irrational" target="_blank">docs ↗</a> · <a class="open" href="https://github.com/Deicyde/mathlib4/blob/58721d32a350bd5c966be52e21892a4692ce852e/Mathlib/NumberTheory/Real/Irrational.lean#L35-L38" target="_blank">source ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- A real number is irrational if it is not equal to any rational number. -/</span>
+<span class="kd">@[</span><span class="n">wikidata</span><span class="w"> </span><span class="n">Q607728</span><span class="kd">]</span>
+<span class="kn">def</span><span class="w"> </span><span class="n">Irrational</span><span class="w"> </span><span class="o">(</span><span class="n">x</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">ℝ</span><span class="o">)</span><span class="w"> </span><span class="o">:=</span>
+<span class="w">  </span><span class="n">x</span><span class="w"> </span><span class="bp">∉</span><span class="w"> </span><span class="n">Set</span><span class="bp">.</span><span class="n">range</span><span class="w"> </span><span class="o">((</span><span class="bp">↑</span><span class="o">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">ℚ</span><span class="w"> </span><span class="bp">→</span><span class="w"> </span><span class="n">ℝ</span><span class="o">)</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">real number that cannot be expressed as a ratio of integers</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In mathematics, the irrational numbers are all the real numbers that are not rational numbers; that is, irrational numbers are those that cannot be expressed as the ratio of two integers. Geometrically, when the ratio of lengths of two line segments is an irrational number, the line segments are also described as being incommensurable, meaning that they share no &quot;measure&quot; in common; that is, there is no length (&quot;the measure&quot;), no matter how short, that could be used to express the lengths of both of the two given segments as integer multiples of itself.
+Among irrational numbers are the ratio π of a circle&#x27;s circumference to its diameter, Euler&#x27;s number e, the golden ratio φ, and the square root of two.  In fact, all square roots of natural numbers, other than of perfect squares, are irrational.
+Like all real numbers, irrational numbers can be expressed in positional notation, notably as…</p><p class="more"><a href="https://en.wikipedia.org/wiki/Irrational_number" target="_blank">Read full article on Wikipedia ↗</a></p></div></details>
+    </section>
+  </div>
+</article>
+<article class="entry">
+  <header>
+    <span class="num">16</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Cumulative_distribution_function" target="_blank">Cumulative distribution function</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q386228" target="_blank">Q386228</a></span>
+    <span class="decl">↔ <code>ProbabilityTheory.?</code></span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · Mathlib/Probability/CDF.lean:52–56 <a class="open" href="https://leanprover-community.github.io/mathlib4_docs/Mathlib/Probability/CDF.html#ProbabilityTheory.?" target="_blank">docs ↗</a> · <a class="open" href="https://github.com/Deicyde/mathlib4/blob/58721d32a350bd5c966be52e21892a4692ce852e/Mathlib/Probability/CDF.lean#L52-L56" target="_blank">source ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- Cumulative distribution function of a real measure. The definition currently makes sense only</span>
+<span class="sd">for probability measures. In that case, it satisfies `cdf μ x = μ.real (Iic x)` (see</span>
+<span class="sd">`ProbabilityTheory.cdf_eq_real`). -/</span>
+<span class="kd">@[</span><span class="n">wikidata</span><span class="w"> </span><span class="n">Q386228</span><span class="kd">]</span>
+<span class="kn">noncomputable</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">function that defines a probability distribution by specifying the probability of being ≤ each value</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In probability theory and statistics, the cumulative distribution function (CDF) of a real-valued random variable 
+  
+    
+      
+        X
+      
+    
+    {\displaystyle X}
+  
+, or just distribution function of 
+  
+    
+      
+        X
+      
+    
+    {\displaystyle X}
+  
+, evaluated at 
+  
+    
+      
+        x
+      
+    
+    {\displaystyle x}
+  
+, is the probability that 
+  
+    
+      
+        X
+      
+    
+    {\displaystyle X}
+  
+ will take a value less than or equal to 
+  
+    
+      
+        x
+      
+    
+    {\displaystyle x}
+  
+.
+Every probability distribution supported on the real numbers, discrete or &quot;mixed&quot; as well as continuous, is uniquely identified by a right-continuous monotone increasing function (a càdlàg function) 
+  
+    
+      
+        F
+        :
+        
+          R
+        
+        →
+        [
+        0
+        ,
+        1
+        ]
+      
+    
+   …</p><p class="more"><a href="https://en.wikipedia.org/wiki/Cumulative_distribution_function" target="_blank">Read full article on Wikipedia ↗</a></p></div></details>
+    </section>
+  </div>
+</article>
+<article class="entry">
+  <header>
+    <span class="num">17</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Normal_distribution" target="_blank">Normal distribution</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q133871" target="_blank">Q133871</a></span>
+    <span class="decl">↔ <code>ProbabilityTheory.?</code></span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · Mathlib/Probability/Distributions/Gaussian/Real.lean:219–221 <a class="open" href="https://leanprover-community.github.io/mathlib4_docs/Mathlib/Probability/Distributions/Gaussian/Real.html#ProbabilityTheory.?" target="_blank">docs ↗</a> · <a class="open" href="https://github.com/Deicyde/mathlib4/blob/58721d32a350bd5c966be52e21892a4692ce852e/Mathlib/Probability/Distributions/Gaussian/Real.lean#L219-L221" target="_blank">source ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- A Gaussian distribution on `ℝ` with mean `μ` and variance `v`. -/</span>
+<span class="kd">@[</span><span class="n">wikidata</span><span class="w"> </span><span class="n">Q133871</span><span class="kd">]</span>
+<span class="kn">noncomputable</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">probability distribution</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In probability theory and statistics, a normal distribution or Gaussian distribution is a type of continuous probability distribution for a real-valued random variable. The general form of its probability density function is
+
+  
+    
+      
+        f
+        (
+        x
+        )
+        =
+        
+          
+            1
+            
+              2
+              π
+              
+                σ
+                
+                  2
+                
+              
+            
+          
+        
+        exp
+        ⁡
+        
+          
+            (
+            
+              −
+              
+                
+                  
+                    (
+                    x
+                    −
+                    μ
+                    
+                      )
+                      
+                        2
+                      
+                    
+                  
+             …</p><p class="more"><a href="https://en.wikipedia.org/wiki/Normal_distribution" target="_blank">Read full article on Wikipedia ↗</a></p></div></details>
+    </section>
+  </div>
+</article>
+<article class="entry">
+  <header>
+    <span class="num">18</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Poisson_distribution" target="_blank">Poisson distribution</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q205692" target="_blank">Q205692</a></span>
+    <span class="decl">↔ <code>ProbabilityTheory.?</code></span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · Mathlib/Probability/Distributions/Poisson/Basic.lean:38–40 <a class="open" href="https://leanprover-community.github.io/mathlib4_docs/Mathlib/Probability/Distributions/Poisson/Basic.html#ProbabilityTheory.?" target="_blank">docs ↗</a> · <a class="open" href="https://github.com/Deicyde/mathlib4/blob/58721d32a350bd5c966be52e21892a4692ce852e/Mathlib/Probability/Distributions/Poisson/Basic.lean#L38-L40" target="_blank">source ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- The poisson measure with rate `r : ℝ≥0` as a measure over `ℕ`. -/</span>
+<span class="kd">@[</span><span class="n">wikidata</span><span class="w"> </span><span class="n">Q205692</span><span class="kd">]</span>
+<span class="kn">noncomputable</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">discrete probability distribution</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In probability theory and statistics, the Poisson distribution () is a discrete probability distribution that expresses the probability of a given number of events occurring in a fixed interval of time if these events occur with a known constant mean rate and independently of the time since the last event. It can also be used for the number of events in other types of intervals than time, and in dimension greater than 1 (e.g., number of events in a given area or volume).
+The Poisson distribution is named after French mathematician Siméon Denis Poisson. It plays an important role for discrete-stable distributions.
+Under a Poisson distribution with the expectation of λ events in a given interval, the probability of k events in the same interval is:
+
+  
+    
+      
+        
+          
+            
+              
+                λ
+                
+                  k
+                
+      …</p><p class="more"><a href="https://en.wikipedia.org/wiki/Poisson_distribution" target="_blank">Read full article on Wikipedia ↗</a></p></div></details>
+    </section>
+  </div>
+</article>
+<article class="entry">
+  <header>
+    <span class="num">19</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Coprime_integers" target="_blank">Coprime integers</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q104752" target="_blank">Q104752</a></span>
+    <span class="decl">↔ <code>IsCoprime</code></span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · Mathlib/RingTheory/Coprime/Basic.lean:41–46 <a class="open" href="https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/Coprime/Basic.html#IsCoprime" target="_blank">docs ↗</a> · <a class="open" href="https://github.com/Deicyde/mathlib4/blob/58721d32a350bd5c966be52e21892a4692ce852e/Mathlib/RingTheory/Coprime/Basic.lean#L41-L46" target="_blank">source ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- The proposition that `x` and `y` are coprime, defined to be the existence of `a` and `b` such</span>
+<span class="sd">that `a * x + b * y = 1`. Note that elements with no common divisors are not necessarily coprime,</span>
+<span class="sd">e.g., the multivariate polynomials `x₁` and `x₂` are not coprime. -/</span>
+<span class="kd">@[</span><span class="n">wikidata</span><span class="w"> </span><span class="n">Q104752</span><span class="kd">]</span>
+<span class="kn">def</span><span class="w"> </span><span class="n">IsCoprime</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">Prop</span><span class="w"> </span><span class="o">:=</span>
+<span class="w">  </span><span class="bp">∃</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span><span class="o">,</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="bp">*</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="bp">+</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="bp">*</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="bp">=</span><span class="w"> </span><span class="mi">1</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">two numbers whose only common factor is 1</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In number theory, two integers a and b are coprime, relatively prime or mutually prime if the only positive integer that is a divisor of both of them is 1. Consequently, any prime number that divides a does not divide b, and vice versa. This is equivalent to their greatest common divisor (GCD) being 1. One says also a is prime to b or a is coprime with b.
+The numbers 8 and 9 are coprime, despite the fact that neither—considered individually—is a prime number, since 1 is their only common divisor. On the other hand, 6 and 9 are not coprime, because they are both divisible by 3. The numerator and denominator of a reduced fraction are coprime, by definition.</p><p class="more"><a href="https://en.wikipedia.org/wiki/Coprime_integers" target="_blank">Read full article on Wikipedia ↗</a></p></div></details>
+    </section>
+  </div>
+</article>
+<article class="entry">
+  <header>
+    <span class="num">20</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Formal_power_series" target="_blank">Formal power series</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q1003025" target="_blank">Q1003025</a></span>
+    <span class="decl">↔ <code>PowerSeries</code></span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · Mathlib/RingTheory/PowerSeries/Basic.lean:58–61 <a class="open" href="https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/PowerSeries/Basic.html#PowerSeries" target="_blank">docs ↗</a> · <a class="open" href="https://github.com/Deicyde/mathlib4/blob/58721d32a350bd5c966be52e21892a4692ce852e/Mathlib/RingTheory/PowerSeries/Basic.lean#L58-L61" target="_blank">source ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- Formal power series over a coefficient type `R` -/</span>
+<span class="kd">@[</span><span class="n">wikidata</span><span class="w"> </span><span class="n">Q1003025</span><span class="kd">]</span>
+<span class="kn">abbrev</span><span class="w"> </span><span class="n">PowerSeries</span><span class="w"> </span><span class="o">(</span><span class="n">R</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">Type</span><span class="bp">*</span><span class="o">)</span><span class="w"> </span><span class="o">:=</span>
+<span class="w">  </span><span class="n">MvPowerSeries</span><span class="w"> </span><span class="n">Unit</span><span class="w"> </span><span class="n">R</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">generalization of a polynomial, where the number of terms is allowed to be infinite, defined algebraically without consideration of convergence (so that e.g. evaluation is not always defined)</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In mathematics, a formal series is an infinite sum that is considered independently from any notion of convergence, and can be manipulated with the usual algebraic operations on series (addition, subtraction, multiplication, division, partial sums, etc.).
+A formal power series is a special kind of formal series, of the form 
+
+  
+    
+      
+        
+          ∑
+          
+            n
+            =
+            0
+          
+          
+            ∞
+          
+        
+        
+          a
+          
+            n
+          
+        
+        
+          x
+          
+            n
+          
+        
+        =
+        
+          a
+          
+            0
+          
+        
+        +
+        
+          a
+          
+            1
+          
+        
+        x
+        +
+        
+          a
+          
+            2
+          
+        
+        
+          x
+          
+            2
+         …</p><p class="more"><a href="https://en.wikipedia.org/wiki/Formal_power_series" target="_blank">Read full article on Wikipedia ↗</a></p></div></details>
+    </section>
+  </div>
+</article>
+<article class="entry">
+  <header>
+    <span class="num">21</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Open_set" target="_blank">Open set</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q213363" target="_blank">Q213363</a></span>
+    <span class="decl">↔ <code>IsOpen</code></span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · Mathlib/Topology/Defs/Basic.lean:92–94 <a class="open" href="https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Defs/Basic.html#IsOpen" target="_blank">docs ↗</a> · <a class="open" href="https://github.com/Deicyde/mathlib4/blob/58721d32a350bd5c966be52e21892a4692ce852e/Mathlib/Topology/Defs/Basic.lean#L92-L94" target="_blank">source ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- `IsOpen s` means that `s` is open in the ambient topological space on `X` -/</span>
+<span class="kd">@[</span><span class="n">wikidata</span><span class="w"> </span><span class="n">Q213363</span><span class="kd">]</span>
+<span class="kn">def</span><span class="w"> </span><span class="n">IsOpen</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">Set</span><span class="w"> </span><span class="n">X</span><span class="w"> </span><span class="bp">→</span><span class="w"> </span><span class="kt">Prop</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="n">TopologicalSpace</span><span class="bp">.</span><span class="n">IsOpen</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">set that does not contain any of its boundary points</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In general topology and mathematical analysis, an open set is a generalization of an open interval in the real line.
+In a metric space (a set with a distance defined between every two points), an open set is a set that, with every point P in it, contains all points of the metric space that are sufficiently near to P (that is, all points whose distance to P is less than some value depending on P).
+More generally, an open set is a member of a given collection of subsets of a given set, a collection that has the property of containing every union of its members, every finite intersection of its members, the empty set, and the whole set itself. A set in which such a collection is given is called a topological space, and the collection is called a topology. These conditions are very loose, and allow enormous flexibility in the choice of open sets. For example, every subset can be open (the…</p><p class="more"><a href="https://en.wikipedia.org/wiki/Open_set" target="_blank">Read full article on Wikipedia ↗</a></p></div></details>
+    </section>
+  </div>
+</article>
+<article class="entry">
+  <header>
+    <span class="num">22</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Continuous_function" target="_blank">Continuous function</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q170058" target="_blank">Q170058</a></span>
+    <span class="decl">↔ <code>Continuous</code></span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · Mathlib/Topology/Defs/Basic.lean:150–156 <a class="open" href="https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Defs/Basic.html#Continuous" target="_blank">docs ↗</a> · <a class="open" href="https://github.com/Deicyde/mathlib4/blob/58721d32a350bd5c966be52e21892a4692ce852e/Mathlib/Topology/Defs/Basic.lean#L150-L156" target="_blank">source ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- A function between topological spaces is continuous if the preimage</span>
+<span class="sd">  of every open set is open. Registered as a structure to make sure it is not unfolded by Lean. -/</span>
+<span class="kd">@[</span><span class="n">fun_prop</span><span class="o">,</span><span class="w"> </span><span class="n">wikidata</span><span class="w"> </span><span class="n">Q170058</span><span class="kd">]</span>
+<span class="kn">structure</span><span class="w"> </span><span class="n">Continuous</span><span class="w"> </span><span class="o">(</span><span class="n">f</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">X</span><span class="w"> </span><span class="bp">→</span><span class="w"> </span><span class="n">Y</span><span class="o">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">Prop</span><span class="w"> </span><span class="kn">where</span>
+<span class="w">  </span><span class="sd">/-- The preimage of an open set under a continuous function is an open set. Use `IsOpen.preimage`</span>
+<span class="sd">  instead. -/</span>
+<span class="w">  </span><span class="n">isOpen_preimage</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="bp">∀</span><span class="w"> </span><span class="n">s</span><span class="o">,</span><span class="w"> </span><span class="n">IsOpen</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="bp">→</span><span class="w"> </span><span class="n">IsOpen</span><span class="w"> </span><span class="o">(</span><span class="n">f</span><span class="w"> </span><span class="bp">⁻¹&#39;</span><span class="w"> </span><span class="n">s</span><span class="o">)</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">function such that the preimage of an open set is open</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In mathematics, a continuous function is a function such that a small variation of the argument induces a small variation of the value of the function. This implies there are no abrupt changes in value, known as discontinuities. More precisely, a function is continuous if arbitrarily small changes in its value can be assured by restricting to sufficiently small changes of its argument. A discontinuous function is a function that is not continuous. Until the 19th century, mathematicians largely relied on intuitive notions of continuity and considered only continuous functions. The epsilon–delta definition of a limit was introduced to formalize the definition of continuity.
+Continuity is one of the core concepts of calculus and mathematical analysis, where arguments and values of functions are real and complex numbers. The concept has been generalized to functions between metric spaces…</p><p class="more"><a href="https://en.wikipedia.org/wiki/Continuous_function" target="_blank">Read full article on Wikipedia ↗</a></p></div></details>
+    </section>
+  </div>
+</article>
+<article class="entry">
+  <header>
+    <span class="num">23</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Ball_(mathematics)" target="_blank">Ball (mathematics)</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q838611" target="_blank">Q838611</a></span>
+    <span class="decl">↔ <code>Metric.ball</code></span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · Mathlib/Topology/MetricSpace/Pseudo/Defs.lean:367–370 <a class="open" href="https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/MetricSpace/Pseudo/Defs.html#Metric.ball" target="_blank">docs ↗</a> · <a class="open" href="https://github.com/Deicyde/mathlib4/blob/58721d32a350bd5c966be52e21892a4692ce852e/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean#L367-L370" target="_blank">source ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- `ball x ε` is the set of all points `y` with `dist y x &lt; ε` -/</span>
+<span class="kd">@[</span><span class="n">wikidata</span><span class="w"> </span><span class="n">Q838611</span><span class="kd">]</span>
+<span class="kn">def</span><span class="w"> </span><span class="n">ball</span><span class="w"> </span><span class="o">(</span><span class="n">x</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">α</span><span class="o">)</span><span class="w"> </span><span class="o">(</span><span class="n">ε</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">ℝ</span><span class="o">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">Set</span><span class="w"> </span><span class="n">α</span><span class="w"> </span><span class="o">:=</span>
+<span class="w">  </span><span class="o">{</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="bp">|</span><span class="w"> </span><span class="n">dist</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="bp">&lt;</span><span class="w"> </span><span class="n">ε</span><span class="w"> </span><span class="o">}</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">in mathematics, space bounded by a sphere</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In mathematics, a ball is the solid figure bounded by a sphere; it is also called a solid sphere. It may be a closed ball (including the boundary points that constitute the sphere) or an open ball (excluding them).
+These concepts are defined not only in three-dimensional Euclidean space but also for lower and higher dimensions, and for metric spaces in general. A ball in n dimensions is called a hyperball or n-ball and is bounded by a hypersphere or (n−1)-sphere. Thus, for example, a ball in the Euclidean plane is the same thing as a disk, the planar region bounded by a circle. In Euclidean 3-space, a ball is taken to be the region of space bounded by a 2-dimensional sphere. In a one-dimensional space, a ball is a line segment.
+In other contexts, such as in Euclidean geometry and informal use, sphere is sometimes used to mean ball. In the field of topology the closed 
+  
+    
+      
+   …</p><p class="more"><a href="https://en.wikipedia.org/wiki/Ball_(mathematics)" target="_blank">Read full article on Wikipedia ↗</a></p></div></details>
+    </section>
+  </div>
+</article>
+<article class="entry">
+  <header>
+    <span class="num">24</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Uniform_space" target="_blank">Uniform space</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q652446" target="_blank">Q652446</a></span>
+    <span class="decl">↔ <code>UniformSpace</code></span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · Mathlib/Topology/UniformSpace/Defs.lean:186–203 <a class="open" href="https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/UniformSpace/Defs.html#UniformSpace" target="_blank">docs ↗</a> · <a class="open" href="https://github.com/Deicyde/mathlib4/blob/58721d32a350bd5c966be52e21892a4692ce852e/Mathlib/Topology/UniformSpace/Defs.lean#L186-L203" target="_blank">source ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- A uniform space is a generalization of the &quot;uniform&quot; topological aspects of a</span>
+<span class="sd">  metric space. It consists of a filter on `α × α` called the &quot;uniformity&quot;, which</span>
+<span class="sd">  satisfies properties analogous to the reflexivity, symmetry, and triangle properties</span>
+<span class="sd">  of a metric.</span>
+
+<span class="sd">  A metric space has a natural uniformity, and a uniform space has a natural topology.</span>
+<span class="sd">  A topological group also has a natural uniformity, even when it is not metrizable. -/</span>
+<span class="kd">@[</span><span class="n">wikidata</span><span class="w"> </span><span class="n">Q652446</span><span class="kd">]</span>
+<span class="kn">class</span><span class="w"> </span><span class="n">UniformSpace</span><span class="w"> </span><span class="o">(</span><span class="n">α</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">Type</span><span class="w"> </span><span class="n">u</span><span class="o">)</span><span class="w"> </span><span class="kn">extends</span><span class="w"> </span><span class="n">TopologicalSpace</span><span class="w"> </span><span class="n">α</span><span class="w"> </span><span class="kn">where</span>
+<span class="w">  </span><span class="sd">/-- The uniformity filter. -/</span>
+<span class="w">  </span><span class="kn">protected</span><span class="w"> </span><span class="n">uniformity</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">Filter</span><span class="w"> </span><span class="o">(</span><span class="n">α</span><span class="w"> </span><span class="bp">×</span><span class="w"> </span><span class="n">α</span><span class="o">)</span>
+<span class="w">  </span><span class="sd">/-- If `s ∈ uniformity`, then `Prod.swap ⁻¹&#39; s ∈ uniformity`. -/</span>
+<span class="w">  </span><span class="kn">protected</span><span class="w"> </span><span class="n">symm</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">Tendsto</span><span class="w"> </span><span class="n">Prod</span><span class="bp">.</span><span class="n">swap</span><span class="w"> </span><span class="n">uniformity</span><span class="w"> </span><span class="n">uniformity</span>
+<span class="w">  </span><span class="sd">/-- For every set `u ∈ uniformity`, there exists `v ∈ uniformity` such that `v ○ v ⊆ u`. -/</span>
+<span class="w">  </span><span class="kn">protected</span><span class="w"> </span><span class="n">comp</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">(</span><span class="n">uniformity</span><span class="bp">.</span><span class="n">lift&#39;</span><span class="w"> </span><span class="k">fun</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="bp">=&gt;</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="bp">○</span><span class="w"> </span><span class="n">s</span><span class="o">)</span><span class="w"> </span><span class="bp">≤</span><span class="w"> </span><span class="n">uniformity</span>
+<span class="w">  </span><span class="sd">/-- The uniformity agrees with the topology: the neighborhoods filter of each point `x`</span>
+<span class="sd">  is equal to `Filter.comap (Prod.mk x) (𝓤 α)`. -/</span>
+<span class="w">  </span><span class="kn">protected</span><span class="w"> </span><span class="n">nhds_eq_comap_uniformity</span><span class="w"> </span><span class="o">(</span><span class="n">x</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">α</span><span class="o">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">𝓝</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="bp">=</span><span class="w"> </span><span class="n">comap</span><span class="w"> </span><span class="o">(</span><span class="n">Prod</span><span class="bp">.</span><span class="n">mk</span><span class="w"> </span><span class="n">x</span><span class="o">)</span><span class="w"> </span><span class="n">uniformity</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">set given a measure of &quot;closedness&quot; of two points</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In the mathematical field of topology, a uniform space is a set with additional structure that is used to define uniform properties, such as completeness, uniform continuity and uniform convergence. Uniform spaces generalize metric spaces and topological groups, but the concept is designed to formulate the weakest axioms needed for most proofs in analysis.
+In addition to the usual properties of a topological structure, in a uniform space one formalizes the notions of relative closeness and closeness of points.  In other words, ideas like &quot;x is closer to a than y is to b&quot; make sense in uniform spaces.  By comparison, in a general topological space, given sets A,B it is meaningful to say that a point x is arbitrarily close to A (i.e., in the closure of A), or perhaps that A is a smaller neighborhood of x than B, but notions of closeness of points and relative closeness are not described…</p><p class="more"><a href="https://en.wikipedia.org/wiki/Uniform_space" target="_blank">Read full article on Wikipedia ↗</a></p></div></details>
+    </section>
+  </div>
+</article>
+<article class="entry">
+  <header>
+    <span class="num">25</span>
+    <h2><a href="https://en.wikipedia.org/wiki/Uniform_convergence" target="_blank">Uniform convergence</a></h2>
+    <span class="qid"><a href="https://www.wikidata.org/wiki/Q1411887" target="_blank">Q1411887</a></span>
+    <span class="decl">↔ <code>TendstoUniformly</code></span>
+  </header>
+  <div class="panes">
+    <section class="mathlib">
+      <h3>Mathlib source · Mathlib/Topology/UniformSpace/UniformConvergence.lean:111–116 <a class="open" href="https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/UniformSpace/UniformConvergence.html#TendstoUniformly" target="_blank">docs ↗</a> · <a class="open" href="https://github.com/Deicyde/mathlib4/blob/58721d32a350bd5c966be52e21892a4692ce852e/Mathlib/Topology/UniformSpace/UniformConvergence.lean#L111-L116" target="_blank">source ↗</a></h3>
+      <pre class="lean"><span class="sd">/-- A sequence of functions `Fₙ` converges uniformly to a limiting function `f` with respect to a</span>
+<span class="sd">filter `p` if, for any entourage of the diagonal `u`, one has `p`-eventually</span>
+<span class="sd">`(f x, Fₙ x) ∈ u` for all `x`. -/</span>
+<span class="kd">@[</span><span class="n">wikidata</span><span class="w"> </span><span class="n">Q1411887</span><span class="kd">]</span>
+<span class="kn">def</span><span class="w"> </span><span class="n">TendstoUniformly</span><span class="w"> </span><span class="o">(</span><span class="n">F</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">ι</span><span class="w"> </span><span class="bp">→</span><span class="w"> </span><span class="n">α</span><span class="w"> </span><span class="bp">→</span><span class="w"> </span><span class="n">β</span><span class="o">)</span><span class="w"> </span><span class="o">(</span><span class="n">f</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">α</span><span class="w"> </span><span class="bp">→</span><span class="w"> </span><span class="n">β</span><span class="o">)</span><span class="w"> </span><span class="o">(</span><span class="n">p</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">Filter</span><span class="w"> </span><span class="n">ι</span><span class="o">)</span><span class="w"> </span><span class="o">:=</span>
+<span class="w">  </span><span class="bp">∀</span><span class="w"> </span><span class="n">u</span><span class="w"> </span><span class="bp">∈</span><span class="w"> </span><span class="n">𝓤</span><span class="w"> </span><span class="n">β</span><span class="o">,</span><span class="w"> </span><span class="bp">∀ᶠ</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">p</span><span class="o">,</span><span class="w"> </span><span class="bp">∀</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">α</span><span class="o">,</span><span class="w"> </span><span class="o">(</span><span class="n">f</span><span class="w"> </span><span class="n">x</span><span class="o">,</span><span class="w"> </span><span class="n">F</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="n">x</span><span class="o">)</span><span class="w"> </span><span class="bp">∈</span><span class="w"> </span><span class="n">u</span></pre>
+    </section>
+    <section class="wiki">
+      <h3>Wikidata · Wikipedia</h3>
+      <p class="desc">mode of convergence of a function sequence</p>
+      <details class="lead"><summary>Wikipedia lead ↓</summary><div class="lead-body"><p>In the mathematical field of analysis, uniform convergence is a mode of convergence of functions stronger than pointwise convergence. A sequence of functions 
+  
+    
+      
+        (
+        
+          f
+          
+            n
+          
+        
+        )
+      
+    
+    {\displaystyle (f_{n})}
+  
+ converges uniformly to a limiting function 
+  
+    
+      
+        f
+      
+    
+    {\displaystyle f}
+  
+ if, roughly speaking, they uniformly approximate the function 
+  
+    
+      
+        f
+      
+    
+    {\displaystyle f}
+  
+ over the whole domain, meaning that all but finitely many of the functions of the sequence lie in a uniform error bar of the original function. Graphically this means that, given any thin band around the graph of 
+  
+    
+      
+        f
+      
+    
+    {\displaystyle f}
+  
+, the graphs of all but finitely many of the functions 
+  
+    
+      
+        
+      …</p><p class="more"><a href="https://en.wikipedia.org/wiki/Uniform_convergence" target="_blank">Read full article on Wikipedia ↗</a></p></div></details>
+    </section>
+  </div>
+</article>
+<footer>
+  Wikipedia URLs from each QID's <code>sitelinks.enwiki</code> on Wikidata.
+  Lead text via MediaWiki <code>prop=extracts</code>.
+  Mathlib source slices read at the PR's HEAD commit; body boundaries determined
+  by static analysis of column-0 top-level constructs. Syntax highlighting via
+  Pygments 2.x <code>Lean4</code> lexer.
+  No model in the rendering loop.
+</footer>
+</div>
+</body>
+</html>
