@@ -29,14 +29,15 @@
 //
 // It is NOT total, and the older claim here — "nothing that resolved before the
 // cell cut 404s now" — was false by 47,990 of the v2 index's 66,746 ids. What
-// holds, measured against site/assets/brain/labels.json: every v2 concept
-// (2,674 QIDs), decl (3,303) and container (9,052 paths) resolves, and so does
-// every article slug. What does not is exactly what v3 DROPPED on purpose
-// (docs/BRAIN-V3.md "Dropped in v3"): 45,996 unanchored frontier ext pages
-// (anchored ones — 3,610 — still resolve) and 1,994 arXiv paper nodes. Those
-// 404 with a `reason` naming the drop (see droppedInV3); they never pretend the
-// id is unknown. `/api/brain/node` still serves them from the v2 shards, which
-// is why the two route families answer differently for the same id.
+// holds: every v2 concept, decl and container resolves, and so does every
+// article slug. What does not is exactly what v3 DROPPED on purpose
+// (docs/BRAIN-V3.md "Dropped in v3"): the unanchored frontier ext pages
+// (anchored ones still resolve) and the arXiv paper nodes. Those 404 with a
+// `reason` naming the drop (see droppedInV3); they never pretend the id is
+// unknown. The v2 per-node shards are retired (`/api/brain/node` answers 410),
+// so this cell layer is the ONLY resolver — the community-edit write path
+// validates edge endpoints against it too, via the STRICT atomIdForOrgan
+// (aliases ∪ supercells, no fuzzy resolution).
 //
 // Everything here is shard/asset-backed and safe to cache for the nightly
 // rebuild cadence (Cache-Control public, max-age=3600).
@@ -532,6 +533,11 @@ export async function resolveAtomKey(c: Ctx, keyRaw: string): Promise<ResolvedKe
   // supercell labels are not in labels.json (it indexes cells) — match a
   // field concept's own label through the supercell's organs.
   //
+  // NOTE for future editors: everything below this point (and the label/aka
+  // match above) is FUZZY resolution. The community-edit endpoint oracle must
+  // never reach it — that is why atomIdForOrgan exists as a separate function
+  // rather than a flag on this one.
+  //
   // `aliases.json.slugs` indexes CELL slugs only and supercell organs ship no
   // `slug` at all, so a rule-5 field concept's own article slug missed every
   // index above and 404'd — 61 of them, including `Linear_algebra`, the very
@@ -552,6 +558,28 @@ export async function resolveAtomKey(c: Ctx, keyRaw: string): Promise<ResolvedKe
     }
   }
   return null;
+}
+
+// STRICT organ → atom resolver: the node-existence oracle the community-edit
+// write path (src/brain-edits.ts) validates edge endpoints against, replacing
+// the retired v2 per-node shard set. Deliberately NOT resolveAtomKey: that
+// also resolves bare decl names, article-title slug guesses, and exact
+// labels/aka, which would let prose like "Vector space" become a valid edge
+// endpoint — an accepted-invalid id written to D1, invisible in every overlay
+// and irreversible. Accepted here, nothing else:
+//   cell:… | path:…   an atom id that exists in the shards (supercells.json
+//                     answers the path: side — aliases has no path: keys)
+//   any exact organ-id key of aliases.json `organs` (QID, decl:<Lib>:<Name>,
+//                     xref page id, article slug, lit statement)
+// Returns the owning atom id, or null.
+export async function atomIdForOrgan(c: Ctx, id: string): Promise<string | null> {
+  if (!id || !BRAIN_ID_RE.test(id)) return null;
+  if (isAtomId(id)) {
+    const atom = await atomFor(c, id);
+    return atom ? atom.id : null;
+  }
+  const aliases = await cellAliases(c);
+  return own(aliases?.organs, id) ?? null;
 }
 
 // v3 drops two whole v2 populations (docs/BRAIN-V3.md "Dropped in v3"), so their
@@ -2016,8 +2044,8 @@ page, a WikiLean article and an arXiv statement that all denote <em>one object</
 organ, and one no cell claims has no atom; the 3,610 anchored ones do resolve, the corpus stays
 in <code>catalog/data/external/</code>, and the page's signal survives as a
 <code>co-page</code> synapse) and <b>arXiv paper nodes</b> (1,994 <code>lit:&lt;arxiv&gt;</code> ids —
-only STATEMENTS a cell claims are organs). The v2 route <code>/api/brain/node</code> still serves
-both from the v2 shards, so the two route families deliberately answer differently for those ids.</p>
+only STATEMENTS a cell claims are organs). The v2 route <code>/api/brain/node</code> and its
+per-node shards are retired (<b>410 Gone</b>) — the cell layer is the only resolver.</p>
 
 <h2>Connect over MCP (recommended for agents)</h2>
 <pre><code>claude mcp add --transport http wikibrain https://wikilean.jackmccarthy.org/mcp</code></pre>
@@ -2125,8 +2153,8 @@ resolves exactly (QID, decl name, slug, xref id) is promoted to the top hit.
 <h3>Related routes</h3>
 <p><code>GET /api/brain/edges?id=</code> (live community overlay, uncached) ·
 <code>GET /decl/&lt;name&gt;</code> (decl → docs redirect; JSON with <code>Accept: application/json</code>) ·
-<code>GET /api/brain/node?id=</code> (the v2 particle shards — <b>legacy</b>, retiring with the v2
-render path; use <code>/api/brain/cell</code>).</p>
+<code>GET /api/brain/node?id=</code> (the v2 particle layer — <b>retired, 410 Gone</b>; its ids are
+ORGAN ids, so they all resolve on <code>/api/brain/cell</code>).</p>
 
 <h2>Provenance &amp; licensing</h2>
 <p>Brain cell/synapse data is CC0. Every organ and every synapse trace carries a

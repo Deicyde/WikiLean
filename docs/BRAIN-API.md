@@ -457,11 +457,12 @@ time-travel over archived snapshots comes later.
   `Cache-Control: no-store`) including inferred xref-shared partners.
 - `GET /decl/<name>` — durable decl resolver; 302 → mathlib4_docs, or JSON
   (module, docs_url, reverse citations) with `Accept: application/json`.
-- `GET /api/brain/node?id=` — **legacy**: the v2 particle shards
-  (`wiki/src/brain.ts`). Still served because the community-edit write path uses
-  the v2 shard set as its node-existence oracle and the v2 `/brain` page reads
-  it; it retires with the v2 render path (docs/BRAIN-V3.md phase 5). Use
-  `/api/brain/cell`. Note its ids are ORGAN ids, so they all feed the v3 routes.
+- `GET /api/brain/node?id=` — **retired, 410 Gone** (2026-08-04; docs/BRAIN-V3.md
+  phase 5). The v2 per-node shards are no longer built or shipped; the
+  community-edit write path now validates endpoints against the v3 cell layer
+  (`aliases.json organs` ∪ `supercells.json`, via the strict `atomIdForOrgan`).
+  Use `/api/brain/cell` — every id this route ever served is an ORGAN id, so it
+  resolves there (the two populations v3 dropped 404 with a named `reason`).
 - `/map`, `/graph`, `/atlas`, `/article-graph` → 301 `/brain`;
   `/graph_data.json`, `/atlas_data.json`, `/api/atlas` → **410** (retired
   2026-07-10).

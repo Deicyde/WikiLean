@@ -245,9 +245,11 @@ the completion — so the zeta atom legitimately holds both zeta decls, exactly 
 described (C7).
 
 ### Phase 2 — shards ☑  `brain/build_cell_shards.py` + `brain/test_cell_shards.py`
-A NEW `cells/` namespace rather than a rewrite of `build_shards.py`: v2 keeps
-serving `/brain` while v3 lands, and phase 5 deletes the old path. It reuses
-build_shards' prefix scheme verbatim. Acceptance **33/33** (S1–S6).
+A NEW `cells/` namespace rather than a rewrite of `build_shards.py`: v2 kept
+serving `/brain` while v3 landed, and phase 5 has since deleted the old path
+(2026-08-04: `build_shards.py` now emits only `xref_index.json` +
+`sources.json`). It reuses build_shards' prefix scheme verbatim. Acceptance
+**33/33** (S1–S6).
 
 ```
 site/assets/brain/cells/
@@ -316,8 +318,11 @@ What the work **changed vs. the plan** — each one forced by the shipped data:
   the CELL label index (an `aka` hit is how "Vector space" finds the Module
   atom), and `brain.ts` registers first — a route left there would have silently
   shadowed the v3 one. `searchLabels` gained `aka` matching at label rank and is
-  still shared; the rest of `brain.ts` stays v2 for `brainNodeExists` (the
-  community-edit node-existence oracle) until phase 5.
+  still shared. (`brainNodeExists` — the community-edit node-existence oracle —
+  stayed v2 in `brain.ts` until phase 5; it is now a thin wrapper over the
+  STRICT v3 resolver `atomIdForOrgan`: exact `aliases.json organs` keys ∪ atom
+  ids via the cell shards/`supercells.json`, never label/aka/slug/bare-decl
+  fuzz — a prose label must not become a stored edge endpoint.)
 - **`neighborhood` lost `dir`.** A synapse is an undirected aggregate; direction
   lives on each trace. It gained `traces=0` for a compact partner list, and its
   `kinds` filter now filters the traces too (asking for `depends` must not dump
@@ -364,10 +369,25 @@ only way to get them. Also `truncated.syn` is a **count**, not a flag, and `tt`
 appears only when traces were actually trimmed. All three are now documented
 rather than papered over.
 
-### Phase 5 — verify + land ☐
+### Phase 5 — verify + land ☑ (asset retirement 2026-08-04)
 Acceptance green · browser-verify the bubble view + explorer + a synapse trace ·
 perf check (the whole point: no freeze with everything on) · deploy from the
 branch only after Jack reviews · then merge to `main`.
+
+**v2 per-node asset retirement (2026-08-04):** `brain/build_shards.py` no
+longer emits the per-node shards, `manifest.json`, v2 `labels.json`, v2
+`aliases.json` or `views/xref_explorer.json` — it builds only the two live
+survivors, `xref_index.json` (cross-pollination reverse index; the Worker
+inverts it to replace the v2 shard entries' xref edge lists) and
+`sources.json` (the /brain legend), and its atomic swap still carries `cells/`
+across. `GET /api/brain/node` answers **410 Gone**. The community-edit oracle
+(`brainNodeExists`) validates against aliases ∪ supercells via the strict
+`atomIdForOrgan`, and submitted `cell:<anchor>` endpoints normalize to their
+anchor before storage (fixes the search-picker → add-connection 400).
+Unanchored `xref:`/`lit:` ids — the populations v3 dropped — 400 with the
+named reason. `wiki/scripts/build-public.ts` copies an allow-list only:
+`cells/` + `sources.json` + `xref_index.json` (~100 MB deploy, down from
+~440 MB).
 
 ## Open items / carried debt
 
@@ -387,9 +407,11 @@ branch only after Jack reviews · then merge to `main`.
   `build_cells.py` applies it again late (idempotent) so a curated fix lands without
   a heavy upstream rebuild. If the two ever disagree, upstream wins on the next
   full rebuild.
-- v2 artifacts that become dead once v3 lands: ext nodes in `nodes.jsonl` are
-  still the organ layer (KEEP — cells derive from them), but the ext *rendering*
-  path, `xref_explorer.json` seeding, and the ext-node shards go away.
+- ☑ v2 artifacts dead now that v3 landed (retired 2026-08-04): ext nodes in
+  `nodes.jsonl` are still the organ layer (KEEP — cells derive from them), but
+  the ext *rendering* path, `xref_explorer.json` seeding, and the whole
+  per-node shard layer are gone — `build_shards.py` emits only
+  `xref_index.json` + `sources.json` (see Phase 5).
 - ☑ Nightly (`site/ops/brain-nightly.sh`) gained the atom layer: `build_cells` →
   `test_cells` → `build_cell_shards` → `test_cell_shards`, each RED aborting the
   publish exactly as the organ layer's acceptance does; it also logs the

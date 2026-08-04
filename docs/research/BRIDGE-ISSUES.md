@@ -64,8 +64,24 @@ fetch-fails under campaign load — pause the campaign (resumable) and deploy on
 a quiet machine (~100s). Still open from the review pass: the **7 grading
 disputes in `catalog/data/grounding_overrides.jsonl`** need Jack's call, and a
 post-hoc code review of the ~65 shipped commits is still worth doing.
-### 4b. Retire the v2 per-node brain assets (~340MB of the 440MB deploy)
-Phase-5 leftover, now the deploy-size tax. Three coupled changes:
+### 4b. ~~Retire the v2 per-node brain assets (~340MB of the 440MB deploy)~~ DONE 2026-08-04
+Landed. NOTE the original advice below was measurably wrong on the oracle:
+the v2 `labels.json` indexes ATOMS only (cells; zero organ ids beyond the
+anchor, zero `path:` rows beyond what it happened to carry) — a labels.json
+membership set would have rejected most legitimate organ-id endpoints. The
+real existence predicate is **`cells/aliases.json` `organs` ∪
+`cells/supercells.json` keys** (the aliases-is-insufficient claim was about
+the v2 aliases.json, which held only decls+slugs; the CELLS aliases.json
+`organs` map holds every organ id — QIDs, decl ids, anchored xref pages,
+slugs, lit statements — and supercells covers the `path:` containers aliases
+has zero keys for). Shipped as `atomIdForOrgan` (wiki/src/brain-api.ts, STRICT
+— no label/aka/slug/bare-decl fuzz) with `brainNodeExists` a thin wrapper;
+`build_shards.py` emits only `xref_index.json` + `sources.json` (views/, v2
+labels/aliases/manifest and the per-node files all retired — each checked
+against consumers); GET /api/brain/node → 410; build-public copies an
+allow-list (cells/ + sources.json + xref_index.json). `cell:<anchor>` edge
+endpoints normalize to the anchor before storage, fixing the search-picker →
+add-connection 400. Original text:
 (1) `brainNodeExists` (wiki/src/brain.ts) — swap the per-node-shard oracle for
 a labels.json membership set (8.7MB, already isolate-memoized for search;
 aliases.json is NOT sufficient — only decls+slugs). (2) stop `brain/

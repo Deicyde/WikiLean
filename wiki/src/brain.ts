@@ -1,40 +1,31 @@
-// Shared BRAIN asset plumbing + the LEGACY v2 particle route.
+// Shared BRAIN asset plumbing + the community-edit node-existence oracle.
 //
-//   GET /api/brain/node?id=<node id>     v2 shard entry: {node, edges,
-//                                        breadcrumb, children, rollup} + prov
+// **The v2 (particle) layer is retired.** BRAIN v3 made the CELL the node: the
+// /brain page reads /assets/brain/cells/* and the agent surface is
+// /api/brain/cell (src/brain-api.ts). The v2 per-node shards + manifest are no
+// longer built or shipped, and the old GET /api/brain/node route answers 410
+// Gone below (same pattern as the retired graph/atlas endpoints in index.ts).
 //
-// **This is the v2 (particle) layer.** BRAIN v3 made the CELL the node, and the
-// agent surface moved to /api/brain/cell (src/brain-api.ts, reading
-// /assets/brain/cells/). This module stays for two live consumers until phase 5
-// retires the v2 assets (docs/BRAIN-V3.md): `brainNodeExists` — the
-// node-existence oracle the community-edit write path validates edge endpoints
-// against (src/brain-edits.ts) — and the v2 /brain page. The exports below
-// (assetJson, memoAssetJson, searchLabels, BRAIN_ID_RE) are model-agnostic and
-// shared with the v3 API.
+// What lives here now: `brainNodeExists` — the node-existence oracle the
+// community-edit write path validates edge endpoints against
+// (src/brain-edits.ts) — as a thin wrapper over the STRICT v3 resolver
+// (brain-api.ts atomIdForOrgan: aliases.json `organs` ∪ supercells.json, no
+// label/slug/bare-decl fuzz), plus the model-agnostic asset helpers shared
+// with the v3 API (assetJson, memoAssetJson, searchLabels, BRAIN_ID_RE).
 //
-// v2 node ids per brain/SCHEMA.md: Q181296 | path:Mathlib/CategoryTheory |
-// decl:Mathlib:CommGroup | lit:<arxiv>#<ref>. Ids carry ':'/'/' so they ride
-// in a query param, not a path segment. The shard scheme is identical to the
-// decl-index (build_shards.py mirrors build-decl-index.ts), so the resolver
-// reuses declShardFor.
+// Node ids stay in the v2 grammar per brain/SCHEMA.md: Q181296 |
+// path:Mathlib/CategoryTheory | decl:Mathlib:CommGroup | lit:<arxiv>#<ref>.
+// Ids carry ':'/'/' so they ride in a query param, not a path segment. All of
+// them are ORGAN ids in v3, which is what keeps the oracle one alias lookup.
 import type { Context, Hono } from "hono";
 import type { Env } from "./env.js";
-import { declShardFor } from "./decl.js";
+import { atomIdForOrgan } from "./brain-api.js";
 
 // Interior spaces are legal (lit anchors like "lit:2110.15741#Theorem 2");
 // only control chars and blank/overlong ids are rejected.
 export const BRAIN_ID_RE = /^(?!\s*$)[^\p{C}]{1,400}$/u;
-const ID_RE = BRAIN_ID_RE;
 
-interface BrainManifest {
-  scheme: { min_len: number; max_len: number; pad: string };
-  shards: Record<string, number>;
-  prov: Array<Record<string, string>>;
-  roots: Array<Record<string, unknown>>;
-  _meta: Record<string, unknown>;
-}
-
-// Shared by decl.ts-style asset lookups in brain-api.ts (the v2 agent API).
+// Shared by decl.ts-style asset lookups in brain-api.ts (the cell agent API).
 export async function assetJson<T>(c: Context<{ Bindings: Env }>, path: string): Promise<T | null> {
   const res = await c.env.ASSETS.fetch(new Request(new URL(path, c.req.url)));
   if (!res.ok) return null;
@@ -64,9 +55,9 @@ export function _resetBrainAssetMemo(): void { _assetMemo.clear(); }
 
 // One labels.json row. The v3 cell index (build_cell_shards.py, the namespace
 // /assets/brain/cells/) ships `{id, label, f?, aka?, p?}` — one row per ATOM,
-// `aka` = every organ's label, `p` = the atom's deepest supercell. The v2 node
-// index (still served by /api/brain/node's shards) ships `type`/`slug`/`status`
-// instead; every field is optional so one row type + one search serve both.
+// `aka` = every organ's label, `p` = the atom's deepest supercell. The v2-only
+// fields (`type`/`slug`/`status`) linger for callers that stored old rows;
+// every field is optional so one row type + one search serve all of them.
 export interface BrainLabelRow {
   id: string;
   label: string;
@@ -103,51 +94,32 @@ export function searchLabels(
   return [...starts, ...contains].slice(0, limit);
 }
 
-// Resolve a node id to its shard entry (+ the manifest prov table), or null.
-// Shared by GET /api/brain/node and the brain-edit write path (the shard set is
-// the node-existence oracle — an edge endpoint must resolve to a real node).
-export async function resolveBrainEntry(
-  c: Context<{ Bindings: Env }>,
-  id: string,
-): Promise<{ entry: object; prov: Array<Record<string, string>> } | null> {
-  const manifest = await memoAssetJson<BrainManifest>(c, "/assets/brain/manifest.json");
-  if (!manifest?.shards) return null;
-  const key = declShardFor(
-    { scheme: { min_len: manifest.scheme.min_len, max_len: manifest.scheme.max_len, pad: manifest.scheme.pad },
-      shards: manifest.shards },
-    id,
-  );
-  const shard = key
-    ? await assetJson<Record<string, unknown>>(c, `/assets/brain/${key}.json`)
-    : null;
-  // hasOwnProperty guard: JSON.parse yields a plain object, so id="__proto__"
-  // would otherwise resolve Object.prototype as a truthy "entry" (the same
-  // gotcha atlas.ts documents)
-  const entry = shard && Object.prototype.hasOwnProperty.call(shard, id)
-    ? shard[id] : undefined;
-  if (!entry) return null;
-  return { entry: entry as object, prov: manifest.prov };
-}
-
-// True iff `id` is a real brain node (used to validate edge endpoints).
+// True iff `id` is a real brain node (used to validate edge endpoints). A thin
+// wrapper over the STRICT v3 resolver: an exact aliases.json `organs` key, or
+// an atom id (cell:… via the cell shards, path:… via supercells.json). Never
+// resolves labels, aka, bare decl names, or slug guesses — an edge endpoint
+// must be a real id, not prose that happens to match one.
 export async function brainNodeExists(c: Context<{ Bindings: Env }>, id: string): Promise<boolean> {
   if (!BRAIN_ID_RE.test(id)) return false;
-  return (await resolveBrainEntry(c, id)) !== null;
+  return (await atomIdForOrgan(c, id)) !== null;
 }
 
 export function registerBrainRoutes(app: Hono<{ Bindings: Env }>): void {
-  app.get("/api/brain/node", async (c) => {
-    const id = c.req.query("id") || "";
-    if (!ID_RE.test(id)) return c.json({ ok: false, error: "bad node id" }, 400);
-    const resolved = await resolveBrainEntry(c, id);
-    if (!resolved) return c.json({ ok: false, error: "unknown node id", id }, 404);
-    return c.json(
-      { ok: true, id, ...resolved.entry, prov_table: resolved.prov },
-      200,
-      // shards change only on nightly data rebuilds
-      { "Cache-Control": "public, max-age=3600" },
-    );
-  });
+  // Retired 2026-08-04 with the v2 per-node shards (docs/BRAIN-V3.md phase 5):
+  // same 410 pattern as /graph_data.json etc. in index.ts. Every id this route
+  // ever served is an ORGAN id, so /api/brain/cell?key= resolves it (except the
+  // two populations v3 dropped on purpose, which 404 there with a `reason`).
+  app.get("/api/brain/node", (c) =>
+    c.json(
+      {
+        ok: false, error: "gone",
+        note: "this endpoint is retired — the v2 per-node shards were replaced by the cell layer; every v2 node id resolves as an organ id on the cell API",
+        see: { api: "/api/brain/cell?key=", reference: "/brain/api", mcp: "/mcp" },
+      },
+      410,
+      { "Cache-Control": "public, max-age=86400" },
+    ),
+  );
   // GET /api/brain/search lives in brain-api.ts (v3): it searches the CELL
   // label index, where a hit's `aka` carries every organ label. Registering it
   // there keeps ONE search implementation — this module is registered first, so
