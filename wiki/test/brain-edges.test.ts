@@ -1,61 +1,68 @@
 // Community brain edges (docs/BRAIN-EDITS-ROADMAP.md): POST/GET/DELETE
 // /api/brain/edge(s). Exercises auth (login required; OAuth forces human, bearer
-// must declare actor_type), origin/rate-limit guards, shard + kind + xref
+// must declare actor_type), origin/rate-limit guards, oracle + kind + xref
 // validation, dedupe, the added-by/human-AI provenance, and the soft-delete
-// gravestone. Node existence is oracle'd against a shim brain manifest built
-// with the real declShardKey so the shard resolution matches production.
+// gravestone. Node existence is oracle'd against the STRICT v3 resolver
+// (aliases.json organs ∪ supercells.json + the cell shards), served from the
+// shared v3 fixture (helpers/brain-fixture.ts) — the v2 per-node shards are
+// retired. cell:<anchor> endpoints normalize to their anchor before storage,
+// and prose labels / unanchored xref:/lit: ids must NEVER validate.
 
 import { describe, it, expect, beforeEach } from "vitest";
 import { setup, post, get, blockNetwork, PIPELINE_TOKEN, type Harness } from "./helpers/harness.js";
 import { app } from "../src/index.js";
-import { declShardKey } from "../src/decl.js";
 import { _resetBrainEditCaches } from "../src/brain-edits.js";
+import { _resetBrainAssetMemo } from "../src/brain.js";
+import {
+  installBrainFixture,
+  DEFAULT_ALIASES,
+  MODULE_CELL,
+  MODULE_Q,
+  LINALG_SUPER,
+} from "./helpers/brain-fixture.js";
 import type { Env } from "../src/env.js";
 
 blockNetwork();
-beforeEach(() => _resetBrainEditCaches());   // clear the isolate-lifetime xref index
+beforeEach(() => {
+  _resetBrainEditCaches(); // isolate-lifetime xref index (+ its inversion)
+  _resetBrainAssetMemo(); // isolate-lifetime aliases/supercells/manifest memo
+});
 
-const CONCEPT = "Q181296"; // abelian group
-const DECL = "decl:Mathlib:CommGroup";
+const CONCEPT = "Q181296"; // abelian group (organ of cell:Q181296 in the fixture)
+const DECL = "decl:Mathlib:CommGroup"; // organ of the same cell
 const XREF_DST = "xref:lmfdb_knowl:group.abelian";
 const UNKNOWN = "Q999999999";
 
-// Serve a brain manifest + shards for `nodeIds` so brainNodeExists resolves them.
-// `nodeXrefs` seeds each node's STATIC xref edges (node id → external pages) so
-// the shard entry has them; `xrefIndex` is the reverse page → nodes index.
+// Serve the shared v3 fixture, optionally extending aliases.json `organs`
+// (extra node ids the oracle should accept) and overriding the static
+// xref_index.json (page → nodes; brain-edits inverts it for a node's own
+// static pages — the replacement for the v2 shard entries' xref edge lists).
 function installBrainAssets(
   env: Env,
-  nodeIds: string[],
-  nodeXrefs: Record<string, string[]> = {},
+  extraOrgans: Record<string, string> = {},
   xrefIndex: Record<string, string[]> = {},
 ): void {
-  const scheme = { min_len: 2, max_len: 2, pad: "_" };
-  const shards: Record<string, number> = {};
-  const data: Record<string, Record<string, unknown>> = {};
-  for (const id of nodeIds) {
-    const key = declShardKey(id, 2);
-    shards[key] = (shards[key] ?? 0) + 1;
-    const out = (nodeXrefs[id] || []).map((pg) => ({ id: pg, kind: "xref" }));
-    (data[key] ??= {})[id] = { node: { id, label: id }, edges: { out, in: [] } };
-  }
-  const manifest = { scheme, shards, prov: [], roots: [], _meta: { generated_at: "2026-07-05" } };
-  (env as unknown as { ASSETS: { fetch: (r: Request) => Promise<Response> } }).ASSETS = {
+  installBrainFixture(env, {
+    aliases: {
+      ...DEFAULT_ALIASES,
+      organs: { ...DEFAULT_ALIASES.organs, ...extraOrgans },
+    },
+  });
+  const assets = (env as unknown as { ASSETS: { fetch: (r: Request) => Promise<Response> } });
+  const inner = assets.ASSETS.fetch;
+  assets.ASSETS = {
     fetch: async (req: Request) => {
       const path = new URL(req.url).pathname;
-      if (path === "/assets/brain/manifest.json")
-        return new Response(JSON.stringify(manifest), { status: 200 });
       if (path === "/assets/brain/xref_index.json")
         return new Response(JSON.stringify(xrefIndex), { status: 200 });
-      const m = /^\/assets\/brain\/([a-z0-9_]+)\.json$/.exec(path);
-      if (m && data[m[1]]) return new Response(JSON.stringify(data[m[1]]), { status: 200 });
-      return new Response("not found", { status: 404 });
+      return inner(req);
     },
   };
 }
 
 function harness(opts: Parameters<typeof setup>[0] = {}): Harness {
   const h = setup(opts);
-  installBrainAssets(h.env, [CONCEPT, DECL]);
+  installBrainAssets(h.env);
   return h;
 }
 
@@ -170,8 +177,111 @@ describe("POST /api/brain/edge", () => {
 
   it("429s when the rate limiter denies", async () => {
     const h = harness({ limiterAllows: false });
-    installBrainAssets(h.env, [CONCEPT, DECL]);
+    installBrainAssets(h.env);
     expect((await postEdge(h, REL, { user: "u-human" })).status).toBe(429);
+  });
+
+  // ---- the v3 oracle: strict ids in, v2 grammar stored -----------------------
+
+  it("accepts a supercell path: endpoint (validated via supercells.json)", async () => {
+    const h = harness();
+    const res = await postEdge(
+      h,
+      { src: CONCEPT, dst: LINALG_SUPER, kind: "relates", evidence: { note: "field link" } },
+      { user: "u-human" },
+    );
+    expect(res.status).toBe(201);
+    expect(edgeRows(h)[0]).toMatchObject({ src: CONCEPT, dst: LINALG_SUPER, kind: "relates" });
+  });
+
+  it("accepts a cell:<anchor> endpoint AND stores it normalized to the anchor", async () => {
+    const h = harness();
+    // the /brain search picker submits cell ids — the v2 oracle 400'd these
+    // (the live bug this port fixes); they must now validate AND store in the
+    // v2 id grammar the overlay string-matches on.
+    const res = await postEdge(
+      h,
+      { src: `cell:${CONCEPT}`, dst: MODULE_CELL, kind: "relates", evidence: { note: "picker" } },
+      { user: "u-human" },
+    );
+    expect(res.status).toBe(201);
+    expect(edgeRows(h)[0]).toMatchObject({ src: CONCEPT, dst: MODULE_Q, kind: "relates" });
+    // the normalized endpoints are what the overlay serves back
+    const j = (await (await get(h.env, `/api/brain/edges?id=${encodeURIComponent(MODULE_Q)}`)).json()) as {
+      edges: Array<{ src: string; dst: string }>;
+    };
+    expect(j.edges).toHaveLength(1);
+    expect(j.edges[0]).toMatchObject({ src: CONCEPT, dst: MODULE_Q });
+  });
+
+  it("strips a double-wrapped cell:cell: endpoint to fixpoint (no atom-grammar rows in D1)", async () => {
+    const h = harness();
+    // A double-wrapped id (plausible agent bug: prefixing an already-prefixed
+    // id) must land on the SAME stored row as the bare anchor — a single-strip
+    // normalize stored "cell:Q…" in the atom grammar, defeating (src,dst,kind)
+    // dedupe, hiding the row from the overlay string-match, and letting a
+    // disguised self-loop (cell:cell:X → X) past the src===dst guard.
+    const dup = await postEdge(
+      h,
+      { src: `cell:cell:${CONCEPT}`, dst: MODULE_CELL, kind: "relates", evidence: { note: "wrapped" } },
+      { user: "u-human" },
+    );
+    expect(dup.status).toBe(201);
+    expect(edgeRows(h)[0]).toMatchObject({ src: CONCEPT, dst: MODULE_Q, kind: "relates" });
+    // disguised self-loop: both endpoints normalize to the same anchor → 400
+    const loop = await postEdge(
+      h,
+      { src: `cell:cell:${CONCEPT}`, dst: CONCEPT, kind: "relates", evidence: { note: "loop" } },
+      { user: "u-human" },
+    );
+    expect(loop.status).toBe(400);
+    expect(edgeRows(h)).toHaveLength(1);
+  });
+
+  it("rejects a prose label as an endpoint (no label/aka/slug resolution)", async () => {
+    const h = harness();
+    // "Vector space" is an `aka` of the Module atom — the READ api resolves it,
+    // the WRITE oracle must not: an accepted label would store a junk id.
+    const res = await postEdge(
+      h,
+      { src: CONCEPT, dst: "Vector space", kind: "relates", evidence: { note: "x" } },
+      { user: "u-human" },
+    );
+    expect(res.status).toBe(400);
+    expect(String((await res.json() as Record<string, unknown>).error)).toContain("not a known brain node");
+    expect(edgeRows(h)).toHaveLength(0);
+  });
+
+  it("rejects an unanchored xref:/lit: endpoint with the named v3-drop reason", async () => {
+    const h = harness();
+    const res = await postEdge(
+      h,
+      { src: CONCEPT, dst: "xref:dlmf:1.1", kind: "relates", evidence: { note: "x" } },
+      { user: "u-human" },
+    );
+    expect(res.status).toBe(400);
+    expect(String((await res.json() as Record<string, unknown>).error)).toContain(
+      "unanchored external id — dropped in v3; link the page to a cell first",
+    );
+    const lit = await postEdge(
+      h,
+      { src: CONCEPT, dst: "lit:9999.00001#thm1", kind: "cites", evidence: { note: "x" } },
+      { user: "u-human" },
+    );
+    expect(lit.status).toBe(400);
+    expect(String((await lit.json() as Record<string, unknown>).error)).toContain("dropped in v3");
+    expect(edgeRows(h)).toHaveLength(0);
+  });
+});
+
+describe("GET /api/brain/node — retired v2 route", () => {
+  it("answers 410 Gone with a pointer to the cell API", async () => {
+    const h = harness();
+    const res = await get(h.env, `/api/brain/node?id=${encodeURIComponent(CONCEPT)}`);
+    expect(res.status).toBe(410);
+    const j = (await res.json()) as Record<string, unknown>;
+    expect(j.ok).toBe(false);
+    expect((j.see as Record<string, string>).api).toBe("/api/brain/cell?key=");
   });
 });
 
@@ -505,7 +615,7 @@ describe("GET /api/brain/edges — xref-shared cross-pollination", () => {
 
   it("community↔community: two nodes both community-xref'd to one page infer each other", async () => {
     const h = setup();
-    installBrainAssets(h.env, [CONCEPT, DECL]);
+    installBrainAssets(h.env);
     await postEdge(h, { src: CONCEPT, dst: PAGE, kind: "xref", evidence: { note: "a" } }, { user: "u-human" });
     await postEdge(h, { src: DECL, dst: PAGE, kind: "xref", evidence: { note: "b" } }, { user: "u-human" });
     const shared = sharedOf(await (await get(h.env, `/api/brain/edges?id=${encodeURIComponent(CONCEPT)}`)).json());
@@ -514,8 +624,10 @@ describe("GET /api/brain/edges — xref-shared cross-pollination", () => {
 
   it("community→static: a community xref onto a page a STATIC node already holds, bridges both ways", async () => {
     const h = setup();
-    // NODE_B carries a STATIC xref to PAGE (seeded in its shard + the reverse index)
-    installBrainAssets(h.env, [CONCEPT, DECL, NODE_B], { [NODE_B]: [PAGE] }, { [PAGE]: [NODE_B] });
+    // NODE_B carries a STATIC xref to PAGE: it appears in the reverse index
+    // (page → nodes), whose inversion is also how the overlay finds NODE_B's
+    // own static pages — the v2 shard-entry edge lists are gone.
+    installBrainAssets(h.env, { [NODE_B]: "cell:Q11650" }, { [PAGE]: [NODE_B] });
     await postEdge(h, { src: CONCEPT, dst: PAGE, kind: "xref", evidence: { note: "same object" } }, { user: "u-human" });
     // viewing CONCEPT surfaces the static NODE_B
     const sA = sharedOf(await (await get(h.env, `/api/brain/edges?id=${encodeURIComponent(CONCEPT)}`)).json());
@@ -527,7 +639,7 @@ describe("GET /api/brain/edges — xref-shared cross-pollination", () => {
 
   it("no false partners: a node whose page is unique has no shared", async () => {
     const h = setup();
-    installBrainAssets(h.env, [CONCEPT]);
+    installBrainAssets(h.env);
     await postEdge(h, { src: CONCEPT, dst: "xref:nlab:unique_thing", kind: "xref", evidence: { note: "x" } }, { user: "u-human" });
     expect(sharedOf(await (await get(h.env, `/api/brain/edges?id=${encodeURIComponent(CONCEPT)}`)).json())).toHaveLength(0);
   });

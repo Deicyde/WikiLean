@@ -28,10 +28,13 @@ brain/build_nodes.py      → brain/data/nodes.jsonl     (v2: + ext nodes, unit,
 brain/build_edges.py      → brain/data/edges.jsonl     (every kind EXCEPT links)
         │                 + brain/data/edges_links.jsonl (ONLY kind=links; gitignored)
 brain/build_rollups.py    → brain/data/rollup_edges.*.jsonl
-brain/build_shards.py     → site/assets/brain/*.json   (per-node shards + manifest
-        │                    + labels.json search index; v2: + views/xref_explorer.json
-        ▼                    + aliases.json, f bits on labels/children, ext in labels)
-wiki build-public         → wiki/public/assets/brain/  (wipe-then-recursive-copy; deployed)
+brain/build_shards.py     → site/assets/brain/{xref_index,sources}.json  (the two
+        │                    live survivors; the v2 per-node shards + manifest +
+        │                    labels/aliases/views were RETIRED 2026-08-04 — the
+        │                    cells/ layer is the node store, docs/BRAIN-V3.md;
+        ▼                    cells/ itself is built by brain/build_cell_shards.py)
+wiki build-public         → wiki/public/assets/brain/  (allow-list copy: cells/ +
+                             sources.json + xref_index.json; deployed)
 brain/test_acceptance.py  → CI gate; datapoints P1-P9 + schema invariants
 brain/test_v2.py          → fixture unit tests for the v2 external layer
 ```
@@ -65,8 +68,8 @@ python3 brain/build_nodes.py       # nodes.jsonl (concepts + containers + decls 
 python3 brain/build_edges.py       # edges.jsonl (all kinds EXCEPT links) + edges_links.jsonl (links only)
 python3 brain/build_rollups.py     # rollup_edges.<grain>.jsonl (streams the 1 GB CSV)
 python3 brain/test_acceptance.py   # exit 0 = green (reads edges.jsonl + edges_links.jsonl)
-cd brain && python3 build_shards.py && cd ..          # site/assets/brain/ (gitignored)
-cd wiki && node --experimental-strip-types scripts/build-public.ts   # ship shards to wiki/public
+cd brain && python3 build_shards.py && cd ..          # xref_index.json + sources.json only
+cd wiki && node --experimental-strip-types scripts/build-public.ts   # ship cells/ + the two files
 ```
 
 All writers are atomic (tmp file + rename), so a crashed build never leaves a torn
@@ -149,12 +152,11 @@ no-op when the directory is empty: zero ext nodes, zero `links` edges.
   code snippets + the `.ilean` oracle floor), `BRAIN_DECL_ORACLE` (path to
   doc-gen4 `declaration-data.json`; default is the mathlib-search skill's cache).
 
-New shard-level assets (`build_shards.py`): `views/xref_explorer.json` — the global
-cross-ref explorer view (seeds = facet bits 0-3, plus connected concepts/decls via
-formalizes/xref/links; deterministically trimmed under a 3.9 MB budget) — and
-`aliases.json` (`{decls: {FQ name: [QID…]}, slugs: {slug: QID}}`) for Worker-side
-unit-key resolution. Both live inside the atomic directory swap; `labels.json` gains
-ext rows (searchable, `type:"ext"`, with `db`).
+Shard-level assets (`build_shards.py`) — RETIRED 2026-08-04 with the rest of the
+per-node layer (docs/BRAIN-V3.md phase 5): `views/xref_explorer.json`, the v2
+`aliases.json` and the v2 `labels.json` are no longer emitted. The v3 cell tree
+(`site/assets/brain/cells/`, `build_cell_shards.py`) carries their successors;
+`build_shards.py` now ships only `xref_index.json` + `sources.json`.
 
 ```bash
 python3 brain/test_v2.py           # fixture unit tests for all of the above
@@ -177,8 +179,10 @@ pinned dataset and rebuilds as newer snapshots.
   concept's node payload with its `unit` card (aliases.json/xref_index.json fast
   path, full-scan fallback; exit 1 on miss); `neighborhood --full` scans
   `edges.jsonl` + `edges_links.jsonl` merged.
-- **Live API:** `GET /api/brain/node?id=<id>` and `GET /api/brain/search?q=…`
-  (wiki/src/brain.ts, served from the deployed shards).
+- **Live API:** `GET /api/brain/cell?key=<any organ id>` + the rest of the v3
+  routes (wiki/src/brain-api.ts) and `GET /api/brain/search?q=…`.
+  `GET /api/brain/node` is retired — **410 Gone** (its per-node shards are no
+  longer built; every v2 node id is an organ id and resolves on `/cell`).
 - **UI:** `/brain` (site/build_brain_page.py → brain.html) — Miller-column drill-down
   through the containment tree, per-node panel with every edge's provenance one click
   away, layer toggles per edge family, label search. One shard fetch per interaction;
@@ -186,16 +190,15 @@ pinned dataset and rebuilds as newer snapshots.
 
 ## Shards
 
-`build_shards.py` mirrors `wiki/scripts/build-decl-index.ts`'s longest-prefix scheme
-(normalize to `[a-z0-9_]`, start at 2-char keys, split shards over 150 KB): a client
-loads `manifest.json` once, then any node is one fetch away. Each entry carries the
-node payload, up to 200 ontology edges per direction (ranked, `truncated` flagged),
-the containment breadcrumb, a children summary (first 50 + count), and for containers
-the strongest `depends` rollups at module/dir grain. Provenance dicts are factored
-into a manifest-level `prov` table. `manifest.roots` is the /brain boot payload;
-`labels.json` is the concept+container+ext search index (v2: rows and children
-entries carry the `f` facet bitmask; `views/xref_explorer.json` and `aliases.json`
-ship alongside — see the v2 section above).
+The v2 per-node shard layer is RETIRED (2026-08-04, docs/BRAIN-V3.md phase 5).
+The shipped shard tree is `site/assets/brain/cells/` (`build_cell_shards.py`),
+which reuses `wiki/scripts/build-decl-index.ts`'s longest-prefix scheme
+(normalize to `[a-z0-9_]`, start at 2-char keys, split shards over 150 KB): a
+client loads `cells/manifest.json` once, then any ATOM is one fetch away, and
+`cells/aliases.json` maps every organ id to its owning atom. `build_shards.py`
+still runs, emitting only the two live top-level assets: `xref_index.json`
+(external-page → node-ids reverse index; the Worker's community-edge
+cross-pollination inverts it) and `sources.json` (the /brain Sources legend).
 
 ## Acceptance
 
@@ -231,7 +234,7 @@ when `catalog/data/external/` lacks the needed ingest file (P6–P8) or when
 | `brain/data/grading_disputes.jsonl` | skeptic-rejected audits of SHIPPED grounding grades — the human-review queue feeding grounding_overrides.jsonl | small | yes |
 | `brain/data/community_edges.jsonl` | graduated live D1 community edges (harvest_community_edges.py) | small | yes |
 | `brain/proposals/*.jsonl` | raw agent proposals + skeptic verdicts | ~820 KB | yes |
-| `site/assets/brain/` | 7,809 neighborhood shards + manifest + labels.json + aliases.json + xref_index.json + views/ | 242 MB | **gitignored** (rebuild ~85 s) |
+| `site/assets/brain/` | cells/ (v3 atom shards, build_cell_shards.py) + xref_index.json + sources.json — the v2 per-node shards/manifest/labels/aliases/views are retired | ~95 MB | **gitignored** (rebuild) |
 
 ## Network-structure calibration (arXiv 2604.24797)
 

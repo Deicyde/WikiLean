@@ -6,14 +6,16 @@
 // ("added by"), and labelled human/AI. Correction is by SOFT delete, which
 // leaves a gravestone (deleted_by/at). Reuses the annotation write guards:
 // getUser (identity, never client-claimed), checkOrigin (CSRF), a rate limiter,
-// and the brain shard set as the node-existence oracle.
+// and the v3 cell layer (aliases.json organs ∪ supercells.json, via
+// brainNodeExists → atomIdForOrgan) as the node-existence oracle.
 import type { Context, Hono } from "hono";
 import { drizzle } from "drizzle-orm/d1";
 import { and, eq, or, inArray } from "drizzle-orm";
 import type { Env } from "./env.js";
 import { getUser, type AuthUser } from "./auth.js";
 import { brainEdges, brainNodes } from "./db/schema.js";
-import { brainNodeExists, resolveBrainEntry, BRAIN_ID_RE } from "./brain.js";
+import { brainNodeExists, BRAIN_ID_RE } from "./brain.js";
+import { atomFor, atomIdForOrgan, type Atom } from "./brain-api.js";
 import { crossRefSpec } from "./crossref.js";
 import { htmlEscape } from "./engine/html.js";
 import type { QueueBlob, QueueItem } from "./queue.js";
@@ -77,9 +79,14 @@ function safeParse(s: string): unknown {
 // only on nightly rebuilds, and community (D1) partners are queried live, so a
 // few minutes of staleness on the STATIC side is harmless.
 let _xrefIndex: Record<string, string[]> | null = null;
-/** test-only: clear the isolate-lifetime static-index cache between cases */
+// its inversion, node id → [pages the node statically xrefs]: the v2 per-node
+// shard entries used to carry this as edges.{out,in} kind==="xref"; the shards
+// are retired, and inverting the (already-loaded) index is the same data.
+let _xrefPagesByNode: Record<string, string[]> | null = null;
+/** test-only: clear the isolate-lifetime static-index caches between cases */
 export function _resetBrainEditCaches(): void {
   _xrefIndex = null;
+  _xrefPagesByNode = null;
 }
 async function getXrefIndex(c: Context<{ Bindings: Env }>): Promise<Record<string, string[]>> {
   if (_xrefIndex) return _xrefIndex;
@@ -90,6 +97,18 @@ async function getXrefIndex(c: Context<{ Bindings: Env }>): Promise<Record<strin
     _xrefIndex = {};
   }
   return _xrefIndex;
+}
+async function getXrefPagesByNode(c: Context<{ Bindings: Env }>): Promise<Record<string, string[]>> {
+  if (_xrefPagesByNode) return _xrefPagesByNode;
+  const idx = await getXrefIndex(c);
+  // null-prototype: the focus id is caller input, and a plain object would
+  // serve inherited names ("__proto__", "constructor") as truthy rows
+  const inv: Record<string, string[]> = Object.create(null);
+  for (const [page, nodes] of Object.entries(idx)) {
+    for (const n of nodes) (inv[n] ??= []).push(page);
+  }
+  _xrefPagesByNode = inv;
+  return inv;
 }
 
 // user.role 'bot' is the shared PIPELINE_TOKEN bearer (site/moderate.py + scripts).
@@ -135,9 +154,39 @@ type EndpointResult =
   | { node: false; mint: { id: string; label: string; description: string } }
   | { error: string };
 
-// An edge endpoint is valid if it's an EXISTING brain node, OR a validated
-// Wikidata QID (which the caller then mints as a community node). Anything else
-// is rejected — the constrained "new nodes" rule: only real Wikidata items.
+// The /brain search picker returns ATOM ids (cell:Q713084); stored edge
+// endpoints stay in the v2 id grammar (Q…, decl:…, path:…, xref:…, lit:…) that
+// the overlay, renderCommunity and /api/brain/edges string-match on. Strip the
+// cell: envelope so a search-picked endpoint stores NORMALIZED — the anchor is
+// always an organ of its own cell, so it validates. path: ids are in both
+// grammars and pass through. Strip to FIXPOINT: a double-wrapped
+// "cell:cell:Q…" (a plausible agent bug) would otherwise validate via the
+// atom-id oracle yet store in the atom grammar — defeating (src,dst,kind)
+// dedupe, hiding the row from the overlay's string-match, and smuggling
+// disguised self-loops past the src===dst guard.
+function normalizeEndpointId(id: string): string {
+  while (id.startsWith("cell:")) id = id.slice("cell:".length);
+  return id;
+}
+
+// v3 deliberately dropped the unanchored ext-page and arXiv-paper populations
+// (docs/BRAIN-V3.md "Dropped in v3"), so an xref:/lit: id that misses the
+// oracle gets a 400 that NAMES the drop instead of "not a known brain node".
+function droppedEndpointError(id: string): string | null {
+  if (/^xref:/i.test(id)) {
+    return "unanchored external id — dropped in v3; link the page to a cell first";
+  }
+  if (/^lit:/i.test(id)) {
+    return "unanchored literature id — dropped in v3; only statements a cell claims are brain nodes";
+  }
+  return null;
+}
+
+// An edge endpoint is valid if it's an EXISTING brain node — per the STRICT v3
+// oracle (aliases.json organs ∪ supercells; never label/slug fuzz) — OR a
+// validated Wikidata QID (which the caller then mints as a community node).
+// Anything else is rejected — the constrained "new nodes" rule: only real
+// Wikidata items.
 async function resolveNodeEndpoint(c: Context<{ Bindings: Env }>, id: string): Promise<EndpointResult> {
   if (await brainNodeExists(c, id)) return { node: true };
   if (QID_RE.test(id)) {
@@ -145,7 +194,7 @@ async function resolveNodeEndpoint(c: Context<{ Bindings: Env }>, id: string): P
     if (wd) return { node: false, mint: { id, label: wd.label, description: wd.description } };
     return { error: `${id} is not a resolvable Wikidata item (retry if Wikidata was unreachable)` };
   }
-  return { error: "endpoint is not a known brain node" };
+  return { error: droppedEndpointError(id) ?? "endpoint is not a known brain node" };
 }
 
 function actorTypeFor(bearer: boolean, body: Record<string, unknown>): ActorType | string {
@@ -509,16 +558,27 @@ function quickRowsFromBody(body: Record<string, unknown>, specs: QuickDbSpec[]):
   return text ? parseQuickText(text, specs) : [];
 }
 
-function nodeLabelFromEntry(entry: object | undefined, fallback: string): string {
-  const n = (entry as { node?: { label?: unknown } } | undefined)?.node;
-  return typeof n?.label === "string" && n.label ? n.label : fallback;
+// The owning atom of a v2-grammar node id, ONE shard fetch: an atom id goes
+// straight to the shards; an organ id resolves through the strict oracle
+// (alias lookup, no fetch) and then fetches its atom. Null = not in the brain.
+async function atomForNode(c: Context<{ Bindings: Env }>, id: string): Promise<Atom | null> {
+  if (id.startsWith("cell:") || id.startsWith("path:")) return atomFor(c, id);
+  const atomId = await atomIdForOrgan(c, id);
+  return atomId ? atomFor(c, atomId) : null;
 }
 
-async function fileForDecl(c: Context<{ Bindings: Env }>, declNode: string, supplied?: string): Promise<string> {
-  if (supplied) return supplied;
-  const resolved = await resolveBrainEntry(c, declNode);
-  const node = (resolved?.entry as { node?: { module?: unknown } } | undefined)?.node;
-  return typeof node?.module === "string" ? moduleToFile(node.module) : "";
+// v3 label reader: the organ's own label, falling back to the atom's label
+// (the v2 per-node `node.label` is gone — labels live on organs now).
+function labelForNode(atom: Atom | null, nodeId: string, fallback: string): string {
+  const organ = atom?.organs.find((o) => o.id === nodeId);
+  return organ?.label || atom?.label || fallback;
+}
+
+// v3 module reader: a decl node's Mathlib file comes off its decl organ's
+// embedded `module` payload (one shard fetch already made by the caller).
+function fileForDeclOrgan(atom: Atom | null, declNode: string): string {
+  const organ = atom?.organs.find((o) => o.kind === "decl" && o.id === declNode);
+  return typeof organ?.module === "string" ? moduleToFile(organ.module) : "";
 }
 
 function externalValue(raw: string, sp: QuickDbSpec): string | { error: string } {
@@ -545,26 +605,26 @@ async function endpointForDb(
     const decl = normalizeDecl(raw);
     if (!decl) return { error: "bad Mathlib declaration name" };
     const nodeId = `decl:Mathlib:${decl}`;
-    const resolved = await resolveBrainEntry(c, nodeId);
-    if (!resolved) return { error: "Mathlib declaration is not in the Brain" };
-    const file = await fileForDecl(c, nodeId, normalizeFile(row) || undefined);
+    const atom = await atomForNode(c, nodeId);
+    if (!atom) return { error: "Mathlib declaration is not in the Brain" };
+    const file = normalizeFile(row) || fileForDeclOrgan(atom, nodeId);
     if (!file) return { error: "Mathlib file is required when the Brain node has no module" };
-    return { db: sp.key, label: sp.label, value: decl, nodeId, decl, file, displayLabel: nodeLabelFromEntry(resolved.entry, decl) };
+    return { db: sp.key, label: sp.label, value: decl, nodeId, decl, file, displayLabel: labelForNode(atom, nodeId, decl) };
   }
   if (sp.key === "wikidata") {
     const qid = normalizeQid(raw);
     if (!qid || !QID_RE.test(qid)) return { error: "bad Wikidata QID" };
     const res = await resolveNodeEndpoint(c, qid);
     if ("error" in res) return { error: "qid: " + res.error };
-    const displayLabel = res.node ? nodeLabelFromEntry((await resolveBrainEntry(c, qid))?.entry, qid) : res.mint.label;
+    const displayLabel = res.node ? labelForNode(await atomForNode(c, qid), qid, qid) : res.mint.label;
     return { db: sp.key, label: sp.label, value: qid, nodeId: qid, qid, displayLabel, mint: res.node ? undefined : res.mint };
   }
   if (sp.key === "brain") {
-    const nodeId = raw.trim();
+    const nodeId = normalizeEndpointId(raw.trim());
     if (!BRAIN_ID_RE.test(nodeId)) return { error: "bad Brain node id" };
     const res = await resolveNodeEndpoint(c, nodeId);
     if ("error" in res) return { error: "brain node: " + res.error };
-    const displayLabel = res.node ? nodeLabelFromEntry((await resolveBrainEntry(c, nodeId))?.entry, nodeId) : res.mint.label;
+    const displayLabel = res.node ? labelForNode(await atomForNode(c, nodeId), nodeId, nodeId) : res.mint.label;
     return { db: sp.key, label: sp.label, value: nodeId, nodeId, displayLabel, mint: res.node ? undefined : res.mint };
   }
   const value = externalValue(raw, sp);
@@ -1052,8 +1112,11 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
     } catch {
       return c.json({ ok: false, error: "bad JSON body" }, 400);
     }
-    const src = str(body.src);
-    const dst = str(body.dst);
+    // Normalize atom-id endpoints (cell:<anchor> → <anchor>) BEFORE validation
+    // and insert: the /brain search picker submits cell ids, and stored
+    // endpoints must stay in the v2 id grammar the overlay string-matches on.
+    const src = normalizeEndpointId(str(body.src));
+    const dst = normalizeEndpointId(str(body.dst));
     const kind = str(body.kind);
     const ev = (body.evidence ?? {}) as Record<string, unknown>;
     const note = str(ev.note) || str(body.note);
@@ -1258,20 +1321,16 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
     }));
 
     // ---- cross-pollination: inferred xref-shared partners --------------------
-    // A's external pages = its community xrefs (src=id) ∪ its STATIC xrefs (from
-    // the shard). For each page, every OTHER node pointing at it — from the
-    // static reverse index and from live community xrefs — is the same object
-    // as A across databases (an xref-shared link nobody drew explicitly).
+    // A's external pages = its community xrefs (src=id) ∪ its STATIC xrefs.
+    // The static side reads the INVERTED xref_index.json (page → nodes becomes
+    // node → pages; memoized per isolate) — the same data the retired v2 shard
+    // entries carried as edges.{out,in} kind==="xref". For each page, every
+    // OTHER node pointing at it — from the static reverse index and from live
+    // community xrefs — is the same object as A across databases (an
+    // xref-shared link nobody drew explicitly).
     const pages = new Set<string>();
     for (const r of rows) if (r.kind === "xref" && r.src === id) pages.add(r.dst);
-    const resolved = await resolveBrainEntry(c, id);
-    if (resolved) {
-      const entry = resolved.entry as {
-        edges?: { out?: Array<{ id: string; kind: string }>; in?: Array<{ id: string; kind: string }> };
-      };
-      for (const dir of ["out", "in"] as const)
-        for (const x of entry.edges?.[dir] || []) if (x.kind === "xref") pages.add(x.id);
-    }
+    for (const p of (await getXrefPagesByNode(c))[id] || []) pages.add(p);
     const shared: Array<{ node: string; via: string; db: string; value: string; source: string }> = [];
     if (pages.size) {
       const pageArr = [...pages].slice(0, 40);

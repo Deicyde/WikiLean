@@ -514,9 +514,11 @@ concept layer floating alongside at every grain. Derived, server-side artifacts:
 
 - `brain/data/rollup_edges.<grain>.jsonl` — `depends` aggregated to each grain with
   hub-suppression fields (raw weight + distinct-witness count) so renderers can prune.
-- `wiki/public/assets/brain/<shard>.json` — per-node neighborhood shards (the
-  `decl-index/` pattern): node id → {payload, 1-hop ontology edges, containment path,
-  children summary}. Client fetches ONE shard per interaction. Nothing global ships.
+- `wiki/public/assets/brain/cells/<shard>.json` — per-ATOM cell shards (v3, the
+  `decl-index/` pattern): atom id → {cell head, organs with embedded payloads,
+  synapses, breadcrumb}. Client fetches ONE shard per interaction; nothing global
+  ships. (The v2 per-NODE neighborhood shards were retired 2026-08-04 —
+  docs/BRAIN-V3.md phase 5; `GET /api/brain/node` answers 410.)
 
 ## Acceptance datapoints (regression tests, `brain/test_acceptance.py`)
 
@@ -641,8 +643,9 @@ brain/build_edges.py      → brain/data/edges.jsonl     (every kind EXCEPT link
                             joint file over GitHub's 100MB limit; gitignored, rebuilt from
                             the committed external inputs; readers merge both files)
 brain/build_rollups.py    → brain/data/rollup_edges.*.jsonl
-brain/build_shards.py     → wiki/public/assets/brain/*.json (via wiki build-public)
-                            (v2: + views/xref_explorer.json, f bits in labels/children)
+brain/build_shards.py     → site/assets/brain/{xref_index,sources}.json (via wiki
+                            build-public; the v2 per-node shard layer is retired —
+                            the shipped shards are cells/, build_cell_shards.py)
 brain/test_acceptance.py  → CI gate; the datapoints + schema invariants
 ```
 
