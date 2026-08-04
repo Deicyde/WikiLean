@@ -17,6 +17,12 @@ the `contains` edges (for organ payloads and the containment tree) and writes
                    genuinely unplaceable cells; each also carries its halo
                    `shells` (hop-distance partition) VERBATIM for the halo view
   explorer.json    the whole flat graph: cells with build-time xy + synapses
+  frontier_graph.json  brain/data/frontier_graph.json byte-copied VERBATIM — the
+                   halo view's lazily-fetched client-side BFS input (FRONTIER
+                   GRAPH contract, brain/build_frontier.py + brain/SCHEMA.md):
+                   cells / per-library formal weights / frontier<->frontier
+                   edges, so the shipped graph is exactly the one
+                   test_frontier.py proved the parity law against
   traces/<key>.json  the LAZY trace sidecar: evidence for every supercell-involving
                    synapse (cell<->path and path<->path — the rows supercells.json
                    ships traceless), bucketed by the same longest-prefix scheme
@@ -826,6 +832,34 @@ def main() -> int:
     n_sup = dump("supercells.json", sup_doc)
     (tmp / "explorer.json").write_text(explorer_blob)
 
+    # frontier_graph.json ships VERBATIM (byte-copy, never re-serialized): the
+    # halo view's client-side BFS input must be exactly the file the frontier
+    # tests proved the parity law against (test_cell_shards S8 pins the bytes).
+    # Fail-soft when absent, like frontier.jsonl — but LOUD, and stale-checked
+    # against the CURRENT homeless set so a drifted graph never ships silently.
+    graph_src = BRAIN_DATA / "frontier_graph.json"
+    n_graph = 0
+    if graph_src.exists():
+        graph_blob = graph_src.read_bytes()
+        (tmp / "frontier_graph.json").write_bytes(graph_blob)
+        n_graph = len(graph_blob)
+        homeless_now = {cid for cid, c in cells.items()
+                        if not any(o.get("kind") == "decl" for o in c["organs"])}
+        try:
+            graph_cells = set(json.loads(graph_blob).get("cells") or [])
+        except json.JSONDecodeError:
+            graph_cells = None
+        if graph_cells != homeless_now:
+            print(f"  ! STALE frontier_graph.json: its cells "
+                  f"({'unparseable' if graph_cells is None else len(graph_cells)}) "
+                  f"!= the current homeless set ({len(homeless_now)}) — the halo "
+                  f"view's client BFS will diverge from the shells; rerun "
+                  f"python3 brain/build_frontier.py", file=sys.stderr)
+    else:
+        print("  ! no brain/data/frontier_graph.json — the halo view's "
+              "library re-shelling has no client BFS input; run "
+              "python3 brain/build_frontier.py first", file=sys.stderr)
+
     if OUT_DIR.exists():
         OUT_DIR.rename(old)
     tmp.rename(OUT_DIR)
@@ -846,6 +880,9 @@ def main() -> int:
           f"{frontier_stats['unclaimed']} unclaimed)", file=sys.stderr)
     print(f"explorer:  {len(cells)} nodes + {len(rows)} edges, complete "
           f"({len(explorer_blob.encode()) / 1e6:.1f} MB)", file=sys.stderr)
+    print(f"frontier_graph: "
+          + (f"shipped verbatim ({n_graph / 1000:.0f} KB)" if n_graph
+             else "NOT SHIPPED (source missing)"), file=sys.stderr)
     print(f"traces:    {len(sidecar)} supercell-synapse rows -> "
           f"{len(trace_leaves)} bucket files "
           f"({sum(trace_sizes.values()) / 1e6:.1f} MB), largest "

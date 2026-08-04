@@ -17,9 +17,14 @@ are checked against the shipped bytes, not against the builder's intent.
       synapse, its documented lookup resolves every pair, tt counts every trim,
       prov indexes resolve, files fit the byte budget — and supercells.json
       itself stays traceless
+  S8  frontier_graph.json ships VERBATIM (byte-identical to
+      brain/data/frontier_graph.json — the file test_frontier proved the
+      parity law against), self-consistent (counts match arrays, edges index
+      into cells with i<j, formal keys are frontier cells), and its cell
+      universe == the tree's frontier rows' cells (the dots the halo draws)
 
 Plus a determinism gate (when brain/data is present): rebuilding the shards is
-byte-identical for manifest.json + the sidecar.
+byte-identical for manifest.json + frontier_graph.json + the sidecar.
 
 Run: python3 brain/test_cell_shards.py   (after brain/build_cell_shards.py)
 """
@@ -427,6 +432,65 @@ def main() -> int:
           not leaked_tr, f"{len(leaked_tr)} syn rows carry traces, "
           f"e.g. {leaked_tr[:3]}")
 
+    # ---- S8: frontier_graph.json — the halo view's client-side BFS input ----
+    # The parity law is PROVED against brain/data/frontier_graph.json in
+    # test_frontier F10; what the client fetches is this shipped copy, so the
+    # transfer of that proof is exactly one property: the bytes are identical.
+    # The self-consistency checks below also hold on artifact-only runs.
+    gpath = OUT / "frontier_graph.json"
+    if not gpath.exists():
+        check("S8 frontier_graph.json ships", False,
+              f"missing {gpath} — run brain/build_frontier.py then "
+              f"brain/build_cell_shards.py")
+    else:
+        gblob = gpath.read_bytes()
+        g = json.loads(gblob)
+        gsrc = ROOT / "brain" / "data" / "frontier_graph.json"
+        if gsrc.exists():
+            check("S8 shipped bytes == brain/data/frontier_graph.json VERBATIM "
+                  "(the parity-law proof transfers)",
+                  gblob == gsrc.read_bytes(),
+                  "the ship step re-serialized or a stale copy shipped — "
+                  "rerun brain/build_cell_shards.py")
+        else:
+            print("  SKIP S8 verbatim (brain/data/frontier_graph.json absent "
+                  "— artifact-only run)")
+        gmeta = g.get("_meta") or {}
+        check("S8 generated_at matches the manifest (same cell build)",
+              gmeta.get("generated_at") == manifest["_meta"]["generated_at"],
+              f"graph {gmeta.get('generated_at')!r} != manifest "
+              f"{manifest['_meta']['generated_at']!r} — one of them is stale")
+        gcells = g.get("cells") or []
+        gformal = g.get("formal") or {}
+        gedges = g.get("edges") or []
+        gcounts = gmeta.get("counts") or {}
+        check("S8 _meta.counts match the shipped arrays",
+              gcounts.get("cells") == len(gcells)
+              and gcounts.get("formal") == len(gformal)
+              and gcounts.get("edges") == len(gedges),
+              f"_meta says {gcounts}, shipped "
+              f"{len(gcells)}/{len(gformal)}/{len(gedges)}")
+        n_g = len(gcells)
+        bad_ge = [e for e in gedges
+                  if len(e) != 2 or not (0 <= e[0] < n_g and 0 <= e[1] < n_g)
+                  or e[0] >= e[1]]
+        check("S8 every edge indexes into `cells` with i < j", not bad_ge,
+              f"{len(bad_ge)} bad, e.g. {bad_ge[:3]}")
+        gcell_set = set(gcells)
+        stray_f = sorted(set(gformal) - gcell_set)
+        check("S8 every formal key is a frontier cell", not stray_f,
+              f"{len(stray_f)} stray, e.g. {stray_f[:3]}")
+        # the dots the halo view draws (the tree's frontier rows) and the graph
+        # the client BFS runs on must agree on the universe, or toggling a
+        # library re-shells a different set of cells than the ones rendered
+        tree_frontier = {c for r in tree.values() if r.get("frontier")
+                         for c in r.get("cells") or []}
+        check("S8 graph cells == the tree's frontier cells (what the halo draws)",
+              gcell_set == tree_frontier,
+              f"graph-only {sorted(gcell_set - tree_frontier)[:3]}, "
+              f"tree-only {sorted(tree_frontier - gcell_set)[:3]} — "
+              f"stale frontier data; rerun brain/build_frontier.py")
+
     # ---- search
     check("labels.json lets an organ label find its atom",
           any(r["id"] == "cell:Q18848" and "Vector space" in (r.get("aka") or [])
@@ -436,14 +500,18 @@ def main() -> int:
     # ---- determinism: rebuild and compare bytes. A cached manifest + fresh
     # buckets must always agree (the "Unknown cell" ghost-bug class), so the
     # sidecar and its _meta must reproduce byte-identically from the same inputs.
-    # Scoped to manifest.json + traces/ — the sidecar's own contract — and gated
+    # Scoped to manifest.json + frontier_graph.json + traces/ — the byte-pinned
+    # contracts — and gated
     # on the atom layer being present (this test can also run artifact-only).
     data_dir = ROOT / "brain" / "data"
     if all((data_dir / f).exists() for f in
            ("cells.jsonl", "synapses.jsonl", "nodes.jsonl", "edges.jsonl")):
         def digest() -> dict[str, str]:
-            out = {"manifest.json":
-                   hashlib.sha256((OUT / "manifest.json").read_bytes()).hexdigest()}
+            out = {}
+            for name in ("manifest.json", "frontier_graph.json"):
+                fp = OUT / name
+                if fp.exists():
+                    out[name] = hashlib.sha256(fp.read_bytes()).hexdigest()
             for fp in sorted((OUT / "traces").glob("*.json")):
                 out[f"traces/{fp.name}"] = \
                     hashlib.sha256(fp.read_bytes()).hexdigest()
@@ -459,8 +527,8 @@ def main() -> int:
             diff = sorted(k for k in before.keys() | after.keys()
                           if before.get(k) != after.get(k))
             check("determinism: rebuild is byte-identical "
-                  "(manifest.json + trace sidecar)", not diff,
-                  f"{len(diff)} files changed, e.g. {diff[:3]}")
+                  "(manifest.json + frontier_graph.json + trace sidecar)",
+                  not diff, f"{len(diff)} files changed, e.g. {diff[:3]}")
     else:
         print("  SKIP determinism (brain/data inputs absent — artifact-only run)")
 
