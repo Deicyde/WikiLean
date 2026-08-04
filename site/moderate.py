@@ -125,6 +125,42 @@ def list_checkpoints(pending_dir: Path | None = None) -> list[dict]:
 # Consecutive window-exhaustion errors before aborting (batch_annotate.run uses
 # 15 for 700-article sweeps; moderate batches are small, so trip earlier).
 ABORT_AFTER = 5
+
+
+class AbortSkip(Exception):
+    """Raised by _AbortingSem when the run aborted while a job was queued.
+
+    Caught in run_jobs.worker and swallowed silently: the job is neither an
+    error nor processed — it simply re-queues next run. Must never be caught
+    by process_*/annotate_one (it is raised BEFORE their try blocks, at
+    semaphore acquisition)."""
+
+
+class _AbortingSem:
+    """asyncio.Semaphore look-alike that refuses new slots once state["abort"]
+    is set. asyncio.gather schedules every worker immediately, so the plain
+    at-task-start abort check always passes long before the first error can
+    trip the flag; the real queue is the semaphore inside annotate_one. Gating
+    the acquire is what makes ABORT_AFTER actually bound a bad night (the
+    2026-07-03 window-exhausted run recorded 99 errors when 5 should have
+    stopped it — every queued job sailed past the stale check)."""
+
+    def __init__(self, sem: asyncio.Semaphore, state: dict):
+        self._sem = sem
+        self._state = state
+
+    async def __aenter__(self):
+        if self._state["abort"]:
+            raise AbortSkip()
+        await self._sem.acquire()
+        if self._state["abort"]:  # tripped while we were queued
+            self._sem.release()
+            raise AbortSkip()
+        return self
+
+    async def __aexit__(self, *exc):
+        self._sem.release()
+        return False
 # new-mode candidate probing is one GET per catalog title until --limit new
 # slugs are found; cap total probes so a mostly-seeded catalog doesn't turn
 # into a 1,300-request scan. discover_articles.py (Wave C3+) will replace this
@@ -854,7 +890,7 @@ async def flush_pending(ctx, pending_dir: Path | None = None) -> dict:
 # Per-job flows
 # ---------------------------------------------------------------------------
 
-async def process_review(job: dict, ctx, sem: asyncio.Semaphore) -> dict:
+async def process_review(job: dict, ctx, sem: "_AbortingSem | asyncio.Semaphore") -> dict:
     """review: GET live annotations → agents (existing_override) → ID post-pass
     → bearer POST with base_version. The agents review the article's PINNED
     Wikipedia revision (F1): the GET's revid is threaded into the fetch
@@ -962,7 +998,7 @@ async def process_review(job: dict, ctx, sem: asyncio.Semaphore) -> dict:
     return rec
 
 
-async def process_new(article: dict, ctx, sem: asyncio.Semaphore) -> dict:
+async def process_new(article: dict, ctx, sem: "_AbortingSem | asyncio.Semaphore") -> dict:
     """new: full disk pipeline (fetch → agents → render), then create the
     article in D1 via the bot-only PUT /api/article/:slug (contract D-C1).
     Dry-run: print the would-PUT summary, zero agent calls and zero writes."""
@@ -1129,10 +1165,13 @@ async def run_jobs(jobs: list, ctx, process) -> tuple[int, dict]:
     exit_code 3 = aborted (window/budget), matching batch_annotate.run's
     convention. Every processed job also appends one decisions-sidecar line
     (P2c) next to the run-log write, under the same lock."""
-    sem = asyncio.Semaphore(ctx.concurrency)
     t0 = time.time()
     state = {"consec_err": 0, "abort": False, "n_done": 0, "n_err": 0,
              "tokens": 0, "cost": 0.0}
+    # The guard is what every process_* acquires (via annotate_one); once
+    # abort trips, queued jobs raise AbortSkip at the acquire instead of
+    # burning a slot — see _AbortingSem.
+    sem = _AbortingSem(asyncio.Semaphore(ctx.concurrency), state)
     lock = asyncio.Lock()
     MODERATE_LOG.parent.mkdir(parents=True, exist_ok=True)
 
@@ -1142,6 +1181,8 @@ async def run_jobs(jobs: list, ctx, process) -> tuple[int, dict]:
                 return  # window/budget died — skip cheaply, retried next run
             try:
                 rec = await process(job, ctx, sem)
+            except AbortSkip:
+                return  # aborted while queued — no rec, no error; re-queues next run
             except Exception as e:
                 # F12: one bad job/annotation must not kill the whole
                 # asyncio.gather — log it and count it as a job error.

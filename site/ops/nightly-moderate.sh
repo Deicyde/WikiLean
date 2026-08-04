@@ -54,25 +54,9 @@ LOG="$LOGDIR/moderate-$TS.log"
 # morning. Rationale: launchd fires at a fixed clock time but the Max 5-hour
 # window resets on a rolling schedule, so any fixed start can still straddle a
 # reset (the 2026-07-02 run lost all 29 jobs to a 03:10 reset). See nightly.env.
-RETRY_SLEEP="${WIKILEAN_RETRY_SLEEP:-900}"   # seconds to wait for the window reset
-RETRY_MAX="${WIKILEAN_RETRY_MAX:-3}"
-retry_on_ratelimit() {
-  local n=0 rc
-  while : ; do
-    "$@"; rc=$?
-    [ "$rc" -ne 3 ] && return "$rc"
-    if ! tail -n 80 "$LOG" 2>/dev/null | grep -qiE "hit your limit|usage limit|resets [0-9]"; then
-      return "$rc"   # exit 3 without the Max signature = intended budget stop
-    fi
-    n=$((n + 1))
-    if [ "$n" -ge "$RETRY_MAX" ]; then
-      echo "  (rate-limited: exhausted $n retries across the Max reset — leaving the rest for tomorrow)"
-      return "$rc"
-    fi
-    echo "  (Max window exhausted; sleeping ${RETRY_SLEEP}s for the reset, then retry $n/$((RETRY_MAX - 1)))"
-    sleep "$RETRY_SLEEP"
-  done
-}
+# Shared implementation (reset-time-aware sleep, budget-stop detection,
+# tunables): site/ops/retry-lib.sh.
+. "$(dirname "$0")/retry-lib.sh"
 
 # Single-instance lock (macOS has no flock): atomic mkdir, with stale recovery
 # after 4h in case a prior run was killed without cleaning up. A review batch

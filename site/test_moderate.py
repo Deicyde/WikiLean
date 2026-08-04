@@ -348,6 +348,75 @@ def test_build_create_body_shape():
     assert wire["ids_fresh"] == 2 and wire["ids_echoed"] == 0
 
 
+def test_abort_bounds_a_bad_night():
+    """ABORT_AFTER must actually stop queued jobs (fix 2026-08-04): the
+    07-03 window-exhausted `new` run recorded 99 errors because asyncio.gather
+    schedules every worker immediately — each passed the at-task-start abort
+    check long before the first error tripped the flag, and the semaphore
+    inside annotate_one happily kept issuing slots. The _AbortingSem guard
+    refuses the acquire once state["abort"] is set, so a bad night records
+    at most ABORT_AFTER + concurrency errors and the rest re-queue silently."""
+    import asyncio
+    import tempfile
+
+    old_mod, old_dec = m.MODERATE_LOG, m.DECISIONS_LOG
+    with tempfile.TemporaryDirectory() as td:
+        m.MODERATE_LOG = Path(td) / "run.log"
+        m.DECISIONS_LOG = Path(td) / "dec.jsonl"
+        ctx = SimpleNamespace(run_id="testrun0", mode="review", model=None,
+                              prompt_sha=None, concurrency=2,
+                              budget_tokens=None)
+
+        async def exhausted(job, _ctx, sem):
+            # Mirrors annotate_one's shape: the semaphore is acquired INSIDE
+            # the process fn, which is exactly why the old at-task-start
+            # check never fired in time.
+            async with sem:
+                await asyncio.sleep(0.001)
+                return {"slug": job["slug"],
+                        "error": ("agent_error: You've hit your limit · "
+                                  "resets 2am (America/New_York)")}
+
+        jobs = [{"slug": f"a{i}"} for i in range(40)]
+        try:
+            rc, stats = asyncio.run(m.run_jobs(jobs, ctx, exhausted))
+        finally:
+            m.MODERATE_LOG, m.DECISIONS_LOG = old_mod, old_dec
+    assert rc == 3, f"abort must exit 3, got {rc}"
+    cap = m.ABORT_AFTER + ctx.concurrency
+    assert stats["errors"] <= cap, \
+        f"a bad night recorded {stats['errors']} errors (cap {cap})"
+    assert stats["processed"] == stats["errors"], \
+        "aborted-while-queued jobs must be silent (no rec, no error)"
+    assert stats["processed"] < len(jobs), "abort never fired"
+
+
+def test_abort_sem_lets_healthy_runs_through():
+    """The guard must be invisible on a healthy run: every job processes."""
+    import asyncio
+    import tempfile
+
+    old_mod, old_dec = m.MODERATE_LOG, m.DECISIONS_LOG
+    with tempfile.TemporaryDirectory() as td:
+        m.MODERATE_LOG = Path(td) / "run.log"
+        m.DECISIONS_LOG = Path(td) / "dec.jsonl"
+        ctx = SimpleNamespace(run_id="testrun1", mode="review", model=None,
+                              prompt_sha=None, concurrency=3,
+                              budget_tokens=None)
+
+        async def healthy(job, _ctx, sem):
+            async with sem:
+                await asyncio.sleep(0.001)
+                return {"slug": job["slug"], "skipped": "noop"}
+
+        jobs = [{"slug": f"b{i}"} for i in range(17)]
+        try:
+            rc, stats = asyncio.run(m.run_jobs(jobs, ctx, healthy))
+        finally:
+            m.MODERATE_LOG, m.DECISIONS_LOG = old_mod, old_dec
+    assert rc == 0 and stats["processed"] == 17 and stats["errors"] == 0, stats
+
+
 def test_build_create_body_optional_fields_omitted():
     env = _envelope()
     del env["display_title"]
