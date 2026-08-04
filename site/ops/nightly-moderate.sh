@@ -185,6 +185,28 @@ cd "$REPO/site" || exit 1
     fi
     echo
   fi
+  # Golden-fixture freshness: the engine.golden vitest gate compares the TS
+  # engine against render.py's site/out pages; every moderation edit drifts
+  # them and the gate rots into a permanent 171/733-style failure (it masked
+  # regressions for weeks until the 2026-08-04 full regen). Re-render the whole
+  # corpus nightly — local files only, ~0.1s/article, fail-soft per slug.
+  if [ "${WIKILEAN_GOLDEN_REFRESH:-1}" = "1" ]; then
+    echo "--- refresh golden fixtures (site/out, local only) ---"
+    n_ok=0; n_fail=0
+    for f in "$REPO"/site/out/*.html; do
+      s="$(basename "$f" .html)"
+      case "$s" in index|concepts|about|404|brain) continue;; esac
+      [ -f "$REPO/site/annotations/$s.json" ] || continue
+      [ -f "$REPO/site/cache/$s.html" ] || continue
+      if python3 "$REPO/site/render.py" "$s" >/dev/null 2>&1; then
+        n_ok=$((n_ok + 1))
+      else
+        n_fail=$((n_fail + 1))
+      fi
+    done
+    echo "(golden fixtures: $n_ok re-rendered, $n_fail failed)"
+    echo
+  fi
   echo "=== done $(date +%Y%m%dT%H%M%S) ==="
 } >>"$LOG" 2>&1
 
