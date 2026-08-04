@@ -102,7 +102,10 @@ a:hover { text-decoration:underline; }
 #xcanvas { position:absolute; inset:0; pointer-events:none; display:none;
   transition:opacity .26s; }
 #stage .hint { position:absolute; left:12px; bottom:10px; font-size:.72rem;
-  pointer-events:none; color:#77808f; }
+  pointer-events:none; color:#77808f;
+  /* readable when SVG labels (halo sector names at 6 o'clock) run beneath it */
+  background:color-mix(in srgb, #0b0e14 82%, transparent);
+  border-radius:6px; padding:2px 6px; max-width:72%; }
 circle.bubble { cursor:pointer; transition: stroke .12s; stroke:#fff0; }
 circle.bubble:hover { stroke:#38bdf8; stroke-width:2px; }
 circle.preview { pointer-events:none; }
@@ -1354,6 +1357,7 @@ const HALO_SHELL_KEYS = ["1", "2", "3", "disc"];
 const HALO_FRAC = {"1": 0.42, "2": 0.62, "3": 0.76, "disc": 0.92};
 const HALO_RING_LABEL = {"1": "1 hop", "2": "2 hops", "3": "3 hops", "disc": "disconnected"};
 const HALO_RIM_LABELS = 12;   // the largest sectors get rim labels
+let haloBootTries = 0;        // boot guard: re-solve attempts against an unsettled stage
 // ---- the frontier graph: client-side re-shelling ----------------------------
 // frontier_graph.json ships the WHOLE frontier synapse graph once (~133 KB):
 // `cells` (every frontier cell id, sorted), `formal` (per cell, {library root:
@@ -1570,6 +1574,17 @@ async function renderHalo(seq, anim, moveAnim) {
     "deterministic polar layout — no simulation; dashed ring = no path to formal code";
   // ---- geometry pass: solve the polar layout for the settled stage ----------
   const W = stageEl.clientWidth || 800, H = stageEl.clientHeight || 600;
+  // Boot guard: a mid-layout stage (flex not settled on a direct #__halo__
+  // load) can measure 0×150 here — the || fallbacks then solve a 800×150
+  // wheel (39px radius). The stage ResizeObserver self-heals that where it
+  // delivers, but not in every embedded pane (measured — see the observer
+  // note below), so poll the real size briefly and re-solve.
+  if ((stageEl.clientWidth < 60 || stageEl.clientHeight < 60) && haloBootTries < 60) {
+    haloBootTries++;
+    setTimeout(() => { if (layout && layout.halo) renderFocus(false); }, 100);
+  } else if (stageEl.clientWidth >= 60 && stageEl.clientHeight >= 60) {
+    haloBootTries = 0;
+  }
   const cx = W / 2, cy = H / 2;
   const maxR = Math.min(W, H) / 2 - 36;   // rim-label margin: nothing clips the stage
   const coreR = Math.max(26, maxR * 0.17);
@@ -2066,6 +2081,7 @@ async function zoomOut() {
   selectedId = null;
   setHash(parent);
   await renderFocus(true);
+  renderPanel(parent);   // panel follows the zoom — no stale supercell at the root
 }
 svg.on("click", ev => {
   if (panMoved) { panMoved = false; return; }
