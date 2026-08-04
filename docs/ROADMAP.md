@@ -206,10 +206,13 @@ into `wiki/public/assets/`. Edit sources, then run build-public, never edit
   (36%) had drifted from their pinned revisions. Upstream churn is much higher than
   assumed — wp-update is a first-class workload, not an edge case. Stage-0 clears
   ~80% of drift for zero tokens (first-run sample).
-- [ ] **Anchor-rot telemetry:** structured render log {slug, version, matched, total};
-  articles.anchored_count written only from live-pinned renders.
-- [ ] **Staleness banner** (per-request injection, post-cache) with one-click
-  Wikipedia ?diff=cur&oldid= link.
+- [x] **Anchor-rot telemetry (log increment)** — DONE 2026-08-04 (fd64e7d9):
+  cache-miss renders log {event:'render', slug, version, revid, matched, total}
+  from the wrap engine's real results. REMAINING: articles.anchored_count column
+  (needs a migration; write it only from live-pinned renders).
+- [x] **Staleness banner** — shipped in Wave B (per-request injection, post-cache,
+  ?diff=cur&oldid= link); this line had drifted from the Wave B log. Verified
+  live 2026-08-04 (Banach_space shows the pinned-revision banner).
 - [x] **Dynamic homepage/sitemap from D1** — DONE 2026-06-12 (Wave D). GET / and
   /sitemap.xml render from per-article count columns (KV-cached 5min/1h); static
   copies removed from build-public so the Worker routes aren't shadowed.
@@ -217,7 +220,8 @@ into `wiki/public/assets/`. Edit sources, then run build-public, never edit
   111 tests incl. the full edit-safety cycle: seed → human save → bot echo →
   intact / bot drop → 422).
 - [x] **WP_HTML TTL** (90d, Wave A) + delete-old-key on re-pin (Wave D).
-- [ ] **Token-budget memo:** tokens/article (from cache/.batch_run.log) × corpus ×
+- [x] **Token-budget memo** — refreshed 2026-08-04 with August run data (448b5e69,
+  docs/token_budget.md). Original scope: tokens/article (from cache/.batch_run.log) × corpus ×
   cadence vs Max-plan limits. Gates the "AI-moderated" claim and sizes donations ask.
 - [x] Fix serveArticle double-read race (Wave A).
 - [x] Remove the GET-path revid write (Wave D; all 709 revids verified non-null).
@@ -262,9 +266,12 @@ into `wiki/public/assets/`. Edit sources, then run build-public, never edit
   docs/research-plan.md (RQ1-RQ8 with exists-today status per question).
   NOTE: annotation_events is legitimately ZERO so far (re-pins echo verbatim,
   no-op reviews skip events) — first substantive edit starts the dataset.
-- [ ] Editor save UX: kind/match_kind as selects; clear comment after save; panel
-  title by label not index; orphaned-anchor re-select flow; alt-click links;
-  in-place body swap (deliberate refactor with initAnnotations(), NOT a line item).
+- [x] Editor save UX — DONE 2026-08-04 (fd64e7d9): kind/match_kind selects
+  (unknown stored values preserved), comment cleared only after 2xx, panel title
+  by label/quote, alt-click opens Mathlib docs, orphaned-anchor Re-anchor flow
+  (__WL_MATCHED__ distinguishes true rot from overlap-suppressed highlights —
+  the latter get truthful copy and NO Re-anchor). REMAINING: in-place body swap
+  (deliberate refactor with initAnnotations(), NOT a line item).
 - [ ] **Propose-then-approve: AI may propose updates to human annotations** —
   designed in [propose-then-approve.md](propose-then-approve.md), awaiting Jack's
   UX pick (§5) before build. Foundation already exists (dormant
@@ -272,8 +279,10 @@ into `wiki/public/assets/`. Edit sources, then run build-public, never edit
   template); the agent never mutates a human annotation — it proposes, Jack
   one-click approves. `findLostHuman` 422 stays the floor. Jack's directive:
   "human-curated does NOT mean it shouldn't be updated by reviewers."
-- [ ] Trust signals: "N/M human-reviewed" badge; legend popover; least-reviewed list
-  on the (now dynamic) homepage.
+- [x] Trust signals — DONE 2026-08-04 (fd64e7d9): "N/M human-reviewed" badge
+  (tombstones excluded both sides), keyboard-accessible legend popover
+  (viewport-clamped), "Least recently reviewed" strip on / (moderation_state
+  NULLS FIRST, parked states excluded).
 - [ ] Privacy: stop storing session ip_address if better-auth allows; IRB exemption
   filed before any paper.
 
@@ -334,6 +343,27 @@ into `wiki/public/assets/`. Edit sources, then run build-public, never edit
   python3 site/eval_moderation.py --offline` and `cd wiki && npm test`.
 
 ## Status log
+
+- 2026-08-04 — **Full-day autonomous sweep (14-task plan).** (1) Frontier/halo
+  tranche verified + committed; worktrees/branches pruned; docs de-drifted.
+  (2) Worker batch 1 DEPLOYED + verified live: unified nav across all shells,
+  header article search (combobox a11y, prefix-ranked, left-anchored dropdown),
+  dynamic /about from D1, [edit]-link hiding incl. the .mw-editsection-like
+  excerpt variant; /api/articles index + nosniff; RESERVED swept
+  (atlas_data.json, brain.html, concepts.html); ELOOP-causing brain/brain
+  symlink removed + build-public made symlink-proof. (3) Pipeline reliability:
+  ABORT_AFTER now bounds a bad night; reset-aware Max retries; create-path
+  verified. (4) Data hygiene: count backfill, untagged articles, concept graph
+  rebuilt against the annotation layer. (5) Brain: root panel follows zoom-out,
+  halo boot guard + legible hint legend (deployed with batch 1); v2 per-node
+  asset layer RETIRED (2b808365 — strict atom oracle, /api/brain/node 410,
+  cell:-fixpoint endpoint normalization pinned by test, allow-list deploy
+  450→94MB). (6) Trust signals + editor save-UX + anchor-rot telemetry
+  (fd64e7d9, adversarially reviewed; render:v16, page:home:v10,
+  editor.js?v=16). Suites at end of day: tsc clean, 33 files / 703 Worker
+  tests, parity 7/7, moderate 106/106, cell shards 56/56, acceptance 21/21.
+  **DEPLOY PENDING for 2b808365 + fd64e7d9** (permission classifier blocked
+  `npm run deploy`; live /api/brain/node still 200 until it ships).
 
 - 2026-08-02/03 — **Mathlib halo view + discoverability.** brain: halo view renders the frontier cells in distance shells around the formal core, niche topics outward (03d46a7b); made discoverable via a frontier|halo toggle at the root + a rootsPanel link (52742028).
 
