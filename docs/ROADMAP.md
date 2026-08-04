@@ -183,8 +183,12 @@ into `wiki/public/assets/`. Edit sources, then run build-public, never edit
   --auth subscription|api-key via guarded key-pop; WIKILEAN_MATHLIB env; ID3 meta
   with ladder + id-discipline stats; 409/422/429 handling; D1-backed selection via
   /api/work). update_old_annotations.py removed (v1/v2→v3 migration complete);
-  seed-delta/refresh retired to legacy. KNOWN GAP: `new` mode has no D1 create path — POST 404s on unknown slugs
-  (Wave D: bot-only article-create endpoint or seed-delta handoff).
+  seed-delta/refresh retired to legacy. [GAP CLOSED — contract D-C1: bot-only
+  `PUT /api/article/:slug` create endpoint shipped (index.ts, 201/409/400-reserved,
+  full row init incl. counts + moderation_state + events); `new` mode creates via
+  PUT (moderate.py build_create_body/put_article) — verified 23/25 created in the
+  2026-06-18 run. This note previously claimed "no D1 create path — POST 404s";
+  stale since D-C1 landed. Corrected 2026-08-04.]
 - [x] **Wikipedia drift detection** — DONE (cron 17 6 * * * deployed; first tick
   pending). wiki/src/drift.ts: prop=info batches of 50, ≤8 batches/run with KV
   cursor (drift:cursor in RENDER_CACHE), full sweep every ~2 days at 709 articles.

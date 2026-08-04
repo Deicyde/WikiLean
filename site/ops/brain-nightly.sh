@@ -64,27 +64,9 @@ if [ "$BRAIN_REFRESH" != "1" ]; then
 fi
 
 # Retry the agent step across a Max-window reset — same contract as the
-# moderation wrapper: exit 3 + the rate-limit signature in the log tail means
-# window exhaustion (retry); exit 3 without it is an intended budget stop.
-RETRY_SLEEP="${WIKILEAN_RETRY_SLEEP:-900}"
-RETRY_MAX="${WIKILEAN_RETRY_MAX:-3}"
-retry_on_ratelimit() {
-  local n=0 rc
-  while : ; do
-    "$@"; rc=$?
-    [ "$rc" -ne 3 ] && return "$rc"
-    if ! tail -n 80 "$LOG" 2>/dev/null | grep -qiE "hit your limit|usage limit|resets [0-9]|rate_limited_429"; then
-      return "$rc"   # exit 3 without the Max signature = intended budget stop
-    fi
-    n=$((n + 1))
-    if [ "$n" -ge "$RETRY_MAX" ]; then
-      echo "  (rate-limited: exhausted $n retries across the Max reset — leaving the rest for tomorrow)"
-      return "$rc"
-    fi
-    echo "  (Max window exhausted; sleeping ${RETRY_SLEEP}s for the reset, then retry $n/$((RETRY_MAX - 1)))"
-    sleep "$RETRY_SLEEP"
-  done
-}
+# moderation wrapper; shared implementation (reset-time-aware sleep,
+# budget-stop detection): site/ops/retry-lib.sh.
+. "$(dirname "$0")/retry-lib.sh"
 
 # Single-instance lock — its OWN lock (.lock.brain.d) so this job coexists with
 # the 03:10/03:20 jobs. Atomic mkdir, 4h stale recovery.
