@@ -28,6 +28,17 @@ shard_key.
       excluded — never read from the builder); global sums match
       _meta.halo.shell_counts AND the 2026-08-01 ground truth
       855/454/13/290 (d=1/d=2/d=3/disconnected over 1,612 homeless)
+  F10 FRONTIER GRAPH (brain/data/frontier_graph.json — the halo view's
+      client-side BFS input): cells == the partition universe exactly;
+      `formal` re-derives from the SPEC (per-library summed synapse weight
+      over decl-organ neighbors, decl-id fallback for supercell-less ones)
+      and its lib names are real library roots; `edges` == every
+      frontier<->frontier synapse as in-range deduped sorted [i, j] pairs;
+      and THE PARITY LAW: a client BFS written HERE from the spec (all
+      libraries enabled) over the emitted graph reproduces the shipped
+      shells EXACTLY, cell for cell — the build-side proof that the halo
+      view's lazy re-shelling can never drift from the tested partition
+      (F6 also pins the file byte-identical across rebuilds)
 
 Run: python3 brain/test_frontier.py
      (after brain/build_frontier.py + brain/build_cell_shards.py)
@@ -44,6 +55,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 FRONTIER = HERE / "data" / "frontier.jsonl"
+GRAPH = HERE / "data" / "frontier_graph.json"
 CELLS = HERE / "data" / "cells.jsonl"
 SYNAPSES = HERE / "data" / "synapses.jsonl"
 EDGES = HERE / "data" / "edges.jsonl"
@@ -189,7 +201,8 @@ def main() -> int:
         return sorted(out)
 
     nbrs: dict[str, list] = defaultdict(list)
-    for row in load_jsonl(SYNAPSES)[1]:
+    syn_rows = load_jsonl(SYNAPSES)[1]   # kept raw: F10 re-derives from them
+    for row in syn_rows:
         kinds = row.get("kinds", {})
         eff = sum(n * KIND_MULT.get(k, 1) for k, n in kinds.items())
         nbrs[row["src"]].append((row["dst"], kinds, eff))
@@ -236,12 +249,17 @@ def main() -> int:
 
     # ---- F6: determinism ----------------------------------------------------
     before = FRONTIER.read_bytes()
+    graph_before = GRAPH.read_bytes() if GRAPH.exists() else None
     proc = subprocess.run([sys.executable, str(HERE / "build_frontier.py")],
                           capture_output=True, text=True)
     check("F6 a rebuild exits 0", proc.returncode == 0,
           (proc.stderr or proc.stdout)[-300:])
     check("F6 two runs are byte-identical (deterministic, seedless)",
           FRONTIER.read_bytes() == before)
+    check("F6 frontier_graph.json is byte-identical across rebuilds too",
+          GRAPH.exists() and GRAPH.read_bytes() == graph_before,
+          "missing before the rebuild" if graph_before is None
+          else "the rebuild changed its bytes")
 
     # ---- F7: mean_stateability recomputes from halo.json --------------------
     halo_frac: dict[str, float] = {}
@@ -380,6 +398,139 @@ def main() -> int:
           f"BFS says {dict(sorted(bfs_counts.items()))} — if brain/data "
           f"legitimately drifted, re-measure and update HALO_PIN (and the "
           f"HALO CONTRACT counts in brain/SCHEMA.md)")
+
+    # ---- F10: FRONTIER GRAPH — the halo view's client-side BFS input --------
+    # Everything below re-derives the FRONTIER GRAPH contract from the SPEC
+    # (build_frontier.py docstring / SCHEMA.md), never from the builder's code.
+    if not GRAPH.exists():
+        check("F10 frontier_graph.json exists", False,
+              f"missing {GRAPH} — rerun python3 brain/build_frontier.py")
+    else:
+        g = json.loads(GRAPH.read_text())
+        gmeta = g.get("_meta") or {}
+        gcells: list = g.get("cells") or []
+        gformal: dict = g.get("formal") or {}
+        gedges: list = g.get("edges") or []
+        check("F10 generated_at is the CELL build's stamp (determinism pin)",
+              gmeta.get("generated_at") == cells_meta.get("generated_at"),
+              f"{gmeta.get('generated_at')!r} != "
+              f"{cells_meta.get('generated_at')!r}")
+        gcounts = gmeta.get("counts") or {}
+        check("F10 _meta.counts match the shipped arrays",
+              gcounts.get("cells") == len(gcells)
+              and gcounts.get("formal") == len(gformal)
+              and gcounts.get("edges") == len(gedges),
+              f"_meta says {gcounts}, shipped "
+              f"{len(gcells)}/{len(gformal)}/{len(gedges)}")
+        # the graph's universe IS the partition's universe — same ids, sorted
+        check("F10 `cells` == the frontier partition's cells exactly (sorted)",
+              gcells == sorted(set(seen)) and gcells == sorted(homeless),
+              f"{len(gcells)} graph cells vs {len(set(seen))} partition / "
+              f"{len(homeless)} homeless; e.g. graph-only "
+              f"{sorted(set(gcells) - homeless)[:3]}, missing "
+              f"{sorted(homeless - set(gcells))[:3]}")
+
+        # formal: lib names are real library roots; weights are positive ints
+        lib_universe = {sup.split(":", 1)[1].split("/")[0]
+                        for c in cell_rows for sup in c.get("supercells") or []}
+        fallback_libs = {o["id"].split(":", 2)[1]
+                         for c in cell_rows
+                         if c["id"] in decl_cells
+                         and not (c.get("supercells") or [])
+                         for o in c["organs"] if o.get("kind") == "decl"}
+        valid_libs = lib_universe | fallback_libs
+        bad_lib = [(cid, lib) for cid, lrow in gformal.items()
+                   for lib in lrow if lib not in valid_libs]
+        check(f"F10 every formal lib is a real library root "
+              f"(universe: {sorted(valid_libs)})", not bad_lib,
+              f"{len(bad_lib)} unknown, e.g. {bad_lib[:3]}")
+        bad_w = [(cid, lib, w) for cid, lrow in gformal.items()
+                 for lib, w in lrow.items()
+                 if not isinstance(w, int) or w <= 0]
+        check("F10 every formal weight is a positive int", not bad_w,
+              f"{bad_w[:3]}")
+
+        # formal + edges, re-derived from the SPEC over the raw synapse rows
+        def libs_of_formal(cid: str) -> set:
+            libs = {sup.split(":", 1)[1].split("/")[0]
+                    for sup in cells[cid].get("supercells") or []}
+            if not libs:   # supercell-less decl cell: the decl id's <Lib> segment
+                libs = {o["id"].split(":", 2)[1] for o in cells[cid]["organs"]
+                        if o.get("kind") == "decl"}
+            return libs
+
+        gindex = {c: i for i, c in enumerate(gcells)}
+        want_formal: dict[str, Counter] = defaultdict(Counter)
+        want_edges: set[tuple[int, int]] = set()
+        for row in syn_rows:
+            s, d = row["src"], row["dst"]
+            if s in homeless and d in homeless:
+                i, j = gindex.get(s), gindex.get(d)
+                if i is not None and j is not None and i != j:
+                    want_edges.add((i, j) if i < j else (j, i))
+                continue
+            for a, b in ((s, d), (d, s)):
+                if a in homeless and b in decl_cells:
+                    for lib in libs_of_formal(b):
+                        want_formal[a][lib] += row["weight"]
+        div_formal = [cid for cid in set(want_formal) | set(gformal)
+                      if dict(want_formal.get(cid) or {}) != gformal.get(cid)]
+        div_detail = [(c, gformal.get(c), dict(want_formal.get(c) or {}))
+                      for c in div_formal[:2]]
+        check(f"F10 `formal` re-derives from the spec on all "
+              f"{len(gformal)} cells (per-lib summed synapse weight)",
+              not div_formal,
+              f"{len(div_formal)} diverge (cell, shipped, spec), "
+              f"e.g. {div_detail}")
+
+        n_cells = len(gcells)
+        bad_e = [e for e in gedges
+                 if len(e) != 2 or not (0 <= e[0] < n_cells
+                                        and 0 <= e[1] < n_cells)
+                 or e[0] >= e[1]]
+        check("F10 edges are in-range [i, j] index pairs with i < j",
+              not bad_e, f"{len(bad_e)} bad, e.g. {bad_e[:3]}")
+        etup = [tuple(e) for e in gedges]
+        check("F10 edges are sorted + deduped (deterministic bytes)",
+              etup == sorted(set(etup)),
+              f"{len(etup) - len(set(etup))} dupes / out of order")
+        check(f"F10 edges == every frontier<->frontier synapse "
+              f"({len(want_edges)} pairs from synapses.jsonl)",
+              set(etup) == want_edges,
+              f"{len(set(etup) - want_edges)} extra, "
+              f"{len(want_edges - set(etup))} missing")
+
+        # THE PARITY LAW, proved on the emitted bytes: the client BFS (spec:
+        # all libraries enabled -> d1 = cells with ANY formal lib, BFS outward
+        # over edges, unreached = disc) reproduces the SHIPPED shells exactly.
+        adj: dict[int, list[int]] = defaultdict(list)
+        for i, j in etup:
+            adj[i].append(j)
+            adj[j].append(i)
+        cdist: dict[int, int] = {gindex[c]: 1 for c in gformal if c in gindex}
+        cq = deque(sorted(cdist))
+        while cq:
+            cur = cq.popleft()
+            for nxt in adj.get(cur, []):
+                if nxt not in cdist:
+                    cdist[nxt] = cdist[cur] + 1
+                    cq.append(nxt)
+        client_shell = {c: ("disc" if gindex[c] not in cdist
+                            else str(cdist[gindex[c]])) for c in gcells}
+        shipped_shell = {c: k for r in shelled
+                         for k, v in r["shells"].items() for c in v}
+        parity_div = [(c, client_shell.get(c), shipped_shell.get(c))
+                      for c in gcells
+                      if client_shell.get(c) != shipped_shell.get(c)]
+        check(f"F10 PARITY LAW: the all-libraries client BFS over the graph "
+              f"== the shipped shells on ALL {len(gcells)} cells",
+              not parity_div,
+              f"{len(parity_div)} diverge (cell, client, shipped), "
+              f"e.g. {parity_div[:3]}")
+        client_counts = dict(Counter(client_shell.values()))
+        check(f"F10 client-BFS shell counts == the pinned ground truth "
+              f"{HALO_PIN}", client_counts == HALO_PIN,
+              f"client BFS says {dict(sorted(client_counts.items()))}")
 
     print(f"\n{CHECKS - len(FAILURES)}/{CHECKS} checks passed")
     if FAILURES:

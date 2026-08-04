@@ -97,6 +97,10 @@ a:hover { text-decoration:underline; }
   cursor:grab; touch-action:none; }
 #stage.grabbing { cursor:grabbing; }
 #stage svg { display:block; width:100%; height:100%; }
+/* the Explorer's canvas: sits over the (then-empty) SVG, never eats events —
+   the SVG keeps the zoom/click surface and the canvas only paints */
+#xcanvas { position:absolute; inset:0; pointer-events:none; display:none;
+  transition:opacity .26s; }
 #stage .hint { position:absolute; left:12px; bottom:10px; font-size:.72rem;
   pointer-events:none; color:#77808f; }
 circle.bubble { cursor:pointer; transition: stroke .12s; stroke:#fff0; }
@@ -110,7 +114,6 @@ text.blabel { pointer-events:none; text-anchor:middle;
 text.bcount { pointer-events:none; text-anchor:middle; fill:#9aa3b2;
   font-family:Georgia,serif; }
 path.link { pointer-events:none; }
-path.synbatch { pointer-events:none; fill:none; }   /* the flat map's batched synapses */
 
 /* the reading surface: an encyclopedia page beside a star map */
 #panel { flex:1 1 38%; overflow-y:auto; padding:20px 26px; background:#f6f1e5;
@@ -248,6 +251,14 @@ section.kind.community h3 { border-bottom-color:#c9b98a; }
 .fchip.on { background:#173753; border-color:#38bdf8; color:#cdeafe; }
 /* the Frontier's areas|halo view toggle — a canvas overlay, shown only there */
 #viewtoggle { position:absolute; top:10px; right:12px; display:none; gap:6px; z-index:5; }
+/* halo: sector rim labels are CLICKABLE (the .blabel default is pointer-events:none) */
+text.rimlab { pointer-events:auto; cursor:pointer; }
+text.rimlab:hover { fill:#38bdf8; }
+/* the Libraries control — ONE component, rendered by the root panel AND the halo panel */
+.libctl { display:flex; flex-direction:column; gap:4px; margin:6px 0; }
+.librow { display:flex; gap:7px; align-items:center; font-size:.84rem; cursor:pointer;
+  font-family:-apple-system,sans-serif; }
+.librow small { color:#8a8272; margin-left:auto; }
 .fgrouplabel { color:#6b7488; font-size:.7rem; margin:0 2px 0 8px; white-space:nowrap;
   border-left:1px solid #2a3244; padding-left:9px; cursor:help; }
 .fgrouplabel:first-of-type { border-left:none; padding-left:0; }
@@ -353,6 +364,7 @@ body.embed .wl-header, body.embed #crumbbar { display:none; }   /* flex column f
 <div id="crumbbar"></div>
 <div class="main">
   <div id="stage"><svg id="svg"></svg>
+    <canvas id="xcanvas"></canvas>
     <div id="viewtoggle">
       <button id="vt-areas" class="fchip" title="the frontier partition as dive-able area bubbles">areas</button>
       <button id="vt-halo" class="fchip" title="every homeless cell on concentric shells by its synapse distance to the nearest formalized cell">halo</button>
@@ -411,6 +423,15 @@ const HALO_ID = "__halo__";           // pseudo-focus: the Frontier's HALO view 
                                       // #__halo__ and #__frontier__ both resolve;
                                       // a shells-less build falls back to areas.
 const isFrontierId = id => typeof id === "string" && id.startsWith("frontier:");
+// "#__halo__:<Area>" — the halo focused on ONE frontier area's sector (its
+// shells alone, spread over the full circle). The token after ":" is the
+// frontier row's <Area> id segment (hash-safe by the frontier id grammar
+// ^[A-Za-z][A-Za-z0-9_]{0,63}$), NOT its display label.
+const isHaloId = id => id === HALO_ID ||
+  (typeof id === "string" && id.startsWith(HALO_ID + ":"));
+// a sector focus → the frontier:<Area> row it names (null for the full halo)
+const haloAreaOf = id => id && id !== HALO_ID && isHaloId(id)
+  ? "frontier:" + id.slice(HALO_ID.length + 1) : null;
 let manifest = null, labels = null, labelById = null, tree = null, aliases = null;
 const shardCache = new Map(), entryCache = new Map();
 
@@ -586,8 +607,14 @@ async function resolveId(id) {
   if (id === ROOTS_ID || id === UNPLACED_ID || id === FRONTIER_ID || isCellId(id)) return id;
   await ensureTree();
   // #__halo__ resolves like #__frontier__; a build with no shells falls back to
-  // the areas view (fail-soft — exactly today's UI)
-  if (id === HALO_ID) return tree.halo ? HALO_ID : FRONTIER_ID;
+  // the areas view (fail-soft — exactly today's UI). A sector id whose area
+  // vanished from this build resolves to the FULL halo, never to a dead canvas.
+  if (isHaloId(id)) {
+    if (!tree.halo) return FRONTIER_ID;
+    const area = haloAreaOf(id);
+    return area === null ? HALO_ID
+      : (tree.sc[area] || {}).frontier ? id : HALO_ID;
+  }
   if (isFrontierId(id)) return tree.sc[id] ? id : null;
   if (id.startsWith(STRAYS_PREFIX))
     return tree.sc[id.slice(STRAYS_PREFIX.length)] ? id : null;
@@ -637,6 +664,49 @@ let selectedId = null;     // node the panel shows / ring highlights
 let layout = null;         // {items: Map(id -> {x,y,r,data}), leaves, ego?, explorer?}
 let explorerOn = false;    // the Explorer: the flat cell graph at its build-time xy
 let filterMask = 0;        // facet-filter bitmask over `f` (0 = no filter)
+// ---- the Libraries config: which formal libraries count as "formal code" ----
+// State = the DISABLED set of library root names ("Mathlib", "TauCeti", …).
+// Default all-on; persists in localStorage "wl-brain-libs" (the ENABLED list;
+// key absent = all on) AND in the hash (&libs=Mathlib,TauCeti when not-all).
+// A disabled library: its root bubble dims to 35% (never removed), it is
+// excluded from the halo BFS sources, and the halo's core disc label lists
+// what is left on.
+let disabledLibs = new Set();
+const libsFiltered = () => disabledLibs.size > 0;
+function libRoots() {   // every library root WITH cells (8 today) — from the tree
+  return tree ? tree.roots.filter(p => tree.count(p) > 0).map(p => p.slice(5)) : [];
+}
+const enabledLibs = () => libRoots().filter(n => !disabledLibs.has(n));
+function persistLibs(writeHash = true) {
+  try {
+    if (libsFiltered()) localStorage.setItem("wl-brain-libs", enabledLibs().join(","));
+    else localStorage.removeItem("wl-brain-libs");
+  } catch (e) { /* storage unavailable — the hash still carries the state */ }
+  if (writeHash) setHash(focusId === ROOTS_ID ? "" : focusId || "");
+}
+// enabled-list → state. A stored list naming NO current root is stale data,
+// not "all off" — reset to the all-on default. An EMPTY list is a deliberate
+// all-off (every halo cell disconnected — honest, if bleak).
+function applyLibsList(en) {
+  const known = libRoots();
+  const keep = new Set(en.filter(n => known.includes(n)));
+  if (!keep.size && en.length) { disabledLibs = new Set(); return; }
+  disabledLibs = new Set(known.filter(n => !keep.has(n)));
+}
+function initLibs(hashLibs) {   // boot: the hash wins over localStorage
+  let en = hashLibs;
+  if (en === null) {
+    try { const s = localStorage.getItem("wl-brain-libs");
+          en = s === null ? null : s.split(",").filter(Boolean); }
+    catch (e) { en = null; }
+  }
+  if (en !== null) applyLibsList(en);
+}
+function syncLibCheckboxes() {
+  document.querySelectorAll(".libcb").forEach(cb => {
+    cb.checked = !disabledLibs.has(cb.dataset.lib);
+  });
+}
 let currentUser = null;    // {id, name, role} once /api/auth/me resolves (community edits)
 let renderSeq = 0;         // guards against out-of-order async renders
 const svg = d3.select("#svg");
@@ -663,7 +733,10 @@ const zoomBehav = d3.zoom().scaleExtent([0.02, 16])
     if (ev.sourceEvent && ev.sourceEvent.type === "mousedown") stageEl.classList.add("grabbing"); })
   .on("zoom", ev => { if (ev.sourceEvent && ev.sourceEvent.type === "mousemove") panMoved = true;
     lastK = ev.transform.k;
-    gViewport.attr("transform", ev.transform); })
+    // in the explorer the scene lives on the canvas and gViewport is EMPTY —
+    // skip the per-event DOM write (the rAF draw reads the transform itself);
+    // explorerOn (not layout.explorer) so the leave-path resetZoom still writes
+    if (!explorerOn) gViewport.attr("transform", ev.transform); })
   .on("end", () => stageEl.classList.remove("grabbing"));
 svg.call(zoomBehav).on("dblclick.zoom", null);
 // every fresh level fits the viewport — discard any lingering pan/zoom
@@ -744,6 +817,9 @@ async function focusItems(id) {
     // a root with no cells has nothing to dive into — v3 ships no library_kind,
     // so emptiness (not a taxonomy toggle) is what prunes the 39 roots to 6
     const items = tree.roots.filter(p => tree.count(p) > 0).map(folderItem);
+    // a library the Libraries control turned off keeps its bubble, dimmed to
+    // 35% by drawNodes/drawLabels — dimmed, never removed
+    for (const it of items) it.libdim = disabledLibs.has(it.id.slice(5));
     // the FRONTIER: one root-level group holding the frontier:<Area> partition of
     // the homeless cells (+ the tiny unfiled residue) — replaces the old
     // undifferentiated "no formal home" blob. When the build shipped no frontier
@@ -818,17 +894,15 @@ const DOT_PX = 3.0;     // rendered dot radius floor at any zoom
 const RING_PX = 1.6;    // rendered @[wikidata] gold ring width at any zoom
 let lastK = 1;          // live zoom, tracked by the zoom handler
 
+// The explorer draws on canvas: every input (wheel, drag, filter, resize)
+// funnels into scheduleXDraw and at most ONE frame is painted per rAF. The old
+// SVG version ran three full-selection passes over 20,880 circles per wheel
+// EVENT (measured ~53ms of main thread per pan frame before rasterising) —
+// never re-grow a per-event DOM write here.
 function applyExplorerScale(k) {
   if (!layout || !layout.explorer) return;
   lastK = k || 1;
-  const s = 1 / lastK;
-  gBubbles.selectAll("circle.node")
-    .attr("r", l => Math.max(l.r, DOT_PX * s))
-    .style("stroke-width", l => ((l.data.f || 0) & 1) ? (RING_PX * s) + "px" : null);
-  gEdges.selectAll("path.synbatch").attr("stroke-width", function () {
-    return Number(this.dataset.w) * s;
-  });
-  updateExplorerLabels(lastK);
+  scheduleXDraw();
 }
 
 function drawNodes() {
@@ -840,10 +914,22 @@ function drawNodes() {
   bubbles.exit().remove();
   const entered = bubbles.enter().append("circle")
     .attr("class", l => l.data.type === "folder" ? "bubble node" : "dot node");
-  if (withTitles) entered.append("title");
   const all = entered.merge(bubbles);
+  // <title> presence syncs on the MERGED selection: the data join reuses a
+  // circle across views (same cell id), so an enter-only append left every
+  // halo dot TITLELESS when the reader arrived from the explorer (and handed
+  // the explorer stale level-view titles). A circle's only legal child is its
+  // <title>, so firstElementChild is the exact test.
+  all.each(function () {
+    const t = this.firstElementChild;
+    if (withTitles) {
+      if (!t) this.appendChild(document.createElementNS("http://www.w3.org/2000/svg", "title"));
+    } else if (t) t.remove();
+  });
   all
     .attr("cx", l => l.x).attr("cy", l => l.y)
+    // a disabled library's root bubble dims to 35% — dimmed, never removed
+    .attr("opacity", l => l.data.libdim ? 0.35 : null)
     // cells are dots, never discs: a near-empty focus level would otherwise
     // pack its lone cell to fill the stage (a 568px "plain blue dot")
     .attr("r", l => l.data.type === "cell" ? Math.min(Math.max(l.r, 2), 42)
@@ -861,9 +947,10 @@ function drawNodes() {
         + (l.data.s != null ? ` · mean stateability ${l.data.s.toFixed(2)}` : "")
       : l.data.type === "strays" ? " — click to open them as dots, with the story of why they sit here"
       : (((l.data.f || 0) & 1 ? " — carries a hand-written @[wikidata] tag" : "")
-         + (l.data.hop === undefined ? ""     // the halo view's dots wear their hop
-           : l.data.hop === "disc" ? " — disconnected from Mathlib"
-           : ` — ${l.data.hop} hop${l.data.hop === 1 ? "" : "s"} from Mathlib`))));
+         + (l.data.hop === undefined ? ""     // halo dots wear area + hop:
+           : (l.data.area ? ` · ${l.data.area}` : "")   // "label · area · N hops"
+             + (l.data.hop === "disc" ? " · disconnected"
+                : ` · ${l.data.hop} hop${l.data.hop === 1 ? "" : "s"}`)))));
 }
 
 // Cell labels in the level views get the SAME treatment the explorer's do:
@@ -887,12 +974,12 @@ function drawLabels() {
       const fs = flat ? 10 : Math.max(10, Math.min(16, l.r / 4.5));
       gLabels.append("text").attr("class", "blabel")
         .attr("x", l.x).attr("y", flat ? l.y + l.r + 11 : l.y - (l.r > 40 ? 4 : -4))
-        .attr("font-size", fs).attr("opacity", l.data.dim ? 0.35 : null)
+        .attr("font-size", fs).attr("opacity", l.data.dim || l.data.libdim ? 0.35 : null)
         .text(l.data.label);
       if (!flat && l.r > 40)
         gLabels.append("text").attr("class", "bcount")
           .attr("x", l.x).attr("y", l.y + fs - 2).attr("font-size", fs * 0.72)
-          .attr("opacity", l.data.dim ? 0.35 : null)
+          .attr("opacity", l.data.dim || l.data.libdim ? 0.35 : null)
           .text(`${(l.data.n || 0).toLocaleString()} cells`);
       continue;
     }
@@ -920,8 +1007,8 @@ function drawLabels() {
   layout.cellR = cells.length ? cells.map(l => l.r).sort((a, b) => a - b)[cells.length >> 1] : 0;
   updateLevelLabels(d3.zoomTransform(svg.node()).k);
 }
-// The level views' twin of updateExplorerLabels — same budget shape, same
-// screen-space font size, for the same reason.
+// The level views' twin of the explorer's zoom^2 label budget — same budget
+// shape, same screen-space font size, for the same reason.
 //
 // FOLDER labels stay in layout units: a folder's radius IS its cell count and its
 // label is sized to fit inside it, so that text is geometry and must keep scaling
@@ -1146,11 +1233,12 @@ async function enrich(seq, leaves) {
 
 async function renderFocus(anim) {
   if (explorerOn) return renderExplorer(anim);
+  xcanvasShow(false);   // every non-explorer view: the canvas is gone, SVG owns the stage
   const seq = ++renderSeq;
   resetZoom();
   await ensureTree();
   if (seq !== renderSeq) return;
-  if (focusId === HALO_ID) {
+  if (isHaloId(focusId)) {
     if (tree.halo) return renderHalo(seq, anim);
     focusId = FRONTIER_ID;   // fail-soft: this build's frontier rows ship no shells
   }
@@ -1266,54 +1354,186 @@ const HALO_SHELL_KEYS = ["1", "2", "3", "disc"];
 const HALO_FRAC = {"1": 0.42, "2": 0.62, "3": 0.76, "disc": 0.92};
 const HALO_RING_LABEL = {"1": "1 hop", "2": "2 hops", "3": "3 hops", "disc": "disconnected"};
 const HALO_RIM_LABELS = 12;   // the largest sectors get rim labels
+// ---- the frontier graph: client-side re-shelling ----------------------------
+// frontier_graph.json ships the WHOLE frontier synapse graph once (~133 KB):
+// `cells` (every frontier cell id, sorted), `formal` (per cell, {library root:
+// summed synapse weight} over its decl-holding neighbors) and `edges` (every
+// frontier↔frontier synapse as [i,j] index pairs into `cells`). The halo view
+// fetches it LAZILY, once, and re-shells CLIENT-SIDE: d=1 for cells whose
+// formal map hits any ENABLED library, BFS outward over the edges, unreached
+// cells = disc.
+//
+// PARITY LAW: with every library enabled the client BFS must reproduce the
+// shipped shells EXACTLY — asserted the moment the graph loads
+// (console.error + a visible ⚠ in the halo status line on any mismatch).
+let fgraph = null, fgraphP = null, fgraphFail = false;
+let fgAdjOff = null, fgAdj = null, fgFormalLibs = null;
+let parity = {ran: false, ok: null, bad: 0, missing: 0, extra: 0};
+let clientHops = null, clientHopsKey = null;   // cell -> d | "disc" for the CURRENT lib set
+function prepFrontierGraph() {
+  const cells = fgraph.cells || [], edges = fgraph.edges || [];
+  const n = cells.length;
+  const deg = new Uint32Array(n);
+  for (const [i, j] of edges) { deg[i]++; deg[j]++; }
+  fgAdjOff = new Uint32Array(n + 1);
+  for (let i = 0; i < n; i++) fgAdjOff[i + 1] = fgAdjOff[i] + deg[i];
+  fgAdj = new Uint32Array(fgAdjOff[n]);
+  const cur = fgAdjOff.slice(0, n);
+  for (const [i, j] of edges) { fgAdj[cur[i]++] = j; fgAdj[cur[j]++] = i; }
+  fgFormalLibs = cells.map(c => Object.keys((fgraph.formal || {})[c] || {}));
+}
+// Multi-source BFS with the disabled libraries removed from the SOURCES. A
+// formal neighbor in a library the control does not list can never be toggled
+// off, so it always conducts — never a silent drop.
+function bfsHops(disabled) {
+  const cells = fgraph.cells, n = cells.length;
+  const dist = new Int32Array(n).fill(-1);
+  let q = [];
+  for (let i = 0; i < n; i++)
+    if (fgFormalLibs[i].some(L => !disabled.has(L))) { dist[i] = 1; q.push(i); }
+  let d = 1;
+  while (q.length) {
+    const next = [];
+    for (const i of q)
+      for (let e = fgAdjOff[i]; e < fgAdjOff[i + 1]; e++) {
+        const j = fgAdj[e];
+        if (dist[j] === -1) { dist[j] = d + 1; next.push(j); }
+      }
+    q = next; d++;
+  }
+  const out = new Map();
+  cells.forEach((c, i) => out.set(c, dist[i] === -1 ? "disc" : dist[i]));
+  return out;
+}
+function runParityCheck() {
+  if (!fgraph || !tree || !tree.halo) return;
+  const hops = bfsHops(new Set());   // ALL libraries enabled
+  let bad = 0, missing = 0, extra = 0;
+  for (const [c, d] of hops) {
+    const ship = tree.cellHops.get(c);
+    if (ship === undefined) missing++;        // in the graph, in no shipped shell
+    else if (ship !== d) bad++;
+  }
+  for (const c of tree.cellHops.keys()) if (!hops.has(c)) extra++;
+  parity = {ran: true, ok: !(bad || missing || extra), bad, missing, extra};
+  if (!parity.ok) {
+    console.error(`[brain halo] PARITY FAILURE: client BFS (all libraries) != shipped shells — ` +
+      `${bad} cell(s) at a different d, ${missing} in the graph but in no shipped shell, ` +
+      `${extra} in shipped shells but missing from the graph`);
+    // the render that is already on screen printed no warning — say it now
+    if (layout && layout.halo && isHaloId(focusId))
+      statusEl.textContent += " · ⚠ client shells disagree with the build (see console)";
+  } else {
+    console.info(`[brain halo] parity OK: the client BFS reproduces the shipped shells for all ${
+      hops.size} frontier cells`);
+  }
+}
+function fetchFrontierGraph() {
+  if (!fgraphP) {
+    fgraphP = fetch(BASE + "frontier_graph.json" + vq())
+      .then(r => (r.ok ? r.json() : null)).catch(() => null)
+      .then(j => {
+        fgraph = j;
+        fgraphFail = !j;
+        if (j) { prepFrontierGraph(); runParityCheck(); }
+        else console.warn("[brain halo] frontier_graph.json unavailable — the library filter cannot re-shell");
+        return j;
+      });
+  }
+  return fgraphP;
+}
+function ensureClientHops() {
+  if (!fgraph) { clientHops = null; return; }
+  const key = [...disabledLibs].sort().join(",");
+  if (clientHopsKey === key && clientHops) return;
+  clientHops = bfsHops(disabledLibs);
+  clientHopsKey = key;
+}
+// The shells feeding the CURRENT render: shipped VERBATIM when every library is
+// on (byte-identical to the build, and the parity assert proves the client BFS
+// agrees anyway); client-computed when the set is filtered. Cell order inside a
+// client shell = the area row's own cells order — deterministic.
+function activeShellsFor(p) {
+  const sc = tree.sc[p] || {};
+  if (!libsFiltered() || !clientHops) return sc.shells || null;
+  const out = {};
+  for (const c of sc.cells || []) {
+    const d = clientHops.get(c);
+    if (d === undefined) continue;   // not in the graph — counted as uncovered drift
+    const k = d === "disc" ? "disc" : String(d);
+    (out[k] = out[k] || []).push(c);
+  }
+  return Object.keys(out).length ? out : null;
+}
 function updateHaloToggle() {
   const el = $("#viewtoggle");
   if (!el) return;
   // visible at the ROOT too — the halo is a top-level way to read the map, and
-  // hiding its only entry point inside the Frontier dive made it undiscoverable
+  // hiding its only entry point inside the Frontier dive made it undiscoverable.
+  // But the root shows ONLY the halo chip: the Frontier bubble IS the areas
+  // entry there, so an "areas" chip would duplicate it. The areas|halo pair
+  // remains inside the Frontier and halo levels (sector focus included).
   const show = !explorerOn && tree && tree.halo &&
-    (focusId === ROOTS_ID || focusId === FRONTIER_ID || focusId === HALO_ID);
+    (focusId === ROOTS_ID || focusId === FRONTIER_ID || isHaloId(focusId));
   el.style.display = show ? "flex" : "none";
   const a = $("#vt-areas"), h = $("#vt-halo");
   if (a) {
+    a.style.display = focusId === ROOTS_ID ? "none" : "";
     a.classList.toggle("on", focusId === FRONTIER_ID);
-    a.textContent = focusId === ROOTS_ID ? "frontier" : "areas";
-    a.title = focusId === ROOTS_ID
-      ? "the frontier: concepts with no Lean formalization, grouped into areas"
-      : "frontier areas as bubbles";
   }
-  if (h) h.classList.toggle("on", focusId === HALO_ID);
+  if (h) h.classList.toggle("on", isHaloId(focusId));
 }
-function renderHalo(seq, anim) {
+async function renderHalo(seq, anim, moveAnim) {
+  // The frontier graph is fetched lazily by THIS view, once. A filtered library
+  // set needs it BEFORE shelling; all-on renders the shipped shells immediately
+  // while the fetch + the parity assert run in the background.
+  const graphP = fetchFrontierGraph();
+  if (libsFiltered() && !fgraph && !fgraphFail) {
+    await graphP;
+    if (seq !== renderSeq) return;
+  }
+  if (libsFiltered()) ensureClientHops();   // no-op when the graph is missing
+  // sector focus (#__halo__:<Area>): that area's shells alone, spread over the
+  // full circle. An area this build doesn't carry falls back to the full halo.
+  let sector = haloAreaOf(focusId);
+  if (sector && !((tree.sc[sector] || {}).frontier)) { sector = null; focusId = HALO_ID; }
+  // a re-shelling ANIMATES: remember where every dot sits now, move it after
+  const oldPos = moveAnim && layout && layout.halo
+    ? new Map([...layout.items.values()].map(l => [l.data.id, [l.x, l.y]])) : null;
   // ---- data pass FIRST (geometry-free): sectors, shell counts, facet filter --
   // sectors: tree.frontier is already (size desc, id) — a stable order
   const perArea = [];
   let totalCells = 0;
-  // shell keys come from the DATA (numeric asc, disc last) so a future build
-  // with d>=4 renders its own ring instead of silently dropping those dots;
-  // HALO_SHELL_KEYS is only the fallback ordering baseline.
+  const areas = sector ? [sector] : tree.frontier;
+  // shell keys come from the DATA (numeric asc, disc last) so a future build —
+  // or a client re-shelling with libraries off — with d>=4 renders its own ring
+  // instead of silently dropping those dots; HALO_SHELL_KEYS is only the
+  // fallback ordering baseline. Keys always come from the FULL frontier, sector
+  // or not, so a sector's rings sit at the same radii as the full halo's.
   const keySet = new Set();
   for (const p of tree.frontier)
-    Object.keys((tree.sc[p] || {}).shells || {}).forEach(k => keySet.add(k));
+    Object.keys(activeShellsFor(p) || {}).forEach(k => keySet.add(k));
   const haloKeys = [...keySet].sort((a, b) =>
     (a === "disc") - (b === "disc") || Number(a) - Number(b));
   if (!haloKeys.length) haloKeys.push(...HALO_SHELL_KEYS);
   const cnt = Object.fromEntries(haloKeys.map(k => [k, 0]));
-  for (const p of tree.frontier) {
-    const sh = (tree.sc[p] || {}).shells;
+  for (const p of areas) {
+    const sh = activeShellsFor(p);
     if (!sh) continue;   // a shells-less area is COUNTED below, never silent
     let n = 0;
     for (const k of haloKeys) { const m = (sh[k] || []).length; n += m; cnt[k] += m; }
     if (n) perArea.push({p, sh, n});
     totalCells += n;
   }
-  const uncovered = tree.frontierN - totalCells;   // shells-less areas' cells + drift
+  const claimed = sector ? ((tree.sc[sector] || {}).cells || []).length : tree.frontierN;
+  const uncovered = claimed - totalCells;   // shells-less areas' cells + drift
   const placed = [];   // [{it, A, k, idx}] — items now, coordinates after measuring
   for (const A of perArea)
     for (const k of haloKeys)
       (A.sh[k] || []).forEach((cid, idx) => {
         const it = cellItem(cid);
         it.hop = k === "disc" ? "disc" : Number(k);   // hover + card plumbing
+        it.area = frontierName(A.p);                  // tooltip: label · area · hops
         placed.push({it, A, k, idx});
       });
   const fv = applyFacetFilter(placed.map(e => e.it));
@@ -1327,10 +1547,21 @@ function renderHalo(seq, anim) {
   // (and measure) the settled layout.
   updateFilterStat(fv);
   renderCrumb();   // the halo branch writes synchronously (no await on its path)
-  statusEl.textContent = `${totalCells.toLocaleString()} cells · halo view · ` +
+  const en = enabledLibs();
+  const libNote = !libsFiltered() ? ""
+    : clientHops
+      ? ` · libraries: ${en.length === 0 ? "none"
+          : en.length <= 3 ? en.join(" + ")
+          : `${en.length} of ${libRoots().length}`}`
+      : " · ⚠ library filter inactive (frontier_graph.json unavailable)";
+  const parityNote = parity.ran && !parity.ok
+    ? " · ⚠ client shells disagree with the build (see console)" : "";
+  statusEl.textContent = `${totalCells.toLocaleString()} cells · halo view` +
+    (sector ? ` · ${frontierName(sector)} sector` : "") + ` · ` +
     haloKeys.map(k => `${(cnt[k] || 0).toLocaleString()} ${k === "disc"
       ? "disconnected" : `at ${k} hop${k === "1" ? "" : "s"}`}`).join(" · ") +
-    (uncovered > 0 ? ` · ${uncovered} cells lack shell data (drift — see console)` : "");
+    (uncovered > 0 ? ` · ${uncovered} cells lack shell data (drift — see console)` : "") +
+    libNote + parityNote;
   if (uncovered > 0)
     console.warn(`[brain halo] ${uncovered} frontier cell(s) missing from shells — ` +
       `the halo draws only what this build's shells cover`);
@@ -1385,16 +1616,20 @@ function renderHalo(seq, anim) {
     const inRow = row === g.rows - 1 ? n - row * g.perRow : g.perRow;
     const ang = A.a0 + (((idx % g.perRow) + 0.5) / inRow) * A.span;
     const rr = ringR[k] + (row - (g.rows - 1) / 2) * g.gap;
-    return {data: it, x: cx + rr * Math.cos(ang), y: cy + rr * Math.sin(ang), r: DOT};
+    // arc length per dot in this row — the honest "does a label fit" test the
+    // sector view renders labels by
+    const fit = (A.span * rr) / Math.max(1, inRow) >= HALO_LABEL_FIT_PX;
+    return {data: it, x: cx + rr * Math.cos(ang), y: cy + rr * Math.sin(ang), r: DOT, fit};
   });
   // haloW/H: the stage this layout was solved FOR — the deferred self-check
   // below (and the stage ResizeObserver, where it delivers) re-render on drift
   layout = {items: new Map(leaves.map(l => [l.data.id, l])), leaves, halo: true,
-            haloW: W, haloH: H};
+            haloW: W, haloH: H, sector};
   edgeStore = [];
   gEdges.selectAll("*").remove();
   gOverlay.selectAll("*").remove();
   gBubbles.selectAll("circle.preview").remove();
+  gBubbles.selectAll("circle.node").interrupt("reshell");   // stale moves must not fight this render
   gLabels.selectAll("*").remove();
   // shell rings + the core disc render UNDER the dots (gEdges is the bottom
   // layer; renderEdges() early-returns in halo view so nothing wipes them)
@@ -1413,7 +1648,7 @@ function renderHalo(seq, anim) {
       .attr("stroke", "transparent").attr("stroke-width", 12)
       .append("title").text(disc
         ? `disconnected (${cnt.disc.toLocaleString()} cells) — no synapse path from these cells reaches any formalized cell`
-        : `${HALO_RING_LABEL[k]} from Mathlib (${cnt[k].toLocaleString()} cells) — shortest synapse path to a formalized cell`);
+        : `${HALO_RING_LABEL[k] || `${k} hops`} from formal code (${cnt[k].toLocaleString()} cells) — shortest synapse path to a formalized cell in an enabled library`);
   }
   const core = gEdges.append("g").style("cursor", "pointer")
     .on("click", ev => { ev.stopPropagation(); focusId = ROOTS_ID; selectedId = null;
@@ -1422,23 +1657,53 @@ function renderHalo(seq, anim) {
     .attr("fill", CELL_FORMAL).attr("fill-opacity", 0.3)
     .attr("stroke", CELL_FORMAL).attr("stroke-opacity", 0.9).attr("stroke-width", 1.5);
   core.append("title").text(
-    "the formalized interior — every cell with a Lean declaration; click to open the library roots");
+    `the formalized interior — every cell with a Lean declaration in: ${
+      en.length ? en.join(", ") : "(no library enabled)"}; click to open the library roots`);
   drawNodes();
+  // a re-shelling ANIMATES the dots from their previous shell radii to the new
+  // ones (drawNodes reuses each circle by id, so only cx/cy need to travel)
+  if (oldPos) {
+    gBubbles.selectAll("circle.node").each(function (l) {
+      const o = oldPos.get(l.data.id);
+      if (!o || (Math.abs(o[0] - l.x) < 0.5 && Math.abs(o[1] - l.y) < 0.5)) return;
+      d3.select(this).attr("cx", o[0]).attr("cy", o[1])
+        .transition("reshell").duration(650).ease(d3.easeCubicInOut)
+        .attr("cx", l.x).attr("cy", l.y);
+    });
+    // rAF-driven transitions pause in hidden/background panes (the fadeIn /
+    // zoomInto guard) — a dot must NEVER stay stranded on its old shell, so
+    // snap everything to its final position once the window has passed
+    setTimeout(() => {
+      if (seq !== renderSeq || !layout || !layout.halo) return;
+      gBubbles.selectAll("circle.node").interrupt("reshell")
+        .attr("cx", l => l.x).attr("cy", l => l.y);
+    }, 800);
+  }
   // core label + ring labels + sector rim labels — inked with a dark outline so
   // they stay readable wherever they land over dots
   const inked = t => t.attr("stroke", "#0b0e14").attr("stroke-width", 3)
     .attr("paint-order", "stroke").attr("stroke-linejoin", "round");
+  // the core disc names what "formal" currently MEANS: the one enabled library,
+  // both of two, or the count — and how many the reader switched off
+  const coreLbl = en.length === 1 ? en[0]
+    : en.length === 2 ? `${en[0]} + ${en[1]}`
+    : `${en.length} libraries`;
+  const coreFs = Math.max(8.5, Math.min(Math.max(12, coreR * 0.3),
+    (2 * coreR - 6) / (0.6 * Math.max(1, coreLbl.length))));
   inked(gLabels.append("text").attr("class", "blabel")
-    .attr("x", cx).attr("y", cy - 3).attr("font-size", Math.max(12, coreR * 0.3))
-    .text("Mathlib"));
+    .attr("x", cx).attr("y", cy - 3).attr("font-size", coreFs)
+    .text(coreLbl));
   inked(gLabels.append("text").attr("class", "bcount")
     .attr("x", cx).attr("y", cy + Math.max(11, coreR * 0.26))
-    .attr("font-size", Math.max(9, coreR * 0.2)).text("+ libraries"));
+    .attr("font-size", Math.max(9, coreR * 0.2))
+    .text(libsFiltered() ? `${disabledLibs.size} off` : "formal interior"));
   for (const k of haloKeys)
     inked(gLabels.append("text").attr("class", "bcount")
       .attr("x", cx).attr("y", cy - ringR[k] - 5).attr("font-size", 9.5)
       .text(`${HALO_RING_LABEL[k] || `${k} hops`} · ${(cnt[k] || 0).toLocaleString()}`));
-  perArea.slice(0, HALO_RIM_LABELS).forEach(A => {
+  // rim labels: full halo only (a sector IS the whole circle) — clicking one
+  // focuses that sector (#__halo__:<Area>); background-click returns
+  if (!sector) perArea.slice(0, HALO_RIM_LABELS).forEach(A => {
     const mid = A.a0 + A.span / 2;
     const t = gLabels.append("text").attr("class", "blabel rimlab")
       .attr("x", cx + (maxR + 12) * Math.cos(mid))
@@ -1446,22 +1711,152 @@ function renderHalo(seq, anim) {
       .attr("font-size", 10)
       .style("text-anchor", Math.cos(mid) > 0.25 ? "start"
         : Math.cos(mid) < -0.25 ? "end" : "middle")
-      .text(frontierName(A.p));
+      .text(frontierName(A.p))
+      .on("click", ev => { ev.stopPropagation();
+        gotoFrontierView(HALO_ID + ":" + A.p.slice(9)); });
     inked(t);
+    t.append("title").text(`focus this sector — ${frontierName(A.p)}'s shells alone, ` +
+      `spread over the full circle (${A.n.toLocaleString()} cells)`);
   });
+  drawHaloDotLabels(leaves, sector);
   drawSelRing();
   webState = {shown: 0, cells: totalCells, capped: false};
+  applyHaloScale(d3.zoomTransform(svg.node()).k || 1);   // re-shells keep the reader's zoom
   if (anim) fadeIn();
   // Safety net for any OTHER late reflow (scrollbars, panel content, chrome):
   // if the stage the layout was solved for is no longer the stage on screen,
   // re-solve once against the settled one. Converges — the second pass writes
   // identical chrome, so the stage cannot move again.
   setTimeout(() => {
-    if (!layout || !layout.halo || focusId !== HALO_ID) return;
+    if (!layout || !layout.halo || !isHaloId(focusId)) return;
     if (Math.abs(stageEl.clientWidth - layout.haloW) < 2 &&
         Math.abs(stageEl.clientHeight - layout.haloH) < 2) return;
     renderFocus(false);
   }, 120);
+}
+// ---- halo dot labels + screen-space zoom scaling ----------------------------
+// Dot labels are ANNOTATION (the rings are the geometry): font pinned to the
+// screen, visibility budgeted by zoom — exactly the updateLevelLabels / explorer
+// zoom^2-budget design. The sector view additionally renders every label
+// whose row spacing FITS at rest; the full halo reveals labels as you zoom.
+const HALO_LABEL_FIT_PX = 46;   // arc per dot at which a label fits at k=1
+const HALO_LABEL_BUDGET = 14;   // ranked labels at k=1 (sector: 36); grows with k²
+const HALO_SECTOR_BUDGET = 36;
+function drawHaloDotLabels(leaves, sector) {
+  const rk = h => h === "disc" ? 1e9 : h;
+  // rank: fitting labels first (the sector view shows them immediately), then
+  // nearest-to-Mathlib, then label — deterministic, so the map can be learned
+  const fitRank = l => sector && l.fit ? 0 : 1;
+  const ranked = leaves.slice().sort((a, b) =>
+    (fitRank(a) - fitRank(b)) ||
+    (rk(a.data.hop) - rk(b.data.hop)) ||
+    String(a.data.label || a.data.id).localeCompare(String(b.data.label || b.data.id)));
+  const ink = t => t.attr("stroke", "#0b0e14").attr("stroke-width", 3)
+    .attr("paint-order", "stroke").attr("stroke-linejoin", "round");
+  ranked.forEach((l, i) => {
+    const raw = l.data.label || l.data.id;
+    ink(gLabels.append("text").attr("class", "blabel hlab")
+      .attr("x", l.x).attr("y", l.y + (l.r || 2.2) + 8).attr("data-rank", i)
+      .text(raw.length > 26 ? raw.slice(0, 24) + "…" : raw));
+  });
+  layout.haloFitN = sector ? leaves.filter(l => l.fit).length : 0;
+}
+// Dots grow with √k (visibly bigger as you dive, but the k-growing spacing
+// still separates overlaps); labels hold a constant screen size while their
+// budget grows with k² — zooming DE-CLUTTERS, as everywhere else in v3.
+function applyHaloScale(k) {
+  if (!layout || !layout.halo) return;
+  lastK = k || 1;
+  const rr = 1 / Math.sqrt(lastK);
+  gBubbles.selectAll("circle.dot.node").attr("r", l => (l.r || 2.2) * rr);
+  updateHaloLabels(lastK);
+}
+function updateHaloLabels(k) {
+  const sel = gLabels.selectAll("text.hlab");
+  const n = sel.size();
+  if (!n) return;
+  const budget = layout.sector ? HALO_SECTOR_BUDGET : HALO_LABEL_BUDGET;
+  const lim = Math.min(n, Math.max(layout.haloFitN || 0, Math.round(budget * k * k)));
+  sel.attr("display", function () { return Number(this.dataset.rank) < lim ? null : "none"; })
+     .attr("font-size", 9.5 / (k || 1))
+     .attr("stroke-width", 3 / (k || 1));
+}
+zoomBehav.on("zoom.halo", ev => {
+  if (layout && layout.halo) applyHaloScale(ev.transform.k);
+});
+// searching while in the halo keeps the view for hits that are ON it:
+// spotlight-pulse the dot + open its card. Anything not on the current halo
+// (areas, formalized cells, another sector's cells) navigates exactly as today.
+function spotlightDot(id) {
+  const L = layout && layout.items.get(id);
+  if (!L) return;
+  const t = d3.zoomTransform(svg.node()), k = t.k || 1;
+  // a pan/zoom may have left the dot off screen — bring it back at the same zoom
+  const sx = t.applyX(L.x), sy = t.applyY(L.y);
+  const W = stageEl.clientWidth, H = stageEl.clientHeight;
+  if (sx < 20 || sx > W - 20 || sy < 20 || sy > H - 20)
+    svg.transition().duration(420).call(zoomBehav.transform,
+      d3.zoomIdentity.translate(W / 2 - k * L.x, H / 2 - k * L.y).scale(k));
+  for (let i = 0; i < 3; i++)
+    gOverlay.append("circle")
+      .attr("cx", L.x).attr("cy", L.y).attr("r", 4 / k)
+      .attr("fill", "none").attr("stroke", "#38bdf8").attr("stroke-width", 2.4 / k)
+      .transition().delay(140 + i * 300).duration(950).ease(d3.easeCubicOut)
+      .attr("r", 40 / k).attr("stroke-opacity", 0)
+      .remove();
+}
+async function searchGo(rawId) {
+  if (layout && layout.halo) {
+    const id = await resolveId(rawId);
+    if (layout && layout.halo && isCellId(id) && layout.items.has(id)) {
+      selectedId = id;
+      drawSelRing();
+      spotlightDot(id);
+      renderPanel(id);
+      return;
+    }
+  }
+  navigate(rawId);
+}
+// ---- the Libraries control (root panel + halo panel, ONE component) ---------
+async function reShellHalo() {
+  const seq = ++renderSeq;
+  await renderHalo(seq, false, true);   // instant: no refetch, no zoom reset; dots animate
+}
+async function setLibEnabled(name, on) {
+  if (on) disabledLibs.delete(name); else disabledLibs.add(name);
+  persistLibs();
+  syncLibCheckboxes();
+  if (layout && layout.halo && isHaloId(focusId)) {
+    await reShellHalo();
+    if (isHaloId(lastPanelId)) {          // refresh the card's counts in place
+      const st = panelEl.scrollTop;
+      await haloPanel(lastPanelId);
+      panelEl.scrollTop = st;
+    }
+  } else if (!explorerOn && focusId === ROOTS_ID) {
+    renderFocus(false);                   // re-dim the root bubbles
+    if (lastPanelId === ROOTS_ID) {
+      const st = panelEl.scrollTop;
+      rootsPanel();
+      panelEl.scrollTop = st;
+    }
+  }
+}
+function librariesSectionHtml() {
+  const all = libRoots();
+  let html = `<section class="kind"><h3>Library filter <span class="cnt">(${
+    all.length - disabledLibs.size} of ${all.length} on)</span></h3>
+    <p class="note">Which libraries count as <b>formal code</b>. Turning one off dims its
+    root bubble to 35% (never removes it) and re-shells the halo without it: a frontier
+    cell's hop distance becomes the shortest synapse path to a declaration in a library
+    still on.</p><div class="libctl">`;
+  for (const n of all)
+    html += `<label class="librow"><input type="checkbox" class="libcb" data-lib="${esc(n)}"${
+      disabledLibs.has(n) ? "" : " checked"}> ${esc(n)}
+      <small>${tree.count("path:" + n).toLocaleString()} cells</small></label>`;
+  html += `</div></section>`;
+  return html;
 }
 // ---- logical communities ---------------------------------------------------
 // Greedy modularity merging over the level's `depends` synapses. Makes arXiv
@@ -1555,6 +1950,9 @@ function updateStructStat() {
   el.textContent = parts.join(" · ");
 }
 function drawSelRing() {
+  // the explorer's ring is painted by the canvas frame (screen-space, so it is
+  // visible at ANY zoom — the old SVG ring drew sub-pixel at the resting k)
+  if (layout && layout.explorer) { scheduleXDraw(); return; }
   gOverlay.selectAll("circle.selring").remove();
   const S = selectedId && layout && layout.items.get(selectedId);
   if (S) gOverlay.append("circle").attr("class", "selring")
@@ -1570,19 +1968,25 @@ function setHash(id) {
   let h = "#" + (id && id !== ROOTS_ID ? encodeURIComponent(id) : "");
   if (filterMask) h += "&f=" + filterMask;
   if (explorerOn) h += "&view=explorer";
+  // lib names match ^[A-Za-z][A-Za-z0-9_]*$ — raw in the hash by construction
+  if (tree && libsFiltered()) h += "&libs=" + enabledLibs().join(",");
   history.replaceState(null, "", h);
 }
 function parseHash() {
   const parts = location.hash.slice(1).split("&");
   let id = parts[0] || "";
   try { id = decodeURIComponent(id); } catch (e) { /* malformed — keep raw */ }
-  const out = {id, f: 0, view: "", flat: false};
+  const out = {id, f: 0, view: "", flat: false, libs: null};
   for (const kv of parts.slice(1)) {
     const i = kv.indexOf("=");
     const k = i < 0 ? kv : kv.slice(0, i), v = i < 0 ? "" : kv.slice(i + 1);
     if (k === "f") out.f = (parseInt(v, 10) || 0) & 0xffff;
     else if (k === "view") out.view = v;
     else if (k === "flat" && v !== "0") out.flat = true;
+    else if (k === "libs") {   // the ENABLED list; "&libs=" (empty) = all off
+      try { out.libs = v === "" ? [] : decodeURIComponent(v).split(",").filter(Boolean); }
+      catch (e) { out.libs = null; }
+    }
   }
   if (out.flat && !out.view) out.view = "explorer";   // pre-merge flatten links
   return out;
@@ -1652,7 +2056,8 @@ async function zoomOut() {
     await renderFocus(true);
     return;
   }
-  const parent = focusId === FRONTIER_ID || focusId === HALO_ID ? ROOTS_ID
+  const parent = isHaloId(focusId) && focusId !== HALO_ID ? HALO_ID   // sector → full halo
+    : focusId === FRONTIER_ID || focusId === HALO_ID ? ROOTS_ID
     : isFrontierId(focusId) ? FRONTIER_ID
     : focusId === UNPLACED_ID ? (tree.frontier.length ? FRONTIER_ID : ROOTS_ID)
     : focusId.startsWith(STRAYS_PREFIX) ? focusId.slice(STRAYS_PREFIX.length)
@@ -1709,9 +2114,13 @@ function pathChain(p) {
 async function renderCrumb() {
   updateHaloToggle();   // every crumb-bearing view settles the areas|halo toggle
   let html = `<a data-nav="${ROOTS_ID}">all libraries</a>`;
-  if (focusId === HALO_ID) {
+  if (isHaloId(focusId)) {
+    const sec = haloAreaOf(focusId);
     html += ` <span class="sep">/</span> <a data-nav="${FRONTIER_ID}">Frontier</a>` +
-      ` <span class="sep">/</span> <b>halo</b>`;
+      (sec
+        ? ` <span class="sep">/</span> <a data-nav="${HALO_ID}">halo</a>` +
+          ` <span class="sep">/</span> <b>${esc(frontierName(sec))}</b>`
+        : ` <span class="sep">/</span> <b>halo</b>`);
   } else if (focusId === FRONTIER_ID) {
     html += ` <span class="sep">/</span> <b>Frontier</b>`;
   } else if (isFrontierId(focusId)) {
@@ -2635,6 +3044,9 @@ function wirePanel() {
     }));
   bindRawToggles();
   enrichEvidence(panelEl);
+  // the Libraries control (rendered by the root panel + the halo panel)
+  panelEl.querySelectorAll(".libcb").forEach(cb =>
+    cb.addEventListener("change", () => setLibEnabled(cb.dataset.lib, cb.checked)));
   // the Wikipedia lead is an on-demand REST fetch — never paid on card render
   panelEl.querySelectorAll("details[data-wplead]").forEach(d =>
     d.addEventListener("toggle", async () => {
@@ -2665,7 +3077,7 @@ async function renderPanel(id) {
   if (id === UNPLACED_ID) return unplacedPanel();
   // frontier ids are TREE rows, not shard entries — they must never reach getEntry
   if (id === FRONTIER_ID) return frontierPanel();
-  if (id === HALO_ID) return haloPanel();
+  if (isHaloId(id)) return haloPanel(id);
   if (isFrontierId(id)) return frontierAreaPanel(id);
   if (id.startsWith(STRAYS_PREFIX)) return straysPanel(id.slice(STRAYS_PREFIX.length));
   if (isPathId(id)) return renderSupercellPanel(id);
@@ -2707,6 +3119,7 @@ function rootsPanel() {
       <small>${n.toLocaleString()}</small></span>`;
   html += `</div><p class="note">${
     tree.roots.length - rows.length} further library roots hold no cells yet.</p></section>`;
+  html += librariesSectionHtml();
   if (tree.frontier.length)
     html += `<section class="kind"><h3>The Frontier <span class="cnt">(${
       (tree.frontierN + tree.unplaced.length).toLocaleString()})</span></h3>
@@ -2824,32 +3237,54 @@ async function frontierAreaPanel(id) {
   wirePanel();
 }
 // ---- the halo view's reading panel ------------------------------------------
-async function haloPanel() {
+// One panel for both faces of the halo: the full view (#__halo__) and a sector
+// focus (#__halo__:<Area>). Counts reflect the shells ON SCREEN — the client
+// re-shelling when the library set is filtered, the shipped shells otherwise.
+async function haloPanel(id) {
+  id = id || HALO_ID;
   await ensureTree();
-  if (lastPanelId !== HALO_ID) return;
-  const cnt = {1: 0, 2: 0, 3: 0, disc: 0};
-  for (const h of tree.cellHops.values()) cnt[h] = (cnt[h] || 0) + 1;
-  const total = cnt[1] + cnt[2] + cnt[3] + cnt.disc;
-  panelEl.innerHTML = `<div class="crumb"><a data-nav="${ROOTS_ID}">all libraries</a> /
-      <a data-nav="${FRONTIER_ID}">Frontier</a> / halo</div>
-    <h2>The Frontier — halo</h2>
+  if (lastPanelId !== id) return;
+  const sector = haloAreaOf(id);
+  const areas = sector && (tree.sc[sector] || {}).frontier ? [sector] : tree.frontier;
+  const cnt = {};
+  let total = 0;
+  for (const p of areas)
+    for (const [k, arr] of Object.entries(activeShellsFor(p) || {})) {
+      cnt[k] = (cnt[k] || 0) + (arr || []).length;
+      total += (arr || []).length;
+    }
+  const keys = Object.keys(cnt).sort((a, b) =>
+    (a === "disc") - (b === "disc") || Number(a) - Number(b));
+  let html = `<div class="crumb"><a data-nav="${ROOTS_ID}">all libraries</a> /
+      <a data-nav="${FRONTIER_ID}">Frontier</a> / ${sector
+        ? `<a data-nav="${HALO_ID}">halo</a> / ${esc(frontierName(sector))}` : "halo"}</div>
+    <h2>${sector ? `${esc(frontierName(sector))} — halo sector` : "The Frontier — halo"}</h2>
     <div class="sub">${total.toLocaleString()} cells on concentric shells ·
-      hop distance to the nearest formalized cell</div>
-    <p class="note">A multi-source BFS from <b>every cell with a Lean declaration</b>
-    over the cell↔cell synapses (all bond kinds conduct) gives each homeless cell a
-    hop distance <b>d</b> — how far its neighborhood sits from formal code. Shell
-    radius IS that distance: the innermost ring is one synapse from Mathlib. Dots
-    keep their frontier-area grouping as angular sectors and dive exactly like the
-    <a data-nav="${FRONTIER_ID}">areas view</a>'s.</p>
-    <section class="kind"><h3>Shells</h3><div class="chips">
-      <span class="chip">1 hop <b>${cnt[1].toLocaleString()}</b></span>
-      <span class="chip">2 hops <b>${cnt[2].toLocaleString()}</b></span>
-      <span class="chip">3 hops <b>${cnt[3].toLocaleString()}</b></span>
-      <span class="chip" title="no synapse path from these cells reaches any formalized cell">disconnected
-        <b>${cnt.disc.toLocaleString()}</b></span></div>
+      hop distance to the nearest formalized cell${libsFiltered() && clientHops
+        ? ` · libraries: ${esc(enabledLibs().join(" + ") || "none")}` : ""}</div>`;
+  html += sector
+    ? `<p class="note">One frontier area's shells, spread over the full circle — dot
+       labels render where they fit, and zooming reveals more. Click the canvas
+       background (or <a data-nav="${HALO_ID}">here</a>) to return to the full halo,
+       or open <a data-nav="${esc(sector)}">${esc(frontierName(sector))}</a> as
+       dive-able bubbles.</p>`
+    : `<p class="note">A multi-source BFS from <b>every cell with a Lean declaration in
+       an enabled library</b> over the cell↔cell synapses (all bond kinds conduct) gives
+       each homeless cell a hop distance <b>d</b> — how far its neighborhood sits from
+       formal code. Shell radius IS that distance: the innermost ring is one synapse
+       from formal code. Dots keep their frontier-area grouping as angular sectors —
+       click a sector's rim label to focus it — and dive exactly like the
+       <a data-nav="${FRONTIER_ID}">areas view</a>'s.</p>`;
+  html += `<section class="kind"><h3>Shells</h3><div class="chips">` +
+    keys.map(k => k === "disc"
+      ? `<span class="chip" title="no synapse path from these cells reaches any formalized cell">disconnected <b>${cnt[k].toLocaleString()}</b></span>`
+      : `<span class="chip">${k} hop${k === "1" ? "" : "s"} <b>${cnt[k].toLocaleString()}</b></span>`).join("") +
+    `</div>
     <p class="note">The dashed outer ring is <b>disconnected</b>: no synapse path from
     those cells reaches formal code at all — the deepest frontier. The central disc is
-    Mathlib + the other formal libraries; click it to open them.</p></section>`;
+    the enabled formal libraries; click it to open them.</p></section>`;
+  html += librariesSectionHtml();
+  panelEl.innerHTML = html;
   wirePanel();
 }
 async function straysPanel(parent) {
@@ -3105,7 +3540,7 @@ $("#q").addEventListener("input", () => {
     }).join("") || `<div class="hit"><span class="t">no hits</span> try /decl/&lt;name&gt; for declarations</div>`;
     box.style.display = "block";
     box.querySelectorAll("[data-id]").forEach(h =>
-      h.addEventListener("click", () => { box.style.display = "none"; $("#q").value = ""; navigate(h.dataset.id); }));
+      h.addEventListener("click", () => { box.style.display = "none"; $("#q").value = ""; searchGo(h.dataset.id); }));
   }, 150);
 });
 document.addEventListener("click", ev => {
@@ -3139,32 +3574,296 @@ async function fetchExplorerData() {
   xdata = j;
   return j;
 }
-// 76k <path> elements is not a thing a browser survives, so the synapses batch
-// into one path per weight tier (a single `d` of M…L subpaths). Nothing is
-// dropped — the click target is a nearest-segment hit test below, so every drawn
-// synapse stays inspectable.
+// 76k SVG <path> segments — and 20.9k SVG <circle>s — are not a thing a browser
+// repaints at 60fps: measured on the shipped graph, every wheel/mousemove ran
+// ~53ms of main thread BEFORE rasterising. The explorer therefore paints on a
+// <canvas> (the SVG stays the empty event surface on top):
+//   · a uniform spatial grid (CSR) over the shipped xy, built ONCE per scope —
+//     it culls the nodes each frame and answers every pointer hit test, so no
+//     mousemove ever scans all n cells
+//   · zoom-tiered LOD:  far (k < XK_EDGE_MIN)  dots only — no edges, no labels
+//                       mid                    + edges from the heaviest weight
+//                         tier down, stopping at the tier that would push the
+//                         drawn count past XE_BUDGET (a weight threshold)
+//                       near                   all visible edges + labels for
+//                         the largest cells on screen (XL_CAP hard cap).
+//                         Near = every visible edge fits the budget (a small
+//                         scope is "near" at rest — full detail) OR k >=
+//                         XK_NEAR: the dense core's long heavy edges cross any
+//                         zoomed-in viewport, so a count test alone would keep
+//                         max-zoom label-less and capped forever
+//   · every input coalesces into ONE requestAnimationFrame draw — never a draw
+//     per wheel event
+// Nothing is dropped from the DATA: xEdges keeps every synapse for the click
+// hit test, and zooming in always reaches full detail — the budget caps what
+// one FRAME draws, not what the view can reach.
 const SYN_TIERS = [
   {min: 1, max: 1, w: 0.5, op: 0.10},
   {min: 2, max: 3, w: 0.7, op: 0.18},
   {min: 4, max: 7, w: 1.1, op: 0.30},
   {min: 8, max: Infinity, w: 1.8, op: 0.50},
 ];
-let xEdges = [];   // [{a, b, w, ax, ay, bx, by}] for the hit test
-function drawExplorerEdges() {
-  gEdges.selectAll("*").remove();
-  for (const t of SYN_TIERS) {
-    let d = "";
-    for (const e of xEdges) {
-      if (e.w < t.min || e.w > t.max) continue;
-      d += `M${e.ax.toFixed(1)},${e.ay.toFixed(1)}L${e.bx.toFixed(1)},${e.by.toFixed(1)}`;
-    }
-    if (!d) continue;
-    gEdges.append("path").attr("class", "synbatch").attr("d", d)
-      .attr("stroke", SYN_COLOR).attr("stroke-opacity", t.op)
-      // base width in PIXELS; applyExplorerScale divides by k so it renders at t.w
-      .attr("data-w", t.w).attr("stroke-width", t.w);
+const XK_EDGE_MIN = 0.05;   // below this zoom the view is "far": dots only
+const XK_NEAR = 0.8;        // at/above this zoom the view is "near" regardless
+const XE_BUDGET = 8000;     // max synapse segments a MID frame draws
+const XL_CAP = 250;         // max labels on screen (same cap the SVG version had)
+let xEdges = [];   // [{a, b, w, ax, ay, bx, by}] for the click hit test
+let xr = null;     // canvas render state (typed arrays + grid), per scope
+let xDrawPending = false, xDrawTimer = 0, xInputT = 0, xHover = -1;
+const xcv = document.getElementById("xcanvas");
+const xctx = xcv.getContext("2d");
+// live draw telemetry (console-inspectable debug hook; ~40 bytes, no hot-path cost)
+window.__xstats = {lod: "", nodes: 0, edges: 0, perTier: [0, 0, 0, 0],
+                   labels: 0, drawMs: 0, i2f: []};
+
+function xcanvasShow(on) {
+  xcv.style.display = on ? "block" : "none";
+  if (!on) {
+    xr = null; xHover = -1; xDrawPending = false;
+    clearTimeout(xDrawTimer);
+    stageEl.title = "";
+    svg.node().style.cursor = "";
   }
 }
+function scheduleXDraw() {
+  if (!xr || xDrawPending) return;
+  xDrawPending = true;
+  requestAnimationFrame(xDrawNow);
+  // rAF pauses in hidden tabs (fadeIn's own trap) — a safety timer keeps a
+  // background tab from sticking blank; it still coalesces (one timer, one draw)
+  xDrawTimer = setTimeout(xDrawNow, 120);
+}
+function xDrawNow() {
+  if (!xDrawPending) return;
+  xDrawPending = false;
+  clearTimeout(xDrawTimer);
+  drawXFrame();
+}
+// typed-array scene + CSR grid, built once per renderExplorer (scope/filter)
+function buildXState(leaves) {
+  const n = leaves.length;
+  const X = new Float32Array(n), Y = new Float32Array(n), R = new Float32Array(n);
+  const flags = new Uint8Array(n);   // bit0 formal (blue), bit1 gold @[wikidata]
+  const labs = new Array(n);
+  let maxR = 0;
+  for (let i = 0; i < n; i++) {
+    const l = leaves[i];
+    X[i] = l.x; Y[i] = l.y; R[i] = l.r;
+    if (l.r > maxR) maxR = l.r;
+    flags[i] = (l.data.p ? 1 : 0) | (((l.data.f || 0) & 1) ? 2 : 0);
+    const raw = l.data.label || l.data.id;
+    labs[i] = raw.length > 24 ? raw.slice(0, 22) + "…" : raw;
+  }
+  // label rank = the SVG version's ordering: biggest dot (≈ degree) first
+  const rank = Uint32Array.from(
+    Array.from({length: n}, (_, i) => i).sort((a, b) => R[b] - R[a]));
+  // ---- the uniform spatial grid (CSR: starts + items) -----------------------
+  let minx = Infinity, miny = Infinity, maxx = -Infinity, maxy = -Infinity;
+  for (let i = 0; i < n; i++) {
+    if (X[i] < minx) minx = X[i]; if (X[i] > maxx) maxx = X[i];
+    if (Y[i] < miny) miny = Y[i]; if (Y[i] > maxy) maxy = Y[i];
+  }
+  if (!(minx <= maxx)) { minx = miny = 0; maxx = maxy = 1; }
+  const gn = Math.max(1, Math.min(160, Math.ceil(Math.sqrt(n || 1))));
+  const cw = Math.max((maxx - minx) / gn, 1e-6);
+  const ch = Math.max((maxy - miny) / gn, 1e-6);
+  const bxOf = i => Math.min(gn - 1, Math.max(0, Math.floor((X[i] - minx) / cw)));
+  const byOf = i => Math.min(gn - 1, Math.max(0, Math.floor((Y[i] - miny) / ch)));
+  const starts = new Uint32Array(gn * gn + 1);
+  for (let i = 0; i < n; i++) starts[byOf(i) * gn + bxOf(i) + 1]++;
+  for (let b = 0; b < gn * gn; b++) starts[b + 1] += starts[b];
+  const items = new Uint32Array(n);
+  const cursor = starts.slice(0, gn * gn);
+  for (let i = 0; i < n; i++) items[cursor[byOf(i) * gn + bxOf(i)]++] = i;
+  // ---- synapse tiers as flat arrays (screen-space stroke + bbox culling) ----
+  const tierOf = w => w >= 8 ? 3 : w >= 4 ? 2 : w >= 2 ? 1 : 0;
+  const tiers = SYN_TIERS.map(t => ({min: t.min, w: t.w, op: t.op, n: 0, fill: 0}));
+  for (const e of xEdges) tiers[tierOf(e.w)].n++;
+  for (const t of tiers) {
+    t.ax = new Float32Array(t.n); t.ay = new Float32Array(t.n);
+    t.bx = new Float32Array(t.n); t.by = new Float32Array(t.n);
+  }
+  for (const e of xEdges) {
+    const t = tiers[tierOf(e.w)], j = t.fill++;
+    t.ax[j] = e.ax; t.ay[j] = e.ay; t.bx[j] = e.bx; t.by[j] = e.by;
+  }
+  xHover = -1;
+  xr = {n, X, Y, R, flags, labs, rank, maxR, tiers,
+        grid: {minx, miny, cw, ch, gn, starts, items},
+        vis: new Uint32Array(n), stamp: new Int32Array(n), frame: 0,
+        minClickW: Infinity};
+}
+// visible-node gather through the grid; stamps this frame's visibility set
+function xCollectVisible(x0, y0, x1, y1) {
+  const g = xr.grid, gn = g.gn, X = xr.X, Y = xr.Y;
+  const cl = (v, w) => Math.min(gn - 1, Math.max(0, Math.floor((v) / w)));
+  const bx0 = cl(x0 - g.minx, g.cw), bx1 = cl(x1 - g.minx, g.cw);
+  const by0 = cl(y0 - g.miny, g.ch), by1 = cl(y1 - g.miny, g.ch);
+  const vis = xr.vis, stamp = xr.stamp, f = ++xr.frame;
+  let m = 0;
+  for (let by = by0; by <= by1; by++)
+    for (let bx = bx0; bx <= bx1; bx++) {
+      const b = by * gn + bx;
+      for (let s = g.starts[b], e = g.starts[b + 1]; s < e; s++) {
+        const i = g.items[s];
+        if (X[i] >= x0 && X[i] <= x1 && Y[i] >= y0 && Y[i] <= y1) {
+          vis[m++] = i; stamp[i] = f;
+        }
+      }
+    }
+  return m;
+}
+// nearest dot under the pointer (world coords), through the grid — the hit
+// radius is the dot's own rendered radius + a 4px grace ring
+function xHitNode(wx, wy, k) {
+  if (!xr) return -1;
+  const g = xr.grid, gn = g.gn, X = xr.X, Y = xr.Y, R = xr.R;
+  const grace = 4 / k, floor = DOT_PX / k;
+  const reach = xr.maxR + Math.max(floor, DOT_PX) + grace;
+  const cl = (v, w) => Math.min(gn - 1, Math.max(0, Math.floor((v) / w)));
+  const bx0 = cl(wx - reach - g.minx, g.cw), bx1 = cl(wx + reach - g.minx, g.cw);
+  const by0 = cl(wy - reach - g.miny, g.ch), by1 = cl(wy + reach - g.miny, g.ch);
+  let best = -1, bd = Infinity;
+  for (let by = by0; by <= by1; by++)
+    for (let bx = bx0; bx <= bx1; bx++) {
+      const b = by * gn + bx;
+      for (let s = g.starts[b], e = g.starts[b + 1]; s < e; s++) {
+        const i = g.items[s];
+        const dx = X[i] - wx, dy = Y[i] - wy, d2 = dx * dx + dy * dy;
+        const rr = Math.max(R[i], floor) + grace;
+        if (d2 <= rr * rr && d2 < bd) { bd = d2; best = i; }
+      }
+    }
+  return best;
+}
+function drawXFrame() {
+  if (!xr || !layout || !layout.explorer) return;
+  const t0 = performance.now();
+  const t = d3.zoomTransform(svg.node());
+  const k = t.k || 1, tx = t.x, ty = t.y;
+  const W = stageEl.clientWidth || 800, H = stageEl.clientHeight || 600;
+  const dpr = window.devicePixelRatio || 1;
+  if (xcv.width !== Math.round(W * dpr) || xcv.height !== Math.round(H * dpr)) {
+    xcv.width = Math.round(W * dpr); xcv.height = Math.round(H * dpr);
+    xcv.style.width = W + "px"; xcv.style.height = H + "px";
+  }
+  xctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  xctx.clearRect(0, 0, W, H);
+  const X = xr.X, Y = xr.Y, R = xr.R, flags = xr.flags, vis = xr.vis;
+  // world-space viewport, padded by the biggest dot + label room at this zoom
+  const pad = xr.maxR + (DOT_PX + 12) / k;
+  const x0 = -tx / k - pad, x1 = (W - tx) / k + pad;
+  const y0 = -ty / k - pad, y1 = (H - ty) / k + pad;
+  const m = xCollectVisible(x0, y0, x1, y1);
+  // ---- edges: count visible per tier, pick the LOD, then draw ---------------
+  let edges = 0, lod = "far";
+  const perTier = [0, 0, 0, 0];
+  xr.minClickW = Infinity;
+  if (k >= XK_EDGE_MIN) {
+    const cnt = [0, 0, 0, 0];
+    let total = 0;
+    for (let ti = 0; ti < 4; ti++) {
+      const T = xr.tiers[ti];
+      let c = 0;
+      for (let e = 0; e < T.n; e++) {
+        const ax = T.ax[e], ay = T.ay[e], bx = T.bx[e], by = T.by[e];
+        if ((ax < x0 && bx < x0) || (ax > x1 && bx > x1) ||
+            (ay < y0 && by < y0) || (ay > y1 && by > y1)) continue;
+        c++;
+      }
+      cnt[ti] = c; total += c;
+    }
+    // near draws EVERYTHING visible (XE_BUDGET only chooses the mid threshold)
+    const near = k >= XK_NEAR || total <= XE_BUDGET;
+    lod = near ? "near" : "mid";
+    let loTier = 0;   // lightest tier this frame draws
+    if (!near) {
+      let acc = 0;
+      loTier = 4;
+      for (let ti = 3; ti >= 0; ti--) {
+        if (acc + cnt[ti] > XE_BUDGET) break;   // lighter tiers stay off too
+        acc += cnt[ti]; loTier = ti;
+      }
+    }
+    for (let ti = 3; ti >= loTier; ti--) {
+      const T = xr.tiers[ti];
+      if (!cnt[ti]) { xr.minClickW = Math.min(xr.minClickW, T.min); continue; }
+      xctx.beginPath();
+      for (let e = 0; e < T.n; e++) {
+        const ax = T.ax[e], ay = T.ay[e], bx = T.bx[e], by = T.by[e];
+        if ((ax < x0 && bx < x0) || (ax > x1 && bx > x1) ||
+            (ay < y0 && by < y0) || (ay > y1 && by > y1)) continue;
+        xctx.moveTo(ax * k + tx, ay * k + ty);
+        xctx.lineTo(bx * k + tx, by * k + ty);
+      }
+      xctx.globalAlpha = T.op; xctx.strokeStyle = SYN_COLOR;
+      xctx.lineWidth = T.w; xctx.stroke();
+      perTier[ti] = cnt[ti]; edges += cnt[ti];
+      xr.minClickW = T.min;   // only what this frame draws is click-inspectable
+    }
+  }
+  // ---- dots: one fill pass per colour, gold rings after ---------------------
+  xctx.globalAlpha = 0.9;
+  const TAU = Math.PI * 2;
+  for (let pass = 0; pass < 2; pass++) {
+    xctx.beginPath();
+    for (let v = 0; v < m; v++) {
+      const i = vis[v];
+      if ((flags[i] & 1) !== pass) continue;
+      const sx = X[i] * k + tx, sy = Y[i] * k + ty;
+      const r = Math.max(R[i] * k, DOT_PX);
+      xctx.moveTo(sx + r, sy); xctx.arc(sx, sy, r, 0, TAU);
+    }
+    xctx.fillStyle = pass ? CELL_FORMAL : CELL_INFORMAL;
+    xctx.fill();
+  }
+  xctx.globalAlpha = 1;
+  xctx.beginPath();
+  for (let v = 0; v < m; v++) {
+    const i = vis[v];
+    if (!(flags[i] & 2)) continue;
+    const sx = X[i] * k + tx, sy = Y[i] * k + ty;
+    const r = Math.max(R[i] * k, DOT_PX);
+    xctx.moveTo(sx + r, sy); xctx.arc(sx, sy, r, 0, TAU);
+  }
+  xctx.strokeStyle = GOLD; xctx.lineWidth = RING_PX; xctx.stroke();
+  // hover + selection rings (screen-space, like circle.dot:hover / .selring)
+  if (xHover >= 0 && xr.stamp[xHover] === xr.frame) {
+    const sx = X[xHover] * k + tx, sy = Y[xHover] * k + ty;
+    xctx.beginPath();
+    xctx.arc(sx, sy, Math.max(R[xHover] * k, DOT_PX) + 1, 0, TAU);
+    xctx.strokeStyle = "#38bdf8"; xctx.lineWidth = 2; xctx.stroke();
+  }
+  const S = selectedId && layout.items.get(selectedId);
+  if (S) {
+    xctx.beginPath();
+    xctx.arc(S.x * k + tx, S.y * k + ty, Math.max(S.r * k, DOT_PX) + 4, 0, TAU);
+    xctx.strokeStyle = "#38bdf8"; xctx.lineWidth = 2.5; xctx.stroke();
+  }
+  // ---- labels: near tier only — the largest visible cells, budget by zoom ---
+  let labels = 0;
+  if (lod === "near") {
+    const lim = Math.min(XL_CAP, Math.max(12, Math.round(600 * k * k)));
+    xctx.fillStyle = "#e8e6e1"; xctx.textAlign = "center";
+    xctx.font = LABEL_PX + 'px Georgia,"Iowan Old Style","Times New Roman",serif';
+    const rank = xr.rank;
+    for (let q = 0; q < rank.length && labels < lim; q++) {
+      const i = rank[q];
+      if (xr.stamp[i] !== xr.frame) continue;
+      const sx = X[i] * k + tx, sy = Y[i] * k + ty;
+      xctx.fillText(xr.labs[i], sx, sy + Math.max(R[i] * k, DOT_PX) + 10);
+      labels++;
+    }
+  }
+  const st = window.__xstats;
+  st.lod = lod; st.nodes = m; st.edges = edges; st.perTier = perTier;
+  st.labels = labels; st.drawMs = performance.now() - t0;
+  if (xInputT) {   // interaction → this frame's completion, for the perf gate
+    if (st.i2f.length < 400) st.i2f.push(performance.now() - xInputT);
+    xInputT = 0;
+  }
+}
+window.__xdraw = drawXFrame;   // debug hook: force one synchronous frame
 // distance from p to segment ab, squared
 function segDist2(px, py, ax, ay, bx, by) {
   const dx = bx - ax, dy = by - ay;
@@ -3175,17 +3874,46 @@ function segDist2(px, py, ax, ay, bx, by) {
   return (px - qx) * (px - qx) + (py - qy) * (py - qy);
 }
 function explorerClick(ev) {
+  if (!xr) return;
+  // gViewport no longer tracks the explorer's zoom (the canvas reads the
+  // transform itself), so invert the SVG-space pointer through the transform
+  const t = d3.zoomTransform(svg.node());
+  const k = t.k || 1;
+  const p = t.invert(d3.pointer(ev, svg.node()));
+  // dots first: the canvas has no per-circle handlers, so the stage click IS
+  // the node click — resolved through the grid, exactly like hover
+  const i = xHitNode(p[0], p[1], k);
+  if (i >= 0) { nodeClick(layout.leaves[i].data); return; }
   if (!xEdges.length) return;
-  const [px, py] = d3.pointer(ev, gViewport.node());
-  const k = d3.zoomTransform(svg.node()).k || 1;
   const tol = 7 / k;                    // a constant on-screen grab radius
   let best = null, bd = tol * tol;
-  for (const e of xEdges) {
-    const d2 = segDist2(px, py, e.ax, e.ay, e.bx, e.by);
+  for (const e of xEdges) {             // click-only — never runs per move
+    if (e.w < xr.minClickW) continue;   // only edges the frame DRAWS are clickable
+    const d2 = segDist2(p[0], p[1], e.ax, e.ay, e.bx, e.by);
     if (d2 < bd) { bd = d2; best = e; }
   }
   if (best) showSynapsePanel(best.a, best.b, {a: best.a, b: best.b, w: best.w});
 }
+// hover: grid hit test per move (never an O(n) scan), native tooltip on the
+// stage — the level views' <title> affordance, now at EVERY explorer scope
+svg.on("mousemove.xhover", ev => {
+  if (!xr || !layout || !layout.explorer) return;
+  const t = d3.zoomTransform(svg.node());
+  const p = t.invert(d3.pointer(ev, svg.node()));
+  const i = xHitNode(p[0], p[1], t.k || 1);
+  if (i === xHover) return;
+  xHover = i;
+  svg.node().style.cursor = i >= 0 ? "pointer" : "";
+  const d = i >= 0 ? layout.leaves[i].data : null;
+  stageEl.title = d ? (d.label || d.id) +
+    (((d.f || 0) & 1) ? " — carries a hand-written @[wikidata] tag" : "") : "";
+  scheduleXDraw();   // repaint the hover ring (coalesced)
+});
+svg.on("mouseleave.xhover", () => {
+  if (xHover === -1) return;
+  xHover = -1;
+  if (xr) { svg.node().style.cursor = ""; stageEl.title = ""; scheduleXDraw(); }
+});
 // the explorer scopes by AREA: an area id scopes to its subtree, a cell id
 // scopes to that cell's home area (and is selected), anything else = everything
 async function explorerFocusFor(rawId) {
@@ -3292,11 +4020,15 @@ async function renderExplorer(anim) {
   }
   layout = {items: new Map(leaves.map(l => [l.data.id, l])), leaves, explorer: true};
   edgeStore = [];
+  // the canvas engine owns the whole scene — every SVG group empties, so the
+  // event surface on top paints nothing and costs nothing per frame
+  gEdges.selectAll("*").remove();
   gOverlay.selectAll("*").remove();
-  gBubbles.selectAll("circle.preview").remove();
-  drawNodes();
-  drawExplorerEdges();
-  drawExplorerLabels();
+  gBubbles.selectAll("*").remove();
+  gLabels.selectAll("*").remove();
+  buildXState(leaves);
+  xcanvasShow(true);
+  scheduleXDraw();   // even a 0-leaf scope paints (clears) a frame — never stale pixels
   // Fit the camera to where the cells actually ARE, not to the bounding box.
   //
   // The build-time layout takes whatever area it needs, so a scope's extent is set
@@ -3348,45 +4080,20 @@ async function renderExplorer(anim) {
     xEdges.length.toLocaleString()} synapses · ${scopeLabel} · build-time layout`;
   const el = $("#structstat");
   if (el) el.textContent = "no client simulation — positions are solved at build time";
-  if (anim) fadeIn();
-}
-// labels capped by zoom: only the biggest atoms are labelled zoomed-out; zooming
-// in reveals more (up to 250 text elements at any graph size)
-function drawExplorerLabels() {
-  gLabels.selectAll("*").remove();
-  const ranked = layout.leaves.slice().sort((a, b) => b.r - a.r).slice(0, 250);
-  ranked.forEach((l, i) => {
-    const raw = l.data.label || l.data.id;
-    gLabels.append("text").attr("class", "blabel xlab")
-      .attr("x", l.x).attr("y", l.y + l.r + 8).attr("font-size", 8)
-      .attr("data-rank", i)
-      .text(raw.length > 24 ? raw.slice(0, 22) + "…" : raw);
-  });
-  updateExplorerLabels(d3.zoomTransform(svg.node()).k);
-}
-function updateExplorerLabels(k) {
-  if (!layout || !layout.explorer) return;
-  // Label budget scales with zoom^2 (i.e. with visible AREA per cell), because the
-  // labels now render at a constant 11px: once they were legible, showing 250 of
-  // them at the resting zoom piled them into an unreadable white mass in the dense
-  // core. Fewer at rest, more as you zoom in — the map stays readable at every k.
-  const lim = Math.max(12, Math.min(250, Math.round(600 * k * k)));
-  gLabels.selectAll("text.xlab").attr("display", function () {
-    return Number(this.dataset.rank) < lim ? null : "none";
-  });
-  // The labels live inside gViewport, so `font-size` is in USER units and renders
-  // at font-size*k. To hold a constant on-screen size the divisor must therefore be
-  // the size you want IN PIXELS: 11/k renders at 11px, at any k.
-  //
-  // This read `1.1 / k`, which renders at 1.1 PIXELS — identically, at every k below
-  // the clamp. The whole flat map drew as sub-pixel dust at its own fitted zoom
-  // (k≈0.13), which is a large part of why the explorer read as unreadable no matter
-  // how the layout was tuned. Same trap as the dots below: never size in layout units.
-  gLabels.selectAll("text.xlab").attr("font-size", LABEL_PX / (k || 1));
+  // the canvas fade-in mirrors fadeIn(), background-tab guard included
+  if (anim) {
+    xcv.style.opacity = "0";
+    requestAnimationFrame(() => { xcv.style.opacity = "1"; });
+    setTimeout(() => { xcv.style.opacity = "1"; }, 600);
+  } else xcv.style.opacity = "1";
 }
 zoomBehav.on("zoom.xplabels", ev => {
-  // labels AND dots AND strokes: every one of them is sized in screen space
-  if (layout && layout.explorer) applyExplorerScale(ev.transform.k);
+  // dots, strokes AND labels are all sized in screen space by the canvas frame;
+  // this handler only timestamps the input and schedules ONE coalesced draw
+  if (layout && layout.explorer) {
+    if (ev.sourceEvent) xInputT = performance.now();
+    applyExplorerScale(ev.transform.k);
+  }
 });
 // ============================ toolbar + boot =================================
 document.querySelectorAll(".toolbar input").forEach(el =>
@@ -3437,6 +4144,13 @@ window.addEventListener("hashchange", async () => {
   const h = parseHash();
   filterMask = h.f;
   syncChips();
+  // a &libs= in an incoming hash wins (a shared link renders what it says);
+  // an absent param keeps the session's current library set
+  if (h.libs !== null) {
+    applyLibsList(h.libs);
+    persistLibs(false);   // storage only — the hash already says it
+    syncLibCheckboxes();
+  }
   if (h.view === "explorer") {
     setExplorer(true);
     // the explorer scopes by AREA, so the id segment picks the subtree (a cell
@@ -3473,11 +4187,15 @@ window.addEventListener("resize", () => {
 // than the one on screen, interleaving the d=1/d=2 bands by ~3px. Scoped to the
 // halo (the pannable level views keep the width-only guard above on purpose),
 // and gated on the geometry the layout was actually solved for.
+// The EXPLORER piggybacks here for its canvas: a height-only stage change never
+// fires the width-gated resize handler, but the canvas backing store is sized
+// in pixels — one coalesced redraw re-syncs it (drawXFrame reads the live size).
 if (typeof ResizeObserver !== "undefined") {
   let stageRT = 0;
   new ResizeObserver(() => {
     clearTimeout(stageRT);
     stageRT = setTimeout(() => {
+      if (layout && layout.explorer) { scheduleXDraw(); return; }
       if (!layout || !layout.halo) return;
       const w = stageEl.clientWidth, h = stageEl.clientHeight;
       if (Math.abs(w - (layout.haloW || 0)) < 2 &&
@@ -3785,6 +4503,7 @@ function wireCommunity(apiId, panelId) {
   const h = parseHash();
   filterMask = h.f;
   syncChips();
+  initLibs(h.libs);   // the hash wins over localStorage; default = every library on
   if (h.view === "explorer") {
     setExplorer(true);
     focusId = await explorerFocusFor(h.id);

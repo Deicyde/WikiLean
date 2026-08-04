@@ -49,6 +49,28 @@ FRONTIER CONTRACT (pinned across agents; documented in brain/SCHEMA.md):
        count; ties lexicographic).
     4. else frontier:Unsorted.
 
+  FRONTIER GRAPH (brain/data/frontier_graph.json — the halo view's CLIENT-side
+  BFS input, shipped VERBATIM by build_cell_shards.py as
+  site/assets/brain/cells/frontier_graph.json):
+    {"_meta": {"generated_at" (the cell build's stamp), "method",
+               "counts": {"cells", "formal", "edges", "libs"}},
+     "cells":  [every homeless cell id, sorted] — the partition universe,
+     "formal": {<cell>: {<LibRoot>: summed synapse weight, ...}} for every
+               frontier cell with >=1 formalized neighbor. LibRoot = the first
+               path component of the neighbor's supercells (Mathlib, TauCeti,
+               Init, ...); a supercell-less decl cell (Mathlib-archive names)
+               falls back to its decl organ ids' <Lib> segment so attribution
+               is TOTAL; a neighbor owned by several roots adds its FULL
+               weight to each (per-lib adjacency, not a weight partition),
+     "edges":  [[i, j], ...] index pairs into `cells` (i < j, sorted, deduped)
+               — every frontier<->frontier synapse}
+  PARITY LAW: the client re-shells from an enabled-library set L (d=1 iff the
+  cell's formal row hits any lib of L, BFS outward over edges, unreached =
+  disc); with ALL libraries enabled the result must equal the shipped shells
+  EXACTLY — asserted here at build time AND spec-re-proved per cell in
+  brain/test_frontier.py (F10). Deterministic bytes (sorted keys and lists,
+  input-pinned stamp).
+
   mean_stateability = mean of manage/data/halo.json items' all-bond
   neighbor-formalization (`all_frac`) over the area's cells present in
   halo.json — null if none. halo.json is OPTIONAL (fail-soft to null).
@@ -60,7 +82,8 @@ FRONTIER CONTRACT (pinned across agents; documented in brain/SCHEMA.md):
 Reads  brain/data/{cells,synapses}.jsonl (required),
        brain/data/edges.jsonl (phase-2 msc xrefs; fail-soft),
        manage/data/halo.json (stateability; fail-soft).
-Writes brain/data/frontier.jsonl (atomic tmp+rename).
+Writes brain/data/frontier.jsonl + brain/data/frontier_graph.json
+       (each atomic tmp+rename).
 
 Every bound and every fallback tier LOGS what it drops and why — a silent
 filter deciding what renders is the 'extreme minority' bug class.
@@ -83,6 +106,7 @@ SYNAPSES_IN = HERE / "data" / "synapses.jsonl"
 EDGES_IN = HERE / "data" / "edges.jsonl"
 HALO_IN = ROOT / "manage" / "data" / "halo.json"
 OUT = HERE / "data" / "frontier.jsonl"
+GRAPH_OUT = HERE / "data" / "frontier_graph.json"
 
 AREA_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_]{0,63}$")
 TOP_CAP = 12                      # contract: up to 12 `top` rows per area
@@ -186,12 +210,18 @@ def main() -> int:
     # ---- synapses: undirected adjacency with effective weights ----------------
     nbrs: dict[str, list] = defaultdict(list)
     n_syn = 0
+    homeless_set = set(homeless)
+    # raw (src, dst, weight) rows touching >=1 homeless endpoint — the frontier
+    # graph's input (frontier<->frontier edges + formalized-neighbor weights)
+    raw_frontier_syn: list[tuple[str, str, int]] = []
     for row in iter_jsonl(SYNAPSES_IN):
         n_syn += 1
         kinds = row.get("kinds", {})
         eff = sum(cnt * KIND_MULT.get(k, 1) for k, cnt in kinds.items())
         nbrs[row["src"]].append((row["dst"], kinds, eff))
         nbrs[row["dst"]].append((row["src"], kinds, eff))
+        if row["src"] in homeless_set or row["dst"] in homeless_set:
+            raw_frontier_syn.append((row["src"], row["dst"], row["weight"]))
     print(f"synapses: {n_syn} rows loaded")
 
     # area registry: name -> {"near": path|None, "lib", "top"}, precomputed from
@@ -496,6 +526,137 @@ def main() -> int:
     tmp.rename(OUT)
     print(f"\n-> {OUT} ({len(rows)} areas over {len(homeless)} homeless cells) "
           f"in {time.monotonic() - t0:.1f}s")
+
+    # ---- frontier graph: the halo view's CLIENT-side BFS input ---------------
+    # FRONTIER GRAPH contract (docstring above; brain/SCHEMA.md): `cells` =
+    # every homeless cell, sorted; `formal` = per frontier cell with >=1
+    # formalized neighbor, {library root -> summed synapse weight}; `edges` =
+    # every frontier<->frontier synapse as [i, j] index pairs into `cells`.
+    # The client re-shells from an enabled-library set; with ALL libraries
+    # enabled the result must equal the shipped shells EXACTLY (parity law) —
+    # asserted right here, before the file can ship.
+    cell_index = {c: i for i, c in enumerate(homeless)}   # homeless is sorted
+    lib_memo: dict[str, list[str]] = {}
+
+    def libs_of(cid: str) -> list[str]:
+        """Owning library roots of a formalized cell: the first path component
+        of each supercell; a supercell-less decl cell (Mathlib-archive names
+        like Theorems100.*) falls back to its decl organ ids' <Lib> segment,
+        so EVERY decl cell yields >=1 lib — parity needs total attribution."""
+        got = lib_memo.get(cid)
+        if got is None:
+            libs = {sup.split(":", 1)[1].split("/")[0]
+                    for sup in cells[cid].get("supercells") or []}
+            if not libs:
+                libs = {o["id"].split(":", 2)[1]
+                        for o in cells[cid].get("organs", [])
+                        if o.get("kind") == "decl" and o["id"].count(":") >= 2}
+            got = lib_memo[cid] = sorted(libs)
+        return got
+
+    formal: dict[str, Counter] = defaultdict(Counter)
+    edge_set: set[tuple[int, int]] = set()
+    n_fallback_rows = 0
+    fallback_cells: set[str] = set()
+    n_unattributable = 0
+    n_self = 0
+    for src, dst, w in raw_frontier_syn:
+        si, di = cell_index.get(src), cell_index.get(dst)
+        if si is not None and di is not None:      # frontier <-> frontier
+            if si == di:
+                n_self += 1                        # a C6 breach — never silent
+                continue
+            edge_set.add((si, di) if si < di else (di, si))
+            continue
+        cid, other = (src, dst) if si is not None else (dst, src)
+        if other not in decl_cells:
+            continue        # the partner is a path: supercell endpoint (rule 5)
+        libs = libs_of(other)
+        if not cells[other].get("supercells"):
+            n_fallback_rows += 1
+            fallback_cells.add(other)
+        if not libs:
+            n_unattributable += 1   # would break parity; the assert below is red
+            continue
+        for lib in libs:
+            formal[cid][lib] += w
+
+    lib_cells: Counter = Counter()
+    for lib_row in formal.values():
+        for lib in lib_row:
+            lib_cells[lib] += 1
+    print(f"\nfrontier graph: {len(homeless)} cells, {len(formal)} with a "
+          f"formalized neighbor (= shell d1), "
+          f"{len(homeless) - len(formal)} without (shells d>=2/disc), "
+          f"{len(edge_set)} frontier<->frontier edges")
+    print("  formal libs: " + ", ".join(
+        f"{lib}: {lib_cells[lib]} cells" for lib in sorted(lib_cells)))
+    if fallback_cells:
+        print(f"  {n_fallback_rows} rows attributed via the decl-id fallback "
+              f"({len(fallback_cells)} supercell-less decl cells, e.g. "
+              f"{sorted(fallback_cells)[:3]})")
+    if n_self:
+        print(f"  ! {n_self} self-loop synapse rows SKIPPED (src == dst — C6 "
+              f"should forbid this; check brain/test_cells.py)")
+    if n_unattributable:
+        print(f"  ! {n_unattributable} formalized-neighbor rows carry NO "
+              f"attributable library (no supercell, no decl organ) — parity "
+              f"breaks; the assert below goes red")
+
+    # PARITY LAW, asserted at build time: formal's keys are exactly the d=1
+    # shell, and the client's all-libraries BFS over the graph reproduces the
+    # shipped shells cell for cell.
+    d1 = {c for c in homeless if dist.get(c) == 1}
+    assert set(formal) == d1, \
+        (f"formal keys != the d1 shell: {len(set(formal) - d1)} extra, "
+         f"{len(d1 - set(formal))} missing e.g. {sorted(d1 - set(formal))[:3]}")
+    adj: dict[int, list[int]] = defaultdict(list)
+    for i, j in edge_set:
+        adj[i].append(j)
+        adj[j].append(i)
+    cdist: dict[int, int] = {cell_index[c]: 1 for c in formal}
+    cq = deque(sorted(cdist))
+    while cq:
+        cur = cq.popleft()
+        for nxt in adj.get(cur, []):
+            if nxt not in cdist:
+                cdist[nxt] = cdist[cur] + 1
+                cq.append(nxt)
+    parity_bad = [c for c in homeless
+                  if ("disc" if cell_index[c] not in cdist
+                      else str(cdist[cell_index[c]])) != shell_of(c)]
+    assert not parity_bad, \
+        (f"PARITY LAW broken: the client BFS over the graph diverges from the "
+         f"shipped shells on {len(parity_bad)} cells, e.g. {parity_bad[:3]}")
+    print("  parity law holds: all-libraries client BFS == shipped shells "
+          f"({len(homeless)} cells)")
+
+    graph = {
+        "_meta": {
+            "generated_at": generated_at,   # the cell build's stamp (determinism)
+            "method": "cells = the homeless partition universe, sorted; formal = "
+                      "per-cell {library root: summed synapse weight} over "
+                      "decl-organ neighbors (root = first supercell path "
+                      "component; supercell-less decl cells fall back to the "
+                      "decl id's <Lib> segment; multi-root neighbors add full "
+                      "weight to each); edges = every frontier<->frontier "
+                      "synapse as [i,j] into cells, i<j. Client BFS: d1 = "
+                      "formal hits an enabled lib, BFS over edges, unreached = "
+                      "disc; all libs enabled == the shipped shells (PARITY "
+                      "LAW, asserted at build + test_frontier F10)",
+            "counts": {"cells": len(homeless), "formal": len(formal),
+                       "edges": len(edge_set),
+                       "libs": {lib: lib_cells[lib] for lib in sorted(lib_cells)}},
+        },
+        "cells": homeless,
+        "formal": {c: {lib: formal[c][lib] for lib in sorted(formal[c])}
+                   for c in sorted(formal)},
+        "edges": sorted(edge_set),
+    }
+    gtmp = GRAPH_OUT.with_suffix(".json.tmp")
+    gtmp.write_text(json.dumps(graph, ensure_ascii=False, separators=(",", ":")))
+    gtmp.rename(GRAPH_OUT)
+    print(f"-> {GRAPH_OUT} ({GRAPH_OUT.stat().st_size / 1000:.0f} KB)")
     return 0
 
 

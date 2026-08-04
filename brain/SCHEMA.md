@@ -268,6 +268,45 @@ omitted; member lists sorted). `_meta.halo` = `{shell_counts, method}`;
 builder never hardcodes these counts — it computes them; only the test pins
 them.
 
+**Frontier graph** (FRONTIER GRAPH contract — the halo view's CLIENT-side BFS
+input): `build_frontier.py` also emits `brain/data/frontier_graph.json`, and
+`build_cell_shards.py` ships it byte-copied VERBATIM as
+`site/assets/brain/cells/frontier_graph.json` (lazily fetched once by the halo
+view; ~133 KB on 2026-08-01 data):
+
+```json
+{"_meta": {"generated_at": "<the cell build's stamp>", "method": "…",
+           "counts": {"cells": 1612, "formal": 855, "edges": 7042,
+                      "libs": {"Mathlib": 672, "Init": 322, "…": 1}}},
+ "cells":  ["cell:Q1000660", "…"],
+ "formal": {"cell:Q1008566": {"Init": 2, "Mathlib": 41}, "…": {}},
+ "edges":  [[0, 17], [0, 23]]}
+```
+
+`cells` = every frontier (homeless) cell id, sorted — exactly the partition's
+universe. `formal` = one row per frontier cell with ≥1 formalized (decl-organ)
+neighbor: `{library root → summed synapse weight}` over that root's neighbors.
+A neighbor's roots = the first path component of its supercells (`Mathlib`,
+`TauCeti`, `Init`, …); a supercell-less decl cell (Mathlib-archive names like
+`Theorems100.*` — 3 cells / 50 rows on live data) falls back to its decl organ
+ids' `<Lib>` segment, so attribution is TOTAL (parity needs it); a neighbor
+owned by several roots adds its FULL weight to each (the map answers "does this
+cell touch library X", not a weight partition — lib weights may double-count a
+multi-root synapse). `edges` = every frontier↔frontier synapse as `[i, j]`
+index pairs into `cells` (i < j, sorted, deduped). The client re-shells from an
+enabled-library set L: d=1 = cells whose `formal` row hits any lib of L, BFS
+outward over `edges`, unreached = disc. **PARITY LAW: with ALL libraries
+enabled the result equals the shipped shells EXACTLY** — asserted in the
+builder before the file can ship, spec-re-proved per cell in `test_frontier.py`
+(F10, including a client BFS written from this contract), and transferred to
+the shipped copy by `test_cell_shards.py` (S8: byte-identical to the proved
+file). Deterministic bytes (sorted keys/lists, input-pinned stamp; F6 pins a
+rebuild byte-identical). `libs` in `_meta.counts` = frontier cells adjacent to
+each library (builder-side accounting; the Libraries UI's badge numbers are the
+tree's per-root TOTAL cell counts, not these); cells with no formalized
+neighbor simply have no `formal` row — the count difference is logged by the
+builder, never silent.
+
 **Shard emission** (`build_cell_shards.py`): each area becomes a PARENTLESS
 `supercells.json` row `{label, frontier: true, cells, fa?, near?,
 stateability?, top?, shells?}` (field order as emitted; `shells` last) —
@@ -286,14 +325,22 @@ newly-formalized cells are dropped LOUDLY (counted in `supercells.json`
 `_meta.counts.frontier_*`), and unclaimed homeless cells are reported — a cap or
 filter is never silent. Frontier ids live only in the tree: they never enter the
 cell shards, aliases.json or explorer.json, and `path:`/organ-id resolution is
-untouched.
+untouched. `frontier_graph.json` ships beside the shard files VERBATIM (byte
+copy — never re-serialized), stale-checked against the current homeless set
+(loud warning + S8 red on drift; fail-soft-but-loud when the source is absent).
 
-Acceptance: **F1–F9 in `brain/test_frontier.py`** — the partition + count
+Acceptance: **F1–F10 in `brain/test_frontier.py`** — the partition + count
 reconciliation, contract regex, a spec-re-derived vote on pinned + sampled
-cells, Unsorted share ceiling, byte-identical determinism, stateability
-recomputation, the shard-side drain, and the halo shells (per-area partition +
-per-cell distances vs a spec-re-derived BFS + the pinned global counts); the
-shard-side shells pass-through is asserted in `test_cell_shards.py` (S5). The
+cells, Unsorted share ceiling, byte-identical determinism (frontier.jsonl AND
+frontier_graph.json), stateability
+recomputation, the shard-side drain, the halo shells (per-area partition +
+per-cell distances vs a spec-re-derived BFS + the pinned global counts), and
+the frontier graph (F10: cells == the partition universe, `formal` re-derived
+from the spec with real library roots and positive int weights, edges == every
+frontier↔frontier synapse in-range/sorted/deduped, and the PARITY LAW proved by
+a client BFS written from the contract over the emitted bytes); the
+shard-side shells pass-through is asserted in `test_cell_shards.py` (S5) and
+the graph's verbatim ship in S8. The
 nightly runs
 `build_frontier` between `test_cells` and `build_cell_shards`, and
 `test_frontier` after `test_cell_shards`; any RED aborts the publish.
@@ -301,7 +348,7 @@ nightly runs
 ### v3 shard acceptance (brain/test_cell_shards.py) — the artifact the client reads
 
 `site/assets/brain/cells/` is built by `brain/build_cell_shards.py` and can drift from
-the atom layer independently (it trims, embeds and re-indexes), so S1–S7 check the
+the atom layer independently (it trims, embeds and re-indexes), so S1–S8 check the
 shipped bytes. S1 and S6 SAMPLE (a stratified sample of cells / the first shards),
 not the full set — they are a smoke gate, not a proof: S1 the manifest's own
 documented lookup rule resolves every sampled cell and
@@ -316,9 +363,15 @@ rows equal the explorer's declared supercell split (set math, zero missing again
 every `syn` row `supercells.json` ships), every pair key is `src<dst` and the
 documented lookup lands it in its own prefix-free under-budget bucket, every entry
 is `{tt, traces}` with `tt` ≥ shipped traces and resolvable `prov` indexes, and
-`supercells.json` stays traceless. A final determinism gate (when `brain/data/` is
-present) rebuilds the shards and requires `manifest.json` + the sidecar to
-reproduce byte-identically. Status: **48/48 green**.
+`supercells.json` stays traceless · S8 `frontier_graph.json` ships VERBATIM
+(byte-identical to `brain/data/frontier_graph.json`, so F10's parity-law proof
+transfers to the shipped copy), is self-consistent (counts == arrays, edges
+index into `cells` with i<j, formal keys are frontier cells), and its cell
+universe == the tree's frontier rows' cells (the dots the halo view draws). A
+final determinism gate (when `brain/data/` is
+present) rebuilds the shards and requires `manifest.json` +
+`frontier_graph.json` + the sidecar to
+reproduce byte-identically. Status: **56/56 green**.
 
 ---
 
