@@ -184,18 +184,29 @@ describe("POST /mcp — tools/call", () => {
   });
 
   // An agent session that connected before the cell cut holds the old catalog.
-  // It must keep working, not hard-fail on the first call.
-  it("the v2 brain_unit / brain_node aliases still answer, with the atom", async () => {
+  // brain_unit must keep working, not hard-fail on the first call.
+  it("the v2 brain_unit alias still answers, with the atom, on either arg name", async () => {
     const h = harness();
     const unit = await callTool(h, "brain_unit", { key: "CommGroup" });
     expect(unit.isError).toBeUndefined();
     expect(unit.data).toMatchObject({ ok: true, id: ABELIAN_CELL, kind: "cell" });
-    // brain_node took `id`, brain_unit took `key` — both names are accepted
-    const node = await callTool(h, "brain_node", { id: VSPACE_Q });
-    expect(node.isError).toBeUndefined();
-    expect(node.data).toMatchObject({ ok: true, id: MODULE_CELL });
-    const byKey = await callTool(h, "brain_node", { key: DECL_CELL });
+    // brain_node took `id`, brain_unit took `key` — brain_unit accepts both
+    const byId = await callTool(h, "brain_unit", { id: VSPACE_Q });
+    expect(byId.isError).toBeUndefined();
+    expect(byId.data).toMatchObject({ ok: true, id: MODULE_CELL });
+    const byKey = await callTool(h, "brain_unit", { key: DECL_CELL });
     expect(byKey.data).toMatchObject({ ok: true, id: DECL_CELL });
+  });
+
+  // The brain_node alias was deleted 2026-08-04 with the rest of the v2
+  // particle layer — it is now an unknown tool, the -32602 protocol error.
+  it("the deleted brain_node alias is an unknown tool (-32602)", async () => {
+    const h = harness();
+    const res = await rpc(h, "tools/call", { name: "brain_node", arguments: { id: VSPACE_Q } });
+    expect(res.status).toBe(200);
+    const j = (await res.json()) as { error: { code: number; message: string } };
+    expect(j.error.code).toBe(-32602);
+    expect(j.error.message).toContain("brain_node");
   });
 
   it("decl_exists verifies real decls and rejects fabrications", async () => {

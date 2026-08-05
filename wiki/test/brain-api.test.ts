@@ -905,6 +905,9 @@ describe("GET /brain/api — the reference page", () => {
     // the page must teach the model it serves, not the retired one
     expect(html).toContain("supercell");
     expect(html).toContain("synapse");
+    // the deleted v2 route + alias must not be documented anywhere on the page
+    expect(html).not.toContain("/api/brain/node");
+    expect(html).not.toContain("brain_node");
   });
 });
 

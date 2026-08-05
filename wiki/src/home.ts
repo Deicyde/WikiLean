@@ -751,7 +751,7 @@ export function sitemapXml(rows: SitemapRow[]): string {
   const newest = rows.reduce((m, r) => (r.updatedAt > m ? r.updatedAt : m), 0);
   const rootMod = newest ? `<lastmod>${new Date(newest).toISOString().slice(0, 10)}</lastmod>` : "";
   const rootUrl = `  <url><loc>${SITE_ORIGIN}/</loc>${rootMod}<priority>1.0</priority></url>`;
-  // Flagship pages (retired /map + /article-graph 301 to /brain — not listed).
+  // Flagship pages (the old /map + /article-graph routes are deleted — not listed).
   const staticUrls = ["brain", "mcp", "articles", "concepts", "about"].map(
     (p) => `  <url><loc>${SITE_ORIGIN}/${p}</loc><priority>0.8</priority></url>`,
   );

@@ -220,10 +220,12 @@ The frontier layer partitions them into named AREAS — `brain/data/frontier.jso
 ```json
 {"_meta": {"generated_at": "<the cell build's stamp>", "method": "...",
            "counts": {"homeless": 1612, "assigned": 1303, "unsorted": 309},
-           "halo": {"shell_counts": {"1": 855, "2": 454, "3": 13, "disc": 290},
-                    "method": "multi-source BFS …"}}}
+           "proximity": {"method": "score = direct + bridge/4 …",
+                         "lambda": 0.25,
+                         "counts": {"direct": 855, "bridged": 454, "zero": 303}}}}
 {"id": "frontier:Analysis", "label": "Analysis frontier", "cells": ["cell:Q…"],
- "n": 509, "shells": {"1": ["cell:Q…"], "2": ["cell:Q…"]},
+ "n": 509,
+ "prox": {"db": [3], "dw": [7], "ib": [2], "iw": [4], "s": [8.0], "r": [0.2081]},
  "near": "path:Mathlib/Analysis", "mean_stateability": 0.3856,
  "top": [{"cell": "cell:Q903783", "label": "Naive set theory", "score": 3436}]}
 ```
@@ -252,98 +254,142 @@ falls through and why:
 `near` = the area's formal home (`path:<Lib>[/<Dir>]`, null for DeepFrontier/
 Unsorted). `mean_stateability` = mean `all_frac` of `manage/data/halo.json`
 items over the area's cells (null when none joins; halo.json is an OPTIONAL
-input — fail-soft). `top` = the area's ≤12 most-connected cells (score = total
-effective synapse weight, same ×3/×1 multipliers).
+input — fail-soft). It SURVIVED the 2026-08-04 shell destruction because the
+areas view tints each frontier bubble by it (`site/build_brain_page.py`) —
+per-area stateability is orthogonal to the destroyed hop tiering. `top` = the
+area's ≤12 most-connected cells (score = total effective synapse weight, same
+×3/×1 multipliers).
 
-**Halo shells** (HALO CONTRACT — the `/brain` halo view's data): a multi-source
-BFS from ALL formalized cells (≥1 decl organ) over cell↔cell synapses — every
-kind conducts equally (reachability, not vote strength), `path:` endpoints
-never do — assigns every homeless cell a hop distance d to the nearest
-formalized cell. Each area row's `shells` is a PARTITION of that area's
-`cells`, keyed `str(d)` plus `"disc"` for unreachable (empty shell keys
-omitted; member lists sorted). `_meta.halo` = `{shell_counts, method}`;
-`shell_counts` must equal the per-area sum AND a spec-re-derived BFS
-(2026-08-01 ground truth: d=1: 855, d=2: 454, d=3: 13, disc: 290 — pinned in
-`test_frontier.py` `HALO_PIN`; re-measure on legitimate data drift). The
-builder never hardcodes these counts — it computes them; only the test pins
-them.
+**Formal proximity** (PROXIMITY CONTRACT — the granular replacement for the
+halo hop shells, which were DESTROYED 2026-08-04 on Jack's call: hop counts
+made "1 jump over 200 bonds" and "1 jump over one thread" the same tier; no
+`shells`, no `shell_counts`, no d=1/2/3/disc anywhere). Every frontier cell
+gets a deterministic, bond-weighted score over **RAW synapse weights** (trace
+counts — deliberately NOT the vote's ×3 multipliers: the score measures
+evidence mass, not vote strength):
 
-**Frontier graph** (FRONTIER GRAPH contract — the halo view's CLIENT-side BFS
-input): `build_frontier.py` also emits `brain/data/frontier_graph.json`, and
-`build_cell_shards.py` ships it byte-copied VERBATIM as
-`site/assets/brain/cells/frontier_graph.json` (lazily fetched once by the halo
-view; ~133 KB on 2026-08-01 data):
+```
+direct(c) = Σ RAW weight of c's synapses into formalized (≥1 decl organ) cells
+bridge(c) = Σ over frontier neighbors u of min(w(c,u), direct(u))
+score(c)  = direct(c) + bridge(c) / 4
+```
+
+One damped second-order term, λ = 1/4 — exact in binary floats, so builder,
+tests and client can demand bit-for-bit equality. `min()` is the bottleneck
+rule: a bridge through u is worth no more than the bond to u AND no more than
+u's own direct evidence, so one near-isolated intermediary can never stand in
+for hundreds of direct bonds (the exact failure of hop tiering). MONOTONE:
+more direct bonded weight ⇒ strictly higher score (the bridge term never
+depends on the cell's own direct weight). Tooltip sentence: *"score = trace
+weight of its bonds straight into formalized cells, plus ¼ of what its
+frontier neighbors can bridge (each bridge capped by both the bond and the
+neighbor's own direct weight)."*
+
+Each area row's `prox` = six arrays PARALLEL to its sorted `cells` (every
+member scored exactly once — no holes, no drops): `db` = # formalized
+neighbor cells; `dw` = direct(c); `ib` = # frontier neighbors with
+direct(u)>0; `iw` = bridge(c) (all ints ≥ 0); `s` = score (exact ¼-float);
+`r` = radius percentile of s over ALL 1,612 frontier cells — `(#cells with
+strictly higher s + #equal/2) / N`, rounded 4dp, ties share r, 0 ≈ most
+proximal. `r` is RANK-based per the robust-fit rule (a 900-weight hub cannot
+stretch the mapping) and computed at build time — the client never re-fits;
+for library subsets it re-ranks with the same one-line formula.
+`_meta.proximity` = `{method, lambda, counts: {direct, bridged, zero}}`
+(2026-08-01 ground truth: direct 855, bridged 454, zero 303 — pinned in
+`test_frontier.py` `PROX_PIN`; re-measure on legitimate data drift; the
+builder never hardcodes these, only the test pins them). Zero-scored cells
+(no formal evidence within two hops) are counted LOUDLY by the builder — on
+2026-08-01 data: 35 still carry synapses, 268 are fully synapse-less.
+
+**Frontier graph** (FRONTIER GRAPH contract — the CLIENT-side re-scoring
+input for the Libraries toggle): `build_frontier.py` also emits
+`brain/data/frontier_graph.json`, and `build_cell_shards.py` ships it
+byte-copied VERBATIM as `site/assets/brain/cells/frontier_graph.json`
+(lazily fetched once; ~152 KB on 2026-08-01 data):
 
 ```json
 {"_meta": {"generated_at": "<the cell build's stamp>", "method": "…",
            "counts": {"cells": 1612, "formal": 855, "edges": 7042,
                       "libs": {"Mathlib": 672, "Init": 322, "…": 1}}},
  "cells":  ["cell:Q1000660", "…"],
- "formal": {"cell:Q1008566": {"Init": 2, "Mathlib": 41}, "…": {}},
- "edges":  [[0, 17], [0, 23]]}
+ "formal": {"cell:Q1008566": {"Init": 2, "Init|Mathlib": 5, "Mathlib": 41}},
+ "edges":  [[0, 17, 1], [0, 23, 4]]}
 ```
 
 `cells` = every frontier (homeless) cell id, sorted — exactly the partition's
 universe. `formal` = one row per frontier cell with ≥1 formalized (decl-organ)
-neighbor: `{library root → summed synapse weight}` over that root's neighbors.
-A neighbor's roots = the first path component of its supercells (`Mathlib`,
-`TauCeti`, `Init`, …); a supercell-less decl cell (Mathlib-archive names like
-`Theorems100.*` — 3 cells / 50 rows on live data) falls back to its decl organ
-ids' `<Lib>` segment, so attribution is TOTAL (parity needs it); a neighbor
-owned by several roots adds its FULL weight to each (the map answers "does this
-cell touch library X", not a weight partition — lib weights may double-count a
-multi-root synapse). `edges` = every frontier↔frontier synapse as `[i, j]`
-index pairs into `cells` (i < j, sorted, deduped). The client re-shells from an
-enabled-library set L: d=1 = cells whose `formal` row hits any lib of L, BFS
-outward over `edges`, unreached = disc. **PARITY LAW: with ALL libraries
-enabled the result equals the shipped shells EXACTLY** — asserted in the
-builder before the file can ship, spec-re-proved per cell in `test_frontier.py`
-(F10, including a client BFS written from this contract), and transferred to
-the shipped copy by `test_cell_shards.py` (S8: byte-identical to the proved
-file). Deterministic bytes (sorted keys/lists, input-pinned stamp; F6 pins a
-rebuild byte-identical). `libs` in `_meta.counts` = frontier cells adjacent to
-each library (builder-side accounting; the Libraries UI's badge numbers are the
-tree's per-root TOTAL cell counts, not these); cells with no formalized
-neighbor simply have no `formal` row — the count difference is logged by the
-builder, never silent.
+neighbor: `{root set → summed RAW synapse weight}`, keyed by the neighbor's
+EXACT owning-root set, `"|"`-joined sorted (`"Mathlib"`, `"Init|Mathlib"`) —
+exact-set keys mean a library-subset restriction NEVER double-counts a
+multi-root neighbor (566 such rows on live data; a neighbor counts iff its
+root set intersects the enabled set). A neighbor's roots = the first path
+component of its supercells; a supercell-less decl cell (Mathlib-archive
+names like `Theorems100.*` — 3 cells / 50 rows on live data) falls back to
+its decl organ ids' `<Lib>` segment, so attribution is TOTAL (asserted red in
+the builder otherwise — parity needs it). `edges` = every frontier↔frontier
+synapse as `[i, j, w]` triples into `cells` (i < j, sorted, deduped, w = RAW
+weight). The client re-scores from an enabled-library set L:
+
+```
+direct_L(c) = Σ formal[c][K] over key-sets K with K ∩ L ≠ ∅
+score_L(c)  = direct_L(c) + Σ over edges (c,u,w) of min(w, direct_L(u)) / 4
+```
+
+**PARITY LAW: with ALL libraries enabled score_L equals the shipped `s`
+EXACTLY (exact float equality — quarter-precision is lossless)** — asserted
+in the builder before the file can ship, spec-re-proved per cell in
+`test_frontier.py` (F10, including under proper library subsets against an
+independent raw-synapse restriction), and transferred to the shipped copy by
+`test_cell_shards.py` (S8: byte-identical to the proved file). Deterministic
+bytes (sorted keys/lists, input-pinned stamp; F6 pins a rebuild
+byte-identical). `libs` in `_meta.counts` = frontier cells adjacent to each
+root, each cell once per root (builder-side accounting; the Libraries UI's
+badge numbers are the tree's per-root TOTAL cell counts, not these); cells
+with no formalized neighbor simply have no `formal` row — the count
+difference is logged by the builder, never silent.
 
 **Shard emission** (`build_cell_shards.py`): each area becomes a PARENTLESS
 `supercells.json` row `{label, frontier: true, cells, fa?, near?,
-stateability?, top?, shells?}` (field order as emitted; `shells` last) —
-`shells` passes through from frontier.jsonl VERBATIM
-(~30KB total; asserted in `test_cell_shards.py`), so the halo view renders the
-exact partition the frontier tests proved
-(`fa` emitted only when the member-OR is nonzero; `_meta` also carries
-`frontier_*` count keys and frontier.jsonl's `phases`/`inputs` diagnostics) —
-so it joins `roots`, renders beside the library roots, and drains the
-client's DERIVED "no formal home" bucket (unplaced = labels minus the union of
-every row's `cells`) down to the few decl-carrying cells whose decls have no
-`contains` parent (5 Mathlib-Archive names today). `manifest.roots` lists the
-areas with `frontier: true` so library metadata never blurs with frontier rows.
-Stale frontier rows are validated against the CURRENT cell set: vanished or
-newly-formalized cells are dropped LOUDLY (counted in `supercells.json`
-`_meta.counts.frontier_*`), and unclaimed homeless cells are reported — a cap or
-filter is never silent. Frontier ids live only in the tree: they never enter the
-cell shards, aliases.json or explorer.json, and `path:`/organ-id resolution is
-untouched. `frontier_graph.json` ships beside the shard files VERBATIM (byte
-copy — never re-serialized), stale-checked against the current homeless set
-(loud warning + S8 red on drift; fail-soft-but-loud when the source is absent).
+stateability?, top?, prox?}` (field order as emitted; `prox` last) — `prox`
+passes through from frontier.jsonl VERBATIM (asserted in
+`test_cell_shards.py` S5), so the UI renders the exact scores the frontier
+tests proved (`fa` emitted only when the member-OR is nonzero; `_meta` also
+carries `frontier_*` count keys and frontier.jsonl's `phases`/`inputs`
+diagnostics) — so it joins `roots`, renders beside the library roots, and
+drains the client's DERIVED "no formal home" bucket (unplaced = labels minus
+the union of every row's `cells`) down to the few decl-carrying cells whose
+decls have no `contains` parent (5 Mathlib-Archive names today).
+`manifest.roots` lists the areas with `frontier: true` so library metadata
+never blurs with frontier rows. Stale frontier rows are validated against the
+CURRENT cell set: vanished or newly-formalized cells are dropped LOUDLY
+(counted in `supercells.json` `_meta.counts.frontier_*`), their `prox` arrays
+re-aligned by index to the kept cells (misaligned arrays NEVER ship — a score
+on the wrong cell is worse than no score; malformed sets are dropped loudly),
+and unclaimed homeless cells are reported — a cap or filter is never silent.
+Frontier ids live only in the tree: they never enter the cell shards,
+aliases.json or explorer.json, and `path:`/organ-id resolution is untouched.
+`frontier_graph.json` ships beside the shard files VERBATIM (byte copy —
+never re-serialized), stale-checked against the current homeless set (loud
+warning + S8 red on drift; fail-soft-but-loud when the source is absent).
 
 Acceptance: **F1–F10 in `brain/test_frontier.py`** — the partition + count
 reconciliation, contract regex, a spec-re-derived vote on pinned + sampled
 cells, Unsorted share ceiling, byte-identical determinism (frontier.jsonl AND
-frontier_graph.json), stateability
-recomputation, the shard-side drain, the halo shells (per-area partition +
-per-cell distances vs a spec-re-derived BFS + the pinned global counts), and
-the frontier graph (F10: cells == the partition universe, `formal` re-derived
-from the spec with real library roots and positive int weights, edges == every
-frontier↔frontier synapse in-range/sorted/deduped, and the PARITY LAW proved by
-a client BFS written from the contract over the emitted bytes); the
-shard-side shells pass-through is asserted in `test_cell_shards.py` (S5) and
-the graph's verbatim ship in S8. The
-nightly runs
-`build_frontier` between `test_cells` and `build_cell_shards`, and
-`test_frontier` after `test_cell_shards`; any RED aborts the publish.
+frontier_graph.json), stateability recomputation, the shard-side drain, the
+formal proximity (F9: six parallel arrays re-derived per cell from the spec —
+exact equality on db/dw/ib/iw/s/r — no-NaN/no-negative, the pinned
+direct/bridged/zero counts, full-pairwise MONOTONICITY on the real data, and
+the JACK REGRESSION: hundreds-of-direct-bonds ≥ 100× one-weak-bond >
+one-bridge-through-a-near-isolated-intermediary, with radii ordered the same
+way), and the frontier graph (F10: cells == the partition universe, `formal`
+re-derived from the spec with canonical exact-root-set keys and positive int
+weights, edges == every frontier↔frontier synapse as in-range/sorted/deduped
+weighted triples, and the PARITY LAW proved by a client re-score written from
+the contract over the emitted bytes — all libraries AND proper subsets); the
+shard-side prox pass-through is asserted in `test_cell_shards.py` (S5) and
+the graph's verbatim ship in S8. The nightly runs `build_frontier` between
+`test_cells` and `build_cell_shards`, and `test_frontier` after
+`test_cell_shards`; any RED aborts the publish.
 
 ### v3 shard acceptance (brain/test_cell_shards.py) — the artifact the client reads
 
@@ -357,7 +403,8 @@ points (`Q125977`→the Module atom, `Q82571`→its folder) · S3 a cell entry i
 SELF-CONTAINED (one fetch = the whole card: Lean code, Wikidata description, DB
 snippets, breadcrumb, synapse traces) · S4 every explorer edge indexes a shipped node,
 nothing is truncated, and omitted supercell edges reconcile · S5 `supercells.json` is
-a consistent tree whose leaves are cells · S6 no licensed snippet ships without its
+a consistent tree whose leaves are cells, and its frontier rows' `prox` matches
+frontier.jsonl per cell · S6 no licensed snippet ships without its
 licence · S7 the trace sidecar: `manifest.traces` declares caps/files/rows, sidecar
 rows equal the explorer's declared supercell split (set math, zero missing against
 every `syn` row `supercells.json` ships), every pair key is `src<dst` and the
@@ -366,8 +413,9 @@ is `{tt, traces}` with `tt` ≥ shipped traces and resolvable `prov` indexes, an
 `supercells.json` stays traceless · S8 `frontier_graph.json` ships VERBATIM
 (byte-identical to `brain/data/frontier_graph.json`, so F10's parity-law proof
 transfers to the shipped copy), is self-consistent (counts == arrays, edges
-index into `cells` with i<j, formal keys are frontier cells), and its cell
-universe == the tree's frontier rows' cells (the dots the halo view draws). A
+are `[i, j, w]` triples into `cells` with i<j and positive int weights, formal
+keys are frontier cells), and its cell universe == the tree's frontier rows'
+cells (the dots the proximity view draws). A
 final determinism gate (when `brain/data/` is
 present) rebuilds the shards and requires `manifest.json` +
 `frontier_graph.json` + the sidecar to
@@ -409,7 +457,7 @@ reproduce byte-identically. Status: **56/56 green**.
 ## Node types and stable IDs
 
 Every node has a globally unique string id with a type prefix. IDs are addressable in
-the UI (`/brain#<id>`), the API (`/api/brain/node/<id>`), and by agents.
+the UI (`/brain#<id>`), the API (`/api/brain/cell?key=<id>`), and by agents.
 
 | type | id form | example | identity source |
 |---|---|---|---|
@@ -518,7 +566,8 @@ concept layer floating alongside at every grain. Derived, server-side artifacts:
   `decl-index/` pattern): atom id → {cell head, organs with embedded payloads,
   synapses, breadcrumb}. Client fetches ONE shard per interaction; nothing global
   ships. (The v2 per-NODE neighborhood shards were retired 2026-08-04 —
-  docs/BRAIN-V3.md phase 5; `GET /api/brain/node` answers 410.)
+  docs/BRAIN-V3.md phase 5; the `GET /api/brain/node` route was deleted
+  outright, plain 404.)
 
 ## Acceptance datapoints (regression tests, `brain/test_acceptance.py`)
 

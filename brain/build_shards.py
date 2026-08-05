@@ -8,8 +8,8 @@ labels.json, aliases.json and views/xref_explorer.json, ~340 MB. BRAIN v3
 /assets/brain/cells/* (brain/build_cell_shards.py) and the community-edit
 endpoint oracle validates against cells/aliases.json ∪ cells/supercells.json
 (wiki/src/brain-api.ts atomIdForOrgan), so the per-node layer is retired
-(GET /api/brain/node answers 410 Gone) and none of those artifacts are
-emitted any more. The atomic swap below also prunes any stale copies of them
+(the GET /api/brain/node route is deleted outright — plain 404) and none of
+those artifacts are emitted any more. The atomic swap below also prunes any stale copies of them
 out of site/assets/brain/ on the first run.
 
 Two outputs from this builder are still LIVE and remain:

@@ -274,14 +274,11 @@ describe("POST /api/brain/edge", () => {
   });
 });
 
-describe("GET /api/brain/node — retired v2 route", () => {
-  it("answers 410 Gone with a pointer to the cell API", async () => {
+describe("GET /api/brain/node — deleted v2 route", () => {
+  it("answers a plain 404 (the tombstone was deleted 2026-08-04), not a 500", async () => {
     const h = harness();
     const res = await get(h.env, `/api/brain/node?id=${encodeURIComponent(CONCEPT)}`);
-    expect(res.status).toBe(410);
-    const j = (await res.json()) as Record<string, unknown>;
-    expect(j.ok).toBe(false);
-    expect((j.see as Record<string, string>).api).toBe("/api/brain/cell?key=");
+    expect(res.status).toBe(404);
   });
 });
 

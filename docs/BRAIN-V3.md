@@ -307,9 +307,10 @@ stale-`site/out`-fixture issue and fails identically at HEAD).
 **MCP: seven tools, down from eight.** `brain_cell` replaces BOTH `brain_node`
 and `brain_unit` — v3 has no particle nodes, and the unit card *became* the cell
 card (a unit was QID ∘ article ∘ decls ∘ xrefs = exactly a cell's organs), so
-keeping them separate would have been ceremony. Both survive as dispatch-only
+keeping them separate would have been ceremony. Both survived as dispatch-only
 aliases (not in `tools/list`, accepting either `key` or `id`) so a pre-cut agent
-session does not hard-fail. serverInfo → 3.0.0; the instructions block and every
+session does not hard-fail. (2026-08-04: the `brain_node` alias was deleted with
+the rest of the v2 particle layer; `brain_unit` remains.) serverInfo → 3.0.0; the instructions block and every
 tool description now teach cells/organs/synapses.
 
 What the work **changed vs. the plan** — each one forced by the shipped data:
@@ -380,7 +381,8 @@ longer emits the per-node shards, `manifest.json`, v2 `labels.json`, v2
 survivors, `xref_index.json` (cross-pollination reverse index; the Worker
 inverts it to replace the v2 shard entries' xref edge lists) and
 `sources.json` (the /brain legend), and its atomic swap still carries `cells/`
-across. `GET /api/brain/node` answers **410 Gone**. The community-edit oracle
+across. `GET /api/brain/node` is **deleted** (2026-08-04 — first a 410
+tombstone, then removed outright; it answers a plain 404). The community-edit oracle
 (`brainNodeExists`) validates against aliases ∪ supercells via the strict
 `atomIdForOrgan`, and submitted `cell:<anchor>` endpoints normalize to their
 anchor before storage (fixes the search-picker → add-connection 400).

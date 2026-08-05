@@ -54,14 +54,14 @@ DEFAULT_MODEL = "claude-haiku-4-5-20251001"
 # The seven Wikibrain MCP tools (BRAIN v3 — docs/BRAIN-API.md) + the
 # server-level rule as a catch-all if the tool list grows. `brain_cell`
 # replaced brain_node + brain_unit at the cell cut: v3 has no particle nodes,
-# and the unit card became the cell card. The v2 names still dispatch as
-# aliases, so listing them costs nothing and keeps an older resumed run's
-# transcripts replayable.
+# and the unit card became the cell card. brain_unit still dispatches as an
+# alias, so listing it costs nothing and keeps an older resumed run's
+# transcripts replayable. (The brain_node alias was deleted 2026-08-04.)
 WIKIBRAIN_TOOLS = ["mcp__wikibrain"] + [
     f"mcp__wikibrain__{t}" for t in (
         "brain_search", "brain_cell", "brain_transfer", "brain_neighborhood",
         "brain_snippets", "brain_filter", "decl_exists",
-        "brain_unit", "brain_node")  # v2 aliases of brain_cell
+        "brain_unit")  # v2 alias of brain_cell
 ]
 # Belt-and-suspenders: -p mode auto-denies unapproved tools, but disallow the
 # built-ins outright so neither arm can read files or search the web.

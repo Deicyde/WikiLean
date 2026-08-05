@@ -19,11 +19,14 @@ bonds between two cells collapse to ONE **synapse** carrying every trace.
                synapses), drawn at its BUILD-TIME `xy`. The client runs no
                physics at all — SCHEMA "Layout is BUILD-TIME" — which is what
                killed the freeze and the ring-around-a-clump artefact.
-  · Halo     — the Frontier's second face (#__halo__): the same homeless cells
-               on concentric shells by BFS hop distance to the nearest
-               formalized cell (frontier rows' `shells`), a deterministic
-               client-computed polar layout — no simulation. Fail-soft: a build
-               whose frontier rows ship no shells renders the areas view only.
+  · Frontier — ONE view (#__frontier__): every homeless cell on a polar canvas
+               whose angular sectors are the frontier areas and whose RADIUS is
+               the build-time bond-weighted formal proximity (frontier rows'
+               `prox`, PROXIMITY CONTRACT in brain/SCHEMA.md) — a deterministic
+               client-computed layout, no simulation. The old hop-shell halo
+               was DESTROYED 2026-08-04: "1 jump away" said nothing about
+               whether the jump rode 200 bonds or one thread. Fail-soft: a
+               build whose frontier rows ship no prox renders area bubbles.
   · Card     — the selected cell's organs grouped by kind, each with its bond,
                its provenance (a merged @[wikidata] tag never reads like an
                AI-queued candidate — C7) and its embedded payload: Lean code,
@@ -96,14 +99,18 @@ a:hover { text-decoration:underline; }
 #stage { flex:1 1 62%; position:relative; background:#0b0e14; overflow:hidden;
   cursor:grab; touch-action:none; }
 #stage.grabbing { cursor:grabbing; }
-#stage svg { display:block; width:100%; height:100%; }
+/* Absolutely positioned against #stage (position:relative): under the
+   <=900px media query #stage's height comes from min-height alone, where a
+   child's height:100% resolves to auto and an SVG defaults to 150px — the
+   wheel painted only its top band on phones. inset:0 tracks the real box. */
+#stage svg { display:block; position:absolute; inset:0; width:100%; height:100%; }
 /* the Explorer's canvas: sits over the (then-empty) SVG, never eats events —
    the SVG keeps the zoom/click surface and the canvas only paints */
 #xcanvas { position:absolute; inset:0; pointer-events:none; display:none;
   transition:opacity .26s; }
 #stage .hint { position:absolute; left:12px; bottom:10px; font-size:.72rem;
   pointer-events:none; color:#77808f;
-  /* readable when SVG labels (halo sector names at 6 o'clock) run beneath it */
+  /* readable when SVG labels (frontier sector names at 6 o'clock) run beneath it */
   background:color-mix(in srgb, #0b0e14 82%, transparent);
   border-radius:6px; padding:2px 6px; max-width:72%; }
 circle.bubble { cursor:pointer; transition: stroke .12s; stroke:#fff0; }
@@ -252,12 +259,10 @@ section.kind.community h3 { border-bottom-color:#c9b98a; }
   color:#9aa3b2; font-size:.78rem; cursor:pointer; font-family:inherit; }
 .fchip:hover { border-color:#38bdf8; color:#e6e4de; }
 .fchip.on { background:#173753; border-color:#38bdf8; color:#cdeafe; }
-/* the Frontier's areas|halo view toggle — a canvas overlay, shown only there */
-#viewtoggle { position:absolute; top:10px; right:12px; display:none; gap:6px; z-index:5; }
-/* halo: sector rim labels are CLICKABLE (the .blabel default is pointer-events:none) */
+/* frontier: sector rim labels are CLICKABLE (the .blabel default is pointer-events:none) */
 text.rimlab { pointer-events:auto; cursor:pointer; }
 text.rimlab:hover { fill:#38bdf8; }
-/* the Libraries control — ONE component, rendered by the root panel AND the halo panel */
+/* the Libraries control — ONE component, rendered by the root panel AND the frontier panel */
 .libctl { display:flex; flex-direction:column; gap:4px; margin:6px 0; }
 .librow { display:flex; gap:7px; align-items:center; font-size:.84rem; cursor:pointer;
   font-family:-apple-system,sans-serif; }
@@ -368,10 +373,6 @@ body.embed .wl-header, body.embed #crumbbar { display:none; }   /* flex column f
 <div class="main">
   <div id="stage"><svg id="svg"></svg>
     <canvas id="xcanvas"></canvas>
-    <div id="viewtoggle">
-      <button id="vt-areas" class="fchip" title="the frontier partition as dive-able area bubbles">areas</button>
-      <button id="vt-halo" class="fchip" title="every homeless cell on concentric shells by its synapse distance to the nearest formalized cell">halo</button>
-    </div>
     <div class="hint">scroll to zoom · drag to pan · click an area to dive in ·
       background to go up · click any synapse for its evidence ·
       dots = <b>cells</b> (atoms of organs) ·
@@ -419,22 +420,17 @@ const FRONTIER_ID = "__frontier__";   // pseudo-focus: the Frontier group — th
                                       // cells (brain/build_frontier.py), which
                                       // replaced the old undifferentiated
                                       // "no formal home" blob
-const HALO_ID = "__halo__";           // pseudo-focus: the Frontier's HALO view —
-                                      // the same homeless cells on concentric
-                                      // shells by hop distance to the nearest
-                                      // formalized cell (frontier rows' `shells`).
-                                      // #__halo__ and #__frontier__ both resolve;
-                                      // a shells-less build falls back to areas.
 const isFrontierId = id => typeof id === "string" && id.startsWith("frontier:");
-// "#__halo__:<Area>" — the halo focused on ONE frontier area's sector (its
-// shells alone, spread over the full circle). The token after ":" is the
+// "#__frontier__:<Area>" — the frontier view focused on ONE area's sector (its
+// cells alone, spread over the full circle). The token after ":" is the
 // frontier row's <Area> id segment (hash-safe by the frontier id grammar
 // ^[A-Za-z][A-Za-z0-9_]{0,63}$), NOT its display label.
-const isHaloId = id => id === HALO_ID ||
-  (typeof id === "string" && id.startsWith(HALO_ID + ":"));
-// a sector focus → the frontier:<Area> row it names (null for the full halo)
-const haloAreaOf = id => id && id !== HALO_ID && isHaloId(id)
-  ? "frontier:" + id.slice(HALO_ID.length + 1) : null;
+const isSectorId = id => typeof id === "string" && id.startsWith(FRONTIER_ID + ":");
+// a sector focus → the frontier:<Area> row it names (null otherwise)
+const sectorAreaOf = id => isSectorId(id)
+  ? "frontier:" + id.slice(FRONTIER_ID.length + 1) : null;
+// the ONE frontier view (full circle or a sector focus)
+const isFrontierViewId = id => id === FRONTIER_ID || isSectorId(id);
 let manifest = null, labels = null, labelById = null, tree = null, aliases = null;
 const shardCache = new Map(), entryCache = new Map();
 
@@ -523,7 +519,7 @@ async function ensureTree() {
   ]);
   if (!j) { tree = {roots: [], frontier: [], frontierFa: 0, frontierN: 0,
                     cellArea: new Map(), sc: {}, unplaced: [], unplacedFa: 0,
-                    halo: false, haloDrift: 0, cellHops: new Map(),
+                    prox: false, proxDrift: 0, cellProx: new Map(),
                     count: () => 0}; return tree; }
   const sc = j.supercells || {};
   const memo = new Map();
@@ -561,38 +557,40 @@ async function ensureTree() {
     frontierN += (sc[p].cells || []).length;
     for (const c of sc[p].cells || []) cellArea.set(c, p);
   }
-  // the HALO layer: frontier rows may carry `shells` — a partition of that
-  // area's cells by BFS hop distance to the nearest formalized cell (keys
-  // "1"/"2"/"3"/"disc"). cellHops powers the halo view, the cell cards'
-  // "N hops from Mathlib" line and the d-ascending dive sort. The partition is
-  // RE-CHECKED here on the shipped bytes: any drift between an area's shells
-  // and its cells is counted and logged, never silent.
-  let halo = false, haloDrift = 0;
-  const cellHops = new Map();   // homeless cell -> 1 | 2 | 3 | "disc"
+  // the PROXIMITY layer: frontier rows carry `prox` — six arrays PARALLEL to
+  // that row's `cells` (PROXIMITY CONTRACT, brain/SCHEMA.md "Formal
+  // proximity"): db/dw = the cell's direct bonds/summed RAW trace weight into
+  // formalized cells, ib/iw = bridging frontier neighbors/bridged weight,
+  // s = score (dw + iw/4), r = rank percentile of s over ALL frontier cells
+  // (0 ≈ most proximal, ties share). cellProx powers the frontier view's
+  // radial placement, the cell cards' provenance line and the best-evidenced-
+  // first dive sort. RE-CHECKED here on the shipped bytes: a row whose array
+  // lengths disagree with its cells is counted and DROPPED loudly — misaligned
+  // arrays never feed a render.
+  let prox = false, proxDrift = 0;
+  const cellProx = new Map();   // homeless cell -> {db, dw, ib, iw, s, r}
+  const PROX_KEYS = ["db", "dw", "ib", "iw", "s", "r"];
   for (const p of frontier) {
-    const sh = sc[p].shells;
-    if (!sh) continue;
-    halo = true;
-    const own = new Set(sc[p].cells || []);
-    const local = new Set();
-    for (const [k, arr] of Object.entries(sh))
-      for (const c of arr || []) {
-        cellHops.set(c, k === "disc" ? "disc" : Number(k));
-        local.add(c);
-      }
-    let covered = 0;
-    for (const c of own) if (local.has(c)) covered++;
-    haloDrift += (own.size - covered) + (local.size - covered);
+    const px = sc[p].prox;
+    if (!px) continue;
+    const cs = sc[p].cells || [];
+    if (!PROX_KEYS.every(k => Array.isArray(px[k]) && px[k].length === cs.length)) {
+      proxDrift += cs.length;
+      continue;
+    }
+    prox = true;
+    cs.forEach((c, i) => cellProx.set(c, {db: px.db[i], dw: px.dw[i],
+      ib: px.ib[i], iw: px.iw[i], s: px.s[i], r: px.r[i]}));
   }
-  if (haloDrift)
-    console.warn(`[brain halo] shells drift: ${haloDrift} cell(s) where an area's shells and its cells disagree`);
-  if (halo) {
-    const noShells = frontier.filter(p => !sc[p].shells);
-    if (noShells.length)
-      console.warn(`[brain halo] ${noShells.length} frontier area(s) ship no shells: ${noShells.join(", ")}`);
+  if (proxDrift)
+    console.warn(`[brain frontier] prox drift: ${proxDrift} cell(s) in area(s) whose prox arrays and cells disagree — dropped, not trusted`);
+  if (prox) {
+    const noProx = frontier.filter(p => !sc[p].prox);
+    if (noProx.length)
+      console.warn(`[brain frontier] ${noProx.length} frontier area(s) ship no prox: ${noProx.join(", ")}`);
   }
   tree = {roots, frontier, frontierFa, frontierN, cellArea, sc,
-          unplaced, unplacedFa, halo, haloDrift, cellHops, count};
+          unplaced, unplacedFa, prox, proxDrift, cellProx, count};
   return tree;
 }
 async function ensureAliases() {
@@ -609,14 +607,17 @@ async function resolveId(id) {
   if (!id) return null;
   if (id === ROOTS_ID || id === UNPLACED_ID || id === FRONTIER_ID || isCellId(id)) return id;
   await ensureTree();
-  // #__halo__ resolves like #__frontier__; a build with no shells falls back to
-  // the areas view (fail-soft — exactly today's UI). A sector id whose area
-  // vanished from this build resolves to the FULL halo, never to a dead canvas.
-  if (isHaloId(id)) {
-    if (!tree.halo) return FRONTIER_ID;
-    const area = haloAreaOf(id);
-    return area === null ? HALO_ID
-      : (tree.sc[area] || {}).frontier ? id : HALO_ID;
+  // legacy "#__halo__" hashes land on the ONE frontier view (the hop-shell
+  // halo was destroyed 2026-08-04 — old links must not dead-end)
+  if (id === "__halo__" || id.startsWith("__halo__:"))
+    id = id === "__halo__" ? FRONTIER_ID
+      : FRONTIER_ID + ":" + id.slice("__halo__:".length);
+  if (id === FRONTIER_ID) return id;
+  // a sector id whose area vanished from this build resolves to the FULL
+  // frontier view, never to a dead canvas
+  if (isSectorId(id)) {
+    const area = sectorAreaOf(id);
+    return (tree.sc[area] || {}).frontier ? id : FRONTIER_ID;
   }
   if (isFrontierId(id)) return tree.sc[id] ? id : null;
   if (id.startsWith(STRAYS_PREFIX))
@@ -671,9 +672,9 @@ let filterMask = 0;        // facet-filter bitmask over `f` (0 = no filter)
 // State = the DISABLED set of library root names ("Mathlib", "TauCeti", …).
 // Default all-on; persists in localStorage "wl-brain-libs" (the ENABLED list;
 // key absent = all on) AND in the hash (&libs=Mathlib,TauCeti when not-all).
-// A disabled library: its root bubble dims to 35% (never removed), it is
-// excluded from the halo BFS sources, and the halo's core disc label lists
-// what is left on.
+// A disabled library: its root bubble dims to 35% (never removed), its
+// declarations stop counting as formal evidence in the frontier re-score,
+// and the frontier core disc label lists what is left on.
 let disabledLibs = new Set();
 const libsFiltered = () => disabledLibs.size > 0;
 function libRoots() {   // every library root WITH cells (8 today) — from the tree
@@ -689,7 +690,7 @@ function persistLibs(writeHash = true) {
 }
 // enabled-list → state. A stored list naming NO current root is stale data,
 // not "all off" — reset to the all-on default. An EMPTY list is a deliberate
-// all-off (every halo cell disconnected — honest, if bleak).
+// all-off (every frontier cell scores zero — honest, if bleak).
 function applyLibsList(en) {
   const known = libRoots();
   const keep = new Set(en.filter(n => known.includes(n)));
@@ -787,19 +788,19 @@ function frontierItem(p) {
           n: (sc.cells || []).length, f: 0, fa: sc.fa || 0,
           s: sc.stateability != null ? sc.stateability : null};
 }
-// an area's cells for a DIVE, nearest-to-Mathlib first: (halo hop d ascending,
-// then the row's own order). The sort is STABLE, so a build without shells — or
-// any cell the shells miss — keeps exactly today's order.
-function frontierHopRank(cid) {
-  // disc must rank after ANY numeric hop count (a future d=4+ build would
-  // otherwise collide with it); unknown ranks between known hops and disc
-  const h = tree.cellHops && tree.cellHops.get(cid);
-  return h === undefined ? 1e8 : h === "disc" ? 1e9 : h;
+// an area's cells for a DIVE, best-evidenced first: (formal-proximity
+// percentile r ascending — the same radius the frontier view renders — then
+// the row's own order). The sort is STABLE, so a build without prox — or any
+// cell the prox arrays miss — keeps exactly today's order.
+function frontierProxRank(cid) {
+  // unknown ranks after every scored cell (r is always <= 1)
+  const px = tree.cellProx && tree.cellProx.get(cid);
+  return px === undefined ? 2 : px.r;
 }
 function frontierCells(p) {
   const ids = ((tree.sc || {})[p] || {}).cells || [];
-  if (!tree.halo) return ids;
-  return ids.map((c, i) => [frontierHopRank(c), i, c])
+  if (!tree.prox) return ids;
+  return ids.map((c, i) => [frontierProxRank(c), i, c])
     .sort((a, b) => a[0] - b[0] || a[1] - b[1]).map(t => t[2]);
 }
 function cellItem(cid) {
@@ -844,7 +845,7 @@ async function focusItems(id) {
     return items;
   }
   // an area's cells dive exactly like a supercell's: flat dots, cellItem each —
-  // sorted nearest-to-Mathlib first (halo hop d asc; stable without shells)
+  // sorted best-evidenced first (prox r asc; stable without prox)
   if (isFrontierId(id)) return frontierCells(id).map(cellItem);
   if (id === UNPLACED_ID) return tree.unplaced.map(cellItem);
   // diving into a strays bubble shows EVERY cell filed at its level as dots —
@@ -920,7 +921,7 @@ function drawNodes() {
   const all = entered.merge(bubbles);
   // <title> presence syncs on the MERGED selection: the data join reuses a
   // circle across views (same cell id), so an enter-only append left every
-  // halo dot TITLELESS when the reader arrived from the explorer (and handed
+  // frontier dot TITLELESS when the reader arrived from the explorer (and handed
   // the explorer stale level-view titles). A circle's only legal child is its
   // <title>, so firstElementChild is the exact test.
   all.each(function () {
@@ -950,10 +951,9 @@ function drawNodes() {
         + (l.data.s != null ? ` · mean stateability ${l.data.s.toFixed(2)}` : "")
       : l.data.type === "strays" ? " — click to open them as dots, with the story of why they sit here"
       : (((l.data.f || 0) & 1 ? " — carries a hand-written @[wikidata] tag" : "")
-         + (l.data.hop === undefined ? ""     // halo dots wear area + hop:
-           : (l.data.area ? ` · ${l.data.area}` : "")   // "label · area · N hops"
-             + (l.data.hop === "disc" ? " · disconnected"
-                : ` · ${l.data.hop} hop${l.data.hop === 1 ? "" : "s"}`)))));
+         + (l.data.ptip === undefined ? ""    // frontier dots wear area + bond summary:
+           : (l.data.area ? ` · ${l.data.area}` : "")   // "label · area · N bonds …"
+             + ` · ${l.data.ptip}`))));
 }
 
 // Cell labels in the level views get the SAME treatment the explorer's do:
@@ -1133,9 +1133,9 @@ function synVisible(e, kinds, provs) {
 let edgeStore = [];   // [{a, b, w, kinds, traces, tt}] for the level/ego views
 
 function renderEdges() {
-  // the halo view's shell rings + core disc live in gEdges — never wipe them
-  // (its dots carry no level-view synapse web to draw anyway)
-  if (layout && layout.halo) return;
+  // the frontier view's core disc + radial guide live in gEdges — never wipe
+  // them (its dots carry no level-view synapse web to draw anyway)
+  if (layout && layout.frontier) return;
   gEdges.selectAll("*").remove();
   if (!layout || layout.explorer) return;
   const kinds = activeKinds(), provs = activeProv();
@@ -1241,9 +1241,9 @@ async function renderFocus(anim) {
   resetZoom();
   await ensureTree();
   if (seq !== renderSeq) return;
-  if (isHaloId(focusId)) {
-    if (tree.halo) return renderHalo(seq, anim);
-    focusId = FRONTIER_ID;   // fail-soft: this build's frontier rows ship no shells
+  if (isFrontierViewId(focusId)) {
+    if (tree.prox) return renderFrontier(seq, anim);
+    focusId = FRONTIER_ID;   // fail-soft: a prox-less build renders area bubbles
   }
   if (isCellId(focusId)) {
     const fe = await getEntry(focusId);
@@ -1343,37 +1343,45 @@ async function renderCellEgo(seq, entry, anim) {
   if (anim) fadeIn();
   renderPanel(id);
 }
-// ---- halo view: the frontier by hop distance to Mathlib ---------------------
-// A deterministic, client-computed polar layout — pure arithmetic over the
-// frontier rows' `shells` (each a PARTITION of that area's cells by BFS hop
-// distance to the nearest formalized cell) and the area sizes. No simulation,
-// no RNG: the same build renders the same halo every visit. The central disc is
-// the formalized interior; shells sit at d = 1, 2, 3; the DISCONNECTED cells
-// ride a dashed, dimmer outermost ring — visually apart, because "far" and
-// "unreachable" are different facts. Dots go through the same cellItem pathway
-// as an area dive (same tint, same click-through to the ego view), grouped into
-// angular sectors by area — sector order = area size desc, stable.
-const HALO_SHELL_KEYS = ["1", "2", "3", "disc"];
-const HALO_FRAC = {"1": 0.42, "2": 0.62, "3": 0.76, "disc": 0.92};
-const HALO_RING_LABEL = {"1": "1 hop", "2": "2 hops", "3": "3 hops", "disc": "disconnected"};
-const HALO_RIM_LABELS = 12;   // the largest sectors get rim labels
-let haloBootTries = 0;        // boot guard: re-solve attempts against an unsettled stage
-// ---- the frontier graph: client-side re-shelling ----------------------------
-// frontier_graph.json ships the WHOLE frontier synapse graph once (~133 KB):
-// `cells` (every frontier cell id, sorted), `formal` (per cell, {library root:
-// summed synapse weight} over its decl-holding neighbors) and `edges` (every
-// frontier↔frontier synapse as [i,j] index pairs into `cells`). The halo view
-// fetches it LAZILY, once, and re-shells CLIENT-SIDE: d=1 for cells whose
-// formal map hits any ENABLED library, BFS outward over the edges, unreached
-// cells = disc.
+// ---- the frontier view: territories × formal proximity ----------------------
+// ONE view for the frontier (the hop-shell halo was DESTROYED 2026-08-04:
+// "1 jump away" said nothing about whether the jump rode 200 synapse bonds or
+// one thread to an isolated node). A deterministic, client-computed polar
+// layout — pure arithmetic over the frontier rows' `prox` arrays and the area
+// sizes. No simulation, no RNG: the same build renders the same view every
+// visit. The frontier AREAS stay the organizational skeleton, as angular
+// sectors (order = area size desc, stable); WITHIN a sector each cell's
+// RADIAL position is its build-time bond-weighted formal-proximity percentile
+// `r` — rank-robust by construction (the robust-fit rule: the radius map is a
+// percentile, never a min/max fit over raw scores, so one 900-weight hub
+// cannot stretch it). Heavily-evidenced cells hug the central formal disc, a
+// single thread to an isolated neighbor sits far out, zero-signal cells are
+// outermost. Dots go through the same cellItem pathway as an area dive (same
+// tint, same click-through to the ego view).
+const FRONTIER_RIM_LABELS = 12;   // the largest sectors get rim labels
+let frontierBootTries = 0;        // boot guard: re-solve attempts against an unsettled stage
+// ---- the frontier graph: client-side re-SCORING -----------------------------
+// frontier_graph.json ships the WHOLE frontier synapse graph once (~152 KB):
+// `cells` (every frontier cell id, sorted), `formal` (per cell, {"|"-joined
+// EXACT owning-root set → summed RAW synapse weight} over its decl-holding
+// neighbors — exact-set keys, so a library subset never double-counts a
+// multi-root neighbor) and `edges` (every frontier↔frontier synapse as
+// [i, j, w] weight triples into `cells`). The view fetches it LAZILY, once,
+// and re-scores CLIENT-SIDE per the PROXIMITY CONTRACT (brain/SCHEMA.md):
+//   direct_L(c) = Σ formal[c][K] over key sets K with K ∩ enabled ≠ ∅
+//   score_L(c)  = direct_L(c) + Σ over edges (c,u,w) of min(w, direct_L(u))/4
+//   r_L(c)      = (#cells with strictly higher score_L + #equal/2) / N, 4dp
+//                 — the builder's own midrank formula, re-ranked per subset
 //
-// PARITY LAW: with every library enabled the client BFS must reproduce the
-// shipped shells EXACTLY — asserted the moment the graph loads
-// (console.error + a visible ⚠ in the halo status line on any mismatch).
+// PARITY LAW: with every library enabled score_L must equal the shipped `s`
+// EXACTLY (exact float equality — quarter-floats are lossless), asserted the
+// moment the graph loads (console.error + a visible ⚠ in the status line on
+// any mismatch). The all-on view renders the SHIPPED r verbatim, so it is
+// identical to the build-time placement by construction.
 let fgraph = null, fgraphP = null, fgraphFail = false;
-let fgAdjOff = null, fgAdj = null, fgFormalLibs = null;
+let fgAdjOff = null, fgAdj = null, fgAdjW = null, fgFormal = null;
 let parity = {ran: false, ok: null, bad: 0, missing: 0, extra: 0};
-let clientHops = null, clientHopsKey = null;   // cell -> d | "disc" for the CURRENT lib set
+let clientProx = null, clientProxKey = null;   // cell -> {dw,ib,iw,s,r} for the CURRENT lib set
 function prepFrontierGraph() {
   const cells = fgraph.cells || [], edges = fgraph.edges || [];
   const n = cells.length;
@@ -1382,54 +1390,74 @@ function prepFrontierGraph() {
   fgAdjOff = new Uint32Array(n + 1);
   for (let i = 0; i < n; i++) fgAdjOff[i + 1] = fgAdjOff[i] + deg[i];
   fgAdj = new Uint32Array(fgAdjOff[n]);
+  fgAdjW = new Float64Array(fgAdjOff[n]);
   const cur = fgAdjOff.slice(0, n);
-  for (const [i, j] of edges) { fgAdj[cur[i]++] = j; fgAdj[cur[j]++] = i; }
-  fgFormalLibs = cells.map(c => Object.keys((fgraph.formal || {})[c] || {}));
+  for (const [i, j, w] of edges) {
+    fgAdj[cur[i]] = j; fgAdjW[cur[i]++] = w;
+    fgAdj[cur[j]] = i; fgAdjW[cur[j]++] = w;
+  }
+  // per cell: [[root set (split once), weight], …]
+  fgFormal = cells.map(c => Object.entries((fgraph.formal || {})[c] || {})
+    .map(([k, w]) => [k.split("|"), w]));
 }
-// Multi-source BFS with the disabled libraries removed from the SOURCES. A
-// formal neighbor in a library the control does not list can never be toggled
-// off, so it always conducts — never a silent drop.
-function bfsHops(disabled) {
+// Re-score with the disabled libraries removed from the FORMAL evidence. A
+// root the Libraries control does not list can never be toggled off, so it
+// always conducts — never a silent drop.
+function scoreCells(disabled) {
   const cells = fgraph.cells, n = cells.length;
-  const dist = new Int32Array(n).fill(-1);
-  let q = [];
-  for (let i = 0; i < n; i++)
-    if (fgFormalLibs[i].some(L => !disabled.has(L))) { dist[i] = 1; q.push(i); }
-  let d = 1;
-  while (q.length) {
-    const next = [];
-    for (const i of q)
-      for (let e = fgAdjOff[i]; e < fgAdjOff[i + 1]; e++) {
-        const j = fgAdj[e];
-        if (dist[j] === -1) { dist[j] = d + 1; next.push(j); }
-      }
-    q = next; d++;
+  const direct = new Float64Array(n);   // integer trace weights — exact
+  for (let i = 0; i < n; i++) {
+    let d = 0;
+    for (const [roots, w] of fgFormal[i])
+      if (roots.some(L => !disabled.has(L))) d += w;
+    direct[i] = d;
   }
   const out = new Map();
-  cells.forEach((c, i) => out.set(c, dist[i] === -1 ? "disc" : dist[i]));
+  for (let i = 0; i < n; i++) {
+    let iw = 0, ib = 0;
+    for (let e = fgAdjOff[i]; e < fgAdjOff[i + 1]; e++) {
+      const du = direct[fgAdj[e]];
+      if (du > 0) { iw += Math.min(fgAdjW[e], du); ib++; }   // the bottleneck rule
+    }
+    // iw accumulates INTEGERS; one /4 at the end — bit-for-bit the builder's
+    // `direct + bridge * 0.25`, which is what the parity law demands
+    out.set(cells[i], {dw: direct[i], ib, iw, s: direct[i] + iw / 4});
+  }
+  // r: midrank percentile of s — (#strictly higher + #equal/2)/N, 4dp,
+  // ties share (the builder's formula, verbatim)
+  const sorted = [...out.values()].map(p => p.s).sort((a, b) => b - a);
+  const higher = new Map();   // score -> #cells strictly above it
+  const count = new Map();    // score -> #cells at it
+  for (let i = 0; i < sorted.length; i++) {
+    const v = sorted[i];
+    if (!count.has(v)) { higher.set(v, i); count.set(v, 0); }
+    count.set(v, count.get(v) + 1);
+  }
+  for (const p of out.values())
+    p.r = Math.round(((higher.get(p.s) + count.get(p.s) / 2) / n) * 1e4) / 1e4;
   return out;
 }
 function runParityCheck() {
-  if (!fgraph || !tree || !tree.halo) return;
-  const hops = bfsHops(new Set());   // ALL libraries enabled
+  if (!fgraph || !tree || !tree.prox) return;
+  const all = scoreCells(new Set());   // ALL libraries enabled
   let bad = 0, missing = 0, extra = 0;
-  for (const [c, d] of hops) {
-    const ship = tree.cellHops.get(c);
-    if (ship === undefined) missing++;        // in the graph, in no shipped shell
-    else if (ship !== d) bad++;
+  for (const [c, p] of all) {
+    const ship = tree.cellProx.get(c);
+    if (ship === undefined) missing++;   // in the graph, in no shipped prox row
+    else if (ship.s !== p.s) bad++;      // EXACT equality — the parity law
   }
-  for (const c of tree.cellHops.keys()) if (!hops.has(c)) extra++;
+  for (const c of tree.cellProx.keys()) if (!all.has(c)) extra++;
   parity = {ran: true, ok: !(bad || missing || extra), bad, missing, extra};
   if (!parity.ok) {
-    console.error(`[brain halo] PARITY FAILURE: client BFS (all libraries) != shipped shells — ` +
-      `${bad} cell(s) at a different d, ${missing} in the graph but in no shipped shell, ` +
-      `${extra} in shipped shells but missing from the graph`);
+    console.error(`[brain frontier] PARITY FAILURE: client re-score (all libraries) != shipped prox — ` +
+      `${bad} cell(s) at a different score, ${missing} in the graph but in no shipped prox row, ` +
+      `${extra} in shipped prox but missing from the graph`);
     // the render that is already on screen printed no warning — say it now
-    if (layout && layout.halo && isHaloId(focusId))
-      statusEl.textContent += " · ⚠ client shells disagree with the build (see console)";
+    if (layout && layout.frontier && isFrontierViewId(focusId))
+      statusEl.textContent += " · ⚠ client scores disagree with the build (see console)";
   } else {
-    console.info(`[brain halo] parity OK: the client BFS reproduces the shipped shells for all ${
-      hops.size} frontier cells`);
+    console.info(`[brain frontier] parity OK: the client re-score reproduces the shipped scores for all ${
+      all.size} frontier cells`);
   }
 }
 function fetchFrontierGraph() {
@@ -1440,161 +1468,162 @@ function fetchFrontierGraph() {
         fgraph = j;
         fgraphFail = !j;
         if (j) { prepFrontierGraph(); runParityCheck(); }
-        else console.warn("[brain halo] frontier_graph.json unavailable — the library filter cannot re-shell");
+        else console.warn("[brain frontier] frontier_graph.json unavailable — the library filter cannot re-score");
         return j;
       });
   }
   return fgraphP;
 }
-function ensureClientHops() {
-  if (!fgraph) { clientHops = null; return; }
+function ensureClientProx() {
+  if (!fgraph) { clientProx = null; return; }
   const key = [...disabledLibs].sort().join(",");
-  if (clientHopsKey === key && clientHops) return;
-  clientHops = bfsHops(disabledLibs);
-  clientHopsKey = key;
+  if (clientProxKey === key && clientProx) return;
+  clientProx = scoreCells(disabledLibs);
+  clientProxKey = key;
 }
-// The shells feeding the CURRENT render: shipped VERBATIM when every library is
-// on (byte-identical to the build, and the parity assert proves the client BFS
-// agrees anyway); client-computed when the set is filtered. Cell order inside a
-// client shell = the area row's own cells order — deterministic.
-function activeShellsFor(p) {
-  const sc = tree.sc[p] || {};
-  if (!libsFiltered() || !clientHops) return sc.shells || null;
-  const out = {};
-  for (const c of sc.cells || []) {
-    const d = clientHops.get(c);
-    if (d === undefined) continue;   // not in the graph — counted as uncovered drift
-    const k = d === "disc" ? "disc" : String(d);
-    (out[k] = out[k] || []).push(c);
+// The prox feeding the CURRENT render: shipped VERBATIM when every library is
+// on (byte-identical to the build, and the parity assert proves the client
+// re-score agrees anyway); client-computed when the set is filtered. A client
+// row carries no `db` (the graph aggregates direct weight by root set, not by
+// neighbor), so db is undefined there — the copy degrades honestly.
+function activeProxFor(cid) {
+  if (!libsFiltered() || !fgraph) return tree.cellProx.get(cid);
+  ensureClientProx();   // self-syncs to the CURRENT set (cheap when unchanged) —
+                        // a cell card opened after a root-level toggle must
+                        // never read scores for a stale library set
+  return clientProx ? clientProx.get(cid) : tree.cellProx.get(cid);
+}
+// the human-readable bond summary for ONE cell — the tooltip/panel provenance
+// (evidence-mass wording; weights are RAW trace counts, per the contract)
+function proxSummary(px) {
+  if (!px) return "no proximity data in this build";
+  if (px.dw > 0) {
+    const direct = px.db !== undefined
+      ? `${px.dw.toLocaleString()} trace${px.dw === 1 ? "" : "s"} across ${
+          px.db} direct bond${px.db === 1 ? "" : "s"} into formalized cells`
+      : `direct evidence weight ${px.dw.toLocaleString()} into formalized cells`;
+    return direct + (px.iw > 0
+      ? `, +${px.iw.toLocaleString()} bridged via ${px.ib} frontier neighbor${
+          px.ib === 1 ? "" : "s"}` : "");
   }
-  return Object.keys(out).length ? out : null;
+  if (px.iw > 0)
+    return `no direct bonds — evidence weight ${px.iw.toLocaleString()} bridged via ${
+      px.ib} frontier neighbor${px.ib === 1 ? "" : "s"} (¼-damped, bottleneck-capped)`;
+  return "no formal signal — no bonds into formalized cells and nothing to bridge through";
 }
-function updateHaloToggle() {
-  const el = $("#viewtoggle");
-  if (!el) return;
-  // visible at the ROOT too — the halo is a top-level way to read the map, and
-  // hiding its only entry point inside the Frontier dive made it undiscoverable.
-  // But the root shows ONLY the halo chip: the Frontier bubble IS the areas
-  // entry there, so an "areas" chip would duplicate it. The areas|halo pair
-  // remains inside the Frontier and halo levels (sector focus included).
-  const show = !explorerOn && tree && tree.halo &&
-    (focusId === ROOTS_ID || focusId === FRONTIER_ID || isHaloId(focusId));
-  el.style.display = show ? "flex" : "none";
-  const a = $("#vt-areas"), h = $("#vt-halo");
-  if (a) {
-    a.style.display = focusId === ROOTS_ID ? "none" : "";
-    a.classList.toggle("on", focusId === FRONTIER_ID);
-  }
-  if (h) h.classList.toggle("on", isHaloId(focusId));
-}
-async function renderHalo(seq, anim, moveAnim) {
+async function renderFrontier(seq, anim, moveAnim) {
   // The frontier graph is fetched lazily by THIS view, once. A filtered library
-  // set needs it BEFORE shelling; all-on renders the shipped shells immediately
+  // set needs it BEFORE scoring; all-on renders the shipped prox immediately
   // while the fetch + the parity assert run in the background.
   const graphP = fetchFrontierGraph();
   if (libsFiltered() && !fgraph && !fgraphFail) {
     await graphP;
     if (seq !== renderSeq) return;
   }
-  if (libsFiltered()) ensureClientHops();   // no-op when the graph is missing
-  // sector focus (#__halo__:<Area>): that area's shells alone, spread over the
-  // full circle. An area this build doesn't carry falls back to the full halo.
-  let sector = haloAreaOf(focusId);
-  if (sector && !((tree.sc[sector] || {}).frontier)) { sector = null; focusId = HALO_ID; }
-  // a re-shelling ANIMATES: remember where every dot sits now, move it after
-  const oldPos = moveAnim && layout && layout.halo
+  if (libsFiltered()) ensureClientProx();   // no-op when the graph is missing
+  // sector focus (#__frontier__:<Area>): that area's cells alone, spread over
+  // the full circle. An area this build doesn't carry falls back to the full view.
+  let sector = sectorAreaOf(focusId);
+  if (sector && !((tree.sc[sector] || {}).frontier)) { sector = null; focusId = FRONTIER_ID; }
+  // a re-score ANIMATES: remember where every dot sits now, move it after
+  const oldPos = moveAnim && layout && layout.frontier
     ? new Map([...layout.items.values()].map(l => [l.data.id, [l.x, l.y]])) : null;
-  // ---- data pass FIRST (geometry-free): sectors, shell counts, facet filter --
+  // ---- data pass FIRST (geometry-free): sectors, prox counts, facet filter --
   // sectors: tree.frontier is already (size desc, id) — a stable order
-  const perArea = [];
-  let totalCells = 0;
   const areas = sector ? [sector] : tree.frontier;
-  // shell keys come from the DATA (numeric asc, disc last) so a future build —
-  // or a client re-shelling with libraries off — with d>=4 renders its own ring
-  // instead of silently dropping those dots; HALO_SHELL_KEYS is only the
-  // fallback ordering baseline. Keys always come from the FULL frontier, sector
-  // or not, so a sector's rings sit at the same radii as the full halo's.
-  const keySet = new Set();
-  for (const p of tree.frontier)
-    Object.keys(activeShellsFor(p) || {}).forEach(k => keySet.add(k));
-  const haloKeys = [...keySet].sort((a, b) =>
-    (a === "disc") - (b === "disc") || Number(a) - Number(b));
-  if (!haloKeys.length) haloKeys.push(...HALO_SHELL_KEYS);
-  const cnt = Object.fromEntries(haloKeys.map(k => [k, 0]));
+  const perArea = [];
+  let totalCells = 0, nDirect = 0, nBridged = 0, nZero = 0, skipped = 0;
   for (const p of areas) {
-    const sh = activeShellsFor(p);
-    if (!sh) continue;   // a shells-less area is COUNTED below, never silent
-    let n = 0;
-    for (const k of haloKeys) { const m = (sh[k] || []).length; n += m; cnt[k] += m; }
-    if (n) perArea.push({p, sh, n});
-    totalCells += n;
+    const members = [];   // [{cid, px}]
+    for (const cid of (tree.sc[p] || {}).cells || []) {
+      const px = activeProxFor(cid);
+      if (!px) { skipped++; continue; }   // no prox data — COUNTED below, never silent
+      members.push({cid, px});
+      if (px.dw > 0) nDirect++; else if (px.iw > 0) nBridged++; else nZero++;
+    }
+    // radius ascending, then id — deterministic; equal-r runs form tie groups
+    // (the 300-odd zero-signal cells all share ONE percentile, and a tie group
+    // is laid out in stacked rows instead of a 1px overplotted arc)
+    members.sort((a, b) => (a.px.r - b.px.r) || (a.cid < b.cid ? -1 : 1));
+    if (members.length) {
+      const groups = [];
+      let g0 = 0;
+      for (let i = 1; i <= members.length; i++)
+        if (i === members.length || members[i].px.r !== members[g0].px.r) {
+          groups.push({rv: members[g0].px.r, from: g0, m: i - g0});
+          g0 = i;
+        }
+      perArea.push({p, members, groups, n: members.length});
+    }
+    totalCells += members.length;
   }
-  const claimed = sector ? ((tree.sc[sector] || {}).cells || []).length : tree.frontierN;
-  const uncovered = claimed - totalCells;   // shells-less areas' cells + drift
-  const placed = [];   // [{it, A, k, idx}] — items now, coordinates after measuring
+  const placed = [];   // [{it, A, G, j}] — items now, coordinates after measuring
   for (const A of perArea)
-    for (const k of haloKeys)
-      (A.sh[k] || []).forEach((cid, idx) => {
+    for (const G of A.groups)
+      for (let j = 0; j < G.m; j++) {
+        const {cid, px} = A.members[G.from + j];
         const it = cellItem(cid);
-        it.hop = k === "disc" ? "disc" : Number(k);   // hover + card plumbing
-        it.area = frontierName(A.p);                  // tooltip: label · area · hops
-        placed.push({it, A, k, idx});
-      });
+        it.area = frontierName(A.p);   // tooltip: label · area · bond summary
+        it.ptip = proxSummary(px);     // hover + card plumbing
+        it.px = px;
+        placed.push({it, A, G, j});
+      }
   const fv = applyFacetFilter(placed.map(e => e.it));
   // ---- chrome pass: write EVERY toolbar/crumb line, THEN measure the stage --
   // The long status line and the filter stat can re-wrap the flex toolbar, and
   // the crumb bar grows from empty at boot — each changes the stage height with
   // NO window `resize` event (and ResizeObserver is undeliverable in embedded
   // panes, measured). Solving the radial layout before those writes left the
-  // halo drawn for a stage 16px taller than the one on screen, interleaving the
-  // d=1/d=2 bands. Write first; the clientWidth/Height reads below then force
-  // (and measure) the settled layout.
+  // view drawn for a stage 16px taller than the one on screen. Write first; the
+  // clientWidth/Height reads below then force (and measure) the settled layout.
   updateFilterStat(fv);
-  renderCrumb();   // the halo branch writes synchronously (no await on its path)
+  renderCrumb();   // the frontier branch writes synchronously (no await on its path)
   const en = enabledLibs();
   const libNote = !libsFiltered() ? ""
-    : clientHops
+    : clientProx
       ? ` · libraries: ${en.length === 0 ? "none"
           : en.length <= 3 ? en.join(" + ")
           : `${en.length} of ${libRoots().length}`}`
       : " · ⚠ library filter inactive (frontier_graph.json unavailable)";
   const parityNote = parity.ran && !parity.ok
-    ? " · ⚠ client shells disagree with the build (see console)" : "";
-  statusEl.textContent = `${totalCells.toLocaleString()} cells · halo view` +
-    (sector ? ` · ${frontierName(sector)} sector` : "") + ` · ` +
-    haloKeys.map(k => `${(cnt[k] || 0).toLocaleString()} ${k === "disc"
-      ? "disconnected" : `at ${k} hop${k === "1" ? "" : "s"}`}`).join(" · ") +
-    (uncovered > 0 ? ` · ${uncovered} cells lack shell data (drift — see console)` : "") +
+    ? " · ⚠ client scores disagree with the build (see console)" : "";
+  statusEl.textContent = `${totalCells.toLocaleString()} cells · frontier view` +
+    (sector ? ` · ${frontierName(sector)} sector` : "") +
+    ` · ${nDirect.toLocaleString()} bond formal code directly · ` +
+    `${nBridged.toLocaleString()} bridged only · ` +
+    `${nZero.toLocaleString()} no formal signal` +
+    (skipped > 0 ? ` · ${skipped} cells lack proximity data (drift — see console)` : "") +
     libNote + parityNote;
-  if (uncovered > 0)
-    console.warn(`[brain halo] ${uncovered} frontier cell(s) missing from shells — ` +
-      `the halo draws only what this build's shells cover`);
+  if (skipped > 0)
+    console.warn(`[brain frontier] ${skipped} frontier cell(s) missing from prox — ` +
+      `the view draws only what this build's prox arrays cover`);
   const stat = $("#structstat");
   if (stat) stat.textContent =
-    "deterministic polar layout — no simulation; dashed ring = no path to formal code";
+    "deterministic polar layout — no simulation; radius = build-time formal-proximity percentile";
   // ---- geometry pass: solve the polar layout for the settled stage ----------
   const W = stageEl.clientWidth || 800, H = stageEl.clientHeight || 600;
-  // Boot guard: a mid-layout stage (flex not settled on a direct #__halo__
+  // Boot guard: a mid-layout stage (flex not settled on a direct #__frontier__
   // load) can measure 0×150 here — the || fallbacks then solve a 800×150
   // wheel (39px radius). The stage ResizeObserver self-heals that where it
   // delivers, but not in every embedded pane (measured — see the observer
   // note below), so poll the real size briefly and re-solve.
-  if ((stageEl.clientWidth < 60 || stageEl.clientHeight < 60) && haloBootTries < 60) {
-    haloBootTries++;
-    setTimeout(() => { if (layout && layout.halo) renderFocus(false); }, 100);
+  if ((stageEl.clientWidth < 60 || stageEl.clientHeight < 60) && frontierBootTries < 60) {
+    frontierBootTries++;
+    setTimeout(() => { if (layout && layout.frontier) renderFocus(false); }, 100);
   } else if (stageEl.clientWidth >= 60 && stageEl.clientHeight >= 60) {
-    haloBootTries = 0;
+    frontierBootTries = 0;
   }
   const cx = W / 2, cy = H / 2;
   const maxR = Math.min(W, H) / 2 - 36;   // rim-label margin: nothing clips the stage
   const coreR = Math.max(26, maxR * 0.17);
-  const ringR = {};
-  haloKeys.forEach((k, i) => {
-    // known keys keep their designed radii; unknown (d>=4) keys interpolate
-    // evenly between the last known numeric ring and the disc ring
-    ringR[k] = maxR * (HALO_FRAC[k] ?? (0.76 + 0.16 * ((i + 1) / haloKeys.length)));
-  });
-  // a thin top wedge stays clear of dots so the ring labels sit on empty sky
+  // The radial band the proximity percentile maps onto: r=0 (best-evidenced)
+  // lands just off the core disc, r=1 would land at the outer edge. LINEAR IN
+  // r — r is already the rank statistic (robust-fit rule: percentiles, never
+  // a min/max fit over raw scores, so a 900-weight hub cannot stretch the map).
+  const rInner = coreR + Math.max(10, maxR * 0.06);
+  const rOuter = maxR - 4;
+  const radiusOf = r => rInner + (rOuter - rInner) * Math.max(0, Math.min(1, r));
+  // a thin top wedge stays clear of dots so the radial guide sits on empty sky
   const TOP_GUTTER = 0.14;
   const start = -Math.PI / 2 + TOP_GUTTER / 2;
   const avail = 2 * Math.PI - TOP_GUTTER;
@@ -1602,69 +1631,60 @@ async function renderHalo(seq, anim, moveAnim) {
   const wSum = perArea.reduce((s, A) => s + A.n + SMOOTH, 0) || 1;
   let a0 = start;
   for (const A of perArea) { A.a0 = a0; A.span = avail * (A.n + SMOOTH) / wSum; a0 += A.span; }
-  // dot geometry adapts to the viewport; rows stack around each ring, and the
-  // row gap shrinks so a band NEVER crosses into the neighbouring shell
+  // dot geometry adapts to the viewport. A tie group (cells sharing one exact
+  // percentile — the zero-signal population shares ONE) stacks rows around its
+  // shared radius, gap clamped small so the band stays a thin annulus.
   const ARC_STEP = Math.max(5.5, Math.min(8, maxR / 42));
   const DOT = maxR < 220 ? 2.2 : 2.6;
-  const bandHalf = k => {
-    const i = haloKeys.indexOf(k);
-    const inner = i === 0 ? coreR : ringR[haloKeys[i - 1]];
-    const outer = i === haloKeys.length - 1 ? maxR : ringR[haloKeys[i + 1]];
-    // true geometric half-band, no floor — on tiny stages a floored excursion
-    // walks dots into the neighbouring shell / the core disc
-    return Math.max(0, Math.min(ringR[k] - inner, outer - ringR[k]) / 2 - 1);
+  const hash01 = s => {   // deterministic per-(area, radius) rotation — no RNG
+    let h = 0;
+    for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+    return (h % 9973) / 9973;
   };
-  const rowGeom = new Map();   // "<area>|<shell>" -> {perRow, rows, gap}
-  for (const A of perArea)
-    for (const k of haloKeys) {
-      const n = (A.sh[k] || []).length;
-      if (!n) continue;
-      const perRow = Math.max(1, Math.floor((A.span * ringR[k]) / ARC_STEP));
-      const rows = Math.ceil(n / perRow);
-      rowGeom.set(A.p + "|" + k, {perRow, rows,
-        gap: rows > 1 ? Math.min(7, (2 * bandHalf(k)) / (rows - 1)) : 0});
-    }
-  const leaves = placed.map(({it, A, k, idx}) => {
-    const g = rowGeom.get(A.p + "|" + k);
-    const n = (A.sh[k] || []).length;
-    const row = Math.floor(idx / g.perRow);
-    const inRow = row === g.rows - 1 ? n - row * g.perRow : g.perRow;
-    const ang = A.a0 + (((idx % g.perRow) + 0.5) / inRow) * A.span;
-    const rr = ringR[k] + (row - (g.rows - 1) / 2) * g.gap;
+  const leaves = placed.map(({it, A, G, j}) => {
+    const R = radiusOf(G.rv);
+    const perRow = Math.max(1, Math.floor((A.span * R) / ARC_STEP));
+    const rows = Math.ceil(G.m / perRow);
+    const gap = rows > 1 ? Math.min(4, (rOuter - rInner) * 0.02) : 0;
+    const row = Math.floor(j / perRow);
+    const inRow = row === rows - 1 ? G.m - row * perRow : perRow;
+    // the hash rotation de-spokes single-dot groups: without it every area's
+    // groups would open at the sector's start edge and draw a radial seam
+    const frac = (((j % perRow) + 0.5) / inRow + hash01(A.p + "|" + G.rv)) % 1;
+    const ang = A.a0 + frac * A.span;
+    const rr = R + (row - (rows - 1) / 2) * gap;
     // arc length per dot in this row — the honest "does a label fit" test the
     // sector view renders labels by
-    const fit = (A.span * rr) / Math.max(1, inRow) >= HALO_LABEL_FIT_PX;
+    const fit = (A.span * rr) / Math.max(1, inRow) >= FRONTIER_LABEL_FIT_PX;
     return {data: it, x: cx + rr * Math.cos(ang), y: cy + rr * Math.sin(ang), r: DOT, fit};
   });
-  // haloW/H: the stage this layout was solved FOR — the deferred self-check
+  // fvW/H: the stage this layout was solved FOR — the deferred self-check
   // below (and the stage ResizeObserver, where it delivers) re-render on drift
-  layout = {items: new Map(leaves.map(l => [l.data.id, l])), leaves, halo: true,
-            haloW: W, haloH: H, sector};
+  layout = {items: new Map(leaves.map(l => [l.data.id, l])), leaves, frontier: true,
+            fvW: W, fvH: H, fvCore: {cx, cy, coreR}, sector};
   edgeStore = [];
   gEdges.selectAll("*").remove();
   gOverlay.selectAll("*").remove();
   gBubbles.selectAll("circle.preview").remove();
-  gBubbles.selectAll("circle.node").interrupt("reshell");   // stale moves must not fight this render
+  gBubbles.selectAll("circle.node").interrupt("rescore");   // stale moves must not fight this render
   gLabels.selectAll("*").remove();
-  // shell rings + the core disc render UNDER the dots (gEdges is the bottom
-  // layer; renderEdges() early-returns in halo view so nothing wipes them)
-  for (const k of haloKeys) {
-    const disc = k === "disc";
-    const ring = gEdges.append("circle")
-      .attr("cx", cx).attr("cy", cy).attr("r", ringR[k]).attr("fill", "none")
-      .attr("stroke", disc ? "#57606a" : "#33405c")
-      .attr("stroke-opacity", disc ? 0.55 : 0.85)
-      .attr("stroke-width", disc ? 1 : 1.2);
-    if (disc) ring.attr("stroke-dasharray", "5 5");
-    // a fat transparent twin makes the thin ring hoverable; its title says what
-    // the ring MEANS (the disconnected ring especially needs the explanation)
-    gEdges.append("circle")
-      .attr("cx", cx).attr("cy", cy).attr("r", ringR[k]).attr("fill", "none")
-      .attr("stroke", "transparent").attr("stroke-width", 12)
-      .append("title").text(disc
-        ? `disconnected (${cnt.disc.toLocaleString()} cells) — no synapse path from these cells reaches any formalized cell`
-        : `${HALO_RING_LABEL[k] || `${k} hops`} from formal code (${cnt[k].toLocaleString()} cells) — shortest synapse path to a formalized cell in an enabled library`);
-  }
+  // the proximity axis renders UNDER the dots (gEdges is the bottom layer;
+  // renderEdges() early-returns in the frontier view so nothing wipes it):
+  // ONE faint radial guide up the top gutter — an axis, NOT shell rings
+  gEdges.append("line")
+    .attr("x1", cx).attr("y1", cy - rInner).attr("x2", cx).attr("y2", cy - rOuter)
+    .attr("stroke", "#33405c").attr("stroke-opacity", 0.8)
+    .attr("stroke-width", 1).attr("stroke-dasharray", "2 4");
+  // a fat transparent twin makes the thin guide hoverable; its title is the
+  // one-sentence proximity explanation (the SCHEMA contract's own wording)
+  gEdges.append("line")
+    .attr("x1", cx).attr("y1", cy - rInner).attr("x2", cx).attr("y2", cy - rOuter)
+    .attr("stroke", "transparent").attr("stroke-width", 14)
+    .append("title").text(
+      "radius = formal proximity: the trace weight of a cell's bonds straight into " +
+      "formalized cells, plus ¼ of what its frontier neighbors can bridge (each " +
+      "bridge capped by both the bond and the neighbor's own direct evidence), " +
+      "rank-mapped over all frontier cells — closer in = more formal evidence");
   const core = gEdges.append("g").style("cursor", "pointer")
     .on("click", ev => { ev.stopPropagation(); focusId = ROOTS_ID; selectedId = null;
       setHash(""); renderFocus(true); renderPanel(ROOTS_ID); });
@@ -1675,27 +1695,27 @@ async function renderHalo(seq, anim, moveAnim) {
     `the formalized interior — every cell with a Lean declaration in: ${
       en.length ? en.join(", ") : "(no library enabled)"}; click to open the library roots`);
   drawNodes();
-  // a re-shelling ANIMATES the dots from their previous shell radii to the new
-  // ones (drawNodes reuses each circle by id, so only cx/cy need to travel)
+  // a re-score ANIMATES the dots from their previous radii to the new ones
+  // (drawNodes reuses each circle by id, so only cx/cy need to travel)
   if (oldPos) {
     gBubbles.selectAll("circle.node").each(function (l) {
       const o = oldPos.get(l.data.id);
       if (!o || (Math.abs(o[0] - l.x) < 0.5 && Math.abs(o[1] - l.y) < 0.5)) return;
       d3.select(this).attr("cx", o[0]).attr("cy", o[1])
-        .transition("reshell").duration(650).ease(d3.easeCubicInOut)
+        .transition("rescore").duration(650).ease(d3.easeCubicInOut)
         .attr("cx", l.x).attr("cy", l.y);
     });
     // rAF-driven transitions pause in hidden/background panes (the fadeIn /
-    // zoomInto guard) — a dot must NEVER stay stranded on its old shell, so
+    // zoomInto guard) — a dot must NEVER stay stranded at its old radius, so
     // snap everything to its final position once the window has passed
     setTimeout(() => {
-      if (seq !== renderSeq || !layout || !layout.halo) return;
-      gBubbles.selectAll("circle.node").interrupt("reshell")
+      if (seq !== renderSeq || !layout || !layout.frontier) return;
+      gBubbles.selectAll("circle.node").interrupt("rescore")
         .attr("cx", l => l.x).attr("cy", l => l.y);
     }, 800);
   }
-  // core label + ring labels + sector rim labels — inked with a dark outline so
-  // they stay readable wherever they land over dots
+  // core label + axis pole labels + sector rim labels — inked with a dark
+  // outline so they stay readable wherever they land over dots
   const inked = t => t.attr("stroke", "#0b0e14").attr("stroke-width", 3)
     .attr("paint-order", "stroke").attr("stroke-linejoin", "round");
   // the core disc names what "formal" currently MEANS: the one enabled library,
@@ -1712,13 +1732,16 @@ async function renderHalo(seq, anim, moveAnim) {
     .attr("x", cx).attr("y", cy + Math.max(11, coreR * 0.26))
     .attr("font-size", Math.max(9, coreR * 0.2))
     .text(libsFiltered() ? `${disabledLibs.size} off` : "formal interior"));
-  for (const k of haloKeys)
-    inked(gLabels.append("text").attr("class", "bcount")
-      .attr("x", cx).attr("y", cy - ringR[k] - 5).attr("font-size", 9.5)
-      .text(`${HALO_RING_LABEL[k] || `${k} hops`} · ${(cnt[k] || 0).toLocaleString()}`));
-  // rim labels: full halo only (a sector IS the whole circle) — clicking one
-  // focuses that sector (#__halo__:<Area>); background-click returns
-  if (!sector) perArea.slice(0, HALO_RIM_LABELS).forEach(A => {
+  // the axis poles: what closest and outermost MEAN, in the gutter's empty sky
+  inked(gLabels.append("text").attr("class", "bcount")
+    .attr("x", cx).attr("y", cy - rInner - 5).attr("font-size", 9.5)
+    .text(`strongest formal evidence · ${nDirect.toLocaleString()} bonded`));
+  inked(gLabels.append("text").attr("class", "bcount")
+    .attr("x", cx).attr("y", cy - rOuter + 12).attr("font-size", 9.5)
+    .text(`no formal signal · ${nZero.toLocaleString()}`));
+  // rim labels: full view only (a sector IS the whole circle) — clicking one
+  // focuses that sector (#__frontier__:<Area>); background-click returns
+  if (!sector) perArea.slice(0, FRONTIER_RIM_LABELS).forEach(A => {
     const mid = A.a0 + A.span / 2;
     const t = gLabels.append("text").attr("class", "blabel rimlab")
       .attr("x", cx + (maxR + 12) * Math.cos(mid))
@@ -1728,79 +1751,93 @@ async function renderHalo(seq, anim, moveAnim) {
         : Math.cos(mid) < -0.25 ? "end" : "middle")
       .text(frontierName(A.p))
       .on("click", ev => { ev.stopPropagation();
-        gotoFrontierView(HALO_ID + ":" + A.p.slice(9)); });
+        gotoFrontierView(FRONTIER_ID + ":" + A.p.slice(9)); });
     inked(t);
-    t.append("title").text(`focus this sector — ${frontierName(A.p)}'s shells alone, ` +
+    t.append("title").text(`focus this sector — ${frontierName(A.p)}'s cells alone, ` +
       `spread over the full circle (${A.n.toLocaleString()} cells)`);
   });
-  drawHaloDotLabels(leaves, sector);
+  drawFrontierDotLabels(leaves, sector);
   drawSelRing();
   webState = {shown: 0, cells: totalCells, capped: false};
-  applyHaloScale(d3.zoomTransform(svg.node()).k || 1);   // re-shells keep the reader's zoom
+  applyFrontierScale(d3.zoomTransform(svg.node()).k || 1);   // re-scores keep the reader's zoom
   if (anim) fadeIn();
   // Safety net for any OTHER late reflow (scrollbars, panel content, chrome):
   // if the stage the layout was solved for is no longer the stage on screen,
   // re-solve once against the settled one. Converges — the second pass writes
   // identical chrome, so the stage cannot move again.
   setTimeout(() => {
-    if (!layout || !layout.halo || !isHaloId(focusId)) return;
-    if (Math.abs(stageEl.clientWidth - layout.haloW) < 2 &&
-        Math.abs(stageEl.clientHeight - layout.haloH) < 2) return;
+    if (!layout || !layout.frontier || !isFrontierViewId(focusId)) return;
+    if (Math.abs(stageEl.clientWidth - layout.fvW) < 2 &&
+        Math.abs(stageEl.clientHeight - layout.fvH) < 2) return;
     renderFocus(false);
   }, 120);
 }
-// ---- halo dot labels + screen-space zoom scaling ----------------------------
-// Dot labels are ANNOTATION (the rings are the geometry): font pinned to the
+// ---- frontier dot labels + screen-space zoom scaling ------------------------
+// Dot labels are ANNOTATION (the radius is the geometry): font pinned to the
 // screen, visibility budgeted by zoom — exactly the updateLevelLabels / explorer
 // zoom^2-budget design. The sector view additionally renders every label
-// whose row spacing FITS at rest; the full halo reveals labels as you zoom.
-const HALO_LABEL_FIT_PX = 46;   // arc per dot at which a label fits at k=1
-const HALO_LABEL_BUDGET = 14;   // ranked labels at k=1 (sector: 36); grows with k²
-const HALO_SECTOR_BUDGET = 36;
-function drawHaloDotLabels(leaves, sector) {
-  const rk = h => h === "disc" ? 1e9 : h;
+// whose row spacing FITS at rest; the full view reveals labels as you zoom.
+const FRONTIER_LABEL_FIT_PX = 46;   // arc per dot at which a label fits at k=1
+const FRONTIER_LABEL_BUDGET = 14;   // ranked labels at k=1 (sector: 36); grows with k²
+const FRONTIER_SECTOR_BUDGET = 36;
+function drawFrontierDotLabels(leaves, sector) {
   // rank: fitting labels first (the sector view shows them immediately), then
-  // nearest-to-Mathlib, then label — deterministic, so the map can be learned
+  // best-evidenced (proximity r asc), then label — deterministic, so the map
+  // can be learned
   const fitRank = l => sector && l.fit ? 0 : 1;
+  const rk = l => (l.data.px && l.data.px.r !== undefined) ? l.data.px.r : 2;
   const ranked = leaves.slice().sort((a, b) =>
     (fitRank(a) - fitRank(b)) ||
-    (rk(a.data.hop) - rk(b.data.hop)) ||
+    (rk(a) - rk(b)) ||
     String(a.data.label || a.data.id).localeCompare(String(b.data.label || b.data.id)));
   const ink = t => t.attr("stroke", "#0b0e14").attr("stroke-width", 3)
     .attr("paint-order", "stroke").attr("stroke-linejoin", "round");
-  ranked.forEach((l, i) => {
+  // the best-evidenced dots hug the core disc, and a top-of-ring dot's label
+  // descends INTO it — over the core's own name. Skip any label whose anchor
+  // lands on the disc (the dot keeps its hover title; the panel lists the top
+  // cells) — measured: without this the top-14 budget stacks 4 labels over
+  // "N libraries" at rest zoom.
+  const cv = layout.fvCore;
+  let i = 0;
+  for (const l of ranked) {
     const raw = l.data.label || l.data.id;
+    const shown = raw.length > 26 ? raw.slice(0, 24) + "…" : raw;
+    const ly = l.y + (l.r || 2.2) + 8;
+    // the label is centre-anchored: test the point of its approximate text box
+    // nearest the disc, not just the anchor (≈2.7px half-width per char at 9.5px)
+    const nx = Math.max(0, Math.abs(l.x - cv.cx) - shown.length * 2.7);
+    if (Math.hypot(nx, ly - cv.cy) < cv.coreR + 12) continue;
     ink(gLabels.append("text").attr("class", "blabel hlab")
-      .attr("x", l.x).attr("y", l.y + (l.r || 2.2) + 8).attr("data-rank", i)
-      .text(raw.length > 26 ? raw.slice(0, 24) + "…" : raw));
-  });
-  layout.haloFitN = sector ? leaves.filter(l => l.fit).length : 0;
+      .attr("x", l.x).attr("y", ly).attr("data-rank", i++)
+      .text(shown));
+  }
+  layout.fvFitN = sector ? leaves.filter(l => l.fit).length : 0;
 }
 // Dots grow with √k (visibly bigger as you dive, but the k-growing spacing
 // still separates overlaps); labels hold a constant screen size while their
 // budget grows with k² — zooming DE-CLUTTERS, as everywhere else in v3.
-function applyHaloScale(k) {
-  if (!layout || !layout.halo) return;
+function applyFrontierScale(k) {
+  if (!layout || !layout.frontier) return;
   lastK = k || 1;
   const rr = 1 / Math.sqrt(lastK);
   gBubbles.selectAll("circle.dot.node").attr("r", l => (l.r || 2.2) * rr);
-  updateHaloLabels(lastK);
+  updateFrontierLabels(lastK);
 }
-function updateHaloLabels(k) {
+function updateFrontierLabels(k) {
   const sel = gLabels.selectAll("text.hlab");
   const n = sel.size();
   if (!n) return;
-  const budget = layout.sector ? HALO_SECTOR_BUDGET : HALO_LABEL_BUDGET;
-  const lim = Math.min(n, Math.max(layout.haloFitN || 0, Math.round(budget * k * k)));
+  const budget = layout.sector ? FRONTIER_SECTOR_BUDGET : FRONTIER_LABEL_BUDGET;
+  const lim = Math.min(n, Math.max(layout.fvFitN || 0, Math.round(budget * k * k)));
   sel.attr("display", function () { return Number(this.dataset.rank) < lim ? null : "none"; })
      .attr("font-size", 9.5 / (k || 1))
      .attr("stroke-width", 3 / (k || 1));
 }
-zoomBehav.on("zoom.halo", ev => {
-  if (layout && layout.halo) applyHaloScale(ev.transform.k);
+zoomBehav.on("zoom.frontier", ev => {
+  if (layout && layout.frontier) applyFrontierScale(ev.transform.k);
 });
-// searching while in the halo keeps the view for hits that are ON it:
-// spotlight-pulse the dot + open its card. Anything not on the current halo
+// searching while in the frontier view keeps the view for hits that are ON it:
+// spotlight-pulse the dot + open its card. Anything not on the current view
 // (areas, formalized cells, another sector's cells) navigates exactly as today.
 function spotlightDot(id) {
   const L = layout && layout.items.get(id);
@@ -1821,9 +1858,9 @@ function spotlightDot(id) {
       .remove();
 }
 async function searchGo(rawId) {
-  if (layout && layout.halo) {
+  if (layout && layout.frontier) {
     const id = await resolveId(rawId);
-    if (layout && layout.halo && isCellId(id) && layout.items.has(id)) {
+    if (layout && layout.frontier && isCellId(id) && layout.items.has(id)) {
       selectedId = id;
       drawSelRing();
       spotlightDot(id);
@@ -1833,20 +1870,20 @@ async function searchGo(rawId) {
   }
   navigate(rawId);
 }
-// ---- the Libraries control (root panel + halo panel, ONE component) ---------
-async function reShellHalo() {
+// ---- the Libraries control (root panel + frontier panel, ONE component) -----
+async function reScoreFrontier() {
   const seq = ++renderSeq;
-  await renderHalo(seq, false, true);   // instant: no refetch, no zoom reset; dots animate
+  await renderFrontier(seq, false, true);   // instant: no refetch, no zoom reset; dots animate
 }
 async function setLibEnabled(name, on) {
   if (on) disabledLibs.delete(name); else disabledLibs.add(name);
   persistLibs();
   syncLibCheckboxes();
-  if (layout && layout.halo && isHaloId(focusId)) {
-    await reShellHalo();
-    if (isHaloId(lastPanelId)) {          // refresh the card's counts in place
+  if (layout && layout.frontier && isFrontierViewId(focusId)) {
+    await reScoreFrontier();
+    if (isFrontierViewId(lastPanelId)) {   // refresh the card's counts in place
       const st = panelEl.scrollTop;
-      await haloPanel(lastPanelId);
+      await frontierPanel(lastPanelId);
       panelEl.scrollTop = st;
     }
   } else if (!explorerOn && focusId === ROOTS_ID) {
@@ -1863,9 +1900,10 @@ function librariesSectionHtml() {
   let html = `<section class="kind"><h3>Library filter <span class="cnt">(${
     all.length - disabledLibs.size} of ${all.length} on)</span></h3>
     <p class="note">Which libraries count as <b>formal code</b>. Turning one off dims its
-    root bubble to 35% (never removes it) and re-shells the halo without it: a frontier
-    cell's hop distance becomes the shortest synapse path to a declaration in a library
-    still on.</p><div class="libctl">`;
+    root bubble to 35% (never removes it) and re-scores the frontier without it: a
+    cell's formal proximity counts only bonds and bridges reaching declarations in the
+    libraries still on, re-ranked with the build's own formula (with every library on,
+    the view is exactly the shipped placement).</p><div class="libctl">`;
   for (const n of all)
     html += `<label class="librow"><input type="checkbox" class="libcb" data-lib="${esc(n)}"${
       disabledLibs.has(n) ? "" : " checked"}> ${esc(n)}
@@ -2071,8 +2109,8 @@ async function zoomOut() {
     await renderFocus(true);
     return;
   }
-  const parent = isHaloId(focusId) && focusId !== HALO_ID ? HALO_ID   // sector → full halo
-    : focusId === FRONTIER_ID || focusId === HALO_ID ? ROOTS_ID
+  const parent = isSectorId(focusId) ? FRONTIER_ID   // sector → full frontier view
+    : focusId === FRONTIER_ID ? ROOTS_ID
     : isFrontierId(focusId) ? FRONTIER_ID
     : focusId === UNPLACED_ID ? (tree.frontier.length ? FRONTIER_ID : ROOTS_ID)
     : focusId.startsWith(STRAYS_PREFIX) ? focusId.slice(STRAYS_PREFIX.length)
@@ -2128,15 +2166,11 @@ function pathChain(p) {
   return out;
 }
 async function renderCrumb() {
-  updateHaloToggle();   // every crumb-bearing view settles the areas|halo toggle
   let html = `<a data-nav="${ROOTS_ID}">all libraries</a>`;
-  if (isHaloId(focusId)) {
-    const sec = haloAreaOf(focusId);
+  if (isSectorId(focusId)) {
+    const sec = sectorAreaOf(focusId);
     html += ` <span class="sep">/</span> <a data-nav="${FRONTIER_ID}">Frontier</a>` +
-      (sec
-        ? ` <span class="sep">/</span> <a data-nav="${HALO_ID}">halo</a>` +
-          ` <span class="sep">/</span> <b>${esc(frontierName(sec))}</b>`
-        : ` <span class="sep">/</span> <b>halo</b>`);
+      ` <span class="sep">/</span> <b>${esc(frontierName(sec))} sector</b>`;
   } else if (focusId === FRONTIER_ID) {
     html += ` <span class="sep">/</span> <b>Frontier</b>`;
   } else if (isFrontierId(focusId)) {
@@ -2760,13 +2794,18 @@ async function renderCellPanel(id, e) {
     nOrg === 1 ? "" : "s"} · ${nSyn.toLocaleString()} synapse${nSyn === 1 ? "" : "s"}${
     (c.supercells || []).length > 1
       ? ` · spans ${c.supercells.length} modules — it renders inside each` : ""}</div>`;
-  // a frontier cell wears its halo distance (shells → cellHops, the same
-  // plumbing cellArea rides): how many synapse hops from formal code it sits
-  const hop = tree && tree.cellHops ? tree.cellHops.get(c.id) : undefined;
-  if (hop !== undefined)
-    html += `<div class="sub" title="shortest synapse path (any bond kind) to a cell holding a Lean declaration — the frontier halo BFS">${
-      hop === "disc" ? "disconnected from Mathlib — no synapse path reaches formal code"
-        : `${hop} hop${hop === 1 ? "" : "s"} from Mathlib`}</div>`;
+  // a frontier cell wears its formal proximity (prox → cellProx, the same
+  // plumbing cellArea rides): the bond-weighted evidence tying it to formal
+  // code, in the same evidence-mass prose the synapse trace drawer uses
+  const px = tree && tree.cellProx ? activeProxFor(c.id) : undefined;
+  if (px !== undefined)
+    html += `<div class="sub" title="formal proximity: score = trace weight of its bonds straight into formalized cells, plus ¼ of what its frontier neighbors can bridge (each bridge capped by both the bond and the neighbor's own direct evidence) — rank-mapped over all frontier cells">formal proximity <b>${
+      (+px.s).toLocaleString()}</b> — ${esc(proxSummary(px))}${
+      px.r !== undefined
+        ? ` · closer to formal code than ${Math.floor((1 - px.r) * 100)}% of the frontier`
+        : ""}${
+      libsFiltered() && clientProx
+        ? ` · libraries: ${esc(enabledLibs().join(" + ") || "none")}` : ""}</div>`;
 
   // organs, grouped by kind: the informal identity, the formal identity, the
   // article, the outside world, the literature — in that order
@@ -3060,7 +3099,7 @@ function wirePanel() {
     }));
   bindRawToggles();
   enrichEvidence(panelEl);
-  // the Libraries control (rendered by the root panel + the halo panel)
+  // the Libraries control (rendered by the root panel + the frontier panel)
   panelEl.querySelectorAll(".libcb").forEach(cb =>
     cb.addEventListener("change", () => setLibEnabled(cb.dataset.lib, cb.checked)));
   // the Wikipedia lead is an on-demand REST fetch — never paid on card render
@@ -3092,8 +3131,7 @@ async function renderPanel(id) {
   if (id === ROOTS_ID) return rootsPanel();
   if (id === UNPLACED_ID) return unplacedPanel();
   // frontier ids are TREE rows, not shard entries — they must never reach getEntry
-  if (id === FRONTIER_ID) return frontierPanel();
-  if (isHaloId(id)) return haloPanel(id);
+  if (id === FRONTIER_ID || isSectorId(id)) return frontierPanel(id);
   if (isFrontierId(id)) return frontierAreaPanel(id);
   if (id.startsWith(STRAYS_PREFIX)) return straysPanel(id.slice(STRAYS_PREFIX.length));
   if (isPathId(id)) return renderSupercellPanel(id);
@@ -3140,12 +3178,11 @@ function rootsPanel() {
     html += `<section class="kind"><h3>The Frontier <span class="cnt">(${
       (tree.frontierN + tree.unplaced.length).toLocaleString()})</span></h3>
       <p class="note">Atoms with no Lean declaration have no module to nest in — nothing
-      formalizes them yet. Each is filed under the library area its synapse neighborhood
-      points at, tinted by how <i>stateable</i> it already is.
-      <a data-nav="${FRONTIER_ID}">Dive into the ${tree.frontier.length} areas</a>${
-        tree.halo ? ` — or see the <a data-nav="${HALO_ID}">Mathlib halo</a>: every
-        frontier concept on concentric shells by hop distance to formal code` : ""
-      }.</p></section>`;
+      formalizes them yet. <a data-nav="${FRONTIER_ID}">Open the frontier</a>: the
+      ${tree.frontier.length} areas as sectors around the formal core${tree.prox
+        ? `, every cell placed by its <b>formal proximity</b> — the bond-weighted
+        evidence tying it to formalized code, so a concept riding hundreds of bonds
+        hugs the core while one with no formal signal sits outermost` : ""}.</p></section>`;
   else if (tree.unplaced.length)
     html += `<section class="kind"><h3>No formal home <span class="cnt">(${
       tree.unplaced.length.toLocaleString()})</span></h3>
@@ -3156,37 +3193,80 @@ function rootsPanel() {
   wirePanel();
 }
 // ---- the Frontier group + its areas (frontier:<Area> rows on the tree) ------
-async function frontierPanel() {
+// ONE panel for the ONE frontier view: the full circle (#__frontier__) and a
+// sector focus (#__frontier__:<Area>). Counts reflect the prox ON SCREEN — the
+// client re-score when the library set is filtered, the shipped arrays
+// otherwise.
+async function frontierPanel(id) {
+  id = id || FRONTIER_ID;
   await ensureTree();
-  let html = `<div class="crumb"><a data-nav="${ROOTS_ID}">all libraries</a> / Frontier</div>
-    <h2>The Frontier</h2>
-    <div class="sub">${tree.frontierN.toLocaleString()} cells ·
-      ${tree.frontier.length} areas · atoms with no Lean declaration</div>
-    <p class="note">Nothing formalizes these atoms yet, so the containment tree cannot
-    place them. Instead of one undifferentiated blob, each cell is filed under the
-    <b>library area its synapse neighborhood points at</b> — a weighted vote of its
-    formalized neighbors (deterministic, no LLM; <code>brain/build_frontier.py</code>).
-    Bubble tint is the area's mean <b>stateability</b> — how formalized each cell's
-    neighborhood already is — from grey (0) to blue (1).</p>
-    <section class="kind"><h3>Areas <span class="cnt">(${tree.frontier.length})</span></h3>
-    <div class="chips">`;
-  for (const p of tree.frontier)
-    html += `<span class="chip"><a data-nav="${esc(p)}">${esc(frontierName(p))}</a>
-      <small>${((tree.sc[p] || {}).cells || []).length.toLocaleString()}</small></span>`;
-  html += `</div></section>`;
-  if (tree.halo)
-    html += `<section class="kind"><h3>Halo</h3>
-      <p class="note">The same cells, ringed by <b>synapse distance to Mathlib</b> —
-      how many hops each sits from the nearest formalized cell.
-      <a data-nav="${HALO_ID}">Switch to the halo view</a>.</p></section>`;
-  if (tree.unplaced.length)
-    html += `<section class="kind"><h3>Unfiled <span class="cnt">(${
-      tree.unplaced.length.toLocaleString()})</span></h3>
-      <p class="note">A different residue: these cells DO hold Lean declarations, but
-      no module is recorded for them (Mathlib-Archive names with no
-      <code>contains</code> parent), so neither the tree nor the frontier partition —
-      which claims only declaration-less cells — can file them.
-      <a data-nav="${UNPLACED_ID}">Browse them</a>.</p></section>`;
+  if (lastPanelId !== id) return;
+  const sector = sectorAreaOf(id);
+  const areas = sector && (tree.sc[sector] || {}).frontier ? [sector] : tree.frontier;
+  let total = 0, nDirect = 0, nBridged = 0, nZero = 0;
+  for (const p of areas)
+    for (const cid of (tree.sc[p] || {}).cells || []) {
+      if (!tree.prox) { total++; continue; }
+      const px = activeProxFor(cid);
+      if (!px) continue;
+      total++;
+      if (px.dw > 0) nDirect++; else if (px.iw > 0) nBridged++; else nZero++;
+    }
+  let html = `<div class="crumb"><a data-nav="${ROOTS_ID}">all libraries</a> /
+      ${sector
+        ? `<a data-nav="${FRONTIER_ID}">Frontier</a> / ${esc(frontierName(sector))} sector`
+        : "Frontier"}</div>
+    <h2>${sector ? `${esc(frontierName(sector))} — frontier sector` : "The Frontier"}</h2>
+    <div class="sub">${total.toLocaleString()} cells · ${sector ? "one area"
+      : `${tree.frontier.length} areas`} · atoms with no Lean declaration${
+      libsFiltered() && clientProx
+        ? ` · libraries: ${esc(enabledLibs().join(" + ") || "none")}` : ""}</div>`;
+  html += sector
+    ? `<p class="note">One frontier area's cells, spread over the full circle — dot
+       labels render where they fit, and zooming reveals more. Each dot's distance
+       from the center is its <b>formal proximity</b>: the trace weight of its bonds
+       straight into formalized cells, plus ¼ of what its frontier neighbors can
+       bridge (each bridge capped by both the bond and the neighbor's own direct
+       evidence), rank-mapped over the whole frontier. Click the canvas background
+       (or <a data-nav="${FRONTIER_ID}">here</a>) to return to the full view, or open
+       <a data-nav="${esc(sector)}">${esc(frontierName(sector))}</a> as dive-able
+       dots.</p>`
+    : `<p class="note">Nothing formalizes these atoms yet, so the containment tree
+       cannot place them. Each is filed under the <b>library area its synapse
+       neighborhood points at</b> — a weighted vote of its formalized neighbors
+       (deterministic, no LLM; <code>brain/build_frontier.py</code>) — and the areas
+       are the angular sectors. Each dot's distance from the central formal disc is
+       its <b>formal proximity</b>: the trace weight of its bonds straight into
+       formalized cells, plus ¼ of what its frontier neighbors can bridge (each
+       bridge capped by both the bond and the neighbor's own direct evidence),
+       rank-mapped over the whole frontier — a concept riding hundreds of bonds hugs
+       the core; one thread to an isolated node sits far out. Click a sector's rim
+       label to focus it.</p>`;
+  if (tree.prox)
+    html += `<section class="kind"><h3>Formal proximity</h3><div class="chips">
+      <span class="chip" title="cells with at least one synapse straight into a formalized cell">bond formal code directly <b>${nDirect.toLocaleString()}</b></span>
+      <span class="chip" title="cells whose only formal evidence bridges through a frontier neighbor (¼-damped, capped by the neighbor's own direct evidence)">bridged only <b>${nBridged.toLocaleString()}</b></span>
+      <span class="chip" title="no bonds into formalized cells and no bridging neighbor with any — zero formal evidence">no formal signal <b>${nZero.toLocaleString()}</b></span></div>
+      <p class="note">The central disc is the enabled formal libraries; click it to
+      open them. The outermost dots carry no formal signal at all — the deepest
+      frontier.</p></section>`;
+  if (!sector) {
+    html += `<section class="kind"><h3>Areas <span class="cnt">(${
+      tree.frontier.length})</span></h3><div class="chips">`;
+    for (const p of tree.frontier)
+      html += `<span class="chip"><a data-nav="${esc(p)}">${esc(frontierName(p))}</a>
+        <small>${((tree.sc[p] || {}).cells || []).length.toLocaleString()}</small></span>`;
+    html += `</div></section>`;
+    if (tree.unplaced.length)
+      html += `<section class="kind"><h3>Unfiled <span class="cnt">(${
+        tree.unplaced.length.toLocaleString()})</span></h3>
+        <p class="note">A different residue: these cells DO hold Lean declarations, but
+        no module is recorded for them (Mathlib-Archive names with no
+        <code>contains</code> parent), so neither the tree nor the frontier partition —
+        which claims only declaration-less cells — can file them.
+        <a data-nav="${UNPLACED_ID}">Browse them</a>.</p></section>`;
+  }
+  html += librariesSectionHtml();
   panelEl.innerHTML = html;
   wirePanel();
 }
@@ -3195,7 +3275,7 @@ async function frontierAreaPanel(id) {
   const sc = tree.sc[id];
   if (lastPanelId !== id) return;
   if (!sc) { panelEl.innerHTML = `<p class="note">Unknown frontier area: ${esc(id)}</p>`; return; }
-  const cells = frontierCells(id);   // nearest-to-Mathlib first (halo d asc, stable)
+  const cells = frontierCells(id);   // best-evidenced first (prox r asc, stable)
   const near = sc.near || null;
   const st = sc.stateability;
   let html = `<div class="crumb"><a data-nav="${ROOTS_ID}">all libraries</a> /
@@ -3221,16 +3301,24 @@ async function frontierAreaPanel(id) {
        grey→blue tint carries this number.</p>`
     : `<p class="note">not yet scored — none of this area's cells appear in the
        stateability halo.</p>`) + `</section>`;
-  if (tree.halo && sc.shells) {
-    const n = k => (sc.shells[k] || []).length;
-    html += `<section class="kind"><h3>Distance to Mathlib</h3><div class="chips">${
-      ["1", "2", "3"].filter(k => n(k)).map(k =>
-        `<span class="chip">${k} hop${k === "1" ? "" : "s"} <b>${n(k).toLocaleString()}</b></span>`).join("")}${
-      n("disc") ? `<span class="chip" title="no synapse path from these cells reaches any formalized cell">disconnected <b>${
-        n("disc").toLocaleString()}</b></span>` : ""}</div>
-      <p class="note">synapse hops to the nearest formalized cell (the halo BFS) — the
-      dive and the list below run nearest-to-Mathlib first.
-      <a data-nav="${HALO_ID}">See every area on the halo</a>.</p></section>`;
+  if (tree.prox && sc.prox) {
+    const px = sc.prox;
+    let nDirect = 0, nBridged = 0, nZero = 0;
+    for (let i = 0; i < (sc.cells || []).length; i++) {
+      if ((px.dw || [])[i] > 0) nDirect++;
+      else if ((px.iw || [])[i] > 0) nBridged++;
+      else nZero++;
+    }
+    html += `<section class="kind"><h3>Formal proximity</h3><div class="chips">${
+      nDirect ? `<span class="chip" title="cells with at least one synapse straight into a formalized cell">bond formal code directly <b>${nDirect.toLocaleString()}</b></span>` : ""}${
+      nBridged ? `<span class="chip" title="cells whose only formal evidence bridges through a frontier neighbor (¼-damped, capped by the neighbor's own direct evidence)">bridged only <b>${nBridged.toLocaleString()}</b></span>` : ""}${
+      nZero ? `<span class="chip" title="no bonds into formalized cells and no bridging neighbor with any — zero formal evidence">no formal signal <b>${nZero.toLocaleString()}</b></span>` : ""}</div>
+      <p class="note">bond-weighted evidence into formalized cells (score = direct
+      trace weight + ¼ of what frontier neighbors can bridge, each bridge capped by
+      both the bond and the neighbor's own direct evidence) — the dive and the list
+      below run best-evidenced first.
+      <a data-nav="${FRONTIER_ID + ":" + id.slice(9)}">See this area as a sector on
+      the frontier view</a>.</p></section>`;
   }
   if ((sc.top || []).length) {
     html += `<section class="kind"><h3>Top cells <span class="cnt">(${sc.top.length})</span></h3>
@@ -3249,57 +3337,6 @@ async function frontierAreaPanel(id) {
     if (cells.length > 80) html += `<span class="chip">… +${cells.length - 80} more</span>`;
     html += `</div></section>`;
   }
-  panelEl.innerHTML = html;
-  wirePanel();
-}
-// ---- the halo view's reading panel ------------------------------------------
-// One panel for both faces of the halo: the full view (#__halo__) and a sector
-// focus (#__halo__:<Area>). Counts reflect the shells ON SCREEN — the client
-// re-shelling when the library set is filtered, the shipped shells otherwise.
-async function haloPanel(id) {
-  id = id || HALO_ID;
-  await ensureTree();
-  if (lastPanelId !== id) return;
-  const sector = haloAreaOf(id);
-  const areas = sector && (tree.sc[sector] || {}).frontier ? [sector] : tree.frontier;
-  const cnt = {};
-  let total = 0;
-  for (const p of areas)
-    for (const [k, arr] of Object.entries(activeShellsFor(p) || {})) {
-      cnt[k] = (cnt[k] || 0) + (arr || []).length;
-      total += (arr || []).length;
-    }
-  const keys = Object.keys(cnt).sort((a, b) =>
-    (a === "disc") - (b === "disc") || Number(a) - Number(b));
-  let html = `<div class="crumb"><a data-nav="${ROOTS_ID}">all libraries</a> /
-      <a data-nav="${FRONTIER_ID}">Frontier</a> / ${sector
-        ? `<a data-nav="${HALO_ID}">halo</a> / ${esc(frontierName(sector))}` : "halo"}</div>
-    <h2>${sector ? `${esc(frontierName(sector))} — halo sector` : "The Frontier — halo"}</h2>
-    <div class="sub">${total.toLocaleString()} cells on concentric shells ·
-      hop distance to the nearest formalized cell${libsFiltered() && clientHops
-        ? ` · libraries: ${esc(enabledLibs().join(" + ") || "none")}` : ""}</div>`;
-  html += sector
-    ? `<p class="note">One frontier area's shells, spread over the full circle — dot
-       labels render where they fit, and zooming reveals more. Click the canvas
-       background (or <a data-nav="${HALO_ID}">here</a>) to return to the full halo,
-       or open <a data-nav="${esc(sector)}">${esc(frontierName(sector))}</a> as
-       dive-able bubbles.</p>`
-    : `<p class="note">A multi-source BFS from <b>every cell with a Lean declaration in
-       an enabled library</b> over the cell↔cell synapses (all bond kinds conduct) gives
-       each homeless cell a hop distance <b>d</b> — how far its neighborhood sits from
-       formal code. Shell radius IS that distance: the innermost ring is one synapse
-       from formal code. Dots keep their frontier-area grouping as angular sectors —
-       click a sector's rim label to focus it — and dive exactly like the
-       <a data-nav="${FRONTIER_ID}">areas view</a>'s.</p>`;
-  html += `<section class="kind"><h3>Shells</h3><div class="chips">` +
-    keys.map(k => k === "disc"
-      ? `<span class="chip" title="no synapse path from these cells reaches any formalized cell">disconnected <b>${cnt[k].toLocaleString()}</b></span>`
-      : `<span class="chip">${k} hop${k === "1" ? "" : "s"} <b>${cnt[k].toLocaleString()}</b></span>`).join("") +
-    `</div>
-    <p class="note">The dashed outer ring is <b>disconnected</b>: no synapse path from
-    those cells reaches formal code at all — the deepest frontier. The central disc is
-    the enabled formal libraries; click it to open them.</p></section>`;
-  html += librariesSectionHtml();
   panelEl.innerHTML = html;
   wirePanel();
 }
@@ -3991,7 +4028,6 @@ async function renderExplorer(anim) {
     return renderFocus(false);
   }
   resetZoom();
-  updateHaloToggle();   // the explorer sets no crumb via renderCrumb — hide it here
   selectedId = null;
   const nodes = j.nodes;
   const totalN = nodes.length;
@@ -4142,8 +4178,8 @@ $("#explorerbtn").addEventListener("click", () => {
   else renderFocus(true);
 });
 
-// the Frontier's areas|halo toggle (canvas overlay; its state IS the hash id —
-// #__frontier__ vs #__halo__, so both faces deep-link and the toggle just travels)
+// travel within the ONE frontier view (full circle ↔ a sector focus) — the
+// state IS the hash id (#__frontier__ / #__frontier__:<Area>), so both deep-link
 function gotoFrontierView(id) {
   if (focusId === id) return;
   if (explorerOn) setExplorer(false);
@@ -4153,8 +4189,6 @@ function gotoFrontierView(id) {
   renderPanel(id);
   renderFocus(true);
 }
-$("#vt-areas").addEventListener("click", () => gotoFrontierView(FRONTIER_ID));
-$("#vt-halo").addEventListener("click", () => gotoFrontierView(HALO_ID));
 
 window.addEventListener("hashchange", async () => {
   const h = parseHash();
@@ -4196,13 +4230,13 @@ window.addEventListener("resize", () => {
     renderFocus(false);
   }, 160);
 });
-// The HALO view additionally watches the STAGE ELEMENT itself: its radial
+// The FRONTIER view additionally watches the STAGE ELEMENT itself: its radial
 // layout is keyed to min(W, H), and the stage can change height with NO window
 // resize at all — the toolbar re-wraps when webfonts land and the stage flexes
-// to fill. Measured at boot: the halo stayed drawn for a stage ~40px taller
-// than the one on screen, interleaving the d=1/d=2 bands by ~3px. Scoped to the
-// halo (the pannable level views keep the width-only guard above on purpose),
-// and gated on the geometry the layout was actually solved for.
+// to fill. Measured at boot: the view stayed drawn for a stage ~40px taller
+// than the one on screen, shifting the radial bands by ~3px. Scoped to the
+// frontier view (the pannable level views keep the width-only guard above on
+// purpose), and gated on the geometry the layout was actually solved for.
 // The EXPLORER piggybacks here for its canvas: a height-only stage change never
 // fires the width-gated resize handler, but the canvas backing store is sized
 // in pixels — one coalesced redraw re-syncs it (drawXFrame reads the live size).
@@ -4212,10 +4246,10 @@ if (typeof ResizeObserver !== "undefined") {
     clearTimeout(stageRT);
     stageRT = setTimeout(() => {
       if (layout && layout.explorer) { scheduleXDraw(); return; }
-      if (!layout || !layout.halo) return;
+      if (!layout || !layout.frontier) return;
       const w = stageEl.clientWidth, h = stageEl.clientHeight;
-      if (Math.abs(w - (layout.haloW || 0)) < 2 &&
-          Math.abs(h - (layout.haloH || 0)) < 2) return;
+      if (Math.abs(w - (layout.fvW || 0)) < 2 &&
+          Math.abs(h - (layout.fvH || 0)) < 2) return;
       renderFocus(false);
     }, 120);
   }).observe(stageEl);
