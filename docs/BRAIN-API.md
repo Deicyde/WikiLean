@@ -457,15 +457,15 @@ time-travel over archived snapshots comes later.
   `Cache-Control: no-store`) including inferred xref-shared partners.
 - `GET /decl/<name>` — durable decl resolver; 302 → mathlib4_docs, or JSON
   (module, docs_url, reverse citations) with `Accept: application/json`.
-- `GET /api/brain/node?id=` — **retired, 410 Gone** (2026-08-04; docs/BRAIN-V3.md
-  phase 5). The v2 per-node shards are no longer built or shipped; the
-  community-edit write path now validates endpoints against the v3 cell layer
-  (`aliases.json organs` ∪ `supercells.json`, via the strict `atomIdForOrgan`).
-  Use `/api/brain/cell` — every id this route ever served is an ORGAN id, so it
-  resolves there (the two populations v3 dropped 404 with a named `reason`).
-- `/map`, `/graph`, `/atlas`, `/article-graph` → 301 `/brain`;
-  `/graph_data.json`, `/atlas_data.json`, `/api/atlas` → **410** (retired
-  2026-07-10).
+
+The old graph stack's routes — `/map`, `/map-v2`, `/graph`, `/atlas`,
+`/article-graph`, `/graph_data.json`, `/atlas_data.json`, `/api/atlas`, and the
+v2 `GET /api/brain/node` — are **deleted 2026-08-04** (they answer plain 404s;
+the `RESERVED` set in `wiki/src/index.ts` squats the page names so no article
+can be created under them). Every id `/api/brain/node` ever served is an ORGAN
+id and resolves on `/api/brain/cell`; the community-edit write path validates
+endpoints against the v3 cell layer (`aliases.json organs` ∪ `supercells.json`,
+via the strict `atomIdForOrgan`).
 
 ## The MCP server
 
@@ -493,10 +493,11 @@ the text is exactly the corresponding REST response body.
 **Eight tools**: `brain_bridge` is the composite first call of an
 autoformalization loop (below); `brain_cell` replaces `brain_node` +
 `brain_unit` (v3 has no particle nodes, and the unit card became the cell card).
-`brain_unit` and `brain_node` remain as **dispatch-only aliases** — not
-advertised in `tools/list`, but still answering (with the atom) so an agent
-session holding the old catalog does not hard-fail. Both accept either `key` or
-`id`, since the two tools disagreed on the name.
+`brain_unit` remains as a **dispatch-only alias** — not advertised in
+`tools/list`, but still answering (with the atom) so an agent session holding
+the old catalog does not hard-fail; it accepts either `key` or `id`. The
+`brain_node` alias was deleted 2026-08-04 with the rest of the v2 particle
+layer (unknown tool, `-32602`).
 
 `decl_exists` verifies fully-qualified Lean decl names against the same doc-gen4
 declaration index `GET /decl/<name>` resolves with. Pass `name` (one) or `names`

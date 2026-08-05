@@ -34,8 +34,9 @@ const shellFiles = [
   // The brain explorer (reserved route /brain, site/build_brain_page.py); its
   // data ships as the v3 cell shards in assets/brain/cells/ (copied below).
   "brain.html",
-  // (graph_data.json / atlas_data.json / article-graph.* retired 2026-07-10 —
-  // the Brain supersedes the whole old graph stack; routes 301/410 in src/index.ts.)
+  // (The old graph stack — graph_data.json / atlas_data.json / article-graph.*
+  // / map.* — is deleted; the Brain supersedes it, and src/index.ts's RESERVED
+  // set only squats the old names so the /:slug catch-all 404s them.)
 ];
 for (const f of shellFiles) {
   const src = resolve(site, "out", f);
@@ -48,7 +49,7 @@ for (const f of shellFiles) {
 // The retired v2 per-node layer (q*/decl_*/xref_*/path_*/lit_* shards,
 // manifest.json, labels.json, aliases.json, views/) is deliberately NOT
 // copied, whatever is still lying in site/assets/brain — nothing serves it
-// (GET /api/brain/node is 410) and it was ~340 MB of deploy tax.
+// (GET /api/brain/node is deleted) and it was ~340 MB of deploy tax.
 // Wipe-then-copy so renamed shard keys never leave stale files behind, the
 // same discipline as build-decl-index.ts. Scoped strictly to assets/brain/.
 const brainSrc = resolve(site, "assets", "brain");
@@ -70,15 +71,13 @@ if (existsSync(brainSrc)) {
   }
 }
 
-// Retired page assets: /map, /graph, /atlas are now redirect routes in the
-// Worker, and /about is a dynamic Worker route (live counts from D1).
-// public/ is generated-but-not-wiped, so a stale map.html/graph.html/
-// atlas.html/about.html would still be bundled by `npm run deploy` and SHADOW
-// the route. map_data.json is likewise no longer served. Remove them.
-for (const f of ["map.html", "map_data.json", "map_data_v2.json", "graph.html",
-                 "atlas.html", "about.html"]) {
-  const p = resolve(pub, f);
-  if (existsSync(p)) rmSync(p);
+// public/ is generated-but-never-wiped: a deploy from an older checkout could
+// still carry pre-2026-07-10 graph-stack pages, which the asset layer would
+// serve at 200 and shadow the intended 404s. One line of insurance, not a
+// deprecation surface.
+for (const f of ["map.html", "graph.html", "atlas.html", "about.html",
+                 "map_data.json", "map_data_v2.json"]) {
+  rmSync(resolve(pub, f), { force: true });
 }
 
 const n = buildMathlibIndex(site, resolve(pubAssets, "mathlib-index.json"));

@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
-"""Acceptance for the FRONTIER layer — F1..F8 (brain/SCHEMA.md "Frontier layer").
+"""Acceptance for the FRONTIER layer — F1..F10 (brain/SCHEMA.md "Frontier layer").
 
 The frontier partitions the HOMELESS cells (no decl organ) into named areas so
-the bubble view's grey "no formal home" blob drains into legible territories.
-The contract is a PARTITION plus a deterministic assignment rule, so that is
-what gets tested — against the shipped bytes, with the vote re-derived from the
-SPEC (not by importing the builder), the same doctrine as test_cell_shards'
-shard_key.
+the bubble view's grey "no formal home" blob drains into legible territories,
+and scores every one of them with a bond-weighted FORMAL PROXIMITY (the
+2026-08-04 replacement for the destroyed halo hop shells — hop counts made
+"1 jump over 200 bonds" and "1 jump over one thread" the same tier). The
+contract is a PARTITION plus deterministic assignment and scoring rules, so
+that is what gets tested — against the shipped bytes, with everything
+re-derived from the SPEC (never by importing the builder), the same doctrine
+as test_cell_shards' shard_key.
 
   F1  frontier.jsonl meta: generated_at pinned to the cell build, contract counts
   F2  PARTITION: every homeless cell in exactly one area — no drops, no dupes,
@@ -22,23 +25,32 @@ shard_key.
   F8  the SHARDS carry it: supercells.json frontier rows match frontier.jsonl,
       fa aggregates member facets, areas are roots, no double placement, and
       the derived "no formal home" bucket really drains (the whole point)
-  F9  HALO SHELLS: every area's `shells` partitions its cells exactly; the
-      per-cell hop distances match a BFS re-run here from the SPEC (multi-
-      source from all decl-organ cells, all synapse kinds, path: endpoints
-      excluded — never read from the builder); global sums match
-      _meta.halo.shell_counts AND the 2026-08-01 ground truth
-      855/454/13/290 (d=1/d=2/d=3/disconnected over 1,612 homeless)
-  F10 FRONTIER GRAPH (brain/data/frontier_graph.json — the halo view's
-      client-side BFS input): cells == the partition universe exactly;
-      `formal` re-derives from the SPEC (per-library summed synapse weight
-      over decl-organ neighbors, decl-id fallback for supercell-less ones)
-      and its lib names are real library roots; `edges` == every
-      frontier<->frontier synapse as in-range deduped sorted [i, j] pairs;
-      and THE PARITY LAW: a client BFS written HERE from the spec (all
-      libraries enabled) over the emitted graph reproduces the shipped
-      shells EXACTLY, cell for cell — the build-side proof that the halo
-      view's lazy re-shelling can never drift from the tested partition
-      (F6 also pins the file byte-identical across rebuilds)
+  F9  FORMAL PROXIMITY (PROXIMITY CONTRACT): every area row's `prox` carries
+      six arrays (db/dw/ib/iw/s/r) parallel to its cells; every value
+      re-derives from the SPEC over the raw synapse rows (direct = summed RAW
+      weight into decl-organ cells; bridge = sum of min(bond, direct(u)) over
+      frontier neighbors; s = direct + bridge/4 EXACTLY; r = midrank
+      percentile of s, ties share); no NaN, nothing negative; the
+      _meta.proximity counts reconcile AND match the 2026-08-01 ground truth
+      855/454/303 (direct/bridged/zero over 1,612 homeless); MONOTONICITY on
+      the real data (more direct weight at >= equal bridge weight => strictly
+      higher score, full pairwise); and the JACK REGRESSION: a cell with
+      hundreds of direct bonds scores >= 100x a weakest-direct cell, which
+      outscores a cell whose only path to the core is one bond through one
+      near-isolated intermediary (the exact failure of hop tiering)
+  F10 FRONTIER GRAPH (brain/data/frontier_graph.json — the client-side
+      re-scoring input): cells == the partition universe exactly; `formal`
+      re-derives from the SPEC (exact "|"-joined sorted root-SET keys over
+      RAW weights, decl-id fallback for supercell-less neighbors) and every
+      key names real library roots; `edges` == every frontier<->frontier
+      synapse as in-range deduped sorted [i, j, w] triples with the RAW
+      weight; and THE PARITY LAW: a client re-score written HERE from the
+      spec over the emitted graph reproduces the shipped `s` EXACTLY (exact
+      float equality — lambda = 1/4 is lossless in binary floats), both with
+      ALL libraries enabled and under proper library SUBSETS (checked against
+      an independent raw-synapse restriction) — the build-side proof that the
+      Libraries toggle can never drift from the tested scores (F6 also pins
+      the file byte-identical across rebuilds)
 
 Run: python3 brain/test_frontier.py
      (after brain/build_frontier.py + brain/build_cell_shards.py)
@@ -46,10 +58,11 @@ Run: python3 brain/test_frontier.py
 from __future__ import annotations
 
 import json
+import math
 import re
 import subprocess
 import sys
-from collections import Counter, defaultdict, deque
+from collections import Counter, defaultdict
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -63,7 +76,9 @@ HALO = ROOT / "manage" / "data" / "halo.json"
 SHARD_DIR = ROOT / "site" / "assets" / "brain" / "cells"
 
 AREA_RE = re.compile(r"^frontier:[A-Za-z][A-Za-z0-9_]{0,63}$")
-KIND_MULT = {"depends": 3, "invocation": 3}   # the contract's 3x kinds
+KIND_MULT = {"depends": 3, "invocation": 3}   # the vote contract's 3x kinds
+LAMBDA = 0.25                                 # the PROXIMITY CONTRACT damping
+PROX_KEYS = ("db", "dw", "ib", "iw", "s", "r")
 
 # Pinned from the 2026-08-01 recon simulation (RECON FINDINGS + census script) —
 # one cell per assignment tier. If the data drifts and a pin stops being
@@ -77,11 +92,13 @@ PINS = [
 ]
 UNSORTED_CEILING = 0.192 + 0.02   # recon-predicted share (309/1612) + 2pp
 
-# HALO ground truth, measured on 2026-08-01 data (HALO CONTRACT): hop distance
-# from the formalized interior over all-kinds cell<->cell synapses. If the data
-# drifts these MUST be re-measured (the F9 failure detail says how) — the
-# contract pins the exact counts against the current build.
-HALO_PIN = {"1": 855, "2": 454, "3": 13, "disc": 290}
+# PROXIMITY ground truth, measured on 2026-08-01 data (PROXIMITY CONTRACT):
+# direct = cells with >=1 formalized-neighbor bond, bridged = cells whose only
+# signal is a bridge through frontier neighbors, zero = no formal evidence
+# within two hops. If the data drifts these MUST be re-measured (the F9
+# failure detail says how) — the contract pins the exact counts against the
+# current build.
+PROX_PIN = {"direct": 855, "bridged": 454, "zero": 303}
 
 FAILURES: list[str] = []
 CHECKS = 0
@@ -201,7 +218,7 @@ def main() -> int:
         return sorted(out)
 
     nbrs: dict[str, list] = defaultdict(list)
-    syn_rows = load_jsonl(SYNAPSES)[1]   # kept raw: F10 re-derives from them
+    syn_rows = load_jsonl(SYNAPSES)[1]   # kept raw: F9/F10 re-derive from them
     for row in syn_rows:
         kinds = row.get("kinds", {})
         eff = sum(n * KIND_MULT.get(k, 1) for k, n in kinds.items())
@@ -327,79 +344,177 @@ def main() -> int:
         check("F8 manifest.roots lists every area with frontier:true", not bad_m,
               f"{bad_m[:3]}")
 
-    # ---- F9: HALO SHELLS — hop distance to the formalized interior ----------
-    # Re-derived from the SPEC, never from the builder: multi-source BFS from
-    # EVERY decl-organ cell over cell<->cell synapses — ALL kinds conduct,
-    # path: (supercell) endpoints never do. d = hops to the nearest formalized
-    # cell; unreachable = "disc". (nbrs above already carries every synapse
-    # row; the `other in cells` filter is what excludes path: endpoints.)
-    dist: dict[str, int] = {cid: 0 for cid in decl_cells}
-    bq = deque(sorted(decl_cells))
-    while bq:
-        cur = bq.popleft()
-        for other, _k, _e in nbrs.get(cur, []):
-            if other in cells and other not in dist:
-                dist[other] = dist[cur] + 1
-                bq.append(other)
-    want_shell = {c: ("disc" if c not in dist else str(dist[c]))
-                  for c in homeless}
-    bfs_counts = dict(Counter(want_shell.values()))
+    # ---- F9: FORMAL PROXIMITY — re-derived from the SPEC --------------------
+    # PROXIMITY CONTRACT (brain/SCHEMA.md), never read from the builder:
+    #   direct(c) = summed RAW weight of c's synapses into decl-organ cells
+    #   bridge(c) = sum over frontier neighbors u of min(w(c,u), direct(u))
+    #   s(c)      = direct(c) + bridge(c)/4      (exact — 1/4 is lossless)
+    #   r(c)      = midrank percentile of s over ALL frontier cells, 4dp
+    sdw: Counter = Counter()
+    sdb: Counter = Counter()
+    ff: dict[tuple[str, str], int] = {}
+    for row in syn_rows:
+        a, b, w = row["src"], row["dst"], row["weight"]
+        if a in homeless and b in homeless:
+            if a != b:
+                k = (a, b) if a < b else (b, a)
+                ff[k] = ff.get(k, 0) + w
+            continue
+        for x, y in ((a, b), (b, a)):
+            if x in homeless and y in decl_cells:
+                sdw[x] += w
+                sdb[x] += 1
+    ff_nbrs: dict[str, list] = defaultdict(list)
+    for (a, b), w in ff.items():
+        ff_nbrs[a].append((b, w))
+        ff_nbrs[b].append((a, w))
+    siw: dict[str, int] = {}
+    sib: dict[str, int] = {}
+    for c in homeless:
+        iw = ib = 0
+        for u, w in ff_nbrs.get(c, []):
+            du = sdw.get(u, 0)
+            if du:
+                iw += min(w, du)
+                ib += 1
+        siw[c], sib[c] = iw, ib
+    want_s = {c: sdw.get(c, 0) + siw[c] * LAMBDA for c in homeless}
+    n_home = len(homeless)
+    by_s = Counter(want_s.values())
+    higher: dict[float, int] = {}
+    acc = 0
+    for v in sorted(by_s, reverse=True):
+        higher[v] = acc
+        acc += by_s[v]
+    want_r = {c: round((higher[want_s[c]] + by_s[want_s[c]] / 2) / n_home, 4)
+              for c in homeless}
 
-    no_shells = [r["id"] for r in rows if not isinstance(r.get("shells"), dict)]
-    check("F9 every area row carries a `shells` object", not no_shells,
-          f"{no_shells[:3]}")
-    shelled = [r for r in rows if isinstance(r.get("shells"), dict)]
-    bad_key = [(r["id"], k) for r in shelled for k in r["shells"]
-               if k != "disc" and not k.isdigit()]
-    check("F9 shell keys are str(d) or 'disc'", not bad_key, f"{bad_key[:3]}")
-    empty = [(r["id"], k) for r in shelled
-             for k, v in r["shells"].items() if not v]
-    check("F9 empty shell keys are omitted", not empty, f"{empty[:3]}")
-    # the partition, per area: shells' disjoint union == the row's cells
-    bad_part = []
-    for r in shelled:
-        ids = [c for arr in r["shells"].values() for c in arr]
-        if len(ids) != r["n"] or set(ids) != set(r["cells"]):
-            bad_part.append(r["id"])
-    check("F9 shells PARTITION each area's cells exactly (no drops, no dupes)",
-          not bad_part, f"{bad_part[:3]}")
-    unsorted_ids = [(r["id"], k) for r in shelled
-                    for k, v in r["shells"].items() if v != sorted(v)]
-    check("F9 shell member lists are sorted (deterministic bytes)",
-          not unsorted_ids, f"{unsorted_ids[:3]}")
-    # per-cell agreement with the spec BFS — every cell, not a sample
-    diverged = [(r["id"], k, c) for r in shelled
-                for k, v in r["shells"].items() for c in v
-                if want_shell.get(c) != k]
-    check(f"F9 every cell's shell matches the spec BFS distance "
-          f"({sum(len(v) for r in shelled for v in r['shells'].values())} "
-          f"cells checked)", not diverged,
-          f"{len(diverged)} diverge, e.g. {diverged[:3]}")
-    # global set math: rows aggregate == _meta.halo == the spec BFS == the pin
-    agg = Counter()
-    for r in shelled:
-        for k, v in r["shells"].items():
-            agg[k] += len(v)
-    halo_meta = meta.get("halo") or {}
-    check("F9 _meta.halo.shell_counts == the sum over area rows",
-          dict(agg) == (halo_meta.get("shell_counts") or {}),
-          f"rows say {dict(sorted(agg.items()))}, _meta says "
-          f"{halo_meta.get('shell_counts')}")
-    check("F9 _meta.halo names its method",
-          "BFS" in (halo_meta.get("method") or ""),
-          f"method={halo_meta.get('method')!r}")
-    check("F9 the spec BFS reproduces the shipped counts",
-          dict(agg) == bfs_counts,
-          f"shipped {dict(sorted(agg.items()))}, BFS re-run says "
-          f"{dict(sorted(bfs_counts.items()))}")
-    check(f"F9 ground truth holds: shells == {HALO_PIN} "
-          f"(d=1/d=2/d=3/disconnected)",
-          bfs_counts == HALO_PIN,
-          f"BFS says {dict(sorted(bfs_counts.items()))} — if brain/data "
-          f"legitimately drifted, re-measure and update HALO_PIN (and the "
-          f"HALO CONTRACT counts in brain/SCHEMA.md)")
+    no_prox = [r["id"] for r in rows if not isinstance(r.get("prox"), dict)]
+    check("F9 every area row carries a `prox` object", not no_prox,
+          f"{no_prox[:3]}")
+    proxed = [r for r in rows if isinstance(r.get("prox"), dict)]
+    bad_keys = [(r["id"], sorted(r["prox"])) for r in proxed
+                if set(r["prox"]) != set(PROX_KEYS)]
+    check(f"F9 prox carries exactly the contract keys {PROX_KEYS}",
+          not bad_keys, f"{bad_keys[:3]}")
+    bad_len = [(r["id"], k) for r in proxed for k in r["prox"]
+               if not isinstance(r["prox"][k], list)
+               or len(r["prox"][k]) != r["n"]]
+    check("F9 every prox array is parallel to the row's cells (len == n — "
+          "every member scored exactly once)", not bad_len, f"{bad_len[:3]}")
+    proxed = [r for r in proxed
+              if set(r["prox"]) == set(PROX_KEYS)
+              and all(isinstance(r["prox"][k], list)
+                      and len(r["prox"][k]) == r["n"] for k in PROX_KEYS)]
+    bad_val = []
+    for r in proxed:
+        p = r["prox"]
+        for i in range(r["n"]):
+            if not all(isinstance(p[k][i], int) and p[k][i] >= 0
+                       for k in ("db", "dw", "ib", "iw")) \
+                    or not all(isinstance(p[k][i], (int, float))
+                               and not math.isnan(p[k][i]) and p[k][i] >= 0
+                               for k in ("s", "r")) \
+                    or p["r"][i] > 1:
+                bad_val.append((r["id"], r["cells"][i]))
+    check("F9 no NaN, nothing negative: db/dw/ib/iw ints >= 0, s >= 0, "
+          "r in [0, 1]", not bad_val, f"{len(bad_val)}, e.g. {bad_val[:3]}")
+    # per-cell agreement with the spec — every cell, every field, not a sample
+    shipped: dict[str, tuple] = {}
+    for r in proxed:
+        p = r["prox"]
+        for i, c in enumerate(r["cells"]):
+            shipped[c] = (p["db"][i], p["dw"][i], p["ib"][i], p["iw"][i],
+                          p["s"][i], p["r"][i])
+    div = [(c, shipped[c],
+            (sdb.get(c, 0), sdw.get(c, 0), sib[c], siw[c], want_s[c],
+             want_r[c]))
+           for c in shipped
+           if shipped[c] != (sdb.get(c, 0), sdw.get(c, 0), sib[c], siw[c],
+                             want_s[c], want_r[c])]
+    check(f"F9 every cell's (db, dw, ib, iw, s, r) matches the spec "
+          f"({len(shipped)} cells checked, exact equality)", not div,
+          f"{len(div)} diverge (cell, shipped, spec), e.g. {div[:2]}")
+    check("F9 s == dw + iw/4 EXACTLY on every shipped cell (the one-sentence "
+          "formula holds)",
+          all(v[4] == v[1] + v[3] * LAMBDA for v in shipped.values()))
+    # _meta.proximity: the accounting the tooltips and the UI legend read
+    pmeta = meta.get("proximity") or {}
+    check("F9 _meta.proximity names the method (min-capped bridge) and lambda",
+          "min(" in (pmeta.get("method") or "") and pmeta.get("lambda") == LAMBDA,
+          f"method={pmeta.get('method')!r} lambda={pmeta.get('lambda')!r}")
+    got_counts = {
+        "direct": sum(1 for c in homeless if sdw.get(c, 0) > 0),
+        "bridged": sum(1 for c in homeless
+                       if sdw.get(c, 0) == 0 and siw[c] > 0),
+    }
+    got_counts["zero"] = n_home - got_counts["direct"] - got_counts["bridged"]
+    check("F9 _meta.proximity.counts == the spec recount",
+          pmeta.get("counts") == got_counts,
+          f"_meta says {pmeta.get('counts')}, spec says {got_counts}")
+    check(f"F9 ground truth holds: counts == {PROX_PIN} (direct/bridged/zero)",
+          got_counts == PROX_PIN,
+          f"spec recount says {got_counts} — if brain/data legitimately "
+          f"drifted, re-measure and update PROX_PIN (and the PROXIMITY "
+          f"CONTRACT counts in brain/SCHEMA.md)")
+    # MONOTONICITY on the real data, full pairwise: strictly more direct
+    # weight at >= equal bridge weight must mean a strictly higher score.
+    vals = sorted((sdw.get(c, 0), siw[c], want_s[c]) for c in homeless)
+    mono_bad = 0
+    for i in range(len(vals)):
+        dwi, iwi, si = vals[i]
+        for j in range(i + 1, len(vals)):
+            dwj, iwj, sj = vals[j]
+            if dwj > dwi and iwj >= iwi and sj <= si:
+                mono_bad += 1
+    check(f"F9 MONOTONE on the data: dw_a > dw_b and iw_a >= iw_b => "
+          f"s_a > s_b ({len(vals)} cells, full pairwise)", mono_bad == 0,
+          f"{mono_bad} violating pairs")
+    # JACK REGRESSION (the reason hop tiering died): pick, deterministically
+    # from the spec values, (a) the most-bonded cell, (b) a weakest-direct
+    # cell (one bond, weight 1), (c) a cell whose ONLY signal is one bridge
+    # through one near-isolated intermediary. Hop tiering called (a) and (b)
+    # the same tier and ranked (c) right behind them; the score must spread
+    # them by orders of magnitude.
+    cand_a = max(homeless, key=lambda c: (sdb.get(c, 0), c))
+    cand_b = min((c for c in homeless
+                  if sdb.get(c) == 1 and sdw.get(c) == 1),
+                 key=lambda c: (siw[c], c), default=None)
+    cand_c = min((c for c in homeless
+                  if sdw.get(c, 0) == 0 and sib[c] == 1 and 0 < siw[c] <= 3),
+                 key=lambda c: (siw[c], c), default=None)
+    if sdb.get(cand_a, 0) < 100 or cand_b is None or cand_c is None:
+        print("  SKIP F9 Jack regression — the data no longer holds the "
+              "pattern (re-pick candidates)")
+    else:
+        la = cells[cand_a].get("label")
+        lb = cells[cand_b].get("label")
+        lc = cells[cand_c].get("label")
+        check(f"F9 JACK REGRESSION: {la!r} ({sdb[cand_a]} direct bonds) "
+              f"scores >= 100x {lb!r} (1 direct bond, weight 1)",
+              want_s[cand_a] >= 100 * want_s[cand_b],
+              f"{want_s[cand_a]} vs {want_s[cand_b]}")
+        check(f"F9 JACK REGRESSION: {lb!r} (1 direct bond) outscores {lc!r} "
+              f"(only path = 1 bridge through a near-isolated intermediary, "
+              f"s <= {3 * LAMBDA})",
+              want_s[cand_b] > want_s[cand_c]
+              and want_s[cand_c] <= 3 * LAMBDA,
+              f"{want_s[cand_b]} vs {want_s[cand_c]}")
+        check("F9 JACK REGRESSION: the radii order the same way "
+              "(r_a < r_b < r_c — closer to the core = smaller radius)",
+              want_r[cand_a] < want_r[cand_b] < want_r[cand_c],
+              f"{want_r[cand_a]} / {want_r[cand_b]} / {want_r[cand_c]}")
+    # a cell with >= 100 direct weight must outscore EVERY zero-direct cell
+    # (measured margin on 2026-08-01 data: 110.0 vs 2.5)
+    heavy = [c for c in homeless if sdw.get(c, 0) >= 100]
+    no_direct_max = max((want_s[c] for c in homeless if sdw.get(c, 0) == 0),
+                        default=0)
+    check(f"F9 every cell with direct weight >= 100 ({len(heavy)}) outscores "
+          f"every zero-direct cell (max bridge-only score {no_direct_max})",
+          all(want_s[c] > no_direct_max for c in heavy),
+          f"min heavy score {min((want_s[c] for c in heavy), default=0)}")
 
-    # ---- F10: FRONTIER GRAPH — the halo view's client-side BFS input --------
+    # ---- F10: FRONTIER GRAPH — the client-side re-scoring input -------------
     # Everything below re-derives the FRONTIER GRAPH contract from the SPEC
     # (build_frontier.py docstring / SCHEMA.md), never from the builder's code.
     if not GRAPH.exists():
@@ -430,7 +545,8 @@ def main() -> int:
               f"{sorted(set(gcells) - homeless)[:3]}, missing "
               f"{sorted(homeless - set(gcells))[:3]}")
 
-        # formal: lib names are real library roots; weights are positive ints
+        # formal: keys are canonical exact root SETS of real library roots;
+        # weights are positive ints
         lib_universe = {sup.split(":", 1)[1].split("/")[0]
                         for c in cell_rows for sup in c.get("supercells") or []}
         fallback_libs = {o["id"].split(":", 2)[1]
@@ -439,98 +555,145 @@ def main() -> int:
                          and not (c.get("supercells") or [])
                          for o in c["organs"] if o.get("kind") == "decl"}
         valid_libs = lib_universe | fallback_libs
-        bad_lib = [(cid, lib) for cid, lrow in gformal.items()
-                   for lib in lrow if lib not in valid_libs]
-        check(f"F10 every formal lib is a real library root "
-              f"(universe: {sorted(valid_libs)})", not bad_lib,
-              f"{len(bad_lib)} unknown, e.g. {bad_lib[:3]}")
-        bad_w = [(cid, lib, w) for cid, lrow in gformal.items()
-                 for lib, w in lrow.items()
+        bad_key = [(cid, key) for cid, lrow in gformal.items()
+                   for key in lrow
+                   if key != "|".join(sorted(key.split("|")))
+                   or any(root not in valid_libs for root in key.split("|"))]
+        check(f"F10 every formal key is a canonical '|'-joined sorted set of "
+              f"real library roots (universe: {sorted(valid_libs)})",
+              not bad_key, f"{len(bad_key)} bad, e.g. {bad_key[:3]}")
+        bad_w = [(cid, key, w) for cid, lrow in gformal.items()
+                 for key, w in lrow.items()
                  if not isinstance(w, int) or w <= 0]
         check("F10 every formal weight is a positive int", not bad_w,
               f"{bad_w[:3]}")
 
         # formal + edges, re-derived from the SPEC over the raw synapse rows
-        def libs_of_formal(cid: str) -> set:
+        def libs_of_formal(cid: str) -> list[str]:
             libs = {sup.split(":", 1)[1].split("/")[0]
                     for sup in cells[cid].get("supercells") or []}
             if not libs:   # supercell-less decl cell: the decl id's <Lib> segment
                 libs = {o["id"].split(":", 2)[1] for o in cells[cid]["organs"]
                         if o.get("kind") == "decl"}
-            return libs
+            return sorted(libs)
 
         gindex = {c: i for i, c in enumerate(gcells)}
         want_formal: dict[str, Counter] = defaultdict(Counter)
-        want_edges: set[tuple[int, int]] = set()
+        want_edges: dict[tuple[int, int], int] = {}
         for row in syn_rows:
-            s, d = row["src"], row["dst"]
-            if s in homeless and d in homeless:
-                i, j = gindex.get(s), gindex.get(d)
+            a, b = row["src"], row["dst"]
+            if a in homeless and b in homeless:
+                i, j = gindex.get(a), gindex.get(b)
                 if i is not None and j is not None and i != j:
-                    want_edges.add((i, j) if i < j else (j, i))
+                    k = (i, j) if i < j else (j, i)
+                    want_edges[k] = want_edges.get(k, 0) + row["weight"]
                 continue
-            for a, b in ((s, d), (d, s)):
-                if a in homeless and b in decl_cells:
-                    for lib in libs_of_formal(b):
-                        want_formal[a][lib] += row["weight"]
+            for x, y in ((a, b), (b, a)):
+                if x in homeless and y in decl_cells:
+                    want_formal[x]["|".join(libs_of_formal(y))] += row["weight"]
         div_formal = [cid for cid in set(want_formal) | set(gformal)
                       if dict(want_formal.get(cid) or {}) != gformal.get(cid)]
         div_detail = [(c, gformal.get(c), dict(want_formal.get(c) or {}))
                       for c in div_formal[:2]]
         check(f"F10 `formal` re-derives from the spec on all "
-              f"{len(gformal)} cells (per-lib summed synapse weight)",
+              f"{len(gformal)} cells (exact-root-set summed RAW weight)",
               not div_formal,
               f"{len(div_formal)} diverge (cell, shipped, spec), "
               f"e.g. {div_detail}")
 
         n_cells = len(gcells)
         bad_e = [e for e in gedges
-                 if len(e) != 2 or not (0 <= e[0] < n_cells
+                 if len(e) != 3 or not (0 <= e[0] < n_cells
                                         and 0 <= e[1] < n_cells)
-                 or e[0] >= e[1]]
-        check("F10 edges are in-range [i, j] index pairs with i < j",
-              not bad_e, f"{len(bad_e)} bad, e.g. {bad_e[:3]}")
+                 or e[0] >= e[1] or not isinstance(e[2], int) or e[2] <= 0]
+        check("F10 edges are in-range [i, j, w] triples with i < j and a "
+              "positive int RAW weight", not bad_e,
+              f"{len(bad_e)} bad, e.g. {bad_e[:3]}")
         etup = [tuple(e) for e in gedges]
+        pair_list = [(e[0], e[1]) for e in etup]
         check("F10 edges are sorted + deduped (deterministic bytes)",
-              etup == sorted(set(etup)),
-              f"{len(etup) - len(set(etup))} dupes / out of order")
-        check(f"F10 edges == every frontier<->frontier synapse "
-              f"({len(want_edges)} pairs from synapses.jsonl)",
-              set(etup) == want_edges,
-              f"{len(set(etup) - want_edges)} extra, "
-              f"{len(want_edges - set(etup))} missing")
+              pair_list == sorted(set(pair_list)),
+              f"{len(pair_list) - len(set(pair_list))} dupes / out of order")
+        check(f"F10 edges == every frontier<->frontier synapse with its RAW "
+              f"weight ({len(want_edges)} pairs from synapses.jsonl)",
+              {(i, j): w for i, j, w in etup} == want_edges,
+              f"{len(set(pair_list) - set(want_edges))} extra, "
+              f"{len(set(want_edges) - set(pair_list))} missing, "
+              f"{sum(1 for i, j, w in etup if want_edges.get((i, j)) not in (None, w))} "
+              f"wrong weight")
 
-        # THE PARITY LAW, proved on the emitted bytes: the client BFS (spec:
-        # all libraries enabled -> d1 = cells with ANY formal lib, BFS outward
-        # over edges, unreached = disc) reproduces the SHIPPED shells exactly.
-        adj: dict[int, list[int]] = defaultdict(list)
-        for i, j in etup:
-            adj[i].append(j)
-            adj[j].append(i)
-        cdist: dict[int, int] = {gindex[c]: 1 for c in gformal if c in gindex}
-        cq = deque(sorted(cdist))
-        while cq:
-            cur = cq.popleft()
-            for nxt in adj.get(cur, []):
-                if nxt not in cdist:
-                    cdist[nxt] = cdist[cur] + 1
-                    cq.append(nxt)
-        client_shell = {c: ("disc" if gindex[c] not in cdist
-                            else str(cdist[gindex[c]])) for c in gcells}
-        shipped_shell = {c: k for r in shelled
-                         for k, v in r["shells"].items() for c in v}
-        parity_div = [(c, client_shell.get(c), shipped_shell.get(c))
+        # THE PARITY LAW, proved on the emitted bytes: the client re-score
+        # (spec: direct_L = sum of formal entries whose root set intersects L;
+        # score_L = direct_L + sum(min(w, direct_L(u)))/4 over edges) must
+        # reproduce the SHIPPED s EXACTLY with all libraries enabled, and must
+        # equal an INDEPENDENT raw-synapse restriction under proper subsets.
+        adj: dict[int, list[tuple[int, int]]] = defaultdict(list)
+        for i, j, w in etup:
+            adj[i].append((j, w))
+            adj[j].append((i, w))
+
+        def graph_scores(enabled: set[str] | None) -> dict[str, float]:
+            dl: dict[str, int] = {}
+            for cid, lrow in gformal.items():
+                tot = sum(w for key, w in lrow.items()
+                          if enabled is None
+                          or not enabled.isdisjoint(key.split("|")))
+                if tot:
+                    dl[cid] = tot
+            out = {}
+            for c in gcells:
+                acc2 = 0
+                for jn, w in adj.get(gindex[c], []):
+                    du = dl.get(gcells[jn], 0)
+                    if du:
+                        acc2 += min(w, du)
+                out[c] = dl.get(c, 0) + acc2 * LAMBDA
+            return out
+
+        all_scores = graph_scores(None)
+        parity_div = [(c, all_scores[c], shipped.get(c))
                       for c in gcells
-                      if client_shell.get(c) != shipped_shell.get(c)]
-        check(f"F10 PARITY LAW: the all-libraries client BFS over the graph "
-              f"== the shipped shells on ALL {len(gcells)} cells",
-              not parity_div,
+                      if c not in shipped or all_scores[c] != shipped[c][4]]
+        check(f"F10 PARITY LAW: the all-libraries client re-score over the "
+              f"graph == the shipped s on ALL {len(gcells)} cells (exact "
+              f"float equality)", not parity_div,
               f"{len(parity_div)} diverge (cell, client, shipped), "
               f"e.g. {parity_div[:3]}")
-        client_counts = dict(Counter(client_shell.values()))
-        check(f"F10 client-BFS shell counts == the pinned ground truth "
-              f"{HALO_PIN}", client_counts == HALO_PIN,
-              f"client BFS says {dict(sorted(client_counts.items()))}")
+        # subsets, against an independent raw-synapse restriction: a neighbor
+        # counts iff its OWN root set intersects L (exact sets — a multi-root
+        # neighbor is never double-counted, never half-counted)
+        subset_bad = []
+        for L in ({"Mathlib"}, {"Init"}, {"FormalConjectures"}):
+            gs = graph_scores(L)
+            rdw: Counter = Counter()
+            for row in syn_rows:
+                a, b = row["src"], row["dst"]
+                for x, y in ((a, b), (b, a)):
+                    if x in homeless and y in decl_cells \
+                            and not L.isdisjoint(libs_of_formal(y)):
+                        rdw[x] += row["weight"]
+            for c in gcells:
+                acc2 = 0
+                for u, w in ff_nbrs.get(c, []):
+                    du = rdw.get(u, 0)
+                    if du:
+                        acc2 += min(w, du)
+                if gs[c] != rdw.get(c, 0) + acc2 * LAMBDA:
+                    subset_bad.append((sorted(L), c))
+        check("F10 PARITY under library subsets: graph re-score == an "
+              "independent raw-synapse restriction (Mathlib / Init / "
+              "FormalConjectures, all cells)", not subset_bad,
+              f"{len(subset_bad)} diverge, e.g. {subset_bad[:3]}")
+        # per-root adjacency accounting in _meta (the Libraries UI's numbers)
+        want_libs: Counter = Counter()
+        for lrow in gformal.values():
+            for root in {root for key in lrow for root in key.split("|")}:
+                want_libs[root] += 1
+        check("F10 _meta.counts.libs == per-root adjacent-cell recount "
+              "(each cell once per root)",
+              gcounts.get("libs") == dict(sorted(want_libs.items())),
+              f"_meta says {gcounts.get('libs')}, spec says "
+              f"{dict(sorted(want_libs.items()))}")
 
     print(f"\n{CHECKS - len(FAILURES)}/{CHECKS} checks passed")
     if FAILURES:

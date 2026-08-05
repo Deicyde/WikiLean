@@ -25,8 +25,9 @@ BASE_URL = "https://wikilean.jackmccarthy.org"
 
 # Pages that are not articles get friendlier sitemap priorities / no per-article
 # treatment. Everything else in out/*.html is an annotated article.
-NON_ARTICLE = {"index", "concepts", "graph", "article-graph", "about", "404"}
-# Hyphenated stems like "article-graph" survive Path.stem unchanged.
+# (graph/article-graph dropped — the old graph stack's pages are deleted and
+# their out/ files removed.)
+NON_ARTICLE = {"index", "concepts", "about", "404"}
 
 
 def write_404() -> None:

@@ -196,7 +196,6 @@ footer a {{ color:#0969da; text-decoration:none; }}
   <a class="wl-brand" href="/">WikiLean</a>
   <nav class="wl-nav">
     <a class="wl-navlink" href="/concepts">Concepts</a>
-    <a class="wl-navlink" href="/article-graph">Article graph</a>
     <a class="wl-navlink" href="/brain">Brain</a>
     <a class="wl-navlink" href="/about">About &amp; method</a>
   </nav>
@@ -227,14 +226,9 @@ footer a {{ color:#0969da; text-decoration:none; }}
     <em>&ldquo;formalized as (Lean/Mathlib)&rdquo;</em> Wikidata property).
   </p>
   <p class="concepts-link">
-    <a href="article-graph">&rarr; Article graph</a> &mdash; WikiLean articles
-    clustered by shared Mathlib formalizations: edges connect articles that annotate
-    the same declarations, colored by their dominant Mathlib area.
-  </p>
-  <p class="concepts-link">
-    <a href="graph.html">&rarr; Concept graph</a> &mdash; Mathlib's declaration-level
-    dependency edges overlaid on Wikidata's typed item-to-item statements, on a shared
-    Wikidata node set. Drag, zoom, click; consensus edges (in both) highlighted.
+    <a href="brain">&rarr; The Brain</a> &mdash; the map of mathematics: concepts, Mathlib
+    declarations, external databases and the literature joined into one explorable graph.
+    (Supersedes the old article/concept graph pages, which are deleted.)
   </p>
   <div class="controls">
     <input class="search" id="q" type="search" placeholder="Filter articles…" autocomplete="off">

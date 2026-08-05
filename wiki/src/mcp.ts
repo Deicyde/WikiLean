@@ -284,15 +284,14 @@ const IMPLS = new Map<string, (c: Ctx, a: Record<string, unknown>) => Promise<Ap
   // statement's 3–8 citations in one round trip (BRIDGE item 1).
   ["decl_exists", (c, a) => declExistsFor(c, argStr(a.name), a.names)],
 
-  // v2 aliases — dispatch-only, deliberately NOT advertised in TOOLS. An agent
+  // v2 alias — dispatch-only, deliberately NOT advertised in TOOLS. An agent
   // session that connected before the cell cut holds the old catalog and will
-  // keep calling these; they answer with the atom rather than hard-failing.
+  // keep calling it; it answers with the atom rather than hard-failing.
   // brain_unit: the unit card BECAME the cell card (a unit was QID ∘ article ∘
-  // decls ∘ xrefs — exactly a cell's organs). brain_node: v3 has no particle
-  // nodes, so a node id is an organ id and resolves to its atom. Both accept
-  // either argument name, since the two tools disagreed on it.
+  // decls ∘ xrefs — exactly a cell's organs). Accepts `key` or `id`, since the
+  // v2 tools disagreed on the argument name. (The brain_node alias was deleted
+  // 2026-08-04 with the rest of the v2 particle layer — unknown tool, -32602.)
   ["brain_unit", (c, a) => cellFor(c, argStr(a.key) || argStr(a.id))],
-  ["brain_node", (c, a) => cellFor(c, argStr(a.id) || argStr(a.key))],
 ]);
 
 // {status, body} → MCP tool result. Failures are isError tool results (the
@@ -580,9 +579,8 @@ response echoes <code>snapshot:{generated_at,pin}</code>.</p>
   <code>f=17</code> formalized atoms with a gold-tagged formalization. Bit table on the
   <a href="/brain/api">API reference</a>.</td></tr>
 </table>
-<p class="muted"><code>brain_unit</code> and <code>brain_node</code> still answer, as aliases of
-<code>brain_cell</code> — the v2 unit card <em>became</em> the cell card, and v3 has no particle
-nodes.</p>
+<p class="muted"><code>brain_unit</code> still answers, as an alias of <code>brain_cell</code> —
+the v2 unit card <em>became</em> the cell card.</p>
 
 <h2>Id grammar</h2>
 <table>

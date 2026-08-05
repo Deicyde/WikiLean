@@ -11,7 +11,8 @@ are checked against the shipped bytes, not against the builder's intent.
   S3  a cell entry is SELF-CONTAINED — one fetch renders the whole card
   S4  explorer.json indices are in range, and its omissions are accounted for
   S5  supercells.json is a consistent tree whose leaves are cells, and its
-      frontier rows carry frontier.jsonl's halo `shells` VERBATIM
+      frontier rows carry frontier.jsonl's formal-proximity `prox` arrays
+      VERBATIM (per-cell aligned when the stale-drop trimmed members)
   S6  no licensed snippet ships without its licence
   S7  the trace SIDECAR (traces/<key>.json) covers every supercell-involving
       synapse, its documented lookup resolves every pair, tt counts every trim,
@@ -19,9 +20,10 @@ are checked against the shipped bytes, not against the builder's intent.
       itself stays traceless
   S8  frontier_graph.json ships VERBATIM (byte-identical to
       brain/data/frontier_graph.json — the file test_frontier proved the
-      parity law against), self-consistent (counts match arrays, edges index
-      into cells with i<j, formal keys are frontier cells), and its cell
-      universe == the tree's frontier rows' cells (the dots the halo draws)
+      parity law against), self-consistent (counts match arrays, edges are
+      weighted [i,j,w] triples indexing into cells with i<j, formal keys are
+      frontier cells), and its cell universe == the tree's frontier rows'
+      cells (the dots the proximity view draws)
 
 Plus a determinism gate (when brain/data is present): rebuilding the shards is
 byte-identical for manifest.json + frontier_graph.json + the sidecar.
@@ -264,12 +266,15 @@ def main() -> int:
                       for c in r["cells"][:3])]
     check("S5 a supercell holding a faceted cell has fa", not leaked,
           f"{len(leaked)} folders would dim wrongly, e.g. {leaked[:3]}")
-    # HALO CONTRACT: a frontier row's `shells` (the hop-distance partition the
-    # halo view renders) passes through from frontier.jsonl VERBATIM — any
-    # rewrite here would let the shard drift from the tested partition.
+    # PROXIMITY CONTRACT: a frontier row's `prox` (the per-cell formal-
+    # proximity arrays the UI renders) passes through from frontier.jsonl —
+    # VERBATIM on a fresh build; when the stale-drop trimmed members, each
+    # kept cell must still carry the SOURCE's values at its original index
+    # (a misalignment silently scores the wrong cells). Any rewrite here
+    # would let the shard drift from the tested scores.
     frontier_src = ROOT / "brain" / "data" / "frontier.jsonl"
     if frontier_src.exists():
-        src_shells = {}
+        src_rows = {}
         with frontier_src.open() as fh:
             for line in fh:
                 if not line.strip():
@@ -277,17 +282,31 @@ def main() -> int:
                 row = json.loads(line)
                 if "_meta" in row and len(row) == 1:
                     continue
-                if row.get("shells") is not None:
-                    src_shells[row["id"]] = row["shells"]
-        bad_shells = [fid for fid, sh in src_shells.items()
-                      if fid in tree and tree[fid].get("shells") != sh]
-        no_shells = [fid for fid in src_shells if fid not in tree]
-        check(f"S5 frontier rows' shells match frontier.jsonl VERBATIM "
-              f"({len(src_shells)} areas)", not bad_shells and not no_shells,
-              f"{len(bad_shells)} rewritten (e.g. {bad_shells[:3]}), "
-              f"{len(no_shells)} missing from the tree (e.g. {no_shells[:3]})")
+                if row.get("prox") is not None:
+                    src_rows[row["id"]] = row
+        bad_prox, no_prox = [], []
+        for fid, src in src_rows.items():
+            got = tree.get(fid)
+            if got is None:
+                continue   # vanished areas are the stale-drop's business
+            if not got.get("prox"):
+                no_prox.append(fid)
+                continue
+            pos = {c: i for i, c in enumerate(src["cells"])}
+            idx = [pos.get(c) for c in got.get("cells") or []]
+            if None in idx:
+                bad_prox.append(fid)   # a shipped cell the source never scored
+                continue
+            want = {k: [v[i] for i in idx] for k, v in src["prox"].items()}
+            if got["prox"] != want:
+                bad_prox.append(fid)
+        check(f"S5 frontier rows' prox == frontier.jsonl per cell "
+              f"({len(src_rows)} areas; verbatim when nothing was stale-"
+              f"dropped)", not bad_prox and not no_prox,
+              f"{len(bad_prox)} rewritten/misaligned (e.g. {bad_prox[:3]}), "
+              f"{len(no_prox)} missing prox in the tree (e.g. {no_prox[:3]})")
     else:
-        print("  SKIP S5 shells pass-through (brain/data/frontier.jsonl absent "
+        print("  SKIP S5 prox pass-through (brain/data/frontier.jsonl absent "
               "— artifact-only run)")
 
     # ---- S6: licensing. Snippets exist only for permitting sources and must carry
@@ -432,7 +451,7 @@ def main() -> int:
           not leaked_tr, f"{len(leaked_tr)} syn rows carry traces, "
           f"e.g. {leaked_tr[:3]}")
 
-    # ---- S8: frontier_graph.json — the halo view's client-side BFS input ----
+    # ---- S8: frontier_graph.json — the client-side re-scoring input ---------
     # The parity law is PROVED against brain/data/frontier_graph.json in
     # test_frontier F10; what the client fetches is this shipped copy, so the
     # transfer of that proof is exactly one property: the bytes are identical.
@@ -472,20 +491,21 @@ def main() -> int:
               f"{len(gcells)}/{len(gformal)}/{len(gedges)}")
         n_g = len(gcells)
         bad_ge = [e for e in gedges
-                  if len(e) != 2 or not (0 <= e[0] < n_g and 0 <= e[1] < n_g)
-                  or e[0] >= e[1]]
-        check("S8 every edge indexes into `cells` with i < j", not bad_ge,
+                  if len(e) != 3 or not (0 <= e[0] < n_g and 0 <= e[1] < n_g)
+                  or e[0] >= e[1] or not isinstance(e[2], int) or e[2] <= 0]
+        check("S8 every edge is an [i, j, w] triple into `cells` with i < j "
+              "and a positive int weight", not bad_ge,
               f"{len(bad_ge)} bad, e.g. {bad_ge[:3]}")
         gcell_set = set(gcells)
         stray_f = sorted(set(gformal) - gcell_set)
         check("S8 every formal key is a frontier cell", not stray_f,
               f"{len(stray_f)} stray, e.g. {stray_f[:3]}")
-        # the dots the halo view draws (the tree's frontier rows) and the graph
-        # the client BFS runs on must agree on the universe, or toggling a
-        # library re-shells a different set of cells than the ones rendered
+        # the dots the proximity view draws (the tree's frontier rows) and the
+        # graph the client re-scores over must agree on the universe, or toggling
+        # a library re-scores a different set of cells than the ones rendered
         tree_frontier = {c for r in tree.values() if r.get("frontier")
                          for c in r.get("cells") or []}
-        check("S8 graph cells == the tree's frontier cells (what the halo draws)",
+        check("S8 graph cells == the tree's frontier cells (what the UI draws)",
               gcell_set == tree_frontier,
               f"graph-only {sorted(gcell_set - tree_frontier)[:3]}, "
               f"tree-only {sorted(tree_frontier - gcell_set)[:3]} — "

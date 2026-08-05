@@ -13,10 +13,12 @@ FRONTIER CONTRACT (pinned across agents; documented in brain/SCHEMA.md):
   brain/data/frontier.jsonl —
     line 1: {"_meta": {"generated_at", "method",
                        "counts": {"homeless", "assigned", "unsorted"},
-                       "halo": {"shell_counts", "method"}}}
+                       "proximity": {"method", "lambda",
+                                     "counts": {"direct", "bridged", "zero"}}}}
     then one row per area:
       {"id": "frontier:<Area>", "label", "cells": [cell ids], "n",
-       "shells": {"1": [ids], "2": [ids], "3": [ids], "disc": [ids]},
+       "prox": {"db": [...], "dw": [...], "ib": [...], "iw": [...],
+                "s": [...], "r": [...]},   # six arrays parallel to `cells`
        "near": "path:<Lib>/<Dir>"|null, "mean_stateability": float|null,
        "top": [up to 12 {"cell", "label", "score"}]}
     <Area> matches ^[A-Za-z][A-Za-z0-9_]{0,63}$.
@@ -24,14 +26,39 @@ FRONTIER CONTRACT (pinned across agents; documented in brain/SCHEMA.md):
   PARTITION: every homeless cell appears in EXACTLY ONE area — no drops, no
   dupes; counts reconcile (asserted here AND in brain/test_frontier.py).
 
-  HALO SHELLS (the halo view's data): a multi-source BFS from ALL formalized
-  cells (>=1 decl organ) over cell<->cell synapses — every kind conducts,
-  path: (supercell) endpoints never do — gives every homeless cell a hop
-  distance d to the nearest formalized cell. Each area row's "shells" is a
-  partition of that area's "cells" keyed by str(d) ("disc" = unreachable;
-  empty shell keys omitted; ids sorted). _meta.halo.shell_counts is the
-  global tally (855/454/13/290 on 2026-08-01 data) and must equal the sum
-  over rows — asserted here AND spec-re-derived in brain/test_frontier.py.
+  FORMAL PROXIMITY (PROXIMITY CONTRACT — replaces the 2026-08-02 halo hop
+  shells, DESTROYED 2026-08-04 on Jack's call: hop counts made "1 jump over
+  200 bonds" and "1 jump over one thread" the same tier). Every frontier cell
+  gets a deterministic, bond-weighted score over RAW synapse weights (trace
+  counts — no vote multipliers; this measures evidence mass, not vote
+  strength):
+
+      direct(c) = sum of the RAW weight of c's synapses into formalized
+                  cells (>=1 decl organ; each synapse counted once)
+      bridge(c) = sum over frontier neighbors u of min(w(c,u), direct(u))
+      score(c)  = direct(c) + bridge(c) / 4
+
+  One damped second-order term, lambda = 1/4 — exact in binary floats, so the
+  build, the tests and the client can demand bit-for-bit equality. min() is
+  the bottleneck rule: a bridge through u is worth no more than the bond to u
+  AND no more than u's own direct evidence, so one isolated intermediary can
+  never stand in for hundreds of direct bonds. MONOTONE: adding direct bonded
+  weight raises the score by exactly that much; the bridge term never depends
+  on the cell's own direct weight. Cells scoring 0 (no formal evidence within
+  two hops) are counted LOUDLY, never silently.
+
+  prox arrays (each parallel to the row's sorted `cells`):
+    db = direct bonds     — # formalized neighbor cells            (int >= 0)
+    dw = direct weight    — direct(c)                              (int >= 0)
+    ib = bridging nbrs    — # frontier neighbors with direct(u)>0  (int >= 0)
+    iw = bridge weight    — bridge(c)                              (int >= 0)
+    s  = score            — dw + iw/4                       (exact 1/4-float)
+    r  = radius percentile of s over ALL frontier cells: (#cells with
+         strictly higher s + #cells with equal s / 2) / N, rounded to 4dp —
+         RANK-based per the robust-fit rule (extremes cannot stretch the
+         mapping), ties share r, 0 ~ most proximal. Computed at build time;
+         the client never re-fits (for library subsets it re-ranks with this
+         same one-line formula).
 
   ASSIGNMENT (deterministic, seedless, no LLM):
     1. weighted vote of the cell's synapse neighbors that have decl organs —
@@ -49,35 +76,45 @@ FRONTIER CONTRACT (pinned across agents; documented in brain/SCHEMA.md):
        count; ties lexicographic).
     4. else frontier:Unsorted.
 
-  FRONTIER GRAPH (brain/data/frontier_graph.json — the halo view's CLIENT-side
-  BFS input, shipped VERBATIM by build_cell_shards.py as
+  FRONTIER GRAPH (brain/data/frontier_graph.json — the client-side re-scoring
+  input for the Libraries toggle, shipped VERBATIM by build_cell_shards.py as
   site/assets/brain/cells/frontier_graph.json):
     {"_meta": {"generated_at" (the cell build's stamp), "method",
                "counts": {"cells", "formal", "edges", "libs"}},
      "cells":  [every homeless cell id, sorted] — the partition universe,
-     "formal": {<cell>: {<LibRoot>: summed synapse weight, ...}} for every
-               frontier cell with >=1 formalized neighbor. LibRoot = the first
-               path component of the neighbor's supercells (Mathlib, TauCeti,
-               Init, ...); a supercell-less decl cell (Mathlib-archive names)
-               falls back to its decl organ ids' <Lib> segment so attribution
-               is TOTAL; a neighbor owned by several roots adds its FULL
-               weight to each (per-lib adjacency, not a weight partition),
-     "edges":  [[i, j], ...] index pairs into `cells` (i < j, sorted, deduped)
-               — every frontier<->frontier synapse}
-  PARITY LAW: the client re-shells from an enabled-library set L (d=1 iff the
-  cell's formal row hits any lib of L, BFS outward over edges, unreached =
-  disc); with ALL libraries enabled the result must equal the shipped shells
-  EXACTLY — asserted here at build time AND spec-re-proved per cell in
-  brain/test_frontier.py (F10). Deterministic bytes (sorted keys and lists,
-  input-pinned stamp).
+     "formal": {<cell>: {<RootSet>: summed RAW synapse weight, ...}} for
+               every frontier cell with >=1 formalized neighbor. RootSet =
+               the neighbor's owning library roots, "|"-joined sorted
+               ("Mathlib", "Init|Mathlib") — an EXACT-set key, so restricting
+               to a library subset never double-counts a multi-root neighbor
+               (566 such rows on 2026-08-01 data). A root = the first path
+               component of the neighbor's supercells; a supercell-less decl
+               cell (Mathlib-archive names) falls back to its decl organ ids'
+               <Lib> segment so attribution is TOTAL (asserted),
+     "edges":  [[i, j, w], ...] index pairs into `cells` (i < j, sorted,
+               deduped) with w = the synapse's RAW weight — every
+               frontier<->frontier synapse}
+  PARITY LAW: the client re-scores from an enabled-library set L:
+      direct_L(c) = sum of formal[c][K] over key-sets K with K ∩ L != {}
+      score_L(c)  = direct_L(c) + sum over edges (c,u,w) of
+                    min(w, direct_L(u)) / 4
+  and with ALL libraries enabled score_L MUST equal the shipped `s` EXACTLY
+  (exact float equality — quarter-precision is lossless) — asserted here at
+  build time AND spec-re-proved per cell in brain/test_frontier.py (F10),
+  including under proper library subsets. Deterministic bytes (sorted keys
+  and lists, input-pinned stamp).
 
   mean_stateability = mean of manage/data/halo.json items' all-bond
   neighbor-formalization (`all_frac`) over the area's cells present in
-  halo.json — null if none. halo.json is OPTIONAL (fail-soft to null).
+  halo.json — null if none. halo.json is OPTIONAL (fail-soft to null). KEPT
+  because the areas view tints each frontier bubble by it
+  (site/build_brain_page.py) — it is orthogonal to the destroyed hop shells.
 
   `top` = the area's 12 most-connected cells, score = the cell's total
   effective synapse weight (sum over its synapses of per-kind count x the
-  same 3x/1x multipliers) — an integer, deterministic.
+  same 3x/1x multipliers) — an integer, deterministic. (The vote's 3x
+  multipliers are a RANKING device; the proximity score deliberately uses
+  raw weights instead — two different questions.)
 
 Reads  brain/data/{cells,synapses}.jsonl (required),
        brain/data/edges.jsonl (phase-2 msc xrefs; fail-soft),
@@ -96,7 +133,7 @@ import json
 import re
 import sys
 import time
-from collections import Counter, defaultdict, deque
+from collections import Counter, defaultdict
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -111,6 +148,7 @@ GRAPH_OUT = HERE / "data" / "frontier_graph.json"
 AREA_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_]{0,63}$")
 TOP_CAP = 12                      # contract: up to 12 `top` rows per area
 KIND_MULT = {"depends": 3, "invocation": 3}   # everything else weighs 1
+LAMBDA = 0.25    # the bridge damping — 1/4 is EXACT in binary floats (parity)
 
 # MSC 2020 top-level classes -> contract-safe area names (DeepFrontier_<name>).
 # Codes absent here fall back to MSC<code>, which still matches the id regex.
@@ -388,42 +426,113 @@ def main() -> int:
           f"{total} == homeless {len(homeless)}")
     assert total == len(homeless)
 
-    # ---- halo BFS: hop distance to the formalized interior -------------------
-    # Multi-source BFS from EVERY formalized cell (>=1 decl organ) over
-    # cell<->cell synapses. ALL kinds conduct (this measures reachability, not
-    # vote strength, so no 3x weighting); path: endpoints are supercells, not
-    # cells, and never conduct. d = hops from a homeless cell to the nearest
-    # formalized cell; unreachable cells are "disc". Deterministic: BFS layers
-    # are order-independent and the seed set is iterated sorted anyway.
-    dist: dict[str, int] = {cid: 0 for cid in decl_cells}
-    bfs_queue = deque(sorted(decl_cells))
-    while bfs_queue:
-        cur = bfs_queue.popleft()
-        for other, _kinds, _eff in nbrs.get(cur, []):
-            if other in cells and other not in dist:
-                dist[other] = dist[cur] + 1
-                bfs_queue.append(other)
+    # ---- the frontier graph's primitives (also the score's inputs) -----------
+    # One pass over the raw frontier-touching synapse rows yields BOTH the
+    # graph file's payload and the proximity score's inputs, so the shipped
+    # score and the client's recomputation can never diverge structurally.
+    cell_index = {c: i for i, c in enumerate(homeless)}   # homeless is sorted
+    lib_memo: dict[str, list[str]] = {}
 
-    def shell_of(cid: str) -> str:
-        d = dist.get(cid)
-        return "disc" if d is None else str(d)
+    def libs_of(cid: str) -> list[str]:
+        """Owning library roots of a formalized cell: the first path component
+        of each supercell; a supercell-less decl cell (Mathlib-archive names
+        like Theorems100.*) falls back to its decl organ ids' <Lib> segment,
+        so EVERY decl cell yields >=1 lib — parity needs total attribution."""
+        got = lib_memo.get(cid)
+        if got is None:
+            libs = {sup.split(":", 1)[1].split("/")[0]
+                    for sup in cells[cid].get("supercells") or []}
+            if not libs:
+                libs = {o["id"].split(":", 2)[1]
+                        for o in cells[cid].get("organs", [])
+                        if o.get("kind") == "decl" and o["id"].count(":") >= 2}
+            got = lib_memo[cid] = sorted(libs)
+        return got
 
-    shell_counts = Counter(shell_of(c) for c in homeless)
-    # partition set-math: every homeless cell lands in exactly one shell
-    assert sum(shell_counts.values()) == len(homeless), \
-        "halo shells lost or invented cells"
-    shell_keys = sorted((k for k in shell_counts if k != "disc"), key=int) \
-        + (["disc"] if "disc" in shell_counts else [])
-    deep = [k for k in shell_keys if k != "disc" and int(k) > 3]
-    print("halo BFS (all-kinds cell<->cell synapses, path: endpoints excluded): "
-          + ", ".join(f"d={k}: {shell_counts[k]}" if k != "disc"
-                      else f"disconnected: {shell_counts[k]}"
-                      for k in shell_keys)
-          + f"; sums to {sum(shell_counts.values())} == homeless")
-    if deep:
-        print(f"  ! {sum(shell_counts[k] for k in deep)} cells sit DEEPER than "
-              f"d=3 (shells {deep}) — the halo view's 3-ring layout will need "
-              f"a look")
+    formal: dict[str, Counter] = defaultdict(Counter)  # cid -> RootSet key -> w
+    direct_w: Counter = Counter()   # cid -> summed RAW weight into decl cells
+    direct_b: Counter = Counter()   # cid -> # formalized neighbor cells
+    edge_w: dict[tuple[int, int], int] = {}   # (i, j) i<j -> RAW weight
+    n_fallback_rows = 0
+    fallback_cells: set[str] = set()
+    n_unattributable = 0
+    n_self = 0
+    for src, dst, w in raw_frontier_syn:
+        si, di = cell_index.get(src), cell_index.get(dst)
+        if si is not None and di is not None:      # frontier <-> frontier
+            if si == di:
+                n_self += 1                        # a C6 breach — never silent
+                continue
+            key = (si, di) if si < di else (di, si)
+            edge_w[key] = edge_w.get(key, 0) + w   # dedupe-by-sum (order-free)
+            continue
+        cid, other = (src, dst) if si is not None else (dst, src)
+        if other not in decl_cells:
+            continue        # the partner is a path: supercell endpoint (rule 5)
+        libs = libs_of(other)
+        if not cells[other].get("supercells"):
+            n_fallback_rows += 1
+            fallback_cells.add(other)
+        if not libs:
+            n_unattributable += 1   # would break parity; asserted red below
+            continue
+        formal[cid]["|".join(libs)] += w   # EXACT root-set key (no double count)
+        direct_w[cid] += w
+        direct_b[cid] += 1
+    assert not n_unattributable, \
+        (f"{n_unattributable} formalized-neighbor rows carry NO attributable "
+         f"library (no supercell, no decl organ) — attribution must be TOTAL "
+         f"or the parity law breaks")
+    for c in formal:   # structural: the score's direct component IS the graph's
+        assert direct_w[c] == sum(formal[c].values()), \
+            f"direct weight != formal row sum on {c} (attribution drift)"
+
+    # ---- FORMAL PROXIMITY: score every frontier cell -------------------------
+    ff_nbrs: dict[int, list[tuple[int, int]]] = defaultdict(list)
+    for (i, j), w in edge_w.items():
+        ff_nbrs[i].append((j, w))
+        ff_nbrs[j].append((i, w))
+    bridge_w: dict[str, int] = {}
+    bridge_b: dict[str, int] = {}
+    for c in homeless:
+        iw = ib = 0
+        for jn, w in ff_nbrs.get(cell_index[c], []):
+            du = direct_w.get(homeless[jn], 0)
+            if du:
+                iw += min(w, du)   # the bottleneck rule
+                ib += 1
+        bridge_w[c] = iw
+        bridge_b[c] = ib
+    score = {c: direct_w.get(c, 0) + bridge_w[c] * LAMBDA for c in homeless}
+
+    # radius: midrank percentile of the score over the WHOLE frontier
+    # population — rank-based (the robust-fit rule: a 900-weight hub cannot
+    # stretch the mapping), ties share r, deterministic.
+    n_home = len(homeless)
+    by_score = Counter(score.values())
+    higher: dict[float, int] = {}
+    acc = 0
+    for v in sorted(by_score, reverse=True):
+        higher[v] = acc
+        acc += by_score[v]
+    radius = {c: round((higher[score[c]] + by_score[score[c]] / 2) / n_home, 4)
+              for c in homeless}
+
+    n_direct = sum(1 for c in homeless if direct_w.get(c, 0) > 0)
+    n_bridged = sum(1 for c in homeless
+                    if direct_w.get(c, 0) == 0 and bridge_w[c] > 0)
+    n_zero = n_home - n_direct - n_bridged
+    zero_with_syn = sum(1 for c in homeless
+                        if score[c] == 0 and nbrs.get(c))
+    smax = max(score.values()) if score else 0
+    print(f"\nformal proximity (score = direct + bridge/4, raw weights): "
+          f"{n_direct} cells bond the core directly, {n_bridged} only bridge "
+          f"through frontier neighbors, {n_zero} score 0")
+    print(f"  zero-scored accounting: {zero_with_syn} of the {n_zero} still "
+          f"carry synapses (no formal evidence within two hops), "
+          f"{n_zero - zero_with_syn} are fully synapse-less; max score {smax}")
+    assert all(v >= 0 and v == v for v in score.values()), \
+        "negative or NaN proximity score"
 
     # ---- halo join: mean_stateability ----------------------------------------
     halo_frac: dict[str, float] = {}
@@ -434,7 +543,7 @@ def main() -> int:
                 if item.get("all_frac") is not None:
                     halo_frac[item["cell"]] = item["all_frac"]
             joined = sum(1 for c in homeless if c in halo_frac)
-            print(f"halo: {len(halo.get('items', []))} items; {joined}/"
+            print(f"halo.json: {len(halo.get('items', []))} items; {joined}/"
                   f"{len(homeless)} homeless cells join with a non-null all_frac "
                   f"({100 * joined / max(len(homeless), 1):.1f}%)")
         except (json.JSONDecodeError, OSError) as exc:
@@ -460,23 +569,20 @@ def main() -> int:
         fracs = [halo_frac[c] for c in cell_ids if c in halo_frac]
         top = sorted(((cell_score(c), c) for c in cell_ids),
                      key=lambda sc: (-sc[0], sc[1]))[:TOP_CAP]
-        # shells: this area's slice of the halo BFS — a PARTITION of cell_ids
-        # (asserted), keyed "1"/"2"/…/"disc", empty keys omitted, ids sorted
-        # (cell_ids is sorted, so per-shell append order stays sorted).
-        by_shell: dict[str, list[str]] = defaultdict(list)
-        for c in cell_ids:
-            by_shell[shell_of(c)].append(c)
-        assert sum(len(v) for v in by_shell.values()) == len(cell_ids) \
-            and set().union(*by_shell.values()) == set(cell_ids), \
-            f"shells do not partition {area}"
-        area_shell_keys = sorted((k for k in by_shell if k != "disc"), key=int) \
-            + (["disc"] if "disc" in by_shell else [])
+        # prox: the six PROXIMITY CONTRACT arrays, parallel to cell_ids
+        # (sorted). Every member gets a value — never a hole, never a drop.
+        prox = {"db": [direct_b.get(c, 0) for c in cell_ids],
+                "dw": [direct_w.get(c, 0) for c in cell_ids],
+                "ib": [bridge_b[c] for c in cell_ids],
+                "iw": [bridge_w[c] for c in cell_ids],
+                "s": [score[c] for c in cell_ids],
+                "r": [radius[c] for c in cell_ids]}
         rows.append({
             "id": f"frontier:{area}",
             "label": area_label(area, info["lib"], info["top"]),
             "cells": cell_ids,
             "n": len(cell_ids),
-            "shells": {k: by_shell[k] for k in area_shell_keys},
+            "prox": prox,
             "near": info["near"],
             "mean_stateability":
                 round(sum(fracs) / len(fracs), 4) if fracs else None,
@@ -489,14 +595,15 @@ def main() -> int:
     print(f"\nareas: {len(rows)} ({n_state} with mean_stateability, "
           f"{len(rows) - n_state} null — no halo-joined member)")
     print(f"{'area':<44} {'n':>5}  {'near':<36} state  "
-          f"shells d1/d2/d3/disc")
+          f"direct/bridged/zero  max_s")
     for r in rows:
         state = ("-" if r["mean_stateability"] is None
                  else f"{r['mean_stateability']:.3f}")
-        sh = "/".join(str(len(r["shells"].get(k, []))) for k in ("1", "2", "3",
-                                                                "disc"))
+        p = r["prox"]
+        nd = sum(1 for v in p["dw"] if v > 0)
+        nb = sum(1 for dwv, iwv in zip(p["dw"], p["iw"]) if dwv == 0 and iwv > 0)
         print(f"{r['id']:<44} {r['n']:>5}  {r['near'] or '-':<36} {state:<6} "
-              f"{sh}")
+              f"{nd}/{nb}/{r['n'] - nd - nb}  {max(p['s']):g}")
 
     # ---- write (atomic) ------------------------------------------------------
     meta = {"_meta": {
@@ -507,11 +614,18 @@ def main() -> int:
         "counts": {"homeless": len(homeless),
                    "assigned": len(homeless) - len(unsorted),
                    "unsorted": len(unsorted)},
-        "halo": {"shell_counts": {k: shell_counts[k] for k in shell_keys},
-                 "method": "multi-source BFS from all decl-organ cells over "
-                           "cell<->cell synapses (all kinds conduct; path: "
-                           "endpoints excluded); d = hops to the nearest "
-                           "formalized cell, disc = unreachable"},
+        "proximity": {
+            "method": "score = direct + bridge/4 over RAW synapse weights: "
+                      "direct = summed weight of the cell's synapses into "
+                      "formalized (decl-organ) cells; bridge = sum over "
+                      "frontier neighbors u of min(bond weight, direct(u)) — "
+                      "one damped second-order term, bottleneck-capped so an "
+                      "isolated intermediary never stands in for direct "
+                      "bonds; r = midrank percentile of the score "
+                      "(rank-robust, ties share)",
+            "lambda": LAMBDA,
+            "counts": {"direct": n_direct, "bridged": n_bridged,
+                       "zero": n_zero}},
         "phases": {"vote": n_by_tier["vote"], "msc": n_by_tier["msc"],
                    "relates": n_by_tier["relates"],
                    "unsorted": n_by_tier["unsorted"]},
@@ -527,70 +641,30 @@ def main() -> int:
     print(f"\n-> {OUT} ({len(rows)} areas over {len(homeless)} homeless cells) "
           f"in {time.monotonic() - t0:.1f}s")
 
-    # ---- frontier graph: the halo view's CLIENT-side BFS input ---------------
+    # ---- frontier graph: the client-side re-scoring input --------------------
     # FRONTIER GRAPH contract (docstring above; brain/SCHEMA.md): `cells` =
     # every homeless cell, sorted; `formal` = per frontier cell with >=1
-    # formalized neighbor, {library root -> summed synapse weight}; `edges` =
-    # every frontier<->frontier synapse as [i, j] index pairs into `cells`.
-    # The client re-shells from an enabled-library set; with ALL libraries
-    # enabled the result must equal the shipped shells EXACTLY (parity law) —
-    # asserted right here, before the file can ship.
-    cell_index = {c: i for i, c in enumerate(homeless)}   # homeless is sorted
-    lib_memo: dict[str, list[str]] = {}
-
-    def libs_of(cid: str) -> list[str]:
-        """Owning library roots of a formalized cell: the first path component
-        of each supercell; a supercell-less decl cell (Mathlib-archive names
-        like Theorems100.*) falls back to its decl organ ids' <Lib> segment,
-        so EVERY decl cell yields >=1 lib — parity needs total attribution."""
-        got = lib_memo.get(cid)
-        if got is None:
-            libs = {sup.split(":", 1)[1].split("/")[0]
-                    for sup in cells[cid].get("supercells") or []}
-            if not libs:
-                libs = {o["id"].split(":", 2)[1]
-                        for o in cells[cid].get("organs", [])
-                        if o.get("kind") == "decl" and o["id"].count(":") >= 2}
-            got = lib_memo[cid] = sorted(libs)
-        return got
-
-    formal: dict[str, Counter] = defaultdict(Counter)
-    edge_set: set[tuple[int, int]] = set()
-    n_fallback_rows = 0
-    fallback_cells: set[str] = set()
-    n_unattributable = 0
-    n_self = 0
-    for src, dst, w in raw_frontier_syn:
-        si, di = cell_index.get(src), cell_index.get(dst)
-        if si is not None and di is not None:      # frontier <-> frontier
-            if si == di:
-                n_self += 1                        # a C6 breach — never silent
-                continue
-            edge_set.add((si, di) if si < di else (di, si))
-            continue
-        cid, other = (src, dst) if si is not None else (dst, src)
-        if other not in decl_cells:
-            continue        # the partner is a path: supercell endpoint (rule 5)
-        libs = libs_of(other)
-        if not cells[other].get("supercells"):
-            n_fallback_rows += 1
-            fallback_cells.add(other)
-        if not libs:
-            n_unattributable += 1   # would break parity; the assert below is red
-            continue
-        for lib in libs:
-            formal[cid][lib] += w
-
+    # formalized neighbor, {"|"-joined sorted root set -> summed RAW weight};
+    # `edges` = every frontier<->frontier synapse as [i, j, w]. The client
+    # re-scores from an enabled-library set; with ALL libraries enabled the
+    # result must equal the shipped `s` EXACTLY (PARITY LAW) — asserted right
+    # here, before the file can ship.
     lib_cells: Counter = Counter()
     for lib_row in formal.values():
-        for lib in lib_row:
-            lib_cells[lib] += 1
+        roots = {root for key in lib_row for root in key.split("|")}
+        for root in roots:      # each adjacent cell counts ONCE per root
+            lib_cells[root] += 1
     print(f"\nfrontier graph: {len(homeless)} cells, {len(formal)} with a "
-          f"formalized neighbor (= shell d1), "
-          f"{len(homeless) - len(formal)} without (shells d>=2/disc), "
-          f"{len(edge_set)} frontier<->frontier edges")
+          f"formalized neighbor (direct > 0), "
+          f"{len(homeless) - len(formal)} without, "
+          f"{len(edge_w)} frontier<->frontier edges")
     print("  formal libs: " + ", ".join(
         f"{lib}: {lib_cells[lib]} cells" for lib in sorted(lib_cells)))
+    n_multi = sum(1 for lib_row in formal.values()
+                  for key in lib_row if "|" in key)
+    if n_multi:
+        print(f"  {n_multi} formal entries use a multi-root key (exact-set "
+              f"attribution — a subset restriction never double-counts them)")
     if fallback_cells:
         print(f"  {n_fallback_rows} rows attributed via the decl-id fallback "
               f"({len(fallback_cells)} supercell-less decl cells, e.g. "
@@ -598,61 +672,65 @@ def main() -> int:
     if n_self:
         print(f"  ! {n_self} self-loop synapse rows SKIPPED (src == dst — C6 "
               f"should forbid this; check brain/test_cells.py)")
-    if n_unattributable:
-        print(f"  ! {n_unattributable} formalized-neighbor rows carry NO "
-              f"attributable library (no supercell, no decl organ) — parity "
-              f"breaks; the assert below goes red")
 
-    # PARITY LAW, asserted at build time: formal's keys are exactly the d=1
-    # shell, and the client's all-libraries BFS over the graph reproduces the
-    # shipped shells cell for cell.
-    d1 = {c for c in homeless if dist.get(c) == 1}
-    assert set(formal) == d1, \
-        (f"formal keys != the d1 shell: {len(set(formal) - d1)} extra, "
-         f"{len(d1 - set(formal))} missing e.g. {sorted(d1 - set(formal))[:3]}")
-    adj: dict[int, list[int]] = defaultdict(list)
-    for i, j in edge_set:
-        adj[i].append(j)
-        adj[j].append(i)
-    cdist: dict[int, int] = {cell_index[c]: 1 for c in formal}
-    cq = deque(sorted(cdist))
-    while cq:
-        cur = cq.popleft()
-        for nxt in adj.get(cur, []):
-            if nxt not in cdist:
-                cdist[nxt] = cdist[cur] + 1
-                cq.append(nxt)
-    parity_bad = [c for c in homeless
-                  if ("disc" if cell_index[c] not in cdist
-                      else str(cdist[cell_index[c]])) != shell_of(c)]
-    assert not parity_bad, \
-        (f"PARITY LAW broken: the client BFS over the graph diverges from the "
-         f"shipped shells on {len(parity_bad)} cells, e.g. {parity_bad[:3]}")
-    print("  parity law holds: all-libraries client BFS == shipped shells "
-          f"({len(homeless)} cells)")
-
+    edges_out = sorted(([i, j, w] for (i, j), w in edge_w.items()))
     graph = {
         "_meta": {
             "generated_at": generated_at,   # the cell build's stamp (determinism)
-            "method": "cells = the homeless partition universe, sorted; formal = "
-                      "per-cell {library root: summed synapse weight} over "
-                      "decl-organ neighbors (root = first supercell path "
-                      "component; supercell-less decl cells fall back to the "
-                      "decl id's <Lib> segment; multi-root neighbors add full "
-                      "weight to each); edges = every frontier<->frontier "
-                      "synapse as [i,j] into cells, i<j. Client BFS: d1 = "
-                      "formal hits an enabled lib, BFS over edges, unreached = "
-                      "disc; all libs enabled == the shipped shells (PARITY "
-                      "LAW, asserted at build + test_frontier F10)",
+            "method": "cells = the homeless partition universe, sorted; formal "
+                      "= per-cell {root set: summed RAW synapse weight} over "
+                      "decl-organ neighbors, keyed by the neighbor's EXACT "
+                      "'|'-joined sorted library roots (root = first supercell "
+                      "path component; supercell-less decl cells fall back to "
+                      "the decl id's <Lib> segment) so a subset restriction "
+                      "never double-counts a multi-root neighbor; edges = "
+                      "every frontier<->frontier synapse as [i,j,w] into "
+                      "cells, i<j, w = RAW weight. Client re-score for lib "
+                      "set L: direct_L = sum of formal entries whose key "
+                      "intersects L; score_L = direct_L + sum(min(w, "
+                      "direct_L(u)))/4 over edges; all libs enabled == the "
+                      "shipped s EXACTLY (PARITY LAW, asserted at build + "
+                      "test_frontier F10)",
             "counts": {"cells": len(homeless), "formal": len(formal),
-                       "edges": len(edge_set),
+                       "edges": len(edges_out),
                        "libs": {lib: lib_cells[lib] for lib in sorted(lib_cells)}},
         },
         "cells": homeless,
-        "formal": {c: {lib: formal[c][lib] for lib in sorted(formal[c])}
+        "formal": {c: {k: formal[c][k] for k in sorted(formal[c])}
                    for c in sorted(formal)},
-        "edges": sorted(edge_set),
+        "edges": edges_out,
     }
+
+    # PARITY LAW, asserted at build time from the GRAPH OBJECT alone (the
+    # client's view of the world): formal's keys are exactly the direct>0
+    # cells, and the all-libraries re-score reproduces the shipped `s`
+    # bit-for-bit on every cell.
+    d_pos = {c for c in homeless if direct_w.get(c, 0) > 0}
+    assert set(graph["formal"]) == d_pos, \
+        (f"formal keys != the direct>0 cells: "
+         f"{len(set(graph['formal']) - d_pos)} extra, "
+         f"{len(d_pos - set(graph['formal']))} missing")
+    g_direct = {c: sum(row.values()) for c, row in graph["formal"].items()}
+    g_adj: dict[int, list[tuple[int, int]]] = defaultdict(list)
+    for i, j, w in graph["edges"]:
+        g_adj[i].append((j, w))
+        g_adj[j].append((i, w))
+    parity_bad = []
+    for c in homeless:
+        acc2 = 0
+        for jn, w in g_adj.get(cell_index[c], []):
+            du = g_direct.get(homeless[jn], 0)
+            if du:
+                acc2 += min(w, du)
+        if g_direct.get(c, 0) + acc2 * LAMBDA != score[c]:
+            parity_bad.append(c)
+    assert not parity_bad, \
+        (f"PARITY LAW broken: the client re-score over the graph diverges "
+         f"from the shipped scores on {len(parity_bad)} cells, "
+         f"e.g. {parity_bad[:3]}")
+    print("  parity law holds: all-libraries client re-score == shipped s "
+          f"({len(homeless)} cells, exact float equality)")
+
     gtmp = GRAPH_OUT.with_suffix(".json.tmp")
     gtmp.write_text(json.dumps(graph, ensure_ascii=False, separators=(",", ":")))
     gtmp.rename(GRAPH_OUT)

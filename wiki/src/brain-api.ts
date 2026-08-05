@@ -34,7 +34,8 @@
 // (docs/BRAIN-V3.md "Dropped in v3"): the unanchored frontier ext pages
 // (anchored ones still resolve) and the arXiv paper nodes. Those 404 with a
 // `reason` naming the drop (see droppedInV3); they never pretend the id is
-// unknown. The v2 per-node shards are retired (`/api/brain/node` answers 410),
+// unknown. The v2 per-node shards are retired and the old GET /api/brain/node
+// route is deleted outright (2026-08-04 — plain 404),
 // so this cell layer is the ONLY resolver — the community-edit write path
 // validates edge endpoints against it too, via the STRICT atomIdForOrgan
 // (aliases ∪ supercells, no fuzzy resolution).
@@ -2044,8 +2045,7 @@ page, a WikiLean article and an arXiv statement that all denote <em>one object</
 organ, and one no cell claims has no atom; the 3,610 anchored ones do resolve, the corpus stays
 in <code>catalog/data/external/</code>, and the page's signal survives as a
 <code>co-page</code> synapse) and <b>arXiv paper nodes</b> (1,994 <code>lit:&lt;arxiv&gt;</code> ids —
-only STATEMENTS a cell claims are organs). The v2 route <code>/api/brain/node</code> and its
-per-node shards are retired (<b>410 Gone</b>) — the cell layer is the only resolver.</p>
+only STATEMENTS a cell claims are organs). The cell layer is the only resolver.</p>
 
 <h2>Connect over MCP (recommended for agents)</h2>
 <pre><code>claude mcp add --transport http wikibrain https://wikilean.jackmccarthy.org/mcp</code></pre>
@@ -2053,9 +2053,8 @@ per-node shards are retired (<b>410 Gone</b>) — the cell layer is the only res
 mode) exposing eight tools: <code>brain_bridge</code>, <code>brain_search</code>,
 <code>brain_cell</code>, <code>brain_transfer</code>, <code>brain_neighborhood</code>,
 <code>brain_snippets</code>, <code>brain_filter</code>, <code>decl_exists</code>.
-<code>brain_unit</code> and <code>brain_node</code> still answer, as aliases of
-<code>brain_cell</code> — the v2 unit card <em>became</em> the cell card, and v3 has no particle
-nodes. Rate limit: 120 requests/min per IP. Every response echoes
+<code>brain_unit</code> still answers, as an alias of <code>brain_cell</code> — the v2 unit
+card <em>became</em> the cell card. Rate limit: 120 requests/min per IP. Every response echoes
 <code>snapshot:{generated_at,pin}</code>.</p>
 
 <h2>Id grammar</h2>
@@ -2152,9 +2151,7 @@ resolves exactly (QID, decl name, slug, xref id) is promoted to the top hit.
 
 <h3>Related routes</h3>
 <p><code>GET /api/brain/edges?id=</code> (live community overlay, uncached) ·
-<code>GET /decl/&lt;name&gt;</code> (decl → docs redirect; JSON with <code>Accept: application/json</code>) ·
-<code>GET /api/brain/node?id=</code> (the v2 particle layer — <b>retired, 410 Gone</b>; its ids are
-ORGAN ids, so they all resolve on <code>/api/brain/cell</code>).</p>
+<code>GET /decl/&lt;name&gt;</code> (decl → docs redirect; JSON with <code>Accept: application/json</code>).</p>
 
 <h2>Provenance &amp; licensing</h2>
 <p>Brain cell/synapse data is CC0. Every organ and every synapse trace carries a

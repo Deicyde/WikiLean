@@ -3,8 +3,11 @@
 // **The v2 (particle) layer is retired.** BRAIN v3 made the CELL the node: the
 // /brain page reads /assets/brain/cells/* and the agent surface is
 // /api/brain/cell (src/brain-api.ts). The v2 per-node shards + manifest are no
-// longer built or shipped, and the old GET /api/brain/node route answers 410
-// Gone below (same pattern as the retired graph/atlas endpoints in index.ts).
+// longer built or shipped, and the old GET /api/brain/node route was deleted
+// outright (2026-08-04) — it answers a plain 404, like the deleted graph/atlas
+// endpoints. Every id it ever served is an ORGAN id, so /api/brain/cell?key=
+// resolves it (except the two populations v3 dropped on purpose, which 404
+// there with a `reason`).
 //
 // What lives here now: `brainNodeExists` — the node-existence oracle the
 // community-edit write path validates edge endpoints against
@@ -17,7 +20,7 @@
 // path:Mathlib/CategoryTheory | decl:Mathlib:CommGroup | lit:<arxiv>#<ref>.
 // Ids carry ':'/'/' so they ride in a query param, not a path segment. All of
 // them are ORGAN ids in v3, which is what keeps the oracle one alias lookup.
-import type { Context, Hono } from "hono";
+import type { Context } from "hono";
 import type { Env } from "./env.js";
 import { atomIdForOrgan } from "./brain-api.js";
 
@@ -104,24 +107,7 @@ export async function brainNodeExists(c: Context<{ Bindings: Env }>, id: string)
   return (await atomIdForOrgan(c, id)) !== null;
 }
 
-export function registerBrainRoutes(app: Hono<{ Bindings: Env }>): void {
-  // Retired 2026-08-04 with the v2 per-node shards (docs/BRAIN-V3.md phase 5):
-  // same 410 pattern as /graph_data.json etc. in index.ts. Every id this route
-  // ever served is an ORGAN id, so /api/brain/cell?key= resolves it (except the
-  // two populations v3 dropped on purpose, which 404 there with a `reason`).
-  app.get("/api/brain/node", (c) =>
-    c.json(
-      {
-        ok: false, error: "gone",
-        note: "this endpoint is retired — the v2 per-node shards were replaced by the cell layer; every v2 node id resolves as an organ id on the cell API",
-        see: { api: "/api/brain/cell?key=", reference: "/brain/api", mcp: "/mcp" },
-      },
-      410,
-      { "Cache-Control": "public, max-age=86400" },
-    ),
-  );
-  // GET /api/brain/search lives in brain-api.ts (v3): it searches the CELL
-  // label index, where a hit's `aka` carries every organ label. Registering it
-  // there keeps ONE search implementation — this module is registered first, so
-  // a route defined here would silently shadow it.
-}
+// This module registers NO routes. GET /api/brain/search lives in brain-api.ts
+// (v3): it searches the CELL label index, where a hit's `aka` carries every
+// organ label. The old GET /api/brain/node tombstone that used to live here was
+// deleted 2026-08-04 (it falls through to the plain 404 handler).

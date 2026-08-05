@@ -14,13 +14,15 @@ the `contains` edges (for organ payloads and the containment tree) and writes
                    brain/data/frontier.jsonl, brain/build_frontier.py): each
                    lists the homeless cells assigned to it, so the client's
                    derived "no formal home" bucket drains to the handful of
-                   genuinely unplaceable cells; each also carries its halo
-                   `shells` (hop-distance partition) VERBATIM for the halo view
+                   genuinely unplaceable cells; each also carries its `prox`
+                   formal-proximity arrays (PROXIMITY CONTRACT: per-cell
+                   score/radius/provenance, parallel to `cells`) VERBATIM
   explorer.json    the whole flat graph: cells with build-time xy + synapses
   frontier_graph.json  brain/data/frontier_graph.json byte-copied VERBATIM — the
-                   halo view's lazily-fetched client-side BFS input (FRONTIER
-                   GRAPH contract, brain/build_frontier.py + brain/SCHEMA.md):
-                   cells / per-library formal weights / frontier<->frontier
+                   lazily-fetched client-side re-scoring input for the
+                   Libraries toggle (FRONTIER GRAPH contract,
+                   brain/build_frontier.py + brain/SCHEMA.md): cells /
+                   exact-root-set formal weights / weighted frontier<->frontier
                    edges, so the shipped graph is exactly the one
                    test_frontier.py proved the parity law against
   traces/<key>.json  the LAZY trace sidecar: evidence for every supercell-involving
@@ -271,6 +273,36 @@ def load_frontier(cells: dict[str, dict]) -> tuple[list[dict], dict]:
                 if len(out["top"]) != n_top:
                     stats["stale_top"] = stats.get("stale_top", 0) + \
                         (n_top - len(out["top"]))
+            # prox arrays are PARALLEL to the row's cells — a stale-drop must
+            # re-align them by index or every score lands on the wrong cell
+            # (worse than missing data). Malformed arrays (length mismatch)
+            # never ship: dropped LOUDLY, counted.
+            prox = row.get("prox")
+            if prox:
+                src_cells = row.get("cells", [])
+                if all(isinstance(v, list) and len(v) == len(src_cells)
+                       for v in prox.values()):
+                    # Re-align to the FINAL emitted order (out["cells"] is
+                    # sorted), never to source order: parallel-array
+                    # correctness must not silently depend on the frontier
+                    # row already being sorted. Identity permutation (the
+                    # normal case) ships prox verbatim, preserving the S8
+                    # byte-copy pin.
+                    pos = {cid: i for i, cid in enumerate(src_cells)}
+                    idx = [pos[cid] for cid in out["cells"]]
+                    if idx != list(range(len(src_cells))):
+                        out["prox"] = {k: [v[i] for i in idx]
+                                       for k, v in prox.items()}
+                    if len(keep) != len(src_cells):
+                        stats["stale_prox"] = stats.get("stale_prox", 0) + \
+                            (len(src_cells) - len(keep))
+                else:
+                    out.pop("prox", None)
+                    stats["malformed_prox"] = stats.get("malformed_prox", 0) + 1
+                    print(f"  ! MALFORMED prox on {row.get('id')}: array "
+                          f"lengths != len(cells) — prox NOT shipped for this "
+                          f"area; rerun python3 brain/build_frontier.py",
+                          file=sys.stderr)
             rows.append(out)
         stats["areas"] += 1
         stats["cells"] += len(keep)
@@ -530,7 +562,7 @@ def main() -> int:
     # `fa` is computed here (the ancestor walk above only sees `supercells` on
     # cell rows, which homeless cells don't have) so facet chips never grey a
     # frontier folder that holds matching cells.
-    stale_shells = []
+    misaligned_prox = []
     for row in frontier_rows:
         entry = {"label": row.get("label") or row["id"].split(":", 1)[1],
                  "frontier": True, "cells": row["cells"]}
@@ -545,21 +577,23 @@ def main() -> int:
             entry["stateability"] = row["mean_stateability"]
         if row.get("top"):
             entry["top"] = row["top"]
-        # halo shells pass through VERBATIM (HALO CONTRACT: the shard row ships
-        # frontier.jsonl's partition unchanged; test_cell_shards asserts it).
-        # On a FRESH frontier.jsonl the shells' union == cells exactly; if the
-        # stale-validation above dropped members, say so — never silently.
-        if row.get("shells"):
-            entry["shells"] = row["shells"]
-            in_shells = {c for arr in row["shells"].values() for c in arr}
-            if in_shells != set(row["cells"]):
-                stale_shells.append(row["id"])
+        # formal-proximity arrays pass through VERBATIM (PROXIMITY CONTRACT:
+        # the shard row ships frontier.jsonl's per-cell scores unchanged —
+        # load_frontier already re-aligned them if stale members dropped;
+        # test_cell_shards S5 asserts the pass-through). Belt over braces: a
+        # misaligned array set must NEVER ship (scores on the wrong cells).
+        if row.get("prox"):
+            if all(isinstance(v, list) and len(v) == len(row["cells"])
+                   for v in row["prox"].values()):
+                entry["prox"] = row["prox"]
+            else:
+                misaligned_prox.append(row["id"])
         supercells[row["id"]] = entry
-    if stale_shells:
-        print(f"  ! STALE frontier shells on {len(stale_shells)} area(s) "
-              f"(shells' union != the kept cells after stale-drop): "
-              f"{stale_shells[:3]} — rerun python3 brain/build_frontier.py",
-              file=sys.stderr)
+    if misaligned_prox:
+        print(f"  ! MISALIGNED frontier prox on {len(misaligned_prox)} area(s) "
+              f"(array lengths != the kept cells after stale-drop) — prox NOT "
+              f"shipped for: {misaligned_prox[:3]}; rerun "
+              f"python3 brain/build_frontier.py", file=sys.stderr)
     n_sup_syn = sum(len(r.get("syn") or []) for r in supercells.values())
     sup_doc = {"_meta": {"schema": "brain/SCHEMA.md#v3", "generated_at": gen,
                          "traces": "supercell `syn` rows carry NO traces (byte budget: "
@@ -833,8 +867,9 @@ def main() -> int:
     (tmp / "explorer.json").write_text(explorer_blob)
 
     # frontier_graph.json ships VERBATIM (byte-copy, never re-serialized): the
-    # halo view's client-side BFS input must be exactly the file the frontier
-    # tests proved the parity law against (test_cell_shards S8 pins the bytes).
+    # Libraries toggle's client-side re-scoring input must be exactly the file
+    # the frontier tests proved the parity law against (test_cell_shards S8
+    # pins the bytes).
     # Fail-soft when absent, like frontier.jsonl — but LOUD, and stale-checked
     # against the CURRENT homeless set so a drifted graph never ships silently.
     graph_src = BRAIN_DATA / "frontier_graph.json"
@@ -852,12 +887,12 @@ def main() -> int:
         if graph_cells != homeless_now:
             print(f"  ! STALE frontier_graph.json: its cells "
                   f"({'unparseable' if graph_cells is None else len(graph_cells)}) "
-                  f"!= the current homeless set ({len(homeless_now)}) — the halo "
-                  f"view's client BFS will diverge from the shells; rerun "
+                  f"!= the current homeless set ({len(homeless_now)}) — the client "
+                  f"re-score will diverge from the shipped prox; rerun "
                   f"python3 brain/build_frontier.py", file=sys.stderr)
     else:
-        print("  ! no brain/data/frontier_graph.json — the halo view's "
-              "library re-shelling has no client BFS input; run "
+        print("  ! no brain/data/frontier_graph.json — the Libraries "
+              "toggle has no client re-scoring input; run "
               "python3 brain/build_frontier.py first", file=sys.stderr)
 
     if OUT_DIR.exists():

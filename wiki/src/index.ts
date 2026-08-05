@@ -40,7 +40,6 @@ import { wikifunctionsPage } from "./wikifunctions.js";
 import { wikifunctionsVerifyPage } from "./wikifunctions-verify.js";
 import { registerReviewRoutes } from "./review.js";
 import { registerDeclRoutes } from "./decl.js";
-import { registerBrainRoutes } from "./brain.js";
 import { registerBrainEditRoutes } from "./brain-edits.js";
 import { registerBrainApiRoutes } from "./brain-api.js";
 import { registerMcpRoutes } from "./mcp.js";
@@ -105,10 +104,12 @@ const RESERVED = new Set([
   "mcp",
   "repos",
   "about",
-  // Static assets in wiki/public/ + retired-redirect paths. The asset layer /
-  // redirect routes answer these before the /:slug catch-all, but an article
-  // must never be creatable under the same name (the invariant: every
-  // non-article top-level path is listed here).
+  // Static assets in wiki/public/ + the names of the DELETED old-graph-stack
+  // routes (/map, /map-v2, /graph, /atlas, /article-graph, graph_data.json,
+  // atlas_data.json — handlers deleted 2026-08-04; they now fall through to
+  // the /:slug catch-all and 404). The names stay squatted here so an article
+  // can never be created under an old URL (the invariant: every non-article
+  // top-level path is listed here).
   "concepts",
   "map",
   "map-v2",
@@ -124,7 +125,6 @@ const app = new Hono<{ Bindings: Env }>();
 registerAuthRoutes(app);
 registerReviewRoutes(app);
 registerDeclRoutes(app);
-registerBrainRoutes(app);
 registerBrainEditRoutes(app);
 registerBrainApiRoutes(app);
 registerMcpRoutes(app);
@@ -568,30 +568,6 @@ app.get("/sitemap.xml", async (c) => {
   await c.env.RENDER_CACHE.put(cacheKey, xml, { expirationTtl: 3600 });
   return c.body(xml, 200, headers);
 });
-
-// ---- retired graph/atlas data endpoints → 410 Gone (2026-07-10). The old
-// concept-graph + bubble-atlas stack is fully superseded by the Brain: pages
-// 301 below, and the data endpoints answer 410 with pointers so any remaining
-// agent integrations get an actionable error instead of stale data. ------------
-const GONE_HEADERS = { "Cache-Control": "public, max-age=86400" };
-const gone = (c: Context<{ Bindings: Env }>) =>
-  c.json({
-    ok: false, error: "gone",
-    note: "this endpoint is retired — the Brain supersedes the old concept graph/atlas",
-    see: { page: "/brain", api: "/api/brain/cell?key=", reference: "/brain/api", mcp: "/mcp" },
-  }, 410, GONE_HEADERS);
-app.get("/graph_data.json", gone);
-app.get("/atlas_data.json", gone);
-app.get("/api/atlas", gone);
-app.get("/api/atlas/:key", gone);
-
-// ---- /map, /graph, /atlas, /article-graph → /brain (301): every retired
-// graph page. /brain supersedes them all. --------------------------------------
-app.get("/map", (c) => c.redirect("/brain", 301));
-app.get("/map-v2", (c) => c.redirect("/brain", 301));
-app.get("/graph", (c) => c.redirect("/brain", 301));
-app.get("/atlas", (c) => c.redirect("/brain", 301));
-app.get("/article-graph", (c) => c.redirect("/brain", 301));
 
 // ---- /favicon.ico — WikiLean's mark: the "W" drawn as a graph of connected
 // nodes (a constellation), which is what the site now IS — the Brain, a network

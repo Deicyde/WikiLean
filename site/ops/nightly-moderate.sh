@@ -135,10 +135,11 @@ cd "$REPO/site" || exit 1
     # FormalConjectures frontier ingest — same fail-soft contract; the DRIFT
     # lines in its output are the frontier moving (open→solved flips).
     python3 "$REPO/catalog/ingest_formal_conjectures.py" || echo "(fc ingest returned $? — using last good file)"
-    # The old concept-graph/atlas page + endpoint stack is RETIRED (2026-07-10):
-    # /graph_data.json, /atlas_data.json and /api/atlas answer 410, their
-    # builders are deleted, and the brain nightly (brain-nightly.sh) owns the
-    # graph now. Coverage still refreshes here — manage/ worklists consume it.
+    # The old concept-graph/atlas page + endpoint stack is DELETED (retired
+    # 2026-07-10, tombstones destroyed 2026-08-04): /graph_data.json,
+    # /atlas_data.json and /api/atlas are plain 404s, their builders are
+    # deleted, and the brain nightly (brain-nightly.sh) owns the graph now.
+    # Coverage still refreshes here — manage/ worklists consume it.
     python3 "$REPO/manage/coverage.py" || echo "(coverage returned $?)"
     echo
   fi
