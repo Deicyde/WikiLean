@@ -344,6 +344,21 @@ into `wiki/public/assets/`. Edit sources, then run build-public, never edit
 
 ## Status log
 
+- 2026-08-04 (evening) — **Frontier/halo reconciled + tombstone layer destroyed
+  (821edf18, DEPLOYED cf39e3d5, live-verified).** Jack's directives: (1) hop-count
+  shells hid bond volume — replaced by the formal-proximity contract (SCHEMA
+  "Formal proximity": direct raw synapse weight into decl cells + bottleneck-
+  capped bridge/4; midrank-percentile radius; six parallel prox arrays; per-
+  library client re-scoring with exact-float parity, proven over six 2-library
+  subsets). One frontier view, territory sectors, no toggle, no "jumps" copy;
+  old-vs-new: a 648-bond cell and a 1-bond cell both sat in "shell 1", now
+  separate 986.75 vs 1.0. Mobile stage-SVG collapse (≤900px painted 150px)
+  fixed in the same pass. (2) Tombstones deleted outright: /map /graph /atlas
+  /article-graph 301s, graph_data/atlas_data//api/atlas 410s, GET
+  /api/brain/node, MCP brain_node alias — RESERVED only squats the names;
+  clean 404s pinned by wiki/test/retired-routes.test.ts. Suites: frontier
+  54/54, shards 56/56, acceptance 21/21, wiki 34 files / 706.
+
 - 2026-08-04 — **Full-day autonomous sweep (14-task plan).** (1) Frontier/halo
   tranche verified + committed; worktrees/branches pruned; docs de-drifted.
   (2) Worker batch 1 DEPLOYED + verified live: unified nav across all shells,
