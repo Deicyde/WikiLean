@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "`Nat.ModEq.pow_totient` states exactly `x ^ φ n ≡ 1 [MOD n]` under `Nat.Coprime x n`, with `ZMod.pow_totient` as an equivalent units-form statement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "afb8ead1da92"
     },
     {
       "kind": "proposition",
@@ -35,7 +36,8 @@
         "match_kind": null
       },
       "note": "The converse direction `a ^ φ(n) ≡ 1 [MOD n] → Coprime a n` is not stated as a named lemma; the underlying infrastructure `ZMod.isUnit_iff_coprime` makes it a one-step corollary but no exact decl exists.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "36bdfcfb406c"
     },
     {
       "kind": "example",
@@ -51,7 +53,8 @@
         "match_kind": null
       },
       "note": "This numerical worked example (computing 7^222 mod 10) has no corresponding decl in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c19039373ad9"
     },
     {
       "kind": "proposition",
@@ -67,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "`Nat.pow_totient_mod` states `x ^ k % n = x ^ (k % φ n) % n` whenever `1 < n` and `x.Coprime n`, exactly the exponent-reduction principle.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "00bea79e29f6"
     },
     {
       "kind": "proof",
@@ -83,7 +87,8 @@
         "match_kind": "invocation"
       },
       "note": "Mathlib's proof of `ZMod.pow_totient` follows this exact group-theoretic argument via `pow_card_eq_one` on the unit group `(ZMod n)ˣ`, with `card_units_eq_totient` identifying its order as `φ n`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d6418c4ba6da"
     },
     {
       "kind": "proof",
@@ -99,7 +104,8 @@
         "match_kind": null
       },
       "note": "Mathlib formalizes Euler's theorem only via the group-theoretic route through `(ZMod n)ˣ`; the elementary product-permutation proof on reduced residue systems is not present.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "66c2bec20145"
     }
   ]
 }

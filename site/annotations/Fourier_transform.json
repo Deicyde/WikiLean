@@ -14,7 +14,7 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Real.fourierIntegral_eq",
+        "decl": "Real.fourier_real_eq",
         "module": "Mathlib.Analysis.Fourier.FourierTransform",
         "match_kind": "exact"
       },
@@ -507,12 +507,12 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "mellin_inversion",
+        "decl": "mellinInv_mellin_eq",
         "module": "Mathlib.Analysis.MellinInversion",
         "match_kind": "generalization"
       },
       "note": "Mathlib has `mellin_inversion` for the Mellin transform itself, but no derivation as an inversion formula for the (absent) Laplace transform.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "f6bae1c67f4a"
     },
     {
@@ -1056,7 +1056,8 @@
         "match_kind": "exact"
       },
       "note": "`MeasureTheory.Measure.dirac a` is the Dirac point mass at `a`; on tempered distributions, it induces the Dirac delta.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "42cc510ead63"
     },
     {
       "kind": "definition",
@@ -1072,7 +1073,8 @@
         "match_kind": "exact"
       },
       "note": "`MeasureTheory.charFun μ t = ∫ x, exp(i⟪t,x⟫) dμ(x)` is the characteristic function of a measure; `ProbabilityTheory.charFun` does not exist as a separate decl.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f3e3dadb72a5"
     },
     {
       "kind": "definition",
@@ -1088,7 +1090,8 @@
         "match_kind": "exact"
       },
       "note": "`fourierCoeff f n` computes the n-th Fourier coefficient of a periodic function on `AddCircle T`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b714eb763c61"
     },
     {
       "kind": "theorem",
@@ -1104,7 +1107,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib formalizes classical Poisson summation `∑ f(n) = ∑ 𝓕(f)(n)` under Schwartz-like hypotheses on `f`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "889794b1eda9"
     },
     {
       "kind": "theorem",
@@ -1120,7 +1124,8 @@
         "match_kind": null
       },
       "note": "The Riesz–Thorin complex interpolation theorem is not present in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "979bc8c8db65"
     },
     {
       "kind": "definition",
@@ -1136,7 +1141,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not define the Heisenberg group of triples `(x, ξ, z) ∈ R² × U(1)` with the twisted product.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d557679a5367"
     },
     {
       "kind": "definition",
@@ -1152,7 +1158,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no dedicated `SolidSphericalHarmonic` / space of homogeneous harmonic polynomials of degree k on Rⁿ.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b6f7abdca657"
     },
     {
       "kind": "definition",
@@ -1168,7 +1175,8 @@
         "match_kind": null
       },
       "note": "Bessel functions of the first kind are not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b0de75639a49"
     },
     {
       "kind": "definition",
@@ -1184,7 +1192,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not define the Fourier cosine transform `∫ f(x) cos(2π λ x) dx`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "467384013449"
     },
     {
       "kind": "definition",
@@ -1200,7 +1209,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not define the Fourier sine transform `∫ f(x) sin(2π λ x) dx`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b9046b7e8278"
     },
     {
       "kind": "definition",
@@ -1216,7 +1226,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no autocorrelation `R_f(τ) = ∫ f(t) conj(f(t+τ)) dt` operator for a general function.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bb080df21561"
     },
     {
       "kind": "theorem",
@@ -1232,7 +1243,8 @@
         "match_kind": null
       },
       "note": "The identification of the power spectral density with the Fourier transform of the autocorrelation (Wiener–Khinchin) is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "85b3dc4c8702"
     },
     {
       "kind": "definition",
@@ -1248,7 +1260,8 @@
         "match_kind": "exact"
       },
       "note": "`ZMod.dft` defines the discrete Fourier transform of a function `ZMod N → ℂ`, the finite-abelian-group Fourier transform.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8763545885be"
     },
     {
       "kind": "definition",
@@ -1264,7 +1277,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not construct the enveloping group C*-algebra `C*(G)` from `L¹(G)`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5513f3208392"
     },
     {
       "kind": "theorem",
@@ -1280,7 +1294,8 @@
         "match_kind": "exact"
       },
       "note": "`gelfandStarTransform` gives the star-algebra equivalence `A ≃⋆ₐ[ℂ] C(characterSpace ℂ A, ℂ)` for a commutative unital C*-algebra, exactly Gelfand duality.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "263c01e7d2b5"
     }
   ]
 }

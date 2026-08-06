@@ -376,7 +376,8 @@
         "module": "Mathlib.Analysis.SpecialFunctions.Integrals.Basic",
         "match_kind": null
       },
-      "note": "Real.log is not defined as ∫1/t in Mathlib, but integral_one_div_of_pos proves ∫ 1/x from a..b = log(b/a) so the integral identity is available."
+      "note": "Real.log is not defined as ∫1/t in Mathlib, but integral_one_div_of_pos proves ∫ 1/x from a..b = log(b/a) so the integral identity is available.",
+      "id": "b8da137d2613"
     },
     {
       "kind": "proposition",
@@ -392,7 +393,8 @@
         "module": "Mathlib.Analysis.SpecialFunctions.ExpDeriv",
         "match_kind": null
       },
-      "note": "analyticAt_cexp shows Complex.exp is entire, but Mathlib constructs Complex.exp directly from its series rather than by analytic continuation from Real.exp."
+      "note": "analyticAt_cexp shows Complex.exp is entire, but Mathlib constructs Complex.exp directly from its series rather than by analytic continuation from Real.exp.",
+      "id": "362b4dbb4bac"
     },
     {
       "kind": "proposition",
@@ -408,7 +410,8 @@
         "module": "Mathlib.Analysis.Normed.Algebra.Exponential",
         "match_kind": "generalization"
       },
-      "note": "NormedSpace.exp and its ODE/series lemmas (hasDerivAt_exp, NormedSpace.exp_eq_tsum) formalize exp on any Banach algebra via the power-series and ODE routes."
+      "note": "NormedSpace.exp and its ODE/series lemmas (hasDerivAt_exp, NormedSpace.exp_eq_tsum) formalize exp on any Banach algebra via the power-series and ODE routes.",
+      "id": "65128cce2163"
     },
     {
       "kind": "proposition",
@@ -424,7 +427,8 @@
         "module": "Mathlib.Analysis.SpecialFunctions.Integrals.Basic",
         "match_kind": null
       },
-      "note": "Mathlib has integrability of 1/x on intervals avoiding 0 (used implicitly by integral_one_div_of_pos) but no standalone lemma phrased as `1/t is integrable, so the log integral is well-defined`."
+      "note": "Mathlib has integrability of 1/x on intervals avoiding 0 (used implicitly by integral_one_div_of_pos) but no standalone lemma phrased as `1/t is integrable, so the log integral is well-defined`.",
+      "id": "aabebaaace47"
     },
     {
       "kind": "proposition",
@@ -440,7 +444,8 @@
         "module": "Mathlib.Analysis.SpecialFunctions.Log.Basic",
         "match_kind": null
       },
-      "note": "Surjectivity of log ℝ>0 → ℝ is available via Real.expOrderIso, but Mathlib does not derive it from the integral-test/divergence-of-harmonic-series argument."
+      "note": "Surjectivity of log ℝ>0 → ℝ is available via Real.expOrderIso, but Mathlib does not derive it from the integral-test/divergence-of-harmonic-series argument.",
+      "id": "6d95d26cf4f0"
     },
     {
       "kind": "proposition",
@@ -456,7 +461,8 @@
         "module": "Mathlib.Topology.Order.IntermediateValue",
         "match_kind": null
       },
-      "note": "The Intermediate Value Theorem is formalized as intermediate_value_univ / IsPreconnected.intermediate_value, but its application to produce the exponential base is not."
+      "note": "The Intermediate Value Theorem is formalized as intermediate_value_univ / IsPreconnected.intermediate_value, but its application to produce the exponential base is not.",
+      "id": "26b433eaf824"
     },
     {
       "kind": "proposition",
@@ -472,7 +478,8 @@
         "module": "Mathlib.Algebra.BigOperators.NatAntidiagonal",
         "match_kind": null
       },
-      "note": "The general binomial theorem (add_pow / Commute.add_pow) is formalized, but its specific use to bound (1+x/n)^n vs the partial sums of exp(x) is not."
+      "note": "The general binomial theorem (add_pow / Commute.add_pow) is formalized, but its specific use to bound (1+x/n)^n vs the partial sums of exp(x) is not.",
+      "id": "09da0e939ef9"
     },
     {
       "kind": "proposition",
@@ -488,7 +495,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The extension of the product-limit ⇔ power-series equivalence to negative arguments is not formalized."
+      "note": "The extension of the product-limit ⇔ power-series equivalence to negative arguments is not formalized.",
+      "id": "278e52733191"
     },
     {
       "kind": "proposition",
@@ -504,7 +512,8 @@
         "module": "Mathlib.Analysis.SpecialFunctions.Log.Deriv",
         "match_kind": null
       },
-      "note": "The FTC (intervalIntegral.integral_eq_sub_of_hasDerivAt) and Real.hasDerivAt_log are both formalized, so the specific derivation (d/dx ∫₁^x 1/t = 1/x) is a routine composition, but not packaged as one lemma."
+      "note": "The FTC (intervalIntegral.integral_eq_sub_of_hasDerivAt) and Real.hasDerivAt_log are both formalized, so the specific derivation (d/dx ∫₁^x 1/t = 1/x) is a routine composition, but not packaged as one lemma.",
+      "id": "11b505610e8d"
     },
     {
       "kind": "proposition",
@@ -520,7 +529,8 @@
         "module": "Mathlib.Analysis.SpecialFunctions.Log.Basic",
         "match_kind": "exact"
       },
-      "note": "Real.log_pow states log(x^n) = n * log x exactly."
+      "note": "Real.log_pow states log(x^n) = n * log x exactly.",
+      "id": "b7af0a73e956"
     },
     {
       "kind": "proposition",
@@ -536,7 +546,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib has ODE_solution_unique but no formalization of the convergence of the Euler discretization to the exact ODE solution."
+      "note": "Mathlib has ODE_solution_unique but no formalization of the convergence of the Euler discretization to the exact ODE solution.",
+      "id": "0d3a82591b0e"
     },
     {
       "kind": "proposition",
@@ -552,7 +563,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No Mathlib lemma proves that a solution of the multiplicative Cauchy equation nonzero at one point is nonzero everywhere."
+      "note": "No Mathlib lemma proves that a solution of the multiplicative Cauchy equation nonzero at one point is nonzero everywhere.",
+      "id": "4ecb468fdb1c"
     },
     {
       "kind": "proposition",
@@ -568,7 +580,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No Mathlib lemma establishes that a solution of the multiplicative Cauchy equation continuous at one point is continuous everywhere."
+      "note": "No Mathlib lemma establishes that a solution of the multiplicative Cauchy equation continuous at one point is continuous everywhere.",
+      "id": "2165953f6682"
     }
   ]
 }

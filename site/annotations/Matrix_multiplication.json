@@ -14,12 +14,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Matrix.instHMul",
+        "decl": "Matrix.instHMulOfFintypeOfMulOfAddCommMonoid",
         "module": "Mathlib.Data.Matrix.Mul",
         "match_kind": "exact"
       },
       "note": "The heterogeneous matrix multiplication instance `HMul (Matrix l m α) (Matrix m n α) (Matrix l n α)` is defined directly in `Mathlib/Data/Matrix/Mul.lean`.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "0785066f48df"
     },
     {
@@ -31,12 +31,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Matrix.instHMul",
+        "decl": "Matrix.instHMulOfFintypeOfMulOfAddCommMonoid",
         "module": "Mathlib.Data.Matrix.Mul",
         "match_kind": "exact"
       },
       "note": "The `HMul` instance and `Matrix.mul_apply` give exactly the m×p product matrix of an m×n and n×p matrix.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "anchors": [
         {
           "section": "Matrix times matrix",
@@ -83,12 +83,12 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Matrix.instHMul",
+        "decl": "Matrix.instHMulOfFintypeOfMulOfAddCommMonoid",
         "module": "Mathlib.Data.Matrix.Mul",
         "match_kind": "invocation"
       },
       "note": "The dimension-matching condition is enforced at the type level via the `HMul (Matrix l m α) (Matrix m n α)` instance rather than stated as a proposition.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "2c992ed54de9"
     },
     {
@@ -134,12 +134,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Matrix.dotProduct",
+        "decl": "dotProduct",
         "module": "Mathlib.Data.Matrix.Mul",
         "match_kind": "exact"
       },
       "note": "`Matrix.dotProduct v w = ∑ i, v i * w i` is defined and `Matrix.mul_apply` ties it back to the 1×1 matrix entry of the product.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "507113eb177c"
     },
     {
@@ -273,12 +273,12 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Matrix.dotProduct",
+        "decl": "dotProduct",
         "module": "Mathlib.Data.Matrix.Mul",
         "match_kind": "invocation"
       },
       "note": "`Matrix.dotProduct` plus `Matrix.mul_apply` yield this identification, but no single lemma states the dot product equals the unique entry of `xᵀ y`.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "02210aed9a54"
     },
     {
@@ -324,12 +324,12 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Matrix.instMul",
+        "decl": "Matrix.instMulOfFintypeOfAddCommMonoid",
         "module": "Mathlib.Data.Matrix.Mul",
         "match_kind": "invocation"
       },
       "note": "Mathlib's `Matrix.instRing` deliberately does not provide commutativity for `n ≥ 2`, but there is no explicit `¬ Commute A B` example as a named lemma.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "5ec999c91d9a"
     },
     {
