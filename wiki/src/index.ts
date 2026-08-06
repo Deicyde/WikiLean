@@ -972,13 +972,39 @@ app.get("/proposals", async (c) => {
         .where(inArray(articles.slug, slugs))
     : [];
   const bySlug = new Map(arts.map((a) => [a.slug, a]));
+  // The annotation's quoted article text: anchor.snippet (v3 multi-anchor
+  // annotations carry it in anchors[0] instead), else a legacy `quote` field.
+  // HOSTILE text — the page escapes it; here we only pick + truncate.
+  const isObj = (v: unknown): v is Record<string, unknown> =>
+    typeof v === "object" && v !== null && !Array.isArray(v);
+  const quoteOf = (a: AnnRecord): { quote: string | null; section: string | null } => {
+    const anc = isObj(a.anchor)
+      ? a.anchor
+      : Array.isArray(a.anchors) && a.anchors.length > 0 && isObj(a.anchors[0])
+        ? (a.anchors[0] as Record<string, unknown>)
+        : {};
+    const raw = typeof anc.snippet === "string" ? anc.snippet : typeof a.quote === "string" ? a.quote : null;
+    return {
+      quote: raw === null ? null : raw.length > 200 ? raw.slice(0, 200) + "…" : raw,
+      section: typeof anc.section === "string" ? anc.section : null,
+    };
+  };
   const rows: ProposalQueueRow[] = pending.map((p) => {
     const art = bySlug.get(p.slug);
     let label = "";
     let current: Record<string, unknown> | null = null;
+    let quote: string | null = null;
+    let section: string | null = null;
+    let provenance: string | null = null;
+    let target: AnnRecord | undefined;
     try {
       const anns = JSON.parse(art?.annotations ?? "[]") as AnnRecord[];
-      const target = anns.find((a) => a.id === p.annotationId);
+      // Same liveness predicate as approve_proposal: a tombstoned (rejected)
+      // target must render the dead-target fallback, not a live-looking delta
+      // — approve on it 409s and drops the proposal as stale, and a
+      // "rejected -> X" card would read as the AI proposing to overturn a
+      // human veto.
+      target = anns.find((a) => a.id === p.annotationId && a.status !== "rejected");
       if (target) {
         label = typeof target.label === "string" ? target.label : "";
         current = {
@@ -988,9 +1014,12 @@ app.get("/proposals", async (c) => {
           label: target.label,
           kind: target.kind,
         };
+        ({ quote, section } = quoteOf(target));
+        provenance = typeof target.provenance === "string" ? target.provenance : null;
       }
     } catch {
       /* render with unknown current values rather than 500 */
+      target = undefined;
     }
     let fields: Record<string, unknown> = {};
     try {
@@ -998,6 +1027,12 @@ app.get("/proposals", async (c) => {
     } catch {
       /* leave empty */
     }
+    // The REAL delta, with the exact semantics approve will use: reuse
+    // applyProposalFields against the live target (whole-field replace over
+    // the approvable whitelist, deep-equal per field). changed === null means
+    // "target gone/unparseable" (approve would drop the proposal as stale),
+    // which is distinct from noChange (target present, delta empty).
+    const changed = target ? applyProposalFields(target, fields).changed : null;
     return {
       proposalId: p.proposalId,
       slug: p.slug,
@@ -1007,6 +1042,11 @@ app.get("/proposals", async (c) => {
       label,
       current,
       fields,
+      changed,
+      noChange: changed !== null && changed.length === 0,
+      quote,
+      section,
+      provenance,
       reason: p.reason ?? "",
       model: p.model,
       createdAt: p.createdAt,
@@ -1634,12 +1674,13 @@ app.post("/api/article/:slug", async (c) => {
     // Exclude tombstones: a `rejected` annotation is a human veto and must
     // never be a proposal target (else an approved proposal could resurrect a
     // veto). mergeProposals drops any proposal whose id isn't in this set.
-    const liveIds = new Set(
-      finalAnnotations
-        .filter((a) => a.status !== "rejected")
-        .map((a) => a.id)
-        .filter((x): x is string => typeof x === "string"),
-    );
+    // liveById additionally powers the no-delta guard: the concrete delta each
+    // proposal would apply is computed against these exact annotations.
+    const liveById = new Map<string, AnnRecord>();
+    for (const a of finalAnnotations) {
+      if (a.status !== "rejected" && typeof a.id === "string") liveById.set(a.id, a);
+    }
+    const liveIds = new Set(liveById.keys());
     // Blob↔table reconciliation (the dual-write self-heal): a decision racing
     // a bot save on the same slug can diverge the two stores in either
     // direction (a blind blob overwrite erases a just-merged entry → zombie
@@ -1656,18 +1697,40 @@ app.post("/api/article/:slug", async (c) => {
     // tombstoned since) can never be approved — drop them from the hot blob and
     // record the silent expiry in the lifecycle log instead of losing it.
     const staleNow = undecided.filter((p) => !liveIds.has(p.annotationId));
-    const stillPending = undecided.filter((p) => liveIds.has(p.annotationId));
+    const liveStillPending = undecided.filter((p) => liveIds.has(p.annotationId));
+    // No-delta sweep (self-heal): a pending proposal whose delta vs the CURRENT
+    // target is now empty — either it was filed as a "confirmation" before the
+    // merge guard existed, or a later edit already applied the same values —
+    // can only ever approve to a no-op. Same applyProposalFields computation as
+    // the incoming-merge guard, so historical no-delta rows (e.g. the 2026-08
+    // batch of 8) disappear from the queue on the next nightly bot save that
+    // touches their slug, with the expiry recorded as 'stale' in the lifecycle
+    // log — no manual cleanup pass needed.
+    const noDeltaNow = liveStillPending.filter((p) => {
+      const live = liveById.get(p.annotationId);
+      return live !== undefined && applyProposalFields(live, p.fields).changed.length === 0;
+    });
+    const noDeltaIds = new Set(noDeltaNow.map((p) => p.proposalId));
+    const stillPending = liveStillPending.filter((p) => !noDeltaIds.has(p.proposalId));
     // posted.meta may be absent entirely (the sweep runs on every bot save).
     const postedMeta = (posted.meta && typeof posted.meta === "object" ? posted.meta : {}) as {
       run_id?: unknown;
       model?: unknown;
     };
-    const merged = mergeProposals(stillPending, parseRejected(ms?.rejectedProposals), incomingProposals, {
+    const { merged, droppedNoDelta } = mergeProposals(stillPending, parseRejected(ms?.rejectedProposals), incomingProposals, {
       now: pnow,
       runId: typeof postedMeta.run_id === "string" ? postedMeta.run_id : undefined,
       model: typeof postedMeta.model === "string" ? postedMeta.model : undefined,
       validIds: liveIds,
+      liveById,
     });
+    if (droppedNoDelta > 0 || noDeltaNow.length > 0) {
+      // Structured log for the save: how many no-delta proposals were stopped
+      // at the door (incoming) vs swept out of the existing queue (pending).
+      console.log(
+        JSON.stringify({ event: "proposal-no-delta-drop", slug, incoming_dropped: droppedNoDelta, pending_swept: noDeltaNow.length, t: pnow }),
+      );
+    }
     // Zombie heal: table rows still 'pending' that are in neither the incoming
     // blob nor the pre-existing one (their blob entry was lost to a race) —
     // sweep to stale so /proposals and /stats can't show undecidable rows.
@@ -1676,7 +1739,7 @@ app.post("/api/article/:slug", async (c) => {
     const zombies = tableRows.filter((r) => r.status === "pending" && !mergedIds.has(r.id) && !blobIds.has(r.id));
     const blobChanged = merged.length !== existingPending.length ||
       merged.some((p, i) => p.proposalId !== existingPending[i]?.proposalId);
-    if (blobChanged || staleNow.length > 0 || zombies.length > 0) {
+    if (blobChanged || staleNow.length > 0 || noDeltaNow.length > 0 || zombies.length > 0) {
       const proposalJson = merged.length ? JSON.stringify(merged) : null;
       const newOnes = merged.slice(stillPending.length);
       await db.batch([
@@ -1699,8 +1762,9 @@ app.post("/api/article/:slug", async (c) => {
             createdAt: p.createdAt,
           }),
         ),
-        // …the silent expiries, and the zombie rows healed to stale.
-        ...[...staleNow.map((p) => p.proposalId), ...zombies.map((z) => z.id)].map((pid) =>
+        // …the silent expiries (dead targets + no-delta self-heal), and the
+        // zombie rows healed to stale.
+        ...[...staleNow.map((p) => p.proposalId), ...noDeltaNow.map((p) => p.proposalId), ...zombies.map((z) => z.id)].map((pid) =>
           db
             .update(proposals)
             .set({ status: "stale", decidedAt: pnow })
