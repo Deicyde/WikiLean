@@ -85,7 +85,13 @@ This is advisory data only — it does NOT touch the rendered annotations.
 - **A. Global queue page `/proposals`** (recommended): one cross-article list,
   "AI proposes: not_formalized → formalized (decl X) on *Commutative ring*
   [approve] [reject]", ordered by article. Best triage throughput. Mirrors how
-  `/api/work` ranks, but human-facing.
+  `/api/work` ranks, but human-facing. Each row is an **evidence card**: the
+  annotation's quoted article text, a provenance badge, the real server-computed
+  field delta (applyProposalFields semantics) as before/after chips with
+  mathlib4_docs links + decl-index existence ticks, auto-linked Mathlib source
+  refs in the reason, and a "changes nothing → reject as not_better" banner on
+  no-delta rows (which the merge guard now blocks at filing and the bot-save
+  sweep self-heals out of the queue).
 - **B. A tab in the existing `/review` tool**: reuses the curation surface and
   its OAuth, less new UI.
 - **C. Inline banner on each article's moderation view**: maximal context, but

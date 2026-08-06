@@ -87,6 +87,29 @@ def proposal_fields_for(a: dict, verdict: dict) -> dict:
     return {"mathlib": ml}
 
 
+# Fields an approved proposal may overwrite — mirror APPROVABLE in
+# wiki/src/proposals.ts (provenance/id are never proposal-writable).
+APPROVABLE_FIELDS = ("status", "mathlib", "note", "label", "kind", "match_kind")
+
+
+def _stable(v) -> str:
+    return json.dumps(v, sort_keys=True, ensure_ascii=False)
+
+
+def proposal_has_delta(a: dict, fields: dict) -> bool:
+    """Mirror of the server's no-delta rule (applyProposalFields in
+    wiki/src/proposals.ts): whole-field replace over the approvable whitelist,
+    deep-equal per field. A proposal whose every field already equals the live
+    annotation's value is a no-op the Worker's merge guard would drop anyway —
+    don't file it (and don't waste a review slot in /proposals)."""
+    for k, v in fields.items():
+        if k not in APPROVABLE_FIELDS:
+            continue
+        if _stable(a.get(k)) != _stable(v):
+            return True
+    return False
+
+
 def build_plans(sweep: dict, verdicts: list[dict]) -> tuple[dict, dict, list[dict]]:
     """Returns (auto_plan[slug] -> edits, overclaim_props[slug] -> proposals,
     reported). Human-provenance conversion happens later, against live D1."""
@@ -145,9 +168,13 @@ def process_slug(s, base: str, token: str, slug: str, edits: list[dict],
                 skipped.append((e, f"decl already {ads.get_decl(a)!r}")); continue
             if a.get("provenance") == "human":
                 # never bot-edit a human annotation — convert to a proposal
+                fields = proposal_fields_for(a, e["verdict"])
+                if not proposal_has_delta(a, fields):
+                    skipped.append((e, "no-delta, not filed"))
+                    continue
                 proposals.append({
                     "annotationId": e["id"],
-                    "fields": proposal_fields_for(a, e["verdict"]),
+                    "fields": fields,
                     "reason": ("decl-sweep (human-owned): " + e["verdict"]["reason"])[:500]})
                 continue
             if a.get("provenance") not in ads.EDITABLE_PROV:
@@ -171,9 +198,13 @@ def process_slug(s, base: str, token: str, slug: str, edits: list[dict],
                 skipped.append((p, "overclaim target gone/tombstoned")); continue
             if ads.get_decl(a) != p["expect_decl"]:
                 skipped.append((p, "overclaim decl drifted")); continue
+            fields = proposal_fields_for(a, p["verdict"])
+            if not proposal_has_delta(a, fields):
+                skipped.append((p, "no-delta, not filed"))
+                continue
             proposals.append({
                 "annotationId": p["id"],
-                "fields": proposal_fields_for(a, p["verdict"]),
+                "fields": fields,
                 "reason": ("proof_wanted overclaim: " + p["verdict"]["reason"])[:500]})
         return out, applied, proposals, skipped
 

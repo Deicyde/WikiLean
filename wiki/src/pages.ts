@@ -3,6 +3,7 @@
 
 import { htmlEscape } from "./engine/html.js";
 import { SEARCHBOX_CSS, SEARCHBOX_HTML, SEARCHBOX_SCRIPT } from "./engine/searchbox.js";
+import { docsUrlFor } from "./decl.js";
 import type { AuthUser } from "./auth.js";
 import type { Annotation } from "./engine/types.js";
 
@@ -863,11 +864,14 @@ export function userProfilePage(
 }
 
 // ---- /proposals — the cross-article propose-then-approve review queue -------
-// One row per pending AI proposal (from the proposals lifecycle table), with
-// the target annotation's CURRENT values beside the proposed delta so the
-// reviewer can judge without opening the article. Approve/Reject post the
-// existing /api/article/:slug contract (approve carries that slug's current
-// version as base_version; a 409 mid-queue just reloads).
+// One evidence card per pending AI proposal (from the proposals lifecycle
+// table): the annotation's quoted article text, the REAL field-level delta
+// (computed server-side with applyProposalFields — the same semantics approve
+// runs), mathlib4_docs links for decl changes with a client-side existence
+// tick, and auto-linked Mathlib source references in the reason. Approve/
+// Reject post the existing /api/article/:slug contract (approve carries that
+// slug's current version as base_version; a 409 mid-queue just reloads).
+// This page is UNCACHED (session-gated c.html direct) — no cache-key bumps.
 export interface ProposalQueueRow {
   proposalId: string;
   slug: string;
@@ -876,8 +880,16 @@ export interface ProposalQueueRow {
   annotationId: string;
   label: string; // target annotation's label ('' if the target is gone)
   current: Record<string, unknown> | null; // target's current approvable fields
-  fields: Record<string, unknown>; // the proposed delta
-  reason: string;
+  fields: Record<string, unknown>; // the proposed delta as filed
+  // The concrete delta approve would apply (applyProposalFields vs the live
+  // target). null = target gone/unparseable (approve drops it as stale);
+  // [] = target present but nothing would change (see noChange).
+  changed: Array<{ field: string; from: unknown; to: unknown }> | null;
+  noChange: boolean; // changed !== null && changed.length === 0
+  quote: string | null; // the annotation's anchor snippet (HOSTILE — escape)
+  section: string | null; // anchor section, e.g. "(Lead)" (HOSTILE — escape)
+  provenance: string | null; // target's provenance — 'human' targets are Jack's own
+  reason: string; // HOSTILE — escape
   model: string | null;
   createdAt: number;
 }
@@ -890,6 +902,97 @@ function fmtVal(v: unknown): string {
   }
   return String(v);
 }
+
+// Auto-link Mathlib source references in a proposal reason: "Foo/Bar.lean:123"
+// (with or without the Mathlib/ prefix, line optional) becomes a GitHub link.
+// The regex IS the sanity check — only [A-Za-z0-9_'-] path segments with at
+// least one directory qualify; everything else in the (HOSTILE) reason is
+// rendered as escaped text. The (?<![/.\w]) guard stops re-matching path
+// tails inside a full URL the reason already carries (".../master/Mathlib/…"
+// was previously re-prefixed from its "com/…" substring — a wrong-target
+// evidence link that looked valid).
+const LEAN_REF_RE = /(?<![/.\w])((?:[A-Za-z0-9_'-]+\/)+[A-Za-z0-9_'-]+\.lean)(?::(\d{1,6}))?/g;
+// mathlib4's real top-level source roots: paths under these are linked as-is;
+// bare module paths get the Mathlib/ prefix (e.g. an adjudicator citing
+// "Archive/Imo/Imo1959Q1.lean" — Archive/ and Counterexamples/ are genuine
+// repo roots, and prefixing them produced 404 evidence links).
+const MATHLIB4_ROOTS = /^(Mathlib|Archive|Counterexamples|MathlibTest)\//;
+function linkifyReason(reason: string): string {
+  let out = "";
+  let last = 0;
+  LEAN_REF_RE.lastIndex = 0;
+  for (let m = LEAN_REF_RE.exec(reason); m !== null; m = LEAN_REF_RE.exec(reason)) {
+    out += htmlEscape(reason.slice(last, m.index), false);
+    const rel = MATHLIB4_ROOTS.test(m[1]) ? m[1] : "Mathlib/" + m[1];
+    const href = "https://github.com/leanprover-community/mathlib4/blob/master/" + rel + (m[2] ? "#L" + m[2] : "");
+    out += `<a class="wl-evidence" href="${htmlEscape(href)}" target="_blank" rel="noopener">${htmlEscape(m[0], false)}</a>`;
+    last = m.index + m[0].length;
+  }
+  return out + htmlEscape(reason.slice(last), false);
+}
+
+// One side of a delta chip. For the mathlib field, a value carrying a string
+// decl renders as a mathlib4_docs link (docsUrlFor — the same helper /decl
+// uses — when the object carries its module; else the durable /decl/:name
+// resolver, which 302s via the decl-index shards) plus an existence-tick
+// placeholder the page script fills in against the same shards. Decl/module
+// are HOSTILE (proposal-supplied) — escaped everywhere they land.
+function deltaChip(field: string, v: unknown, cls: "from" | "to"): string {
+  const chip = (inner: string) => `<span class="wl-chip wl-chip-${cls}">${inner}</span>`;
+  if (field === "mathlib" && typeof v === "object" && v !== null) {
+    const o = v as Record<string, unknown>;
+    if (typeof o.decl === "string" && o.decl) {
+      const href =
+        typeof o.module === "string" && o.module
+          ? docsUrlFor(o.module, o.decl)
+          : "/decl/" + encodeURIComponent(o.decl);
+      return chip(
+        `<a href="${htmlEscape(href)}" target="_blank" rel="noopener">${htmlEscape(o.decl, false)}</a>` +
+          `<span class="wl-decl-check" data-decl="${htmlEscape(o.decl)}"></span>`,
+      );
+    }
+  }
+  return chip(htmlEscape(fmtVal(v), false));
+}
+
+const PROPOSALS_CSS = `<style>
+.wl-prop-card{background:#fffdf9;border:1px solid #d8d0bd;border-radius:8px;padding:14px 16px;margin:0 0 14px}
+.wl-prop-head{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;margin-bottom:6px}
+.wl-prop-title{font-weight:700;font-size:1.02rem}
+.wl-prop-label{color:#5f594e;font-size:.9rem}
+.wl-prop-age{margin-left:auto}
+.wl-prov{display:inline-block;padding:1px 8px;border-radius:10px;font-size:.7rem;font-weight:700;background:#ece6d8;color:#5f594e;text-transform:uppercase;letter-spacing:.04em}
+.wl-prov-human{background:rgba(26,75,140,.12);color:#1a4b8c}
+.wl-prop-quote{margin:6px 0 10px;padding:6px 12px;border-left:3px solid #d8d0bd;color:#5f594e;font-style:italic;font-size:.92rem}
+.wl-prop-quote .wl-prop-sec{font-style:normal;font-size:.8rem;color:#6e675a}
+.wl-prop-nochange{background:rgba(176,128,32,.12);border:1px solid rgba(176,128,32,.4);color:#7d5a10;border-radius:6px;padding:8px 12px;margin:8px 0;font-size:.9rem;font-weight:600}
+.wl-prop-fieldrow{margin:4px 0;font-size:.9rem}
+.wl-prop-fieldrow>code{font-size:.8rem;margin-right:6px}
+.wl-chip{display:inline-block;padding:1px 8px;border-radius:6px;font-size:.85rem;max-width:100%;word-break:break-word}
+.wl-chip-from{background:rgba(179,55,47,.08);color:#9c2f28;text-decoration:line-through}
+.wl-chip-from a{color:#9c2f28;text-decoration:line-through}
+.wl-chip-to{background:rgba(47,125,79,.10);color:#2f7d4f;font-weight:600}
+.wl-chip-to a{color:#2f7d4f}
+.wl-arrow{color:#6e675a;margin:0 4px}
+.wl-decl-check{font-size:.72rem;margin-left:5px;white-space:nowrap}
+.wl-decl-check.ok{color:#2f7d4f}
+.wl-decl-check.miss{color:#b3372f;font-weight:600}
+.wl-prop-reason{margin:8px 0;font-size:.88rem;color:#3d382f;white-space:pre-wrap;word-break:break-word}
+.wl-prop-actions{margin-top:8px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+[data-theme="dark"] .wl-prop-card{background:#232020;border-color:#4d4742}
+[data-theme="dark"] .wl-prop-label{color:#9a9081}
+[data-theme="dark"] .wl-prov{background:#2e2a2f;color:#9a9081}
+[data-theme="dark"] .wl-prov-human{background:rgba(110,154,223,.16);color:#6e9adf}
+[data-theme="dark"] .wl-prop-quote{border-left-color:#4d4742;color:#9a9081}
+[data-theme="dark"] .wl-prop-nochange{background:rgba(212,160,66,.16);border-color:rgba(212,160,66,.5);color:#e2bf78}
+[data-theme="dark"] .wl-chip-from{background:rgba(226,104,95,.14);color:#f08e85}
+[data-theme="dark"] .wl-chip-from a{color:#f08e85}
+[data-theme="dark"] .wl-chip-to{background:rgba(76,169,122,.14);color:#8fd4ad}
+[data-theme="dark"] .wl-chip-to a{color:#8fd4ad}
+[data-theme="dark"] .wl-decl-check.ok{color:#8fd4ad}
+[data-theme="dark"] .wl-decl-check.miss{color:#f08e85}
+[data-theme="dark"] .wl-prop-reason{color:#c9c2b4}
+</style>`;
 
 export function proposalsQueuePage(
   rows: ProposalQueueRow[],
@@ -906,7 +1009,85 @@ export function proposalsQueuePage(
     meta.total > rows.length
       ? `<p class="muted">Showing the newest ${rows.length} of <b>${meta.total}</b> pending proposals — decide some to see the rest.</p>`
       : "";
+  const card = (r: ProposalQueueRow): string => {
+    const age = Math.max(0, Math.round((Date.now() - r.createdAt) / 86400000));
+    // Provenance badge — a 'human' target is Jack's OWN annotation; approving
+    // edits a human-owned record, so that case gets the loud badge.
+    const prov =
+      r.provenance === "human"
+        ? `<span class="wl-prov wl-prov-human" title="This annotation is human-owned — approving edits it in place (it stays yours)">human-owned</span>`
+        : r.provenance
+          ? `<span class="wl-prov">${htmlEscape(r.provenance, false)}</span>`
+          : "";
+    const quote =
+      r.quote !== null
+        ? `<blockquote class="wl-prop-quote">“${htmlEscape(r.quote, false)}”` +
+          (r.section !== null ? `<span class="wl-prop-sec"> — ${htmlEscape(r.section, false)}</span>` : "") +
+          `</blockquote>`
+        : "";
+    // Delta body: the real per-field before/after when the target is live,
+    // a fallback on the raw filed fields when it is gone, and the no-change
+    // banner when approve would be a pure no-op.
+    let delta: string;
+    if (r.changed === null) {
+      delta =
+        `<p class="muted">Target annotation not found — approving will drop this proposal as stale.</p>` +
+        Object.entries(r.fields)
+          .map(
+            ([k, v]) =>
+              `<div class="wl-prop-fieldrow"><code>${htmlEscape(k, false)}</code>` +
+              `<span class="wl-chip wl-chip-from">?</span><span class="wl-arrow">→</span>${deltaChip(k, v, "to")}</div>`,
+          )
+          .join("");
+    } else if (r.noChange) {
+      delta =
+        `<div class="wl-prop-nochange">This proposal changes nothing (current values already match) — reject as <b>not_better</b>.</div>` +
+        `<p class="muted">Proposed (all already current): ` +
+        Object.entries(r.fields)
+          .map(([k, v]) => `<code>${htmlEscape(k, false)}</code> = ${htmlEscape(fmtVal(v), false)}`)
+          .join(", ") +
+        `</p>`;
+    } else {
+      delta = r.changed
+        .map(
+          (ch) =>
+            `<div class="wl-prop-fieldrow"><code>${htmlEscape(ch.field, false)}</code>` +
+            `${deltaChip(ch.field, ch.from, "from")}<span class="wl-arrow">→</span>${deltaChip(ch.field, ch.to, "to")}</div>`,
+        )
+        .join("");
+    }
+    const reason = r.reason
+      ? `<div class="wl-prop-reason">${linkifyReason(r.reason)}</div>`
+      : `<div class="wl-prop-reason muted">(no reason given)</div>`;
+    return (
+      `<div class="wl-prop-card" data-pid="${htmlEscape(r.proposalId, false)}" data-slug="${htmlEscape(r.slug)}" data-ver="${r.version}">` +
+      `<div class="wl-prop-head">` +
+      `<a class="wl-prop-title" href="/${htmlEscape(r.slug)}">${htmlEscape(r.displayTitle)}</a>` +
+      `<span class="wl-prop-label">${htmlEscape(r.label || r.annotationId)}</span>` +
+      prov +
+      `<span class="muted wl-prop-age">${age}d</span>` +
+      `</div>` +
+      quote +
+      delta +
+      reason +
+      (r.model ? `<div class="muted" style="font-size:.78rem">${htmlEscape(r.model, false)}</div>` : "") +
+      `<div class="wl-prop-actions">` +
+      `<button class="revert wl-prop-approve" data-pid="${htmlEscape(r.proposalId, false)}">✓ approve</button>` +
+      `<select class="wl-prop-why" aria-label="Reject reason">` +
+      `<option value="">reject: why?</option>` +
+      `<option value="incorrect">incorrect</option>` +
+      // No-change rows pre-select not_better — the banner's recommendation.
+      `<option value="not_better"${r.noChange ? " selected" : ""}>not better</option>` +
+      `<option value="out_of_scope">out of scope</option>` +
+      `<option value="other">other</option>` +
+      `</select>` +
+      `<button class="revert wl-prop-reject" data-pid="${htmlEscape(r.proposalId, false)}">✗ reject</button>` +
+      `</div></div>`
+    );
+  };
+
   const body =
+    PROPOSALS_CSS +
     `<h1>AI proposals</h1>` +
     `<p class="muted">The AI may propose updates to human-owned annotations but never applies them ` +
     `(<a class="wl-navlink" href="/about">how moderation works</a>). Approving applies the change and keeps the annotation yours; ` +
@@ -914,77 +1095,104 @@ export function proposalsQueuePage(
     truncNote +
     (rows.length === 0
       ? `<p><b>No pending proposals.</b> New ones appear here after AI review passes.</p>`
-      : `<div style="overflow-x:auto"><table>` +
-        `<thead><tr><th>Article</th><th>Annotation</th><th>Proposed change</th><th>Why</th><th>Age</th><th></th></tr></thead>` +
-        `<tbody>` +
-        rows
-          .map((r) => {
-            const delta = Object.entries(r.fields)
-              .map(([k, v]) => {
-                const from = r.current ? fmtVal(r.current[k]) : "?";
-                return `<code>${htmlEscape(k, false)}</code> ${htmlEscape(from, false)} → <b>${htmlEscape(fmtVal(v), false)}</b>`;
-              })
-              .join("<br>");
-            const age = Math.max(0, Math.round((Date.now() - r.createdAt) / 86400000));
-            return (
-              `<tr data-pid="${htmlEscape(r.proposalId, false)}" data-slug="${htmlEscape(r.slug)}" data-ver="${r.version}">` +
-              `<td><a class="wl-navlink" href="/${htmlEscape(r.slug)}">${htmlEscape(r.displayTitle)}</a></td>` +
-              `<td>${htmlEscape(r.label || r.annotationId)}</td>` +
-              `<td>${delta}</td>` +
-              `<td class="muted">${htmlEscape(r.reason)}${r.model ? `<br><span class="muted">${htmlEscape(r.model, false)}</span>` : ""}</td>` +
-              `<td class="muted">${age}d</td>` +
-              `<td style="white-space:nowrap">` +
-              `<button class="revert wl-prop-approve" data-pid="${htmlEscape(r.proposalId, false)}">✓ approve</button> ` +
-              `<select class="wl-prop-why" aria-label="Reject reason">` +
-              `<option value="">reject: why?</option>` +
-              `<option value="incorrect">incorrect</option>` +
-              `<option value="not_better">not better</option>` +
-              `<option value="out_of_scope">out of scope</option>` +
-              `<option value="other">other</option>` +
-              `</select> ` +
-              `<button class="revert wl-prop-reject" data-pid="${htmlEscape(r.proposalId, false)}">✗ reject</button>` +
-              `</td></tr>`
-            );
-          })
-          .join("") +
-        `</tbody></table></div>`);
+      : rows.map(card).join(""));
 
   const script = `<script>
 document.addEventListener("click", async function (e) {
   var btn = e.target.closest ? e.target.closest(".wl-prop-approve, .wl-prop-reject") : null;
   if (!btn) return;
-  var tr = btn.closest("tr");
+  var card = btn.closest(".wl-prop-card");
   var body = { proposal_id: btn.dataset.pid };
   if (btn.classList.contains("wl-prop-approve")) {
     body.action = "approve_proposal";
-    body.base_version = Number(tr.dataset.ver);
+    body.base_version = Number(card.dataset.ver);
   } else {
     body.action = "reject_proposal";
-    var why = tr.querySelector(".wl-prop-why");
+    var why = card.querySelector(".wl-prop-why");
     if (why && why.value) body.reject_reason = why.value;
   }
-  tr.querySelectorAll("button").forEach(function (b) { b.disabled = true; });
+  card.querySelectorAll("button").forEach(function (b) { b.disabled = true; });
   try {
-    var res = await fetch("/api/article/" + encodeURIComponent(tr.dataset.slug), {
+    var res = await fetch("/api/article/" + encodeURIComponent(card.dataset.slug), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     });
     if (res.status === 200) {
-      tr.remove();
+      card.remove();
     } else if (res.status === 409) {
       alert("Article changed since this page loaded — reloading.");
       location.reload();
     } else {
       var j = await res.json().catch(function () { return {}; });
       alert("Failed: " + (j.error || res.status));
-      tr.querySelectorAll("button").forEach(function (b) { b.disabled = false; });
+      card.querySelectorAll("button").forEach(function (b) { b.disabled = false; });
     }
   } catch (err) {
     alert("Network error — try again.");
-    tr.querySelectorAll("button").forEach(function (b) { b.disabled = false; });
+    card.querySelectorAll("button").forEach(function (b) { b.disabled = false; });
   }
 });
+// Decl existence ticks: the editor's on-blur check pattern (editor.js) against
+// the same decl-index shards — manifest → prefix-free shard key (with the
+// upward padded retry) → exact scan. Purely informational; every failure
+// (manifest 404, shard error) leaves the tick blank.
+(function () {
+  var checks = document.querySelectorAll(".wl-decl-check[data-decl]");
+  if (!checks.length) return;
+  var manifestP = fetch("/assets/decl-index/manifest.json")
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (m) { return m && m.shards && m.scheme ? m : null; })
+    .catch(function () { return null; });
+  var shards = {};
+  function shardKey(name, len) {
+    var k = "";
+    for (var i = 0; i < len; i++) {
+      if (i < name.length) {
+        var l = name[i].toLowerCase();
+        k += /[a-z0-9]/.test(l) ? l : "_";
+      } else k += "_";
+    }
+    return k;
+  }
+  function shardFor(m, name) {
+    var maxLen = (m.scheme && m.scheme.max_len) || 2;
+    for (var len = Math.min(maxLen, Math.max(name.length, 2)); len >= 2; len--) {
+      var k = shardKey(name, len);
+      if (m.shards[k] !== undefined) return k;
+    }
+    for (var len2 = Math.max(name.length, 2) + 1; len2 <= maxLen; len2++) {
+      var k2 = shardKey(name, len2);
+      if (m.shards[k2] !== undefined) return k2;
+    }
+    return null;
+  }
+  function fetchShard(key) {
+    if (!(key in shards)) {
+      shards[key] = fetch("/assets/decl-index/" + key + ".json")
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (a) { return Array.isArray(a) ? a : null; })
+        .catch(function () { return null; });
+    }
+    return shards[key];
+  }
+  checks.forEach(function (el) {
+    var name = el.dataset.decl;
+    manifestP.then(function (m) {
+      if (!m) return;
+      var key = shardFor(m, name);
+      var hitP = key === null ? Promise.resolve([]) : fetchShard(key);
+      hitP.then(function (arr) {
+        if (arr === null) return; // shard fetch failed — stay silent
+        var found = false;
+        for (var i = 0; i < arr.length; i++) if (arr[i][0] === name) { found = true; break; }
+        el.textContent = found ? "✓" : "not found";
+        el.title = found ? "Declaration exists in the Mathlib index" : "Not in the Mathlib declaration index";
+        el.classList.add(found ? "ok" : "miss");
+      });
+    });
+  });
+})();
 </${"script"}>`;
   return shell("AI proposals", body, script);
 }

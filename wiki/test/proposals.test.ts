@@ -66,16 +66,33 @@ describe("proposals — pure logic", () => {
   it("mergeProposals dedups vs pending + rejected and skips non-live ids", () => {
     const inc = [{ annotationId: HUMAN_ID, fields: PROP_FIELDS, reason: "r" }];
     const validIds = new Set([HUMAN_ID]);
-    const first = mergeProposals([], [], inc, { now: 1, validIds });
+    const first = mergeProposals([], [], inc, { now: 1, validIds }).merged;
     expect(first).toHaveLength(1);
     expect(first[0].proposalId).toMatch(/^[0-9a-f]{12}$/);
     // same delta again → deduped (already pending)
-    expect(mergeProposals(first, [], inc, { now: 2, validIds })).toHaveLength(1);
+    expect(mergeProposals(first, [], inc, { now: 2, validIds }).merged).toHaveLength(1);
     // previously rejected → suppressed
     const rejected = [{ annotationId: HUMAN_ID, fieldsSig: fieldsSig(PROP_FIELDS) }];
-    expect(mergeProposals([], rejected, inc, { now: 3, validIds })).toHaveLength(0);
+    expect(mergeProposals([], rejected, inc, { now: 3, validIds }).merged).toHaveLength(0);
     // target id not live → skipped
-    expect(mergeProposals([], [], inc, { now: 4, validIds: new Set(["zzzzzzzzzzzz"]) })).toHaveLength(0);
+    expect(mergeProposals([], [], inc, { now: 4, validIds: new Set(["zzzzzzzzzzzz"]) }).merged).toHaveLength(0);
+  });
+
+  it("mergeProposals with liveById drops incoming no-delta proposals and counts them", () => {
+    const validIds = new Set([HUMAN_ID]);
+    // Live target ALREADY has every proposed value → empty delta → dropped.
+    const liveMatching = new Map([[HUMAN_ID, { id: HUMAN_ID, status: "formalized", mathlib: PROP_FIELDS.mathlib }]]);
+    const inc = [{ annotationId: HUMAN_ID, fields: PROP_FIELDS, reason: "confirmation" }];
+    const dropped = mergeProposals([], [], inc, { now: 1, validIds, liveById: liveMatching });
+    expect(dropped.merged).toHaveLength(0);
+    expect(dropped.droppedNoDelta).toBe(1);
+    // A real delta against the same live target still merges.
+    const liveDiffering = new Map([[HUMAN_ID, { id: HUMAN_ID, status: "partial", mathlib: null }]]);
+    const kept = mergeProposals([], [], inc, { now: 2, validIds, liveById: liveDiffering });
+    expect(kept.merged).toHaveLength(1);
+    expect(kept.droppedNoDelta).toBe(0);
+    // Without liveById the old behavior is unchanged (no no-delta filtering).
+    expect(mergeProposals([], [], inc, { now: 3, validIds }).merged).toHaveLength(1);
   });
 
   it("applyProposalFields overwrites only whitelisted fields and reports the delta", () => {
@@ -289,6 +306,21 @@ describe("POST /api/article/:slug (proposals)", () => {
     expect(pending(db)).toHaveLength(0);
   });
 
+  it("drops an incoming no-delta proposal at merge (nothing pending, no lifecycle row)", async () => {
+    const { db, env } = setup();
+    await seedProposal(env); // v2, HUMAN_ID human, status 'partial'
+    // "Confirmation" filed as a proposal: fields equal the live values.
+    const res = await botSave(env, {
+      annotations: storedAnnotations(db).map(echo),
+      base_version: 2,
+      meta: { ladder: { proposals: [{ annotationId: HUMAN_ID, fields: { status: "partial" }, reason: "confirmed correct" }] } },
+    });
+    expect(res.status).toBe(200);
+    expect(pending(db)).toHaveLength(0);
+    const n = db.prepare("SELECT COUNT(*) AS n FROM proposals").get() as { n: number };
+    expect(n.n).toBe(0); // never entered the lifecycle log either
+  });
+
   it("bots cannot approve/reject (403); anonymous 401; stale/unknown handled", async () => {
     const { db, env } = setup();
     await seedProposal(env);
@@ -304,5 +336,183 @@ describe("POST /api/article/:slug (proposals)", () => {
     expect(stale.status).toBe(409);
     expect(articleRow(db)!.version).toBe(2);
     expect(pending(db)).toHaveLength(1); // untouched
+  });
+});
+
+describe("GET /proposals — evidence cards", () => {
+  it("renders the quote, the human-owned badge, and real before/after chips", async () => {
+    const { db, env } = setup();
+    await seedProposal(env); // HUMAN_ID → provenance 'human' (v2)
+    await storeProposal(env, db, 2); // partial → formalized + mathlib Foo.bar
+    const html = await (await get(env, "/proposals", { user: "u-patroller" })).text();
+    // The annotation's quoted article text (its anchor snippet).
+    expect(html).toContain("fundamental theorem of finite abelian groups");
+    // Approving edits Jack's own annotation — the loud badge.
+    expect(html).toContain("human-owned");
+    // Real delta chips computed server-side (applyProposalFields semantics).
+    expect(html).toContain(">partial</span>");
+    expect(html).toContain(">formalized</span>");
+    // Proposed decl links to mathlib4_docs via its module, with the
+    // client-side existence-tick placeholder.
+    expect(html).toContain("https://leanprover-community.github.io/mathlib4_docs/Mathlib/Foo.html#Foo.bar");
+    expect(html).toContain('data-decl="Foo.bar"');
+    // No no-change banner: this proposal is a real delta.
+    expect(html).not.toContain("changes nothing");
+  });
+
+  it("mathlib object replace: BOTH decls render as docs links; reason evidence auto-links", async () => {
+    const { db, env } = setup();
+    // Target aaaaaaaaaaaa currently cites AddCommGroup @ Mathlib.Algebra.Group.Defs.
+    const res = await botSave(env, {
+      annotations: storedAnnotations(db).map(echo),
+      base_version: 1,
+      meta: {
+        ladder: {
+          proposals: [
+            {
+              annotationId: "aaaaaaaaaaaa",
+              fields: { mathlib: { decl: "CommGroup", module: "Mathlib.Algebra.Group.Defs", match_kind: "exact" } },
+              reason: "Tighter match — see Mathlib/Algebra/Group/Defs.lean:120 and GroupTheory/Sylow.lean",
+            },
+          ],
+        },
+      },
+    });
+    expect(res.status).toBe(200);
+    const html = await (await get(env, "/proposals", { user: "u-patroller" })).text();
+    // Both sides of the decl change are mathlib4_docs links + existence ticks.
+    expect(html).toContain("https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Defs.html#AddCommGroup");
+    expect(html).toContain("https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Defs.html#CommGroup");
+    expect(html).toContain('data-decl="AddCommGroup"');
+    expect(html).toContain('data-decl="CommGroup"');
+    // Mathlib source refs in the reason become GitHub links (Mathlib/ prefix
+    // added when missing; line number optional).
+    expect(html).toContain("https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Algebra/Group/Defs.lean#L120");
+    expect(html).toContain('https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/GroupTheory/Sylow.lean"');
+    // Non-human target still shows its provenance.
+    expect(html).toContain(">ai</span>");
+  });
+
+  it("evidence links: full URLs are not re-prefixed; Archive/ paths keep their real root", async () => {
+    const { db, env } = setup();
+    const res = await botSave(env, {
+      annotations: storedAnnotations(db).map(echo),
+      base_version: 1,
+      meta: {
+        ladder: {
+          proposals: [
+            {
+              annotationId: "aaaaaaaaaaaa",
+              fields: { status: "partial" },
+              // A reason may quote a full GitHub URL (must not be re-matched
+              // from its "com/…" tail) or cite mathlib4's non-Mathlib roots
+              // (Archive/, Counterexamples/ — prefixing them 404s).
+              reason:
+                "see https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Algebra/Group/Defs.lean#L120 " +
+                "and Archive/Imo/Imo1959Q1.lean:12 and Counterexamples/Phillips.lean",
+            },
+          ],
+        },
+      },
+    });
+    expect(res.status).toBe(200);
+    const html = await (await get(env, "/proposals", { user: "u-patroller" })).text();
+    expect(html).not.toContain("master/Mathlib/com/");
+    expect(html).toContain('https://github.com/leanprover-community/mathlib4/blob/master/Archive/Imo/Imo1959Q1.lean#L12');
+    expect(html).toContain('https://github.com/leanprover-community/mathlib4/blob/master/Counterexamples/Phillips.lean"');
+  });
+
+  it("tombstoned target renders the dead-target fallback, never a live delta card", async () => {
+    const { db, env } = setup();
+    // File a proposal against the human annotation, then tombstone it via a
+    // session save (human veto) with NO bot sweep in between.
+    const seed = await botSave(env, {
+      annotations: storedAnnotations(db).map(echo),
+      base_version: 1,
+      meta: { ladder: { proposals: [{ annotationId: HUMAN_ID, fields: { status: "formalized" }, reason: "x" }] } },
+    });
+    expect(seed.status).toBe(200);
+    const anns = storedAnnotations(db).map(echo);
+    const human = anns.find((a) => a.id === HUMAN_ID)!;
+    human.status = "rejected";
+    // The seed save changed no annotation bytes (proposal-blob writes never
+    // bump version), so the article is still at version 1.
+    const veto = await save(env, { annotations: anns, base_version: 1 }, { user: "u-human" });
+    expect(veto.status).toBe(200);
+    const html = await (await get(env, "/proposals", { user: "u-patroller" })).text();
+    // Approve on this card would 409 "annotation gone" — the card must render
+    // the dead-target fallback ("? →" chips + warning), never a live delta
+    // computed FROM the tombstoned annotation: a "rejected → formalized" card
+    // would read as the AI proposing to overturn the human veto.
+    expect(html).toContain("Target annotation not found");
+    expect(html).not.toContain(">rejected<");
+  });
+
+  it("no-change row: banner + not_better pre-selected; next bot save sweeps it stale", async () => {
+    const { db, env } = setup();
+    await seedProposal(env); // v2
+    // Proposal with a REAL delta at filing time…
+    const r1 = await botSave(env, {
+      annotations: storedAnnotations(db).map(echo),
+      base_version: 2,
+      meta: { ladder: { proposals: [{ annotationId: HUMAN_ID, fields: { note: "better note" }, reason: "clearer" }] } },
+    });
+    expect(r1.status).toBe(200);
+    expect(pending(db)).toHaveLength(1);
+    const pid = pending(db)[0].proposalId;
+    // …then a human applies the same change by hand (v3) → delta is now empty.
+    const anns = storedAnnotations(db).map(echo);
+    const i = anns.findIndex((a) => a.id === HUMAN_ID);
+    anns[i] = { ...anns[i], note: "better note" };
+    expect((await save(env, { annotations: anns, base_version: 2 }, { user: "u-human" })).status).toBe(200);
+    // The queue computes the delta live: banner + reject reason pre-selected.
+    const html = await (await get(env, "/proposals", { user: "u-patroller" })).text();
+    expect(html).toContain("changes nothing");
+    expect(html).toContain('value="not_better" selected');
+    // Self-heal: the next bot save (a plain echo, no new proposals) drops the
+    // no-delta pending row and records the expiry as 'stale'.
+    expect((await botSave(env, { annotations: storedAnnotations(db).map(echo), base_version: 3 })).status).toBe(200);
+    expect(pending(db)).toHaveLength(0);
+    const row = db.prepare("SELECT status, decided_at FROM proposals WHERE id = ?").get(pid) as {
+      status: string;
+      decided_at: number | null;
+    };
+    expect(row.status).toBe("stale");
+    expect(row.decided_at).not.toBeNull();
+  });
+
+  it("XSS: hostile quote/section/reason/decl strings render inert", async () => {
+    const { db, env } = setup();
+    // Hostile anchor via a human edit (v2; also makes the target human-owned).
+    const anns = storedAnnotations(db).map(echo);
+    const i = anns.findIndex((a) => a.id === HUMAN_ID);
+    anns[i] = { ...anns[i], anchor: { section: "<svg onload=alert(4)>", snippet: '<img src=x onerror="alert(1)">' } };
+    expect((await save(env, { annotations: anns, base_version: 1 }, { user: "u-human" })).status).toBe(200);
+    // Hostile proposal: decl/module/reason all carry markup.
+    const res = await botSave(env, {
+      annotations: storedAnnotations(db).map(echo),
+      base_version: 2,
+      meta: {
+        ladder: {
+          proposals: [
+            {
+              annotationId: HUMAN_ID,
+              fields: {
+                status: "formalized",
+                mathlib: { decl: '"><img src=x onerror=alert(3)>', module: 'x"><script>alert(5)</script>', match_kind: "exact" },
+              },
+              reason: '<img src=x onerror=alert(2)> trust me — also Evil/Path.lean:1',
+            },
+          ],
+        },
+      },
+    });
+    expect(res.status).toBe(200);
+    const html = await (await get(env, "/proposals", { user: "u-patroller" })).text();
+    expect(html).not.toContain("<img");
+    expect(html).not.toContain("<svg");
+    expect(html).not.toContain("<script>alert");
+    expect(html).toContain("&lt;img"); // escaped, still visible to the reviewer
+    expect(html).toContain("&lt;svg");
   });
 });
