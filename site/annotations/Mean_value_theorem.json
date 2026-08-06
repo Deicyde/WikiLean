@@ -395,6 +395,40 @@
       "note": "No Mathlib declaration was found for the complex-analytic MVT on convex open sets.",
       "provenance": "ai",
       "id": "816dfda6fe5d"
+    },
+    {
+      "kind": "theorem",
+      "label": "Rolle's theorem",
+      "anchor": {
+        "section": "Proof",
+        "snippet": "By Rolle's theorem , since"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_hasDerivAt_eq_zero",
+        "module": "Mathlib.Analysis.Calculus.LocalExtr.Rolle",
+        "match_kind": "exact"
+      },
+      "note": "Rolle's theorem is `exists_hasDerivAt_eq_zero` in `Mathlib.Analysis.Calculus.LocalExtr.Rolle` (module corrected from `Deriv.MeanValue`): with `f a = f b`, continuity on `Icc a b`, and `HasDerivAt` on `Ioo a b`, there exists `c ∈ Ioo a b` with `f' c = 0`.",
+      "provenance": "ai",
+      "id": "4cfd7f4cfe97"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cauchy–Schwarz inequality (used in vector MVT bound)",
+      "anchor": {
+        "section": "Mean value theorem in several variables",
+        "snippet": "By the Cauchy–Schwarz inequality , the equation gives the estimate"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "norm_inner_le_norm",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Cauchy–Schwarz is `norm_inner_le_norm` in Mathlib (the previously cited `inner_mul_le_norm_mul_norm` does not exist; `abs_real_inner_le_norm` is the real-valued variant).",
+      "provenance": "ai",
+      "id": "2bd1728af8e4"
     }
   ]
 }

@@ -465,6 +465,23 @@
       "id": "92521dc16018"
     },
     {
+      "kind": "example",
+      "label": "Sobolev space",
+      "anchor": {
+        "section": "Completeness",
+        "snippet": "weak solutions to differential equations typically live in a completion (a Sobolev space )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not yet formalize general Sobolev spaces W^{k,p} as completions of smooth functions.",
+      "provenance": "ai",
+      "id": "7e6fc204741c"
+    },
+    {
       "kind": "definition",
       "label": "Bounded metric space",
       "anchor": {
@@ -1248,6 +1265,40 @@
     },
     {
       "kind": "definition",
+      "label": "Hausdorff measure",
+      "anchor": {
+        "section": "Metric measure spaces",
+        "snippet": "equipped with the α-dimensional Hausdorff measure where α is the Hausdorff dimension"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.hausdorffMeasure",
+        "module": "Mathlib.MeasureTheory.Measure.Hausdorff",
+        "match_kind": "exact"
+      },
+      "note": "`μH[d]` (`MeasureTheory.Measure.hausdorffMeasure`) is the d-dimensional Hausdorff measure on a (pseudo)e-metric space.",
+      "provenance": "ai",
+      "id": "a4e01ca44867"
+    },
+    {
+      "kind": "definition",
+      "label": "Hausdorff dimension",
+      "anchor": {
+        "section": "Metric measure spaces",
+        "snippet": "α is the Hausdorff dimension"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dimH",
+        "module": "Mathlib.MeasureTheory.Measure.HausdorffDimension",
+        "match_kind": "exact"
+      },
+      "note": "`dimH` is the Hausdorff dimension of a set in an emetric space.",
+      "provenance": "ai",
+      "id": "32965f392992"
+    },
+    {
+      "kind": "definition",
       "label": "Discrete metric space",
       "anchor": {
         "section": "Graphs and finite metric spaces",
@@ -1279,6 +1330,23 @@
       "note": "`SimpleGraph.dist` defines the graph (shortest-path) distance, but Mathlib does not register a `MetricSpace` instance on the vertex set.",
       "provenance": "ai",
       "id": "dbc7ef12fb49"
+    },
+    {
+      "kind": "definition",
+      "label": "Cayley graph",
+      "anchor": {
+        "section": "Graphs and finite metric spaces",
+        "snippet": "this construction is applied to the Cayley graph of a (typically infinite) finitely-generated group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Cayley graph of a group with respect to a generating set is constructed in Mathlib.",
+      "provenance": "ai",
+      "id": "db1f8fee332c"
     },
     {
       "kind": "definition",
@@ -1361,9 +1429,26 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No `Levenshtein`/edit-distance file exists in Mathlib (grep for `levenshtein`/`EditDistance` returns no matches).",
-      "provenance": "ai",
+      "note": "No Levenshtein/edit-distance declaration exists in Mathlib; `decl_exists` and grep for `Levenshtein`/`EditDistance` return no matches.",
+      "provenance": "ai-moderated",
       "id": "6f2012bf2fef"
+    },
+    {
+      "kind": "example",
+      "label": "Wasserstein distance",
+      "anchor": {
+        "section": "Distances between mathematical objects",
+        "snippet": "Wasserstein metrics measure the distance between two measures on the same metric space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Wasserstein / optimal-transport distance between probability measures is defined in Mathlib.",
+      "provenance": "ai",
+      "id": "1919edd8d76c"
     },
     {
       "kind": "definition",
@@ -1491,14 +1576,14 @@
         "section": "Miscellaneous examples",
         "snippet": "Given a metric space ( X , d ) and an increasing concave function"
       },
-      "status": "partial",
+      "status": "not_formalized",
       "mathlib": {
-        "decl": "Metric.Snowflaking",
-        "module": "Mathlib.Topology.MetricSpace.Snowflaking",
-        "match_kind": "special_case"
+        "decl": null,
+        "module": null,
+        "match_kind": null
       },
-      "note": "`Metric.Snowflaking X α` formalizes the power-of-d snowflake; the general concave-f version is not stated.",
-      "provenance": "ai",
+      "note": "No general `Snowflaking` / concave-composition metric construction was located in Mathlib.",
+      "provenance": "ai-moderated",
       "id": "1b57c218abe6"
     },
     {
@@ -1940,7 +2025,8 @@
         "match_kind": "exact"
       },
       "note": "`IsClosed s ↔ IsOpen sᶜ` is the topological definition inherited by metric spaces.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "92bbba43b5aa"
     },
     {
       "kind": "proposition",
@@ -1956,7 +2042,8 @@
         "match_kind": "exact"
       },
       "note": "`Metric.tendsto_nhds` shows filter/topological convergence agrees with the ε–N metric formulation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "46f37cac4fe0"
     },
     {
       "kind": "proposition",
@@ -1972,7 +2059,8 @@
         "match_kind": "exact"
       },
       "note": "`Metric.instParacompactSpace` registers paracompactness of (pseudo-e)metric spaces; `T2Space`/`FirstCountableTopology` instances are also automatic.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6d6302d0f8d8"
     },
     {
       "kind": "definition",
@@ -1988,7 +2076,8 @@
         "match_kind": "exact"
       },
       "note": "`ContinuousLinearMap` (`E →L[𝕜] F`) is Mathlib's bundled bounded operator.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "83ff55f18737"
     },
     {
       "kind": "proposition",
@@ -2004,7 +2093,59 @@
         "match_kind": "exact"
       },
       "note": "`Metric.infDist_le_infDist_add_dist : infDist x s ≤ infDist y s + dist x y` is the triangle inequality.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d6e9ec491089"
+    },
+    {
+      "kind": "example",
+      "label": "Normed vector space",
+      "anchor": {
+        "section": "Normed vector spaces",
+        "snippet": "A normed vector space is a vector space equipped with a norm"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedAddCommGroup",
+        "module": "Mathlib.Analysis.Normed.Group.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`NormedAddCommGroup` together with `NormedSpace 𝕜 E` is Mathlib's normed vector space; the norm is `‖·‖`.",
+      "provenance": "ai",
+      "id": "f118755fcb78"
+    },
+    {
+      "kind": "example",
+      "label": "Angular distance on a sphere",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a sphere equipped with the angular distance"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated angular/great-circle metric instance on the sphere is registered in Mathlib.",
+      "provenance": "ai",
+      "id": "2d9dedb1828a"
+    },
+    {
+      "kind": "example",
+      "label": "Hyperbolic plane",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "and the hyperbolic plane"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The hyperbolic plane as a metric/Riemannian space is not formalized in Mathlib.",
+      "provenance": "ai",
+      "id": "687110f68ccf"
     }
   ]
 }

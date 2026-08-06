@@ -1,0 +1,1960 @@
+{
+  "slug": "Inversive_geometry",
+  "wikipedia_title": "Inversive geometry",
+  "display_title": "Inversive geometry",
+  "schema_version": 3,
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Inversive geometry",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "inversive geometry is the study of inversion"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.inversion",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines sphere inversion in affine inner-product spaces, but not inversive geometry as a named geometry.",
+      "provenance": "ai",
+      "id": "a544ea7286b6"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inversion maps generalized circles",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "maps circles or lines to other circles or lines"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.image_inversion_sphere_dist_center",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.ImageHyperplane",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves a sphere through the inversion center maps to a hyperplane, but not the full generalized-circle preservation theorem.",
+      "provenance": "ai",
+      "id": "b83260ac2879"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inversion preserves crossing angles",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "preserves the angles between crossing curves"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.hasFDerivAt_inversion",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.Calculus",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib gives the derivative of inversion as a scalar times a reflection, but no theorem states angle preservation for inverse curves.",
+      "provenance": "ai",
+      "id": "f28787a13a29"
+    },
+    {
+      "kind": "proposition",
+      "label": "Higher-dimensional inversion",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The concept of inversion can be generalized to higher-dimensional spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.inversion",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "EuclideanGeometry.inversion is defined for any affine space over a real inner-product vector space, covering higher dimensions.",
+      "provenance": "ai",
+      "id": "aae95bfd57f4"
+    },
+    {
+      "kind": "definition",
+      "label": "Inverse point",
+      "anchor": {
+        "section": "Inverse of a point",
+        "snippet": "the inverse of a point P with respect to a reference circle"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.inversion",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "EuclideanGeometry.inversion gives the inverse point by the standard center-radius distance formula.",
+      "provenance": "ai",
+      "id": "9e7b1b29c573"
+    },
+    {
+      "kind": "definition",
+      "label": "Circle inversion",
+      "anchor": {
+        "section": "Inverse of a point",
+        "snippet": "This is called circle inversion or plane inversion"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.inversion",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The general sphere inversion specializes to plane circle inversion, although Mathlib has no separate circle-inversion alias.",
+      "provenance": "ai",
+      "id": "6fd42e4ceb66"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inversion is involutive",
+      "anchor": {
+        "section": "Inverse of a point",
+        "snippet": "the result of applying the same inversion twice is the identity transformation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.inversion_involutive",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.Basic",
+        "match_kind": "exact"
+      },
+      "note": "EuclideanGeometry.inversion_involutive proves that inversion with nonzero radius is involutive.",
+      "provenance": "ai",
+      "id": "fee98d011f4b"
+    },
+    {
+      "kind": "definition",
+      "label": "Inversion at infinity",
+      "anchor": {
+        "section": "Inverse of a point",
+        "snippet": "it is necessary to introduce a point at infinity"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "OnePoint.infty",
+        "module": "Mathlib.Topology.Compactification.OnePoint.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has a one-point compactification point at infinity, but EuclideanGeometry.inversion is not extended to swap the center with infinity.",
+      "provenance": "ai",
+      "id": "485f0f18c692"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inside outside inversion",
+      "anchor": {
+        "section": "Inverse of a point",
+        "snippet": "the inversion of any point inside the reference circle must lie outside it"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.dist_inversion_center",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The distance formula gives the reciprocal radial distance needed for inside-outside behavior, but the inequality statement is not named.",
+      "provenance": "ai",
+      "id": "57c8b52ae22c"
+    },
+    {
+      "kind": "proposition",
+      "label": "Circle points fixed by inversion",
+      "anchor": {
+        "section": "Inverse of a point",
+        "snippet": "any point on the circle is unaffected"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.inversion_of_mem_sphere",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.Basic",
+        "match_kind": "exact"
+      },
+      "note": "EuclideanGeometry.inversion_of_mem_sphere proves that every point on the reference sphere is fixed.",
+      "provenance": "ai",
+      "id": "81151d250c5d"
+    },
+    {
+      "kind": "proposition",
+      "label": "Distance monotonicity inside circle",
+      "anchor": {
+        "section": "Inverse of a point",
+        "snippet": "the nearer the point to the center, the further away its transformation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.dist_inversion_center",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The reciprocal distance formula is present, but monotonicity for points inside the circle is not packaged as a theorem.",
+      "provenance": "ai",
+      "id": "055495112772"
+    },
+    {
+      "kind": "proposition",
+      "label": "Distance monotonicity near circle",
+      "anchor": {
+        "section": "Inverse of a point",
+        "snippet": "the nearer the point to the circle, the closer its transformation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.dist_inversion_center",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The reciprocal distance formula is present, but closeness-to-circle monotonicity is not packaged as a theorem.",
+      "provenance": "ai",
+      "id": "323dcf170354"
+    },
+    {
+      "kind": "example",
+      "label": "Construct inverse outside circle",
+      "anchor": {
+        "section": "Compass and straightedge construction",
+        "snippet": "To construct the inverse P ' of a point P outside a circle Ø"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing this compass-and-straightedge construction.",
+      "provenance": "ai",
+      "id": "57856b3a01c8"
+    },
+    {
+      "kind": "example",
+      "label": "Construct inverse inside circle",
+      "anchor": {
+        "section": "Compass and straightedge construction",
+        "snippet": "To construct the inverse P of a point P ' inside a circle Ø"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing this compass-and-straightedge construction.",
+      "provenance": "ai",
+      "id": "1bc88f7ef27c"
+    },
+    {
+      "kind": "example",
+      "label": "Dutta inverse construction",
+      "anchor": {
+        "section": "Dutta's construction",
+        "snippet": "There is a construction of the inverse point to A with respect to a circle Ø"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing Dutta's inverse-point construction.",
+      "provenance": "ai",
+      "id": "bd2728ed6b05"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dutta construction correctness",
+      "anchor": {
+        "section": "Dutta's construction",
+        "snippet": "A ' is the inverse point of A with respect to circle Ø"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing correctness of Dutta's construction.",
+      "provenance": "ai",
+      "id": "cd09d5af10b0"
+    },
+    {
+      "kind": "example",
+      "label": "Circle through center inverse",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The inverse, with respect to the red circle, of a circle going through O"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.image_inversion_sphere_dist_center",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.ImageHyperplane",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves that a sphere through the center maps to a hyperplane, with the center inserted because inversion fixes it.",
+      "provenance": "ai",
+      "id": "d2930a998183"
+    },
+    {
+      "kind": "example",
+      "label": "Circle away from center inverse",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The inverse, with respect to the red circle, of a circle not going through O"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.image_inversion_perpBisector",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.ImageHyperplane",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves the inverse image of a hyperplane is a sphere through the center, but not the circle-away-from-center image theorem.",
+      "provenance": "ai",
+      "id": "6699912e670a"
+    },
+    {
+      "kind": "proposition",
+      "label": "Circle center not generally mapped to image center",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "does not map the center of the circle to the center of its image"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib stating the center behavior for the inverse image of a noncentral circle.",
+      "provenance": "ai",
+      "id": "b830f227b5cd"
+    },
+    {
+      "kind": "definition",
+      "label": "Inversion of set of points",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The inversion of a set of points in the plane with respect to a circle"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.inversion",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has the point map used with ordinary Set.image, but no separate definition for inversion of a set of points.",
+      "provenance": "ai",
+      "id": "f402bcfe4483"
+    },
+    {
+      "kind": "proposition",
+      "label": "Circle through center maps to line",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "A circle that passes through the center O of the reference circle inverts to a line"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.image_inversion_sphere_dist_center",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.ImageHyperplane",
+        "match_kind": "generalization"
+      },
+      "note": "The theorem maps a sphere through the center to a hyperplane, which specializes in the plane to a circle mapping to a line.",
+      "provenance": "ai",
+      "id": "8f7bd91a1aea"
+    },
+    {
+      "kind": "proposition",
+      "label": "Line through center fixed as set",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "a line passing through O is inverted into itself"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.image_inversion_affineSubspace_of_mem",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.ImageHyperplane",
+        "match_kind": "generalization"
+      },
+      "note": "EuclideanGeometry.image_inversion_affineSubspace_of_mem proves any affine subspace through the center is fixed as a set.",
+      "provenance": "ai",
+      "id": "b229d2451894"
+    },
+    {
+      "kind": "proposition",
+      "label": "Circle away from center maps to circle",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "A circle not passing through O inverts to a circle not passing through O"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.image_inversion_perpBisector",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.ImageHyperplane",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has hyperplane-to-sphere image results but no theorem for a circle not through the center mapping to another circle.",
+      "provenance": "ai",
+      "id": "f79d2160ff83"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reference intersection points invariant",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "these invariant points of intersection are also on the inverse circle"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.inversion_of_mem_sphere",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The fixed-point theorem covers points on the reference sphere, but the inverse-circle intersection statement is not formalized.",
+      "provenance": "ai",
+      "id": "c4d70ca678f0"
+    },
+    {
+      "kind": "theorem",
+      "label": "Orthogonal generalized circles fixed by inversion",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "unchanged by inversion if and only if it is orthogonal to the reference circle"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.Sphere.orthRadius",
+        "module": "Mathlib.Geometry.Euclidean.Sphere.OrthRadius",
+        "match_kind": "invocation"
+      },
+      "note": "Sphere.orthRadius provides polar and tangent infrastructure related to orthogonality, but the iff invariant-generalized-circle theorem is absent.",
+      "provenance": "ai",
+      "id": "8b8c72ffa3b9"
+    },
+    {
+      "kind": "proposition",
+      "label": "Circle through inverse points orthogonal",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "If a circle q passes through two distinct points A and A'"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.Sphere.orthRadius",
+        "module": "Mathlib.Geometry.Euclidean.Sphere.OrthRadius",
+        "match_kind": "invocation"
+      },
+      "note": "The polar subspace infrastructure is present, but no theorem states that a circle through inverse points is orthogonal to the reference circle.",
+      "provenance": "ai",
+      "id": "5567c160f60b"
+    },
+    {
+      "kind": "proposition",
+      "label": "Orthogonal circle cuts inverse points on center line",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "If the circles k and q are orthogonal"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.Sphere.orthRadius",
+        "module": "Mathlib.Geometry.Euclidean.Sphere.OrthRadius",
+        "match_kind": "invocation"
+      },
+      "note": "The orthogonal-radius API is related, but the stated cutting property for orthogonal circles is not formalized.",
+      "provenance": "ai",
+      "id": "9ad1559aa7d7"
+    },
+    {
+      "kind": "proposition",
+      "label": "Triangle inverse points relation",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Given a triangle OAB in which O is the center of a circle k"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.dist_inversion_inversion",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib proves the distance relation between two inverse images, but not the full triangle formulation from the article.",
+      "provenance": "ai",
+      "id": "e4ce9143d124"
+    },
+    {
+      "kind": "proposition",
+      "label": "Orthogonal circle intersections are inverse",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The points of intersection of two circles p and q orthogonal to a circle k"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.Sphere.orthRadius",
+        "module": "Mathlib.Geometry.Euclidean.Sphere.OrthRadius",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has polar and tangent infrastructure for spheres, but not this intersection-inverse theorem.",
+      "provenance": "ai",
+      "id": "0f9a8650e207"
+    },
+    {
+      "kind": "proposition",
+      "label": "Tangents at inverse curve points",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "If M and M' are inverse points with respect to a circle k"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.hasFDerivAt_inversion",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.Calculus",
+        "match_kind": "invocation"
+      },
+      "note": "The derivative of inversion is formalized, but no theorem relates tangent lines of inverse curves at inverse points.",
+      "provenance": "ai",
+      "id": "dce920f1cbba"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inversion preserves angle measure",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Inversion leaves the measure of angles unaltered"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.hasFDerivAt_inversion",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.Calculus",
+        "match_kind": "invocation"
+      },
+      "note": "The derivative formula plus conformal-angle infrastructure are present, but inversion angle preservation is not stated as a theorem.",
+      "provenance": "ai",
+      "id": "30e9a7496ea8"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inversion reverses oriented angle orientation",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "reverses the orientation of oriented angles"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.hasFDerivAt_inversion",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.Calculus",
+        "match_kind": "invocation"
+      },
+      "note": "The derivative is a scalar times a reflection, but Mathlib has no theorem that inversion reverses oriented angles.",
+      "provenance": "ai",
+      "id": "e1184000cad4"
+    },
+    {
+      "kind": "example",
+      "label": "Line inversion",
+      "anchor": {
+        "section": "Examples in two dimensions",
+        "snippet": "Inversion of a line is a circle containing the center of inversion"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.image_inversion_perpBisector",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.ImageHyperplane",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves that inversion maps a suitable hyperplane to a sphere through the center, specializing to line inversion in the plane.",
+      "provenance": "ai",
+      "id": "6f5405549349"
+    },
+    {
+      "kind": "example",
+      "label": "Circle inversion",
+      "anchor": {
+        "section": "Examples in two dimensions",
+        "snippet": "Inversion of a circle is another circle"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.image_inversion_sphere_dist_center",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.ImageHyperplane",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves the circle-through-center case as a hyperplane image, but not the general circle-to-circle example.",
+      "provenance": "ai",
+      "id": "d3e0ef28f3f2"
+    },
+    {
+      "kind": "example",
+      "label": "Parabola inversion",
+      "anchor": {
+        "section": "Examples in two dimensions",
+        "snippet": "Inversion of a parabola is a cardioid"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing inversion of a parabola to a cardioid.",
+      "provenance": "ai",
+      "id": "c2fbabbb9348"
+    },
+    {
+      "kind": "example",
+      "label": "Hyperbola inversion",
+      "anchor": {
+        "section": "Examples in two dimensions",
+        "snippet": "Inversion of hyperbola is a lemniscate of Bernoulli"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing inversion of a hyperbola to a Bernoulli lemniscate.",
+      "provenance": "ai",
+      "id": "051bf2278488"
+    },
+    {
+      "kind": "proposition",
+      "label": "Circle image center collinearity",
+      "anchor": {
+        "section": "Application",
+        "snippet": "the center of the circle being inverted and the center of its image under inversion are collinear"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.inversion_vsub_center",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib proves inverse points lie on the radial line from the center, but no theorem gives the center of an inverted circle.",
+      "provenance": "ai",
+      "id": "3aa63c5825ae"
+    },
+    {
+      "kind": "proposition",
+      "label": "Intouch Euler line equals OI line",
+      "anchor": {
+        "section": "Application",
+        "snippet": "the Euler line of the intouch triangle of a triangle coincides with its OI line"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing the intouch triangle Euler-line statement.",
+      "provenance": "ai",
+      "id": "f934a63ac8a8"
+    },
+    {
+      "kind": "example",
+      "label": "Intouch triangle inversion proof",
+      "anchor": {
+        "section": "Application",
+        "snippet": "Invert with respect to the incircle of triangle ABC"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing this intouch-triangle inversion proof.",
+      "provenance": "ai",
+      "id": "3fca70910704"
+    },
+    {
+      "kind": "proposition",
+      "label": "Medial intouch triangle inversion",
+      "anchor": {
+        "section": "Application",
+        "snippet": "The medial triangle of the intouch triangle is inverted into triangle ABC"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing the medial-intouch inversion theorem.",
+      "provenance": "ai",
+      "id": "8c2a902f1a80"
+    },
+    {
+      "kind": "proposition",
+      "label": "Nine-point incenter circumcenter collinear",
+      "anchor": {
+        "section": "Application",
+        "snippet": "the nine-point center of the intouch triangle, the incenter and circumcenter of triangle ABC are collinear"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing this intouch-triangle nine-point collinearity theorem.",
+      "provenance": "ai",
+      "id": "3aa8585175fd"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-intersecting circles invert to concentric circles",
+      "anchor": {
+        "section": "Application",
+        "snippet": "Any two non-intersecting circles may be inverted into concentric circles"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing inversion of nonintersecting circles to concentric circles.",
+      "provenance": "ai",
+      "id": "ba90279a64da"
+    },
+    {
+      "kind": "definition",
+      "label": "Inversive distance",
+      "anchor": {
+        "section": "Application",
+        "snippet": "the inversive distance (usually denoted δ) is defined as the natural logarithm of the ratio"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing inversive distance.",
+      "provenance": "ai",
+      "id": "9b49ea0a5a73"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-intersecting circles invert to congruent circles",
+      "anchor": {
+        "section": "Application",
+        "snippet": "any two non-intersecting circles may be inverted into congruent circles"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing inversion of nonintersecting circles to congruent circles.",
+      "provenance": "ai",
+      "id": "e4138899defd"
+    },
+    {
+      "kind": "example",
+      "label": "Peaucellier-Lipkin linkage",
+      "anchor": {
+        "section": "Application",
+        "snippet": "The Peaucellier–Lipkin linkage is a mechanical implementation of inversion in a circle"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing the Peaucellier-Lipkin linkage.",
+      "provenance": "ai",
+      "id": "b7d2d61fcd19"
+    },
+    {
+      "kind": "proposition",
+      "label": "Peaucellier-Lipkin exact conversion",
+      "anchor": {
+        "section": "Application",
+        "snippet": "It provides an exact solution to the important problem of converting between linear and circular motion"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing the Peaucellier-Lipkin motion-conversion theorem.",
+      "provenance": "ai",
+      "id": "bc63404723e0"
+    },
+    {
+      "kind": "definition",
+      "label": "Polar of inverse point",
+      "anchor": {
+        "section": "Pole and polar",
+        "snippet": "the lines perpendicular to the line PR through one of the points is the polar of the other point"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.Sphere.orthRadius",
+        "module": "Mathlib.Geometry.Euclidean.Sphere.OrthRadius",
+        "match_kind": "invocation"
+      },
+      "note": "Sphere.orthRadius is documented as the polar of the inversion of a point, but the article pole-polar definition is not separately formalized.",
+      "provenance": "ai",
+      "id": "3ad292dc4711"
+    },
+    {
+      "kind": "proposition",
+      "label": "Pole-polar incidence duality",
+      "anchor": {
+        "section": "Pole and polar",
+        "snippet": "If a point P lies on a line l"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.Sphere.orthRadius",
+        "module": "Mathlib.Geometry.Euclidean.Sphere.OrthRadius",
+        "match_kind": "invocation"
+      },
+      "note": "The orthRadius API gives a polar-like affine subspace, but the pole-polar incidence duality theorem is absent.",
+      "provenance": "ai",
+      "id": "0768e30604e6"
+    },
+    {
+      "kind": "proposition",
+      "label": "Moving point polar rotates about pole",
+      "anchor": {
+        "section": "Pole and polar",
+        "snippet": "If a point P moves along a line l"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing this pole-polar motion statement.",
+      "provenance": "ai",
+      "id": "ab6bb4958cf1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Polar through tangent points",
+      "anchor": {
+        "section": "Pole and polar",
+        "snippet": "If two tangent lines can be drawn from a pole to the circle"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.Sphere.tangentsFrom",
+        "module": "Mathlib.Geometry.Euclidean.Sphere.Tangent",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib defines tangent subspaces from a point, but no theorem states that the polar passes through the tangent points.",
+      "provenance": "ai",
+      "id": "77096796e0f2"
+    },
+    {
+      "kind": "proposition",
+      "label": "Circle point polar is tangent",
+      "anchor": {
+        "section": "Pole and polar",
+        "snippet": "If a point lies on the circle, its polar is the tangent through this point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.Sphere.isTangentAt_orthRadius_iff_mem",
+        "module": "Mathlib.Geometry.Euclidean.Sphere.Tangent",
+        "match_kind": "generalization"
+      },
+      "note": "The theorem states that the orthRadius subspace is tangent exactly when the point lies on the sphere.",
+      "provenance": "ai",
+      "id": "c368ab5555a8"
+    },
+    {
+      "kind": "proposition",
+      "label": "Point on own polar lies on circle",
+      "anchor": {
+        "section": "Pole and polar",
+        "snippet": "If a point P lies on its own polar line, then P is on the circle"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing this pole-polar characterization.",
+      "provenance": "ai",
+      "id": "d3cc8cc042b1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unique pole for each line",
+      "anchor": {
+        "section": "Pole and polar",
+        "snippet": "Each line has exactly one pole"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing uniqueness of poles for lines.",
+      "provenance": "ai",
+      "id": "4ae28865cb01"
+    },
+    {
+      "kind": "definition",
+      "label": "Sphere inversion",
+      "anchor": {
+        "section": "In three dimensions",
+        "snippet": "Circle inversion is generalizable to sphere inversion in three dimensions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.inversion",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "EuclideanGeometry.inversion is defined for inversion in a sphere in arbitrary affine inner-product spaces.",
+      "provenance": "ai",
+      "id": "f89d51bef549"
+    },
+    {
+      "kind": "definition",
+      "label": "Inverse point in 3D",
+      "anchor": {
+        "section": "In three dimensions",
+        "snippet": "The inversion of a point P in 3D with respect to a reference sphere"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.inversion",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The same inversion definition specializes to three-dimensional Euclidean space.",
+      "provenance": "ai",
+      "id": "434b05466933"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sphere maps to sphere",
+      "anchor": {
+        "section": "In three dimensions",
+        "snippet": "a sphere inverts to a sphere"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.image_inversion_sphere_dist_center",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.ImageHyperplane",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves the sphere-through-center case mapping to a hyperplane, but not the general sphere-to-sphere image theorem.",
+      "provenance": "ai",
+      "id": "61ebe79d636e"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sphere through center maps to plane",
+      "anchor": {
+        "section": "In three dimensions",
+        "snippet": "if a sphere passes through the center O of the reference sphere"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.image_inversion_sphere_dist_center",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.ImageHyperplane",
+        "match_kind": "generalization"
+      },
+      "note": "The theorem maps a sphere through the center to a hyperplane, specializing in 3D to a plane.",
+      "provenance": "ai",
+      "id": "90a2bdbe5705"
+    },
+    {
+      "kind": "proposition",
+      "label": "Plane through center maps to tangent sphere",
+      "anchor": {
+        "section": "In three dimensions",
+        "snippet": "Any plane passing through O , inverts to a sphere touching at O"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.image_inversion_perpBisector",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.ImageHyperplane",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves a hyperplane of the perpendicular-bisector form maps to a sphere through the center, but not this plane-through-center formulation.",
+      "provenance": "ai",
+      "id": "13b42cda5418"
+    },
+    {
+      "kind": "proposition",
+      "label": "Circle maps to circle in 3D inversion",
+      "anchor": {
+        "section": "In three dimensions",
+        "snippet": "A circle, that is, the intersection of a sphere with a secant plane, inverts into a circle"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.image_inversion_sphere_dist_center",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.ImageHyperplane",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has sphere-to-hyperplane image theorems, but not a theorem about intersections forming circles under 3D inversion.",
+      "provenance": "ai",
+      "id": "b4399bdaff11"
+    },
+    {
+      "kind": "proposition",
+      "label": "Circle through center maps to line in 3D",
+      "anchor": {
+        "section": "In three dimensions",
+        "snippet": "if the circle passes through O it inverts into a line"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.image_inversion_sphere_dist_center",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.ImageHyperplane",
+        "match_kind": "invocation"
+      },
+      "note": "The sphere-through-center image theorem is one component of the result, but Mathlib has no packaged 3D circle-to-line theorem.",
+      "provenance": "ai",
+      "id": "cbed882742cc"
+    },
+    {
+      "kind": "proposition",
+      "label": "2D reduction for secant plane through center",
+      "anchor": {
+        "section": "In three dimensions",
+        "snippet": "This reduces to the 2D case when the secant plane passes through O"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing this dimensional reduction statement.",
+      "provenance": "ai",
+      "id": "fc1485d36033"
+    },
+    {
+      "kind": "example",
+      "label": "Sphere inversion example",
+      "anchor": {
+        "section": "Sphere",
+        "snippet": "a non trivial inversion (the center of the sphere is not the center of inversion) of a sphere"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.inversion",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The inversion map is formalized, but no specific nontrivial sphere-inversion example is present.",
+      "provenance": "ai",
+      "id": "8dbdb543b27a"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cylinder cone torus invert to Dupin cyclide",
+      "anchor": {
+        "section": "Cylinder, cone, torus",
+        "snippet": "The inversion of a cylinder, cone, or torus results in a Dupin cyclide"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing inversion of cylinders, cones, or tori to Dupin cyclides.",
+      "provenance": "ai",
+      "id": "83bc8fc76018"
+    },
+    {
+      "kind": "definition",
+      "label": "Spheroid",
+      "anchor": {
+        "section": "Spheroid",
+        "snippet": "A spheroid is a surface of revolution"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing spheroids as surfaces of revolution.",
+      "provenance": "ai",
+      "id": "c83cfe8eae69"
+    },
+    {
+      "kind": "proposition",
+      "label": "Spheroid circle pencil maps to circle pencil",
+      "anchor": {
+        "section": "Spheroid",
+        "snippet": "contains a pencil of circles which is mapped onto a pencil of circles"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing this spheroid circle-pencil statement.",
+      "provenance": "ai",
+      "id": "5ba991fcfdf5"
+    },
+    {
+      "kind": "proposition",
+      "label": "Spheroid inverse degree",
+      "anchor": {
+        "section": "Spheroid",
+        "snippet": "The inverse image of a spheroid is a surface of degree 4"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing the degree of the inverse image of a spheroid.",
+      "provenance": "ai",
+      "id": "5f5181ce14d0"
+    },
+    {
+      "kind": "definition",
+      "label": "Hyperboloid of one sheet",
+      "anchor": {
+        "section": "Hyperboloid of one sheet",
+        "snippet": "A hyperboloid of one sheet, which is a surface of revolution"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing a hyperboloid of one sheet as a surface of revolution.",
+      "provenance": "ai",
+      "id": "f4fac242b9aa"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hyperboloid circle pencil maps to circle pencil",
+      "anchor": {
+        "section": "Hyperboloid of one sheet",
+        "snippet": "contains a pencil of circles which is mapped onto a pencil of circles"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing this hyperboloid circle-pencil statement.",
+      "provenance": "ai",
+      "id": "33c6f0b701fc"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hyperboloid line pencils map to circle pencils",
+      "anchor": {
+        "section": "Hyperboloid of one sheet",
+        "snippet": "contains additional two pencils of lines, which are mapped onto pencils of circles"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing this hyperboloid line-pencil statement.",
+      "provenance": "ai",
+      "id": "7233df131857"
+    },
+    {
+      "kind": "definition",
+      "label": "Stereographic projection",
+      "anchor": {
+        "section": "Stereographic projection as the inversion of a sphere",
+        "snippet": "A stereographic projection usually projects a sphere"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "stereographic",
+        "module": "Mathlib.Geometry.Manifold.Instances.Sphere",
+        "match_kind": "exact"
+      },
+      "note": "The stereographic open partial homeomorphism from the unit sphere to an orthogonal hyperplane is defined in Mathlib.",
+      "provenance": "ai",
+      "id": "c15850888530"
+    },
+    {
+      "kind": "proposition",
+      "label": "Stereographic projection by inversion",
+      "anchor": {
+        "section": "Stereographic projection as the inversion of a sphere",
+        "snippet": "This mapping can be performed by an inversion of the sphere onto its tangent plane"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "stereographic",
+        "module": "Mathlib.Geometry.Manifold.Instances.Sphere",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib defines stereographic projection, but the file explicitly leaves relating it to inversion as a TODO.",
+      "provenance": "ai",
+      "id": "8f1ad7486f11"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sphere maps to tangent plane under unit inversion",
+      "anchor": {
+        "section": "Stereographic projection as the inversion of a sphere",
+        "snippet": "then it will be mapped by the inversion at the unit sphere (red) onto the tangent plane"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.image_inversion_sphere_dist_center",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.ImageHyperplane",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has a sphere-through-center to hyperplane theorem, but not this unit-inversion tangent-plane formulation.",
+      "provenance": "ai",
+      "id": "e76687093577"
+    },
+    {
+      "kind": "proposition",
+      "label": "Projection lines fixed under inversion",
+      "anchor": {
+        "section": "Stereographic projection as the inversion of a sphere",
+        "snippet": "The lines through the center of inversion"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.image_inversion_affineSubspace_of_mem",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.ImageHyperplane",
+        "match_kind": "generalization"
+      },
+      "note": "Any affine subspace through the center, including a projection line, is fixed as a set under inversion.",
+      "provenance": "ai",
+      "id": "68b3da3389aa"
+    },
+    {
+      "kind": "definition",
+      "label": "6-sphere coordinates",
+      "anchor": {
+        "section": "6-sphere coordinates",
+        "snippet": "The 6-sphere coordinates are a coordinate system for three-dimensional space"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing 6-sphere coordinates.",
+      "provenance": "ai",
+      "id": "846c1cb84f1a"
+    },
+    {
+      "kind": "definition",
+      "label": "Generalized circles as blocks",
+      "anchor": {
+        "section": "Axiomatics and generalization",
+        "snippet": "the generalized circles are called \"blocks\""
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing generalized circles as blocks.",
+      "provenance": "ai",
+      "id": "12eebec1770f"
+    },
+    {
+      "kind": "definition",
+      "label": "Möbius plane",
+      "anchor": {
+        "section": "Axiomatics and generalization",
+        "snippet": "any affine plane together with a single point at infinity forms a Möbius plane"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing Möbius planes.",
+      "provenance": "ai",
+      "id": "31c5a744cfb7"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite and infinite Möbius planes",
+      "anchor": {
+        "section": "Axiomatics and generalization",
+        "snippet": "exist in both finite and infinite versions"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing finite or infinite Möbius planes.",
+      "provenance": "ai",
+      "id": "2017a31c7cce"
+    },
+    {
+      "kind": "example",
+      "label": "Riemann sphere model",
+      "anchor": {
+        "section": "Axiomatics and generalization",
+        "snippet": "A model for the Möbius plane that comes from the Euclidean plane is the Riemann sphere"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "onePointEquivSphereOfFinrankEq",
+        "module": "Mathlib.Topology.Compactification.OnePoint.Sphere",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib proves a one-point compactification of Euclidean space is homeomorphic to a sphere, but not the Möbius-plane model statement.",
+      "provenance": "ai",
+      "id": "877cc907eeab"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cross-ratio invariant under inversion",
+      "anchor": {
+        "section": "Invariant",
+        "snippet": "The cross-ratio between 4 points"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing cross-ratio invariance under inversion.",
+      "provenance": "ai",
+      "id": "8b513bf67b18"
+    },
+    {
+      "kind": "proposition",
+      "label": "Line length under unit inversion",
+      "anchor": {
+        "section": "Invariant",
+        "snippet": "length of the line"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.dist_inversion_inversion",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "EuclideanGeometry.dist_inversion_inversion gives the exact distance scaling formula, including unit inversion as a special case.",
+      "provenance": "ai",
+      "id": "88707890508b"
+    },
+    {
+      "kind": "proposition",
+      "label": "Two concentric inversions give dilation",
+      "anchor": {
+        "section": "Dilation",
+        "snippet": "The combination of two inversions in concentric circles results in a similarity"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.inversion_mul",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib relates inversions with concentric radii by a homothety, but does not state the two-inversion composition theorem directly.",
+      "provenance": "ai",
+      "id": "f53722964ce6"
+    },
+    {
+      "kind": "definition",
+      "label": "Reciprocal of complex number",
+      "anchor": {
+        "section": "Reciprocation",
+        "snippet": "the reciprocal of z is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.inv_def",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Complex.inv_def gives the reciprocal as conjugate times the inverse norm squared.",
+      "provenance": "ai",
+      "id": "641511cfe9dd"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unit circle inversion algebraic form",
+      "anchor": {
+        "section": "Reciprocation",
+        "snippet": "the algebraic form of the inversion in a unit circle is given by"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.inversion",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Euclidean inversion and Complex.inv_def provide the ingredients, but no theorem states the unit-circle algebraic inversion formula.",
+      "provenance": "ai",
+      "id": "265665a04b08"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reciprocation generates Möbius group",
+      "anchor": {
+        "section": "Reciprocation",
+        "snippet": "Reciprocation is key in transformation theory as a generator of the Möbius group"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing reciprocation as a generator of the Möbius group.",
+      "provenance": "ai",
+      "id": "04964716690d"
+    },
+    {
+      "kind": "proposition",
+      "label": "Translation and rotation generate Möbius group",
+      "anchor": {
+        "section": "Reciprocation",
+        "snippet": "The other generators are translation and rotation"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing translations and rotations as generators of the Möbius group.",
+      "provenance": "ai",
+      "id": "6c17a7440124"
+    },
+    {
+      "kind": "definition",
+      "label": "Inversive geometry as larger study",
+      "anchor": {
+        "section": "Reciprocation",
+        "snippet": "inversive geometry is the larger study"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing inversive geometry as a larger study.",
+      "provenance": "ai",
+      "id": "f1f43ef9a0fd"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inversive geometry includes conjugation",
+      "anchor": {
+        "section": "Reciprocation",
+        "snippet": "Inversive geometry also includes the conjugation mapping"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing this inclusion claim about inversive geometry.",
+      "provenance": "ai",
+      "id": "22571a5dfbaa"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conjugation and circle inversion outside Möbius group",
+      "anchor": {
+        "section": "Reciprocation",
+        "snippet": "Neither conjugation nor inversion-in-a-circle are in the Möbius group"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing this nonmembership statement for conjugation or circle inversion.",
+      "provenance": "ai",
+      "id": "c0ed621dd8ad"
+    },
+    {
+      "kind": "proposition",
+      "label": "Möbius group elements conformal",
+      "anchor": {
+        "section": "Reciprocation",
+        "snippet": "Möbius group elements are analytic functions of the whole plane and so are necessarily conformal"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "DifferentiableAt.conformalAt",
+        "module": "Mathlib.Analysis.Complex.Conformal",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib proves holomorphic maps with nonzero derivative are conformal and defines fractional linear actions, but not this global Möbius-group statement.",
+      "provenance": "ai",
+      "id": "426bddcafbc8"
+    },
+    {
+      "kind": "example",
+      "label": "Complex circle under inversion",
+      "anchor": {
+        "section": "Transforming circles into circles",
+        "snippet": "Consider, in the complex plane, the circle of radius"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing this complex-circle inversion example.",
+      "provenance": "ai",
+      "id": "2b5943ed4036"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inverted complex circle equation",
+      "anchor": {
+        "section": "Transforming circles into circles",
+        "snippet": "it is straightforward to show that"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing the displayed equation for an inverted complex circle.",
+      "provenance": "ai",
+      "id": "20abe03d1d65"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inverted complex circle center and radius",
+      "anchor": {
+        "section": "Transforming circles into circles",
+        "snippet": "describes the circle of center"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing the center and radius of the inverted complex circle.",
+      "provenance": "ai",
+      "id": "8a89dd2de7d8"
+    },
+    {
+      "kind": "proposition",
+      "label": "Circle through origin maps to vertical line",
+      "anchor": {
+        "section": "Transforming circles into circles",
+        "snippet": "the circle transforms into the line parallel to the imaginary axis"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing this special complex-circle inversion result.",
+      "provenance": "ai",
+      "id": "5683d76063bf"
+    },
+    {
+      "kind": "proposition",
+      "label": "Special inverted circle center and radius",
+      "anchor": {
+        "section": "Transforming circles into circles",
+        "snippet": "showing that the"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing this special center-radius computation.",
+      "provenance": "ai",
+      "id": "4118bcc1f90e"
+    },
+    {
+      "kind": "definition",
+      "label": "Point at infinity for circle inversion",
+      "anchor": {
+        "section": "Higher geometry",
+        "snippet": "The approach is to adjoin a point at infinity designated ∞ or 1/0"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "OnePoint.infty",
+        "module": "Mathlib.Topology.Compactification.OnePoint.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib defines a point at infinity in OnePoint, but does not connect it to circle inversion.",
+      "provenance": "ai",
+      "id": "81de141f4a13"
+    },
+    {
+      "kind": "definition",
+      "label": "Complex projective line as Riemann sphere",
+      "anchor": {
+        "section": "Higher geometry",
+        "snippet": "the complex projective line , often called the Riemann sphere"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "OnePoint.equivProjectivization",
+        "module": "Mathlib.Topology.Compactification.OnePoint.ProjectiveLine",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib identifies OnePoint K with the projectivization of K^2, but does not name the complex case as the Riemann sphere.",
+      "provenance": "ai",
+      "id": "ad457ab499d6"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inversive geometry includes Lobachevsky-Bolyai ideas",
+      "anchor": {
+        "section": "Higher geometry",
+        "snippet": "inversive geometry includes the ideas originated by Lobachevsky and Bolyai"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing this historical inclusion claim.",
+      "provenance": "ai",
+      "id": "86880df6355f"
+    },
+    {
+      "kind": "definition",
+      "label": "Geometry as space with transformation group",
+      "anchor": {
+        "section": "Higher geometry",
+        "snippet": "the term geometry for a space together with a group of mappings of that space"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing geometry as a space together with a transformation group.",
+      "provenance": "ai",
+      "id": "c517880633dc"
+    },
+    {
+      "kind": "proposition",
+      "label": "Geometric properties are group invariants",
+      "anchor": {
+        "section": "Higher geometry",
+        "snippet": "The significant properties of figures in the geometry are those that are invariant under this group"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing this Erlangen-style invariance statement for inversive geometry.",
+      "provenance": "ai",
+      "id": "0fcf00efd8e6"
+    },
+    {
+      "kind": "definition",
+      "label": "Higher-dimensional sphere inversion",
+      "anchor": {
+        "section": "In higher dimensions",
+        "snippet": "an inversion in the sphere of radius r centered at the point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.inversion",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "EuclideanGeometry.inversion is the higher-dimensional sphere inversion map in affine inner-product spaces.",
+      "provenance": "ai",
+      "id": "958a001c65c1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inversions generate Euclidean similarities",
+      "anchor": {
+        "section": "In higher dimensions",
+        "snippet": "The transformation by inversion in hyperplanes or hyperspheres in E n can be used to generate dilations, translations, or rotations"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.inversion_mul",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has inversion-homothety infrastructure, but not a generation theorem for Euclidean similarities.",
+      "provenance": "ai",
+      "id": "c68816f84588"
+    },
+    {
+      "kind": "proposition",
+      "label": "Concentric hypersphere inversions give dilation",
+      "anchor": {
+        "section": "In higher dimensions",
+        "snippet": "two concentric hyperspheres, used to produce successive inversions, result in a dilation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.inversion_mul",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The inversion_mul theorem is the relevant concentric-radius homothety relation, but the composition result is not named.",
+      "provenance": "ai",
+      "id": "e2fda41655cc"
+    },
+    {
+      "kind": "proposition",
+      "label": "Parallel hyperplane reflections give translation",
+      "anchor": {
+        "section": "In higher dimensions",
+        "snippet": "When two parallel hyperplanes are used to produce successive reflections, the result is a translation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.reflection",
+        "module": "Mathlib.Geometry.Euclidean.Projection",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib defines Euclidean reflection in affine subspaces, but no theorem states that two parallel hyperplane reflections compose to a translation.",
+      "provenance": "ai",
+      "id": "d1c367028e50"
+    },
+    {
+      "kind": "proposition",
+      "label": "Intersecting hyperplane reflections give rotation",
+      "anchor": {
+        "section": "In higher dimensions",
+        "snippet": "When two hyperplanes intersect in an ( n −2)- flat"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.reflection_mul_reflection_pow_apply",
+        "module": "Mathlib.LinearAlgebra.Reflection",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has algebraic formulas for products of reflections, but not the Euclidean intersecting-hyperplane rotation theorem.",
+      "provenance": "ai",
+      "id": "a0d0a9481778"
+    },
+    {
+      "kind": "definition",
+      "label": "Isometry",
+      "anchor": {
+        "section": "In higher dimensions",
+        "snippet": "Any combination of reflections, translations, and rotations is called an isometry"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Isometry",
+        "module": "Mathlib.Topology.MetricSpace.Isometry",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines Isometry as a distance-preserving map between metric spaces.",
+      "provenance": "ai",
+      "id": "0c4bee5063b3"
+    },
+    {
+      "kind": "definition",
+      "label": "Similarity",
+      "anchor": {
+        "section": "In higher dimensions",
+        "snippet": "Any combination of reflections, dilations, translations, and rotations is a similarity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Dilation",
+        "module": "Mathlib.Topology.MetricSpace.Dilation",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes metric similarities as Dilation maps that scale distances by a nonzero ratio.",
+      "provenance": "ai",
+      "id": "120ba01ffd9c"
+    },
+    {
+      "kind": "proposition",
+      "label": "Similarities are conformal maps",
+      "anchor": {
+        "section": "In higher dimensions",
+        "snippet": "All of these are conformal maps"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ConformalAt",
+        "module": "Mathlib.Analysis.Calculus.Conformal.NormedSpace",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib defines conformal maps and metric dilations, but no theorem states that similarities are conformal.",
+      "provenance": "ai",
+      "id": "db648bc1cbd7"
+    },
+    {
+      "kind": "theorem",
+      "label": "Liouville conformal maps theorem",
+      "anchor": {
+        "section": "In higher dimensions",
+        "snippet": "where the space has three or more dimensions, the mappings generated by inversion are the only conformal mappings"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing Liouville theorem for higher-dimensional conformal maps.",
+      "provenance": "ai",
+      "id": "8337936f15b4"
+    },
+    {
+      "kind": "proposition",
+      "label": "Point at infinity identifies hyperplanes and hyperspheres",
+      "anchor": {
+        "section": "In higher dimensions",
+        "snippet": "The addition of a point at infinity to the space obviates the distinction between hyperplane and hypersphere"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "OnePoint.infty",
+        "module": "Mathlib.Topology.Compactification.OnePoint.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has one-point compactification and inversion image results, but no theorem identifying hyperplanes with hyperspheres via infinity.",
+      "provenance": "ai",
+      "id": "0062f8318121"
+    },
+    {
+      "kind": "definition",
+      "label": "Möbius transformations",
+      "anchor": {
+        "section": "In higher dimensions",
+        "snippet": "The transformations of inversive geometry are often referred to as Möbius transformations"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "UpperHalfPlane.smulAux'",
+        "module": "Mathlib.Analysis.Complex.UpperHalfPlane.MoebiusAction",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib defines fractional linear transformations on the upper half-plane, but not general inversive-geometry Möbius transformations.",
+      "provenance": "ai",
+      "id": "b5e39067a0a6"
+    },
+    {
+      "kind": "definition",
+      "label": "Anticonformal map",
+      "anchor": {
+        "section": "Anticonformal mapping property",
+        "snippet": "The circle inversion map is anticonformal"
+      },
+      "status": "not_formalized",
+      "note": "No declaration named or defining anticonformal maps was found under Mathlib.",
+      "provenance": "ai",
+      "id": "ec5bacba6bab"
+    },
+    {
+      "kind": "definition",
+      "label": "Conformal map",
+      "anchor": {
+        "section": "Anticonformal mapping property",
+        "snippet": "a map is called conformal if it preserves oriented angles"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ConformalAt",
+        "module": "Mathlib.Analysis.Calculus.Conformal.NormedSpace",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines ConformalAt and Conformal via conformal derivatives, but its convention does not require orientation preservation.",
+      "provenance": "ai",
+      "id": "67073f60ef6f"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraic anticonformal condition",
+      "anchor": {
+        "section": "Anticonformal mapping property",
+        "snippet": "Algebraically, a map is anticonformal if at every point the Jacobian is a scalar times an orthogonal matrix with negative determinant"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing the negative-determinant Jacobian condition for anticonformality.",
+      "provenance": "ai",
+      "id": "5be6f1e7c97d"
+    },
+    {
+      "kind": "proposition",
+      "label": "Two-dimensional anticonformal Jacobian form",
+      "anchor": {
+        "section": "Anticonformal mapping property",
+        "snippet": "in two dimensions the Jacobian must be a scalar times a reflection at every point"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing this two-dimensional anticonformal Jacobian criterion.",
+      "provenance": "ai",
+      "id": "a35b6f05cce1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inversive map is anticonformal by Jacobian",
+      "anchor": {
+        "section": "Anticonformal mapping property",
+        "snippet": "hence the inversive map is anticonformal"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.hasFDerivAt_inversion",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.Calculus",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib computes the inversion derivative as a scalar times a reflection, but has no anticonformal conclusion theorem.",
+      "provenance": "ai",
+      "id": "432a3031d6f8"
+    },
+    {
+      "kind": "proposition",
+      "label": "Circle inversion as conjugate inverse",
+      "anchor": {
+        "section": "Anticonformal mapping property",
+        "snippet": "the most obvious circle inversion map"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.inv_def",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Complex.inv_def gives the reciprocal formula, but no theorem identifies circle inversion with a conjugate inverse map.",
+      "provenance": "ai",
+      "id": "b7783ab2488d"
+    },
+    {
+      "kind": "proposition",
+      "label": "Complex inverse conformal",
+      "anchor": {
+        "section": "Anticonformal mapping property",
+        "snippet": "The complex analytic inverse map is conformal"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "DifferentiableAt.conformalAt",
+        "module": "Mathlib.Analysis.Complex.Conformal",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib proves holomorphic maps with nonzero derivative are conformal, but does not state the complex inverse map case as a theorem here.",
+      "provenance": "ai",
+      "id": "5de5293c3c01"
+    },
+    {
+      "kind": "proposition",
+      "label": "Circle inversion anticonformal in complex plane",
+      "anchor": {
+        "section": "Anticonformal mapping property",
+        "snippet": "its conjugate, circle inversion, is anticonformal"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.inv_def",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The complex reciprocal and conjugation formulas are present, but no anticonformality theorem for circle inversion is formalized.",
+      "provenance": "ai",
+      "id": "be5b5666c19f"
+    },
+    {
+      "kind": "proposition",
+      "label": "Homographies and anti-homographies",
+      "anchor": {
+        "section": "Anticonformal mapping property",
+        "snippet": "a homography is conformal while an anti-homography is anticonformal"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "UpperHalfPlane.smulAux'",
+        "module": "Mathlib.Analysis.Complex.UpperHalfPlane.MoebiusAction",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib defines homography-like fractional linear transformations on the upper half-plane, but not the homography versus anti-homography conformality statement.",
+      "provenance": "ai",
+      "id": "95c5ccf9e794"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sphere inversion radius positivity",
+      "anchor": {
+        "section": "Hyperbolic geometry",
+        "snippet": "will have a positive radius if"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing this radius-positivity condition for inverted spheres.",
+      "provenance": "ai",
+      "id": "04c74a520e5a"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inverted sphere equation",
+      "anchor": {
+        "section": "Hyperbolic geometry",
+        "snippet": "and on inversion gives the sphere"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing the equation of an inverted sphere.",
+      "provenance": "ai",
+      "id": "0e2f4c711003"
+    },
+    {
+      "kind": "theorem",
+      "label": "Invariant sphere iff orthogonal to unit sphere",
+      "anchor": {
+        "section": "Hyperbolic geometry",
+        "snippet": "it will be invariant under inversion if and only if c = 1"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.Sphere.orthRadius",
+        "module": "Mathlib.Geometry.Euclidean.Sphere.OrthRadius",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has polar and orthogonal-radius sphere infrastructure, but not the invariant-iff-orthogonal theorem.",
+      "provenance": "ai",
+      "id": "c562b6b1d28b"
+    },
+    {
+      "kind": "proposition",
+      "label": "Orthogonal spheres invariant under inversion",
+      "anchor": {
+        "section": "Hyperbolic geometry",
+        "snippet": "which are invariant under inversion, orthogonal to the unit sphere"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.Sphere.orthRadius",
+        "module": "Mathlib.Geometry.Euclidean.Sphere.OrthRadius",
+        "match_kind": "invocation"
+      },
+      "note": "Sphere orthogonal-radius infrastructure is present, but no theorem states that orthogonal spheres are invariant under inversion.",
+      "provenance": "ai",
+      "id": "39d72982d61e"
+    },
+    {
+      "kind": "definition",
+      "label": "Poincare disk hypersurfaces",
+      "anchor": {
+        "section": "Hyperbolic geometry",
+        "snippet": "the hypersurfaces of the Poincaré disk model of hyperbolic geometry"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.UnitDisc",
+        "module": "Mathlib.Analysis.Complex.UnitDisc.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib defines the complex unit disc used for the Poincare disc, but not these hypersurfaces.",
+      "provenance": "ai",
+      "id": "c27b998eb4d0"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unit sphere inversion swaps inside and outside",
+      "anchor": {
+        "section": "Hyperbolic geometry",
+        "snippet": "inversion in the unit sphere leaves the spheres orthogonal to it invariant"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.dist_inversion_center",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The inversion distance formula supports the inside-outside swap, but this unit-sphere statement is not named.",
+      "provenance": "ai",
+      "id": "3487e9b92df0"
+    },
+    {
+      "kind": "proposition",
+      "label": "Orthogonal sphere inversion preserves unit sphere",
+      "anchor": {
+        "section": "Hyperbolic geometry",
+        "snippet": "inversion in one of the spheres orthogonal to the unit sphere maps the unit sphere to itself"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing preservation of the unit sphere by inversion in an orthogonal sphere.",
+      "provenance": "ai",
+      "id": "662ef95635e6"
+    },
+    {
+      "kind": "proposition",
+      "label": "Orthogonal sphere inversion preserves unit ball interior",
+      "anchor": {
+        "section": "Hyperbolic geometry",
+        "snippet": "It also maps the interior of the unit sphere to itself"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing preservation of the unit ball interior by such inversions.",
+      "provenance": "ai",
+      "id": "d7bad753f2b8"
+    },
+    {
+      "kind": "definition",
+      "label": "Poincare disc reflections",
+      "anchor": {
+        "section": "Hyperbolic geometry",
+        "snippet": "this defines the reflections of the Poincaré disc model"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing Poincare disc reflections by orthogonal-sphere inversion.",
+      "provenance": "ai",
+      "id": "87c4e36958df"
+    },
+    {
+      "kind": "proposition",
+      "label": "Poincare reflections generate isometry group",
+      "anchor": {
+        "section": "Hyperbolic geometry",
+        "snippet": "These reflections generate the group of isometries of the model"
+      },
+      "status": "not_formalized",
+      "note": "No declaration was found under Mathlib formalizing generation of the Poincare model isometry group by reflections.",
+      "provenance": "ai",
+      "id": "9dc9729b4c6f"
+    },
+    {
+      "kind": "proposition",
+      "label": "Poincare model isometries are conformal",
+      "anchor": {
+        "section": "Hyperbolic geometry",
+        "snippet": "which tells us that the isometries are conformal"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "UpperHalfPlane.isometry_real_vadd",
+        "module": "Mathlib.Analysis.Complex.UpperHalfPlane.Metric",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves some upper-half-plane hyperbolic isometries, but not the Poincare model conformality theorem.",
+      "provenance": "ai",
+      "id": "c9df02138605"
+    },
+    {
+      "kind": "proposition",
+      "label": "Poincare model angle preservation",
+      "anchor": {
+        "section": "Hyperbolic geometry",
+        "snippet": "the angle between two curves in the model is the same as the angle between two curves in the hyperbolic space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductGeometry.ConformalAt.preserves_angle",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.Conformal",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib proves conformal maps preserve Euclidean angles, but not the Poincare model angle-preservation theorem.",
+      "provenance": "ai",
+      "id": "6c3326cfcda1"
+    }
+  ]
+}

@@ -344,6 +344,20 @@ into `wiki/public/assets/`. Edit sources, then run build-public, never edit
 
 ## Status log
 
+- 2026-08-06 — **Decl-existence sweep applied to production; first proposals
+  filed.** Three-agent adjudication of all 337 missing decls (321 renames — 261
+  verified / 43 high / 17 judgment — 8 clear_decl, 8 leave, 11 proof_wanted
+  overclaims; 12 wrong sweep suggestions corrected). apply_sweep_verdicts.py
+  (dry-run default, echo-verbatim bot path, live precondition re-checks):
+  dry-run revealed 358/400 targets ALREADY fixed in D1 by nightly reviews +
+  the July rename cleanup (disk mirrors lagged); applied the real gap — 42
+  auto edits across 35 articles + 14 proposals (11 overclaims → partial, 3
+  human-owned fixes incl. Picard–Lindelöf) — converged to 0, zero 422s.
+  Corpus miss rate 2.96% → 0.48% (440 → 73 citations; residue = judgment-tier
+  + overnight pipeline drift). PROPOSE-THEN-APPROVE IS NOW EXERCISED
+  END-TO-END: /stats shows 15 pending / 0 decided — Jack's triage at
+  /proposals is the next human touch. Mirrors re-pulled from D1.
+
 - 2026-08-04 (evening) — **Frontier/halo reconciled + tombstone layer destroyed
   (821edf18, DEPLOYED cf39e3d5, live-verified).** Jack's directives: (1) hop-count
   shells hid bond volume — replaced by the formal-proximity contract (SCHEMA

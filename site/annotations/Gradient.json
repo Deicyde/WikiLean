@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "`gradient f x` is the Mathlib definition of the gradient of a scalar-valued differentiable function on a Hilbert space.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bc18bd92cc37"
     },
     {
       "kind": "proposition",
@@ -35,7 +36,8 @@
         "match_kind": null
       },
       "note": "No `steepest`/`fastest` ascent characterization of the gradient is stated in Mathlib's `Gradient` API.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6ba656b983d8"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no `IsCritical`/`StationaryPt`/`CriticalPt` definition for zeros of the gradient.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "870b9f03f2ce"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": null
       },
       "note": "Mathlib defines `gradient` abstractly via Riesz duality; the component/partial-derivative formula is only implicit through tools like `fderiv_pi`, not as a named `gradient` formula.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b97d9c0f3ff8"
     },
     {
       "kind": "example",
@@ -83,7 +87,8 @@
         "match_kind": null
       },
       "note": "This Wikipedia counterexample is not present in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "050c2e9cfc9f"
     },
     {
       "kind": "proposition",
@@ -99,7 +104,8 @@
         "match_kind": "exact"
       },
       "note": "`inner_gradient_left` proves `⟪∇ f x, y⟫ = fderiv 𝕜 f x y`, the Riesz duality identifying the gradient with the total derivative.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6885a0b372dc"
     },
     {
       "kind": "example",
@@ -115,7 +121,8 @@
         "match_kind": null
       },
       "note": "This physical motivating example is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "334fb4b4a041"
     },
     {
       "kind": "example",
@@ -131,7 +138,8 @@
         "match_kind": null
       },
       "note": "Geographic-height motivating example is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "25d390ca4e5b"
     },
     {
       "kind": "example",
@@ -147,7 +155,8 @@
         "match_kind": null
       },
       "note": "This numerical slope example is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f41d3148f110"
     },
     {
       "kind": "proposition",
@@ -163,7 +172,8 @@
         "match_kind": "generalization"
       },
       "note": "`HasGradientAt.fderiv_apply` gives `fderiv 𝕜 f x y = ⟪f', y⟫`, the general directional-derivative-via-inner-product fact; the unit-vector \"slope\" framing is not specifically formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6513550a59f2"
     },
     {
       "kind": "definition",
@@ -179,7 +189,8 @@
         "match_kind": "exact"
       },
       "note": "`gradient f x := (InnerProductSpace.toDual 𝕜 F).symm (fderiv 𝕜 f x)` defines the gradient by its inner-product duality with the differential.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8b4db50ea1de"
     },
     {
       "kind": "proposition",
@@ -195,7 +206,8 @@
         "match_kind": null
       },
       "note": "Mathlib's gradient is intrinsically defined, so coordinate-invariance is implicit but not stated as a theorem.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5fd3fedd6fea"
     },
     {
       "kind": "definition",
@@ -211,7 +223,8 @@
         "match_kind": null
       },
       "note": "No explicit `gradient` formula in Cartesian/EuclideanSpace coordinates is recorded in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "476c1d28c6b3"
     },
     {
       "kind": "example",
@@ -227,7 +240,8 @@
         "match_kind": null
       },
       "note": "This worked Cartesian-gradient example is not present in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d72eb67c32f1"
     },
     {
       "kind": "definition",
@@ -243,7 +257,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no gradient formula in cylindrical coordinates.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7c20ce1faca0"
     },
     {
       "kind": "definition",
@@ -259,7 +274,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no gradient formula in spherical coordinates.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d7b64249f984"
     },
     {
       "kind": "definition",
@@ -275,7 +291,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no Einstein-notation/metric-tensor gradient formula.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7f803b923a2e"
     },
     {
       "kind": "definition",
@@ -291,7 +308,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no orthogonal-coordinates gradient formula.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "270739340ee3"
     },
     {
       "kind": "proposition",
@@ -307,7 +325,8 @@
         "match_kind": "exact"
       },
       "note": "`inner_gradient_left` expresses `⟪∇ f x, y⟫ = fderiv 𝕜 f x y`, i.e. the gradient and total derivative are dual under the inner product.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cef86d2a105e"
     },
     {
       "kind": "definition",
@@ -323,7 +342,8 @@
         "match_kind": "exact"
       },
       "note": "`fderiv 𝕜 f x` is Mathlib's Fréchet/total differential of a function between normed spaces.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "55eec3119183"
     },
     {
       "kind": "proposition",
@@ -339,7 +359,8 @@
         "match_kind": "exact"
       },
       "note": "`HasGradientAt.fderiv_apply` establishes `fderiv 𝕜 f x y = ⟪f', y⟫`, the standard `df(v) = ⟨∇f, v⟩` formula.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2c46428d41d3"
     },
     {
       "kind": "proposition",
@@ -355,7 +376,8 @@
         "match_kind": "exact"
       },
       "note": "`hasGradientAt_iff_isLittleO` states `f x' = f x + ⟪f', x' - x⟫ + o(x' - x)`, the gradient linear approximation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8fffc70978fe"
     },
     {
       "kind": "definition",
@@ -371,7 +393,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib's `gradient` is defined as `(InnerProductSpace.toDual 𝕜 F).symm (fderiv 𝕜 f x)`, exactly Riesz-representing the Fréchet derivative.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5bb35b09de57"
     },
     {
       "kind": "proposition",
@@ -387,7 +410,8 @@
         "match_kind": "generalization"
       },
       "note": "Linearity exists at the Fréchet level (`fderiv_add` etc.), but no `gradient_add`/`gradient_smul` lemmas are recorded in `Mathlib.Analysis.Calculus.Gradient.Basic`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1904a1e70f04"
     },
     {
       "kind": "proposition",
@@ -403,7 +427,8 @@
         "match_kind": "generalization"
       },
       "note": "The product rule is formalized for `fderiv` (`fderiv_mul`) but not lifted to a `gradient_mul`/`HasGradientAt.mul` lemma in the Gradient file.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "df79bf7c8652"
     },
     {
       "kind": "proposition",
@@ -419,7 +444,8 @@
         "match_kind": "generalization"
       },
       "note": "The chain rule exists for `fderiv` (`fderiv_comp`) but not stated specifically for `f ∘ γ` in terms of the gradient.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dd0d23b64f4d"
     },
     {
       "kind": "proposition",
@@ -435,7 +461,8 @@
         "match_kind": "generalization"
       },
       "note": "Multivariable chain rule is in Mathlib for `fderiv` but not specialized to a gradient formula.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "383dc695c78b"
     },
     {
       "kind": "proposition",
@@ -451,7 +478,8 @@
         "match_kind": "generalization"
       },
       "note": "The composition rule is in Mathlib for `fderiv`; no dedicated gradient-of-composition lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7be36608117c"
     },
     {
       "kind": "definition",
@@ -467,7 +495,8 @@
         "match_kind": null
       },
       "note": "Level sets are expressible via `f ⁻¹' {c}` but Mathlib has no `LevelSet`/`Isosurface` definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "99f2b7be7e8a"
     },
     {
       "kind": "proposition",
@@ -483,7 +512,8 @@
         "match_kind": null
       },
       "note": "No theorem in Mathlib relates the gradient to the tangent space of a level set.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e3d2c4df5404"
     },
     {
       "kind": "proposition",
@@ -499,7 +529,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not record gradient-normal-to-hypersurface results on Riemannian manifolds.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "437363f5e14a"
     },
     {
       "kind": "proposition",
@@ -515,7 +546,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no theorem characterizing singular points of an algebraic hypersurface via the gradient.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3693917f125d"
     },
     {
       "kind": "proposition",
@@ -531,7 +563,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no `ConservativeVectorField` definition or gradient-theorem statement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "71d79cad4962"
     },
     {
       "kind": "theorem",
@@ -547,7 +580,8 @@
         "match_kind": null
       },
       "note": "The converse of the gradient theorem is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6a9ba3e84fda"
     },
     {
       "kind": "theorem",
@@ -563,7 +597,8 @@
         "match_kind": null
       },
       "note": "No `steepest`/`fastest` ascent theorem about the gradient is present in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "996bd94a379e"
     },
     {
       "kind": "definition",
@@ -579,7 +614,8 @@
         "match_kind": "generalization"
       },
       "note": "The Fréchet derivative `fderiv` gives the Jacobian as a continuous linear map, but no explicit matrix-of-partials `jacobianMatrix` definition exists in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5d420ef1e0c5"
     },
     {
       "kind": "definition",
@@ -595,7 +631,8 @@
         "match_kind": "generalization"
       },
       "note": "The total derivative of a vector field is `fderiv`; the rectangular-coordinate Jacobian matrix form of the vector-field gradient is not separately defined.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5ca40d82e9af"
     },
     {
       "kind": "definition",
@@ -611,7 +648,8 @@
         "match_kind": null
       },
       "note": "No curvilinear/covariant-derivative formulation of the gradient of a vector field is in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fb140d19ce4a"
     },
     {
       "kind": "definition",
@@ -627,7 +665,8 @@
         "match_kind": null
       },
       "note": "No invariant/tensorial definition of `∇𝐀` as a (1,1)-tensor field is recorded in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6dec690066f4"
     },
     {
       "kind": "definition",
@@ -643,7 +682,8 @@
         "match_kind": null
       },
       "note": "Mathlib's Riemannian-manifold development (`Mathlib.Geometry.Manifold.Riemannian.*`) does not yet contain a gradient definition for smooth scalar functions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cd2153cd50f3"
     },
     {
       "kind": "proposition",
@@ -659,7 +699,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no musical-isomorphism (`♯`/`♭`) machinery on Riemannian manifolds, so `grad f = (df)^♯` is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d2155d2fc537"
     }
   ]
 }

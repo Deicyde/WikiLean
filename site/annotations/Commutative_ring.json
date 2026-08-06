@@ -27,7 +27,7 @@
       "label": "Commutative ring",
       "anchor": {
         "section": "Definition",
-        "snippet": "is called commutative"
+        "snippet": "If the multiplication is commutative, i.e.\na ⋅ b = b ⋅ a ,\nthen the ring R is called commutative."
       },
       "status": "formalized",
       "mathlib": {
@@ -36,7 +36,7 @@
         "match_kind": "exact"
       },
       "note": "`CommRing` extends `Ring` with commutative multiplication.",
-      "provenance": "ai",
+      "provenance": "human",
       "anchors": [
         {
           "section": "Definition",
@@ -109,12 +109,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "ContinuousMap.instCommRing",
+        "decl": "ContinuousMap.instCommRingOfIsTopologicalRing",
         "module": "Mathlib.Topology.ContinuousMap.Algebra",
         "match_kind": "invocation"
       },
       "note": "`CommRing C(α, β)` gives the ring of continuous maps; taking `β = ℂ` yields complex-valued continuous functions.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "79df1e0c3bb4"
     },
     {
@@ -1163,12 +1163,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "AlgebraicGeometry.instFiniteRingKrullDim",
+        "decl": "instFiniteRingKrullDimOfIsLocalRing",
         "module": "Mathlib.RingTheory.Ideal.KrullsHeightTheorem",
         "match_kind": "exact"
       },
       "note": "Under `[CommRing R] [IsNoetherianRing R] [IsLocalRing R]`, an instance provides `FiniteRingKrullDim R`.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "b0417f77d965"
     },
     {
@@ -1475,12 +1475,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "IsLocalRing.ringKrullDim_le_spanFinrank_maximalIdeal",
+        "decl": "ringKrullDim_le_spanFinrank_maximalIdeal",
         "module": "Mathlib.RingTheory.Ideal.KrullsHeightTheorem",
         "match_kind": "exact"
       },
       "note": "`ringKrullDim_le_spanFinrank_maximalIdeal` gives dim R ≤ minimal generators of m, equal to finrank of the cotangent space.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "ff1c3d5b9408"
     },
     {
@@ -2192,6 +2192,17 @@
       "note": "`SimplicialObject C` is defined so `SimplicialObject CommRingCat` is expressible, but no dedicated 'simplicial commutative ring' definition exists.",
       "provenance": "ai",
       "id": "64a9e2e3d03f"
+    },
+    {
+      "status": "not_formalized",
+      "kind": "example",
+      "label": "Ring of differentiable functions",
+      "provenance": "human",
+      "anchor": {
+        "section": "First examples",
+        "snippet": "The same is true for differentiable or holomorphic functions"
+      },
+      "id": "ed372c841b0d"
     }
   ]
 }

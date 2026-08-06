@@ -189,7 +189,8 @@
         "match_kind": "invocation"
       },
       "note": "Mathlib formalizes Fourier series of periodic functions via `fourierCoeff` on `AddCircle` (with L² convergence results such as `hasSum_fourier_series_L2`), but no single theorem states the decomposition as claimed.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5bbe3207badc"
     },
     {
       "kind": "example",
@@ -226,21 +227,21 @@
       "id": "ec73036e29ca"
     },
     {
-      "kind": "example",
-      "label": "Elliptic (double-periodic) functions",
+      "kind": "proposition",
+      "label": "Euler's formula",
       "anchor": {
-        "section": "Double-periodic functions",
-        "snippet": "A function on the complex plane can have two distinct, incommensurate periods without being a constant function."
+        "section": "Complex exponential",
+        "snippet": "Euler's formula demonstrates that the complex exponential function has a period"
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "PeriodPair.weierstrassP_add_coe",
-        "module": "Mathlib.Analysis.SpecialFunctions.Elliptic.Weierstrass",
-        "match_kind": "special_case"
+        "decl": "Complex.exp_mul_I",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
       },
-      "note": "The Weierstrass `℘` function is constructed in Mathlib for a `PeriodPair`, with `PeriodPair.weierstrassP_add_coe` establishing its double periodicity; no general `DoublyPeriodic` predicate is defined.",
+      "note": "`Complex.exp_mul_I` gives `exp (θ * I) = cos θ + sin θ * I`, i.e. Euler's formula, which combined with `Real.sin_periodic`/`cos_periodic` yields the `2π*I` periodicity of `Complex.exp`.",
       "provenance": "ai",
-      "id": "678c2542d084"
+      "id": "0e9ced9fbc9a"
     },
     {
       "kind": "proposition",
@@ -324,7 +325,8 @@
         "match_kind": "generalization"
       },
       "note": "A periodic sequence is a `Function.Periodic (f : ℕ → α) c` (or on `ℤ`); Mathlib reuses `Function.Periodic` for this since `ℕ`/`ℤ` are additive monoids.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ca2c531e3dae"
     },
     {
       "kind": "definition",
@@ -342,6 +344,23 @@
       "note": "`Function.Antiperiodic f c := ∀ x, f (x + c) = -f x` matches the Wikipedia definition exactly.",
       "provenance": "ai",
       "id": "207fc3158045"
+    },
+    {
+      "kind": "example",
+      "label": "Sine/cosine are π-antiperiodic",
+      "anchor": {
+        "section": "Antiperiodic functions",
+        "snippet": "the sine and cosine functions are"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.sin_antiperiodic",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Real.sin_antiperiodic` and `Real.cos_antiperiodic` state `Function.Antiperiodic sin π` and `Function.Antiperiodic cos π`.",
+      "provenance": "ai",
+      "id": "6c7d43cd08c3"
     },
     {
       "kind": "proposition",
@@ -461,6 +480,23 @@
       "note": "Mathlib has no music-theoretic formalization of minor triads or their period.",
       "provenance": "ai",
       "id": "1ddcf988a737"
+    },
+    {
+      "kind": "example",
+      "label": "Elliptic (double-periodic) functions",
+      "anchor": {
+        "section": "Double-periodic functions",
+        "snippet": "A function on the complex plane can have two distinct, incommensurate periods without being a constant function."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PeriodPair.weierstrassP_add_coe",
+        "module": "Mathlib.Analysis.SpecialFunctions.Elliptic.Weierstrass",
+        "match_kind": "special_case"
+      },
+      "note": "The Weierstrass `℘` function is constructed in Mathlib for a `PeriodPair`, with `PeriodPair.weierstrassP_add_coe` establishing its double periodicity; no general `DoublyPeriodic` predicate is defined.",
+      "provenance": "ai",
+      "id": "678c2542d084"
     }
   ]
 }

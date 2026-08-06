@@ -1,6 +1,12 @@
 # Propose-then-approve: letting AI reviewers update human annotations
 
-**Status:** designed, awaiting Jack's go on the UX surface (§5) before build.
+**Status: FULLY LIVE (2026-08-06).** Every rollout step shipped: store +
+approve/reject endpoints, agent emission + harvest (gated `WIKILEAN_PROPOSALS=1`,
+ON in nightly.env), the global `/proposals` queue (§5 option A) AND the inline
+editor surface (option C), lifecycle table + /stats instrumentation. First
+production proposals filed 2026-08-06 by the decl-existence sweep
+(manage/apply_sweep_verdicts.py): 11 proof_wanted overclaims + 3 human-owned
+decl fixes, pending in the queue.
 **Owner decision recorded:** "Just because a review is human-curated does NOT
 mean it shouldn't be updated by reviewers." Chosen policy: **propose → you
 approve** (not: freeze forever, not: let the bot overwrite).
@@ -75,7 +81,7 @@ This is advisory data only — it does NOT touch the rendered annotations.
 - `reject_proposal`: drop it from pending and append `{annotationId, fieldsSig}`
   to a rejected-memory so the agent's identical re-proposal is suppressed.
 
-### 5. UX surface — **Jack, pick one** (the only thing blocking build)
+### 5. UX surface — RESOLVED: A (global `/proposals`) + C (inline editor) both shipped
 - **A. Global queue page `/proposals`** (recommended): one cross-article list,
   "AI proposes: not_formalized → formalized (decl X) on *Commutative ring*
   [approve] [reject]", ordered by article. Best triage throughput. Mirrors how
