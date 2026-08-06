@@ -78,6 +78,21 @@ These resolved real conflicts between competing proposals. Build each thing **on
 - **Attribution lives at revision level** (`revisions.kind` + `meta` JSON), never in
   the annotation-level provenance enum — `_preserve_human` and the PRIORITY ladder do
   exact string matching on `human`/`ai-moderated`/`ai`.
+- **Human-at-boundaries decision policy (RATIFIED 2026-08-06, supersedes the
+  human-gate on intra-site proposals).** Jack, verbatim: "I think humans need to
+  come in only for adding cross-refs between sites where one site only allows
+  human edits. e.g. Mathlib, Wikipedia." Confirmed via explicit prompt, both
+  parts: (1) AI decides ALL pending proposals in WikiLean's own D1 — including
+  those targeting provenance:'human' annotations, which flip to 'ai-moderated'
+  when AI-changed (attribution is NEVER laundered: AI decisions record
+  actorType 'ai', distinct revision kind, never mint 'human'); (2) the nightly
+  auto-decides unattended (WIKILEAN_AUTO_DECIDE=1) via a deterministic resolver.
+  Humans remain the gate ONLY where WikiLean pushes into human-edited systems
+  (mathlib4 PRs, Wikidata submissions, Wikipedia). findLostHuman's 422 on bot
+  SAVES survives as an anti-clobber guard, not a policy gate — deliberate
+  change flows through the decide path. Companion policy, same date:
+  proof_wanted stubs badge 'partial' ('formalized' alone is an overclaim).
+  BUILD IS PENDING — see docs/SESSION-HANDOFF-2026-08-06.md for the work order.
 - **Schema v4 (multi-library `formalizations[]`) is deferred** and must be **bundled
   into the annotation-ID backfill migration** (one corpus rewrite, not two). Written
   trigger: CSLib covers a typical undergrad algorithms course. Wikidata property
