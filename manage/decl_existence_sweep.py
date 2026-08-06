@@ -214,9 +214,11 @@ def main() -> int:
 
     # proof_wanted overclaims — an INDEPENDENT pass over the whole corpus, not the
     # miss path: a proof_wanted decl DOES exist (it is declared), so it is never an
-    # existence miss. The defect is the STATUS — a declared-but-unproven stub badged
-    # formalized/partial claims Mathlib has proved something it has not (this is why
-    # the DB says "Poincare is formalized"). Downgrade those to not_formalized.
+    # existence miss. The defect is the STATUS. Owner-ratified policy
+    # (2026-08-06): a proof_wanted stub badges as 'partial' — the statement is
+    # formalized, the proof is not. Only 'formalized' is an overclaim (this is
+    # what made the DB say "Poincare is formalized"); 'partial' is the correct
+    # badge and is no longer flagged.
     overclaims = []
     proof_wanted_cited = []  # informational: every proof_wanted decl the corpus cites
     for decl, recs in sorted(by_decl.items()):
@@ -228,10 +230,10 @@ def main() -> int:
             "articles": sorted({r["slug"] for r in recs}),
         })
         for r in recs:
-            if r["status"] in ("formalized", "partial"):
+            if r["status"] == "formalized":
                 overclaims.append({
                     "slug": r["slug"], "id": r["id"], "decl": decl,
-                    "current_status": r["status"], "proposed_status": "not_formalized",
+                    "current_status": r["status"], "proposed_status": "partial",
                     "label": r["label"],
                 })
 
