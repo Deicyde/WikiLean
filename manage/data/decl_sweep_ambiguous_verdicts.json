@@ -1,0 +1,822 @@
+{
+ "generated_by": "ambiguous_rename adjudication subagent",
+ "date": "2026-08-05",
+ "source": "manage/data/decl_sweep_proposal.json categories.ambiguous_rename",
+ "oracle": "doc-gen4 cache UNION source-parse (427546 names), full-FQ matches only",
+ "verdicts": [
+  {
+   "old_decl": "AlgebraicGeometry.Scheme.presheaf",
+   "action": "rename",
+   "confidence": "high",
+   "reason": "Cited fact: regular functions as structure-sheaf sections. Scheme.presheaf is not a decl (presheaf is a PresheafedSpace field); the scheme-level structure sheaf is AlgebraicGeometry.Scheme.sheaf (cache: AlgebraicGeometry/Scheme).",
+   "new_decl": "AlgebraicGeometry.Scheme.sheaf"
+  },
+  {
+   "old_decl": "Basis",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Basis renamed to Module.Basis (2025 namespace move); oracle-verified.",
+   "new_decl": "Module.Basis"
+  },
+  {
+   "old_decl": "Basis.dualBasis",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Module.Basis namespace move; oracle-verified.",
+   "new_decl": "Module.Basis.dualBasis"
+  },
+  {
+   "old_decl": "Basis.equivFun",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Module.Basis namespace move; oracle-verified.",
+   "new_decl": "Module.Basis.equivFun"
+  },
+  {
+   "old_decl": "Basis.ext_elem_iff",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Module.Basis namespace move; oracle-verified.",
+   "new_decl": "Module.Basis.ext_elem_iff"
+  },
+  {
+   "old_decl": "Basis.extend",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Module.Basis namespace move; oracle-verified.",
+   "new_decl": "Module.Basis.extend"
+  },
+  {
+   "old_decl": "Basis.repr",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Module.Basis namespace move; oracle-verified (4 citations all about coordinate map).",
+   "new_decl": "Module.Basis.repr"
+  },
+  {
+   "old_decl": "CWComplex",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Classical CW complexes live at Topology.CWComplex (with Topology.RelCWComplex), cache: Topology/CWComplex/Classical/Basic — matches the annotation note.",
+   "new_decl": "Topology.CWComplex"
+  },
+  {
+   "old_decl": "Category.assoc",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Category typeclass field; FQ name is CategoryTheory.Category.assoc; oracle-verified.",
+   "new_decl": "CategoryTheory.Category.assoc"
+  },
+  {
+   "old_decl": "CategoryTheory.Abelian.imageFactorisation",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Same def moved into namespace OfCoimageImageComparisonIsIso (CategoryTheory/Abelian/Basic.lean:160, verified in source); gives the canonical epi-mono factorisation, IsIso comparison holds in abelian categories.",
+   "new_decl": "CategoryTheory.Abelian.OfCoimageImageComparisonIsIso.imageFactorisation"
+  },
+  {
+   "old_decl": "CategoryTheory.MonoidalClosed.ihom.adjunction",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "The tensor-hom adjunction is CategoryTheory.ihom.adjunction; oracle-verified.",
+   "new_decl": "CategoryTheory.ihom.adjunction"
+  },
+  {
+   "old_decl": "CategoryTheory.Types.binaryCoproductColimit",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Moved under Limits: CategoryTheory.Limits.Types.binaryCoproductColimit; oracle-verified.",
+   "new_decl": "CategoryTheory.Limits.Types.binaryCoproductColimit"
+  },
+  {
+   "old_decl": "CategoryTheory.Types.epi_iff_surjective",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Type-category lemma now CategoryTheory.epi_iff_surjective (cache: CategoryTheory/Types/Basic).",
+   "new_decl": "CategoryTheory.epi_iff_surjective"
+  },
+  {
+   "old_decl": "CategoryTheory.Types.isIso_iff_bijective",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Now CategoryTheory.isIso_iff_bijective (cache: CategoryTheory/Types/Basic).",
+   "new_decl": "CategoryTheory.isIso_iff_bijective"
+  },
+  {
+   "old_decl": "CategoryTheory.Types.mono_iff_injective",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Now CategoryTheory.mono_iff_injective (cache: CategoryTheory/Types/Basic).",
+   "new_decl": "CategoryTheory.mono_iff_injective"
+  },
+  {
+   "old_decl": "CliffordAlgebra.equivProd",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "The Cl(Q1.prod Q2) equivalence with the graded tensor product is CliffordAlgebra.prodEquiv (CliffordAlgebra/Prod.lean:170, statement verified in source).",
+   "new_decl": "CliffordAlgebra.prodEquiv"
+  },
+  {
+   "old_decl": "CofiniteTopology.instT1Space",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Anonymous instance's elaborated name is instT1SpaceCofiniteTopology (cache: Topology/Separation/Basic).",
+   "new_decl": "instT1SpaceCofiniteTopology"
+  },
+  {
+   "old_decl": "Completion.extension_unique",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "FQ name UniformSpace.Completion.extension_unique; oracle-verified.",
+   "new_decl": "UniformSpace.Completion.extension_unique"
+  },
+  {
+   "old_decl": "Completion.instPseudoMetricSpace",
+   "action": "rename",
+   "confidence": "high",
+   "reason": "No separate PseudoMetricSpace-on-completion decl survives; the completion's metric instance is UniformSpace.Completion.instMetricSpace (oracle-verified). Annotation note's pseudometric-first description is now slightly stale but the cited fact is carried by this instance.",
+   "new_decl": "UniformSpace.Completion.instMetricSpace"
+  },
+  {
+   "old_decl": "ContinuousLinearMap.instCStarAlgebra",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "B(H) C*-algebra instance is instCStarAlgebraContinuousLinearMapComplexIdOfCompleteSpace (name encodes CStarAlgebra (E toL[C] E) for complete E); oracle-verified.",
+   "new_decl": "instCStarAlgebraContinuousLinearMapComplexIdOfCompleteSpace"
+  },
+  {
+   "old_decl": "ContinuousMap.evalRingHom",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "No evalRingHom; point evaluation is bundled as ContinuousMap.evalAlgHom : C(X,R) →ₐ[S] R (source-verified, Topology/ContinuousMap/Algebra.lean:846) which is in particular a ring hom.",
+   "new_decl": "ContinuousMap.evalAlgHom"
+  },
+  {
+   "old_decl": "ContinuousMap.instCommRing",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "CommRing C(X,R) instance is ContinuousMap.instCommRingOfIsTopologicalRing; oracle-verified.",
+   "new_decl": "ContinuousMap.instCommRingOfIsTopologicalRing"
+  },
+  {
+   "old_decl": "Cospherical.two_zsmul_oangle_eq",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "FQ name EuclideanGeometry.Cospherical.two_zsmul_oangle_eq; oracle-verified.",
+   "new_decl": "EuclideanGeometry.Cospherical.two_zsmul_oangle_eq"
+  },
+  {
+   "old_decl": "DenseInducing.extend",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "DenseInducing renamed IsDenseInducing; IsDenseInducing.extend oracle-verified.",
+   "new_decl": "IsDenseInducing.extend"
+  },
+  {
+   "old_decl": "DivInvMonoid.zpow",
+   "action": "leave",
+   "confidence": "high",
+   "reason": "Decl exists: zpow is a field of class DivInvMonoid (Algebra/Group/Defs.lean:969); structure projections are an oracle blind spot (absent from doc-gen4 cache, invisible to the source parser). Citation is correct as-is; whitelist."
+  },
+  {
+   "old_decl": "Empty.instLinearOrder",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Anonymous `instance : LinearOrder Empty` (Order/Basic.lean:1057) elaborates to instLinearOrderEmpty (cache: Order/Basic).",
+   "new_decl": "instLinearOrderEmpty"
+  },
+  {
+   "old_decl": "Equiv.Perm.alternatingGroup.isSimpleGroup",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "alternatingGroup is a root-level def; FQ name alternatingGroup.isSimpleGroup (cache: GroupTheory/SpecificGroups/Alternating/Simple).",
+   "new_decl": "alternatingGroup.isSimpleGroup"
+  },
+  {
+   "old_decl": "Equiv.Perm.alternatingGroup.normal",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "instance normal : (alternatingGroup a).Normal at Alternating.lean:166, FQ alternatingGroup.normal; source+cache verified.",
+   "new_decl": "alternatingGroup.normal"
+  },
+  {
+   "old_decl": "Equiv.Perm.formPerm_reverse",
+   "action": "rename",
+   "confidence": "high",
+   "reason": "Both Cycle.formPerm_reverse and List.formPerm_reverse exist (oracle-verified); Cycle version (reversing a cycle gives the inverse permutation, Perm/Cycle/Concrete.lean:175) best matches the label 'Inverse via reversing cycles'.",
+   "new_decl": "Cycle.formPerm_reverse"
+  },
+  {
+   "old_decl": "Fintype.to_wellFoundedLT",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Renamed Fintype->Finite: Finite.to_wellFoundedLT; oracle-verified.",
+   "new_decl": "Finite.to_wellFoundedLT"
+  },
+  {
+   "old_decl": "FirstOrder.Language.Theory.CompleteType.instCompactSpace",
+   "action": "leave",
+   "confidence": "judgment",
+   "reason": "The CompactSpace instance exists in source (anonymous, ModelTheory/Topology/Types.lean:73, namespace CompleteType) but is not in the doc-gen4 cache (cache lags this file: only the TopologicalSpace/TotallySeparatedSpace instances are cached) and instances are invisible to the source parser, so the exact elaborated name (likely CompleteType.instCompactSpaceCompleteType) cannot be confirmed without running Lean. Re-adjudicate after the next cache refresh."
+  },
+  {
+   "old_decl": "Function.iterate",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Lean-4 name is Nat.iterate (notation f^[n]); cache: Logic/Function/Iterate.",
+   "new_decl": "Nat.iterate"
+  },
+  {
+   "old_decl": "FundamentalGroup.instGroup",
+   "action": "rename",
+   "confidence": "high",
+   "reason": "FundamentalGroup is now `abbrev FundamentalGroup x := End (FundamentalGroupoid.mk x)` with no own Group instance; the group structure is supplied by CategoryTheory.Groupoid.vertexGroup (oracle-verified), matching the note 'via End of the fundamental groupoid'.",
+   "new_decl": "CategoryTheory.Groupoid.vertexGroup"
+  },
+  {
+   "old_decl": "Geometry.PreAbstractSimplicialComplex.map",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Namespace prefix dropped: PreAbstractSimplicialComplex.map (cache: AlgebraicTopology/SimplicialComplex/Basic).",
+   "new_decl": "PreAbstractSimplicialComplex.map"
+  },
+  {
+   "old_decl": "HarmonicContOnCl.circleAverage_poissonKernel_smul",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Declared inside `namespace InnerProductSpace` (Analysis/Complex/Harmonic/Poisson.lean:102); FQ name verified in source and oracle.",
+   "new_decl": "InnerProductSpace.HarmonicContOnCl.circleAverage_poissonKernel_smul"
+  },
+  {
+   "old_decl": "HarmonicOnNhd.add",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Declared inside `namespace InnerProductSpace` (Analysis/InnerProductSpace/Harmonic/Basic.lean:136); FQ InnerProductSpace.HarmonicOnNhd.add verified.",
+   "new_decl": "InnerProductSpace.HarmonicOnNhd.add"
+  },
+  {
+   "old_decl": "HomologicalComplex.QuasiIso",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "The class is root-level QuasiIso (cache: Algebra/Homology/QuasiIso).",
+   "new_decl": "QuasiIso"
+  },
+  {
+   "old_decl": "Ideal.Quotient",
+   "action": "rename",
+   "confidence": "high",
+   "reason": "Ideal.Quotient is a namespace, not a decl; the cited fact (R/I is a ring with Ideal.Quotient.mk the projection) is carried by the CommRing instance Ideal.Quotient.commRing (oracle-verified).",
+   "new_decl": "Ideal.Quotient.commRing"
+  },
+  {
+   "old_decl": "Ideal.isPrime",
+   "action": "rename",
+   "confidence": "high",
+   "reason": "Never existed with lowercase i; the class is Ideal.IsPrime (oracle-verified). BOTH citing annotations are provenance=human (Adjoint_functors ids e814e5b6cdc2, c51ef8cfb6b4) so this fix MUST go through the propose-then-approve machinery, never direct edit. Flag for moderation: both look like test artifacts (a prime-ideal decl cited on the Adjoint functors lead snippet 'and, for all objects c in C', no label/note).",
+   "new_decl": "Ideal.IsPrime"
+  },
+  {
+   "old_decl": "IncidenceAlgebra.Mu.eulerChar",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Decl is IncidenceAlgebra.eulerChar (cache: Combinatorics/Enumerative/IncidenceAlgebra); Mu segment never part of the FQ name.",
+   "new_decl": "IncidenceAlgebra.eulerChar"
+  },
+  {
+   "old_decl": "InnerProductSpace.HarmonicOnNhd.circleAverage_eq",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "The mean-value theorem is declared at root with `open InnerProductSpace` (Analysis/Complex/Harmonic/MeanValue.lean:27): FQ HarmonicOnNhd.circleAverage_eq; source+oracle verified.",
+   "new_decl": "HarmonicOnNhd.circleAverage_eq"
+  },
+  {
+   "old_decl": "Int.instDenumerable",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "The Denumerable Z instance is Denumerable.int; oracle-verified.",
+   "new_decl": "Denumerable.int"
+  },
+  {
+   "old_decl": "IsCompletelyMetrizableSpace",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "FQ name TopologicalSpace.IsCompletelyMetrizableSpace; oracle-verified.",
+   "new_decl": "TopologicalSpace.IsCompletelyMetrizableSpace"
+  },
+  {
+   "old_decl": "IsImmersion",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Manifold immersions are namespaced: Manifold.IsImmersion (cache: Geometry/Manifold/Immersion; `namespace Manifold` verified in source). All three citing annotations are manifold-context (not AlgebraicGeometry.IsImmersion).",
+   "new_decl": "Manifold.IsImmersion"
+  },
+  {
+   "old_decl": "IsMultiplyPretransitive",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Group-action context: MulAction.IsMultiplyPretransitive; oracle-verified.",
+   "new_decl": "MulAction.IsMultiplyPretransitive"
+  },
+  {
+   "old_decl": "IsSimpleRing.isField",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "The commutative-simple-iff-field result is root-level isSimpleRing_iff_isField (RingTheory/SimpleRing/Field.lean:55, statement verified: [CommRing A] IsSimpleRing A iff IsField A).",
+   "new_decl": "isSimpleRing_iff_isField"
+  },
+  {
+   "old_decl": "IsTopologicalBasis.prod",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "FQ TopologicalSpace.IsTopologicalBasis.prod; oracle-verified.",
+   "new_decl": "TopologicalSpace.IsTopologicalBasis.prod"
+  },
+  {
+   "old_decl": "Language.instMembership",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "The Membership (List a) (Language a) instance is Language.instMembershipList; oracle-verified.",
+   "new_decl": "Language.instMembershipList"
+  },
+  {
+   "old_decl": "LaurentSeries.instIsFractionRing",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Instance elaborates to LaurentSeries.instIsFractionRingPowerSeries (IsFractionRing K[[X]] K((X))); oracle-verified.",
+   "new_decl": "LaurentSeries.instIsFractionRingPowerSeries"
+  },
+  {
+   "old_decl": "LinearPMap.IsSelfAdjoint",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "The standalone def was replaced by the root IsSelfAdjoint predicate; the cited characterization (IsSelfAdjoint A iff A-dagger = A) is LinearPMap.isSelfAdjoint_def (Analysis/InnerProductSpace/LinearPMap.lean:235, verified in source).",
+   "new_decl": "LinearPMap.isSelfAdjoint_def"
+  },
+  {
+   "old_decl": "LocalDiffeomorphAt.mfderivToContinuousLinearEquiv",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Renamed IsLocalDiffeomorphAt.mfderivToContinuousLinearEquiv; oracle-verified.",
+   "new_decl": "IsLocalDiffeomorphAt.mfderivToContinuousLinearEquiv"
+  },
+  {
+   "old_decl": "Matrix.dotProduct",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Moved out of Matrix namespace to root dotProduct (cache: Data/Matrix/Mul); all 4 citations are about the dot product.",
+   "new_decl": "dotProduct"
+  },
+  {
+   "old_decl": "Matrix.exists_list_transvec_mul_diagonal_mul_list_transvec",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Transvection file namespace: Matrix.Pivot.exists_list_transvec_mul_diagonal_mul_list_transvec; oracle-verified.",
+   "new_decl": "Matrix.Pivot.exists_list_transvec_mul_diagonal_mul_list_transvec"
+  },
+  {
+   "old_decl": "Matrix.instHMul",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Heterogeneous matrix-multiplication instance is Matrix.instHMulOfFintypeOfMulOfAddCommMonoid (cache: Data/Matrix/Mul).",
+   "new_decl": "Matrix.instHMulOfFintypeOfMulOfAddCommMonoid"
+  },
+  {
+   "old_decl": "Matrix.instMul",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Square-matrix Mul instance is Matrix.instMulOfFintypeOfAddCommMonoid (cache: Data/Matrix/Mul).",
+   "new_decl": "Matrix.instMulOfFintypeOfAddCommMonoid"
+  },
+  {
+   "old_decl": "Matrix.mul",
+   "action": "rename",
+   "confidence": "high",
+   "reason": "Matrix.mul was removed; the product of two matrices is carried by the HMul instance Matrix.instHMulOfFintypeOfMulOfAddCommMonoid (oracle-verified), matching the annotation note.",
+   "new_decl": "Matrix.instHMulOfFintypeOfMulOfAddCommMonoid"
+  },
+  {
+   "old_decl": "MeasureTheory.AECover.integrable",
+   "action": "rename",
+   "confidence": "high",
+   "reason": "No AECover.integrable; the IntegralEqImproper equality the note describes is MeasureTheory.AECover.integral_eq_of_tendsto (oracle-verified; siblings integrable_of_* also exist).",
+   "new_decl": "MeasureTheory.AECover.integral_eq_of_tendsto"
+  },
+  {
+   "old_decl": "MeasureTheory.IsTightMeasureSet.isCompact_closure",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Prokhorov forward direction renamed to root isCompact_closure_of_isTightMeasureSet (cache: MeasureTheory/Measure/Prokhorov).",
+   "new_decl": "isCompact_closure_of_isTightMeasureSet"
+  },
+  {
+   "old_decl": "MeasureTheory.Measure.IsMulRightInvariant.inv",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "The inversion-swaps-invariance instance is MeasureTheory.Measure.inv.instIsMulRightInvariant; oracle-verified.",
+   "new_decl": "MeasureTheory.Measure.inv.instIsMulRightInvariant"
+  },
+  {
+   "old_decl": "MeasureTheory.integral_inner",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Root-level integral_inner (the MeasureTheory._root_ oracle entry is a parser artifact of the same decl); oracle-verified.",
+   "new_decl": "integral_inner"
+  },
+  {
+   "old_decl": "MeromorphicAt.order",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "2025 rename to meromorphicOrderAt (cache: Analysis/Meromorphic/Order).",
+   "new_decl": "meromorphicOrderAt"
+  },
+  {
+   "old_decl": "Monoid.npow",
+   "action": "leave",
+   "confidence": "high",
+   "reason": "Decl exists: npow is a field of class Monoid (Algebra/Group/Defs.lean:652); structure projections are an oracle blind spot. All 7 citations remain correct; whitelist."
+  },
+  {
+   "old_decl": "MulChar.map_mul",
+   "action": "rename",
+   "confidence": "high",
+   "reason": "MulChar.map_mul was removed; chi(ab)=chi(a)chi(b) is the generic map_mul (root, oracle-verified) applicable via MulChar's MonoidHomClass instance.",
+   "new_decl": "map_mul"
+  },
+  {
+   "old_decl": "Nat.instGCDMonoid",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Instance is instGCDMonoidNat; oracle-verified.",
+   "new_decl": "instGCDMonoidNat"
+  },
+  {
+   "old_decl": "Nat.instInfinite",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Instance is instInfiniteNat; oracle-verified.",
+   "new_decl": "instInfiniteNat"
+  },
+  {
+   "old_decl": "Nat.rec",
+   "action": "leave",
+   "confidence": "high",
+   "reason": "Core Lean auto-generated recursor; exists but is invisible to both oracle sides (doc-gen4 cache omits recursors, source parser cannot see auto-generated decls). All 4 induction citations remain correct; whitelist."
+  },
+  {
+   "old_decl": "Nimber.instField",
+   "action": "clear_decl",
+   "confidence": "judgment",
+   "reason": "Nimber is entirely absent from current Mathlib: zero case-insensitive oracle hits, Mathlib/SetTheory has no Nimber (combinatorial game theory incl. nimbers moved to a separate repository). The fact 'nimbers form a field' has no current Mathlib formalization.",
+   "new_status": "not_formalized"
+  },
+  {
+   "old_decl": "Pi",
+   "action": "leave",
+   "confidence": "judgment",
+   "reason": "Bare `Pi` was never a declaration; function types (the cited 'set exponentiation' E^F = F -> E) are primitive Lean syntax with no citable decl, and no suggested candidate is the same fact. Recommend a human clears the decl while keeping the status; not expressible as a rename."
+  },
+  {
+   "old_decl": "Pi.connectedSpace",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Product-of-connected-spaces instance is instConnectedSpaceForall; oracle-verified.",
+   "new_decl": "instConnectedSpaceForall"
+  },
+  {
+   "old_decl": "PointedSmoothMap.eval",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Renamed PointedContMDiffMap; PointedContMDiffMap.eval (Geometry/Manifold/DerivationBundle.lean:71) source+cache verified.",
+   "new_decl": "PointedContMDiffMap.eval"
+  },
+  {
+   "old_decl": "Polynomial.finrank_quotient_span_eq_natDegree",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Now root-level finrank_quotient_span_eq_natDegree; oracle-verified.",
+   "new_decl": "finrank_quotient_span_eq_natDegree"
+  },
+  {
+   "old_decl": "Polynomial.instIsDomain",
+   "action": "rename",
+   "confidence": "high",
+   "reason": "The polynomial IsDomain instance is Polynomial.instIsDomainOfIsCancelAdd (oracle-verified; only IsDomain instance for Polynomial after the cancellative generalization).",
+   "new_decl": "Polynomial.instIsDomainOfIsCancelAdd"
+  },
+  {
+   "old_decl": "Polynomial.mul_def",
+   "action": "rename",
+   "confidence": "high",
+   "reason": "mul_def removed; the coefficient-convolution description of polynomial multiplication in the note is Polynomial.coeff_mul (oracle-verified).",
+   "new_decl": "Polynomial.coeff_mul"
+  },
+  {
+   "old_decl": "PontryaginDual.instDiscreteTopology",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Instance is PontryaginDual.instDiscreteTopologyOfCompactSpace; oracle-verified and matches 'discrete when source compact'.",
+   "new_decl": "PontryaginDual.instDiscreteTopologyOfCompactSpace"
+  },
+  {
+   "old_decl": "ProbabilityTheory.IsUniform",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Uniform-distribution predicate lives at MeasureTheory.pdf.IsUniform; oracle-verified (both citations concern the uniform distribution).",
+   "new_decl": "MeasureTheory.pdf.IsUniform"
+  },
+  {
+   "old_decl": "Prod.module",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Instance is Prod.instModule; oracle-verified.",
+   "new_decl": "Prod.instModule"
+  },
+  {
+   "old_decl": "PseudoMetrizableSpace.regularSpace",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "FQ TopologicalSpace.PseudoMetrizableSpace.regularSpace; oracle-verified.",
+   "new_decl": "TopologicalSpace.PseudoMetrizableSpace.regularSpace"
+  },
+  {
+   "old_decl": "Quaternion.instNormOneClass",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Instance is Quaternion.instNormOneClassReal; oracle-verified. (Citing annotation is provenance=ai-agent1.)",
+   "new_decl": "Quaternion.instNormOneClassReal"
+  },
+  {
+   "old_decl": "Quaternion.instNormedAddCommGroup",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Instance is Quaternion.instNormedAddCommGroupReal; oracle-verified. (ai-agent1 annotations.)",
+   "new_decl": "Quaternion.instNormedAddCommGroupReal"
+  },
+  {
+   "old_decl": "Quaternion.instNormedAlgebra",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Instance is Quaternion.instNormedAlgebraReal; oracle-verified. (ai-agent1 annotation.)",
+   "new_decl": "Quaternion.instNormedAlgebraReal"
+  },
+  {
+   "old_decl": "Quaternion.re",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Projection lives on QuaternionAlgebra: QuaternionAlgebra.re; oracle-verified.",
+   "new_decl": "QuaternionAlgebra.re"
+  },
+  {
+   "old_decl": "R1Space.instR0Space",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "The [R1Space X] : R0Space X instance (Topology/Separation/Basic.lean:914) elaborates to bare instR0Space — verified by elimination against its named siblings instR0SpaceOfT1Space/Prod/Forall/Subtype in the same cached module.",
+   "new_decl": "instR0Space"
+  },
+  {
+   "old_decl": "Rat.mk",
+   "action": "rename",
+   "confidence": "high",
+   "reason": "Rat.mk never existed in Lean 4; the 'reduction of ratios' operation is Rat.normalize (cache: Init/Data/Rat/Basic), which reduces num/den by their gcd.",
+   "new_decl": "Rat.normalize"
+  },
+  {
+   "old_decl": "Real.fourierIntegral",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Refactor moved the scalar Fourier integral to Fourier.fourierIntegral (Analysis/Fourier/FourierTransform.lean:340, namespace verified in source).",
+   "new_decl": "Fourier.fourierIntegral"
+  },
+  {
+   "old_decl": "Real.instIsTopologicalAddGroup",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Real-specific instance is instIsTopologicalAddGroupReal (cache: Topology/Algebra/Ring/Real).",
+   "new_decl": "instIsTopologicalAddGroupReal"
+  },
+  {
+   "old_decl": "Real.instLinearOrder",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Named instance Real.linearOrder; oracle-verified.",
+   "new_decl": "Real.linearOrder"
+  },
+  {
+   "old_decl": "Real.instTopologicalSpace",
+   "action": "rename",
+   "confidence": "high",
+   "reason": "No named TopologicalSpace R instance; the standard topology is induced by Real.pseudoMetricSpace (oracle-verified), matching the note 'topology coming from its metric instance'.",
+   "new_decl": "Real.pseudoMetricSpace"
+  },
+  {
+   "old_decl": "Real.noncompactSpace",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Instance is instNoncompactSpaceReal (cache: Topology/Algebra/Ring/Real).",
+   "new_decl": "instNoncompactSpaceReal"
+  },
+  {
+   "old_decl": "Set.Finite.exists_max_image",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Now Set.exists_max_image with s.Finite as hypothesis (Data/Set/Finite/Lemmas.lean:81, statement verified).",
+   "new_decl": "Set.exists_max_image"
+  },
+  {
+   "old_decl": "SimpleGraph.completeBipartiteGraph",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Root-level completeBipartiteGraph; oracle-verified.",
+   "new_decl": "completeBipartiteGraph"
+  },
+  {
+   "old_decl": "StandardBorelSpace.pi",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Countable-product instance is StandardBorelSpace.pi_countable (MeasureTheory/Constructions/Polish/Basic.lean:152, source-verified).",
+   "new_decl": "StandardBorelSpace.pi_countable"
+  },
+  {
+   "old_decl": "Subgroup.instIsTopologicalGroup",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Instance is Subgroup.instIsTopologicalGroupSubtypeMem; oracle-verified.",
+   "new_decl": "Subgroup.instIsTopologicalGroupSubtypeMem"
+  },
+  {
+   "old_decl": "Submodule.Quotient",
+   "action": "rename",
+   "confidence": "high",
+   "reason": "Submodule.Quotient is not a decl; the quotient module M/S is carried by the HasQuotient instance Submodule.hasQuotient (oracle-verified), matching the note.",
+   "new_decl": "Submodule.hasQuotient"
+  },
+  {
+   "old_decl": "TensorProduct.contractLeft",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Root-level contractLeft (LinearAlgebra contraction); oracle-verified.",
+   "new_decl": "contractLeft"
+  },
+  {
+   "old_decl": "TestFunction.instLocallyConvexSpace",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Instance is TestFunction.instLocallyConvexSpaceReal; oracle-verified.",
+   "new_decl": "TestFunction.instLocallyConvexSpaceReal"
+  },
+  {
+   "old_decl": "TopologicalSpace.NonemptyCompacts.instMetricSpace",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "The Hausdorff-distance metric instance is Metric.NonemptyCompacts.instMetricSpace (cache: Topology/MetricSpace/Closeds).",
+   "new_decl": "Metric.NonemptyCompacts.instMetricSpace"
+  },
+  {
+   "old_decl": "TopologicalSpace.SecondCountableTopology",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Class moved to root SecondCountableTopology (cache: Topology/Bases).",
+   "new_decl": "SecondCountableTopology"
+  },
+  {
+   "old_decl": "Tor",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "CategoryTheory.Tor (cache-verified); matches note (CategoryTheory.Monoidal.Tor).",
+   "new_decl": "CategoryTheory.Tor"
+  },
+  {
+   "old_decl": "Turing.ToPartrec.tr_eval",
+   "action": "rename",
+   "confidence": "high",
+   "reason": "Namespace renamed: the partrec-to-TM2 simulation theorem is Turing.PartrecToTM2.tr_eval (cache: Computability/TuringMachine/ToPartrec) — the 'TM models compute the partial recursive functions' fact the note invokes.",
+   "new_decl": "Turing.PartrecToTM2.tr_eval"
+  },
+  {
+   "old_decl": "Units.instIsTopologicalGroup",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Instance is Units.instIsTopologicalGroupOfContinuousMul; oracle-verified and matches the note's continuity hypotheses.",
+   "new_decl": "Units.instIsTopologicalGroupOfContinuousMul"
+  },
+  {
+   "old_decl": "WeakDual.CharacterSpace.instCompactSpace",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Instance is WeakDual.CharacterSpace.instCompactSpaceElemCharacterSpaceOfProperSpace (proper field, matching the note); oracle-verified.",
+   "new_decl": "WeakDual.CharacterSpace.instCompactSpaceElemCharacterSpaceOfProperSpace"
+  },
+  {
+   "old_decl": "ZMod.quadratic_reciprocity",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Quadratic reciprocity is legendreSym.quadratic_reciprocity (oracle-verified). Note: the annotation's Eisenstein-lemma phrasing may be stale but the cited fact is QR itself.",
+   "new_decl": "legendreSym.quadratic_reciprocity"
+  },
+  {
+   "old_decl": "circleAverage",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Namespaced: Real.circleAverage (MeasureTheory/Integral/CircleAverage.lean:53, namespace Real verified).",
+   "new_decl": "Real.circleAverage"
+  },
+  {
+   "old_decl": "convolution",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Moved into namespace: MeasureTheory.convolution (cache: Analysis/Convolution).",
+   "new_decl": "MeasureTheory.convolution"
+  },
+  {
+   "old_decl": "deriv.comp",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Chain rule renamed deriv_comp (Analysis/Calculus/Deriv/Comp.lean:313, statement verified: deriv (h2 . h) x = deriv h2 (h x) * deriv h x).",
+   "new_decl": "deriv_comp"
+  },
+  {
+   "old_decl": "exists_basis",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Every-vector-space-has-a-basis is Module.Basis.exists_basis (cache: LinearAlgebra/Basis/VectorSpace).",
+   "new_decl": "Module.Basis.exists_basis"
+  },
+  {
+   "old_decl": "exteriorPower",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "The k-th exterior power def now lives at ExteriorAlgebra.exteriorPower (oracle-verified; root name gone).",
+   "new_decl": "ExteriorAlgebra.exteriorPower"
+  },
+  {
+   "old_decl": "gcd_mul_lcm",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Root lemma moved into namespace: GCDMonoid.gcd_mul_lcm (cache: Algebra/GCDMonoid/Basic). Applies to all 6 citations, which all reference the gcd*lcm ~ a*b relation.",
+   "new_decl": "GCDMonoid.gcd_mul_lcm"
+  },
+  {
+   "old_decl": "intermediateFieldEquivSubgroup",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Fundamental theorem of Galois theory is IsGalois.intermediateFieldEquivSubgroup; oracle-verified.",
+   "new_decl": "IsGalois.intermediateFieldEquivSubgroup"
+  },
+  {
+   "old_decl": "isCompact_Icc",
+   "action": "rename",
+   "confidence": "high",
+   "reason": "Root lemma gone; the fact (closed intervals compact) is carried by the class projection CompactIccSpace.isCompact_Icc (oracle-verified), which covers all 4 citations incl. [0,1] and R.",
+   "new_decl": "CompactIccSpace.isCompact_Icc"
+  },
+  {
+   "old_decl": "isCompact_closedBall",
+   "action": "rename",
+   "confidence": "high",
+   "reason": "Root lemma gone; closed balls compact in proper spaces is the class projection ProperSpace.isCompact_closedBall (oracle-verified).",
+   "new_decl": "ProperSpace.isCompact_closedBall"
+  },
+  {
+   "old_decl": "lcm_zero_right",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Moved into namespace: GCDMonoid.lcm_zero_right (cache: Algebra/GCDMonoid/Basic).",
+   "new_decl": "GCDMonoid.lcm_zero_right"
+  },
+  {
+   "old_decl": "measurable_const_mul",
+   "action": "rename",
+   "confidence": "high",
+   "reason": "Root lemma gone; measurability of left-multiplication by a constant is the class field MeasurableMul.measurable_const_mul (oracle-verified).",
+   "new_decl": "MeasurableMul.measurable_const_mul"
+  },
+  {
+   "old_decl": "polar",
+   "action": "rename",
+   "confidence": "high",
+   "reason": "Bare polar never a Lean4 decl; the polar set of a subset (the note's cited notion) is LinearMap.polar (oracle-verified; StrongDual.polar/WeakDual.polar are the normed specializations). ai-agent1 annotation.",
+   "new_decl": "LinearMap.polar"
+  },
+  {
+   "old_decl": "singularChainComplexFunctor",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Namespaced: AlgebraicTopology.singularChainComplexFunctor; oracle-verified.",
+   "new_decl": "AlgebraicTopology.singularChainComplexFunctor"
+  },
+  {
+   "old_decl": "star_mul",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Root star_mul is only an `export StarMul (star_mul)` alias (Algebra/Star/Basic.lean:133); the decl is StarMul.star_mul (cache-verified).",
+   "new_decl": "StarMul.star_mul"
+  },
+  {
+   "old_decl": "sum_four_squares",
+   "action": "rename",
+   "confidence": "verified",
+   "reason": "Lagrange four-square theorem is Nat.sum_four_squares (oracle-verified); annotation stays partial for the five-nonzero-squares variant.",
+   "new_decl": "Nat.sum_four_squares"
+  }
+ ]
+}
