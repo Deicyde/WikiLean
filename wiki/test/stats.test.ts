@@ -1,7 +1,7 @@
 // /stats (P2a): the public experiment-instrumentation dashboard. Pins the
 // SQL aggregates against seeded fixtures (review states, count columns,
 // event_type × actor_type cells, flags, revisions/patrol, pipeline_runs),
-// the RQ labels, the KV cache (page:stats:v4, TTL 300), and the
+// the RQ labels, the KV cache (page:stats:v5, TTL 300), and the
 // zero-means-broken footnote.
 
 import { describe, it, expect } from "vitest";
@@ -100,6 +100,17 @@ async function seedWorld(h: Harness): Promise<void> {
     { bearer: PIPELINE_TOKEN, origin: null },
   );
   expect(runRes.status).toBe(200);
+
+  // Proposal lifecycle rows: one decided by the pipeline bearer (the
+  // Human-at-boundaries decide path), one by a human patroller — so the
+  // "Decided by AI" aggregate is pinned NONZERO (a broken subquery rendering
+  // 0 forever is the extreme-minority bug class).
+  const propIns = h.db.prepare(
+    "INSERT INTO proposals (id, slug, annotation_id, fields, fields_sig, status, created_at, decided_at, decided_by) VALUES (?,?,?,?,?,?,?,?,?)",
+  );
+  propIns.run("aaaa11112222", "Fresh_A", "aaaaaaaaaaaa", "{}", "sig-a", "approved", 1000, 2000, "pipeline");
+  propIns.run("bbbb11112222", "Fresh_A", "aaaaaaaaaaaa", "{}", "sig-b", "rejected", 1000, 3000, "u-patroller");
+  propIns.run("cccc11112222", "Fresh_A", "aaaaaaaaaaaa", "{}", "sig-c", "pending", 1000, null, null);
 }
 
 describe("GET /stats", () => {
@@ -146,6 +157,12 @@ describe("GET /stats", () => {
     expect(html).toContain('<td>Revisions: pipeline</td><td class="wl-stat-num">1</td>');
     expect(html).toContain('<td>Human edits awaiting patrol</td><td class="wl-stat-num">1</td>');
     expect(html).toContain('<td>Human edits patrolled</td><td class="wl-stat-num">1</td>');
+
+    // Proposals: the AI-decided count is pinned NONZERO (extreme-minority
+    // rule — a broken subquery rendering 0 forever would stay green on a
+    // label-only assertion) and the human decision does NOT count.
+    expect(html).toContain('<td>Decided by AI (auto-resolve)</td><td class="wl-stat-num">1</td>');
+    expect(html).toContain('<td>Pending (awaiting a human)</td><td class="wl-stat-num">1</td>');
 
     // Pipeline runs: per-kind row + the all-runs total, cost rendered in $.
     expect(html).toContain(
@@ -194,10 +211,10 @@ describe("GET /stats", () => {
     expect(html).toContain('<span class="muted">—</span>');
   });
 
-  it("is KV-cached under page:stats:v4 for 300s (TTL-only invalidation)", async () => {
+  it("is KV-cached under page:stats:v5 for 300s (TTL-only invalidation)", async () => {
     const h = setup();
     const first = await (await get(h.env, "/stats")).text();
-    expect(h.renderCache.store.has("page:stats:v4")).toBe(true);
+    expect(h.renderCache.store.has("page:stats:v5")).toBe(true);
     // Mutate the DB; the cached page must still serve unchanged.
     insertArticle(h.db, "After_Cache");
     const second = await (await get(h.env, "/stats")).text();

@@ -324,7 +324,7 @@ export interface RecentRow {
 }
 
 // The revisions.kind vocabulary (0004), as filter values for ?kind=.
-export const RECENT_KINDS = ["edit", "revert", "seed", "pipeline", "contribution"] as const;
+export const RECENT_KINDS = ["edit", "revert", "seed", "pipeline", "contribution", "proposal-approved", "proposal-decided-ai"] as const;
 
 // One patrol cell. Only human edits (kind='edit') participate: unpatrolled
 // rows get a subtle amber marker (everyone) + a mark-patrolled button
@@ -628,6 +628,7 @@ export interface StatsData {
     approved: number;
     rejected: number;
     stale: number;
+    decidedByAi: number;
     meanDecisionMs: number | null;
   };
 }
@@ -757,6 +758,7 @@ export function statsPage(d: StatsData): string {
       statRow("Pending (awaiting a human)", d.proposals.pending, "RQ2") +
         statRow("Approved", d.proposals.approved, "RQ1 RQ2") +
         statRow("Rejected", d.proposals.rejected, "RQ1 RQ2") +
+        statRow("Decided by AI (auto-resolve)", d.proposals.decidedByAi, "RQ1 RQ2") +
         statRow("Stale (target vanished undecided)", d.proposals.stale, "RQ5") +
         `<tr><td>Acceptance rate (approved ÷ decided)</td><td class="wl-stat-num">${
           d.proposals.approved + d.proposals.rejected > 0

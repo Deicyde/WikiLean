@@ -63,10 +63,14 @@ python3 manage/refresh.py [--pull] # rebuild the control plane (centrality/cover
 - **D1 is canonical; never re-seed from disk.** Human edits live only in D1. Any new D1 write
   path outside the Worker must bump `version`, or readers see stale pages for up to 30 days.
 - **`findLostHuman` 422 is the floor** — a bot save that drops/alters any `provenance:"human"`
-  annotation (tombstones included) must 422. Bots can't approve/endorse (session-only; 403).
+  annotation (tombstones included) must 422. It is an anti-clobber guard, not a policy gate:
+  under Human-at-boundaries (ROADMAP, ratified 2026-08-06) the PIPELINE_TOKEN bearer MAY
+  decide proposals (approve/reject), and an AI approve that changes human bytes re-labels
+  them `ai-moderated` — **AI-changed bytes are never left marked `human`, and bots never
+  mint `human`** (endorse stays session-only; 403). Humans gate only cross-site pushes.
 - **Render-cache keys are manually versioned + load-bearing** (currently `render:v16:`,
   `page:home:v10`, `page:articles:v2`, `page:articles-index:v1`, `page:about:v1`,
-  `page:sitemap:v4`, `page:stats:v4`, `page:wikifunctions:v3`,
+  `page:sitemap:v4`, `page:stats:v5`, `page:wikifunctions:v3`,
   `page:wikifunctions-verify:v3` — all in `index.ts`) — bump the
   prefix whenever output bytes change, or readers get stale HTML for up to 30 days. Asset
   changes need `?v=` bumps.
