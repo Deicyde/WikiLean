@@ -92,7 +92,15 @@ These resolved real conflicts between competing proposals. Build each thing **on
   SAVES survives as an anti-clobber guard, not a policy gate — deliberate
   change flows through the decide path. Companion policy, same date:
   proof_wanted stubs badge 'partial' ('formalized' alone is an overclaim).
-  BUILD IS PENDING — see docs/SESSION-HANDOFF-2026-08-06.md for the work order.
+  BUILT 2026-08-07 (bearer decide path + GET /api/proposals +
+  site/resolve_proposals.py + nightly WIKILEAN_AUTO_DECIDE + stats v5).
+  *Implementation note on the letter of (1):* annotation_events.actor_type is
+  constrained by migration 0005 to {'human','pipeline'} — AI decisions record
+  the schema's existing AI-actor value **'pipeline'** (the same label every
+  bot save already carries), with the channel separated by revision kind
+  `proposal-decided-ai` + proposals.decided_by. Recording literally 'ai'
+  would need a D1 table rebuild to relabel a synonym; flagged to Jack
+  2026-08-07 — say the word if the literal enum value matters.
 - **Schema v4 (multi-library `formalizations[]`) is deferred** and must be **bundled
   into the annotation-ID backfill migration** (one corpus rewrite, not two). Written
   trigger: CSLib covers a typical undergrad algorithms course. Wikidata property

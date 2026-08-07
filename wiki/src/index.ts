@@ -623,7 +623,7 @@ app.get("/wikifunctions/verify", async (c) => {
 // Annotation blobs are never parsed here. KV-cached with TTL-only
 // invalidation (a write can be up to 5 minutes stale — fine for a dashboard).
 app.get("/stats", async (c) => {
-  const cacheKey = "page:stats:v4"; // v4: shell nav gains Articles + Brain + the search box
+  const cacheKey = "page:stats:v5"; // v5: AI-decided proposals row (Human-at-boundaries)
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const db = drizzle(c.env.DB);
@@ -718,6 +718,9 @@ app.get("/stats", async (c) => {
         approved: sql<number>`COALESCE(SUM(CASE WHEN ${proposals.status} = 'approved' THEN 1 ELSE 0 END), 0)`,
         rejected: sql<number>`COALESCE(SUM(CASE WHEN ${proposals.status} = 'rejected' THEN 1 ELSE 0 END), 0)`,
         stale: sql<number>`COALESCE(SUM(CASE WHEN ${proposals.status} = 'stale' THEN 1 ELSE 0 END), 0)`,
+        // Human-at-boundaries telemetry: decisions made by the pipeline bearer
+        // (decided_by resolves to a role='bot' user) vs human patrollers.
+        decidedByAi: sql<number>`COALESCE(SUM(CASE WHEN ${proposals.status} IN ('approved','rejected') AND ${proposals.decidedBy} IN (SELECT id FROM users WHERE role = 'bot') THEN 1 ELSE 0 END), 0)`,
         meanDecisionMs: sql<number | null>`AVG(CASE WHEN ${proposals.decidedAt} IS NOT NULL AND ${proposals.status} IN ('approved','rejected') THEN ${proposals.decidedAt} - ${proposals.createdAt} END)`,
       })
       .from(proposals)
@@ -934,16 +937,12 @@ app.delete("/api/watch/:slug", async (c) => {
 // Before this page, a proposal on an unvisited article was invisible forever;
 // approval throughput is the bottleneck of the whole experiment. Reads the
 // proposals lifecycle table (pending only) + each target's CURRENT values so
-// the reviewer can decide in place. Logged-in humans only (the POST contract
-// it drives is session-only anyway — bots 403).
-app.get("/proposals", async (c) => {
-  const user = await getUser(c);
-  if (!user) return c.redirect("/login?returnTo=%2Fproposals");
-  // Same gate as the decide actions: deciding is patroller/admin moderation.
-  if (user.role !== "patroller" && user.role !== "admin") {
-    return c.html(proposalsQueuePage([], { total: 0, forbidden: true }), 403);
-  }
-  const db = drizzle(c.env.DB);
+// the reviewer can decide in place. Two consumers, ONE row-builder
+// (pendingProposalRows): the human page below, and the bearer-only
+// GET /api/proposals machine twin that site/resolve_proposals.py reads —
+// forking the delta semantics between them is how a UI and its automation
+// drift apart, so both reuse applyProposalFields via the same code path.
+async function pendingProposalRows(db: ReturnType<typeof drizzle>): Promise<{ total: number; rows: ProposalQueueRow[] }> {
   const [{ total }] = await db
     .select({ total: sql<number>`COUNT(*)` })
     .from(proposals)
@@ -1052,7 +1051,32 @@ app.get("/proposals", async (c) => {
       createdAt: p.createdAt,
     };
   });
+  return { total, rows };
+}
+
+app.get("/proposals", async (c) => {
+  const user = await getUser(c);
+  if (!user) return c.redirect("/login?returnTo=%2Fproposals");
+  // Same gate as the decide actions: deciding is patroller/admin moderation.
+  if (user.role !== "patroller" && user.role !== "admin") {
+    return c.html(proposalsQueuePage([], { total: 0, forbidden: true }), 403);
+  }
+  const db = drizzle(c.env.DB);
+  const { total, rows } = await pendingProposalRows(db);
   return c.html(proposalsQueuePage(rows, { total }));
+});
+
+// Machine twin of /proposals for the deterministic resolver
+// (site/resolve_proposals.py) — PIPELINE_TOKEN bearer only. Same rows, same
+// applyProposalFields delta; `noChange`/`changed === null` mean exactly what
+// they mean on the page (empty delta / target gone).
+app.get("/api/proposals", async (c) => {
+  const user = await getUser(c);
+  if (!user) return c.json({ ok: false, error: "auth required" }, 401);
+  if (user.role !== "bot") return c.json({ ok: false, error: "bearer only" }, 403);
+  const db = drizzle(c.env.DB);
+  const { total, rows } = await pendingProposalRows(db);
+  return c.json({ ok: true, total, rows }, 200, { "Cache-Control": "no-store" });
 });
 
 app.get("/flags", async (c) => {
@@ -1371,20 +1395,20 @@ app.post("/api/article/:slug", async (c) => {
   // endorsing itself would be meaningless (403). This replaces the editor's
   // old provenance-flip-and-save, which stampProvenance reverts by design.
   if (posted.action !== undefined) {
-    // endorse / approve / reject are session-only human actions — a bot may
-    // never approve its own proposal (same 403 as endorse).
-    if (isBot) return c.json({ ok: false, error: "forbidden" }, 403);
-
     // ---- approve/reject a pending AI proposal (docs/propose-then-approve.md) --
-    // Proposals live inert in moderation_state. Approving applies the delta to
-    // the target human annotation IN PLACE and keeps provenance:'human' (Jack
-    // owns it now — findLostHuman keeps protecting it). Rejecting remembers the
-    // delta so the agent won't re-propose it. The agent never mutates here.
+    // Proposals live inert in moderation_state. A SESSION approve applies the
+    // delta and keeps provenance:'human' (Jack owns it — findLostHuman keeps
+    // protecting it). Under the Human-at-boundaries policy (ROADMAP binding
+    // decision, ratified 2026-08-06) the PIPELINE_TOKEN bearer may also
+    // decide: an AI approve that changes a human annotation's bytes re-labels
+    // it 'ai-moderated' (attribution is never laundered — AI-changed bytes
+    // are never left marked 'human', and 'human' is never minted here).
+    // Humans still gate every cross-site push (mathlib4 PRs, Wikidata, WP).
     if (posted.action === "approve_proposal" || posted.action === "reject_proposal") {
       // Deciding a proposal is a MODERATION act (reject permanently suppresses
-      // re-proposals) — patroller/admin only, like flag-resolve and revert.
+      // re-proposals) — patroller/admin sessions or the pipeline bearer.
       // Ordinary users still see nothing: the banner/queue are role-gated too.
-      if (user.role !== "patroller" && user.role !== "admin") {
+      if (!isBot && user.role !== "patroller" && user.role !== "admin") {
         return c.json({ ok: false, error: "forbidden" }, 403);
       }
       if (!isProposalId(posted.proposal_id)) return c.json({ ok: false, error: "bad proposal_id" }, 400);
@@ -1416,7 +1440,7 @@ app.post("/api/article/:slug", async (c) => {
             .set({ status: "rejected", rejectReason, decidedAt: now, decidedBy: user.id })
             .where(and(eq(proposals.id, proposalId), eq(proposals.status, "pending"))),
         ]);
-        console.log(JSON.stringify({ event: "proposal-reject", slug, user_id: user.id, proposal_id: proposalId, reject_reason: rejectReason, t: now }));
+        console.log(JSON.stringify({ event: "proposal-reject", slug, user_id: user.id, actor: isBot ? "ai" : "human", proposal_id: proposalId, reject_reason: rejectReason, t: now }));
         return c.json({ ok: true, rejected: true });
       }
 
@@ -1455,7 +1479,14 @@ app.post("/api/article/:slug", async (c) => {
         ]);
         return c.json({ ok: true, noop: true, version: row.version });
       }
-      next.provenance = "human"; // Jack approved it; keep it human-protected
+      if (isBot) {
+        // AI decision (Human-at-boundaries): NEVER mint 'human'. AI-changed
+        // bytes on a human-owned annotation re-label to 'ai-moderated'; any
+        // other provenance passes through untouched.
+        if (next.provenance === "human") next.provenance = "ai-moderated";
+      } else {
+        next.provenance = "human"; // Jack approved it; keep it human-protected
+      }
       const finals = stored.slice();
       finals[idx] = next;
       const finalsJson = JSON.stringify(finals);
@@ -1478,8 +1509,11 @@ app.post("/api/article/:slug", async (c) => {
           slug,
           userId: user.id,
           annotations: finalsJson,
-          comment: `proposal-approved:${proposalId}`,
-          kind: "proposal-approved",
+          // comment prefix agrees with the kind so feeds/exports read right
+          comment: `${isBot ? "proposal-decided-ai" : "proposal-approved"}:${proposalId}`,
+          // Distinct kind for AI decisions so /recent-changes, the RQ exports
+          // and the revisions ladder can separate the two decision channels.
+          kind: isBot ? "proposal-decided-ai" : "proposal-approved",
           parentId: prior?.id ?? null,
           createdAt: now,
         }),
@@ -1489,7 +1523,10 @@ app.post("/api/article/:slug", async (c) => {
             slug,
             annotationId: prop.annotationId,
             eventType: "modify",
-            actorType: "human",
+            // 'pipeline' IS the schema's AI actor label (0005 CHECK constraint;
+            // bot saves already log it) — the decision channel is separated by
+            // the revision kind 'proposal-decided-ai', not by a third enum value.
+            actorType: isBot ? "pipeline" : "human",
             userId: user.id,
             fieldChanges: serializeFieldChanges(changed),
             createdAt: now,
@@ -1501,11 +1538,14 @@ app.post("/api/article/:slug", async (c) => {
           .set({ status: "approved", decidedAt: now, decidedBy: user.id })
           .where(and(eq(proposals.id, proposalId), eq(proposals.status, "pending"))),
       ]);
-      console.log(JSON.stringify({ event: "proposal-approve", slug, user_id: user.id, proposal_id: proposalId, version: newVersion, t: now }));
+      console.log(JSON.stringify({ event: "proposal-approve", slug, user_id: user.id, actor: isBot ? "ai" : "human", proposal_id: proposalId, version: newVersion, t: now }));
       return c.json({ ok: true, version: newVersion });
     }
 
     if (posted.action !== "endorse") return c.json({ ok: false, error: "unknown action" }, 400);
+    // endorse stays session-only: it flips provenance to 'human', and a bot
+    // endorsing (minting 'human') would launder attribution — hard line.
+    if (isBot) return c.json({ ok: false, error: "forbidden" }, 403);
     const annotationId = posted.annotation_id;
     if (typeof annotationId !== "string" || !ANNOTATION_ID_RE.test(annotationId)) {
       return c.json({ ok: false, error: "bad annotation_id" }, 400);

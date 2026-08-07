@@ -321,14 +321,15 @@ describe("POST /api/article/:slug (proposals)", () => {
     expect(n.n).toBe(0); // never entered the lifecycle log either
   });
 
-  it("bots cannot approve/reject (403); anonymous 401; stale/unknown handled", async () => {
+  it("anonymous 401; stale/unknown handled; bot endorse still 403", async () => {
     const { db, env } = setup();
     await seedProposal(env);
     await storeProposal(env, db, 2);
     const pid = pending(db)[0].proposalId;
 
-    expect((await botSave(env, { action: "approve_proposal", proposal_id: pid, base_version: 2 })).status).toBe(403);
     expect((await save(env, { action: "approve_proposal", proposal_id: pid, base_version: 2 })).status).toBe(401);
+    // endorse mints 'human' — the bearer may NEVER do that (attribution hard line)
+    expect((await botSave(env, { action: "endorse", annotation_id: HUMAN_ID, base_version: 2 })).status).toBe(403);
     // unknown proposal id → 404
     expect((await save(env, { action: "approve_proposal", proposal_id: "ffffffffffff", base_version: 2 }, { user: "u-patroller" })).status).toBe(404);
     // stale base_version → 409, no write
@@ -336,6 +337,111 @@ describe("POST /api/article/:slug (proposals)", () => {
     expect(stale.status).toBe(409);
     expect(articleRow(db)!.version).toBe(2);
     expect(pending(db)).toHaveLength(1); // untouched
+  });
+});
+
+describe("bearer decide path (Human-at-boundaries, ratified 2026-08-06)", () => {
+  it("bearer approve applies the delta, re-labels human → ai-moderated, kind proposal-decided-ai, actorType pipeline", async () => {
+    const { db, env } = setup();
+    await seedProposal(env);
+    await storeProposal(env, db, 2);
+    const pid = pending(db)[0].proposalId;
+
+    const res = await botSave(env, { action: "approve_proposal", proposal_id: pid, base_version: 2 });
+    expect(res.status).toBe(200);
+    expect(((await res.json()) as { version: number }).version).toBe(3);
+
+    const anns = storedAnnotations(db);
+    const target = anns.find((a) => a.id === HUMAN_ID)!;
+    // the delta landed…
+    expect(target.status).toBe("formalized");
+    // …and attribution says the AI changed the bytes: NEVER left 'human'
+    expect(target.provenance).toBe("ai-moderated");
+
+    const rev = latestRevision(db)!;
+    expect(rev.kind).toBe("proposal-decided-ai");
+    expect(rev.user_id).toBe("pipeline");
+
+    const events = eventRows(db);
+    const decide = events.find((e) => e.annotation_id === HUMAN_ID && e.event_type === "modify" && e.actor_type === "pipeline");
+    expect(decide).toBeTruthy();
+
+    const life = db.prepare("SELECT status, decided_by FROM proposals WHERE id = ?").get(pid) as { status: string; decided_by: string };
+    expect(life.status).toBe("approved");
+    expect(life.decided_by).toBe("pipeline");
+    expect(pending(db)).toHaveLength(0);
+  });
+
+  it("bearer approve preserves non-human provenance (no 'ai-moderated' mint on ai-owned bytes)", async () => {
+    const { db, env } = setup();
+    // NO endorse: the target keeps its seeded (non-human) provenance
+    await storeProposal(env, db, 1);
+    const pid = pending(db)[0].proposalId;
+    const before = storedAnnotations(db).find((a) => a.id === HUMAN_ID)!.provenance;
+    expect(before).not.toBe("human");
+
+    const res = await botSave(env, { action: "approve_proposal", proposal_id: pid, base_version: 1 });
+    expect(res.status).toBe(200);
+    const after = storedAnnotations(db).find((a) => a.id === HUMAN_ID)!;
+    expect(after.provenance).toBe(before); // passthrough, no relabel, no mint
+  });
+
+  it("bearer reject records the reason + decided_by pipeline and writes no revision", async () => {
+    const { db, env } = setup();
+    await seedProposal(env);
+    await storeProposal(env, db, 2);
+    const pid = pending(db)[0].proposalId;
+    const revBefore = latestRevision(db)?.id ?? null;
+
+    const res = await botSave(env, { action: "reject_proposal", proposal_id: pid, reject_reason: "not_better" });
+    expect(res.status).toBe(200);
+    const life = db.prepare("SELECT status, reject_reason, decided_by FROM proposals WHERE id = ?").get(pid) as {
+      status: string; reject_reason: string | null; decided_by: string };
+    expect(life.status).toBe("rejected");
+    expect(life.reject_reason).toBe("not_better");
+    expect(life.decided_by).toBe("pipeline");
+    expect(latestRevision(db)?.id ?? null).toBe(revBefore); // no content revision
+    // the human annotation is untouched — reject never writes bytes
+    expect(storedAnnotations(db).find((a) => a.id === HUMAN_ID)!.provenance).toBe("human");
+  });
+
+  it("session approve is byte-identical to before: provenance human, kind proposal-approved, actorType human", async () => {
+    const { db, env } = setup();
+    await seedProposal(env);
+    await storeProposal(env, db, 2);
+    const pid = pending(db)[0].proposalId;
+
+    const res = await save(env, { action: "approve_proposal", proposal_id: pid, base_version: 2 }, { user: "u-patroller" });
+    expect(res.status).toBe(200);
+    const target = storedAnnotations(db).find((a) => a.id === HUMAN_ID)!;
+    expect(target.provenance).toBe("human");
+    expect(latestRevision(db)!.kind).toBe("proposal-approved");
+    const decide = eventRows(db).find((e) => e.annotation_id === HUMAN_ID && e.event_type === "modify");
+    expect(decide!.actor_type).toBe("human");
+  });
+});
+
+describe("GET /api/proposals (bearer machine twin)", () => {
+  it("401 anon, 403 session, 200 bearer with the page's own row semantics", async () => {
+    const { db, env } = setup();
+    await seedProposal(env);
+    await storeProposal(env, db, 2);
+
+    expect((await get(env, "/api/proposals")).status).toBe(401);
+    expect((await get(env, "/api/proposals", { user: "u-patroller" })).status).toBe(403);
+
+    const res = await get(env, "/api/proposals", { bearer: "test-pipeline-token", origin: null });
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as { ok: boolean; total: number; rows: Array<Record<string, unknown>> };
+    expect(body.ok).toBe(true);
+    expect(body.total).toBe(1);
+    expect(body.rows).toHaveLength(1);
+    const row = body.rows[0];
+    expect(row.annotationId).toBe(HUMAN_ID);
+    expect(row.noChange).toBe(false);
+    expect(Array.isArray(row.changed)).toBe(true);
+    expect(row.provenance).toBe("human");
+    expect(typeof row.version).toBe("number");
   });
 });
 

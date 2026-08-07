@@ -125,6 +125,16 @@ cd "$REPO/site" || exit 1
   retry_on_ratelimit "$PY" moderate.py review --limit "$REVIEW_LIMIT" --concurrency "$CONCURRENCY" \
         --budget-tokens "$BUDGET_TOKENS" || echo "(review returned $?)"
   echo
+  if [ "${WIKILEAN_AUTO_DECIDE:-1}" = "1" ]; then
+    echo "--- auto-decide proposals (deterministic, no LLM; Human-at-boundaries) ---"
+    # site/resolve_proposals.py: R1 no-delta -> reject not_better; R2 verified
+    # decl rename -> approve; R3 proof_wanted stub + 'partial' -> approve;
+    # everything else stays pending. Fail-soft: a bad night here must never
+    # kill the graph refresh below.
+    "$PY" "$REPO/site/resolve_proposals.py" --submit \
+      || echo "(auto-decide returned $? — proposals stay pending, night continues)"
+    echo
+  fi
   if [ "${WIKILEAN_GRAPH_REFRESH:-1}" = "1" ]; then
     echo "--- refresh crossrefs + frontier + coverage (no deploy) ---"
     # Coverage reflects tonight's formalization (moderate.py rewrites the disk

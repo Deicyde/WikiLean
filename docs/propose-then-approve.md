@@ -105,14 +105,48 @@ Add `moderation_state.rejected_proposals` (JSON, one `ALTER TABLE`) holding
 to re-propose a delta already in the rejected set for that annotation; the
 Worker also filters re-proposals defensively at store time (§3).
 
+## Decision policy — Human-at-boundaries (RATIFIED 2026-08-06)
+
+> Supersedes the "session-only decide" invariant below. Ratified by Jack via
+> explicit two-part confirmation; quoted verbatim in ROADMAP.md §Binding
+> decisions. Built 2026-08-07.
+
+The AI **decides** all intra-WikiLean proposals — including those targeting
+`provenance:"human"` annotations. Humans gate only **cross-site pushes**
+(mathlib4 PRs, Wikidata submissions, Wikipedia edits). Concretely:
+
+- `approve_proposal` / `reject_proposal` accept the **PIPELINE_TOKEN bearer**
+  alongside patroller/admin sessions. The session path is byte-identical to
+  before (approve keeps `provenance:"human"` — Jack owns it).
+- **Attribution hard line:** an AI approve that changes a human annotation's
+  bytes re-labels it `ai-moderated`. AI-changed bytes are NEVER left marked
+  `human`, and the bearer can NEVER mint `human` (`endorse` stays
+  session-only 403 for bots). Attribution is recorded, not laundered.
+- Bearer decisions write revision kind `proposal-decided-ai` (session:
+  `proposal-approved`) and annotation-events `actorType:"pipeline"` — the
+  two decision channels stay separable in every export. `/stats` carries a
+  "Decided by AI (auto-resolve)" row.
+- The deterministic decider is `site/resolve_proposals.py` (NO LLM): R1
+  no-delta confirmations → reject `not_better`; R2 union-oracle-verified
+  decl renames (new exists AND old gone; exact names, never bare-suffix) →
+  approve; R3 `proof_wanted` stub + proposed `partial` → approve (the
+  ratified "`formalized` alone is an overclaim" rule, 9d2d042f); everything
+  else stays pending. It reads the bearer-only `GET /api/proposals` machine
+  twin (same row-builder + `applyProposalFields` delta as the human page).
+- Nightly: runs `--submit` after the review batch, gated
+  `WIKILEAN_AUTO_DECIDE` (default 1, `site/ops/nightly.env`); failures are
+  fail-soft and never kill the rest of the night.
+
 ## Safety invariants (must hold)
-- `findLostHuman` stays the floor: a direct bot overwrite of a human annotation
-  still 422s. The ONLY ways a human annotation changes are (a) a human edit, or
-  (b) Jack approving a proposal. The agent never mutates a human annotation.
+- `findLostHuman` stays the floor — but it is an **anti-clobber guard, not a
+  policy gate**: it 422s a bot save that silently drops/alters human
+  annotations in the bulk path. The decide path is the sanctioned channel for
+  AI changes to human annotations, and it pays for the privilege with
+  attribution (`ai-moderated`, distinct revision kind, event actor).
 - Proposals are inert until approved — they live in `moderation_state`, not in
   `articles.annotations`, so they never reach the rendered page or a reader.
-- Approve/reject is session-only; a bot cannot approve its own proposal (403),
-  same as `endorse`.
+- `endorse` is session-only (403 for bots): minting `human` is the one
+  attribution move the AI may never make.
 
 ## Migration
 - `moderation_state.proposal` already exists — no migration to store proposals.

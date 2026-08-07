@@ -2078,6 +2078,126 @@ def test_adversarial_f_checkpointed_sentinel_is_a_job_error_not_window():
 # plain runner (no pytest needed)
 # ---------------------------------------------------------------------------
 
+
+# ---------------------------------------------------------------------------
+# resolve_proposals.py — deterministic verdict logic (no network, no LLM)
+# ---------------------------------------------------------------------------
+def test_resolver_r1_no_delta_rejects_not_better():
+    from resolve_proposals import verdict
+    row = {"noChange": True, "changed": [], "fields": {}, "current": {}}
+    action, why = verdict(row, oracle=set(), proof_wanted=set())
+    assert action == "reject" and "not_better" in why, (action, why)
+
+
+def test_resolver_r2_rename_needs_new_present_AND_old_gone():
+    from resolve_proposals import verdict
+    base = {"noChange": False, "changed": [{"field": "mathlib"}]}
+    row = lambda old, new: {**base, "current": {"mathlib": {"decl": old}},
+                            "fields": {"mathlib": {"decl": new}}}
+    oracle = {"Module.Basis", "Nat.add"}
+    # clean rename: new exists, old gone
+    a, w = verdict(row("Basis", "Module.Basis"), oracle, set())
+    assert a == "approve" and "R2" in w, (a, w)
+    # old still exists -> pending (not a rename, a fork)
+    a, _ = verdict(row("Nat.add", "Module.Basis"), oracle, set())
+    assert a == "pending"
+    # new missing -> pending (would swap a real decl for a hallucination)
+    a, _ = verdict(row("Basis", "Module.Bases"), oracle, set())
+    assert a == "pending"
+    # EXACT names only — a bare suffix must never match ("Basis" is not
+    # "Module.Basis"; the union oracle holds fully-qualified names)
+    a, _ = verdict(row("Foo.gone", "Basis"), oracle, set())
+    assert a == "pending"
+
+
+def test_resolver_r3_proof_wanted_partial_approves_formalized_waits():
+    from resolve_proposals import verdict
+    base = {"noChange": False, "changed": [{"field": "status"}],
+            "current": {"mathlib": {"decl": "Stub.thm"}}}
+    pw = {"Stub.thm"}
+    a, w = verdict({**base, "fields": {"status": "partial"}}, {"Stub.thm"}, pw)
+    assert a == "approve" and "R3" in w, (a, w)
+    # proposing 'formalized' on a stub is the overclaim the policy forbids
+    a, _ = verdict({**base, "fields": {"status": "formalized"}}, {"Stub.thm"}, pw)
+    assert a == "pending"
+
+
+def test_resolver_r3_gates_r2_rename_onto_stub():
+    from resolve_proposals import verdict
+    # rename onto a proof_wanted stub + status 'formalized' must NOT approve
+    row = {"noChange": False, "changed": [{"field": "mathlib"}],
+           "current": {"mathlib": {"decl": "Old.gone"}},
+           "fields": {"mathlib": {"decl": "New.stub"}, "status": "formalized"}}
+    a, _ = verdict(row, {"New.stub"}, {"New.stub"})
+    assert a == "pending"
+    # same rename with 'partial' rides R3 to approve
+    row2 = {**row, "fields": {**row["fields"], "status": "partial"}}
+    a, w = verdict(row2, {"New.stub"}, {"New.stub"})
+    assert a == "approve" and "R3" in w, (a, w)
+
+
+def test_resolver_target_gone_and_default_stay_pending():
+    from resolve_proposals import verdict
+    a, _ = verdict({"changed": None}, set(), set())
+    assert a == "pending"
+    a, _ = verdict({"noChange": False, "changed": [{"field": "note"}],
+                    "current": {}, "fields": {"note": "better wording"}},
+                   set(), set())
+    assert a == "pending"  # notes are a human/agent call, never deterministic
+
+
+def test_resolver_decl_of_shapes():
+    from resolve_proposals import decl_of
+    assert decl_of({"decl": "Nat.add", "module": "M"}) == "Nat.add"
+    assert decl_of("Nat.add") == "Nat.add"
+    assert decl_of({"decl": "  "}) is None
+    assert decl_of(None) is None
+    assert decl_of(42) is None
+
+
+
+def test_resolver_rider_fields_never_ride_an_approve():
+    from resolve_proposals import verdict
+    # R3 with an unexamined note rewrite riding along -> pending (adversarial
+    # review major: approve applies the WHOLE delta)
+    row = {"noChange": False,
+           "changed": [{"field": "status"}, {"field": "note"}],
+           "current": {"mathlib": {"decl": "Stub.thm"}},
+           "fields": {"status": "partial", "note": "AI-rewritten note"}}
+    a, w = verdict(row, {"Stub.thm"}, {"Stub.thm"})
+    assert a == "pending" and "rider" in w, (a, w)
+    # R2 with a label rewrite riding along -> pending
+    row = {"noChange": False,
+           "changed": [{"field": "mathlib"}, {"field": "label"}],
+           "current": {"mathlib": {"decl": "Old.gone"}},
+           "fields": {"mathlib": {"decl": "Module.Basis"}, "label": "new label"}}
+    a, w = verdict(row, {"Module.Basis"}, set())
+    assert a == "pending" and "rider" in w, (a, w)
+    # malformed mathlib wipe cannot ride R3 (decl_of -> None, rename not ok)
+    row = {"noChange": False,
+           "changed": [{"field": "status"}, {"field": "mathlib"}],
+           "current": {"mathlib": {"decl": "Stub.thm"}},
+           "fields": {"status": "partial", "mathlib": {"decl": "  "}}}
+    a, _ = verdict(row, {"Stub.thm"}, {"Stub.thm"})
+    assert a == "pending"
+
+
+def test_resolver_r2_implicit_formalized_carryover_stays_pending():
+    from resolve_proposals import verdict
+    # Pure rename onto a proof_wanted stub, status OMITTED but currently
+    # 'formalized' — approving would leave a standing overclaim (adversarial
+    # review major; ratified rule 9d2d042f).
+    row = {"noChange": False, "changed": [{"field": "mathlib"}],
+           "current": {"status": "formalized", "mathlib": {"decl": "Old.gone"}},
+           "fields": {"mathlib": {"decl": "New.stub"}}}
+    a, w = verdict(row, {"New.stub"}, {"New.stub"})
+    assert a == "pending" and "overclaim" in w, (a, w)
+    # same rename where the current status is already 'partial' -> approve
+    row2 = {**row, "current": {**row["current"], "status": "partial"}}
+    a, w = verdict(row2, {"New.stub"}, {"New.stub"})
+    assert a == "approve", (a, w)
+
+
 def main() -> int:
     tests = [(n, f) for n, f in sorted(globals().items())
              if n.startswith("test_") and callable(f)]
