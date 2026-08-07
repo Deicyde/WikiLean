@@ -8,7 +8,12 @@
 ## Where things stand
 
 Everything below is COMMITTED and (unless noted) DEPLOYED + live-verified.
-Worker version at session end: `a6eea4c0` (evidence-card /proposals).
+Worker version at session end: `a6eea4c0` (evidence-card /proposals) —
+re-verified still current 2026-08-07 17:58 EDT, and no wiki/src change has
+landed since, so prod == HEAD. NOTE (2026-08-07 review): 22 commits sit
+unpushed to origin (back to ed5181a9, ~2 weeks of work local-only) — fine
+under the push-only-when-asked policy, but "committed" here does NOT mean
+"on GitHub"; push when convenient.
 
 Shipped 2026-08-04 → 06, in order: unified nav + header search + dynamic
 /about + [edit]-hide (batch 1) · trust signals (N/M human-reviewed badge,
@@ -38,8 +43,10 @@ Design was written and twice classifier-blocked mid-session (bulk-prod-write
 class); Jack has since ratified everything explicitly, so cite the ROADMAP
 binding decision when you build. Components:
 
-1. **Bearer decide path (wiki/src/index.ts ~:1363-1501):** approve_proposal /
-   reject_proposal accept PIPELINE_TOKEN alongside patroller/admin sessions.
+1. **Bearer decide path (wiki/src/index.ts — the `approve_proposal` /
+   `reject_proposal` action branch, ~:1383 as of 2026-08-07; grep the action
+   strings, line numbers rot):** both actions accept PIPELINE_TOKEN alongside
+   patroller/admin sessions.
    Bearer decisions: annotation_event actorType 'ai'; distinct revisions kind
    (e.g. 'proposal-decided-ai'); AI-approve over provenance:'human' sets
    'ai-moderated' (NEVER leaves 'human' on AI-changed bytes, never mints
@@ -62,26 +69,38 @@ binding decision when you build. Components:
    note project_propose_then_approve.md.
 7. Adversarial review before commit (session pattern: invariants lens +
    correctness lens), then deploy + live-verify. Suites: wiki tsc + npm test
-   (714 tests; 1 known failure, see Residue), site/test_moderate.py.
+   (714 tests, all green as of 2026-08-07 — see Residue), site/test_moderate.py.
 
 ## Queue state (check /stats "Pending" before acting)
+
+UPDATE 2026-08-07 17:58 EDT: live pending = **6** — the resolver RAN (the
+"if pending ≈ 15 it hasn't run" check fired negative). But the documented
+remainder was 4 (Picard–Lindelöf rename → approve, evidence in
+manage/data/decl_sweep_likely_rename_verdicts.json; 2 Adjoint_functors
+test-artifacts → reject; 1 unexamined nightly proposal), so either it
+cleared 9 of 11 or new proposals arrived since — RE-TRIAGE the 6 from the
+live /proposals page before acting; do not trust this paragraph's itemized
+remainder. Once the decide path ships, resolve_proposals.py handles the
+queue instead.
+
+<details><summary>Original 2026-08-06 text (superseded)</summary>
 
 15 pending at last count. `manage/resolve_pending_20260806.py` (committed,
 Jack-runnable) clears 11 of them under CURRENT deployed rules: 3 real
 /Conjecture downgrades via bot path + no-delta sweep triggers for the 8
-confirmations. Unknown whether Jack ran it — if pending ≈ 15, it hasn't run;
-once the decide path ships, resolve_proposals.py handles everything instead.
-Remainder: Picard–Lindelöf rename (approve — evidence in
-manage/data/decl_sweep_likely_rename_verdicts.json), 2 Adjoint_functors
+confirmations. Unknown whether Jack ran it — if pending ≈ 15, it hasn't run.
+Remainder: Picard–Lindelöf rename (approve), 2 Adjoint_functors
 test-artifacts (reject; the annotations themselves look like junk — under the
 new policy the AI may tombstone them via the decide/edit machinery once
 built), 1 pre-existing nightly proposal (unexamined).
+</details>
 
 ## Residue / known issues
 
-- **engine.golden.test.ts fails (167/738 differ)** — pre-existing on clean
-  HEAD; cause = 2026-08-06 D1 mirror re-pull vs stale goldens; the nightly
-  golden-fixture refresh re-pins. If still red after a nightly, investigate.
+- **engine.golden.test.ts — RESOLVED 2026-08-07**: the nightly golden-fixture
+  refresh re-pinned exactly as predicted; full wiki suite now 714/714 across
+  34 files (verified 2026-08-07). The work-order Suites line's "1 known
+  failure" caveat is obsolete — expect green.
 - **Sweep residue: 58 missing decls / 73 citations** (post-fix re-run):
   ~25 adjudicated leave/judgment (17 judgment renames were deliberately NOT
   filed — see the verdict JSONs in manage/data/) + ~33 new drift from the
