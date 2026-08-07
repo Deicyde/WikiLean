@@ -41,10 +41,19 @@ from __future__ import annotations
 
 import argparse
 import json
+import ssl
 import sys
 import urllib.error
 import urllib.request
 from pathlib import Path
+
+# The macOS framework Python ships no CA bundle — use certifi when present
+# (same workaround as manage/halo.py + brain/ingest/lean_repo.py).
+try:
+    import certifi
+    _SSL_CTX = ssl.create_default_context(cafile=certifi.where())
+except ImportError:  # the venv python ($PY in the nightly) has its own bundle
+    _SSL_CTX = ssl.create_default_context()
 
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "site"))
@@ -168,7 +177,7 @@ def api(base: str, path: str, token: str, payload: dict | None = None) -> tuple[
         method="POST" if payload is not None else "GET",
     )
     try:
-        with urllib.request.urlopen(req, timeout=60) as resp:
+        with urllib.request.urlopen(req, timeout=60, context=_SSL_CTX) as resp:
             return resp.status, json.load(resp)
     except urllib.error.HTTPError as e:
         try:
