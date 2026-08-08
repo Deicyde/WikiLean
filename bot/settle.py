@@ -12,7 +12,12 @@ Rule (see bot/README.md):
 """
 import json, subprocess, re, sys, datetime as dt
 
-MAINTAINERS = {"jcommelin"}          # allowlist seed (always treated as maintainer)
+# Allowlist seed (always treated as maintainer). Needed for maintainers whose
+# leanprover-community org membership is PRIVATE: their author_association
+# shows CONTRIBUTOR and the members probe 404s, so without the seed their
+# verdicts lose the maintainer trump — batch 6 bug: faenuccio's post-settle
+# rejects were trumped by an earlier approve and never re-trimmed the PR.
+MAINTAINERS = {"jcommelin", "faenuccio"}
 # GitHub author_association values that mark a Mathlib maintainer/reviewer.
 ORG_ROLES = {"OWNER", "MEMBER", "COLLABORATOR"}
 OBJECT = ("reject", "revise", "flag")  # hard objections (a note is NOT one)
