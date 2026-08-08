@@ -1,0 +1,19 @@
+{
+  "_arm": "X — factorial (join-, verifier+): E' toolset + the wikibrain server with ONLY decl_exists model-visible (the 7 join tools + brain_unit are deny-listed by the runner, which the CLI removes from the manifest). docs/research/BRIDGE-FACTORIAL.md.",
+  "mcpServers": {
+    "wiki": {
+      "type": "stdio",
+      "command": "python3",
+      "args": ["bench/arms/wiki_mcp.py"]
+    },
+    "formal": {
+      "type": "stdio",
+      "command": "python3",
+      "args": ["bench/arms/formal_mcp.py"]
+    },
+    "wikibrain": {
+      "type": "http",
+      "url": "https://wikilean.jackmccarthy.org/mcp"
+    }
+  }
+}
