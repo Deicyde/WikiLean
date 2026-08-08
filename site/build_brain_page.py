@@ -71,7 +71,7 @@ a:hover { text-decoration:underline; }
 .toolbar label { display:inline-flex; align-items:center; gap:4px; cursor:pointer;
   color:#9aa3b2; user-select:none; }
 .toolbar .grp { display:inline-flex; gap:10px; align-items:center; padding-right:14px;
-  border-right:1px solid #262c3a; }
+  border-right:1px solid #262c3a; flex-wrap:wrap; row-gap:4px; }
 .toolbar .grp:last-child { border-right:none; }
 .toolbar b { color:#e6e4de; }
 /* a group whose data the current view doesn't carry: visibly inert, never a
@@ -328,7 +328,9 @@ body.embed .wl-header, body.embed #crumbbar { display:none; }   /* flex column f
 </header>
 <div class="toolbar">
   <span class="grp"><b>View</b>
-    <button id="explorerbtn" class="fchip" title="flatten the current area's subtree into the complete cell graph — every cell at its build-time position and every synapse among them. Facet chips narrow it; at the top level it covers all 8.9k cells.">Explorer</button>
+    <button id="explorerbtn" class="fchip" title="flatten the current area's subtree into the complete cell graph — every cell at its build-time position and every synapse among them. The library + facet filters narrow it; at the top level it covers every cell in the current build.">Explorer</button>
+    <button id="hiddenchip" class="fchip" style="display:none"
+      title="items the current library/facet filters removed from this view — click to open the Libraries panel"></button>
   </span>
   <span class="grp" id="grp-layers"><b>Layers</b>
     <label><input type="checkbox" data-k="depends" checked> formal deps</label>
@@ -591,6 +593,7 @@ async function ensureTree() {
   }
   tree = {roots, frontier, frontierFa, frontierN, cellArea, sc,
           unplaced, unplacedFa, prox, proxDrift, cellProx, count};
+  buildCellLibs();   // the (V) predicate's cell → owning-libraries table
   return tree;
 }
 async function ensureAliases() {
@@ -672,9 +675,11 @@ let filterMask = 0;        // facet-filter bitmask over `f` (0 = no filter)
 // State = the DISABLED set of library root names ("Mathlib", "TauCeti", …).
 // Default all-on; persists in localStorage "wl-brain-libs" (the ENABLED list;
 // key absent = all on) AND in the hash (&libs=Mathlib,TauCeti when not-all).
-// A disabled library: its root bubble dims to 35% (never removed), its
-// declarations stop counting as formal evidence in the frontier re-score,
-// and the frontier core disc label lists what is left on.
+// A disabled library: its root bubble and every cell it places are REMOVED
+// from the map/panels/search (the ONE visibility predicate below; the
+// '+N hidden' chip restores discoverability), its declarations stop counting
+// as formal evidence in the frontier re-score, and the frontier core disc
+// label lists what is left on.
 let disabledLibs = new Set();
 const libsFiltered = () => disabledLibs.size > 0;
 function libRoots() {   // every library root WITH cells (8 today) — from the tree
@@ -710,6 +715,93 @@ function syncLibCheckboxes() {
   document.querySelectorAll(".libcb").forEach(cb => {
     cb.checked = !disabledLibs.has(cb.dataset.lib);
   });
+}
+// ---- (V) THE visibility predicate ------------------------------------------
+// ONE predicate decides what every surface shows:
+//   visible(cell) = libEnabled(the cell's owning library) AND facet-mask match.
+// Owning library = the library root(s) whose subtree places the cell (built
+// once from the containment tree; a cell placed under several roots stays
+// visible while ANY of them is enabled). Homeless/frontier cells have no
+// owning library: they are library-independent everywhere EXCEPT the frontier
+// view, where the library set governs them through the re-SCORE (their bonded
+// evidence moves them outward) — never through removal. Bubbles, panels,
+// search badges, the frontier membership and the explorer all ask THIS
+// function; no surface re-implements the test (the reshape contract's
+// single-predicate law).
+let cellLibs = null;   // cell id -> [library root names], from tree containment
+function buildCellLibs() {
+  cellLibs = new Map();
+  for (const rootP of tree.roots) {
+    const lib = rootP.slice(5);
+    const stack = [rootP];
+    while (stack.length) {
+      const p = stack.pop();
+      const v = tree.sc[p];
+      if (!v) continue;
+      for (const c of v.cells || []) {
+        const a = cellLibs.get(c);
+        if (a) { if (!a.includes(lib)) a.push(lib); }
+        else cellLibs.set(c, [lib]);
+      }
+      for (const ch of v.children || []) stack.push(ch);
+    }
+  }
+}
+const facetOk = f => !filterMask || (((f || 0) & filterMask) !== 0);
+function libOkById(id) {
+  if (!disabledLibs.size) return true;
+  const libs = cellLibs && cellLibs.get(id);
+  if (!libs) return true;   // homeless/frontier/unfiled: library-independent
+  return libs.some(L => !disabledLibs.has(L));
+}
+function cellVisible(id, f) {
+  if (f === undefined) {
+    const r = labelById && labelById.get(id);
+    f = (r && r.f) || 0;
+  }
+  return libOkById(id) && facetOk(f);
+}
+const filtersActive = () => !!filterMask || libsFiltered();
+// ---- filtered subtree counts, memoized per predicate epoch ------------------
+// tree.count under the predicate (measured ~5ms for ALL 9,363 supercell rows in
+// the browser); the memo keys on the (libs, facet) state so one render pass
+// never recomputes a row, and the unfiltered fast path IS tree.count exactly.
+let visMemo = new Map(), visMemoKey = null;
+function visEpoch() { return [...disabledLibs].sort().join(",") + "|" + filterMask; }
+function countVisible(p) {
+  if (!filtersActive()) return tree.count(p);
+  const key = visEpoch();
+  if (key !== visMemoKey) { visMemo = new Map(); visMemoKey = key; }
+  if (visMemo.has(p)) return visMemo.get(p);
+  const v = tree.sc[p];
+  if (!v) return 0;
+  visMemo.set(p, 0);   // cycle guard, same as tree.count
+  let n = 0;
+  for (const c of v.cells || []) if (cellVisible(c)) n++;
+  for (const ch of v.children || []) n += countVisible(ch);
+  visMemo.set(p, n);
+  return n;
+}
+function unplacedVisibleN() {
+  if (!filtersActive()) return tree.unplaced.length;
+  let n = 0;
+  for (const id of tree.unplaced) if (cellVisible(id)) n++;
+  return n;
+}
+function frontierVisibleN() {
+  if (!filtersActive()) return tree.frontierN;
+  let n = 0;
+  for (const p of tree.frontier) n += countVisible(p);
+  return n;
+}
+// the '+N hidden' chip: how many items the predicate removed from the CURRENT
+// view — the discoverability affordance that keeps true removal honest
+// (no-silent-filter rule). Click → the Libraries panel.
+function updateHiddenChip(hidden) {
+  const el = $("#hiddenchip");
+  if (!el) return;
+  el.style.display = hidden > 0 ? "" : "none";
+  if (hidden > 0) el.textContent = `+${hidden.toLocaleString()} hidden`;
 }
 let currentUser = null;    // {id, name, role} once /api/auth/me resolves (community edits)
 let renderSeq = 0;         // guards against out-of-order async renders
@@ -773,8 +865,11 @@ function fillFor(item) {
 // ---- level items: a supercell's sub-folders + the CELLS it holds ------------
 function folderItem(p) {
   const sc = tree.sc[p] || {};
-  return {id: p, type: "folder", label: sc.label || p, n: tree.count(p),
-          f: 0, fa: sc.fa || 0};
+  // n = the count under the CURRENT predicate (drives pack size, labels and
+  // survival); nAll = the unfiltered truth, so every count surface can say
+  // "n of nAll shown" instead of silently shrinking
+  return {id: p, type: "folder", label: sc.label || p, n: countVisible(p),
+          nAll: tree.count(p), f: 0, fa: sc.fa || 0};
 }
 // a frontier area's display name: "Analysis frontier" → "Analysis" (the group's
 // breadcrumb already says Frontier; repeating it 46 times is noise)
@@ -785,7 +880,7 @@ function frontierName(p) {
 function frontierItem(p) {
   const sc = tree.sc[p] || {};
   return {id: p, type: "folder", label: frontierName(p),
-          n: (sc.cells || []).length, f: 0, fa: sc.fa || 0,
+          n: countVisible(p), nAll: (sc.cells || []).length, f: 0, fa: sc.fa || 0,
           s: sc.stateability != null ? sc.stateability : null};
 }
 // an area's cells for a DIVE, best-evidenced first: (formal-proximity
@@ -821,35 +916,39 @@ async function focusItems(id) {
     // a root with no cells has nothing to dive into — v3 ships no library_kind,
     // so emptiness (not a taxonomy toggle) is what prunes the 39 roots to 6
     const items = tree.roots.filter(p => tree.count(p) > 0).map(folderItem);
-    // a library the Libraries control turned off keeps its bubble, dimmed to
-    // 35% by drawNodes/drawLabels — dimmed, never removed
-    for (const it of items) it.libdim = disabledLibs.has(it.id.slice(5));
+    // (V)/(B): a library the Libraries control turned off is ABSENT — n forced
+    // to 0 so applyVisibility removes the bubble (true removal; the '+N hidden'
+    // chip restores discoverability). No dimming.
+    for (const it of items) if (disabledLibs.has(it.id.slice(5))) it.n = 0;
     // the FRONTIER: one root-level group holding the frontier:<Area> partition of
     // the homeless cells (+ the tiny unfiled residue) — replaces the old
     // undifferentiated "no formal home" blob. When the build shipped no frontier
     // rows (fail-soft path), the old blob stays, honestly labelled.
     if (tree.frontier.length)
       items.push({id: FRONTIER_ID, type: "folder", label: "Frontier",
-                  n: tree.frontierN + tree.unplaced.length, f: 0,
+                  n: frontierVisibleN() + unplacedVisibleN(),
+                  nAll: tree.frontierN + tree.unplaced.length, f: 0,
                   fa: tree.frontierFa | tree.unplacedFa});
     else if (tree.unplaced.length)
       items.push({id: UNPLACED_ID, type: "folder", label: "no formal home",
-                  n: tree.unplaced.length, f: 0, fa: tree.unplacedFa});
+                  n: unplacedVisibleN(), nAll: tree.unplaced.length,
+                  f: 0, fa: tree.unplacedFa});
     return items;
   }
   if (id === FRONTIER_ID) {
     const items = tree.frontier.map(frontierItem);
     if (tree.unplaced.length)
       items.push({id: UNPLACED_ID, type: "folder", label: "unfiled",
-                  n: tree.unplaced.length, f: 0, fa: tree.unplacedFa});
+                  n: unplacedVisibleN(), nAll: tree.unplaced.length,
+                  f: 0, fa: tree.unplacedFa});
     return items;
   }
   // an area's cells dive exactly like a supercell's: flat dots, cellItem each —
   // sorted best-evidenced first (prox r asc; stable without prox)
   if (isFrontierId(id)) return frontierCells(id).map(cellItem);
   if (id === UNPLACED_ID) return tree.unplaced.map(cellItem);
-  // diving into a strays bubble shows EVERY cell filed at its level as dots —
-  // including any a facet filter kept out of the collapse (the filter still dims)
+  // diving into a strays bubble shows the cells filed at its level as dots —
+  // the (V) predicate then REMOVES any the current filters hide (applyVisibility)
   if (id.startsWith(STRAYS_PREFIX))
     return ((tree.sc[id.slice(STRAYS_PREFIX.length)] || {}).cells || []).map(cellItem);
   const sc = tree.sc[id];
@@ -860,19 +959,24 @@ async function focusItems(id) {
   let cells = (sc.cells || []).map(cellItem);
   // At a level that HAS sub-areas, the cells filed directly here would flood the
   // pack and shrink Algebra to a dot (Mathlib once held 567) — collapse
-  // them into one DIVE-ABLE bubble. An active facet filter must still see its
-  // matches, so only the remainder collapses. At a library ROOT the honest label
+  // them into one DIVE-ABLE bubble. Under an active facet filter the matches
+  // stay out as dots and the non-matches are REMOVED by applyVisibility (true
+  // removal — no dimmed remainder bubble). At a library ROOT the honest label
   // is different: nothing is legitimately "filed" at path:Mathlib — a decl lands
   // there only because it has NO recorded module (mostly stale renames and
   // hallucinated citations in annotations; see straysPanel).
-  if (folders.length && cells.length > 12) {
-    const keep = filterMask ? cells.filter(c => ((c.f || 0) & filterMask) !== 0) : [];
-    const rest = cells.length - keep.length;
-    const atRoot = !id.slice(5).includes("/");
-    cells = keep.concat(rest > 0
-      ? [{id: STRAYS_PREFIX + id, type: "strays", n: rest,
-          label: rest + (atRoot ? " cells · no module recorded" : " cells filed here")}]
-      : []);
+  if (folders.length && !filterMask) {
+    const vis = filtersActive() ? cells.filter(c => cellVisible(c.id, c.f)) : cells;
+    if (vis.length > 12) {
+      const atRoot = !id.slice(5).includes("/");
+      // library-hidden cells swallowed by the collapse are still HIDDEN
+      // content — hiddenInside feeds the '+N hidden' total (no-silent-filter)
+      cells = [{id: STRAYS_PREFIX + id, type: "strays", n: vis.length,
+                nAll: cells.length, hiddenInside: cells.length - vis.length,
+                label: vis.length +
+                  (vis.length < cells.length ? ` of ${cells.length}` : "") +
+                  (atRoot ? " cells · no module recorded" : " cells filed here")}];
+    }
   }
   return folders.concat(cells);
 }
@@ -909,7 +1013,7 @@ function applyExplorerScale(k) {
   scheduleXDraw();
 }
 
-function drawNodes() {
+function drawNodes(reshape) {
   const leaves = layout.leaves;
   // 8.9k <title> children is real DOM weight on the flat map and the labels
   // already name the big ones — hover text is a level-view affordance
@@ -930,25 +1034,47 @@ function drawNodes() {
       if (!t) this.appendChild(document.createElementNS("http://www.w3.org/2000/svg", "title"));
     } else if (t) t.remove();
   });
+  // cells are dots, never discs: a near-empty focus level would otherwise
+  // pack its lone cell to fill the stage (a 568px "plain blue dot")
+  const rOf = l => l.data.type === "cell" ? Math.min(Math.max(l.r, 2), 42)
+                                          : Math.max(l.r, 2);
   all
-    .attr("cx", l => l.x).attr("cy", l => l.y)
-    // a disabled library's root bubble dims to 35% — dimmed, never removed
-    .attr("opacity", l => l.data.libdim ? 0.35 : null)
-    // cells are dots, never discs: a near-empty focus level would otherwise
-    // pack its lone cell to fill the stage (a 568px "plain blue dot")
-    .attr("r", l => l.data.type === "cell" ? Math.min(Math.max(l.r, 2), 42)
-                                           : Math.max(l.r, 2))
     .attr("fill", l => fillFor(l.data))
-    .attr("fill-opacity", l => l.data.dim ? 0.15 : l.data.type === "folder" ? 0.55 : 0.9)
+    .attr("fill-opacity", l => l.data.type === "folder" ? 0.55 : 0.9)
     // the gold ring marks an atom carrying a hand-written @[wikidata] tag —
     // inline style, because the .dot/.bubble CSS stroke overrides an attribute
-    .style("stroke", l => l.data.type === "cell" && !l.data.dim && ((l.data.f || 0) & 1)
-      ? GOLD : null)
+    .style("stroke", l => l.data.type === "cell" && ((l.data.f || 0) & 1) ? GOLD : null)
     .style("stroke-width", l => l.data.type === "cell" && ((l.data.f || 0) & 1) ? "1.6px" : null)
     .on("click", (ev, l) => { ev.stopPropagation(); nodeClick(l.data); });
+  if (reshape) {
+    // (B) filters-changed reshape: surviving circles GLIDE to their repacked
+    // position/size (the transition starts on THIS frame — first reshaped
+    // frame well inside the 300ms gate); entering circles fade in at their
+    // final spot. interrupt() first so a rapid double-toggle never leaves a
+    // circle mid-flight toward a stale layout.
+    entered.attr("cx", l => l.x).attr("cy", l => l.y).attr("r", rOf)
+      .attr("opacity", 0)
+      .transition("reshape").duration(260).attr("opacity", 1);
+    bubbles.interrupt("reshape").attr("opacity", null)
+      .transition("reshape").duration(260).ease(d3.easeCubicInOut)
+      .attr("cx", l => l.x).attr("cy", l => l.y).attr("r", rOf);
+    // rAF-driven transitions pause in background tabs — snap everything to its
+    // exact final geometry once the window has passed (restore stays honest:
+    // the end state is the pack output, bit-identical to a cold render)
+    setTimeout(() => {
+      gBubbles.selectAll("circle.node").interrupt("reshape").attr("opacity", null)
+        .attr("cx", l => l.x).attr("cy", l => l.y).attr("r", rOf);
+    }, 600);
+  } else {
+    all.interrupt("reshape").attr("opacity", null)
+      .attr("cx", l => l.x).attr("cy", l => l.y).attr("r", rOf);
+  }
   if (withTitles) all.select("title").text(l => l.data.label
-    + (l.data.type === "folder" ? ` — ${(l.data.n || 0).toLocaleString()} cells`
-        + (l.data.s != null ? ` · mean stateability ${l.data.s.toFixed(2)}` : "")
+    + (l.data.type === "folder"
+        ? (l.data.nAll != null && l.data.nAll !== (l.data.n || 0)
+            ? ` — ${(l.data.n || 0).toLocaleString()} of ${l.data.nAll.toLocaleString()} cells shown (filtered)`
+            : ` — ${(l.data.n || 0).toLocaleString()} cells`)
+          + (l.data.s != null ? ` · mean stateability ${l.data.s.toFixed(2)}` : "")
       : l.data.type === "strays" ? " — click to open them as dots, with the story of why they sit here"
       : (((l.data.f || 0) & 1 ? " — carries a hand-written @[wikidata] tag" : "")
          + (l.data.ptip === undefined ? ""    // frontier dots wear area + bond summary:
@@ -977,13 +1103,15 @@ function drawLabels() {
       const fs = flat ? 10 : Math.max(10, Math.min(16, l.r / 4.5));
       gLabels.append("text").attr("class", "blabel")
         .attr("x", l.x).attr("y", flat ? l.y + l.r + 11 : l.y - (l.r > 40 ? 4 : -4))
-        .attr("font-size", fs).attr("opacity", l.data.dim || l.data.libdim ? 0.35 : null)
+        .attr("font-size", fs)
         .text(l.data.label);
       if (!flat && l.r > 40)
         gLabels.append("text").attr("class", "bcount")
           .attr("x", l.x).attr("y", l.y + fs - 2).attr("font-size", fs * 0.72)
-          .attr("opacity", l.data.dim || l.data.libdim ? 0.35 : null)
-          .text(`${(l.data.n || 0).toLocaleString()} cells`);
+          // the no-silent-filter rule: a filtered count never poses as the total
+          .text(l.data.nAll != null && l.data.nAll !== (l.data.n || 0)
+            ? `${(l.data.n || 0).toLocaleString()} of ${l.data.nAll.toLocaleString()} cells`
+            : `${(l.data.n || 0).toLocaleString()} cells`);
       continue;
     }
     if (!flat && l.r < 5) continue;
@@ -1056,36 +1184,33 @@ zoomBehav.on("zoom.lvlabels", ev => {
   if (layout && !layout.explorer) updateLevelLabels(ev.transform.k);
 });
 
-// ---- facet filter (the f bitmask; SCHEMA v2 `f` / v3 `fa`) ------------------
-// Chips OR together; a CELL shows iff (f & mask) != 0. A FOLDER survives on its
-// subtree-aggregate bits `fa` — testing a folder's own `f` (always 0 in v3) is
-// what greys the whole canvas to "showing 0 of 77".
-function applyFacetFilter(items) {
-  for (const it of items) delete it.dim;
-  if (!filterMask)
-    return {items, shown: items.length, total: items.length, active: false};
-  const match = it => ((it.f || 0) & filterMask) !== 0;
-  const folderMatch = it => (((it.f || 0) | (it.fa || 0)) & filterMask) !== 0;
+// ---- (V) applying the predicate to a level ---------------------------------
+// True REMOVAL, never dimming: a cell failing cellVisible is not in the
+// layout; a container (folder / strays / the Frontier group) whose visible
+// count n is 0 is not in the layout. The '+N hidden' chip and the "N of M
+// shown" labels keep the removal honest (no-silent-filter rule). Folder n is
+// recomputed under the predicate by focusItems (countVisible), so survival and
+// pack size agree with the counts every panel shows.
+function applyVisibility(items) {
+  const active = filtersActive();
+  if (!active)
+    return {items, shown: items.length, total: items.length, hidden: 0,
+            hiddenCells: 0, active};
   const kept = [];
-  let shown = 0;
+  // hiddenCells counts CELLS uniformly across views (a removed folder weighs
+  // its nAll, a strays collapse carries hiddenInside) so the '+N hidden' chip
+  // never flips units between the roots level and the explorer.
+  let hiddenCells = 0;
   for (const it of items) {
-    if (it.type === "folder") {
-      // a folder stays bright and navigable whenever its SUBTREE matches, so
-      // the user can descend to the matching cells instead of a dead level
-      it.dim = !folderMatch(it);
-      kept.push(it);
-      if (!it.dim) shown++;
-    } else {
-      // supercells are CONTAINERS (folders in the Mathlib source): focusing one
-      // always unfolds its full contents. A facet filter DIMS non-matching
-      // cells (the strays-dive rule) — it never empties a level down to one
-      // stage-filling dot.
-      it.dim = !match(it);
-      kept.push(it);
-      if (!it.dim) shown++;
-    }
+    if (it.type === "folder" || it.type === "strays") {
+      hiddenCells += it.hiddenInside || 0;
+      if ((it.n || 0) > 0) kept.push(it);
+      else hiddenCells += it.nAll ?? it.n ?? 0;
+    } else if (cellVisible(it.id, it.f)) kept.push(it);
+    else hiddenCells += 1;
   }
-  return {items: kept, shown, total: items.length, active: true};
+  return {items: kept, shown: kept.length, total: items.length,
+          hidden: items.length - kept.length, hiddenCells, active};
 }
 function updateFilterStat(fv) {
   const el = $("#filterstat");
@@ -1146,8 +1271,7 @@ function renderEdges() {
   const widthOf = e => 0.7 + 2.4 * Math.sqrt(e.w / maxW);
   for (const e of show) {
     const A = layout.items.get(e.a), B = layout.items.get(e.b);
-    if (!A || !B) continue;
-    if (A.data.dim || B.data.dim) continue;   // filtered-out context folders
+    if (!A || !B) continue;   // an endpoint the (V) predicate removed has no layout item
     const mx = (A.x + B.x) / 2, my = (A.y + B.y) / 2;
     const dx = B.x - A.x, dy = B.y - A.y;
     // deterministic per-pair bend so parallel routes fan out instead of piling
@@ -1234,11 +1358,12 @@ async function enrich(seq, leaves) {
   if (lastPanelId === focusId && !selectedId) renderPanel(focusId);
 }
 
-async function renderFocus(anim) {
+async function renderFocus(anim, opts) {
+  opts = opts || {};
   if (explorerOn) return renderExplorer(anim);
   xcanvasShow(false);   // every non-explorer view: the canvas is gone, SVG owns the stage
   const seq = ++renderSeq;
-  resetZoom();
+  if (!opts.keepZoom) resetZoom();   // a filters-changed reshape happens IN PLACE
   await ensureTree();
   if (seq !== renderSeq) return;
   if (isFrontierViewId(focusId)) {
@@ -1253,8 +1378,33 @@ async function renderFocus(anim) {
   }
   const items = await focusItems(focusId);
   if (seq !== renderSeq) return;
-  const fv = applyFacetFilter(items);
+  const fv = applyVisibility(items);
   updateFilterStat(fv);
+  updateHiddenChip(fv.hiddenCells ?? fv.hidden);   // cell units, every view
+  // chrome FIRST, measure AFTER (the renderFrontier lesson): the status line
+  // and crumb can re-wrap the toolbar and change the stage height with no
+  // resize event — packing against the pre-write stage shifted every bubble
+  // ~3.3% on the first toggle after a cold boot
+  renderCrumb();
+  const foldersShown = fv.items.filter(i => i.type === "folder").length;
+  const foldersTotal = items.filter(i => i.type === "folder").length;
+  const cellsShown = fv.items.length - foldersShown;
+  const cellsTotal = items.length - foldersTotal;
+  // the no-silent-filter rule: under an active predicate every count reads
+  // "N of M … shown" — a shrunken number never poses as the universe
+  statusEl.textContent = (fv.active
+      ? `${cellsShown.toLocaleString()} of ${cellsTotal.toLocaleString()} cells · ` +
+        `${foldersShown} of ${foldersTotal} areas shown · `
+      : `${cellsShown.toLocaleString()} cells · ${foldersShown} areas · `) +
+    `${focusId === ROOTS_ID ? "all libraries"
+      : focusId === FRONTIER_ID ? "the Frontier"
+      : isFrontierId(focusId) ? frontierName(focusId) + " frontier"
+      : focusId === UNPLACED_ID ? (tree.frontier.length ? "unfiled" : "no formal home")
+      : focusId.startsWith(STRAYS_PREFIX)
+        ? focusId.slice(STRAYS_PREFIX.length + 5)
+          + (focusId.slice(STRAYS_PREFIX.length + 5).includes("/")
+             ? " · filed here" : " · no module recorded")
+      : focusId.slice(5)}`;
   const W = stageEl.clientWidth || 800, H = stageEl.clientHeight || 600;
   const root = d3.hierarchy({children: fv.items}).sum(d => d.children ? 0 : packValue(d));
   d3.pack().size([W, H]).padding(fv.items.length > 150 ? 1.5 : 4)(root);
@@ -1265,21 +1415,10 @@ async function renderFocus(anim) {
   gEdges.selectAll("*").remove();
   gOverlay.selectAll("*").remove();
   gBubbles.selectAll("circle.preview").remove();
-  drawNodes();
+  drawNodes(!!opts.reshape);
   drawLabels();
+  if (opts.reshape) fadeLabelsIn();   // labels land at final positions, softened
   drawSelRing();
-  renderCrumb();
-  const folders = fv.items.filter(i => i.type === "folder").length;
-  statusEl.textContent = `${(fv.items.length - folders).toLocaleString()} cells · ` +
-    `${folders} areas · ${focusId === ROOTS_ID ? "all libraries"
-      : focusId === FRONTIER_ID ? "the Frontier"
-      : isFrontierId(focusId) ? frontierName(focusId) + " frontier"
-      : focusId === UNPLACED_ID ? (tree.frontier.length ? "unfiled" : "no formal home")
-      : focusId.startsWith(STRAYS_PREFIX)
-        ? focusId.slice(STRAYS_PREFIX.length + 5)
-          + (focusId.slice(STRAYS_PREFIX.length + 5).includes("/")
-             ? " · filed here" : " · no module recorded")
-      : focusId.slice(5)}`;
   if (anim) fadeIn();
   enrich(seq, leaves);   // background: previews + the synapse web
 }
@@ -1289,6 +1428,13 @@ function fadeIn() {
   // rAF-driven transitions pause in background tabs — never leave the canvas
   // stuck invisible
   setTimeout(() => g.forEach(gr => { gr.interrupt(); gr.attr("opacity", 1); }), 600);
+}
+// the reshape path's label treatment: gLabels is wiped + redrawn at the new
+// pack, so fade the fresh labels in while the circles glide (same 260ms clock,
+// same background-tab snap guard as fadeIn)
+function fadeLabelsIn() {
+  gLabels.attr("opacity", 0).transition("reshape").duration(260).attr("opacity", 1);
+  setTimeout(() => { gLabels.interrupt("reshape"); gLabels.attr("opacity", 1); }, 600);
 }
 
 // ---- ego view: one atom and its synapses ------------------------------------
@@ -1340,6 +1486,7 @@ async function renderCellEgo(seq, entry, anim) {
     `${skipped ? ` (+${skipped} more in the card)` : ""} · ` +
     `${(entry.counts && entry.counts.organs) || (entry.organs || []).length} organs · cell view`;
   updateFilterStat(null);
+  updateHiddenChip(0);   // the ego view shows one atom's synapses — nothing is filtered out
   if (anim) fadeIn();
   renderPanel(id);
 }
@@ -1528,16 +1675,23 @@ async function renderFrontier(seq, anim, moveAnim) {
   // a re-score ANIMATES: remember where every dot sits now, move it after
   const oldPos = moveAnim && layout && layout.frontier
     ? new Map([...layout.items.values()].map(l => [l.data.id, [l.x, l.y]])) : null;
-  // ---- data pass FIRST (geometry-free): sectors, prox counts, facet filter --
+  // ---- data pass FIRST (geometry-free): sectors, prox counts, the predicate --
   // sectors: tree.frontier is already (size desc, id) — a stable order
   const areas = sector ? [sector] : tree.frontier;
   const perArea = [];
-  let totalCells = 0, nDirect = 0, nBridged = 0, nZero = 0, skipped = 0;
+  let totalCells = 0, totalRaw = 0, facetHidden = 0,
+      nDirect = 0, nBridged = 0, nZero = 0, skipped = 0;
   for (const p of areas) {
     const members = [];   // [{cid, px}]
     for (const cid of (tree.sc[p] || {}).cells || []) {
       const px = activeProxFor(cid);
       if (!px) { skipped++; continue; }   // no prox data — COUNTED below, never silent
+      totalRaw++;
+      // (H) the shared (V) predicate governs shell MEMBERSHIP: a cell failing
+      // it is REMOVED from its shell and from every ring count. For homeless
+      // cells the predicate's library half is always true — the library set
+      // governs them through the re-SCORE above (activeProxFor), never removal.
+      if (!cellVisible(cid)) { facetHidden++; continue; }
       members.push({cid, px});
       if (px.dw > 0) nDirect++; else if (px.iw > 0) nBridged++; else nZero++;
     }
@@ -1568,7 +1722,6 @@ async function renderFrontier(seq, anim, moveAnim) {
         it.px = px;
         placed.push({it, A, G, j});
       }
-  const fv = applyFacetFilter(placed.map(e => e.it));
   // ---- chrome pass: write EVERY toolbar/crumb line, THEN measure the stage --
   // The long status line and the filter stat can re-wrap the flex toolbar, and
   // the crumb bar grows from empty at boot — each changes the stage height with
@@ -1576,7 +1729,8 @@ async function renderFrontier(seq, anim, moveAnim) {
   // panes, measured). Solving the radial layout before those writes left the
   // view drawn for a stage 16px taller than the one on screen. Write first; the
   // clientWidth/Height reads below then force (and measure) the settled layout.
-  updateFilterStat(fv);
+  updateFilterStat({active: !!filterMask, shown: totalCells, total: totalRaw});
+  updateHiddenChip(facetHidden);
   renderCrumb();   // the frontier branch writes synchronously (no await on its path)
   const en = enabledLibs();
   const libNote = !libsFiltered() ? ""
@@ -1587,7 +1741,8 @@ async function renderFrontier(seq, anim, moveAnim) {
       : " · ⚠ library filter inactive (frontier_graph.json unavailable)";
   const parityNote = parity.ran && !parity.ok
     ? " · ⚠ client scores disagree with the build (see console)" : "";
-  statusEl.textContent = `${totalCells.toLocaleString()} cells · frontier view` +
+  statusEl.textContent = `${totalCells.toLocaleString()}${filterMask
+      ? ` of ${totalRaw.toLocaleString()} cells shown` : " cells"} · frontier view` +
     (sector ? ` · ${frontierName(sector)} sector` : "") +
     ` · ${nDirect.toLocaleString()} bond formal code directly · ` +
     `${nBridged.toLocaleString()} bridged only · ` +
@@ -1753,8 +1908,10 @@ async function renderFrontier(seq, anim, moveAnim) {
       .on("click", ev => { ev.stopPropagation();
         gotoFrontierView(FRONTIER_ID + ":" + A.p.slice(9)); });
     inked(t);
+    const nRaw = ((tree.sc[A.p] || {}).cells || []).length;
     t.append("title").text(`focus this sector — ${frontierName(A.p)}'s cells alone, ` +
-      `spread over the full circle (${A.n.toLocaleString()} cells)`);
+      `spread over the full circle (${A.n === nRaw ? `${A.n.toLocaleString()} cells`
+        : `${A.n.toLocaleString()} of ${nRaw.toLocaleString()} cells shown`})`);
   });
   drawFrontierDotLabels(leaves, sector);
   drawSelRing();
@@ -1877,33 +2034,19 @@ async function reScoreFrontier() {
 }
 async function setLibEnabled(name, on) {
   if (on) disabledLibs.delete(name); else disabledLibs.add(name);
-  persistLibs();
-  syncLibCheckboxes();
-  if (layout && layout.frontier && isFrontierViewId(focusId)) {
-    await reScoreFrontier();
-    if (isFrontierViewId(lastPanelId)) {   // refresh the card's counts in place
-      const st = panelEl.scrollTop;
-      await frontierPanel(lastPanelId);
-      panelEl.scrollTop = st;
-    }
-  } else if (!explorerOn && focusId === ROOTS_ID) {
-    renderFocus(false);                   // re-dim the root bubbles
-    if (lastPanelId === ROOTS_ID) {
-      const st = panelEl.scrollTop;
-      rootsPanel();
-      panelEl.scrollTop = st;
-    }
-  }
+  await filtersChanged();   // the ONE path — every filter mutation reshapes in place
 }
 function librariesSectionHtml() {
   const all = libRoots();
-  let html = `<section class="kind"><h3>Library filter <span class="cnt">(${
+  let html = `<section class="kind" id="libsec"><h3>Library filter <span class="cnt">(${
     all.length - disabledLibs.size} of ${all.length} on)</span></h3>
-    <p class="note">Which libraries count as <b>formal code</b>. Turning one off dims its
-    root bubble to 35% (never removes it) and re-scores the frontier without it: a
-    cell's formal proximity counts only bonds and bridges reaching declarations in the
-    libraries still on, re-ranked with the build's own formula (with every library on,
-    the view is exactly the shipped placement).</p><div class="libctl">`;
+    <p class="note">Which libraries count as <b>formal code</b>. Turning one off removes
+    its root bubble and every cell it places from the map, panels and search (the
+    <b>+N hidden</b> chip in the toolbar brings you back here), and re-scores the
+    frontier without it: a cell's formal proximity counts only bonds and bridges
+    reaching declarations in the libraries still on, re-ranked with the build's own
+    formula (with every library on, the view is exactly the shipped
+    placement).</p><div class="libctl">`;
   for (const n of all)
     html += `<label class="librow"><input type="checkbox" class="libcb" data-lib="${esc(n)}"${
       disabledLibs.has(n) ? "" : " checked"}> ${esc(n)}
@@ -1960,7 +2103,7 @@ function paintCommunities() {
     .attr("fill", l => fillFor(l.data));
   if (!$("#commColor").checked) { commState = {n: 0, reason: "off"}; return; }
   if (!activeKinds().has("depends")) { commState = {n: 0, reason: "nodeps"}; return; }
-  const nodes = [...layout.items.values()].filter(l => !l.data.dim);
+  const nodes = [...layout.items.values()];   // the layout holds only (V)-visible items
   const idset = new Set(nodes.map(l => l.data.id));
   const links = edgeStore
     .filter(e => (e.kinds || {}).depends && idset.has(e.a) && idset.has(e.b))
@@ -1972,7 +2115,6 @@ function paintCommunities() {
   const colorOf = new Map();
   let ci = 0;
   gBubbles.selectAll("circle.node").each(function (l) {
-    if (l.data.dim) return;
     const c = comm.get(l.data.id);
     if (c === undefined || sizes.get(c) < 2) return;
     if (!colorOf.has(c)) colorOf.set(c, COMM_PALETTE[ci++ % COMM_PALETTE.length]);
@@ -2018,12 +2160,16 @@ function drawSelRing() {
 // The id segment is fully URI-encoded (any raw "&" became %26), so splitting on
 // "&" is safe and a v2 "#Q181296" hash still resolves — through aliases.json.
 function setHash(id) {
-  let h = "#" + (id && id !== ROOTS_ID ? encodeURIComponent(id) : "");
-  if (filterMask) h += "&f=" + filterMask;
-  if (explorerOn) h += "&view=explorer";
+  const core = id && id !== ROOTS_ID ? encodeURIComponent(id) : "";
+  let extra = "";
+  if (filterMask) extra += "&f=" + filterMask;
+  if (explorerOn) extra += "&view=explorer";
   // lib names match ^[A-Za-z][A-Za-z0-9_]*$ — raw in the hash by construction
-  if (tree && libsFiltered()) h += "&libs=" + enabledLibs().join(",");
-  history.replaceState(null, "", h);
+  if (tree && libsFiltered()) extra += "&libs=" + enabledLibs().join(",");
+  // (S) an empty id segment beside params ("#&f=16") cold-loads to the DEFAULT
+  // dive (path:Mathlib), losing the roots view the params were set on — pin the
+  // roots id explicitly whenever there is state that must survive a reload
+  history.replaceState(null, "", "#" + (core || (extra ? ROOTS_ID : "")) + extra);
 }
 function parseHash() {
   const parts = location.hash.slice(1).split("&");
@@ -3168,15 +3314,26 @@ function rootsPanel() {
     keeps its traces.</p>
     <section class="kind"><h3>Libraries <span class="cnt">(${rows.length} with cells)</span></h3>
     <div class="chips">`;
-  for (const [n, p] of rows)
+  for (const [n, p] of rows) {
+    const off = disabledLibs.has(p.slice(5));
+    const nv = off ? 0 : countVisible(p);
+    // "N of M shown" whenever the predicate shrank a count (no-silent-filter)
     html += `<span class="chip"><a data-nav="${esc(p)}">${esc(p.slice(5))}</a>
-      <small>${n.toLocaleString()}</small></span>`;
+      <small>${off ? "off — hidden"
+        : filtersActive() && nv !== n
+          ? `${nv.toLocaleString()} of ${n.toLocaleString()} shown`
+          : n.toLocaleString()}</small></span>`;
+  }
   html += `</div><p class="note">${
     tree.roots.length - rows.length} further library roots hold no cells yet.</p></section>`;
   html += librariesSectionHtml();
+  const frAll = tree.frontierN + tree.unplaced.length;
+  const frVis = frontierVisibleN() + unplacedVisibleN();
   if (tree.frontier.length)
     html += `<section class="kind"><h3>The Frontier <span class="cnt">(${
-      (tree.frontierN + tree.unplaced.length).toLocaleString()})</span></h3>
+      filtersActive() && frVis !== frAll
+        ? `${frVis.toLocaleString()} of ${frAll.toLocaleString()} shown`
+        : frAll.toLocaleString()})</span></h3>
       <p class="note">Atoms with no Lean declaration have no module to nest in — nothing
       formalizes them yet. <a data-nav="${FRONTIER_ID}">Open the frontier</a>: the
       ${tree.frontier.length} areas as sectors around the formal core${tree.prox
@@ -3185,7 +3342,9 @@ function rootsPanel() {
         hugs the core while one with no formal signal sits outermost` : ""}.</p></section>`;
   else if (tree.unplaced.length)
     html += `<section class="kind"><h3>No formal home <span class="cnt">(${
-      tree.unplaced.length.toLocaleString()})</span></h3>
+      filtersActive() && unplacedVisibleN() !== tree.unplaced.length
+        ? `${unplacedVisibleN().toLocaleString()} of ${tree.unplaced.length.toLocaleString()} shown`
+        : tree.unplaced.length.toLocaleString()})</span></h3>
       <p class="note">Atoms with no Lean declaration have no module to nest in — nothing
       formalizes them yet. <a data-nav="${UNPLACED_ID}">Browse them</a>, or find them in the
       Explorer, which places every atom.</p></section>`;
@@ -3203,12 +3362,16 @@ async function frontierPanel(id) {
   if (lastPanelId !== id) return;
   const sector = sectorAreaOf(id);
   const areas = sector && (tree.sc[sector] || {}).frontier ? [sector] : tree.frontier;
-  let total = 0, nDirect = 0, nBridged = 0, nZero = 0;
+  // counts run under the SAME (V) predicate the canvas renders: membership =
+  // prox'd AND cellVisible; the library set acts through the re-score
+  let total = 0, totalRaw = 0, nDirect = 0, nBridged = 0, nZero = 0;
   for (const p of areas)
     for (const cid of (tree.sc[p] || {}).cells || []) {
-      if (!tree.prox) { total++; continue; }
+      if (!tree.prox) { totalRaw++; if (cellVisible(cid)) total++; continue; }
       const px = activeProxFor(cid);
       if (!px) continue;
+      totalRaw++;
+      if (!cellVisible(cid)) continue;
       total++;
       if (px.dw > 0) nDirect++; else if (px.iw > 0) nBridged++; else nZero++;
     }
@@ -3217,7 +3380,9 @@ async function frontierPanel(id) {
         ? `<a data-nav="${FRONTIER_ID}">Frontier</a> / ${esc(frontierName(sector))} sector`
         : "Frontier"}</div>
     <h2>${sector ? `${esc(frontierName(sector))} — frontier sector` : "The Frontier"}</h2>
-    <div class="sub">${total.toLocaleString()} cells · ${sector ? "one area"
+    <div class="sub">${filterMask && total !== totalRaw
+      ? `${total.toLocaleString()} of ${totalRaw.toLocaleString()} cells shown`
+      : `${total.toLocaleString()} cells`} · ${sector ? "one area"
       : `${tree.frontier.length} areas`} · atoms with no Lean declaration${
       libsFiltered() && clientProx
         ? ` · libraries: ${esc(enabledLibs().join(" + ") || "none")}` : ""}</div>`;
@@ -3253,13 +3418,20 @@ async function frontierPanel(id) {
   if (!sector) {
     html += `<section class="kind"><h3>Areas <span class="cnt">(${
       tree.frontier.length})</span></h3><div class="chips">`;
-    for (const p of tree.frontier)
+    for (const p of tree.frontier) {
+      const na = ((tree.sc[p] || {}).cells || []).length;
+      const nva = countVisible(p);
       html += `<span class="chip"><a data-nav="${esc(p)}">${esc(frontierName(p))}</a>
-        <small>${((tree.sc[p] || {}).cells || []).length.toLocaleString()}</small></span>`;
+        <small>${filtersActive() && nva !== na
+          ? `${nva.toLocaleString()} of ${na.toLocaleString()} shown`
+          : na.toLocaleString()}</small></span>`;
+    }
     html += `</div></section>`;
     if (tree.unplaced.length)
       html += `<section class="kind"><h3>Unfiled <span class="cnt">(${
-        tree.unplaced.length.toLocaleString()})</span></h3>
+        filtersActive() && unplacedVisibleN() !== tree.unplaced.length
+          ? `${unplacedVisibleN().toLocaleString()} of ${tree.unplaced.length.toLocaleString()} shown`
+          : tree.unplaced.length.toLocaleString()})</span></h3>
         <p class="note">A different residue: these cells DO hold Lean declarations, but
         no module is recorded for them (Mathlib-Archive names with no
         <code>contains</code> parent), so neither the tree nor the frontier partition —
@@ -3276,13 +3448,18 @@ async function frontierAreaPanel(id) {
   if (lastPanelId !== id) return;
   if (!sc) { panelEl.innerHTML = `<p class="note">Unknown frontier area: ${esc(id)}</p>`; return; }
   const cells = frontierCells(id);   // best-evidenced first (prox r asc, stable)
+  // the (V) predicate: chips, counts and the proximity summary below all
+  // describe the VISIBLE membership, labeled "N of M shown" when it shrank
+  const visCells = filtersActive() ? cells.filter(c => cellVisible(c)) : cells;
   const near = sc.near || null;
   const st = sc.stateability;
   let html = `<div class="crumb"><a data-nav="${ROOTS_ID}">all libraries</a> /
       <a data-nav="${FRONTIER_ID}">Frontier</a> / ${esc(frontierName(id))}</div>
     <h2>${esc(sc.label || id)}</h2>
     <div class="sub">frontier area · <code>${esc(id)}</code> ·
-      ${cells.length.toLocaleString()} cells, none formalized yet</div>`;
+      ${visCells.length !== cells.length
+        ? `${visCells.length.toLocaleString()} of ${cells.length.toLocaleString()} cells shown`
+        : `${cells.length.toLocaleString()} cells`}, none formalized yet</div>`;
   html += `<section class="kind"><h3>Nearest formal home</h3>` + (near
     ? `<div class="chips"><span class="chip"><a data-nav="${esc(near)}">${esc(near.slice(5))}</a>
         <small>${esc(((tree.sc[near] || {}).label) || "")}</small></span></div>
@@ -3302,11 +3479,15 @@ async function frontierAreaPanel(id) {
     : `<p class="note">not yet scored — none of this area's cells appear in the
        stateability halo.</p>`) + `</section>`;
   if (tree.prox && sc.prox) {
-    const px = sc.prox;
+    // activeProxFor, NOT the shipped arrays: under a filtered library set the
+    // canvas renders the client re-score, and this panel must agree with it —
+    // and the counts run over the (V)-visible membership only
     let nDirect = 0, nBridged = 0, nZero = 0;
-    for (let i = 0; i < (sc.cells || []).length; i++) {
-      if ((px.dw || [])[i] > 0) nDirect++;
-      else if ((px.iw || [])[i] > 0) nBridged++;
+    for (const cid of visCells) {
+      const px = activeProxFor(cid);
+      if (!px) continue;
+      if (px.dw > 0) nDirect++;
+      else if (px.iw > 0) nBridged++;
       else nZero++;
     }
     html += `<section class="kind"><h3>Formal proximity</h3><div class="chips">${
@@ -3321,20 +3502,25 @@ async function frontierAreaPanel(id) {
       the frontier view</a>.</p></section>`;
   }
   if ((sc.top || []).length) {
-    html += `<section class="kind"><h3>Top cells <span class="cnt">(${sc.top.length})</span></h3>
+    const topVis = filtersActive() ? sc.top.filter(t => cellVisible(t.cell)) : sc.top;
+    html += `<section class="kind"><h3>Top cells <span class="cnt">(${
+      topVis.length !== sc.top.length
+        ? `${topVis.length} of ${sc.top.length} shown` : sc.top.length})</span></h3>
       <p class="note">the area's most-connected cells (total synapse weight; formal
       bonds count 3×) — the natural first formalization targets.</p><div class="chips">`;
-    for (const t of sc.top)
+    for (const t of topVis)
       html += `<span class="chip"><a data-nav="${esc(t.cell)}">${esc(t.label || t.cell)}</a>
         <small title="weighted synapse degree">${Number(t.score || 0).toLocaleString()}</small></span>`;
     html += `</div></section>`;
   }
   if (cells.length) {
-    html += `<section class="kind"><h3>Cells <span class="cnt">(${cells.length})</span></h3><div class="chips">`;
-    for (const cid of cells.slice(0, 80))
+    html += `<section class="kind"><h3>Cells <span class="cnt">(${
+      visCells.length !== cells.length
+        ? `${visCells.length} of ${cells.length} shown` : cells.length})</span></h3><div class="chips">`;
+    for (const cid of visCells.slice(0, 80))
       html += `<span class="chip"><a data-nav="${esc(cid)}">${
         esc(((labelById && labelById.get(cid)) || {}).label || cid)}</a></span>`;
-    if (cells.length > 80) html += `<span class="chip">… +${cells.length - 80} more</span>`;
+    if (visCells.length > 80) html += `<span class="chip">… +${visCells.length - 80} more</span>`;
     html += `</div></section>`;
   }
   panelEl.innerHTML = html;
@@ -3348,8 +3534,11 @@ async function straysPanel(parent) {
   const chain = pathChain(parent);
   let html = `<div class="crumb">` + chain.map(b =>
     `<a data-nav="${esc(b.id)}">${esc(b.label)}</a>`).join(" / ") + `</div>`;
+  const visStr = filtersActive() ? cells.filter(c => cellVisible(c)) : cells;
   html += `<h2>${atRoot ? "No module recorded" : "Filed at this level"}</h2>
-    <div class="sub">${cells.length.toLocaleString()} cells · directly under
+    <div class="sub">${visStr.length !== cells.length
+      ? `${visStr.length.toLocaleString()} of ${cells.length.toLocaleString()} cells shown`
+      : `${cells.length.toLocaleString()} cells`} · directly under
       <code>${esc(parent)}</code></div>`;
   // The honest story differs by altitude. Deeper down, a cell filed at the level
   // itself is ordinary (its decl lives in <path>.lean rather than a sub-folder).
@@ -3371,11 +3560,13 @@ async function straysPanel(parent) {
         itself (or files at this level) rather than in a sub-folder — ordinary filing,
         collapsed into one bubble so the sub-areas stay readable.</p>`;
   if (cells.length) {
-    html += `<section class="kind"><h3>Cells <span class="cnt">(${cells.length})</span></h3><div class="chips">`;
-    for (const cid of cells.slice(0, 120))
+    html += `<section class="kind"><h3>Cells <span class="cnt">(${
+      visStr.length !== cells.length
+        ? `${visStr.length} of ${cells.length} shown` : cells.length})</span></h3><div class="chips">`;
+    for (const cid of visStr.slice(0, 120))
       html += `<span class="chip"><a data-nav="${esc(cid)}">${
         esc(((labelById && labelById.get(cid)) || {}).label || cid)}</a></span>`;
-    if (cells.length > 120) html += `<span class="chip">… +${cells.length - 120} more</span>`;
+    if (visStr.length > 120) html += `<span class="chip">… +${visStr.length - 120} more</span>`;
     html += `</div></section>`;
   }
   panelEl.innerHTML = html;
@@ -3389,7 +3580,9 @@ function unplacedPanel() {
     ? `<div class="crumb"><a data-nav="${ROOTS_ID}">all libraries</a> /
         <a data-nav="${FRONTIER_ID}">Frontier</a> / unfiled</div>` : "";
   panelEl.innerHTML = crumb + `<h2>${tree.frontier.length ? "Unfiled" : "No formal home"}</h2>
-    <div class="sub">${tree.unplaced.length.toLocaleString()} cells</div>
+    <div class="sub">${filtersActive() && unplacedVisibleN() !== tree.unplaced.length
+      ? `${unplacedVisibleN().toLocaleString()} of ${tree.unplaced.length.toLocaleString()} cells shown`
+      : `${tree.unplaced.length.toLocaleString()} cells`}</div>
     <p class="note">${tree.frontier.length
       ? `These atoms hold Lean declarations, but no module is recorded for them
          (Mathlib-Archive names with no <code>contains</code> parent) — so the
@@ -3412,9 +3605,16 @@ async function renderSupercellPanel(p) {
   let html = `<div class="crumb">` + chain.map((b, i) =>
     i === chain.length - 1 ? esc(b.label) : `<a data-nav="${esc(b.id)}">${esc(b.label)}</a>`)
     .join(" / ") + `</div>`;
+  const nSub = tree.count(p), nSubVis = countVisible(p);
+  const hereAll = (sc.cells || []);
+  const hereVis = filtersActive() ? hereAll.filter(c => cellVisible(c)) : hereAll;
   html += `<h2>${esc(sc.label || p)}</h2>
-    <div class="sub">supercell · <code>${esc(p)}</code> · ${tree.count(p).toLocaleString()}
-      cells in the subtree${(sc.cells || []).length ? ` · ${sc.cells.length} here` : ""}</div>`;
+    <div class="sub">supercell · <code>${esc(p)}</code> · ${
+      filtersActive() && nSubVis !== nSub
+        ? `${nSubVis.toLocaleString()} of ${nSub.toLocaleString()} cells shown in the subtree`
+        : `${nSub.toLocaleString()} cells in the subtree`}${
+      hereAll.length ? ` · ${hereVis.length !== hereAll.length
+        ? `${hereVis.length} of ${hereAll.length} shown` : hereAll.length} here` : ""}</div>`;
   // rule-5 organs: field-of-study concepts and area pages belong to the FOLDER,
   // never to a cell — "Linear algebra" is this module, not the Module atom.
   // Rule-4 PARKED pages are a different fact (a page shared by several cells
@@ -3440,18 +3640,24 @@ async function renderSupercellPanel(p) {
   }
   if ((sc.children || []).length) {
     html += `<section class="kind"><h3>Areas <span class="cnt">(${sc.children.length})</span></h3><div class="chips">`;
-    for (const ch of sc.children.slice(0, 60))
+    for (const ch of sc.children.slice(0, 60)) {
+      const na = tree.count(ch), nv = countVisible(ch);
       html += `<span class="chip"><a data-nav="${esc(ch)}">${esc((tree.sc[ch] || {}).label || ch)}</a>
-        <small>${tree.count(ch).toLocaleString()}</small></span>`;
+        <small>${filtersActive() && nv !== na
+          ? `${nv.toLocaleString()} of ${na.toLocaleString()} shown`
+          : na.toLocaleString()}</small></span>`;
+    }
     if (sc.children.length > 60) html += `<span class="chip">… +${sc.children.length - 60} more</span>`;
     html += `</div></section>`;
   }
-  if ((sc.cells || []).length) {
-    html += `<section class="kind"><h3>Cells here <span class="cnt">(${sc.cells.length})</span></h3><div class="chips">`;
-    for (const cid of sc.cells.slice(0, 80))
+  if (hereAll.length) {
+    html += `<section class="kind"><h3>Cells here <span class="cnt">(${
+      hereVis.length !== hereAll.length
+        ? `${hereVis.length} of ${hereAll.length} shown` : hereAll.length})</span></h3><div class="chips">`;
+    for (const cid of hereVis.slice(0, 80))
       html += `<span class="chip"><a data-nav="${esc(cid)}">${
         esc(((labelById && labelById.get(cid)) || {}).label || cid)}</a></span>`;
-    if (sc.cells.length > 80) html += `<span class="chip">… +${sc.cells.length - 80} more</span>`;
+    if (hereVis.length > 80) html += `<span class="chip">… +${hereVis.length - 80} more</span>`;
     html += `</div></section>`;
   }
   const kinds = activeKinds(), provs = activeProv();
@@ -3587,9 +3793,16 @@ $("#q").addEventListener("input", () => {
       // say WHY a hit matched when it matched on an organ name, not the label
       const via = r.aka && !r.label.toLowerCase().includes(q)
         ? r.aka.find(a => a.toLowerCase().includes(q)) : null;
+      // (V) search badges ride the SAME predicate as the canvas: a hit the
+      // current filters hide says so, and an area count says "n of N shown"
+      const hidden = r.type === "cell" && filtersActive() && !cellVisible(r.id);
+      const nv = r.n && filtersActive() ? countVisible(r.id) : r.n;
       return `<div class="hit" data-id="${esc(r.id)}"><span class="t">${esc(r.type)}</span> ${
         esc(r.label)}${via ? ` <span class="aka">— its organ “${esc(via)}”</span>` : ""}${
-        r.n ? ` <small style="color:#8c959f">${r.n.toLocaleString()}</small>` : ""}</div>`;
+        hidden ? ` <span class="aka">· hidden by the current filters</span>` : ""}${
+        r.n ? ` <small style="color:#8c959f">${nv !== r.n
+          ? `${nv.toLocaleString()} of ${r.n.toLocaleString()} shown`
+          : r.n.toLocaleString()}</small>` : ""}</div>`;
     }).join("") || `<div class="hit"><span class="t">no hits</span> try /decl/&lt;name&gt; for declarations</div>`;
     box.style.display = "block";
     box.querySelectorAll("[data-id]").forEach(h =>
@@ -3610,6 +3823,13 @@ document.addEventListener("click", ev => {
 // for the core — so fit-to-content zooms out ~42× and the graph renders as a ring
 // around a clump. It also makes the map STABLE: the same shape every visit, so it
 // can be learned.
+//
+// ONE deliberate exception (reshape contract E): a FILTERED subgraph. The
+// predicate cuts holes the build layout never planned for, so when the visible
+// remainder is small enough (<= RELAX_CAP cells) the client runs a BOUNDED,
+// fully deterministic relaxation seeded from the build xy — see the solver
+// below drawXFrame. With no filter active the build xy is used verbatim, so
+// clearing every filter restores positions bit-identical to explorer.json.
 //
 // explorer.json ships edges as index triples [i, j, w] into `nodes` (ids average
 // ~11 chars and repeat twice per edge, so objects cost ~4×) — which is what buys
@@ -3660,8 +3880,36 @@ const XK_EDGE_MIN = 0.05;   // below this zoom the view is "far": dots only
 const XK_NEAR = 0.8;        // at/above this zoom the view is "near" regardless
 const XE_BUDGET = 8000;     // max synapse segments a MID frame draws
 const XL_CAP = 250;         // max labels on screen (same cap the SVG version had)
-let xEdges = [];   // [{a, b, w, ax, ay, bx, by}] for the click hit test
+// ---- (E) deterministic relaxation of FILTERED subgraphs ---------------------
+// DETERMINISM CONTRACT: a FIXED iteration count, no Math.random anywhere, every
+// loop in array order, and forces derived only from the visible subset — the
+// same subset always settles to the same layout, bit for bit (the completion
+// telemetry in __xrelax hashes the final positions so two runs can be diffed).
+// The solve runs in rAF slices (~RELAX_CHUNK_MS of solver work per frame) so
+// long main-thread blocks are bounded in the common case (adaptive pacing
+// halves the slice after an overshoot) and the pull-in IS the animation. Above
+// RELAX_CAP the build xy is kept and the status line says so — never a silent
+// skip (no-silent-filter rule).
+const RELAX_CAP = 4000;     // relax only when the visible subgraph is <= this
+const RELAX_ITERS = 96;     // FIXED total iterations — the determinism anchor
+const RELAX_CHUNK_MS = 10;  // solver budget per rAF slice (perf: no long block)
+const RELAX_ITERS_PER_FRAME = 4;  // pacing cap: a small graph solves in <1ms an
+                            // iteration, and without this cap the whole pull-in
+                            // lands inside ~3 frames — a snap, not an animation.
+                            // 96/4 = 24 frames ≈ 0.4s at 60fps; chunking never
+                            // changes the math, only when it is shown
+const RELAX_KK = 26;        // ideal spacing, world units (≈ the build core's own
+                            // median cell spacing on the shipped explorer.json)
+const RELAX_NEIGH_MAX = 64; // repulsion pairs per node per pass — an algorithmic
+                            // bound, DETERMINISTIC (grid traversal order) and
+                            // counted in __xrelax.neighCapHits, never a silent
+                            // data drop (nothing is hidden — only physics)
+let xEdges = [];   // [{a, b, w, ax, ay, bx, by, ai, bi}] click hit test + solver
+                   // (ai/bi index layout.leaves, so the relaxation can refresh
+                   //  the endpoint coords the tiers and the edge click read)
 let xr = null;     // canvas render state (typed arrays + grid), per scope
+let xRelax = null; // in-flight (E) relaxation state (null = none)
+let xLastGestureT = 0;   // last USER pan/zoom — guards the settle-refit snap
 let xDrawPending = false, xDrawTimer = 0, xInputT = 0, xHover = -1;
 const xcv = document.getElementById("xcanvas");
 const xctx = xcv.getContext("2d");
@@ -3672,6 +3920,7 @@ window.__xstats = {lod: "", nodes: 0, edges: 0, perTier: [0, 0, 0, 0],
 function xcanvasShow(on) {
   xcv.style.display = on ? "block" : "none";
   if (!on) {
+    cancelXRelax();   // leaving the explorer orphans any in-flight relaxation
     xr = null; xHover = -1; xDrawPending = false;
     clearTimeout(xDrawTimer);
     stageEl.title = "";
@@ -3899,12 +4148,28 @@ function drawXFrame() {
     const lim = Math.min(XL_CAP, Math.max(12, Math.round(600 * k * k)));
     xctx.fillStyle = "#e8e6e1"; xctx.textAlign = "center";
     xctx.font = LABEL_PX + 'px Georgia,"Iowan Old Style","Times New Roman",serif';
+    // screen-space declutter: one label per ~110×15px bucket (a label claims
+    // its own bucket and both horizontal neighbours). The relaxation compacts
+    // a filtered graph into one clump, and without this the rank pass painted
+    // the settled core as a solid white smear of 250 overlapping strings.
+    // Deterministic: rank order in, first claim wins.
+    const LB_W = 110, LB_H = 15;
+    const cols = Math.max(1, Math.ceil(W / LB_W)), rows = Math.max(1, Math.ceil(H / LB_H));
+    const taken = new Uint8Array(cols * rows);
     const rank = xr.rank;
     for (let q = 0; q < rank.length && labels < lim; q++) {
       const i = rank[q];
       if (xr.stamp[i] !== xr.frame) continue;
-      const sx = X[i] * k + tx, sy = Y[i] * k + ty;
-      xctx.fillText(xr.labs[i], sx, sy + Math.max(R[i] * k, DOT_PX) + 10);
+      const sx = X[i] * k + tx, sy = Y[i] * k + ty + Math.max(R[i] * k, DOT_PX) + 10;
+      const row = Math.floor(sy / LB_H);
+      if (row < 0 || row >= rows) continue;
+      const c0 = Math.max(0, Math.floor((sx - LB_W / 2) / LB_W));
+      const c1 = Math.min(cols - 1, Math.floor((sx + LB_W / 2) / LB_W));
+      let free = true;
+      for (let c = c0; c <= c1; c++) if (taken[row * cols + c]) { free = false; break; }
+      if (!free) continue;
+      for (let c = c0; c <= c1; c++) taken[row * cols + c] = 1;
+      xctx.fillText(xr.labs[i], sx, sy);
       labels++;
     }
   }
@@ -3917,6 +4182,237 @@ function drawXFrame() {
   }
 }
 window.__xdraw = drawXFrame;   // debug hook: force one synchronous frame
+// ---- (E) the relaxation solver ---------------------------------------------
+// A bounded Fruchterman–Reingold pass over the FILTERED subgraph, seeded from
+// the build xy. Repulsion is SHORT-RANGE only (cutoff 3·RELAX_KK through a
+// per-iteration uniform grid) — the long-range kind is exactly what
+// brain/layout.py exists to avoid (see the layout doctrine above fetchExplorerData).
+// Attraction runs along every induced synapse, weight-scaled, so the survivors
+// pull together across the holes the predicate cut. Everything is deterministic:
+// fixed RELAX_ITERS, array-order loops, a golden-angle (index-derived) push for
+// coincident dots instead of random jitter.
+window.__xrelax = null;   // completion telemetry {n, edges, iters, ms, hash, px, py, …}
+function cancelXRelax() {
+  xRelax = null;
+  // the 300ms settle camera refit must not leak into the next view — an
+  // interrupted transition would otherwise keep writing the zoom transform
+  svg.interrupt("relaxfit");
+}
+// FNV-1a over the raw Float64 bytes of the positions — the determinism receipt
+function xPosHash(px, py) {
+  const dv = new DataView(new ArrayBuffer(8));
+  let h = 0x811c9dc5 >>> 0;
+  const mix = v => { dv.setFloat64(0, v);
+    for (let b = 0; b < 8; b++) { h = (h ^ dv.getUint8(b)) >>> 0; h = Math.imul(h, 0x01000193) >>> 0; } };
+  for (let i = 0; i < px.length; i++) { mix(px[i]); mix(py[i]); }
+  return ("0000000" + h.toString(16)).slice(-8);
+}
+function startXRelax(leaves, statusBase) {
+  const n = leaves.length;
+  const px = new Float64Array(n), py = new Float64Array(n);
+  let minx = Infinity, miny = Infinity, maxx = -Infinity, maxy = -Infinity;
+  for (let i = 0; i < n; i++) {
+    px[i] = leaves[i].x; py[i] = leaves[i].y;
+    if (px[i] < minx) minx = px[i]; if (px[i] > maxx) maxx = px[i];
+    if (py[i] < miny) miny = py[i]; if (py[i] > maxy) maxy = py[i];
+  }
+  const spread = Math.max(maxx - minx, maxy - miny, 1);
+  const S = {
+    it: 0, n, px, py, leaves, statusBase, t0: performance.now(),
+    edges: xEdges,   // the induced synapses (ai/bi index `leaves`)
+    dx: new Float64Array(n), dy: new Float64Array(n),
+    // travel budget: enough temperature to cross the seed footprint, cooling
+    // linearly to zero so the layout SETTLES (never oscillates forever)
+    tmax: Math.max(RELAX_KK * 4, spread * 0.05),
+    neighCapHits: 0, chunks: 0, maxChunkMs: 0, workMs: 0,
+  };
+  xRelax = S;
+  requestAnimationFrame(() => xRelaxFrame(S));
+  // the FIRST chunk needs the hidden-tab fallback too (a background deep link
+  // never gets an rAF at all — measured: it sat at "relaxing…", it=0, forever)
+  S.timer = setTimeout(() => xRelaxFrame(S), 120);
+}
+function xRelaxIter(S) {
+  const n = S.n, px = S.px, py = S.py, dx = S.dx, dy = S.dy;
+  const kk = RELAX_KK, rc = RELAX_KK * 3, rc2 = rc * rc;
+  dx.fill(0); dy.fill(0);
+  // short-range repulsion through a fresh uniform grid (CSR, cell ≈ the cutoff;
+  // O(n) to build, and its traversal order is a pure function of the positions
+  // — the pass stays deterministic)
+  let minx = Infinity, miny = Infinity, maxx = -Infinity, maxy = -Infinity;
+  for (let i = 0; i < n; i++) {
+    if (px[i] < minx) minx = px[i]; if (px[i] > maxx) maxx = px[i];
+    if (py[i] < miny) miny = py[i]; if (py[i] > maxy) maxy = py[i];
+  }
+  const gn = Math.max(1, Math.min(256,
+    Math.ceil(Math.max(maxx - minx, maxy - miny, 1) / rc)));
+  const cw = Math.max((maxx - minx) / gn, 1e-6);
+  const ch = Math.max((maxy - miny) / gn, 1e-6);
+  const bxOf = i => Math.min(gn - 1, Math.max(0, Math.floor((px[i] - minx) / cw)));
+  const byOf = i => Math.min(gn - 1, Math.max(0, Math.floor((py[i] - miny) / ch)));
+  const starts = new Uint32Array(gn * gn + 1);
+  for (let i = 0; i < n; i++) starts[byOf(i) * gn + bxOf(i) + 1]++;
+  for (let b = 0; b < gn * gn; b++) starts[b + 1] += starts[b];
+  const items = new Uint32Array(n), cursor = starts.slice(0, gn * gn);
+  for (let i = 0; i < n; i++) items[cursor[byOf(i) * gn + bxOf(i)]++] = i;
+  for (let i = 0; i < n; i++) {
+    const bx = bxOf(i), by = byOf(i);
+    const cy0 = Math.max(0, by - 1), cy1 = Math.min(gn - 1, by + 1);
+    const cx0 = Math.max(0, bx - 1), cx1 = Math.min(gn - 1, bx + 1);
+    let seen = 0;
+    for (let cy = cy0; cy <= cy1 && seen < RELAX_NEIGH_MAX; cy++)
+      for (let cx = cx0; cx <= cx1 && seen < RELAX_NEIGH_MAX; cx++) {
+        const b = cy * gn + cx;
+        for (let s = starts[b], e = starts[b + 1];
+             s < e && seen < RELAX_NEIGH_MAX; s++) {
+          const j = items[s];
+          if (j === i) continue;
+          let ddx = px[i] - px[j], ddy = py[i] - py[j];
+          const d2 = ddx * ddx + ddy * ddy;
+          if (d2 >= rc2) continue;
+          seen++;
+          let d = Math.sqrt(d2);
+          if (d < 1e-6) {   // coincident: deterministic per-index golden-angle push
+            const a = i * 2.39996322972865332;
+            ddx = Math.cos(a); ddy = Math.sin(a); d = 1;
+          }
+          const f = (kk * kk) / Math.max(d, 0.5) * (1 - d / rc);
+          dx[i] += (ddx / d) * f; dy[i] += (ddy / d) * f;
+        }
+      }
+    if (seen >= RELAX_NEIGH_MAX) S.neighCapHits++;
+  }
+  // attraction along every induced synapse (heavier bonds pull a little harder)
+  for (const e of S.edges) {
+    const ai = e.ai, bi = e.bi;
+    const ddx = px[bi] - px[ai], ddy = py[bi] - py[ai];
+    const d = Math.sqrt(ddx * ddx + ddy * ddy);
+    if (d < 1e-6) continue;
+    // FR attraction d²/kk along the unit vector = delta · (d/kk), weight-scaled
+    const m = (d / kk) * (1 + 0.25 * Math.log2(1 + Math.min(e.w || 1, 8)));
+    dx[ai] += ddx * m; dy[ai] += ddy * m;
+    dx[bi] -= ddx * m; dy[bi] -= ddy * m;
+  }
+  // apply, per-node displacement capped by the cooling temperature
+  const temp = S.tmax * (1 - S.it / RELAX_ITERS);
+  for (let i = 0; i < n; i++) {
+    const len = Math.sqrt(dx[i] * dx[i] + dy[i] * dy[i]);
+    if (len < 1e-9) continue;
+    const s = Math.min(len, temp) / len;
+    px[i] += dx[i] * s; py[i] += dy[i] * s;
+  }
+}
+// positions → leaves + edge endpoints + a refreshed render state, so culling,
+// labels, the edge tiers and every hit test track the moved dots mid-animation
+// (never a stale grid under a live pointer)
+function xRelaxSync(S) {
+  for (let i = 0; i < S.n; i++) { S.leaves[i].x = S.px[i]; S.leaves[i].y = S.py[i]; }
+  for (const e of S.edges) {
+    e.ax = S.px[e.ai]; e.ay = S.py[e.ai];
+    e.bx = S.px[e.bi]; e.by = S.py[e.bi];
+  }
+  xRefreshGeom(S);
+}
+// geometry-only refresh: during a relax only POSITIONS move — labels, radii,
+// flags, rank and the tier allocations are all invariant, so refill X/Y, the
+// CSR grid and the tier endpoints IN PLACE instead of rebuilding the whole
+// render state per chunk (measured: buildXState-per-chunk spent ~3ms of every
+// ~7ms chunk re-deriving invariants, and reallocating typed arrays each frame)
+function xRefreshGeom(S) {
+  if (!xr || xr.n !== S.n) { buildXState(S.leaves); return; }   // defensive: scope changed
+  const n = S.n, X = xr.X, Y = xr.Y;
+  for (let i = 0; i < n; i++) { X[i] = S.px[i]; Y[i] = S.py[i]; }
+  let minx = Infinity, miny = Infinity, maxx = -Infinity, maxy = -Infinity;
+  for (let i = 0; i < n; i++) {
+    if (X[i] < minx) minx = X[i]; if (X[i] > maxx) maxx = X[i];
+    if (Y[i] < miny) miny = Y[i]; if (Y[i] > maxy) maxy = Y[i];
+  }
+  if (!(minx <= maxx)) { minx = miny = 0; maxx = maxy = 1; }
+  const g = xr.grid, gn = g.gn;
+  g.minx = minx; g.miny = miny;
+  g.cw = Math.max((maxx - minx) / gn, 1e-6);
+  g.ch = Math.max((maxy - miny) / gn, 1e-6);
+  const bxOf = i => Math.min(gn - 1, Math.max(0, Math.floor((X[i] - g.minx) / g.cw)));
+  const byOf = i => Math.min(gn - 1, Math.max(0, Math.floor((Y[i] - g.miny) / g.ch)));
+  g.starts.fill(0);
+  for (let i = 0; i < n; i++) g.starts[byOf(i) * gn + bxOf(i) + 1]++;
+  for (let b = 0; b < gn * gn; b++) g.starts[b + 1] += g.starts[b];
+  const cursor = g.starts.slice(0, gn * gn);
+  for (let i = 0; i < n; i++) g.items[cursor[byOf(i) * gn + bxOf(i)]++] = i;
+  const tierOf = w => w >= 8 ? 3 : w >= 4 ? 2 : w >= 2 ? 1 : 0;   // == buildXState's
+  for (const t of xr.tiers) t.fill = 0;
+  for (const e of xEdges) {
+    const t = xr.tiers[tierOf(e.w)], j = t.fill++;
+    t.ax[j] = e.ax; t.ay[j] = e.ay; t.bx[j] = e.bx; t.by[j] = e.by;
+  }
+}
+function xRelaxFrame(S) {
+  // the solver dies silently when superseded: a newer render pass called
+  // cancelXRelax / started its own solve, or the reader left the explorer
+  if (xRelax !== S || !layout || !layout.explorer) return;
+  clearTimeout(S.timer);   // whichever driver fired, the other stands down
+  const t0 = performance.now();
+  // the FIRST chunk runs a single iteration: the solver's code is cold (JIT +
+  // the render pass's own GC debris) and a full chunk measured 105ms on boot —
+  // one warm-up iteration bounds that window. Chunking never changes the math.
+  // adaptive: after a chunk overshoots the budget (cold JIT / GC), halve the
+  // per-frame iterations so the 10ms budget is a bound in practice, not advice
+  const cap = S.chunks === 0 ? 1
+    : (S.maxChunkMs || 0) > RELAX_CHUNK_MS * 1.6 ? Math.max(2, RELAX_ITERS_PER_FRAME >> 1)
+    : RELAX_ITERS_PER_FRAME;
+  let ran = 0;
+  while (S.it < RELAX_ITERS && ran < cap &&
+         performance.now() - t0 < RELAX_CHUNK_MS) {
+    xRelaxIter(S);
+    S.it++; ran++;
+  }
+  xRelaxSync(S);
+  const ms = performance.now() - t0;
+  S.chunks++; S.workMs += ms; if (ms > S.maxChunkMs) S.maxChunkMs = ms;
+  scheduleXDraw();
+  if (S.it < RELAX_ITERS) {
+    requestAnimationFrame(() => xRelaxFrame(S));
+    // rAF pauses in hidden tabs (scheduleXDraw's own trap): without a fallback
+    // a background /brain deep link would sit at "relaxing…" until focused.
+    // The slow timer keeps the solve finishing unwatched; when the tab is
+    // visible the rAF always fires first and clears it. Either driver runs the
+    // SAME iterations in the same order — determinism is untouched.
+    S.timer = setTimeout(() => xRelaxFrame(S), 120);
+    return;
+  }
+  // settled — publish the determinism receipt + say what happened, honestly.
+  // wallMs counts idle time too (a background tab throttles both drivers to
+  // ~1s ticks — measured 142s of wall for 88ms of work), so the reader-facing
+  // line reports nothing time-based, only what the layout now IS.
+  window.__xrelax = {n: S.n, edges: S.edges.length, iters: S.it,
+    wallMs: performance.now() - S.t0, workMs: S.workMs,
+    chunks: S.chunks, maxChunkMs: S.maxChunkMs, neighCapHits: S.neighCapHits,
+    hash: xPosHash(S.px, S.py), px: S.px.slice(), py: S.py.slice()};
+  xRelax = null;
+  statusEl.textContent = S.statusBase +
+    `relaxed layout — deterministic (${RELAX_ITERS} iterations)`;
+  // the pull-in contracts the graph, so the camera fitted to the SEED extent
+  // now frames mostly void (measured: the settled 791-cell subgraph drew as a
+  // ~60px blob in a corner of a 990px stage — the dot-in-a-void failure class
+  // again, moved into the camera). Refit to the SETTLED mass — unless the
+  // reader panned/zoomed during the relax: their view is theirs, never yanked.
+  if (!S.userMoved) {
+    const t = explorerCameraTransform(S.leaves);
+    if (t) {
+      const settleT = performance.now(), layAtSettle = layout;
+      svg.transition("relaxfit").duration(300).ease(d3.easeCubicInOut)
+        .call(zoomBehav.transform, t);
+      // d3 transitions pause in background tabs (fadeIn's own trap) — snap to
+      // the exact final camera once the window passed. Guarded three ways: the
+      // reader gestured (their view), a newer solve started, or the scene was
+      // re-rendered (layout identity) — in each case this camera is stale.
+      setTimeout(() => {
+        if (layout === layAtSettle && !xRelax && xLastGestureT < settleT)
+          svg.interrupt("relaxfit").call(zoomBehav.transform, t);
+      }, 700);
+    }
+  }
+}
 // distance from p to segment ab, squared
 function segDist2(px, py, ax, ay, bx, by) {
   const dx = bx - ax, dy = by - ay;
@@ -4001,6 +4497,19 @@ async function explorerFocusFor(rawId) {
 // reacts to the data instead of to a constant.
 const FIT_DROP = 0.20;    // a bin below this share of the peak = the core has ended
 const FIT_FLOOR = 0.85;   // always frame at least this fraction of the cells
+// the fit-to-mass camera transform for a set of leaves (render + relax-settle)
+function explorerCameraTransform(leaves) {
+  if (!leaves.length) return null;
+  const W = stageEl.clientWidth || 800, H = stageEl.clientHeight || 600;
+  const mid = a => a.length ? a.slice().sort((p, q) => p - q)[a.length >> 1] : 0;
+  const cx = mid(leaves.map(l => l.x)), cy = mid(leaves.map(l => l.y));
+  const rad = leaves.map(l => Math.hypot(l.x - cx, l.y - cy)).sort((a, b) => a - b);
+  const rFit = Math.max(fitRadius(rad), 1);
+  const pad = leaves[0] ? leaves[0].r * 2 : 0;
+  const bw = (rFit + pad) * 2, bh = bw;
+  const k = Math.max(0.02, Math.min(2, Math.min((W - 70) / bw, (H - 70) / bh)));
+  return d3.zoomIdentity.translate(W / 2 - k * cx, H / 2 - k * cy).scale(k);
+}
 const FIT_CAP = 0.99;     // never let a single outlier set the extent
 function fitRadius(rad) {
   const n = rad.length;
@@ -4018,7 +4527,11 @@ function fitRadius(rad) {
 }
 async function renderExplorer(anim) {
   const seq = ++renderSeq;
+  cancelXRelax();   // a superseded solve must not keep mutating the old scene
   await ensureTree();
+  // the explorer is a view the library filter reshapes — the panel must offer
+  // the Libraries control even on a cold deep link with nothing selected
+  if (!selectedId) renderPanel(focusId || ROOTS_ID);
   const j = await fetchExplorerData();
   if (seq !== renderSeq) return;
   if (!j || !(j.nodes || []).length) {
@@ -4037,10 +4550,15 @@ async function renderExplorer(anim) {
   // in-scope atom. At the top level everything is in scope.
   const scope = isPathId(focusId) ? focusId : null;
   const inSub = pp => pp === scope || (pp || "").startsWith(scope + "/");
-  const maskOk = i => ((nodes[i].f || 0) & filterMask) !== 0;
+  // (V) the SHARED visibility predicate, routed behind this one boundary: the
+  // explorer's keep[] asks cellVisible (libraries + facets) — never a local
+  // mask re-implementation. With no filters active it keeps everything, so the
+  // restore path re-reads the build xy verbatim, as before.
+  const visRow = i => cellVisible(nodes[i].id, nodes[i].f || 0);
   const keep = new Uint8Array(totalN);
+  let universeN = totalN;   // the scope's honest universe, for "N of M" counts
   if (!scope) {
-    for (let i = 0; i < totalN; i++) keep[i] = (!filterMask || maskOk(i)) ? 1 : 0;
+    for (let i = 0; i < totalN; i++) keep[i] = visRow(i) ? 1 : 0;
   } else {
     const core = new Uint8Array(totalN);
     for (let i = 0; i < totalN; i++) if (nodes[i].p && inSub(nodes[i].p)) core[i] = 1;
@@ -4049,8 +4567,11 @@ async function renderExplorer(anim) {
       if (core[i]) touch[k2] = 1;
       if (core[k2]) touch[i] = 1;
     }
-    for (let i = 0; i < totalN; i++)
-      keep[i] = (touch[i] && (!filterMask || maskOk(i))) ? 1 : 0;
+    universeN = 0;
+    for (let i = 0; i < totalN; i++) {
+      if (touch[i]) universeN++;
+      keep[i] = (touch[i] && visRow(i)) ? 1 : 0;
+    }
   }
   const leaves = [];
   const idxOf = new Uint32Array(totalN);
@@ -4068,7 +4589,8 @@ async function renderExplorer(anim) {
   for (const [i, k2, w] of j.edges) {
     if (!keep[i] || !keep[k2]) continue;
     const A = leaves[idxOf[i]], B = leaves[idxOf[k2]];
-    xEdges.push({a: A.data.id, b: B.data.id, w, ax: A.x, ay: A.y, bx: B.x, by: B.y});
+    xEdges.push({a: A.data.id, b: B.data.id, w, ax: A.x, ay: A.y, bx: B.x, by: B.y,
+                 ai: idxOf[i], bi: idxOf[k2]});   // leaf indices, for the solver
   }
   layout = {items: new Map(leaves.map(l => [l.data.id, l])), leaves, explorer: true};
   edgeStore = [];
@@ -4105,22 +4627,20 @@ async function renderExplorer(anim) {
   // real gap — 89.8% of cells at r<=1,500, then a near-empty shell, then the band —
   // so walk outward from the densest annulus and cut where the density COLLAPSES.
   // That adapts to each scope rather than hard-coding one scope's minority.
-  const W = stageEl.clientWidth || 800, H = stageEl.clientHeight || 600;
-  if (leaves.length) {
-    const mid = a => a.length ? a.slice().sort((p, q) => p - q)[a.length >> 1] : 0;
-    const cx = mid(leaves.map(l => l.x)), cy = mid(leaves.map(l => l.y));
-    const rad = leaves.map(l => Math.hypot(l.x - cx, l.y - cy)).sort((a, b) => a - b);
-    const rFit = Math.max(fitRadius(rad), 1);
-    const pad = leaves[0] ? leaves[0].r * 2 : 0;
-    const bw = (rFit + pad) * 2, bh = bw;
-    const k = Math.max(0.02, Math.min(2, Math.min((W - 70) / bw, (H - 70) / bh)));
-    const t = d3.zoomIdentity.translate(W / 2 - k * cx, H / 2 - k * cy).scale(k);
+  const t = explorerCameraTransform(leaves);
+  if (t) {
     svg.call(zoomBehav.transform, t);
-    applyExplorerScale(k);
+    applyExplorerScale(t.k);
   }
   const scopeLabel = scope ? scope.slice(5) : "all libraries";
-  updateFilterStat({active: !!filterMask, shown: leaves.length, total: totalN,
-    text: filterMask ? `${leaves.length.toLocaleString()} of ${totalN.toLocaleString()} cells match` : ""});
+  const filtered = filtersActive();
+  // (E) a FILTERED subgraph small enough pulls into its own shape; everything
+  // else keeps the build xy verbatim — and the status line says WHICH, always
+  // (no-silent-filter rule: an above-cap skip is announced, never implied)
+  const relaxing = filtered && leaves.length > 1 && leaves.length <= RELAX_CAP;
+  updateFilterStat({active: filtered, shown: leaves.length, total: universeN,
+    text: filtered ? `${leaves.length.toLocaleString()} of ${universeN.toLocaleString()} cells match` : ""});
+  updateHiddenChip(universeN - leaves.length);
   crumbEl.innerHTML = `<a data-nav="${ROOTS_ID}">all libraries</a>
     <span class="sep">/</span> <b>${esc(scopeLabel)} · explorer</b>`;
   crumbEl.querySelectorAll("[data-nav]").forEach(a =>
@@ -4128,10 +4648,18 @@ async function renderExplorer(anim) {
       setExplorer(false); focusId = ROOTS_ID; selectedId = null;
       setHash(""); renderFocus(true); renderPanel(ROOTS_ID);
     }));
-  statusEl.textContent = `explorer: ${leaves.length.toLocaleString()} cells · ${
-    xEdges.length.toLocaleString()} synapses · ${scopeLabel} · build-time layout`;
+  const statusBase = `explorer: ${leaves.length.toLocaleString()}${filtered
+      ? ` of ${universeN.toLocaleString()}` : ""} cells${filtered ? " shown" : ""} · ${
+    xEdges.length.toLocaleString()} synapses · ${scopeLabel} · `;
+  statusEl.textContent = statusBase + (relaxing ? "relaxing…"
+    : filtered && leaves.length > RELAX_CAP
+      ? `build-time layout (relaxation under ${RELAX_CAP.toLocaleString()} nodes)`
+      : "build-time layout");
   const el = $("#structstat");
-  if (el) el.textContent = "no client simulation — positions are solved at build time";
+  if (el) el.textContent = relaxing
+    ? `deterministic relaxation — seeded from the build layout, ${RELAX_ITERS} fixed iterations`
+    : "no client simulation — positions are solved at build time";
+  if (relaxing) startXRelax(leaves, statusBase);
   // the canvas fade-in mirrors fadeIn(), background-tab guard included
   if (anim) {
     xcv.style.opacity = "0";
@@ -4143,7 +4671,11 @@ zoomBehav.on("zoom.xplabels", ev => {
   // dots, strokes AND labels are all sized in screen space by the canvas frame;
   // this handler only timestamps the input and schedules ONE coalesced draw
   if (layout && layout.explorer) {
-    if (ev.sourceEvent) xInputT = performance.now();
+    if (ev.sourceEvent) {
+      xInputT = performance.now();
+      xLastGestureT = xInputT;
+      if (xRelax) xRelax.userMoved = true;   // the settle-refit stands down
+    }
     applyExplorerScale(ev.transform.k);
   }
 });
@@ -4163,14 +4695,45 @@ function syncChips() {
   document.querySelectorAll(".fchip[data-fbit]").forEach(b =>
     b.classList.toggle("on", (filterMask & Number(b.dataset.fbit)) !== 0));
 }
+// ---- the ONE filters-changed path (reshape contract V) ----------------------
+// EVERY filter mutation — a facet chip, a library checkbox — funnels here:
+// sync the controls + persistence, then re-render the CURRENT view in place.
+// No reload, no zoom reset; the bubbles repack with a transition, the frontier
+// re-shells with its dot animation, the explorer rebuilds its kept subgraph,
+// and the visible panel re-reads its counts under the new predicate.
+async function filtersChanged() {
+  syncChips();
+  syncLibCheckboxes();
+  persistLibs(false);   // storage only — setHash below writes the URL state once
+  setHash(focusId === ROOTS_ID ? "" : focusId || "");
+  if (explorerOn) {
+    xInputT = performance.now();   // (P) filter-toggle → first-frame telemetry (i2f)
+    await renderExplorer(false);
+  } else if (layout && layout.frontier && isFrontierViewId(focusId)) {
+    await reScoreFrontier();   // in place: membership + radii; surviving dots glide
+  } else if (layout && layout.ego) {
+    await renderFocus(false, {keepZoom: true});
+  } else {
+    await renderFocus(false, {keepZoom: true, reshape: true});
+  }
+  if (lastPanelId && lastPanelId !== "__sources__") {
+    const st = panelEl.scrollTop;
+    await renderPanel(lastPanelId);
+    panelEl.scrollTop = st;
+  }
+}
 document.querySelectorAll(".fchip[data-fbit]").forEach(b =>
   b.addEventListener("click", () => {
     filterMask ^= Number(b.dataset.fbit);
-    syncChips();
-    setHash(focusId === ROOTS_ID ? "" : focusId || "");
-    if (explorerOn) renderExplorer(false);
-    else renderFocus(false);
+    filtersChanged();
   }));
+// '+N hidden' → the Libraries panel (the restore surface the contract names)
+$("#hiddenchip").addEventListener("click", () => {
+  lastPanelId = ROOTS_ID;
+  rootsPanel();
+  const sec = panelEl.querySelector("#libsec");
+  if (sec) sec.scrollIntoView({block: "start"});
+});
 $("#explorerbtn").addEventListener("click", () => {
   setExplorer(!explorerOn);
   setHash(focusId === ROOTS_ID ? "" : focusId || "");
