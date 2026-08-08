@@ -1,26 +1,27 @@
 [
  {
-  "qid": "Q91050456",
-  "file": "Mathlib/Topology/Connected/Basic.lean",
+  "qid": "Q24743362",
+  "file": "Mathlib/Combinatorics/SimpleGraph/Subgraph.lean",
   "verdicts": {
+   "SnirBroshi": "approve",
    "Deicyde": "approve",
    "faenuccio": "reject"
   },
-  "reason": "objection (reject/revise)",
+  "reason": "maintainer rejected/revised",
   "notes": [
    {
     "login": "faenuccio",
     "status": "reject",
-    "text": "Yes, please add the `ConnectedComponents` (not sure about the `connectedComponentIn`, which is defined in terms of this one)."
+    "text": "Can we add both following @SnirBroshi's suggestion?"
    }
   ],
-  "decl": "connectedComponent",
+  "decl": "SimpleGraph.Subgraph.induce",
   "triage": {
    "decision": "requeue",
-   "reason": "Reviewer says the correct decl is `ConnectedComponents` (the quotient type), not `connectedComponent` (the set-valued component of a point).",
-   "suggested_decl": "ConnectedComponents",
+   "reason": "Mathlib's own docstrings cross-reference SimpleGraph.induce (Maps.lean) and SimpleGraph.Subgraph.induce (Subgraph.lean) as the two 'induced subgraph' definitions, confirming faenuccio's ask to tag both rather than just the Subgraph one.",
+   "suggested_decl": "SimpleGraph.induce",
    "suggested_qid": "",
-   "fix_hint": "Retag Q91050456 on `ConnectedComponents` in Mathlib/Topology/Connected/Basic.lean instead of `connectedComponent`.",
+   "fix_hint": "Tag both SimpleGraph.induce and SimpleGraph.Subgraph.induce with Q24743362 (induced subgraph), per SnirBroshi's suggestion that faenuccio endorsed.",
    "decl_exists": true
   }
  },
