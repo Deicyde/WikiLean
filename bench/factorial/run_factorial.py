@@ -232,6 +232,10 @@ def parse_stream(stdout: str) -> dict:
     trace: list[dict] = []
     by_id: dict[str, dict] = {}
     assistant_texts: list[str] = []
+    # The --max-turns cap unit is assistant MESSAGES (dry-run finding: capped
+    # rows have exactly 30 distinct assistant message ids; the result event's
+    # num_turns counts tool-result user messages + 1 — a different unit).
+    assistant_msg_ids: set[str] = set()
     for line in stdout.splitlines():
         line = line.strip()
         if not line:
@@ -246,6 +250,9 @@ def parse_stream(stdout: str) -> dict:
                         for s in ev.get("mcp_servers") or []]
             init_tools = sorted(ev.get("tools") or [])
         elif et == "assistant":
+            mid = (ev.get("message") or {}).get("id")
+            if mid:
+                assistant_msg_ids.add(mid)
             for blk in (ev.get("message") or {}).get("content", []) or []:
                 if not isinstance(blk, dict):
                     continue
@@ -284,6 +291,7 @@ def parse_stream(stdout: str) -> dict:
             "api_error_status": api_err, "turns": turns, "cost_usd": cost,
             "tokens_in": tin, "tokens_out": tout, "tool_calls_by_name": tool_calls,
             "tool_trace": trace, "mcp_init": mcp_init, "init_tools": init_tools,
+            "assistant_turns": len(assistant_msg_ids),
             "assistant_text": "\n\n".join(assistant_texts)}
 
 
@@ -372,7 +380,8 @@ def attempt_pair(task: dict, arm: str, resolved_cfg: Path, cond_hash: str,
         f.write(stdout)
     st = parse_stream(stdout)
     row["transcript_stats"] = {
-        "turns": st["turns"], "tool_calls_by_name": st["tool_calls_by_name"],
+        "turns": st["turns"], "assistant_turns": st["assistant_turns"],
+        "tool_calls_by_name": st["tool_calls_by_name"],
         "tokens_in": st["tokens_in"], "tokens_out": st["tokens_out"],
         "cost_usd": st["cost_usd"]}
     row["tool_trace"] = st["tool_trace"]
