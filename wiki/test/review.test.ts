@@ -7,6 +7,7 @@ import {
   parseWikidataTags,
   buildReviewCommentBody,
   cleanLead,
+  collectRemovedQids,
   extractDeclName,
   mathToUnicode,
   htmlLeadToText,
@@ -64,6 +65,90 @@ describe("parseWikidataTags", () => {
       "+def real := 1",
     ].join("\n");
     expect(parseWikidataTags(diff)).toHaveLength(0);
+  });
+
+  it("does not resurrect a tag the PR itself trims (removed-line hunk)", () => {
+    // A settle-trim commit turns the tag's line into a "-" line in the PR's
+    // aggregate diff view of the file; only tags still ADDED are reviewable.
+    const diff = [
+      "+++ b/Mathlib/Topology/Connected/Basic.lean",
+      "@@ -494,4 +494,3 @@",
+      " /-- The connected component of a point. -/",
+      "-@[wikidata Q91050456]",
+      " def connectedComponent (x : α) : Set α :=",
+      "+@[wikidata Q999]",
+    ].join("\n");
+    expect(parseWikidataTags(diff).map((t) => t.qid)).toEqual(["Q999"]);
+  });
+});
+
+describe("collectRemovedQids", () => {
+  // The #41139 shape: crossref per-tag comments exist for every tag the batch
+  // ever carried; the current diff only has the survivors.
+  const crossref = (qid: string, path = "Mathlib/Foo.lean") => ({
+    path,
+    body: `<a href="https://www.wikidata.org/wiki/${qid}">Wikidata ${qid}</a>: <b>x</b> <!-- crossref-bot:${qid} -->`,
+  });
+  const review = (qid: string, path = "Mathlib/Foo.lean") => ({
+    path,
+    body: `**🔴 WikiLean reviewer note (reject)**\n\n> no\n\n<sub><!-- wikilean-review:${qid} --></sub>`,
+  });
+
+  it("flags a crossref-tracked qid that is absent from the diff, with its file", () => {
+    const out = collectRemovedQids(
+      new Set(["Q100"]),
+      [crossref("Q100"), crossref("Q91050456", "Mathlib/Topology/Connected/Basic.lean")],
+    );
+    expect([...out.entries()]).toEqual([["Q91050456", "Mathlib/Topology/Connected/Basic.lean"]]);
+  });
+
+  it("never flags a qid still in the diff", () => {
+    const out = collectRemovedQids(new Set(["Q100", "Q200"]), [crossref("Q100"), review("Q200")]);
+    expect(out.size).toBe(0);
+  });
+
+  it("flags a qid known only from wikilean-review comments", () => {
+    const out = collectRemovedQids(new Set(), [review("Q42", "Mathlib/Bar.lean")]);
+    expect(out.get("Q42")).toBe("Mathlib/Bar.lean");
+  });
+
+  it("includes pasted-review qids (no inline comment) with an unknown file", () => {
+    const out = collectRemovedQids(new Set(["Q1"]), [], ["Q1", "Q77"]);
+    expect([...out.entries()]).toEqual([["Q77", ""]]);
+  });
+
+  it("prefers a comment path over a pathless artifact for the same qid", () => {
+    const out = collectRemovedQids(new Set(), [
+      { path: null, body: "<!-- wikilean-review:Q5 -->" },
+      crossref("Q5", "Mathlib/Baz.lean"),
+    ]);
+    expect(out.get("Q5")).toBe("Mathlib/Baz.lean");
+  });
+
+  it("keeps the LATEST non-empty path (comments arrive oldest-first)", () => {
+    const out = collectRemovedQids(new Set(), [
+      crossref("Q5", "Mathlib/Old/Home.lean"),
+      crossref("Q5", "Mathlib/New/Home.lean"),
+      { path: null, body: "<!-- wikilean-review:Q5 -->" }, // pathless straggler doesn't clobber
+    ]);
+    expect(out.get("Q5")).toBe("Mathlib/New/Home.lean");
+  });
+
+  it("dedupes multiple artifacts for one removed qid", () => {
+    const out = collectRemovedQids(new Set(), [crossref("Q9"), review("Q9"), review("Q9")]);
+    expect(out.size).toBe(1);
+  });
+
+  it("does not confuse prefix qids (Q910 in diff, Q9105 removed)", () => {
+    const out = collectRemovedQids(new Set(["Q910"]), [crossref("Q9105")]);
+    expect([...out.keys()]).toEqual(["Q9105"]);
+  });
+
+  it("ignores comments without tag markers", () => {
+    const out = collectRemovedQids(new Set(), [
+      { path: "a.lean", body: "see https://www.wikidata.org/wiki/Q123 — nice" },
+    ]);
+    expect(out.size).toBe(0);
   });
 });
 

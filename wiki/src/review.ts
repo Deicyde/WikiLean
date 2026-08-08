@@ -6,6 +6,14 @@
 // comments underneath and a decision/notes form. Submitting posts the decision
 // as inline review comments on GitHub.
 //
+// The PR's CURRENT diff is the single source of reviewable tags. A tag that
+// carries review artifacts (crossref/wikilean-review comments, pasted reviews)
+// but no longer has an added line in the diff — trimmed off the branch by a
+// settle — renders as an explicit non-reviewable "removed from this PR" card,
+// and pending decisions on it are never counted, copied, or submitted
+// (PR #41139: a since-trimmed Q91050456 collected a maintainer reject — a
+// wasted review this layer now prevents).
+//
 // This module is DETERMINISTIC end to end — plain fetch/parse/post, no LLM.
 //
 // Increment 1 (this file): read-only — `GET /review` page + `GET /api/review/...`
@@ -272,6 +280,36 @@ async function ghRenderMarkdown(
 
 function keyOf(path: string, line: number): string {
   return `${path}:${line}`;
+}
+
+// ---- removed-tag detection (diff is the sole source of reviewable tags) ----
+//
+// A tag can be trimmed off the PR branch after review starts (settle
+// recycle/cut). Its artifacts stay behind on the PR — the crossref per-tag
+// comment posted at batch open, inline wikilean-review comments, pasted
+// reviews — while its added line leaves the diff. Those tags must not simply
+// vanish from the page (reviewers wonder where their verdict went), and must
+// never be reviewable (PR #41139: a since-trimmed Q91050456 collected a
+// maintainer reject — a wasted review). This cross-checks the on-PR artifacts
+// against the current diff and returns qid → last-known file path ("" when
+// only pasted artifacts exist) for every tag that is discussed but gone.
+export function collectRemovedQids(
+  diffQids: ReadonlySet<string>,
+  comments: Array<{ path?: string | null; body?: string | null }>,
+  pastedQids: Iterable<string> = [],
+): Map<string, string> {
+  const out = new Map<string, string>();
+  for (const c of comments) {
+    for (const m of (c.body ?? "").matchAll(/(?:crossref-bot|wikilean-review):(Q\d+)/g)) {
+      const qid = m[1];
+      if (diffQids.has(qid)) continue;
+      // Comments arrive oldest-first; keep the latest non-empty path so a tag
+      // that moved files between settles shows where it last lived.
+      if (!out.has(qid) || c.path) out.set(qid, c.path ?? (out.get(qid) || ""));
+    }
+  }
+  for (const q of pastedQids) if (!diffQids.has(q) && !out.has(q)) out.set(q, "");
+  return out;
 }
 
 // True for a wikilean-review comment that carries only a status (no note) — the
@@ -728,12 +766,22 @@ async function fetchFileLines(
 
 // ---- the assembled review payload returned to the browser ----
 
+// A tag with review artifacts on the PR but no line in its CURRENT diff —
+// trimmed (recycled/cut) since review started. Rendered non-reviewable.
+export interface RemovedTag {
+  qid: string;
+  file: string; // last-known path from its PR comments; "" if only pasted artifacts
+  comments: ReviewComment[];
+  wd: WdInfo | null;
+}
+
 export interface ReviewPayload {
   repo: string;
   pr: number;
   head_sha: string;
   title: string;
   decls: Array<DeclTag & { comments: ReviewComment[]; source: string; wd: WdInfo | null; decl: string | null }>;
+  removed: RemovedTag[];
 }
 
 async function buildReviewPayload(
@@ -803,6 +851,25 @@ async function buildReviewPayload(
       }),
     );
   }
+  // One ReviewComment per GitHub comment, shared between the per-line index
+  // (live decls) and the removed-tag cards (whose anchors are stale).
+  const rcById = new Map<number, ReviewComment>();
+  const rcOf = (c: GhReviewComment): ReviewComment => {
+    let rc = rcById.get(c.id);
+    if (!rc) {
+      rc = {
+        id: c.id,
+        user: c.user?.login ?? "unknown",
+        body: c.body,
+        bodyHtml: htmlById.get(c.id) ?? null,
+        html_url: c.html_url,
+        created_at: c.created_at,
+        reactionVerdicts: reactionsById.get(c.id) ?? [],
+      };
+      rcById.set(c.id, rc);
+    }
+    return rc;
+  };
   const byLine = new Map<string, ReviewComment[]>();
   for (const c of comments) {
     // Index under every anchor line a comment carries. Multi-line comments (the
@@ -813,15 +880,7 @@ async function buildReviewPayload(
       if (v != null) anchors.add(v);
     }
     if (!anchors.size) continue;
-    const rc: ReviewComment = {
-      id: c.id,
-      user: c.user?.login ?? "unknown",
-      body: c.body,
-      bodyHtml: htmlById.get(c.id) ?? null,
-      html_url: c.html_url,
-      created_at: c.created_at,
-      reactionVerdicts: reactionsById.get(c.id) ?? [],
-    };
+    const rc = rcOf(c);
     for (const ln of anchors) {
       const k = keyOf(c.path, ln);
       if (!byLine.has(k)) byLine.set(k, []);
@@ -859,6 +918,9 @@ async function buildReviewPayload(
     }
   }
 
+  // Cross-check: qids discussed on the PR but absent from its current diff.
+  const removedFiles = collectRemovedQids(new Set(tags.map((t) => t.qid)), comments, pastedByQid.keys());
+
   // Page mode (renderMarkdown): also fetch the full decl body per tag and the
   // Wikidata description + Wikipedia lead per qid. Skipped for the POST path.
   const sourceByQid = new Map<string, string>();
@@ -880,13 +942,27 @@ async function buildReviewPayload(
       const name = lines ? extractDeclName(lines, t.qid) : null;
       if (name) declByQid.set(t.qid, name);
     }
-    // Wikidata + Wikipedia leads.
-    const qids = [...new Set(tags.map((t) => t.qid))];
+    // Wikidata + Wikipedia leads (removed tags included — their cards still
+    // show the concept label/description).
+    const qids = [...new Set([...tags.map((t) => t.qid), ...removedFiles.keys()])];
     wdByQid = await fetchWikidata(qids, env);
     const titles = [...wdByQid.values()].map((w) => w.enwikiTitle).filter((x): x is string => !!x);
     const leads = await fetchLeads(titles, env);
     for (const [, w] of wdByQid) if (w.enwikiTitle) w.lead = leads.get(w.enwikiTitle) ?? null;
   }
+
+  // Removed tags keep their full comment history (matched by the per-qid
+  // markers, since their line anchors are stale) so the reviewer can see what
+  // happened — but the client renders them non-reviewable.
+  const removed: RemovedTag[] = [...removedFiles].map(([qid, file]) => {
+    const marker = new RegExp(`(?:crossref-bot|wikilean-review):${qid}\\b`);
+    return {
+      qid,
+      file,
+      comments: [...comments.filter((c) => marker.test(c.body || "")).map(rcOf), ...(pastedByQid.get(qid) ?? [])],
+      wd: wdByQid.get(qid) ?? null,
+    };
+  });
 
   return {
     repo: full,
@@ -900,6 +976,7 @@ async function buildReviewPayload(
       wd: wdByQid.get(t.qid) ?? null,
       decl: declByQid.get(t.qid) ?? null,
     })),
+    removed,
   };
 }
 
@@ -1454,6 +1531,14 @@ pre.lean .n{color:#1f1f1f}
 #bar #submit-gh{background:#fff;color:var(--accent)}
 #bar button:disabled{opacity:.5;cursor:default}
 .note{font-size:.8rem;color:var(--muted)}
+.removed-head h2{font-size:1.05rem;margin:1.8rem 0 .15rem}
+.removed-head .note{margin:0 0 .2rem}
+.entry.removed{opacity:.85;background:#f8f5ee}
+.entry.removed header{background:#efe9db}
+.removed-badge{font-size:.74rem;font-weight:600;color:#8a6d1f;background:#f7eed6;border:1px solid #e0d3a8;border-radius:12px;padding:.08rem .55rem;margin-left:auto}
+.entry.removed .form{background:#f4f0e6}
+.ghost-pending{font-size:.85rem;color:#7a3d2a;background:#fbf0e8;border:1px solid #ecd9c8;border-radius:6px;padding:.4rem .6rem;margin-top:.4rem}
+.ghost-pending button{font:inherit;font-size:.8rem;margin-left:.4rem;padding:.15rem .55rem;border:1px solid var(--rule);background:#fff;color:var(--muted);border-radius:6px;cursor:pointer}
 </style></head>
 <body><div class="wrap">
 <h1>WikiLean · <code>@[wikidata]</code> review</h1>
@@ -1510,6 +1595,32 @@ let STATE = {};   // qid -> {status, notes}
 let KEY = "";
 let CUR = null;   // {owner, repo, pr} of the loaded PR
 let DATA = null;  // last loaded payload (for re-render on filter change)
+let DATA_AT = 0;  // when DATA was FETCHED (not re-rendered) — Copy/Submit re-pull a stale tab
+
+// The PR can be trimmed while this tab sits open (settle recycle/cut). Before
+// assembling a review, re-pull the tag list so decisions on since-removed tags
+// are dropped instead of posted. Pinned to CUR — the PR that's actually loaded
+// — never the form inputs (the reviewer may have typed the next PR number
+// without clicking Load; fetching by the form here would silently retarget the
+// review). Best-effort freshness: the server caches the payload 60s, so the
+// effective staleness bound is ~2min; a failed re-fetch proceeds on old DATA
+// (the server's own not-in-this-PR skip still backstops the Submit path).
+async function ensureFresh(){
+  if(!CUR || Date.now() - DATA_AT < 60000) return;
+  await fetchAndRender(CUR.owner, CUR.repo, CUR.pr);
+}
+
+async function fetchAndRender(owner, repo, pr){
+  try {
+    const r = await fetch("/api/review/" + owner + "/" + repo + "/" + pr);
+    const data = await r.json();
+    if(!data.ok){ $("#status").textContent = "Error: " + data.error; return false; }
+    DATA_AT = Date.now();   // fetch time — a filter re-render must NOT refresh this
+    render(data);
+    refreshConnected();   // re-check canPost now that the PR's org is known
+    return true;
+  } catch(e){ $("#status").textContent = "Fetch failed: " + e; return false; }
+}
 
 function storageKey(repo, pr){ return "wl-review:" + repo + "#" + pr; }
 function load(){ try { return JSON.parse(localStorage.getItem(KEY) || "{}"); } catch(e){ return {}; } }
@@ -1524,13 +1635,7 @@ async function loadPR(){
   CUR = { owner: m[1], repo: m[2], pr: pr };
   $("#status").textContent = "Loading " + repo + " #" + pr + "…";
   $("#entries").innerHTML = "";
-  try {
-    const r = await fetch("/api/review/" + m[1] + "/" + m[2] + "/" + pr);
-    const data = await r.json();
-    if(!data.ok){ $("#status").textContent = "Error: " + data.error; return; }
-    render(data);
-    refreshConnected();   // re-check canPost now that the PR's org is known
-  } catch(e){ $("#status").textContent = "Fetch failed: " + e; }
+  await fetchAndRender(m[1], m[2], pr);
 }
 
 // Minimal Lean 4 highlighter → spans with the Mathlib-palette classes.
@@ -1630,8 +1735,33 @@ function declStatus(d){
   return best ? {status:best.status, by:best.by} : {status:"", by:""};
 }
 
+// One row per reviewer: written verdicts AND 👍/👎 reactions, newest first.
+function reviewsBlockHtml(d){
+  const verds = declVerdicts(d);
+  const verdLogins = Object.keys(verds).sort((a,b) => (verds[b].at||"").localeCompare(verds[a].at||""));
+  if(!verdLogins.length) return '<div class="cur"><span class="cur-label">Reviews</span> ' + statusBadge("") + '</div>';
+  return '<div class="cur"><span class="cur-label">Reviews</span>' +
+    verdLogins.map(login => { const x = verds[login];
+      return '<div class="rev-item">' + statusBadge(x.status) +
+        ' <span class="by">@' + esc(login) + '</span>' +
+        (x.reaction ? ' <span class="by" title="via 👍/👎 reaction">(reacted)</span>' : '') +
+        (x.note ? '<div class="rev-note md">' + x.note + '</div>' : '') + '</div>';
+    }).join("") + '</div>';
+}
+
 function render(data){
   DATA = data;
+  // Ghost cards = server-reported removed tags ∪ pending localStorage decisions
+  // for qids in neither list (a tag trimmed from a PR with no crossref/review
+  // artifacts) — a typed decision must never vanish without being surfaced.
+  const removed = (data.removed || []).slice();
+  const known = new Set(data.decls.map(d => d.qid));
+  removed.forEach(d => known.add(d.qid));
+  Object.keys(STATE).forEach(qid => {
+    const s = STATE[qid] || {};
+    if(!known.has(qid) && (s.changeStatus || (s.note && s.note.trim())))
+      removed.push({ qid, file: "", comments: [], wd: null });
+  });
   // Per-decl existing status (latest verdict — comment OR reaction).
   const cur = data.decls.map(declStatus);
   // Distribution across ALL decls.
@@ -1641,7 +1771,8 @@ function render(data){
     " · ⚠️ "+dist.flag+" · ◯ "+dist.none;
   $("#controls").hidden = false;
   $("#status").innerHTML = "<b>" + esc(data.title) + "</b> — " + data.decls.length +
-    " tagged declarations · commit <code>" + data.head_sha.slice(0,10) + "</code>" +
+    " tagged declarations" + (removed.length ? " · " + removed.length + " removed" : "") +
+    " · commit <code>" + data.head_sha.slice(0,10) + "</code>" +
     ' · <a href="' + prUrl() + '" target="_blank" rel="noopener">' + esc(data.repo) + ' #' + data.pr + ' ↗</a>';
 
   const filter = $("#filter").value;
@@ -1661,20 +1792,7 @@ function render(data){
       !/wikilean-review:Q/.test(c.body||"") && !/crossref-bot:Q/.test(c.body||""));
     const otherHtml = otherCmts.map(commentHtml).filter(Boolean).join("");
     // Reviews block: one row per reviewer, written verdicts AND 👍/👎 reactions, newest first.
-    const verds = declVerdicts(d);
-    const verdLogins = Object.keys(verds).sort((a,b) => (verds[b].at||"").localeCompare(verds[a].at||""));
-    let reviewBlock;
-    if(verdLogins.length){
-      reviewBlock = '<div class="cur"><span class="cur-label">Reviews</span>' +
-        verdLogins.map(login => { const x = verds[login];
-          return '<div class="rev-item">' + statusBadge(x.status) +
-            ' <span class="by">@' + esc(login) + '</span>' +
-            (x.reaction ? ' <span class="by" title="via 👍/👎 reaction">(reacted)</span>' : '') +
-            (x.note ? '<div class="rev-note md">' + x.note + '</div>' : '') + '</div>';
-        }).join("") + '</div>';
-    } else {
-      reviewBlock = '<div class="cur"><span class="cur-label">Reviews</span> ' + statusBadge("") + '</div>';
-    }
+    const reviewBlock = reviewsBlockHtml(d);
     const wd = d.wd || {};
     const wikiHead = wd.enwikiUrl
       ? '<p class="wd-head"><a href="' + wd.enwikiUrl + '" target="_blank">' + esc(wd.enwikiTitle || wd.label || d.qid) + '</a></p>'
@@ -1728,6 +1846,51 @@ function render(data){
       '</div>';
     root.appendChild(el);
   });
+  // Removed tags: reviewed/bot-tracked qids with no line in the PR's CURRENT
+  // diff (trimmed after review started). Shown so they don't silently vanish —
+  // but explicitly non-reviewable (no form), and any stale pending decision a
+  // reviewer typed before the trim is surfaced instead of quietly kept.
+  if(removed.length){
+    const head = document.createElement("div");
+    head.className = "removed-head";
+    head.innerHTML = '<h2>Removed from this PR (' + removed.length + ')</h2>' +
+      '<p class="note">These tags were reviewed or tracked on this PR but are no longer in its diff (trimmed to a later revision) — they can’t be reviewed here.</p>';
+    root.appendChild(head);
+    removed.forEach(d => {
+      const el = document.createElement("article");
+      el.className = "entry removed";
+      const wd = d.wd || {};
+      const wikiHead = wd.enwikiUrl
+        ? '<p class="wd-head"><a href="' + wd.enwikiUrl + '" target="_blank">' + esc(wd.enwikiTitle || wd.label || d.qid) + '</a></p>'
+        : (wd.label ? '<p class="wd-head">' + esc(wd.label) + '</p>' : '');
+      const descHtml = wd.description ? '<p class="wd-desc">' + esc(wd.description) + '</p>' : '';
+      const otherCmts = (d.comments||[]).filter(c =>
+        !/wikilean-review:Q/.test(c.body||"") && !/crossref-bot:Q/.test(c.body||""));
+      const otherHtml = otherCmts.map(commentHtml).filter(Boolean).join("");
+      const st = STATE[d.qid] || {};
+      const stale = !!(st.changeStatus || (st.note && st.note.trim()));
+      const pendWarn = stale
+        ? '<div class="ghost-pending">⚠️ Your pending ' +
+          (st.changeStatus ? '“' + esc(st.changeStatus) + '”' + (st.note && st.note.trim() ? ' + note' : '') : 'note') +
+          ' won’t be posted — this tag is no longer in the PR.' +
+          '<button class="ghost-discard" data-qid="' + d.qid + '">Discard it</button></div>'
+        : '';
+      el.innerHTML =
+        '<header><span class="qid"><a href="https://www.wikidata.org/wiki/' + d.qid +
+          '" target="_blank">' + d.qid + '</a></span>' +
+          (d.file ? '<span class="loc">' + esc(d.file) + '</span>' : '') +
+          '<span class="removed-badge" title="No @[wikidata ' + d.qid + '] line in the PR’s current diff">removed from this PR — not reviewable</span></header>' +
+        ((wikiHead || descHtml) ? '<div class="wiki-pane">' + wikiHead + descHtml + '</div>' : '') +
+        (otherHtml ? '<div class="comments"><div class="comments-label">Other comments</div>' + otherHtml + '</div>' : '') +
+        '<div class="form">' + reviewsBlockHtml(d) + pendWarn + '</div>';
+      root.appendChild(el);
+    });
+    root.querySelectorAll('.ghost-discard').forEach(b => b.addEventListener("click", e => {
+      delete STATE[e.target.dataset.qid]; save();
+      const w = e.target.closest('.ghost-pending'); if(w) w.remove();
+      counts();
+    }));
+  }
   // Wire actions.
   root.querySelectorAll('.act-status').forEach(b => b.addEventListener("click", e => {
     const qid=e.target.dataset.qid, ctrl=root.querySelector('.status-ctrl[data-qid="'+qid+'"]');
@@ -1786,10 +1949,15 @@ function set(qid, field, value){
     const cb=el.querySelector('.act-clear'); if(cb) cb.hidden=!pend; }
   counts();
 }
+// Qids reviewable RIGHT NOW = in the loaded PR's current diff. Decisions for
+// anything else (a tag trimmed since they were typed) are never counted,
+// copied, or submitted — the removed cards surface them instead.
+function validQids(){ return new Set(((DATA && DATA.decls) || []).map(d => d.qid)); }
 function counts(){
+  const valid = validQids();
   let pending=0;
   Object.keys(STATE).forEach(qid => { const s=STATE[qid]||{};
-    if(s.changeStatus || (s.note && s.note.trim())) pending++; });
+    if(valid.has(qid) && (s.changeStatus || (s.note && s.note.trim()))) pending++; });
   $("#c-pending").textContent = pending + (pending===1?" change":" changes") + " pending";
 }
 
@@ -1810,7 +1978,10 @@ function buildClipboardReview(){
   Object.keys(STATE).forEach(qid => {
     const s = STATE[qid] || {}; const ch=(s.changeStatus||"").trim(); const note=(s.note||"").trim();
     if(!ch && !note) return;
-    const m = meta[qid] || {label:"",loc:"",was:""};
+    // Only tags in the PR's CURRENT diff — a decision typed before a trim must
+    // not be pasted as a review of a tag that isn't there (#41139 Q91050456).
+    const m = meta[qid];
+    if(!m) return;
     let line = "- **["+qid+"](https://www.wikidata.org/wiki/"+qid+")**" +
       (m.label?(" "+m.label):"") + (m.loc?(" — "+bt+m.loc+bt):"");
     if(ch){ const e=EMO[ch]||""; line += "\n  - status: "+e+" **"+ch+"**" +
@@ -1833,6 +2004,7 @@ function buildClipboardReview(){
 function prUrl(){ return DATA ? "https://github.com/" + DATA.repo + "/pull/" + DATA.pr : "#"; }
 
 async function copyReview(){
+  await ensureFresh();   // a trim may have landed while this tab sat open
   const md = buildClipboardReview();
   if(!md){ $("#submit-note").textContent = "Nothing to copy — set a status change or add a note first."; return; }
   const link = $("#pr-link"); if(link) link.href = prUrl();
@@ -1901,10 +2073,13 @@ async function submitToGitHub(){
     $("#submit-note").textContent = "In-app posting isn’t available for @"+GH_LOGIN+" on this org — copy the review and paste it (it posts as you).";
     copyReview(); return;
   }
+  await ensureFresh();   // a trim may have landed while this tab sat open
   const parts = DATA.repo.split("/"); const owner=parts[0], repo=parts[1];
   const wasByQid = {}; DATA.decls.forEach(d => { wasByQid[d.qid] = parseStatus(d.comments).status; });
+  const valid = validQids();   // never submit a decision for a since-trimmed tag
   const decisions = {};
   Object.keys(STATE).forEach(qid => {
+    if(!valid.has(qid)) return;
     const s = STATE[qid] || {}; const status=(s.changeStatus||"").trim(); const notes=(s.note||"").trim();
     if(!status && !notes) return;
     decisions[qid] = { status, notes, was: wasByQid[qid]||"" };
