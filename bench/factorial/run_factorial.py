@@ -655,12 +655,16 @@ def main() -> int:
         it_lock = threading.Lock()
 
         def safe_iter():
+            # NB: take the lock only around next() — yielding inside the
+            # `with` would hold the lock across the whole pair execution and
+            # silently serialize all workers (caught by the first dry-run).
             while True:
                 with it_lock:
                     try:
-                        yield next(idx_iter)
+                        i = next(idx_iter)
                     except StopIteration:
                         return
+                yield i
 
         gens = [safe_iter() for _ in range(CONCURRENCY)]
         with ThreadPoolExecutor(CONCURRENCY) as ex:
