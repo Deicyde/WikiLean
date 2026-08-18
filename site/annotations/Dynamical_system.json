@@ -1589,7 +1589,7 @@
         },
         {
           "type": "math_alttext",
-          "value": "{\\displaystyle y'=-{\\text{sgn}}(y){\\sqrt {|y|}},\\,\\,y(0)=1}"
+          "value": "{\\displaystyle y'=-{\\text{sgn}}(y){\\sqrt {|y|}},\\,\\,y(0)=1"
         },
         {
           "type": "math_alttext",
@@ -1894,6 +1894,70 @@
       "note": "`Function.IsPeriodicPt f n x` formalizes periodic points, from which periodic orbits are derived.",
       "provenance": "ai",
       "id": "d7a7115a3d88"
+    },
+    {
+      "kind": "definition",
+      "label": "Conservative system (measure-theoretic)",
+      "anchor": {
+        "section": "Ergodic systems",
+        "snippet": "For systems where the volume is preserved by the flow"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Conservative",
+        "module": "Mathlib.Dynamics.Ergodic.Conservative",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureTheory.Conservative` formalizes conservative (volume/measure-preserving-recurrent) dynamical systems, the setting of Poincaré recurrence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Omega-limit set",
+      "anchor": {
+        "section": "Topological dynamical system",
+        "snippet": "the limit set of any orbit"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "omegaLimit",
+        "module": "Mathlib.Dynamics.OmegaLimit",
+        "match_kind": "exact"
+      },
+      "note": "`omegaLimit` in `Mathlib.Dynamics.OmegaLimit` defines the ω-limit set of a set under a family of maps.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Birkhoff sum and Birkhoff average",
+      "anchor": {
+        "section": "Ergodic systems",
+        "snippet": "An average in time along a trajectory"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "birkhoffAverage",
+        "module": "Mathlib.Dynamics.BirkhoffSum.Average",
+        "match_kind": "exact"
+      },
+      "note": "`birkhoffSum` and `birkhoffAverage` in `Mathlib.Dynamics.BirkhoffSum` formalize the time averages along a trajectory used in ergodic theory.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Monoid / semigroup action",
+      "anchor": {
+        "section": "Definition with monoids",
+        "snippet": "Φ defines a monoid action of T on X"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AddAction",
+        "module": "Mathlib.Algebra.Group.Action.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`AddAction T X` is Mathlib's formalization of an additive monoid action, the algebraic content of the dynamical-system evolution `Φ(t₁+t₂, x) = Φ(t₁, Φ(t₂, x))`.",
+      "provenance": "ai"
     }
   ]
 }

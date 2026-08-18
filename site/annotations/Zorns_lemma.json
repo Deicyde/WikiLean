@@ -990,6 +990,182 @@
       "note": "Mathlib uses the full axiom of choice and does not carry a separate development against ZF+DC.",
       "provenance": "ai",
       "id": "e1ffad3506d4"
+    },
+    {
+      "kind": "theorem",
+      "label": "Transfinite recursion theorem",
+      "anchor": {
+        "section": "Proof by transfinite recursion",
+        "snippet": "the above sequence is defined using transfinite recursion"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ordinal.limitRecOn",
+        "module": "Mathlib.SetTheory.Ordinal.Arithmetic",
+        "match_kind": "exact"
+      },
+      "note": "`Ordinal.limitRecOn` is Mathlib's transfinite recursion principle on ordinals (zero/successor/limit cases).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hartogs number",
+      "anchor": {
+        "section": "Proof by transfinite recursion",
+        "snippet": "this [MATH] is called the Hartogs number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No named `Ordinal.hartogs`/`hartogsNumber` decl exists in Mathlib; the least ordinal not injecting into a type is only implicit via `SuccOrder.succ (Cardinal.mk α)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Limit ordinal",
+      "anchor": {
+        "section": "Proof by transfinite recursion",
+        "snippet": "an ordinal may be a limit ordinal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Order.IsSuccLimit",
+        "module": "Mathlib.Order.SuccPred.Limit",
+        "match_kind": "exact"
+      },
+      "note": "The `Ordinal.IsLimit` predicate has been generalized/renamed to `Order.IsSuccLimit`, which specialises to the notion of limit ordinal on `Ordinal` (see `Ordinal.isSuccLimit_iff`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Chain-complete partial order",
+      "anchor": {
+        "section": "Equivalent formulations",
+        "snippet": "is chain-complete"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ChainCompletePartialOrder",
+        "module": "Mathlib.Order.BourbakiWitt",
+        "match_kind": "exact"
+      },
+      "note": "`ChainCompletePartialOrder` is the Mathlib typeclass for a poset in which every chain has a least upper bound.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Finite character",
+      "anchor": {
+        "section": "Equivalent formulations",
+        "snippet": "has finite character"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No standalone `FiniteCharacter` predicate is in Mathlib; Tukey's lemma is not separately formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Tukey's lemma (finite character family has maximal element)",
+      "anchor": {
+        "section": "Equivalent formulations",
+        "snippet": "( Tukey ) Let [MATH] be a nonempty family of sets that has finite character"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Tukey's lemma (a family of finite character has a maximal element under inclusion) is not formalized as a named result in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Directed complete partial order (dcpo)",
+      "anchor": {
+        "section": "Zorn's lemma implies the axiom of choice",
+        "snippet": "a dcpo is a partially ordered set in which each directed set has a least upper bound"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompletePartialOrder",
+        "module": "Mathlib.Order.CompletePartialOrder",
+        "match_kind": "exact"
+      },
+      "note": "`CompletePartialOrder` is Mathlib's dcpo typeclass: a partial order in which every directed subset has a least upper bound.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Initial segment",
+      "anchor": {
+        "section": "Proof by transfinite recursion",
+        "snippet": "the initial segments of well-ordered sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InitialSeg",
+        "module": "Mathlib.Order.InitialSeg",
+        "match_kind": "exact"
+      },
+      "note": "`InitialSeg r s` is the type of order embeddings whose image is an initial segment, matching the notion used here.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Successor cardinal",
+      "anchor": {
+        "section": "Proof by transfinite recursion",
+        "snippet": "the successor cardinal (= least ordinal whose cardinality is larger than"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Order.succ",
+        "module": "Mathlib.Order.SuccPred.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Order.succ` on `Cardinal` gives the successor cardinal; combined with `Cardinal.aleph`/succ-cardinal machinery in `Mathlib.SetTheory.Cardinal.SuccPred`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ordinal",
+      "anchor": {
+        "section": "Statement of the lemma",
+        "snippet": "let P be the class of all ordinals"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ordinal",
+        "module": "Mathlib.SetTheory.Ordinal.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Ordinal` is Mathlib's type of ordinal numbers, though as a proper type rather than the proper class of the article.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Union of a chain of ideals is an ideal",
+      "anchor": {
+        "section": "Every nontrivial ring with unity contains a maximal ideal",
+        "snippet": "Thus, I is an ideal in R"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No named lemma asserts that the union of a chain of ring ideals is again an ideal; the fact is only implicit via the complete lattice of `Ideal R` and `Ideal.iSup_eq_span`.",
+      "provenance": "ai"
     }
   ]
 }

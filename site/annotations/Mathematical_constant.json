@@ -49,10 +49,10 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Real.sqrt",
-        "module": "Mathlib.Analysis.SpecialFunctions.Pow.NNReal",
+        "module": "Mathlib.Analysis.Real.Sqrt",
         "match_kind": "invocation"
       },
-      "note": "Mathlib has `Real.sqrt 2` with `Real.sq_sqrt`/`Real.sqrt_sq` characterizing it as the unique nonnegative real squaring to 2.",
+      "note": "`Real.sqrt` is defined in `Mathlib.Analysis.Real.Sqrt`; `Real.sq_sqrt`/`Real.sqrt_sq` characterize `Real.sqrt 2` as the unique nonnegative real squaring to 2.",
       "provenance": "ai",
       "id": "342cf00fd3dc"
     },
@@ -108,6 +108,22 @@
       "id": "f5f0cf5110c6"
     },
     {
+      "kind": "proposition",
+      "label": "Continued fraction of √2 is periodic",
+      "anchor": {
+        "section": "Pythagoras' constant √ 2",
+        "snippet": "Its simple continued fraction is periodic and given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has a general continued fraction API (`GenContFract`) but no dedicated statement that √2's simple continued fraction is periodic `[1; 2, 2, 2, …]`.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Definition of π",
       "anchor": {
@@ -123,6 +139,38 @@
       "note": "Mathlib defines `Real.pi` analytically via the first positive zero of cos rather than geometrically, but the resulting constant is the same.",
       "provenance": "ai",
       "id": "4d1c13a77401"
+    },
+    {
+      "kind": "example",
+      "label": "Gaussian integral",
+      "anchor": {
+        "section": "Archimedes' constant π",
+        "snippet": "the Gaussian integral"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "integral_gaussian",
+        "module": "Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib proves `∫ x, Real.exp (-b * x^2) = Real.sqrt (π / b)`, giving `∫ e^{-x²} = √π` at `b = 1`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Complex roots of unity",
+      "anchor": {
+        "section": "Archimedes' constant π",
+        "snippet": "the complex roots of unity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "rootsOfUnity",
+        "module": "Mathlib.RingTheory.RootsOfUnity.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The `n`-th roots of unity are formalized as `rootsOfUnity n R`; in ℂ they are `Complex.exp (2 * π * I * k / n)`.",
+      "provenance": "ai"
     },
     {
       "kind": "example",
@@ -185,10 +233,10 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Real.exp",
-        "module": "Mathlib.Data.Complex.Exponential",
+        "module": "Mathlib.Analysis.Complex.Exponential",
         "match_kind": "invocation"
       },
-      "note": "Euler's number is `Real.exp 1`; the limit definition `(1+1/n)^n → e` is the special case of `tendsto_one_add_div_pow_exp` at `t = 1`.",
+      "note": "Euler's number is `Real.exp 1`; the limit definition `(1+1/n)^n → e` is the `t = 1` special case of `Real.tendsto_one_add_div_pow_exp`.",
       "provenance": "ai",
       "id": "2395ee3fffee"
     },
@@ -202,7 +250,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Real.exp",
-        "module": "Mathlib.Data.Complex.Exponential",
+        "module": "Mathlib.Analysis.Complex.Exponential",
         "match_kind": "exact"
       },
       "note": "Mathlib's `Real.exp` is the real exponential function with `Real.exp 1` exactly Euler's number.",
@@ -329,6 +377,22 @@
       "id": "37c01dd33345"
     },
     {
+      "kind": "definition",
+      "label": "Fibonacci sequence",
+      "anchor": {
+        "section": "The golden ratio φ",
+        "snippet": "it is related to the Fibonacci sequence , related to growth by recursion"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.fib",
+        "module": "Mathlib.Data.Nat.Fib.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines `Nat.fib` by the standard recurrence `fib 0 = 0`, `fib 1 = 1`, `fib (n+2) = fib n + fib (n+1)`.",
+      "provenance": "ai"
+    },
+    {
       "kind": "proposition",
       "label": "Diagonal of regular pentagon equals φ times its side",
       "anchor": {
@@ -415,6 +479,22 @@
     },
     {
       "kind": "definition",
+      "label": "Riemann zeta function",
+      "anchor": {
+        "section": "The Euler–Mascheroni constant γ",
+        "snippet": "as well as the zeta function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "riemannZeta",
+        "module": "Mathlib.NumberTheory.LSeries.RiemannZeta",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines `riemannZeta : ℂ → ℂ` via analytic continuation of `∑ 1/n^s`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Apéry's constant",
       "anchor": {
         "section": "Apéry's constant ζ(3)",
@@ -480,6 +560,22 @@
       "note": "Mathlib has Catalan numbers but no definition of Catalan's analytic constant G.",
       "provenance": "ai",
       "id": "193a61982d18"
+    },
+    {
+      "kind": "definition",
+      "label": "Dirichlet beta function",
+      "anchor": {
+        "section": "Catalan's constant G",
+        "snippet": "It is the special value of the Dirichlet beta function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Dirichlet beta function `β(s) = ∑ (-1)^n / (2n+1)^s` is not formalized in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -596,8 +692,8 @@
         "module": "Mathlib.Analysis.Real.OfDigits",
         "match_kind": "generalization"
       },
-      "note": "`ofDigits_const_last_eq_one` proves the base-b identity `0.(b-1)(b-1)… = 1`, which specializes at `b = 10` to `0.999… = 1`.",
-      "provenance": "ai",
+      "note": "`Real.ofDigits_const_last_eq_one` states `ofDigits (fun _ ↦ Fin.last b) = 1`, explicitly documented as a generalization of the identity `0.(9) = 1`.",
+      "provenance": "ai-moderated",
       "id": "3e690162cd91"
     }
   ]

@@ -20,16 +20,6 @@
       },
       "note": "pathELength is defined as ∫⁻ t in Icc a b, ‖mfderiv γ t 1‖ₑ, i.e. the length as the integral of the norm of the velocity (speed), generalizing the Euclidean case to manifolds.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "As an integral",
-          "snippet": "the arc length is obtained by integrating speed"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle L=\\int _{a}^{b}{\\sqrt {x'(t)^{2}+y'(t)^{2}}}\\,dt.}"
-        }
-      ],
       "id": "660fc93d46c2"
     },
     {
@@ -47,16 +37,6 @@
       },
       "note": "The integral formula L = ∫‖γ'‖ for a differentiable curve is exactly pathELength, of which the Euclidean √(Σ(dxᵢ/dt)²) form is a special case.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "As an integral",
-          "snippet": "The length of the curve is given by the formula"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle L(f)=\\int _{a}^{b}|f'(t)|\\,dt}"
-        }
-      ],
       "id": "851e801fce40"
     },
     {
@@ -193,16 +173,6 @@
       },
       "note": "No lemma giving L = ∫√(1+f'(x)²) for the graph of an explicit function was found, though it follows from pathELength.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Finding arc lengths by integration",
-          "snippet": "then it is simply a special case of a parametric equation"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\sqrt {dx^{2}+dy^{2}}}={\\sqrt {1+\\left({\\frac {dy}{dx}}\\right)^{2}\\,}}dx.}"
-        }
-      ],
       "id": "a305d09d31a7"
     },
     {
@@ -271,16 +241,6 @@
       },
       "note": "No polar-coordinate arc-length formula ∫√(r²+(dr/dθ)²) was found in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Other coordinate systems",
-          "snippet": "So for a curve expressed in polar coordinates, the arc length is"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\int _{t_{1}}^{t_{2}}{\\sqrt {\\left({\\frac {dr}{dt}}\\right)^{2}+r^{2}\\left({\\frac {d\\theta }{dt}}\\right)^{2}\\,}}dt=\\int _{\\theta (t_{1})}^{\\theta (t_{2})}{\\sqrt {\\left({\\frac {dr}{d\\theta }}\\right)^{2}+r^{2}\\,}}d\\theta .}"
-        }
-      ],
       "id": "d3d0f5574b1d"
     },
     {
@@ -298,16 +258,6 @@
       },
       "note": "No spherical-coordinate arc-length formula was found in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Other coordinate systems",
-          "snippet": "So for a curve expressed in spherical coordinates, the arc length is"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\int _{t_{1}}^{t_{2}}{\\sqrt {\\left({\\frac {dr}{dt}}\\right)^{2}+r^{2}\\left({\\frac {d\\theta }{dt}}\\right)^{2}+r^{2}\\sin ^{2}\\theta \\left({\\frac {d\\phi }{dt}}\\right)^{2}\\,}}dt.}"
-        }
-      ],
       "id": "4eb3c41774a7"
     },
     {
@@ -325,16 +275,6 @@
       },
       "note": "No cylindrical-coordinate arc-length formula was found in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Other coordinate systems",
-          "snippet": "the arc length of a curve expressed in cylindrical coordinates is"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\int _{t_{1}}^{t_{2}}{\\sqrt {\\left({\\frac {dr}{dt}}\\right)^{2}+r^{2}\\left({\\frac {d\\theta }{dt}}\\right)^{2}+\\left({\\frac {dz}{dt}}\\right)^{2}\\,}}dt.}"
-        }
-      ],
       "id": "c595dbeaa873"
     },
     {
@@ -591,6 +531,38 @@
       "note": "The equation C = 2πr as an arc-length computation on a circle is not directly formalized in Mathlib (Real.pi is defined analytically, not via circumference).",
       "provenance": "ai",
       "id": "a9d8d8dece14"
+    },
+    {
+      "kind": "definition",
+      "label": "Arc length as distance along a curve",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Arc length is the distance between two points along a curve"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "eVariationOn",
+        "module": "Mathlib.Topology.EMetricSpace.BoundedVariation",
+        "match_kind": "generalization"
+      },
+      "note": "The general notion of arc length between two points on a curve is captured by eVariationOn / variationOnFromTo in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Hausdorff dimension/measure for non-rectifiable curves",
+      "anchor": {
+        "section": "Curves with infinite length",
+        "snippet": "Sometimes the Hausdorff dimension and Hausdorff measure are used to quantify the size of such curves"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.hausdorffMeasure",
+        "module": "Mathlib.MeasureTheory.Measure.Hausdorff",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib formalizes both Hausdorff measure (MeasureTheory.Measure.hausdorffMeasure) and Hausdorff dimension (MeasureTheory.dimH), which can be used to measure the size of non-rectifiable curves.",
+      "provenance": "ai"
     }
   ]
 }

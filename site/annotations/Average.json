@@ -86,7 +86,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No `median` of a finite list/multiset is defined anywhere in `Mathlib/`.",
+      "note": "No statistical `median` of a finite list/multiset is defined in `Mathlib/` (the only `median` there is the geometric simplex median in `Mathlib.LinearAlgebra.AffineSpace.Simplex.Centroid`).",
       "provenance": "ai",
       "id": "7130342c86a8"
     },
@@ -176,6 +176,38 @@
       "id": "c99d21d680b8"
     },
     {
+      "kind": "definition",
+      "label": "Geometric mean",
+      "anchor": {
+        "section": "List of possible averages",
+        "snippet": "the quadratic mean or the geometric mean"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.geom_mean_le_arith_mean_weighted",
+        "module": "Mathlib.Analysis.MeanInequalities",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has no top-level `geomMean` definition, but the geometric mean of positive weighted terms appears inside AM–GM inequality lemmas such as `Real.geom_mean_le_arith_mean_weighted` in `Mathlib.Analysis.MeanInequalities`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Central tendency",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "These different quantities all estimate the central tendency of a group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "'Central tendency' as an abstract statistical notion has no Mathlib formalization.",
+      "provenance": "ai"
+    },
+    {
       "kind": "proposition",
       "label": "Averages lie within bounding box",
       "anchor": {
@@ -242,6 +274,23 @@
       "note": "`Finset.expect` is symmetric in its arguments by construction (via `expect_bij`), but no general permutation-invariance theorem is stated over an abstract class of averages.",
       "provenance": "ai",
       "id": "02f8cdaa0505"
+    },
+    {
+      "kind": "definition",
+      "label": "Constant-collection average equals that constant",
+      "anchor": {
+        "section": "General properties",
+        "snippet": "if a collection consists entirely of the same value, any average of it is that value"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Finset.expect_const",
+        "module": "Mathlib.Algebra.BigOperators.Expect",
+        "match_kind": "special_case"
+      },
+      "note": "`Finset.expect_const` proves the arithmetic average of a constant function is that constant; the general statement quantifies over the unformalized class of all averages.",
+      "provenance": "ai",
+      "id": "aaf06532787f"
     },
     {
       "kind": "definition",
@@ -361,23 +410,6 @@
       "note": "`Finset.centerMass` computes a weighted average of points, which specializes the moving average's weighted form; a top-level `weightedMean` is not defined.",
       "provenance": "ai",
       "id": "ba5f6d125832"
-    },
-    {
-      "kind": "definition",
-      "label": "Constant-collection average equals that constant",
-      "anchor": {
-        "section": "General properties",
-        "snippet": "if a collection consists entirely of the same value, any average of it is that value"
-      },
-      "status": "partial",
-      "mathlib": {
-        "decl": "Finset.expect_const",
-        "module": "Mathlib.Algebra.BigOperators.Expect",
-        "match_kind": "special_case"
-      },
-      "note": "`Finset.expect_const` proves the arithmetic average of a constant function is that constant; the general statement quantifies over the unformalized class of all averages.",
-      "provenance": "ai",
-      "id": "aaf06532787f"
     }
   ]
 }

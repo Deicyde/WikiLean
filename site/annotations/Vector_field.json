@@ -58,6 +58,22 @@
     },
     {
       "kind": "definition",
+      "label": "Differentiable manifold",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "vector fields are defined on differentiable manifolds"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsManifold",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Differentiable/smooth manifolds are captured by the `IsManifold I n M` class parameterized by a model with corners and a smoothness level.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Vector field on a subset of Euclidean space",
       "anchor": {
         "section": "Vector fields on subsets of Euclidean space",
@@ -701,6 +717,22 @@
       "note": "Picard–Lindelöf existence is formalized as `IsPicardLindelof.exists_eq_forall_mem_Icc_eq_picard`, with the manifold companion `exists_isMIntegralCurveAt_of_contMDiffAt`.",
       "provenance": "ai-agent1",
       "id": "1b32337067f9"
+    },
+    {
+      "kind": "definition",
+      "label": "Lipschitz continuous",
+      "anchor": {
+        "section": "Flow curves",
+        "snippet": "is Lipschitz continuous"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LipschitzWith",
+        "module": "Mathlib.Topology.EMetricSpace.Lipschitz",
+        "match_kind": "exact"
+      },
+      "note": "Lipschitz continuity of a function is `LipschitzWith K f`; used as the hypothesis in Mathlib's Picard–Lindelöf.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",

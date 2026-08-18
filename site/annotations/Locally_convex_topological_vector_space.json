@@ -18,7 +18,7 @@
         "module": "Mathlib.Topology.Algebra.Module.LocallyConvex",
         "match_kind": "exact"
       },
-      "note": "The class `LocallyConvexSpace 𝕜 E` asserts that the nhds filter of every point has a basis of convex sets.",
+      "note": "The class `LocallyConvexSpace 𝕜 E` asserts the nhds filter of every point has a basis of convex sets.",
       "provenance": "ai-agent1",
       "id": "ef1e0a803d48"
     },
@@ -72,6 +72,22 @@
       "note": "`nhds_hasBasis_absConvex` shows the 0-neighborhood filter has a basis of absolutely convex (= balanced + convex) sets.",
       "provenance": "ai-agent1",
       "id": "2dbc4c0254b5"
+    },
+    {
+      "kind": "proposition",
+      "label": "Translation invariance of TVS topology",
+      "anchor": {
+        "section": "Definition via convex sets",
+        "snippet": "Because translation is continuous (by definition of topological vector space ), all translations are homeomorphisms"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Homeomorph.addLeft",
+        "module": "Mathlib.Topology.Algebra.Group.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Homeomorph.addLeft` packages translation by a fixed vector as a homeomorphism in any topological (additive) group, hence in any TVS.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -615,7 +631,17 @@
       },
       "note": "`Convex.starConvex` shows any convex set is star-convex at each of its points (in particular at 0 if `0 ∈ s`).",
       "provenance": "ai-moderated",
-      "id": "cc20d7323417"
+      "id": "cc20d7323417",
+      "moderation_proposal": {
+        "fields": {
+          "mathlib": {
+            "decl": "Convex.starConvex",
+            "module": "Mathlib.Analysis.Convex.Basic",
+            "match_kind": "exact"
+          }
+        },
+        "reason": "`decl_exists` confirms `Convex.starConvex` lives in `Mathlib.Analysis.Convex.Basic`, not `Mathlib.Analysis.Convex.Star`."
+      }
     },
     {
       "kind": "proposition",
@@ -1443,7 +1469,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Balanced",
-        "module": "Mathlib.Analysis.LocallyConvex.Balanced.Basic",
+        "module": "Mathlib.Analysis.LocallyConvex.Basic",
         "match_kind": "exact"
       },
       "note": "`Balanced 𝕜 s` asserts `a • s ⊆ s` for every scalar `a` with `‖a‖ ≤ 1`.",
@@ -1483,6 +1509,22 @@
       "note": "The class of bornological locally convex spaces is not defined in Mathlib.",
       "provenance": "ai",
       "id": "cc0f1c41e775"
+    },
+    {
+      "kind": "proposition",
+      "label": "Locally convex space is a uniform space",
+      "anchor": {
+        "section": "Further definitions",
+        "snippet": "As with any topological vector space, a locally convex space is also a uniform space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsTopologicalAddGroup.leftUniformSpace",
+        "module": "Mathlib.Topology.Algebra.IsUniformGroup.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Any topological additive group (in particular any TVS/LCS) carries a canonical uniform structure via `IsTopologicalAddGroup.leftUniformSpace`.",
+      "provenance": "ai"
     }
   ]
 }

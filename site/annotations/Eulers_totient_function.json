@@ -57,6 +57,22 @@
       "id": "c7e9a1f0a3d5"
     },
     {
+      "kind": "proposition",
+      "label": "Order of the multiplicative group mod n",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "This function gives the order of the multiplicative group of integers modulo n"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.card_units_eq_totient",
+        "module": "Mathlib.Data.Nat.Totient",
+        "match_kind": "exact"
+      },
+      "note": "`ZMod.card_units_eq_totient` (in `Mathlib/Data/Nat/Totient.lean`) proves `Fintype.card (ZMod n)ˣ = Nat.totient n` for `NeZero n`.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Cototient",
       "anchor": {
@@ -125,6 +141,22 @@
       "id": "cfab85cf88cb"
     },
     {
+      "kind": "theorem",
+      "label": "Chinese remainder theorem",
+      "anchor": {
+        "section": "Phi is a multiplicative function",
+        "snippet": "by the Chinese remainder theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.chineseRemainder",
+        "module": "Mathlib.Data.ZMod.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ZMod.chineseRemainder` is the ring equivalence `ZMod (m*n) ≃+* ZMod m × ZMod n` when `m` and `n` are coprime, which restricts to the bijection of units used in the proof.",
+      "provenance": "ai"
+    },
+    {
       "kind": "proposition",
       "label": "Phi of a prime power",
       "anchor": {
@@ -140,6 +172,22 @@
       "note": "`Nat.totient_prime_pow` proves `φ(p^n) = p^(n-1)(p-1)` for prime `p` and `0 < n`.",
       "provenance": "ai",
       "id": "e9951869e022"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fundamental theorem of arithmetic",
+      "anchor": {
+        "section": "Proof of Euler's product formula",
+        "snippet": "The fundamental theorem of arithmetic states that if n > 1 there is a unique expression"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "UniqueFactorizationMonoid.factors_unique",
+        "module": "Mathlib.RingTheory.UniqueFactorizationDomain.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Unique factorization of naturals into primes is available via `Nat.primeFactorsList` and the general `UniqueFactorizationMonoid` API.",
+      "provenance": "ai"
     },
     {
       "kind": "example",
@@ -259,6 +307,22 @@
       "note": "`Nat.ModEq.pow_totient` proves `x^(φ n) ≡ 1 [MOD n]` when `Nat.Coprime x n`.",
       "provenance": "ai",
       "id": "779cdcca2026"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fermat's little theorem",
+      "anchor": {
+        "section": "Euler's theorem",
+        "snippet": "The special case where n is prime is known as Fermat's little theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.pow_card_sub_one_eq_one",
+        "module": "Mathlib.FieldTheory.Finite.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ZMod.pow_card_sub_one_eq_one` gives Fermat's little theorem: `a^(p-1) = 1` in `ZMod p` for prime `p` and `a ≠ 0`.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -650,6 +714,22 @@
       "note": "The Gauss–Wantzel theorem on regular-polygon constructibility is not formalized.",
       "provenance": "ai",
       "id": "ef8a7aadeda8"
+    },
+    {
+      "kind": "definition",
+      "label": "Fermat primes",
+      "anchor": {
+        "section": "Cyclotomy",
+        "snippet": "The primes that are one more than a power of 2 are called Fermat primes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `Nat.fermatNumber` (the numbers `2^(2^n)+1`) but no distinguished predicate for Fermat primes.",
+      "provenance": "ai"
     },
     {
       "kind": "example",

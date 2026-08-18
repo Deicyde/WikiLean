@@ -269,12 +269,12 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "PositiveLinearMap.preGNSpreInnerProdSpace",
-        "module": "Mathlib.Analysis.CStarAlgebra.GelfandNaimarkSegal",
-        "match_kind": "invocation"
+        "decl": null,
+        "module": null,
+        "match_kind": null
       },
-      "note": "The GNS construction defines the pre-inner product ⟪a,b⟫ = f(a*·b) from a positive functional, so Cauchy–Schwarz follows by invoking `inner_mul_inner_self_le`, but no standalone named theorem states it.",
-      "provenance": "ai",
+      "note": "No standalone named theorem for the C*-algebra positive-functional Cauchy–Schwarz was located; the GNS construction (Mathlib.Analysis.CStarAlgebra.GelfandNaimarkSegal) builds the pre-inner product ⟪a,b⟫ = f(a*·b), from which the inequality follows by `inner_mul_inner_self_le`, but no direct decl states it.",
+      "provenance": "ai-moderated",
       "id": "2cc950602f3c"
     },
     {
@@ -477,7 +477,7 @@
         "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
         "match_kind": "exact"
       },
-      "note": "The standard inner product on Rⁿ is the dot product ∑ xᵢyᵢ, realized in Mathlib via `EuclideanSpace` whose inner product equals the (conjugated) dot product (module corrected from EuclideanDist to PiL2 per decl_exists).",
+      "note": "The standard inner product on Rⁿ is the dot product ∑ xᵢyᵢ, realized in Mathlib via `EuclideanSpace` whose inner product equals the (conjugated) dot product.",
       "provenance": "ai",
       "id": "fe2969439e9a"
     },
@@ -494,7 +494,7 @@
         "module": "Mathlib.Algebra.Order.Module.PositiveLinearMap",
         "match_kind": "generalization"
       },
-      "note": "`PositiveLinearMap` is Mathlib's typeclass for positive (order-preserving) linear maps; corrected from the non-existent `CStarAlgebra.IsPositive` verified via decl_exists.",
+      "note": "`PositiveLinearMap` is Mathlib's typeclass for positive (order-preserving) linear maps, which generalizes positive linear functionals into codomain ℝ.",
       "provenance": "ai",
       "id": "dc1b3a404dee"
     },
@@ -511,9 +511,57 @@
         "module": "Mathlib.Analysis.CStarAlgebra.Classes",
         "match_kind": "exact"
       },
-      "note": "`CStarAlgebra` is the typeclass for a Banach *-algebra satisfying the C* identity ‖a*·a‖ = ‖a‖², providing the setting for the operator-algebra Cauchy–Schwarz generalizations (module corrected from Basic to Classes per decl_exists).",
+      "note": "`CStarAlgebra` is the typeclass for a Banach *-algebra satisfying the C* identity ‖a*·a‖ = ‖a‖², the setting for the operator-algebra Cauchy–Schwarz generalizations.",
       "provenance": "ai",
       "id": "0970bcdb64cb"
+    },
+    {
+      "kind": "definition",
+      "label": "Hilbert space",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "Namely, when the space is a Hilbert space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompleteSpace",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "generalization"
+      },
+      "note": "A Hilbert space is an inner product space that is a `CompleteSpace`; Mathlib expresses this via the `[InnerProductSpace 𝕜 E] [CompleteSpace E]` combination rather than a dedicated `HilbertSpace` typeclass (module corrected via decl_exists).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Square-integrable complex-valued functions (L²)",
+      "anchor": {
+        "section": "L 2",
+        "snippet": "For the inner product space of square-integrable complex-valued functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Lp",
+        "module": "Mathlib.MeasureTheory.Function.LpSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureTheory.Lp E 2 μ` (also `MeasureTheory.L2`) is the space of (equivalence classes of) square-integrable functions, given an inner product space instance in Mathlib.MeasureTheory.Function.L2Space (module corrected via decl_exists).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cauchy–Schwarz proof via the orthogonal projection",
+      "anchor": {
+        "section": "Proof via the orthogonal projection",
+        "snippet": "Let [MATH] If we look at its length, we will see"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "norm_inner_le_norm",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The projection-length argument (subtract the projection of x onto y and use non-negativity of the resulting norm) is the standard Mathlib proof used to establish `norm_inner_le_norm`.",
+      "provenance": "ai"
     }
   ]
 }

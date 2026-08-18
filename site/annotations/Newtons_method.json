@@ -18,7 +18,7 @@
         "module": "Mathlib.Dynamics.Newton",
         "match_kind": "special_case"
       },
-      "note": "Mathlib defines the Newton iteration `x ↦ x - P(x)/P'(x)` only for polynomials over a commutative ring, not for arbitrary differentiable real functions.",
+      "note": "Mathlib defines the Newton iteration `x ↦ x - P(x)/P'(x)` only for polynomials over a commutative ring (via `Ring.inverse`), not for arbitrary differentiable real functions.",
       "provenance": "ai",
       "id": "9a74de0aa035"
     },
@@ -52,7 +52,7 @@
         "module": "Mathlib.Analysis.Calculus.FDeriv.Defs",
         "match_kind": "generalization"
       },
-      "note": "Mathlib provides the Fréchet derivative formalism as best linear approximation, but no statement specifically frames it as Newton's tangent-line approximation.",
+      "note": "Mathlib's `HasFDerivAt` formalizes the Fréchet derivative as best linear approximation, but nothing specifically frames it as Newton's tangent-line approximation.",
       "provenance": "ai",
       "id": "1820464b3a14"
     },
@@ -290,7 +290,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Not formalized in Mathlib (Mathlib's polynomial `newtonMap` uses a junk value when derivative is not a unit).",
+      "note": "Not formalized in Mathlib (Mathlib's `Polynomial.newtonMap_apply_of_not_isUnit` uses the junk value `x` when the derivative is not a unit).",
       "provenance": "ai",
       "id": "59c8f6a36f9c"
     },
@@ -664,7 +664,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The Newton–Kantorovich theorem is not in Mathlib (no `Kantorovich` matches).",
+      "note": "The Newton–Kantorovich theorem is not in Mathlib (grep finds no `Kantorovich`).",
       "provenance": "ai",
       "id": "e35f11fb6557"
     },
@@ -732,7 +732,7 @@
         "module": "Mathlib.NumberTheory.Padics.Hensel",
         "match_kind": "exact"
       },
-      "note": "Mathlib formalizes Hensel's lemma over ℤ_p, whose proof is built on Newton-iteration construction.",
+      "note": "Mathlib formalizes Hensel's lemma over ℤ_p (`hensels_lemma` in `Mathlib.NumberTheory.Padics.Hensel`), whose proof is built on Newton-iteration construction.",
       "provenance": "ai",
       "id": "80a73b9f444c"
     },
@@ -936,7 +936,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Householder's family of higher-order root-finding methods is not formalized in Mathlib (loogle finds no `Householder`).",
+      "note": "Householder's family of higher-order root-finding methods is not formalized in Mathlib (grep finds no `Householder`).",
       "provenance": "ai",
       "id": "a9da70e7de88"
     },
@@ -984,10 +984,10 @@
       "status": "formalized",
       "mathlib": {
         "decl": "fderiv",
-        "module": "Mathlib.Analysis.Calculus.FDeriv.Basic",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Defs",
         "match_kind": "exact"
       },
-      "note": "Mathlib defines the Fréchet derivative `fderiv` between normed spaces, matching the usage in the Banach-space formulation of Newton's method.",
+      "note": "Mathlib defines the Fréchet derivative as `fderiv 𝕜 f x` (irreducible_def in `Mathlib.Analysis.Calculus.FDeriv.Defs`), matching the Banach-space formulation of Newton's method.",
       "provenance": "ai",
       "id": "9f64ef3e5e4c"
     },
@@ -1024,6 +1024,166 @@
       "note": "The general recurrence defining Newton's iterates for a real differentiable function (as opposed to Mathlib's polynomial-only `Polynomial.newtonMap`) is not formalized.",
       "provenance": "ai",
       "id": "ec9d2db508bb"
+    },
+    {
+      "kind": "proposition",
+      "label": "Doubling of correct digits per step",
+      "anchor": {
+        "section": "Practical considerations",
+        "snippet": "as the method converges on the root, the difference between the root and the approximation is squared"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The informal statement of quadratic convergence (error is squared per step) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Newton iteration well-defined when f'(x_n) ≠ 0",
+      "anchor": {
+        "section": "Description",
+        "snippet": "can be taken as a closer approximate root"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The existence/well-definedness condition for the Newton iterate in the real-valued setting is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Babylonian square-root approximation",
+      "anchor": {
+        "section": "History",
+        "snippet": "the side of a square of known area could be effectively approximated"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Historical Babylonian square-root iteration as a special case of Newton's method is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Heron's method for square roots",
+      "anchor": {
+        "section": "History",
+        "snippet": "an equivalent method can be found in Hero of Alexandria 's Metrica"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Heron's iteration for square roots is not stated as a Newton-method instance in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Al-Kāshī's iteration for x^P = N",
+      "anchor": {
+        "section": "History",
+        "snippet": "Jamshīd al-Kāshī used a method to solve x P − N = 0 to find roots of N"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Al-Kāshī's Nth-root iteration equivalent to Newton's method is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Basin of attraction",
+      "anchor": {
+        "section": "Complex functions",
+        "snippet": "the set of all starting values that cause the method to converge to that particular zero"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The general notion of basin of attraction for an iterative map is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fractal boundaries of basins of attraction",
+      "anchor": {
+        "section": "Complex functions",
+        "snippet": "the boundaries of the basins of attraction are fractals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The claim that basin boundaries for complex Newton iteration are fractals is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multivariate Newton via linear system solve",
+      "anchor": {
+        "section": "k variables, k functions",
+        "snippet": "by solving the system of linear equations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The linear-solve formulation J·Δx = −F(x_n) of multivariate Newton is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Positive-definite Hessian implies local minimum",
+      "anchor": {
+        "section": "Example",
+        "snippet": "it suffices to show that its Hessian matrix is positive definite"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The second-derivative sufficient condition for a local minimum via positive-definite Hessian is not formalized in Mathlib as a named theorem for multivariate real functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Newton–Raphson iteration for reciprocal x_{n+1} = x_n(2 − a·x_n)",
+      "anchor": {
+        "section": "Multiplicative inverses of numbers and power series",
+        "snippet": "Newton's iteration is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The specific division-free reciprocal iteration used in Newton–Raphson division is not formalized in Mathlib.",
+      "provenance": "ai"
     }
   ]
 }

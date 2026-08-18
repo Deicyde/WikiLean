@@ -636,7 +636,7 @@
     },
     {
       "kind": "proposition",
-      "label": "Arctan tends to ±π/2 at infinity",
+      "label": "Inverse trig ranges are strict subsets",
       "anchor": {
         "section": "Principal values",
         "snippet": "the result ranges of the inverse functions are proper (i.e. strict) subsets of the domains of the original functions"
@@ -667,6 +667,22 @@
       "note": "Real.continuous_arcsin, Real.continuous_arccos, Real.continuous_arctan formalize continuity on the real line; analyticity/branch-cut structure on ℂ is only partly present (Complex.arctan).",
       "provenance": "ai",
       "id": "77105139b6ea"
+    },
+    {
+      "kind": "proposition",
+      "label": "Arctan limits at ±∞",
+      "anchor": {
+        "section": "Infinite series",
+        "snippet": "The Taylor series for arctangent is also known as the arctangent series or Gregory's series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.tendsto_arctan_atTop",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Arctan",
+        "match_kind": "exact"
+      },
+      "note": "Real.tendsto_arctan_atTop and Real.tendsto_arctan_atBot state arctan → ±π/2 at ±∞, matching the range endpoints referenced across the article.",
+      "provenance": "ai"
     }
   ]
 }

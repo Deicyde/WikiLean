@@ -40,6 +40,39 @@
       "id": "576394ffd0e2"
     },
     {
+      "kind": "definition",
+      "label": "Closed linear operator",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "such an operator is called a closed linear operator"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearPMap.IsClosed",
+        "module": "Mathlib.Topology.Algebra.Module.LinearPMap",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines a (possibly partially-defined) linear operator to be closed exactly when its graph is closed.",
+      "provenance": "ai",
+      "id": "d4806e8e6a88"
+    },
+    {
+      "kind": "definition",
+      "label": "Graph of a linear operator",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a topological property of their graph"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearPMap.graph",
+        "module": "Mathlib.LinearAlgebra.LinearPMap",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib bundles the graph of a (partially defined) linear operator as a submodule of the product space via LinearPMap.graph.",
+      "provenance": "ai"
+    },
+    {
       "kind": "proposition",
       "label": "Sufficient condition for closed graph",
       "anchor": {
@@ -106,6 +139,22 @@
       "note": "No counterexample showing failure of the closed graph theorem without completeness is formalized in Mathlib.",
       "provenance": "ai",
       "id": "58262c3ec784"
+    },
+    {
+      "kind": "proposition",
+      "label": "Existence of unbounded closed operator",
+      "anchor": {
+        "section": "Statement",
+        "snippet": "an operator with closed graph that is not bounded"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has the LinearPMap.IsClosed predicate and a theory of unbounded operators, but no worked counterexample of a closed operator that fails to be bounded.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",
@@ -446,23 +495,6 @@
       "note": "Mathlib proves continuity of linear maps from a finite-dimensional domain, not continuity of a closed operator into a finite-dimensional codomain.",
       "provenance": "ai",
       "id": "c41bacee0588"
-    },
-    {
-      "kind": "definition",
-      "label": "Closed linear operator",
-      "anchor": {
-        "section": "(Lead)",
-        "snippet": "such an operator is called a closed linear operator"
-      },
-      "status": "formalized",
-      "mathlib": {
-        "decl": "LinearPMap.IsClosed",
-        "module": "Mathlib.Topology.Algebra.Module.LinearPMap",
-        "match_kind": "exact"
-      },
-      "note": "Mathlib defines a (possibly partially-defined) linear operator to be closed exactly when its graph is closed.",
-      "provenance": "ai",
-      "id": "d4806e8e6a88"
     }
   ]
 }

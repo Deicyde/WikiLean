@@ -1330,6 +1330,118 @@
       "note": "The orthogonal complement of a subspace of an inner-product space is formalized in Mathlib as `Submodule.orthogonal`.",
       "provenance": "ai",
       "id": "93fc0de60717"
+    },
+    {
+      "kind": "definition",
+      "label": "Expectation value",
+      "anchor": {
+        "section": "First order corrections",
+        "snippet": "This is simply the expectation value of the perturbation Hamiltonian while the system is in the unperturbed eigenstate"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The quantum-mechanical expectation value of an operator on a state is not formalized in Mathlib as such; only the underlying inner product is.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Variational method",
+      "anchor": {
+        "section": "Applying perturbation theory",
+        "snippet": "most efficiently by the variational method"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The quantum-mechanical variational method is a physics technique not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "WKB approximation",
+      "anchor": {
+        "section": "Non-adiabatic states",
+        "snippet": "such as the variational method and the WKB approximation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The WKB semiclassical approximation is a physics technique with no Mathlib formalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Degenerate eigenspace",
+      "anchor": {
+        "section": "Degenerate perturbation theory",
+        "snippet": "Let D denote the subspace spanned by these degenerate eigenstates"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.End.eigenspace",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The eigenspace of a linear operator at a given eigenvalue (the span of a degenerate family of eigenstates) is formalized in Mathlib as `Module.End.eigenspace`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Diagonalization of a matrix/operator",
+      "anchor": {
+        "section": "Degenerate perturbation theory",
+        "snippet": "The new Hamiltonian must be diagonalized in D"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.IsDiag",
+        "module": "Mathlib.LinearAlgebra.Matrix.IsDiag",
+        "match_kind": "generalization"
+      },
+      "note": "Diagonalization of matrices/operators is available in Mathlib (e.g. `Matrix.IsDiag`, spectral theorem for self-adjoint operators in `Mathlib.Analysis.InnerProductSpace.Spectrum`), though the physics diagonalization on a degenerate subspace is not itself formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Matrix element of an operator",
+      "anchor": {
+        "section": "First order corrections",
+        "snippet": "Each term is proportional to the matrix element"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.toMatrix",
+        "module": "Mathlib.LinearAlgebra.Matrix.ToLin",
+        "match_kind": "generalization"
+      },
+      "note": "Matrix elements of a linear operator with respect to a basis are formalized via `LinearMap.toMatrix` (and via the inner product `⟪ei, T ej⟫` on inner-product spaces).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Density functional theory",
+      "anchor": {
+        "section": "Difficult computations",
+        "snippet": "using methods such as density functional theory"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Density functional theory is a computational-physics/chemistry framework not formalized in Mathlib.",
+      "provenance": "ai"
     }
   ]
 }

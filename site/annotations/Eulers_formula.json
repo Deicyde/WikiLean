@@ -494,7 +494,7 @@
         "module": "Mathlib.Analysis.SpecialFunctions.Log.Basic",
         "match_kind": "invocation"
       },
-      "note": "Mathlib's `Real.log` is defined as the inverse of `Real.exp`; `Real.log_exp x : Real.log (Real.exp x) = x` witnesses e = exp 1 as the base (the previously cited `Real.exp_one_eq_exp` does not exist).",
+      "note": "Mathlib's `Real.log` is defined as the inverse of `Real.exp`; `Real.log_exp x : Real.log (Real.exp x) = x` witnesses e = exp 1 as the base.",
       "provenance": "ai",
       "id": "9a9687e72a44"
     },
@@ -531,6 +531,86 @@
       "note": "The map ℝ → Circle via t ↦ exp(t*I) is formalized as `Circle.exp`; the covering-space structure per se is not packaged as a single lemma but the surjection and periodicity are.",
       "provenance": "ai",
       "id": "96fb7228d63c"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cosine and sine of a real number as real and imaginary parts of e^{ix}",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the fundamental relationship between the trigonometric functions and the complex exponential function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.cos_ofReal_re",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "invocation"
+      },
+      "note": "The relationship between real trig functions and the complex exponential follows from `Complex.exp_mul_I` together with `Complex.cos_ofReal_re` / `Complex.sin_ofReal_re` identifying the real and imaginary parts.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Complex cosine plus i sine equals exp(x*I)",
+      "anchor": {
+        "section": "Using differentiation",
+        "snippet": "and thus"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.cos_add_sin_I",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "States cos z + sin z * I = exp(z * I) — the conclusion of the differentiation-based proof of Euler's formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Modulus of a complex number",
+      "anchor": {
+        "section": "Interpretation of the formula",
+        "snippet": "is the magnitude of z"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.norm_def",
+        "module": "Mathlib.Analysis.Complex.Norm",
+        "match_kind": "invocation"
+      },
+      "note": "The magnitude/modulus |z| = √(x² + y²) of a complex number z = x + iy is Mathlib's `Complex.norm`, characterized by `Complex.norm_def`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Complex conjugate",
+      "anchor": {
+        "section": "Interpretation of the formula",
+        "snippet": "its complex conjugate, z = x − iy"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.conj_I",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Complex conjugation x + iy ↦ x - iy is Mathlib's `starRingEnd ℂ` (a.k.a. `Complex.conj`), a ring homomorphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Logarithm of a product",
+      "anchor": {
+        "section": "Use of the formula to define the logarithm of complex numbers",
+        "snippet": "the definition of the logarithm (as the inverse operator of exponentiation)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp_log",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Log",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.exp_log : z ≠ 0 → Complex.exp (Complex.log z) = z` witnesses `Complex.log` as the inverse of `Complex.exp` on nonzero z.",
+      "provenance": "ai"
     }
   ]
 }

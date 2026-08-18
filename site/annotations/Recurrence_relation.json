@@ -227,6 +227,22 @@
       "id": "22928b5ff492"
     },
     {
+      "kind": "definition",
+      "label": "Fibonacci sequence",
+      "anchor": {
+        "section": "Fibonacci numbers",
+        "snippet": "We obtain the sequence of Fibonacci numbers, which begins"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.fib",
+        "module": "Mathlib.Data.Nat.Fib.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.fib` gives the Fibonacci sequence 0, 1, 1, 2, 3, 5, 8, 13, ... as a function `ℕ → ℕ`.",
+      "provenance": "ai"
+    },
+    {
       "kind": "proposition",
       "label": "Binet's formula for Fibonacci numbers",
       "anchor": {
@@ -242,6 +258,22 @@
       "note": "Mathlib has `Nat.fib` and `Real.goldenRatio`-related infrastructure but no direct closed-form `Nat.fib_eq_binet`-style theorem.",
       "provenance": "ai",
       "id": "93dbddd241df"
+    },
+    {
+      "kind": "proposition",
+      "label": "Generating function of the Fibonacci sequence",
+      "anchor": {
+        "section": "Fibonacci numbers",
+        "snippet": "the generating function of the sequence is the rational function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The ordinary generating function `∑ fib(n) x^n = x / (1 - x - x^2)` is not formalized in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "example",
@@ -337,11 +369,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "fwdDiff",
+        "decl": "fwdDiff_iter_eq_sum_shift",
         "module": "Mathlib.Algebra.Group.ForwardDiff",
         "match_kind": "generalization"
       },
-      "note": "The k-th difference appears as `Function.iterate (fwdDiff h) k` in lemmas but is not separately defined.",
+      "note": "The k-th difference appears as `Function.iterate (fwdDiff h) k`; `fwdDiff_iter_eq_sum_shift` gives its binomial expansion.",
       "provenance": "ai",
       "id": "b96666c533ab"
     },
@@ -429,6 +461,38 @@
       "note": "The connection between homogeneous linear recurrences and generalized hypergeometric series is not formalized.",
       "provenance": "ai",
       "id": "be4218197e02"
+    },
+    {
+      "kind": "example",
+      "label": "Bessel function as solution of a linear recurrence",
+      "anchor": {
+        "section": "Solving general homogeneous linear recurrence relations",
+        "snippet": "the Bessel function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not currently define the Bessel functions or their three-term recurrence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Confluent hypergeometric series as solution of a linear recurrence",
+      "anchor": {
+        "section": "Solving general homogeneous linear recurrence relations",
+        "snippet": "the confluent hypergeometric series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The confluent hypergeometric series (Kummer's function) is not formalized in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",

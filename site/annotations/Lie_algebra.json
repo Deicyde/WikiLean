@@ -31,12 +31,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "LieAlgebra.ofAssociativeAlgebra",
+        "decl": "LieRing.ofAssociativeRing",
         "module": "Mathlib.Algebra.Lie.OfAssociative",
         "match_kind": "exact"
       },
-      "note": "`LieAlgebra.ofAssociativeAlgebra` gives every associative algebra a Lie algebra instance via the ring commutator.",
-      "provenance": "ai",
+      "note": "Every associative ring/algebra carries a `LieRing` instance whose bracket is the commutator (`LieRing.ofAssociativeRing`).",
+      "provenance": "ai-moderated",
       "id": "0460518f321a"
     },
     {
@@ -69,7 +69,7 @@
         "module": "Mathlib.Algebra.Lie.OfAssociative",
         "match_kind": "special_case"
       },
-      "note": "`Module.End R V` is a ring, hence a Lie algebra via the `LieRing.ofAssociativeRing`/`LieAlgebra.ofAssociativeAlgebra` commutator instance.",
+      "note": "`Module.End R V` is a ring, hence a Lie algebra via the `LieRing.ofAssociativeRing` commutator instance.",
       "provenance": "ai",
       "id": "7359f01f0832"
     },
@@ -1738,6 +1738,54 @@
       "note": "Mathlib defines Lie algebras via type classes, not as an internal object in the category of vector spaces.",
       "provenance": "ai",
       "id": "22339d6d2fc5"
+    },
+    {
+      "kind": "definition",
+      "label": "Lower central series",
+      "anchor": {
+        "section": "Abelian, nilpotent, and solvable",
+        "snippet": "lower central series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieModule.lowerCentralSeries",
+        "module": "Mathlib.Algebra.Lie.Nilpotent",
+        "match_kind": "exact"
+      },
+      "note": "`LieModule.lowerCentralSeries R L M` is the descending chain of ideals used to define nilpotency.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Derived series",
+      "anchor": {
+        "section": "Abelian, nilpotent, and solvable",
+        "snippet": "derived series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieAlgebra.derivedSeries",
+        "module": "Mathlib.Algebra.Lie.Solvable",
+        "match_kind": "exact"
+      },
+      "note": "`LieAlgebra.derivedSeries` gives the iterated commutator ideals used to define solvability.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complexification of a real Lie algebra",
+      "anchor": {
+        "section": "Real form and complexification",
+        "snippet": "the complexification"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieAlgebra.ExtendScalars.instLieAlgebra",
+        "module": "Mathlib.Algebra.Lie.BaseChange",
+        "match_kind": "generalization"
+      },
+      "note": "Complexification `ℂ ⊗[ℝ] L` is the base change instance from `LieAlgebra.BaseChange`.",
+      "provenance": "ai"
     }
   ]
 }

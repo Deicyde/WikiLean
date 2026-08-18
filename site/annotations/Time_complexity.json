@@ -78,6 +78,22 @@
     },
     {
       "kind": "definition",
+      "label": "Big O notation",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the time complexity is commonly expressed using big O notation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsBigO",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Big O notation is formalized in Mathlib as Asymptotics.IsBigO (`f =O[l] g`), capturing the ∃ C, ∀ᶠ x in l, ‖f x‖ ≤ C * ‖g x‖ definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Linear and polynomial time classification",
       "anchor": {
         "section": "(Lead)",
@@ -204,6 +220,22 @@
       "note": "No binary/dictionary search running-time result is formalized.",
       "provenance": "ai",
       "id": "a94590c30308"
+    },
+    {
+      "kind": "definition",
+      "label": "Floor function",
+      "anchor": {
+        "section": "Logarithmic time",
+        "snippet": "denotes the floor function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.floor",
+        "module": "Mathlib.Algebra.Order.Floor.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The floor function is formalized via the FloorRing typeclass and Int.floor / Nat.floor.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -853,6 +885,22 @@
       "note": "No definition of factorial-time computation exists in Mathlib (though `Nat.factorial` itself does).",
       "provenance": "ai",
       "id": "1db46e30cb5b"
+    },
+    {
+      "kind": "definition",
+      "label": "Factorial function n!",
+      "anchor": {
+        "section": "Factorial time",
+        "snippet": "upper bounded by the factorial function n!"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.factorial",
+        "module": "Mathlib.Data.Nat.Factorial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The factorial function is Nat.factorial : ℕ → ℕ, defined by 0! = 1 and (n+1)! = (n+1) * n!.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",

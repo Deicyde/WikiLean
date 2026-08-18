@@ -1154,12 +1154,44 @@
       "status": "partial",
       "mathlib": {
         "decl": "Nat.shiftRight_eq_div_pow",
-        "module": "Mathlib.Data.Nat.Bits",
+        "module": "Init.Data.Nat.Bitwise.Basic",
         "match_kind": "special_case"
       },
       "note": "`Nat.shiftRight_eq_div_pow` gives the unsigned case n >>> k = n / 2^k; the signed/arithmetic-shift version is not stated as a named Mathlib lemma.",
       "provenance": "ai",
       "id": "5e1d0dfb31d9"
+    },
+    {
+      "kind": "definition",
+      "label": "Fractional part defining formula",
+      "anchor": {
+        "section": "Notation",
+        "snippet": "{ x } = x − ⌊ x ⌋"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.fract",
+        "module": "Mathlib.Algebra.Order.Floor.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The defining equation {x} = x − ⌊x⌋ is exactly `Int.fract`'s definitional unfolding.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Floor floor identity (nested floor)",
+      "anchor": {
+        "section": "Nested divisions",
+        "snippet": "For a positive integer n , and arbitrary real numbers m and x"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.floor_div_natCast",
+        "module": "Mathlib.Algebra.Order.Floor.Semifield",
+        "match_kind": "special_case"
+      },
+      "note": "Additional coverage: `Nat.floor_div_natCast` gives ⌊x / n⌋₊ = ⌊x⌋₊ / n for x : α and n : ℕ, a special case of the nested-division identity (corrected from nonexistent `Nat.floor_div_nat`).",
+      "provenance": "ai"
     }
   ]
 }

@@ -1120,7 +1120,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "AffineBasis.coord",
-        "module": "Mathlib.LinearAlgebra.AffineSpace.Basis.Defs",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Basis",
         "match_kind": "generalization"
       },
       "note": "`AffineBasis.coord` gives the ith barycentric coordinate map; lemmas like `coord_apply_combination` characterise it.",
@@ -1732,12 +1732,60 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Finset.centroid",
-        "module": "Mathlib.LinearAlgebra.AffineSpace.Combination",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Centroid",
         "match_kind": "generalization"
       },
       "note": "The centroid of a simplex is the equally-weighted affine combination of its vertices.",
       "provenance": "ai",
       "id": "9273afe54735"
+    },
+    {
+      "kind": "definition",
+      "label": "Interior angle of a triangle",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A triangle has three internal angles , each one bounded by a pair of adjacent edges"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.angle",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.Affine",
+        "match_kind": "exact"
+      },
+      "note": "`EuclideanGeometry.angle p₁ p₂ p₃` is the unoriented angle at vertex p₂ in [0, π].",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Line segment",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "any two points determine a unique line segment situated within a unique straight line"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "segment",
+        "module": "Mathlib.Analysis.Convex.Segment",
+        "match_kind": "exact"
+      },
+      "note": "`segment 𝕜 x y` is the closed line segment between two points in an affine space over an ordered field.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Collinearity",
+      "anchor": {
+        "section": "Angles",
+        "snippet": "A degenerate triangle , whose vertices are collinear"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Collinear",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.FiniteDimensional",
+        "match_kind": "exact"
+      },
+      "note": "`Collinear k s` states the set `s` is contained in some affine subspace of dimension ≤ 1.",
+      "provenance": "ai"
     }
   ]
 }

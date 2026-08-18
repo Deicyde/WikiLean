@@ -403,13 +403,13 @@
         "section": "Exponent = 4",
         "snippet": "the area of a right triangle with integer sides can never equal the square of an integer"
       },
-      "status": "not_formalized",
+      "status": "partial",
       "mathlib": {
-        "decl": null,
-        "module": null,
+        "decl": "not_fermat_42",
+        "module": "Mathlib.NumberTheory.FLT.Four",
         "match_kind": null
       },
-      "note": "Fermat's right-triangle theorem (congruent-number style) is not present; only the related Fermat42 infrastructure exists.",
+      "note": "Mathlib proves not_fermat_42 (a⁴+b⁴≠c²), the equation-form equivalent, but does not state the right-triangle-area formulation.",
       "provenance": "ai",
       "id": "321e49b8db7e"
     },
@@ -534,6 +534,22 @@
     },
     {
       "kind": "definition",
+      "label": "Infinite descent",
+      "anchor": {
+        "section": "Exponent = 4",
+        "snippet": "he uses the technique of infinite descent"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.strong_induction_on",
+        "module": "Mathlib.Data.Nat.Init",
+        "match_kind": null
+      },
+      "note": "Infinite descent is not packaged as a named principle; Mathlib uses well-founded/strong induction on ℕ as the underlying device.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Sophie Germain auxiliary primes",
       "anchor": {
         "section": "Sophie Germain",
@@ -650,6 +666,22 @@
       "note": "Neither regular primes nor Kummer's FLT theorem are formalized in Mathlib.",
       "provenance": "ai",
       "id": "3369432d7e25"
+    },
+    {
+      "kind": "definition",
+      "label": "Regular prime",
+      "anchor": {
+        "section": "Ernst Kummer and the theory of ideals",
+        "snippet": "for all regular prime numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Regular primes (primes not dividing the class number of ℚ(ζ_p)) are not defined in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "example",
@@ -771,6 +803,38 @@
       "id": "094ec5584c66"
     },
     {
+      "kind": "definition",
+      "label": "Elliptic curve",
+      "anchor": {
+        "section": "Taniyama–Shimura–Weil conjecture",
+        "snippet": "elliptic curves and modular forms"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WeierstrassCurve.IsElliptic",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.Weierstrass",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes elliptic curves via WeierstrassCurve together with the IsElliptic typeclass (asserting the discriminant is a unit); there is no bare `EllipticCurve` type.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Modular form",
+      "anchor": {
+        "section": "Taniyama–Shimura–Weil conjecture",
+        "snippet": "it can be associated with a unique modular form"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ModularForm",
+        "module": "Mathlib.NumberTheory.ModularForms.Basic",
+        "match_kind": "exact"
+      },
+      "note": "ModularForm Γ k is defined in Mathlib as a holomorphic slash-invariant function on the upper half-plane, bounded at cusps.",
+      "provenance": "ai"
+    },
+    {
       "kind": "theorem",
       "label": "Modularity theorem",
       "anchor": {
@@ -786,6 +850,22 @@
       "note": "The modularity (Taniyama–Shimura–Weil) theorem is not formalized in Mathlib.",
       "provenance": "ai",
       "id": "d36307e2effd"
+    },
+    {
+      "kind": "definition",
+      "label": "Semistable elliptic curve",
+      "anchor": {
+        "section": "Ribet's theorem for Frey curves",
+        "snippet": "semistable elliptic curves"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The semistable-reduction condition for elliptic curves is not defined in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",

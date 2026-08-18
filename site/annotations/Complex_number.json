@@ -674,7 +674,7 @@
         },
         {
           "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{pmatrix}a&amp;-b\\\\b&amp;\\;\\;a\\end{pmatrix}}.}"
+          "value": "{\\begin{pmatrix}a&-b\\\\b&\\;\\;a\\end{pmatrix}}."
         }
       ],
       "id": "471d6661dae1"
@@ -1464,6 +1464,22 @@
       "note": "Split-complex numbers (`ℝ[X]/(X² − 1)`) are not formalised in Mathlib.",
       "provenance": "ai",
       "id": "25b890c4711b"
+    },
+    {
+      "kind": "proposition",
+      "label": "C is a 2-dimensional real vector space",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The complex numbers also form a real vector space of dimension two"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.finrank_real_complex",
+        "module": "Mathlib.LinearAlgebra.Complex.FiniteDimensional",
+        "match_kind": "exact"
+      },
+      "note": "Verified: `Complex.finrank_real_complex : Module.finrank ℝ ℂ = 2` witnesses that ℂ is a 2-dimensional ℝ-vector space with standard basis (1, i).",
+      "provenance": "ai"
     }
   ]
 }

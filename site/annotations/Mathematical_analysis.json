@@ -888,6 +888,166 @@
       "note": "Mathlib constructs `Real` as the completion of `ℚ` via Cauchy sequences rather than Dedekind cuts; the Dedekind-cut construction itself is not the definition used, though the resulting ordered field is the same.",
       "provenance": "ai",
       "id": "2cfffce235cc"
+    },
+    {
+      "kind": "definition",
+      "label": "Method of exhaustion",
+      "anchor": {
+        "section": "Ancient",
+        "snippet": "used the method of exhaustion to compute the area and volume"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The method of exhaustion is a historical proof technique; individual area/volume computations are formalized in Mathlib but the method itself is not a formal definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cavalieri's principle",
+      "anchor": {
+        "section": "Medieval",
+        "snippet": "would later be called Cavalieri's principle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The general Cavalieri's principle relating volumes of solids with equal cross-sectional areas does not appear as a named theorem in Mathlib, though special integration-based volume equalities are provable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cartesian coordinate system",
+      "anchor": {
+        "section": "Foundations",
+        "snippet": "introduced the Cartesian coordinate system"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.EuclideanDist",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib models Cartesian coordinates via `Fin n → ℝ` and the inner-product structure on `EuclideanSpace ℝ (Fin n)`; the abstract 'coordinate system' concept itself is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Mathematical function",
+      "anchor": {
+        "section": "Modernization",
+        "snippet": "Euler introduced the notion of a mathematical function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function",
+        "module": "Init.Prelude",
+        "match_kind": "exact"
+      },
+      "note": "Functions are a primitive of Lean 4's type theory (`α → β`); Mathlib's `Function` namespace supplies the standard operations and lemmas.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Riemann integration",
+      "anchor": {
+        "section": "Modernization",
+        "snippet": "the theorems of Riemann integration"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "intervalIntegral",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib does not define the Riemann integral directly; it uses the Bochner integral, with `intervalIntegral` playing the role of the (definite) Riemann integral for continuous or interval-integrable functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Axiom of choice",
+      "anchor": {
+        "section": "Measure theory",
+        "snippet": "a non-trivial consequence of the axiom of choice"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Classical.choice",
+        "module": "Init.Prelude",
+        "match_kind": "exact"
+      },
+      "note": "The axiom of choice is available in Lean/Mathlib as `Classical.choice`; the existence of Lebesgue non-measurable sets (Vitali sets) has been formalized using it.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Differentiable manifold",
+      "anchor": {
+        "section": "Other areas of mathematics",
+        "snippet": "Differentiable manifolds"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsManifold",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes smooth/differentiable manifolds via `ChartedSpace` plus `IsManifold I n M` (formerly `SmoothManifoldWithCorners`) parameterized by a model with corners and smoothness class.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Partial differential equation",
+      "anchor": {
+        "section": "Other areas of mathematics",
+        "snippet": "Partial differential equations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has scattered results involving specific PDEs (e.g., Laplace's equation) but no general formalization of PDEs as a class.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Analytic number theory",
+      "anchor": {
+        "section": "Other areas of mathematics",
+        "snippet": "Analytic number theory"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Analytic number theory is a subject-area label; Mathlib has significant analytic-number-theory content (Dirichlet series, PNT progress) but the discipline itself is not a formal definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hyperreal numbers",
+      "anchor": {
+        "section": "Other topics",
+        "snippet": "the hyperreal numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Hyperreal",
+        "module": "Mathlib.Analysis.SpecificLimits.Hyperreal",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines `Hyperreal` as the ultraproduct `Germ (hyperfilter ℕ) ℝ`, providing the setting for non-standard analysis.",
+      "provenance": "ai"
     }
   ]
 }

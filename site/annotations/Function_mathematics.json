@@ -874,6 +874,22 @@
     },
     {
       "kind": "definition",
+      "label": "Unique function to a singleton",
+      "anchor": {
+        "section": "Standard functions",
+        "snippet": "there is a unique function from X to { s } , which maps every element of X to s"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.const",
+        "module": "Init.Prelude",
+        "match_kind": "exact"
+      },
+      "note": "`Function.const α s : α → _` is the unique function to a singleton (equivalently, `Unique (α → PUnit)`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Canonical surjection onto image",
       "anchor": {
         "section": "Standard functions",
@@ -1197,6 +1213,22 @@
     },
     {
       "kind": "definition",
+      "label": "Gluing functions from a cover",
+      "anchor": {
+        "section": "Restriction and extension",
+        "snippet": "Function restriction may also be used for \"gluing\" functions together"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.liftCover",
+        "module": "Mathlib.Data.Set.UnionLift",
+        "match_kind": "exact"
+      },
+      "note": "`Set.liftCover` glues functions defined on the pieces of a cover of `X` that agree on overlaps into a single function on `X`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Extension of a function",
       "anchor": {
         "section": "Restriction and extension",
@@ -1415,6 +1447,22 @@
       "note": "Mathlib has many specific function spaces (`ContinuousMap`, `Lp`, `BoundedContinuousFunction`, `Schwartz`, …) but no overarching `def FunctionSpace`.",
       "provenance": "ai",
       "id": "b5e4b569b431"
+    },
+    {
+      "kind": "example",
+      "label": "Smooth functions of compact support (test functions)",
+      "anchor": {
+        "section": "Function space",
+        "snippet": "the real smooth functions with a compact support (that is, they are zero outside some compact set ) form a function space that is at the basis of the theory of distributions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContDiffMapSupportedIn",
+        "module": "Mathlib.Analysis.Distribution.ContDiffMapSupportedIn",
+        "match_kind": "special_case"
+      },
+      "note": "`ContDiffMapSupportedIn` formalizes smooth functions with support in a fixed set, providing the C^∞_c basis of distribution theory.",
+      "provenance": "ai"
     },
     {
       "kind": "example",
