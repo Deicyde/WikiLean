@@ -20,6 +20,7 @@ import {
   declExistsFor,
   filterFor,
   neighborhoodFor,
+  premisesFor,
   searchFor,
   snapshotFor,
   snippetsFor,
@@ -65,6 +66,11 @@ const INSTRUCTIONS =
   "re-verify EVERY name you write) then brain_neighborhood kinds=depends (walk the formal " +
   "dependency chain across turns; it is cursored). brain_search/brain_transfer are the " +
   "lower-level jumps brain_bridge composes. " +
+  "PREMISE SELECTION joins the loop AFTER formal search: seed brain_premises with theorems " +
+  "found via search (brain_bridge hits or decl_exists-verified names, 1–8 seeds) and it " +
+  "returns the ranked union of the premises their stored proofs actually used, each " +
+  "oracle-verified with module + import_line — retrieval of names you could not have " +
+  "guessed, never a substitute for searching first. " +
   "HONEST ABSTENTION: informal to formal answers (brain_bridge, brain_transfer) carry a " +
   "`match` and a `confidence_floor`; a fuzzy match that does not clear the floor returns " +
   "match:'none' with `nearest` candidates instead of a forced weak grounding (a forced " +
@@ -251,16 +257,39 @@ export const TOOLS: ToolDef[] = [
       "Verify Lean decl names against the doc-gen4 declaration index BEFORE citing them — " +
       "hallucinated/renamed names are the #1 failure mode. Pass `name` (one) or `names` (up " +
       "to 16, so a drafted statement's 3–8 decls verify in ONE call). Each verdict returns " +
-      "exists + module + `import_line` + docs URL; when a name is DEAD it returns a labelled " +
-      "suggestion — `suggestion_basis:'verified-rename'` (the verified rename map, e.g. " +
-      "Basis → Module.Basis) or `'unique-suffix-match'` (one indexed decl shares the last " +
-      "segment) — never presented as fact. Batch adds a `counts` summary.",
+      "exists + module + `import_line` + docs URL; a DEAD name gets namespace resolution " +
+      "over the FULL decl index: a labelled suggestion — `suggestion_basis:'verified-rename'` " +
+      "(the verified rename map, e.g. Basis → Module.Basis) or `'namespace-resolution'` " +
+      "(exactly one indexed decl shares the final segment, oracle-verified) — never presented " +
+      "as fact; 2–8 sharers come back as `namespace_matches:[{decl,module}]` with no forced " +
+      "pick, and more than 8 as `namespace_match_count` + a hint to qualify the namespace. " +
+      "Batch adds a `counts` summary.",
     inputSchema: obj(
       {
         name: { type: "string", description: "one fully-qualified decl name, e.g. CommGroup or Nat.Prime.two_le" },
         names: { type: "array", items: { type: "string" }, description: "a batch of decl names (cap 16) — verify a drafted statement's citations in one call" },
       },
       [],
+    ),
+  },
+  {
+    name: "brain_premises",
+    description:
+      "Premise selection for a drafted proof — use AFTER formal search, never instead of it. " +
+      "Pass 1–8 SEED theorems (fully-qualified decl names: the anchor theorems you found via " +
+      "brain_bridge/brain_search or verified with decl_exists) and get back the ranked union " +
+      "of the premises their stored proofs actually used, each oracle-verified with module + " +
+      "`import_line`. Ranking = how many seeds cite the premise (`score`), then the stored " +
+      "per-seed rank; `via` names the citing seeds. Seeds resolve through the decl oracle " +
+      "first: a dead seed that namespace-resolves uniquely is auto-resolved (noted per seed " +
+      "via `resolved_via`); unresolvable seeds return in `seeds_unknown` rather than failing " +
+      "the call.",
+    inputSchema: obj(
+      {
+        seeds: { type: "array", items: { type: "string" }, description: "1–8 fully-qualified decl names, e.g. ['Nat.ModEq.pow_totient', 'Nat.totient_prime']" },
+        limit: { type: "number", description: "max premises returned (default 20, cap 50)" },
+      },
+      ["seeds"],
     ),
   },
 ];
@@ -283,6 +312,9 @@ const IMPLS = new Map<string, (c: Ctx, a: Record<string, unknown>) => Promise<Ap
   // decl_exists: `names` (array) OR `name` (single) — the batch verifies a drafted
   // statement's 3–8 citations in one round trip (BRIDGE item 1).
   ["decl_exists", (c, a) => declExistsFor(c, argStr(a.name), a.names)],
+  // brain_premises: stored-premise retrieval, seeded with theorems found via
+  // search — joins the loop AFTER formal search (the Bridge finding).
+  ["brain_premises", (c, a) => premisesFor(c, a.seeds, a.limit)],
 
   // v2 alias — dispatch-only, deliberately NOT advertised in TOOLS. An agent
   // session that connected before the cell cut holds the old catalog and will
@@ -534,12 +566,13 @@ body; responses are plain <code>application/json</code> (no SSE, no sessions, no
 <code>initialize</code>, <code>tools/list</code>, <code>tools/call</code>, <code>ping</code>.
 Rate limit: 120 calls/min per IP. Read-only by construction.</p>
 
-<h2>The eight tools</h2>
+<h2>The nine tools</h2>
 <p>The canonical autoformalization loop: <code>brain_bridge</code> (informal statement &rarr;
 existence-verified decls) &rarr; <code>brain_cell</code> (the full atom) &rarr;
 <code>decl_exists</code> (batch: re-verify every name you write) &rarr;
-<code>brain_neighborhood</code> (walk <code>depends</code> across turns; cursored). Every
-response echoes <code>snapshot:{generated_at,pin}</code>.</p>
+<code>brain_neighborhood</code> (walk <code>depends</code> across turns; cursored). Premise
+selection joins the loop <b>after</b> formal search: seed <code>brain_premises</code> with the
+theorems you found. Every response echoes <code>snapshot:{generated_at,pin}</code>.</p>
 <table>
 <tr><th>tool</th><th>what it does</th></tr>
 <tr><td><code>brain_bridge</code></td><td><b>The FIRST call of a formalization loop.</b>
@@ -562,8 +595,10 @@ response echoes <code>snapshot:{generated_at,pin}</code>.</p>
 <tr><td><code>decl_exists</code></td><td>Verify decl names before citing them (existence oracle
   over the decl index). Pass <code>name</code> (one) or <code>names</code> (a batch, cap 16 — a
   drafted statement's 3&ndash;8 citations in one call); each verdict returns module +
-  <code>import_line</code>, and a DEAD name gets a labelled <code>renamed_to</code> suggestion
-  (<code>verified-rename</code> | <code>unique-suffix-match</code>), never a fact.</td></tr>
+  <code>import_line</code>, and a DEAD name gets namespace resolution over the FULL index: a
+  labelled <code>renamed_to</code> suggestion (<code>verified-rename</code> |
+  <code>namespace-resolution</code>, never a fact), <code>namespace_matches</code> when
+  2&ndash;8 decls share the final segment, or a count + hint to qualify when more do.</td></tr>
 <tr><td><code>brain_search</code></td><td>Label search &rarr; atom ids, when all you
   have is approximate text. Matches organ labels too, so "Vector space" finds the
   <b>Module</b> atom.</td></tr>
@@ -578,6 +613,11 @@ response echoes <code>snapshot:{generated_at,pin}</code>.</p>
   <code>f=1</code> every atom holding a gold <code>@[wikidata]</code>-tagged declaration,
   <code>f=17</code> formalized atoms with a gold-tagged formalization. Bit table on the
   <a href="/brain/api">API reference</a>.</td></tr>
+<tr><td><code>brain_premises</code></td><td>Premise selection <b>after</b> formal search:
+  1&ndash;8 seed theorems (decl names you already found) &rarr; the ranked union of the
+  premises their stored proofs used, each oracle-verified with <code>module</code> +
+  <code>import_line</code>; dead seeds namespace-resolve when unique, else land in
+  <code>seeds_unknown</code>.</td></tr>
 </table>
 <p class="muted"><code>brain_unit</code> still answers, as an alias of <code>brain_cell</code> —
 the v2 unit card <em>became</em> the cell card.</p>
@@ -610,7 +650,14 @@ and it is why every pre-v3 id still resolves.</p>
 &rarr; brain_neighborhood {"id": "Q190026", "kinds": "depends"}
 &larr; {"synapses": [{"id": "cell:Q11567", "w": 31, "kinds": {"depends": 31},
       "traces": [{"kind": "depends", "src": "decl:Mathlib:Nat.totient", "dst": "...",
-                  "evidence": {"witnesses": [["Nat.totient_prime", "Nat.Prime"]]}}]}]}</code></pre>
+                  "evidence": {"witnesses": [["Nat.totient_prime", "Nat.Prime"]]}}]}]}
+
+&rarr; brain_premises {"seeds": ["Nat.ModEq.pow_totient", "Nat.totient_prime"]}
+&larr; {"premises": [{"decl": "Nat.totient", "module": "Mathlib.Data.Nat.Totient",
+      "import_line": "import Mathlib.Data.Nat.Totient", "score": 2,
+      "via": ["Nat.ModEq.pow_totient", "Nat.totient_prime"]}, &hellip;],
+      "seeds_resolved": [{"seed": "Nat.ModEq.pow_totient", "decl": "Nat.ModEq.pow_totient"}, &hellip;],
+      "seeds_unknown": []}</code></pre>
 
 <p class="muted">Identical REST twins of every tool live under <code>/api/brain/*</code> —
 full parameter-level documentation on the <a href="/brain/api">Wikibrain API reference</a>.

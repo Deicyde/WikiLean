@@ -9,6 +9,18 @@ Arms (tools are the ONLY difference; model fixed per Jack 2026-07-25):
   U — W ∪ F union tools, NO manual (the bare-union ablation: WF − U
       isolates the manual's contribution on the identical toolset)
 
+ARM-IDENTITY WARNING (tranche #18, brain_premises): the W arm's allowedTools
+is PINNED to the 8 explicit tool names below — the server-level
+`mcp__wikibrain` entry was deliberately REMOVED (review finding) so that
+deploying a new tool (brain_premises, tool #9) can never silently change W's
+effective toolset on a rerun. Never re-add a bare server-level entry to an
+arm: the historical W rows on disk predate brain_premises and stay comparable
+only because the toolset is frozen. The measured evaluation of brain_premises
+is the WP arm (W + brain_premises) against those frozen W rows. Benchmark
+discipline: MathlibMPR is EVAL-ONLY — develop/tune brain_premises against
+LeanDojo Benchmark-4's premise split, never against MPR
+(BRIDGE-V2-BENCHMARKS.md).
+
 Task contract (same for every arm): given a benchmark query, return a JSON
 array of <=10 fully-qualified Mathlib declaration names, most-relevant first,
 as the FINAL message. qr810 = "identify the described declaration";
@@ -72,8 +84,10 @@ TRACE_CAP, INPUT_TRUNC, RESULT_TRUNC = 400, 2000, 4000
 
 ARM_CFG = {
     "N": {"mcp": None, "tools": []},
+    # NO server-level "mcp__wikibrain" entry — the 8 explicit names pin the arm
+    # (see the ARM-IDENTITY WARNING in the module docstring).
     "W": {"mcp": "D", "tools": [
-        "mcp__wikibrain", "mcp__wikibrain__brain_bridge",
+        "mcp__wikibrain__brain_bridge",
         "mcp__wikibrain__brain_search", "mcp__wikibrain__brain_cell",
         "mcp__wikibrain__brain_transfer", "mcp__wikibrain__brain_neighborhood",
         "mcp__wikibrain__brain_snippets", "mcp__wikibrain__brain_filter",

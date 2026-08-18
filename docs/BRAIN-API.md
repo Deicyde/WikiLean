@@ -399,12 +399,34 @@ citations verify in one round trip. Each verdict:
   "counts": { "total": 4, "exists": 1, "renamed": 2, "missing": 1 } }
 ```
 
-A dead name returns a **labelled** suggestion, never a fact:
+A dead name returns a **labelled** suggestion, never a fact. Two bases:
 `suggestion_basis: "verified-rename"` (the agent-and-adversary-verified
-`decl_renames.jsonl`, read off the owning cell's decl organ) or
-`"unique-suffix-match"` (exactly one decl in the brain's decl-organ index shares
-the last segment, then verified to exist against the oracle). Two or more
-suffix candidates ⇒ no suggestion (never force one).
+`decl_renames.jsonl`, read off the owning cell's decl organ), then —
+when no verified rename exists — **namespace resolution**: the name's final
+segment is looked up in the suffix index over the **full 411k-decl universe**
+(`/assets/suffix-index/`, built beside the decl index; it replaces the old
+`"unique-suffix-match"` scan, which covered only the brain's ~19k decl
+organs). Bucket keys are *normalized* (case/punctuation-folded), so candidates
+are first filtered to the query's **exact** final segment; by exact-candidate
+count:
+
+- exactly **1** → `renamed_to` + `suggestion_basis: "namespace-resolution"`
+  (+ `module`, `import_line`), oracle-verified before suggesting;
+- **2–8** → `namespace_matches: [{decl, module}, …]` (each entry
+  oracle-verified) and **no** `renamed_to` — never force one;
+- **>8**, or a storage-capped bucket whose full population is not shipped (hub
+  segments like `mk`, 6k+ names) → `namespace_match_count` plus a `hint`
+  advising a namespace-qualified name.
+
+Suggestion verification is fan-out-bounded per call; a row whose verification
+was cut short by the budget carries `suggestion_truncated: true` (re-check it
+in a smaller batch) rather than a silently weaker answer.
+
+A wrong-namespace citation (`Doset.mk_out_eq_mul` for
+`DoubleCoset.mk_out_eq_mul` — the dominant MPR failure shape) now fixes
+itself in one round trip. All previously-served response fields are unchanged
+(back-compat), and the batch shape is unchanged: a unique resolution counts as
+`renamed`, a match list/count as `missing`.
 
 ### `GET /api/brain/bridge?q=<informal statement>&limit=`
 
@@ -441,6 +463,61 @@ oracle; a dead cited name gets the same labelled `renamed_to` suggestion
 `decl_exists` serves. Honest abstention applies: nothing clearing the floor ⇒
 `match: "none"` with `nearest`. Statement-level embedding transfer stays deferred
 (a slogan compresses away hypotheses), so this ranks by concept labels/aliases.
+
+### `GET /api/brain/premises?seeds=<comma-separated>&limit=`
+
+**Ranked premise retrieval** for a proof under construction: given 1–8 seed
+decl names (the statement's subjects, or premises already in hand), return each
+resolved seed's **stored premise list** and rank the union. MCP twin:
+`brain_premises` `{seeds: […], limit?}`.
+
+- `seeds` — 1..8 fully-qualified Lean decl names (comma-separated over REST, a
+  JSON array over MCP). Each seed resolves through the decl oracle; a dead
+  seed that is unique-namespace-resolvable (see `decl_exists` above) is
+  **auto-resolved and noted**; anything else lands in `seeds_unknown` —
+  reported, never silently dropped.
+- `limit` — default 20, cap 50.
+
+```jsonc
+// GET /api/brain/premises?seeds=Module,Module.Basis&limit=20
+{ "ok": true,
+  "premises": [
+    { "decl": "Finset.sum_comm", "module": "Mathlib.Algebra.BigOperators.Basic",
+      "import_line": "import Mathlib.Algebra.BigOperators.Basic",
+      "score": 2, "via": ["Module", "Module.Basis"] },
+    …
+  ],
+  "seeds_resolved": [ … ],
+  "seeds_unknown": [],
+  "index_pin": { "edges_mtime": "…", "decl_index_etag": "…" } }
+```
+
+Ranking is **(multiplicity across seeds, then stored rank)** — the output
+order IS the ranking hint, and each row's `via` names the seeds that vouch for
+it. Bad input → 400; premise-index manifest missing → 503. The premise data is
+**decl-grain on purpose**: cell-level `depends` synapses cover only 13.8% of
+MathlibMPR gold premises (`bench/analysis/brain_artifact.md`), so
+`brain_neighborhood` walks cannot serve this.
+
+**Data + attribution**: the stored lists derive from **MathNetwork /
+MathlibGraph** (arXiv [2604.24797](https://arxiv.org/abs/2604.24797),
+**Apache-2.0**), filtered and hub-damped at build time; the served asset's
+`manifest.json` records the source, its Mathlib `pin`, the filters and the
+hub-drop list. **Staleness caveat**: the index is a frozen snapshot and
+Mathlib renames decls (~5.5% observed drift in the decl-existence sweep) —
+re-verify every name you cite with `decl_exists`, and trust the response's
+**`index_pin`** `{edges_mtime, decl_index_etag}` — this index's own build
+pin — over any assumption of freshness. (The top-level `snapshot` echo tracks
+the brain **cells** manifest, a different artifact rebuilt on a different
+cadence; it says nothing about the premise index.) The three decl-grain
+indexes rebuild in lockstep with `cd wiki && npm run build:indexes`
+(decl-index → suffix-index → premise-index, one pinned doc-gen4 snapshot —
+the builders refuse mismatched inputs).
+
+**Benchmark discipline**: MathlibMPR is **EVAL-ONLY** for this tool —
+development and tuning run against LeanDojo Benchmark-4's premise split
+(`docs/research/BRIDGE-V2-BENCHMARKS.md`); the measured evaluation is the
+bench **WP arm** (W + `brain_premises`) against the frozen pre-tool W rows.
 
 ### Snapshot echo
 
@@ -489,8 +566,9 @@ the text is exactly the corresponding REST response body.
 | `brain_snippets` | `id` (req) | `/api/brain/snippets` |
 | `brain_filter` | `f` (req), `type?`, `under?`, `limit?`, `cursor?` | `/api/brain/filter` |
 | `decl_exists` | `name` OR `names` (array, cap 16) | `/api/brain/decl` |
+| `brain_premises` | `seeds` (req, array 1–8), `limit?` | `/api/brain/premises` |
 
-**Eight tools**: `brain_bridge` is the composite first call of an
+**Nine tools**: `brain_bridge` is the composite first call of an
 autoformalization loop (below); `brain_cell` replaces `brain_node` +
 `brain_unit` (v3 has no particle nodes, and the unit card became the cell card).
 `brain_unit` remains as a **dispatch-only alias** — not advertised in
@@ -504,10 +582,18 @@ declaration index `GET /decl/<name>` resolves with. Pass `name` (one) or `names`
 (a batch, cap 16 — a drafted statement's 3–8 citations verify in one round
 trip). Each verdict is `{exists, module?, import_line?, docs_url?}`; a DEAD name
 also returns a labelled suggestion — `suggestion_basis: "verified-rename"` (the
-verified rename map, e.g. `Basis` → `Module.Basis`) or `"unique-suffix-match"`
-(one indexed decl shares the last segment; verified against the oracle before
-suggesting) — **never presented as fact**. The batch response adds a `counts`
-summary. Hallucinated/renamed names are the #1 failure mode.
+verified rename map, e.g. `Basis` → `Module.Basis`) or `"namespace-resolution"`
+(the final segment looked up in the full-universe suffix index; unique ⇒
+`renamed_to`, 2–8 ⇒ `namespace_matches`, >8 ⇒ `namespace_match_count` + hint;
+every suggested name is verified against the oracle first) — **never presented
+as fact**. The batch response adds a `counts` summary. Hallucinated/renamed
+names are the #1 failure mode.
+
+`brain_premises` (tool #9, appended last) is the premise-retrieval half of the
+loop: seed it with the decls a drafted statement is ABOUT and it returns the
+stored premises of those decls, ranked across the union (multiplicity, then
+stored rank) — see `GET /api/brain/premises` above for the shape, the
+MathNetwork (Apache-2.0) attribution and the staleness caveats.
 
 **THE CANONICAL LOOP** (autoformalization): `brain_bridge` (informal statement →
 existence-verified decls with signatures + one-hop depends — the FIRST call) →

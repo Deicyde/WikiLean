@@ -68,9 +68,14 @@
    "name": "MathlibGraph (MathNetwork)",
    "homepage": "https://huggingface.co/datasets/MathNetwork/MathlibGraph",
    "layer": "formal",
-   "kind": "Per-edge is_explicit flags on the full Mathlib declaration dependency graph — the explicit (source-visible, non-elaborator-synthesized) subgraph, folded into tree-grain rollups as w_types.exp.",
-   "our_provenance": "Released dataset of 'The Network Structure of Mathlib' (arXiv 2604.24797); catalog/fetch_mathlib_graph.py -> catalog/.cache/mathnetwork/; joined by decl name onto the pinned TheoremGraph snapshot in brain/build_rollups.py.",
-   "target_license": "Apache-2.0"
+   "kind": "Per-edge is_explicit flags on the full Mathlib declaration dependency graph — the explicit (source-visible, non-elaborator-synthesized) subgraph, folded into tree-grain rollups as w_types.exp and into the per-declaration premise lists served at /assets/premise-index/ (the brain_premises tool).",
+   "our_provenance": "Released dataset of 'The Network Structure of Mathlib' (arXiv 2604.24797); catalog/fetch_mathlib_graph.py -> catalog/.cache/mathnetwork/; joined by decl name onto the pinned TheoremGraph snapshot in brain/build_rollups.py, and independently by decl name onto the doc-gen4 decl-index snapshot in wiki/scripts/build-premise-index.ts (filters + hub-drop list recorded in that asset's manifest.json).",
+   "target_license": "Apache-2.0",
+   "pin": {
+    "edges_csv_mtime": "2026-07-03T23:43:32-04:00",
+    "edges_csv_bytes": 753711915,
+    "note": "machine-local cache; the premise-index manifest re-records this pin plus the decl-index etag it was joined against"
+   }
   }
  },
  "crossref_sources": {

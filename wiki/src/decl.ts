@@ -26,6 +26,31 @@ interface Manifest {
 
 // ---- pure logic (unit-tested) ----------------------------------------------
 
+export type DeclPair = [decl: string, module: string];
+
+// A name's final "."-segment — the thing the suffix index is keyed by. Shared
+// by the Worker (brain-api.ts suggestRename) and the index builder
+// (scripts/build-suffix-index.ts): both sides of the bucket contract derive
+// keys from THIS function, so a drift is impossible by construction.
+export function finalSegment(name: string): string {
+  const i = name.lastIndexOf(".");
+  return i === -1 ? name : name.slice(i + 1);
+}
+
+// A suffix-index bucket ships in exactly two shapes (build-suffix-index.ts):
+// the bare entries array (uncapped — total = length), or { total_count,
+// entries } when more than BUCKET_CAP entries exist upstream (total_count
+// uncapped, entries truncated). Builder and Worker share this one type.
+export type SuffixBucket = DeclPair[] | { total_count: number; entries: DeclPair[] };
+
+export function bucketEntries(b: SuffixBucket): DeclPair[] {
+  return Array.isArray(b) ? b : b.entries;
+}
+
+export function bucketTotal(b: SuffixBucket): number {
+  return Array.isArray(b) ? b.length : b.total_count;
+}
+
 // Shard-key normalization — must mirror scripts/build-decl-index.ts exactly:
 // lowercase [a-z0-9], everything else "_", pad short names with "_".
 export function declShardKey(name: string, len: number): string {

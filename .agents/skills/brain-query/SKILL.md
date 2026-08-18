@@ -124,16 +124,27 @@ adversarially reviewed — treat as candidate-quality.
   or https://wikilean.jackmccarthy.org/brain/api
 - Remote MCP for any agent:
   `claude mcp add --transport http wikibrain https://wikilean.jackmccarthy.org/mcp`
-  (tools: brain_bridge, brain_search, brain_cell, brain_transfer,
-  brain_neighborhood, brain_snippets, brain_filter, decl_exists —
-  `brain_unit`/`brain_node` still answer as aliases of `brain_cell`).
+  (nine tools: brain_bridge, brain_search, brain_cell, brain_transfer,
+  brain_neighborhood, brain_snippets, brain_filter, decl_exists,
+  brain_premises — `brain_unit`/`brain_node` still answer as aliases of
+  `brain_cell`).
+
+  | tool | use |
+  |---|---|
+  | `brain_premises` | `{seeds:[1–8 decl names], limit?}` — seed with the theorems you just found (via `brain_bridge`/`brain_search`); their stored proof premises come back ranked (multiplicity, then stored rank), oracle-verified, with `module`+`import_line`. Staleness signal = the response's `index_pin`, not the `snapshot` echo. |
+
 - **The autoformalization loop the remote surface is built for:** `brain_bridge`
   (informal statement → existence-verified decls with signatures, `import_line`,
   bond quality, one-hop `depends` — the FIRST call) → `brain_cell` (the full
   atom) → `decl_exists` (batch `names`, cap 16 — re-verify every name you write)
-  → `brain_neighborhood kinds=depends` (walk the dependency chain across turns;
-  cursored). `decl_exists` on a dead name returns a labelled suggestion
-  (`verified-rename` | `unique-suffix-match`), never a fact. **Honest
+  → `brain_premises` (seed with the theorems found above for their ranked stored
+  premises) → `brain_neighborhood kinds=depends` (walk the dependency chain
+  across turns; cursored). `decl_exists` on a dead name returns a labelled
+  suggestion, never a fact: `renamed_to` + `suggestion_basis`
+  (`verified-rename` | `namespace-resolution`), or — when several decls share
+  the name's exact final segment — an oracle-verified `namespace_matches` list
+  (2–8) or a `namespace_match_count` + qualification hint (>8 / capped hub
+  segments like `mk`). **Honest
   abstention**: `brain_bridge`/`brain_transfer` carry a `match` + `confidence_floor`
   and return `match:"none"` + `nearest` rather than forcing a weak grounding; a
   non-exact best hit adds a `note` ("Module generalizes Vector space"). **Every**
