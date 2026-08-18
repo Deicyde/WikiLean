@@ -24,6 +24,22 @@
     },
     {
       "kind": "definition",
+      "label": "Pointwise convergence",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "pointwise convergence of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.Tendsto",
+        "module": "Mathlib.Order.Filter.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Pointwise convergence of a sequence of functions is `∀ x, Filter.Tendsto (fun n => F n x) atTop (𝓝 (f x))`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Uniform convergence",
       "anchor": {
         "section": "Definition",
@@ -376,8 +392,24 @@
         "match_kind": "exact"
       },
       "note": "`TendstoLocallyUniformlyOn.differentiableOn` formalizes the result that a locally uniform limit of holomorphic (= complex-analytic) functions on an open set is holomorphic.",
-      "provenance": "ai-agent1",
+      "provenance": "ai",
       "id": "d7587a7d7f36"
+    },
+    {
+      "kind": "theorem",
+      "label": "Morera's theorem",
+      "anchor": {
+        "section": "To analyticity",
+        "snippet": "Using Morera's Theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.IsConservativeOn.isExactOn_ball",
+        "module": "Mathlib.Analysis.Complex.HasPrimitives",
+        "match_kind": "exact"
+      },
+      "note": "Morera's theorem for a disk is `Complex.IsConservativeOn.isExactOn_ball` in `Mathlib.Analysis.Complex.HasPrimitives` (with `IsConservativeOn.isExactOn_univ` for the whole plane).",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -667,6 +699,38 @@
       "note": "A uniform limit of uniformly continuous functions is uniformly continuous, formalized by (uniform-convergence + `UniformContinuous` hypotheses) yielding `UniformContinuous` on the limit.",
       "provenance": "ai",
       "id": "4838c44acc26"
+    },
+    {
+      "kind": "definition",
+      "label": "Convergence in measure",
+      "anchor": {
+        "section": "Almost uniform convergence",
+        "snippet": "convergence in measure"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.TendstoInMeasure",
+        "module": "Mathlib.MeasureTheory.Function.ConvergenceInMeasure",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureTheory.TendstoInMeasure` formalizes convergence in measure, one of the two modes almost-uniform convergence implies.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fréchet space (uniform convergence on compacts)",
+      "anchor": {
+        "section": "Function spaces",
+        "snippet": "making"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "UniformOnFun",
+        "module": "Mathlib.Topology.UniformSpace.UniformConvergenceTopology",
+        "match_kind": "generalization"
+      },
+      "note": "The Fréchet-space topology of uniform convergence on compact subsets is the `UniformOnFun` topology with the family of compact sets; Mathlib treats it via seminorms/uniformities rather than as a single named Fréchet-space instance.",
+      "provenance": "ai"
     }
   ]
 }

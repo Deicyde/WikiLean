@@ -109,6 +109,22 @@
     },
     {
       "kind": "definition",
+      "label": "Linearity",
+      "anchor": {
+        "section": "Linear vs. nonlinear",
+        "snippet": "If all the operators in a mathematical model exhibit linearity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLinearMap",
+        "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Linearity of a map between modules is captured by `IsLinearMap` / `LinearMap` in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Linearization",
       "anchor": {
         "section": "Linear vs. nonlinear",
@@ -276,6 +292,22 @@
       "note": "Mathlib has probability theory and stochastic processes but no general definition of a 'stochastic model' as described.",
       "provenance": "ai",
       "id": "895fffee4a84"
+    },
+    {
+      "kind": "definition",
+      "label": "Probability distribution",
+      "anchor": {
+        "section": "Deterministic vs. probabilistic (stochastic)",
+        "snippet": "but rather by probability distributions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.ProbabilityMeasure",
+        "module": "Mathlib.MeasureTheory.Measure.ProbabilityMeasure",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib formalizes probability distributions as `ProbabilityMeasure` (measures of total mass one) and via `PMF` for the discrete case.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -517,6 +549,22 @@
     },
     {
       "kind": "definition",
+      "label": "Cross-validation",
+      "anchor": {
+        "section": "Training, tuning, and fitting",
+        "snippet": "and often uses cross-validation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Statistical resampling technique for evaluating models; not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Interpolation and extrapolation",
       "anchor": {
         "section": "Scope of the model",
@@ -701,6 +749,22 @@
       "note": "Mathlib formalizes the Kleene star on formal languages via the `KStar (Language α)` instance characterized by `Language.kstar_def`.",
       "provenance": "ai",
       "id": "a04fe70a010c"
+    },
+    {
+      "kind": "definition",
+      "label": "Regular language",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "is the regular language given by the regular expression"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Language.IsRegular",
+        "module": "Mathlib.Computability.DFA",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib formalizes regular languages as those accepted by some DFA via `Language.IsRegular` in `Mathlib.Computability.DFA`.",
+      "provenance": "ai"
     },
     {
       "kind": "example",

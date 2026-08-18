@@ -173,20 +173,6 @@
       },
       "note": "`CoreHomEquiv` + `Adjunction.mkOfHomEquiv` build an adjunction from a natural family of hom-set bijections.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definition via hom-sets",
-          "snippet": "can be defined as consisting of two functors"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\Phi :\\mathrm {Hom} _{\\mathcal {C}}(F-,-)\\to \\mathrm {Hom} _{\\mathcal {D}}(-,G-).}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\Phi _{Y,X}:\\mathrm {Hom} _{\\mathcal {C}}(FY,X)\\to \\mathrm {Hom} _{\\mathcal {D}}(Y,GX)}"
-        }
-      ],
       "id": "e5d3a80ad887"
     },
     {
@@ -204,24 +190,6 @@
       },
       "note": "Mathlib's primitive `Adjunction` structure is exactly the counit–unit definition (fields `unit`, `counit`, triangle identities).",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definition via counit–unit",
-          "snippet": "A third way of defining an adjunction between two categories"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}\\varepsilon &amp;:FG\\to 1_{\\mathcal {C}}\\\\\\eta &amp;:1_{\\mathcal {D}}\\to GF\\end{aligned}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle F\\xrightarrow {\\overset {}{\\;F\\eta \\;}} FGF\\xrightarrow {\\overset {}{\\;\\varepsilon F\\,}} F}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle G\\xrightarrow {\\overset {}{\\;\\eta G\\;}} GFG\\xrightarrow {\\overset {}{\\;G\\varepsilon \\,}} G}"
-        }
-      ],
       "id": "8f88821afb2f"
     },
     {
@@ -489,10 +457,10 @@
       "status": "partial",
       "mathlib": {
         "decl": "Polynomial.aeval",
-        "module": "Mathlib.Algebra.Polynomial.Eval",
+        "module": "Mathlib.Algebra.Polynomial.AlgebraMap",
         "match_kind": null
       },
-      "note": "The universal property of `R[x]` (evaluation) is formalized, but the adjunction with a category of pointed rings is not.",
+      "note": "The universal property of `R[x]` (evaluation via `Polynomial.aeval`) is formalized, but the adjunction with a category of pointed rings is not.",
       "provenance": "ai",
       "id": "0290d6df8786"
     },
@@ -698,16 +666,6 @@
       },
       "note": "`Equivalence.toAdjunction` turns the equivalence's functor/inverse into an adjoint pair.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Category theory",
-          "snippet": "the two functors F and G form an adjoint pair"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}\\varepsilon '&amp;=\\varepsilon \\circ (F\\eta ^{-1}G)\\circ (FG\\varepsilon ^{-1})\\\\\\eta '&amp;=(GF\\eta ^{-1})\\circ (G\\varepsilon ^{-1}F)\\circ \\eta \\end{aligned}}}"
-        }
-      ],
       "id": "a9402d9006c3"
     },
     {
@@ -725,16 +683,6 @@
       },
       "note": "`ConnectedComponents` and the bijection `typeToCatHomEquiv` give the π₀ ⊣ discrete hom-set adjunction, but it is not packaged as a `Cat`-level `Adjunction`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Category theory",
-          "snippet": "which assigns to a category its set of connected components is left-adjoint"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}\\varepsilon '&amp;=\\varepsilon \\circ (F\\eta ^{-1}G)\\circ (FG\\varepsilon ^{-1})\\\\\\eta '&amp;=(GF\\eta ^{-1})\\circ (G\\varepsilon ^{-1}F)\\circ \\eta \\end{aligned}}}"
-        }
-      ],
       "id": "869db1727bb4"
     },
     {
@@ -752,16 +700,6 @@
       },
       "note": "`ihom.adjunction` with `MonoidalClosed.curry`/`uncurry` gives the currying adjunction; cartesian closed categories are the cartesian-monoidal special case (`CartesianClosed`).",
       "provenance": "ai-moderated",
-      "anchors": [
-        {
-          "section": "Category theory",
-          "snippet": "This pair is often referred to as currying and uncurrying"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}\\varepsilon '&amp;=\\varepsilon \\circ (F\\eta ^{-1}G)\\circ (FG\\varepsilon ^{-1})\\\\\\eta '&amp;=(GF\\eta ^{-1})\\circ (G\\varepsilon ^{-1}F)\\circ \\eta \\end{aligned}}}"
-        }
-      ],
       "id": "e22336f295b6"
     },
     {
@@ -779,36 +717,6 @@
       },
       "note": "The poset-level existential adjoint `Set.image_preimage` exists, but the hyperdoctrine framing of ∃/∀ as adjoints to the pullback functor is not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Categorical logic",
-          "snippet": "quantifiers are identified with adjoints to the pullback functor"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\{y\\in Y\\mid \\exists x.\\,\\psi _{f}(x,y)\\land \\phi _{S}(x)\\}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f^{*}:{\\text{Sub}}(Y)\\longrightarrow {\\text{Sub}}(X)}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\operatorname {Hom} }(\\exists _{f}S,T)\\cong {\\operatorname {Hom} }(S,f^{*}T),}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\exists _{f}S\\subseteq T\\leftrightarrow S\\subseteq f^{-1}[T].}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\exists _{f}S=\\{y\\in Y\\mid \\exists (x\\in f^{-1}[\\{y\\}]).\\,x\\in S\\;\\}=f[S].}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\forall _{f}S=\\{y\\in Y\\mid \\forall (x\\in f^{-1}[\\{y\\}]).\\,x\\in S\\;\\}.}"
-        }
-      ],
       "id": "85c9ed0bf918"
     },
     {
@@ -826,36 +734,6 @@
       },
       "note": "`Set.image_preimage : GaloisConnection (image f) (preimage f)` is the direct-image-left-adjoint-to-preimage as a poset adjunction.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Categorical logic",
-          "snippet": "the category of sets and functions"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\{y\\in Y\\mid \\exists x.\\,\\psi _{f}(x,y)\\land \\phi _{S}(x)\\}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f^{*}:{\\text{Sub}}(Y)\\longrightarrow {\\text{Sub}}(X)}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\operatorname {Hom} }(\\exists _{f}S,T)\\cong {\\operatorname {Hom} }(S,f^{*}T),}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\exists _{f}S\\subseteq T\\leftrightarrow S\\subseteq f^{-1}[T].}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\exists _{f}S=\\{y\\in Y\\mid \\exists (x\\in f^{-1}[\\{y\\}]).\\,x\\in S\\;\\}=f[S].}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\forall _{f}S=\\{y\\in Y\\mid \\forall (x\\in f^{-1}[\\{y\\}]).\\,x\\in S\\;\\}.}"
-        }
-      ],
       "id": "9eece214aefe"
     },
     {
@@ -924,24 +802,6 @@
       },
       "note": "`Adjunction.homEquiv` constructs the natural hom-set bijection from the unit/counit (with `homEquiv_unit`/`homEquiv_counit`).",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "counit–unit adjunction induces hom-set adjunction",
-          "snippet": "we can construct a hom-set adjunction by finding the natural transformation"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}\\Phi _{Y,X}(f)=G(f)\\circ \\eta _{Y}\\\\\\Psi _{Y,X}(g)=\\varepsilon _{X}\\circ F(g)\\end{aligned}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}\\Psi \\Phi f&amp;=\\varepsilon _{X}\\circ FG(f)\\circ F(\\eta _{Y})\\\\&amp;=f\\circ \\varepsilon _{FY}\\circ F(\\eta _{Y})\\\\&amp;=f\\circ 1_{FY}=f\\end{aligned}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}\\Phi \\Psi g&amp;=G(\\varepsilon _{X})\\circ GF(g)\\circ \\eta _{Y}\\\\&amp;=G(\\varepsilon _{X})\\circ \\eta _{GX}\\circ g\\\\&amp;=1_{GX}\\circ g=g\\end{aligned}}}"
-        }
-      ],
       "id": "5b8be172d359"
     },
     {
@@ -959,24 +819,6 @@
       },
       "note": "`Adjunction.mkOfHomEquiv` produces the unit and counit (and triangle identities) from a natural hom-set equivalence.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Hom-set adjunction induces all of the above",
-          "snippet": "which defines families of initial and terminal morphisms"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}\\Phi _{Y,X}(f)=G(f)\\circ \\eta _{Y}\\\\\\Phi _{Y,X}^{-1}(g)=\\varepsilon _{X}\\circ F(g)\\end{aligned}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle 1_{FY}=\\varepsilon _{FY}\\circ F(\\eta _{Y}),}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle 1_{GX}=G(\\varepsilon _{X})\\circ \\eta _{GX}.}"
-        }
-      ],
       "id": "602df092fcf1"
     },
     {
@@ -1045,16 +887,6 @@
       },
       "note": "`ofNatIsoRight` (and `ofNatIsoLeft`) transport an adjunction along a natural isomorphism of either functor.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Uniqueness",
-          "snippet": "then F is also left adjoint to G ′"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}\\eta '&amp;=(\\tau \\ast \\sigma )\\circ \\eta \\\\\\varepsilon '&amp;=\\varepsilon \\circ (\\sigma ^{-1}\\ast \\tau ^{-1}).\\end{aligned}}}"
-        }
-      ],
       "id": "ac2f4e69e63d"
     },
     {
@@ -1072,24 +904,6 @@
       },
       "note": "`Adjunction.comp` composes `F ⊣ G` and `H ⊣ I` to `F ⋙ H ⊣ I ⋙ G`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Composition",
-          "snippet": "Adjunctions can be composed in a natural fashion."
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle F\\circ F':E\\rightarrow C}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle G'\\circ G:C\\to E.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}&amp;1_{\\mathcal {E}}{\\xrightarrow {\\eta '}}G'F'{\\xrightarrow {G'\\eta F'}}G'GFF'\\\\&amp;FF'G'G{\\xrightarrow {F\\varepsilon 'G}}FG{\\xrightarrow {\\varepsilon }}1_{\\mathcal {C}}.\\end{aligned}}}"
-        }
-      ],
       "id": "eb88f2f49277"
     },
     {
@@ -1209,24 +1023,6 @@
       },
       "note": "`Adjunction.toMonad` builds the monad `G ⋙ F` from `L ⊣ R` (and `toComonad` dually).",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Monads",
-          "snippet": "gives rise to an associated monad"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle T:{\\mathcal {D}}\\to {\\mathcal {D}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\eta :1_{\\mathcal {D}}\\to T}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\mu :T^{2}\\to T\\,}"
-        }
-      ],
       "id": "9f3882b8dc2b"
     },
     {
@@ -1247,34 +1043,52 @@
       "id": "617a718459ee"
     },
     {
-      "status": "formalized",
       "kind": "definition",
-      "mathlib": {
-        "decl": "Ideal.isPrime",
-        "module": null,
-        "match_kind": null
-      },
-      "provenance": "human",
+      "label": "Counit and unit of an adjunction",
       "anchor": {
-        "section": "(Lead)",
-        "snippet": "and, for all objects c in C"
+        "section": "Definition via counit–unit",
+        "snippet": "respectively called the counit and the unit of the adjunction"
       },
-      "id": "e814e5b6cdc2"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Adjunction.unit",
+        "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Adjunction.unit : 𝟭 D ⟶ F ⋙ G` and `Adjunction.counit : G ⋙ F ⟶ 𝟭 C` are the unit/counit natural transformations of an adjunction.",
+      "provenance": "ai"
     },
     {
-      "status": "formalized",
-      "kind": "definition",
-      "mathlib": {
-        "decl": "Ideal.isPrime",
-        "module": "Mathlib",
-        "match_kind": null
-      },
-      "provenance": "human",
+      "kind": "example",
+      "label": "Eilenberg–Moore and Kleisli adjunctions",
       "anchor": {
-        "section": "(Lead)",
-        "snippet": "and, for all objects c in C"
+        "section": "Monads",
+        "snippet": "the category of Eilenberg–Moore algebras and the Kleisli category"
       },
-      "id": "c51ef8cfb6b4"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Monad.adj",
+        "module": "Mathlib.CategoryTheory.Monad.Algebra",
+        "match_kind": "exact"
+      },
+      "note": "`Monad.adj : T.free ⊣ T.forget` is the Eilenberg–Moore adjunction; `Kleisli.Adjunction.adj` gives the Kleisli adjunction — the two extremal resolutions of a monad.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Free monoid functor",
+      "anchor": {
+        "section": "Free constructions and forgetful functors",
+        "snippet": "which assigns to an algebraic object its underlying set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MonCat.adj",
+        "module": "Mathlib.Algebra.Category.MonCat.Adjunctions",
+        "match_kind": "exact"
+      },
+      "note": "`MonCat.adj : free ⊣ forget MonCat` is a representative free⊣forgetful adjunction (analogous adjunctions exist for `AddCommGrp`, `ModuleCat`, etc.).",
+      "provenance": "ai"
     }
   ]
 }

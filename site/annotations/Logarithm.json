@@ -1102,6 +1102,182 @@
       "note": "No polylogarithm function `Li_s(z) = ∑ z^k/k^s` is defined in Mathlib.",
       "provenance": "ai",
       "id": "19c4abf3c14a"
+    },
+    {
+      "kind": "proposition",
+      "label": "log_b b^y = y (Motivation)",
+      "anchor": {
+        "section": "Motivation",
+        "snippet": "is equivalent to"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.logb_rpow",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Base",
+        "match_kind": "exact"
+      },
+      "note": "`Real.logb_rpow : 1 < b → logb b (b ^ y) = y` formalizes the exponent-inverse relation stated in Motivation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Log-normal distribution",
+      "anchor": {
+        "section": "Probability theory and statistics",
+        "snippet": "Logarithms also occur in log-normal distributions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `logNormal` measure/distribution is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Law of large numbers",
+      "anchor": {
+        "section": "Probability theory and statistics",
+        "snippet": "the law of large numbers dictates that, for a fair coin"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.strong_law_ae",
+        "module": "Mathlib.Probability.StrongLaw",
+        "match_kind": "exact"
+      },
+      "note": "`ProbabilityTheory.strong_law_ae` formalizes the strong law of large numbers for iid random variables.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Law of the iterated logarithm",
+      "anchor": {
+        "section": "Probability theory and statistics",
+        "snippet": "The fluctuations of this proportion about one-half are described by the law of the iterated logarithm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the law of the iterated logarithm is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Benford's law",
+      "anchor": {
+        "section": "Probability theory and statistics",
+        "snippet": "Benford's law describes the occurrence of digits in many data sets"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Benford's law and the digit distribution `log10(d+1) - log10(d)` are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Riemann zeta function",
+      "anchor": {
+        "section": "Related concepts",
+        "snippet": "the Riemann zeta function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "riemannZeta",
+        "module": "Mathlib.NumberTheory.LSeries.RiemannZeta",
+        "match_kind": "exact"
+      },
+      "note": "`riemannZeta s` is defined in Mathlib as the analytic continuation of `∑ 1/n^s`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Riemann hypothesis",
+      "anchor": {
+        "section": "Number theory",
+        "snippet": "The Riemann hypothesis , one of the oldest open mathematical conjectures"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Riemann hypothesis is an open conjecture and is not proved in Mathlib; only the statement's ingredients (`riemannZeta`) are available.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Binary search log_2(N) comparisons",
+      "anchor": {
+        "section": "Computational complexity",
+        "snippet": "This algorithm requires, on average, log 2 ( N ) comparisons"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A `log₂ N` complexity bound for binary search is not stated as a lemma in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Merge sort N log N complexity",
+      "anchor": {
+        "section": "Computational complexity",
+        "snippet": "Merge sort algorithms typically require a time approximately proportional to N"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `N log N` complexity analysis of `List.mergeSort` is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Haar measure dx/x on the positive reals",
+      "anchor": {
+        "section": "Related concepts",
+        "snippet": "the Haar measure ( Lebesgue measure ) dx on the reals corresponds to the Haar measure dx / x on the positive reals"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.haarMeasure",
+        "module": "Mathlib.MeasureTheory.Measure.Haar.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has general Haar measure and the log-pushforward machinery, but the specific correspondence `dx ↔ dx/x` on (ℝ>0,·) is not a named lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Logarithmic one-form",
+      "anchor": {
+        "section": "Related concepts",
+        "snippet": "Logarithmic one-forms df / f appear in complex analysis and algebraic geometry"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Differential forms with logarithmic poles are not formalized in Mathlib.",
+      "provenance": "ai"
     }
   ]
 }

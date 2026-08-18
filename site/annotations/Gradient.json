@@ -18,7 +18,7 @@
         "module": "Mathlib.Analysis.Calculus.Gradient.Basic",
         "match_kind": "exact"
       },
-      "note": "`gradient f x` is the Mathlib definition of the gradient of a scalar-valued differentiable function on a Hilbert space.",
+      "note": "`gradient f x := (InnerProductSpace.toDual 𝕜 F).symm (fderiv 𝕜 f x)` is Mathlib's gradient of a scalar-valued differentiable function on a Hilbert space.",
       "provenance": "ai",
       "id": "bc18bd92cc37"
     },
@@ -35,7 +35,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No `steepest`/`fastest` ascent characterization of the gradient is stated in Mathlib's `Gradient` API.",
+      "note": "No steepest/fastest-ascent characterization of the gradient is stated in Mathlib's Gradient API.",
       "provenance": "ai",
       "id": "6ba656b983d8"
     },
@@ -52,7 +52,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib has no `IsCritical`/`StationaryPt`/`CriticalPt` definition for zeros of the gradient.",
+      "note": "Mathlib has no `StationaryPt`/`CriticalPt` definition for zeros of the gradient.",
       "provenance": "ai",
       "id": "870b9f03f2ce"
     },
@@ -67,10 +67,10 @@
       "mathlib": {
         "decl": "fderiv_pi",
         "module": "Mathlib.Analysis.Calculus.FDeriv.Prod",
-        "match_kind": null
+        "match_kind": "generalization"
       },
       "note": "Mathlib defines `gradient` abstractly via Riesz duality; the component/partial-derivative formula is only implicit through tools like `fderiv_pi`, not as a named `gradient` formula.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "b97d9c0f3ff8"
     },
     {
@@ -375,7 +375,7 @@
         "module": "Mathlib.Analysis.Calculus.Gradient.Basic",
         "match_kind": "exact"
       },
-      "note": "`hasGradientAt_iff_isLittleO` states `f x' = f x + ⟪f', x' - x⟫ + o(x' - x)`, the gradient linear approximation.",
+      "note": "`hasGradientAt_iff_isLittleO` states `f x' - f x - ⟪f', x' - x⟫ = o(x' - x)`, the gradient linear-approximation identity.",
       "provenance": "ai",
       "id": "8fffc70978fe"
     },
@@ -596,7 +596,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No `steepest`/`fastest` ascent theorem about the gradient is present in Mathlib.",
+      "note": "No steepest/fastest-ascent theorem about the gradient is present in Mathlib.",
       "provenance": "ai",
       "id": "996bd94a379e"
     },
@@ -681,7 +681,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib's Riemannian-manifold development (`Mathlib.Geometry.Manifold.Riemannian.*`) does not yet contain a gradient definition for smooth scalar functions.",
+      "note": "Mathlib's Riemannian-manifold development does not yet contain a gradient definition for smooth scalar functions.",
       "provenance": "ai",
       "id": "cd2153cd50f3"
     },
@@ -701,6 +701,38 @@
       "note": "Mathlib has no musical-isomorphism (`♯`/`♭`) machinery on Riemannian manifolds, so `grad f = (df)^♯` is not formalized.",
       "provenance": "ai",
       "id": "d2155d2fc537"
+    },
+    {
+      "kind": "definition",
+      "label": "Directional derivative (definition used)",
+      "anchor": {
+        "section": "Gradient is direction of steepest ascent",
+        "snippet": "With the directional derivative defined as"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "lineDeriv",
+        "module": "Mathlib.Analysis.Calculus.LineDeriv.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `lineDeriv` captures the limit definition of the directional derivative used here, though not phrased in terms of the gradient.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cauchy–Schwarz bound on directional derivative",
+      "anchor": {
+        "section": "Gradient is direction of steepest ascent",
+        "snippet": "bounded from above by the Cauchy–Schwarz inequality"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "norm_inner_le_norm",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Cauchy–Schwarz is `norm_inner_le_norm : ‖⟪x,y⟫‖ ≤ ‖x‖ * ‖y‖`; the specialization bounding `⟪∇f, v⟫` via `‖∇f‖` is not stated for the gradient in Mathlib.",
+      "provenance": "ai"
     }
   ]
 }

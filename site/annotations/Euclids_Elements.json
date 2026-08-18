@@ -52,7 +52,7 @@
         "module": "Mathlib.Geometry.Euclidean.Triangle",
         "match_kind": "exact"
       },
-      "note": "Mathlib's EuclideanGeometry.angle_eq_angle_of_dist_eq states that if dist p₁ p₂ = dist p₁ p₃ then angle p₁ p₂ p₃ = angle p₁ p₃ p₂, the pons asinorum.",
+      "note": "Verified: EuclideanGeometry.angle_eq_angle_of_dist_eq states dist p₁ p₂ = dist p₁ p₃ → angle p₁ p₂ p₃ = angle p₁ p₃ p₂, the pons asinorum.",
       "provenance": "ai",
       "id": "76ecea39726d"
     },
@@ -69,7 +69,7 @@
         "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.RightAngle",
         "match_kind": "generalization"
       },
-      "note": "Mathlib formalizes the Pythagorean theorem in inner-product/Euclidean form as an iff with the right-angle condition.",
+      "note": "Verified: Mathlib formalizes the Pythagorean theorem in inner-product/Euclidean form as an iff with the right-angle condition.",
       "provenance": "ai",
       "id": "764d4483eb8f"
     },
@@ -86,7 +86,7 @@
         "module": "Mathlib.NumberTheory.Real.GoldenRatio",
         "match_kind": "exact"
       },
-      "note": "Mathlib defines Real.goldenRatio := (1 + √5)/2 together with its irrationality and algebraic identities.",
+      "note": "Verified: Real.goldenRatio := (1 + √5)/2 with its irrationality and algebraic identities.",
       "provenance": "ai",
       "id": "c9c467bfca19"
     },
@@ -103,7 +103,7 @@
         "module": "Mathlib.Geometry.Euclidean.Angle.Sphere",
         "match_kind": "exact"
       },
-      "note": "Mathlib states the central-angle = 2·inscribed-angle relation for oriented angles on a circle.",
+      "note": "Verified: Mathlib states the central-angle = 2·inscribed-angle relation for oriented angles on a circle.",
       "provenance": "ai",
       "id": "98264284fa51"
     },
@@ -120,7 +120,7 @@
         "module": "Mathlib.Geometry.Euclidean.Angle.Sphere",
         "match_kind": "exact"
       },
-      "note": "Mathlib's Thales' theorem states angle p₁ p₂ p₃ = π/2 iff p₂ lies on the sphere with diameter p₁p₃.",
+      "note": "Verified: angle p₁ p₂ p₃ = π/2 iff p₂ lies on the sphere with diameter p₁p₃.",
       "provenance": "ai",
       "id": "8b83f731271b"
     },
@@ -137,7 +137,7 @@
         "module": "Mathlib.Geometry.Euclidean.Sphere.Power",
         "match_kind": "exact"
       },
-      "note": "Mathlib formalizes the intersecting chords theorem via cospherical points and the power-of-a-point file.",
+      "note": "Verified: intersecting chords theorem stated via cospherical points and the power-of-a-point file.",
       "provenance": "ai",
       "id": "2bef93b09634"
     },
@@ -154,7 +154,7 @@
         "module": "Mathlib.Geometry.Euclidean.Sphere.Power",
         "match_kind": "exact"
       },
-      "note": "Mathlib's Sphere.Power file proves the tangent–secant theorem.",
+      "note": "Verified: Sphere.Power file proves the tangent–secant theorem.",
       "provenance": "ai",
       "id": "2b836fe27320"
     },
@@ -222,7 +222,7 @@
         "module": "Mathlib.Data.Nat.Prime.Infinite",
         "match_kind": "exact"
       },
-      "note": "Nat.exists_infinite_primes proves that for every n there is a prime p ≥ n, the standard form of Euclid's theorem.",
+      "note": "Verified: Nat.exists_infinite_primes gives ∀ n, ∃ p ≥ n, p prime — Euclid's theorem.",
       "provenance": "ai",
       "id": "b07c197005df"
     },
@@ -239,7 +239,7 @@
         "module": "Mathlib.Algebra.Field.GeomSum",
         "match_kind": "exact"
       },
-      "note": "geom_sum_eq gives ∑ xⁱ = (xⁿ − 1)/(x − 1) in a field, the standard finite geometric-series formula (verified module is Mathlib.Algebra.Field.GeomSum).",
+      "note": "Verified: geom_sum_eq gives ∑ xⁱ = (xⁿ − 1)/(x − 1) in a field, the standard finite geometric-series formula.",
       "provenance": "ai-moderated",
       "id": "747957e93ad3"
     },
@@ -256,7 +256,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "decl_exists confirms Nat.Perfect.two_pow_mul_mersenne_of_prime does not exist; Mathlib has Nat.Perfect and mersenne but no theorem that 2^(p−1)·(2^p−1) is perfect when 2^p−1 is prime.",
+      "note": "Semantic search confirms Mathlib has Nat.Perfect and mersenne but no theorem that 2^(p−1)·(2^p−1) is perfect when 2^p−1 is prime.",
       "provenance": "ai-moderated",
       "id": "928720baa2b2"
     },
@@ -273,7 +273,7 @@
         "module": "Mathlib.NumberTheory.Divisors",
         "match_kind": "exact"
       },
-      "note": "Nat.Perfect n is defined exactly as the proper-divisor sum equalling n with n positive.",
+      "note": "Verified: Nat.Perfect n is defined as the proper-divisor sum equalling n with n positive.",
       "provenance": "ai",
       "id": "755fc640e82f"
     },
@@ -307,7 +307,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "decl_exists confirms Nat.even_and_perfect_iff does not exist; semantic search shows no Mathlib decl characterizes even perfect numbers via Mersenne primes.",
+      "note": "Semantic search shows no Mathlib decl characterizes even perfect numbers via Mersenne primes.",
       "provenance": "ai-moderated",
       "id": "d34bb58db9d4"
     },
@@ -324,7 +324,7 @@
         "module": "Mathlib.NumberTheory.Real.Irrational",
         "match_kind": "exact"
       },
-      "note": "Irrational (√z) ↔ ¬IsSquare z for nonneg integers, which is precisely Book X Prop 9.",
+      "note": "Verified: Irrational (√z) ↔ ¬IsSquare z for nonneg integers — Book X Prop 9.",
       "provenance": "ai",
       "id": "03e5064b8c57"
     },
@@ -341,7 +341,7 @@
         "module": "Mathlib.NumberTheory.PythagoreanTriples",
         "match_kind": "exact"
       },
-      "note": "Mathlib classifies primitive Pythagorean triples in the (m²−n², 2mn, m²+n²) form attributed to Euclid.",
+      "note": "Verified: Mathlib classifies primitive Pythagorean triples in the (m²−n², 2mn, m²+n²) Euclidean form.",
       "provenance": "ai",
       "id": "c10f1d4e7b78"
     },
@@ -375,7 +375,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No declaration of cone volume = (1/3)·cylinder volume appears in Mathlib.",
+      "note": "Semantic search returns only ball-volume and category-theory 'cone' hits; no cone-vs-cylinder volume theorem exists.",
       "provenance": "ai",
       "id": "f410ea851e19"
     },
@@ -392,7 +392,7 @@
         "module": "Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls",
         "match_kind": "generalization"
       },
-      "note": "Mathlib computes the Lebesgue volume of the 3-dimensional Euclidean ball, exhibiting the r³ proportionality.",
+      "note": "Verified: Mathlib computes vol(ball) = r³ · (4π/3) in ℝ³, exhibiting the r³ proportionality.",
       "provenance": "ai",
       "id": "3500a2760720"
     },
@@ -487,7 +487,7 @@
         "module": "Mathlib.Data.Nat.GCD.Basic",
         "match_kind": "exact"
       },
-      "note": "Mathlib defines Nat.gcd by the Euclidean recursion gcd a b = gcd (b % a) a and proves the standard correctness lemmas (Nat.gcd_dvd_left, Nat.dvd_gcd, etc.).",
+      "note": "Verified: Nat.gcd is defined by the Euclidean recursion gcd a b = gcd (b % a) a and its correctness lemmas (Nat.gcd_dvd_left, Nat.dvd_gcd) live in Mathlib's GCD/Basic.",
       "provenance": "ai",
       "id": "aebc0ce23db9"
     },
@@ -504,7 +504,7 @@
         "module": "Mathlib.Geometry.Euclidean.Triangle",
         "match_kind": "generalization"
       },
-      "note": "Mathlib formalizes the law of cosines in inner-product space form, generalizing Euclid's geometric precursor in Book II (Propositions 12–13).",
+      "note": "Verified: Mathlib formalizes the law of cosines in inner-product form, generalizing Book II Props 12–13.",
       "provenance": "ai",
       "id": "363a54672206"
     },
@@ -606,7 +606,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Pasch's axiom — that a line entering a triangle through one side must exit through another — is not stated synthetically in Mathlib, though Wbtw/Sbtw betweenness primitives exist.",
+      "note": "Pasch's axiom — that a line entering a triangle through one side must exit through another — is not stated synthetically in Mathlib, though Wbtw/Sbtw betweenness primitives and sbtw_of_sbtw_of_sbtw_of_mem_affineSpan_pair exist.",
       "provenance": "ai",
       "id": "47e0de4b20ce"
     },
@@ -623,7 +623,7 @@
         "module": "Mathlib.NumberTheory.Real.Irrational",
         "match_kind": "generalization"
       },
-      "note": "Mathlib's Nat.Prime.irrational_sqrt yields irrationality of √p for every prime p, in particular √2; a specialised irrational_sqrt_two corollary is also available.",
+      "note": "Verified: Nat.Prime.irrational_sqrt yields irrationality of √p for every prime p, in particular √2.",
       "provenance": "ai",
       "id": "1232c5b7ff73"
     },
@@ -725,7 +725,7 @@
         "module": "Mathlib.Geometry.Euclidean.Angle.Sphere",
         "match_kind": "exact"
       },
-      "note": "Same Mathlib decl as for Book III Prop. 31; Thales' theorem is that an angle inscribed in a semicircle is a right angle.",
+      "note": "Verified: same decl as Book III Prop. 31; Thales' theorem is that an angle inscribed in a semicircle is a right angle.",
       "provenance": "ai",
       "id": "9141c22c1e6c"
     },
@@ -762,6 +762,38 @@
       "note": "Mathlib lacks a synthetic notion of parallelepiped as a solid figure and does not state Book XI's similarity/volume results.",
       "provenance": "ai",
       "id": "2a872690a8b5"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hyperbolic (Lobachevskian) geometry",
+      "anchor": {
+        "section": "Non-Euclidean geometry",
+        "snippet": "Nikolai Lobachevsky published a description of acute geometry (or hyperbolic geometry )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize hyperbolic geometry as a model or axiomatic system negating the parallel postulate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quadrature of rectangles (Book II)",
+      "anchor": {
+        "section": "Book II",
+        "snippet": "culminates in the quadrature of arbitrary rectangles"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Euclid's synthetic construction of a square with area equal to a given rectangle is not formalized in Mathlib.",
+      "provenance": "ai"
     }
   ]
 }

@@ -2146,6 +2146,86 @@
       "note": "`Pi.uniqueOfIsEmpty` shows the unique function from an empty domain, giving `0 ^ 0 = 1` for cardinals.",
       "provenance": "ai",
       "id": "4375fe3f3aa8"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cardinality of ℕ is ℵ₀",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The set of natural numbers has cardinality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.mk_nat",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.mk_nat : #ℕ = ℵ₀` records the cardinality of the naturals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Zermelo–Fraenkel set theory",
+      "anchor": {
+        "section": "Alternative and additional axioms",
+        "snippet": "The most common axiomatic set theory used today is Zermelo–Fraenkel set theory (ZFC)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZFSet",
+        "module": "Mathlib.SetTheory.ZFC.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ZFSet` is Mathlib's model of Zermelo–Fraenkel set theory, with the ZFC axioms provable about it.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cartesian product",
+      "anchor": {
+        "section": "Cardinal arithmetic",
+        "snippet": "denotes the Cartesian product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Prod",
+        "module": "Mathlib.Init.Prelude",
+        "match_kind": "exact"
+      },
+      "note": "`Prod α β` (`α × β`) is the Cartesian product type used in `Cardinal.mul_def`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Disjoint union",
+      "anchor": {
+        "section": "Cardinal arithmetic",
+        "snippet": "denotes disjoint union"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Sum",
+        "module": "Mathlib.Init.Prelude",
+        "match_kind": "exact"
+      },
+      "note": "`Sum α β` (`α ⊕ β`) is Mathlib's disjoint union used in `Cardinal.add_def`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Regular cardinal",
+      "anchor": {
+        "section": "Large cardinals",
+        "snippet": "a regular , limit cardinal greater than"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.IsRegular",
+        "module": "Mathlib.SetTheory.Cardinal.Cofinality",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.IsRegular c` means `c` equals its own cofinality (and is at least ℵ₀).",
+      "provenance": "ai"
     }
   ]
 }

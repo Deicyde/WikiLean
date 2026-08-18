@@ -35,7 +35,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The polar decomposition itself is not formalized in Mathlib, so its relation to the SVD is not formalized either.",
+      "note": "Polar decomposition of operators/matrices is not present in Mathlib (loogle for \"polarDecomposition\" returns 0 hits), so its relation to the SVD is not formalized.",
       "provenance": "ai",
       "id": "27b91965e78b"
     },
@@ -1341,10 +1341,10 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Matrix.conjTranspose",
-        "module": "Mathlib.Data.Matrix.Basic",
+        "module": "Mathlib.LinearAlgebra.Matrix.ConjTranspose",
         "match_kind": "exact"
       },
-      "note": "The conjugate transpose is defined on Mathlib matrices.",
+      "note": "The conjugate transpose is defined on Mathlib matrices (Matrix.conjTranspose).",
       "provenance": "ai",
       "id": "ce60eee613bc"
     },
@@ -1398,6 +1398,278 @@
       "note": "A single-constraint Lagrange multiplier statement exists (also the multi-constraint version), though not as an SVD-specialized form.",
       "provenance": "ai",
       "id": "c6de2e935bc9"
+    },
+    {
+      "kind": "definition",
+      "label": "Eigendecomposition",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "It generalizes the eigendecomposition of a square normal matrix"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.IsHermitian.spectral_theorem",
+        "module": "Mathlib.Analysis.Matrix.Spectrum",
+        "match_kind": null
+      },
+      "note": "Mathlib has the spectral theorem for Hermitian matrices, providing eigendecomposition in that case; the general normal-matrix eigendecomposition is not packaged.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rectangular diagonal matrix",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "rectangular diagonal matrix with non-negative real numbers on the diagonal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines diagonal matrices only in the square case; rectangular diagonal matrices are not a named concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Column space",
+      "anchor": {
+        "section": "Relation to the four fundamental subspaces",
+        "snippet": "are a basis of the column space of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.range",
+        "module": "Mathlib.Algebra.Module.Submodule.Range",
+        "match_kind": "generalization"
+      },
+      "note": "The column space of a matrix is the range of its associated linear map, formalized as LinearMap.range.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Null space (kernel)",
+      "anchor": {
+        "section": "Relation to the four fundamental subspaces",
+        "snippet": "are a basis of the null space of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.ker",
+        "module": "Mathlib.Algebra.Module.Submodule.Ker",
+        "match_kind": "generalization"
+      },
+      "note": "The null space is the kernel of the associated linear map, formalized as LinearMap.ker.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Positive-semidefinite Hermitian matrix",
+      "anchor": {
+        "section": "The columns of U and V are orthonormal bases",
+        "snippet": "is a positive-semidefinite Hermitian matrix"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.PosSemidef",
+        "module": "Mathlib.LinearAlgebra.Matrix.PosDef",
+        "match_kind": "exact"
+      },
+      "note": "Positive-semidefinite (Hermitian) matrices are formalized as Matrix.PosSemidef.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Normal matrix",
+      "anchor": {
+        "section": "Relation to eigenvalue decomposition",
+        "snippet": "being a normal matrix"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsStarNormal",
+        "module": "Mathlib.Algebra.Star.SelfAdjoint",
+        "match_kind": null
+      },
+      "note": "The general notion of a normal element/operator (IsStarNormal) is in Mathlib; a dedicated Matrix.IsNormal or a specialized 'normal matrix' definition is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Moore–Penrose pseudoinverse",
+      "anchor": {
+        "section": "Pseudoinverse",
+        "snippet": "The singular value decomposition can be used for computing the pseudoinverse of a matrix"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Moore–Penrose pseudoinverse of a matrix or linear map is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bidiagonal matrix",
+      "anchor": {
+        "section": "Numerical approach",
+        "snippet": "the matrix is reduced to a bidiagonal matrix"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bidiagonal matrices are not a named concept in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Householder reflection",
+      "anchor": {
+        "section": "Numerical approach",
+        "snippet": "The first step can be done using Householder reflections"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Householder reflections/transformations are not formalized as a named construction (loogle for \"Householder\" returns 0 hits).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "QR decomposition",
+      "anchor": {
+        "section": "Numerical approach",
+        "snippet": "the QR decomposition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The QR decomposition is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Givens rotation",
+      "anchor": {
+        "section": "Two-sided Jacobi algorithm",
+        "snippet": "first applying a Givens rotation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Givens rotation matrices are not defined as a named concept in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pauli matrices",
+      "anchor": {
+        "section": "Analytic result of 2 × 2 SVD",
+        "snippet": "denote the Pauli matrices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Pauli matrices are not defined as named constants in Mathlib (loogle for \"Pauli\" returns 0 hits).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Partial isometry",
+      "anchor": {
+        "section": "Bounded operators on Hilbert spaces",
+        "snippet": "there exist a partial isometry"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Partial isometries on Hilbert spaces are not a named concept in Mathlib (loogle for \"partialIsometry\" returns 0 hits).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Compact operator",
+      "anchor": {
+        "section": "Singular values and compact operators",
+        "snippet": "extended to compact operator on Hilbert space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompactOperator",
+        "module": "Mathlib.Analysis.Normed.Operator.Compact.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Compact operators between topological vector spaces are formalized as IsCompactOperator in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Borel functional calculus",
+      "anchor": {
+        "section": "Bounded operators on Hilbert spaces",
+        "snippet": "as given by the Borel functional calculus for self-adjoint operators"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Borel functional calculus for self-adjoint operators is not formalized in Mathlib (only the continuous functional calculus is present).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Schatten p-norm",
+      "anchor": {
+        "section": "Hilbert–Schmidt norm",
+        "snippet": "are special cases of the Schatten norm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Schatten p-norms on operators/matrices are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Operator norm",
+      "anchor": {
+        "section": "Ky Fan norms",
+        "snippet": "is the same as the operator norm of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.opNorm",
+        "module": "Mathlib.Analysis.Normed.Operator.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The operator norm of a continuous linear map is formalized as ContinuousLinearMap.opNorm.",
+      "provenance": "ai"
     }
   ]
 }

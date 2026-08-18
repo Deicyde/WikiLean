@@ -69,7 +69,7 @@
         "module": "Mathlib.Combinatorics.SimpleGraph.Trails",
         "match_kind": "generalization"
       },
-      "note": "`IsTrail.even_countP_edges_iff` (verified in `Trails.lean` line 54) states the count of edges at vertex x in a trail is even iff x is not a unique endpoint, formalizing the entering=leaving property.",
+      "note": "`IsTrail.even_countP_edges_iff` (verified via decl_exists in `Mathlib.Combinatorics.SimpleGraph.Trails`) captures parity of edge-incidences at non-endpoint vertices along a trail.",
       "provenance": "ai",
       "id": "39a499394d62"
     },
@@ -86,7 +86,7 @@
         "module": "Mathlib.Combinatorics.SimpleGraph.Trails",
         "match_kind": "exact"
       },
-      "note": "`IsEulerian.even_degree_iff` (verified in `Trails.lean` line 127) states Even (G.degree x) ↔ (u ≠ v → x ≠ u ∧ x ≠ v), capturing the even-degree condition at non-endpoint vertices.",
+      "note": "`IsEulerian.even_degree_iff` (verified via decl_exists) states Even (G.degree x) ↔ (u ≠ v → x ≠ u ∧ x ≠ v), capturing the even-degree condition at non-endpoint vertices.",
       "provenance": "ai",
       "id": "f3026f7a246c"
     },
@@ -103,7 +103,7 @@
         "module": "Mathlib.Combinatorics.SimpleGraph.Finite",
         "match_kind": "exact"
       },
-      "note": "`SimpleGraph.degree` (verified in `Finite.lean` line 201) is defined as the cardinality of the neighbor finset.",
+      "note": "`SimpleGraph.degree` (verified via decl_exists in `Mathlib.Combinatorics.SimpleGraph.Finite`) is the cardinality of the neighbor finset.",
       "provenance": "ai",
       "id": "e16ade5a3770"
     },
@@ -120,7 +120,7 @@
         "module": "Mathlib.Combinatorics.SimpleGraph.Trails",
         "match_kind": "special_case"
       },
-      "note": "Only the necessary direction is in Mathlib (`IsEulerian.card_odd_degree` at line 151 shows 0 or 2 odd-degree vertices); the existence (sufficient) direction is an explicit TODO in `Trails.lean`.",
+      "note": "Only the necessary direction is in Mathlib (`IsEulerian.card_odd_degree` gives 0 or 2 odd-degree vertices); the sufficient (existence) direction is a known TODO in `Trails.lean`.",
       "provenance": "ai",
       "id": "7e86a7191cb8"
     },
@@ -137,7 +137,7 @@
         "module": "Mathlib.Combinatorics.SimpleGraph.Trails",
         "match_kind": "exact"
       },
-      "note": "`SimpleGraph.Walk.IsEulerian` (verified in `Trails.lean` line 79) is defined as a walk visiting every edge exactly once.",
+      "note": "`SimpleGraph.Walk.IsEulerian` (verified via decl_exists) is a walk visiting every edge exactly once.",
       "provenance": "ai",
       "id": "1025a76643b8"
     },
@@ -154,7 +154,7 @@
         "module": "Mathlib.Combinatorics.SimpleGraph.Trails",
         "match_kind": "generalization"
       },
-      "note": "The contrapositive of `IsEulerian.even_degree_iff` says odd-degree vertices must be endpoints of the Eulerian walk.",
+      "note": "The contrapositive of `IsEulerian.even_degree_iff` says odd-degree vertices must coincide with the endpoints of the Eulerian walk.",
       "provenance": "ai",
       "id": "c896b129f55b"
     },
@@ -273,7 +273,7 @@
         "module": "Mathlib.Combinatorics.SimpleGraph.Basic",
         "match_kind": "generalization"
       },
-      "note": "Mathlib's `SimpleGraph` (verified in `Basic.lean` line 93) formalizes the general abstract graph structure (vertices plus symmetric adjacency); the Königsberg setting is a multigraph, which Mathlib does not directly capture.",
+      "note": "Mathlib's `SimpleGraph` (verified via decl_exists) formalizes the general abstract graph (vertices with symmetric adjacency); the Königsberg setting is a multigraph, not directly captured.",
       "provenance": "ai",
       "id": "3aa30aac233d"
     },
@@ -290,9 +290,41 @@
         "module": "Mathlib.Combinatorics.SimpleGraph.Basic",
         "match_kind": "generalization"
       },
-      "note": "`SimpleGraph.ext` (auto-generated from the `@[ext]` on the `SimpleGraph` structure in `Basic.lean` line 92) shows a simple graph is determined by its adjacency relation.",
+      "note": "`SimpleGraph.ext` (verified via decl_exists) shows a simple graph is determined by its adjacency relation.",
       "provenance": "ai",
       "id": "9291f29e937f"
+    },
+    {
+      "kind": "definition",
+      "label": "Walk in a graph",
+      "anchor": {
+        "section": "Euler's analysis",
+        "snippet": "the possibility of a walk through a graph, traversing each edge exactly once, depends on the degrees of the nodes"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.Walk",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Walk.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`SimpleGraph.Walk` (verified via decl_exists in `Mathlib.Combinatorics.SimpleGraph.Walk.Basic`) is the inductive type of alternating vertex/edge sequences in a graph.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Connected graph",
+      "anchor": {
+        "section": "Euler's analysis",
+        "snippet": "a necessary condition for the walk of the desired form is that the graph be connected and have exactly zero or two nodes of odd degree"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.Connected",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Connectivity.Connected",
+        "match_kind": "exact"
+      },
+      "note": "`SimpleGraph.Connected` (verified via decl_exists in `Mathlib.Combinatorics.SimpleGraph.Connectivity.Connected`) formalizes graph-theoretic connectedness as nonempty plus preconnected.",
+      "provenance": "ai"
     }
   ]
 }

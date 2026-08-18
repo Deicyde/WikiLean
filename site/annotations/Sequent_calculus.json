@@ -375,7 +375,7 @@
         "module": "Mathlib.ModelTheory.Syntax",
         "match_kind": "generalization"
       },
-      "note": "Mathlib's ModelTheory tracks free variables in first-order formulas (e.g. freeVarFinset), but not as part of a sequent-calculus inference system.",
+      "note": "Mathlib's ModelTheory tracks free variables in first-order formulas (freeVarFinset, verified via decl_exists), but not as part of a sequent-calculus inference system.",
       "provenance": "ai-agent1",
       "id": "a494e43e1370"
     },
@@ -392,7 +392,7 @@
         "module": "Mathlib.ModelTheory.Syntax",
         "match_kind": "generalization"
       },
-      "note": "Substitution of terms into first-order formulas exists in ModelTheory (e.g. BoundedFormula.subst), though not tied to LK notation.",
+      "note": "Substitution of terms into first-order formulas exists in ModelTheory (BoundedFormula.subst, verified via decl_exists), though not tied to LK notation.",
       "provenance": "ai-agent1",
       "id": "27c55c818a61"
     },
@@ -922,6 +922,118 @@
       "note": "The multiset variant of sequents is not formalized in Mathlib (no sequent calculus at all).",
       "provenance": "ai",
       "id": "a757f6176f07"
+    },
+    {
+      "kind": "remark",
+      "label": "Gentzen-style advantages for quantifier reasoning",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "both natural deduction and sequent calculus systems facilitate the elimination and introduction of universal and existential quantifiers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The methodological claim about Gentzen-style quantifier introduction/elimination is not a Mathlib statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "remark",
+      "label": "Symmetry of conjunction and disjunction rules",
+      "anchor": {
+        "section": "Sequent calculus systems",
+        "snippet": "the inference rules in sequent calculus for dealing with conjunction (∧) are mirror images of those dealing with disjunction (∨)."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mirror symmetry between ∧- and ∨-rules in LK is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Turnstile symbol",
+      "anchor": {
+        "section": "Natural deduction systems",
+        "snippet": "a list (possibly empty) of formulas on the left-hand side of a turnstile symbol"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The turnstile as a syntactic symbol of an object-level proof calculus is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "remark",
+      "label": "Equivalence of natural-deduction judgments",
+      "anchor": {
+        "section": "Natural deduction systems",
+        "snippet": "are equivalent in the strong sense that a proof of either one may be extended to a proof of the other."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formal statement in Mathlib about strong equivalence between natural-deduction judgments.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "remark",
+      "label": "Equivalence of sequents (extension of proofs)",
+      "anchor": {
+        "section": "Sequent calculus systems",
+        "snippet": "are equivalent in the strong sense that a proof of either sequent may be extended to a proof of the other sequent."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Strong equivalence between sequents via proof extension is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "remark",
+      "label": "Semantic invariance of reduction-tree steps",
+      "anchor": {
+        "section": "Reduction trees",
+        "snippet": "the steps in the tree preserve the semantic truth value of the formulas implied by them"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Semantic preservation of reduction-tree steps is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "remark",
+      "label": "Split-context variant of two-premise rules",
+      "anchor": {
+        "section": "Minor structural alternatives",
+        "snippet": "whether rules with more than one premise share the same context for each of those premises or split their contexts between them"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Additive vs. multiplicative rule formulations are not formalized in Mathlib.",
+      "provenance": "ai"
     }
   ]
 }

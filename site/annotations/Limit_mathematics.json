@@ -922,6 +922,86 @@
       "note": "The ratio test for absolutely convergent series is `summable_of_ratio_test_tendsto_lt_one` (in `Mathlib.Analysis.SpecificLimits.Normed`).",
       "provenance": "ai",
       "id": "2ee78d9aa0ef"
+    },
+    {
+      "kind": "example",
+      "label": "0.999... equals 1 as a limit",
+      "anchor": {
+        "section": "Real numbers",
+        "snippet": "The expression 0.999... should be interpreted as the limit of the sequence 0.9, 0.99, 0.999, ... and so on"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The 0.999… = 1 identity as a limit of the specific decimal-approximation sequence is not a named decl in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Pointwise limit can be discontinuous even if terms are continuous",
+      "anchor": {
+        "section": "Function space",
+        "snippet": "However, such sequences can exhibit unexpected behavior"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has continuity of uniform limits but no named counterexample decl for discontinuity of pointwise limits.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Two-sided infinite limit of a function",
+      "anchor": {
+        "section": "Infinity in limits of functions",
+        "snippet": "A two-sided infinite limit can be defined"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.Tendsto",
+        "module": "Mathlib.Order.Filter.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "A two-sided infinite limit is `Tendsto f l (cocompact ℝ)` or equivalently uses `Filter.atTop ⊔ atBot`; both are expressible via `Filter.Tendsto`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Series conditionally convergent can be rearranged to any real (Riemann rearrangement)",
+      "anchor": {
+        "section": "Series",
+        "snippet": "depending on the ordering, the partial sums can be made to converge to any real number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The rearrangement statement of the Riemann series theorem for conditionally convergent real series is not yet formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convergent sequence is Cauchy in a metric space",
+      "anchor": {
+        "section": "Cauchy sequences",
+        "snippet": "In general metric spaces, it continues to hold that convergent sequences are also Cauchy"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.Tendsto.cauchySeq",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "exact"
+      },
+      "note": "`Filter.Tendsto.cauchySeq` establishes that convergent sequences in a uniform space (hence metric) are Cauchy.",
+      "provenance": "ai"
     }
   ]
 }

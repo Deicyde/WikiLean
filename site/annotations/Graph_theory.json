@@ -52,7 +52,7 @@
         "module": "Mathlib.Combinatorics.Digraph.Basic",
         "match_kind": "exact"
       },
-      "note": "Directed graphs are formalized directly as Digraph (structurally equivalent to Quiver.{0}) in Mathlib.Combinatorics.Digraph.Basic.",
+      "note": "Directed graphs are formalized directly as Digraph in Mathlib.Combinatorics.Digraph.Basic.",
       "provenance": "ai",
       "id": "7f720204ad7d"
     },
@@ -1650,7 +1650,7 @@
         "module": "Mathlib.Combinatorics.SimpleGraph.Hamiltonian",
         "match_kind": null
       },
-      "note": "Hamiltonian walks (SimpleGraph.Walk.IsHamiltonian) and Hamiltonian graphs (SimpleGraph.IsHamiltonian) are defined, but the computational decision problem is not addressed.",
+      "note": "Hamiltonian walks and Hamiltonian graphs (SimpleGraph.IsHamiltonian) are defined, but the computational decision problem is not addressed.",
       "provenance": "ai",
       "id": "d2c6cfd91cc2"
     },
@@ -1891,6 +1891,326 @@
       "note": "Graph factorization (e.g., 1-factorization) is not formalized in Mathlib.",
       "provenance": "ai",
       "id": "f60d9b63dff6"
+    },
+    {
+      "kind": "definition",
+      "label": "Endpoints",
+      "anchor": {
+        "section": "Definition and etymology",
+        "snippet": "Two vertices of an edge are called the endpoints"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated endpoint predicate; SimpleGraph edges are unordered pairs (Sym2), so the two endpoints are the pair's elements.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Simple graph",
+      "anchor": {
+        "section": "Definition and etymology",
+        "snippet": "A graph can also be called a simple graph, to distinguish it from a multigraph"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Simple graphs are formalized as SimpleGraph: a symmetric irreflexive relation on vertices.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cayley graph",
+      "anchor": {
+        "section": "Topological graph theory",
+        "snippet": "It is also a common way to form a covering graph"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.mulCayley",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Cayley",
+        "match_kind": "exact"
+      },
+      "note": "Cayley graphs of a multiplicative structure with respect to a generating set are formalized as SimpleGraph.mulCayley (with additive variant addCayley); the ambiguously-named SimpleGraph.cayleyGraph does not exist.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complete graph",
+      "anchor": {
+        "section": "Topological graph theory",
+        "snippet": "the complete graph on five vertices"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.completeGraph",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The complete graph on a vertex type is formalized as SimpleGraph.completeGraph (⊤ in the SimpleGraph lattice).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complete bipartite graph",
+      "anchor": {
+        "section": "Topological graph theory",
+        "snippet": "This problem can be formalized as asking for the crossing number of a complete bipartite graph"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "completeBipartiteGraph",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Complete bipartite graphs K_{m,n} are formalized as the top-level completeBipartiteGraph on a sum type (defined outside the SimpleGraph namespace).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Degree of a vertex",
+      "anchor": {
+        "section": "Algebraic graph theory",
+        "snippet": "the degree matrix (a diagonal matrix that represents the degree of a vertex)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.degree",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Finite",
+        "match_kind": "exact"
+      },
+      "note": "The degree of a vertex in a locally finite graph is formalized as SimpleGraph.degree.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Symmetric graph",
+      "anchor": {
+        "section": "Algebraic graph theory",
+        "snippet": "Such a symmetry includes symmetric graphs"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Arc-transitive (symmetric) graphs are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Vertex-transitive graph",
+      "anchor": {
+        "section": "Algebraic graph theory",
+        "snippet": "vertex-transitive graphs"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Vertex-transitive graphs are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Edge-transitive graph",
+      "anchor": {
+        "section": "Algebraic graph theory",
+        "snippet": "edge-transitive graphs"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Edge-transitive graphs are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Distance-transitive graph",
+      "anchor": {
+        "section": "Algebraic graph theory",
+        "snippet": "distance-transitive graphs"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Distance-transitive graphs are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Distance-regular graph",
+      "anchor": {
+        "section": "Algebraic graph theory",
+        "snippet": "distance-regular graphs"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Distance-regular graphs are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Strongly regular graph",
+      "anchor": {
+        "section": "Algebraic graph theory",
+        "snippet": "strongly regular graphs"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Strongly regular graphs are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Graph automorphism group",
+      "anchor": {
+        "section": "Visual: Graph drawing",
+        "snippet": "symmetry display on finding the problem of a graph's group automorphism"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SimpleGraph.Iso",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Maps",
+        "match_kind": null
+      },
+      "note": "Graph automorphisms exist only as self-isomorphisms G ≃g G via SimpleGraph.Iso; there is no named SimpleGraph.Aut abbreviation or dedicated group-structure API.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Subgraph",
+      "anchor": {
+        "section": "Subgraphs, induced subgraphs, and minors",
+        "snippet": "A common problem, called the subgraph isomorphism problem , is finding a fixed graph as a subgraph in a given graph"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.Subgraph",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Subgraph",
+        "match_kind": "exact"
+      },
+      "note": "Subgraphs of a simple graph are formalized as SimpleGraph.Subgraph.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Induced subgraph",
+      "anchor": {
+        "section": "Subgraphs, induced subgraphs, and minors",
+        "snippet": "A similar problem is finding induced subgraphs in a given graph"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.induce",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Maps",
+        "match_kind": "exact"
+      },
+      "note": "Induced subgraphs are formalized via SimpleGraph.induce on a subset of vertices.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Clique",
+      "anchor": {
+        "section": "Subgraphs, induced subgraphs, and minors",
+        "snippet": "Finding the largest complete subgraph is called the clique problem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.IsClique",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Clique",
+        "match_kind": "exact"
+      },
+      "note": "Cliques (pairwise adjacent vertex sets) are formalized as SimpleGraph.IsClique.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Independent set",
+      "anchor": {
+        "section": "Subgraphs, induced subgraphs, and minors",
+        "snippet": "Finding the largest edgeless induced subgraph or independent set is called the independent set problem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.IsIndepSet",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Clique",
+        "match_kind": "exact"
+      },
+      "note": "Independent (pairwise non-adjacent) vertex sets are formalized as SimpleGraph.IsIndepSet.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cycle (graph theory)",
+      "anchor": {
+        "section": "Decomposition problems",
+        "snippet": "decomposing a complete graph into Hamiltonian cycles"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.Walk.IsCycle",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Paths",
+        "match_kind": "exact"
+      },
+      "note": "Cycles in a graph are formalized as closed walks with no repeated edges/vertices via SimpleGraph.Walk.IsCycle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Matching",
+      "anchor": {
+        "section": "Decomposition problems",
+        "snippet": "Edge coloring , a decomposition into as few matchings as possible"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.Subgraph.IsMatching",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Matching",
+        "match_kind": "exact"
+      },
+      "note": "Matchings (edge sets with no shared vertex) are formalized as SimpleGraph.Subgraph.IsMatching.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Connected graph",
+      "anchor": {
+        "section": "Geometric graph theory",
+        "snippet": "The planar graph remains connected whenever any two of its vertices are removed"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.Connected",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Connectivity.Connected",
+        "match_kind": "exact"
+      },
+      "note": "Connectedness of a simple graph is formalized as SimpleGraph.Connected (nonempty + preconnected).",
+      "provenance": "ai"
     }
   ]
 }

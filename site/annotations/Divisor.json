@@ -667,6 +667,38 @@
       "note": "`ℕ` is a `GCDMonoid` via `instGCDMonoidNat` and the divisibility order gives a distributive lattice through `Associates.instLattice`; a full `CompleteLattice` structure with 0 as top and 1 as bottom under divisibility is available through `Associates` on a UFD.",
       "provenance": "ai",
       "id": "0f5eb40af616"
+    },
+    {
+      "kind": "proposition",
+      "label": "Isomorphism to dual of subgroup lattice of Z",
+      "anchor": {
+        "section": "Division lattice",
+        "snippet": "isomorphic to the dual of the lattice of subgroups of the infinite cyclic group Z"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib knows that subgroups of `ℤ` are of the form `n • ℤ` (`Int.subgroup_cyclic`/`AddSubgroup.zmultiples`) but does not package the order-reversing lattice isomorphism between the divisibility lattice on `ℕ` and the subgroup lattice of `ℤ` as a single declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Divisibility rules",
+      "anchor": {
+        "section": "General",
+        "snippet": "There are divisibility rules that allow one to recognize certain divisors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has ad-hoc lemmas about digit-based divisibility (e.g. via `Nat.digits`) but no unified `DivisibilityRule` API.",
+      "provenance": "ai"
     }
   ]
 }

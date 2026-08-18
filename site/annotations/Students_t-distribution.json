@@ -35,7 +35,7 @@
         "module": "Mathlib.Probability.Distributions.Cauchy",
         "match_kind": null
       },
-      "note": "Cauchy and Gaussian endpoint distributions are defined, but the limiting relationship to the (undefined) t-distribution is not formalized.",
+      "note": "Cauchy and Gaussian endpoint distributions are defined (cauchyMeasure verified at Mathlib/Probability/Distributions/Cauchy.lean:170), but the limiting relationship to the (undefined) t-distribution is not formalized.",
       "provenance": "ai",
       "id": "68e14c7266f6"
     },
@@ -273,7 +273,7 @@
         "module": "Mathlib.Probability.Distributions.Gaussian.HasGaussianLaw.Independence",
         "match_kind": null
       },
-      "note": "Mathlib proves that a finite sum of independent Gaussian variables has a Gaussian law (iIndepFun.hasGaussianLaw_sum), but the standardization to exactly N(0,1) as a sampling-distribution statement is not assembled.",
+      "note": "Mathlib proves that a finite sum of independent Gaussian variables has a Gaussian law (iIndepFun.hasGaussianLaw_sum verified at Independence.lean:383), but the standardization to exactly N(0,1) as a sampling-distribution statement is not assembled.",
       "provenance": "ai",
       "id": "9035cf1d4822"
     },
@@ -596,7 +596,7 @@
         "module": "Mathlib.Probability.Distributions.Cauchy",
         "match_kind": null
       },
-      "note": "Cauchy is formalized but its identification with the ν=1 location-scale t-distribution is not (t-distribution undefined).",
+      "note": "Cauchy is formalized (cauchyMeasure verified) but its identification with the ν=1 location-scale t-distribution is not (t-distribution undefined).",
       "provenance": "ai",
       "id": "2858ee9036d6"
     },
@@ -715,7 +715,7 @@
         "module": "Mathlib.Probability.Distributions.Gaussian.IsGaussianProcess.Def",
         "match_kind": null
       },
-      "note": "The analogous IsGaussianProcess is formalized, but no Student's t process exists in Mathlib.",
+      "note": "The analogous IsGaussianProcess structure is formalized (verified at Def.lean:30), but no Student's t process exists in Mathlib.",
       "provenance": "ai",
       "id": "588f4f389146"
     },
@@ -749,7 +749,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The chi-squared distribution is not defined in Mathlib.",
+      "note": "The chi-squared distribution is not defined in Mathlib (grep for chiSquared/ChiSquared returned nothing).",
       "provenance": "ai",
       "id": "e71fae17ca01"
     },
@@ -766,7 +766,7 @@
         "module": "Mathlib.Probability.Independence.Basic",
         "match_kind": null
       },
-      "note": "General independence of random variables is in Mathlib, but this specific normal/chi-squared independence used in the t-distribution construction is not assembled.",
+      "note": "General independence of random variables is in Mathlib (IndepFun verified at Basic.lean:144), but this specific normal/chi-squared independence used in the t-distribution construction is not assembled.",
       "provenance": "ai",
       "id": "d3d9085c502d"
     },
@@ -837,6 +837,70 @@
       "note": "Neither the Pearson type IV family nor its identification with the t-distribution is in Mathlib.",
       "provenance": "ai",
       "id": "f4e418afeab4"
+    },
+    {
+      "kind": "definition",
+      "label": "Sample mean",
+      "anchor": {
+        "section": "As the distribution of a test statistic",
+        "snippet": "be the sample mean, and"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Finset.sum",
+        "module": "Mathlib.Algebra.BigOperators.Group.Finset.Defs",
+        "match_kind": null
+      },
+      "note": "The arithmetic mean of a finite sample is expressible via Finset.sum divided by n; Mathlib has no dedicated 'sample mean' probability definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unbiased sample variance",
+      "anchor": {
+        "section": "As the distribution of a test statistic",
+        "snippet": "be an unbiased estimate of the variance from the sample."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes population variance (ProbabilityTheory.variance) but not the (n−1)-divisor unbiased sample-variance estimator.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Gosset published under pseudonym 'Student'",
+      "anchor": {
+        "section": "History",
+        "snippet": "the distribution takes its name from William Sealy Gosset 's 1908 paper in Biometrika under the pseudonym"
+      },
+      "status": "not_applicable",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Historical/biographical fact; not a mathematical statement to formalize.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Non-standardized Student's t distribution (alias)",
+      "anchor": {
+        "section": "Location-scale transformation",
+        "snippet": "The resulting distribution is also called the non-standardized Student's t distribution ."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Alternate name for the location-scale t distribution; not present in Mathlib.",
+      "provenance": "ai"
     }
   ]
 }

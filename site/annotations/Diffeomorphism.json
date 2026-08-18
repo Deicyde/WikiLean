@@ -502,7 +502,7 @@
       "kind": "example",
       "label": "Natural inclusion of a Lie group in its diffeomorphism group",
       "anchor": {
-        "section": "Examples",
+        "section": "Examples (2)",
         "snippet": "natural inclusion of"
       },
       "status": "not_formalized",
@@ -512,14 +512,14 @@
         "match_kind": null
       },
       "note": "The embedding of a Lie group G into Diff(G) via left multiplication is not formalized as such in Mathlib, though the smoothness of left multiplication is established for Lie groups.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "e2ca8c44c09e"
     },
     {
       "kind": "proposition",
       "label": "Diff(R^n) has two components; GL is a deformation retract",
       "anchor": {
-        "section": "Examples",
+        "section": "Examples (2)",
         "snippet": "general linear group is a deformation retract"
       },
       "status": "not_formalized",
@@ -529,14 +529,14 @@
         "match_kind": null
       },
       "note": "The homotopy type of Diff(R^n) and the deformation retraction to GL(n,R) are deep results in differential topology not formalized in Mathlib.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "79f3130fb808"
     },
     {
       "kind": "proposition",
       "label": "Diffeomorphism group of a finite set is the symmetric group",
       "anchor": {
-        "section": "Examples",
+        "section": "Examples (2)",
         "snippet": "diffeomorphism group is simply the symmetric group"
       },
       "status": "not_formalized",
@@ -546,7 +546,7 @@
         "match_kind": null
       },
       "note": "This identification requires viewing finite sets as 0-dimensional manifolds, which is outside Mathlib's current manifold framework. The symmetric group itself is `Equiv.Perm` in Mathlib.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "dcd0db08f358"
     },
     {
@@ -879,15 +879,31 @@
         "section": "Homeomorphism and diffeomorphism",
         "snippet": "uncountably many pairwise non-diffeomorphic"
       },
-      "status": "not_formalized",
+      "status": "partial",
       "mathlib": {
         "decl": "exists_open_nonempty_homeomorph_isEmpty_diffeomorph_euclideanSpace_four",
         "module": "Mathlib.Geometry.Manifold.PoincareConjecture",
         "match_kind": "special_case"
       },
       "note": "Mathlib states the existence of a small exotic R^4 as a `proof_wanted`, but not the uncountability of exotic smooth structures. The full result is far from formalized. (Mathlib declares this as `proof_wanted` — stated, not yet proven.)",
-      "provenance": "ai-moderated",
+      "provenance": "human",
       "id": "4729e82d6965"
+    },
+    {
+      "kind": "definition",
+      "label": "Jacobian matrix",
+      "anchor": {
+        "section": "Local description",
+        "snippet": "This so-called Jacobian matrix"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fderiv",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The Jacobian matrix as the matrix of first-order partial derivatives is captured in Mathlib via `fderiv` (Fréchet derivative) together with matrix representations of continuous linear maps; there is no dedicated `Jacobian` name.",
+      "provenance": "ai"
     }
   ]
 }

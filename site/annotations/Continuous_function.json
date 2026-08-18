@@ -241,16 +241,6 @@
       },
       "note": "`ContinuousAt f x` is defined as `Tendsto f (𝓝 x) (𝓝 (f x))`, the filter version of limits.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definition in terms of limits of functions",
-          "snippet": "The function f is continuous at some point c of its domain if the limit of"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\lim _{x\\to c}{f(x)}=f(c).}"
-        }
-      ],
       "id": "b7ead4649129"
     },
     {
@@ -319,16 +309,6 @@
       },
       "note": "`SeqContinuous f` requires that `f` preserves limits of sequences.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definition in terms of limits of sequences",
-          "snippet": "One can instead require that for any sequence"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\forall (x_{n})_{n\\in \\mathbb {N} }\\subset D:\\lim _{n\\to \\infty }x_{n}=c\\Rightarrow \\lim _{n\\to \\infty }f(x_{n})=f(c)\\,.}"
-        }
-      ],
       "id": "bc866546bf21"
     },
     {
@@ -346,16 +326,6 @@
       },
       "note": "Mathlib's metric-space `Metric.continuous_iff` and `continuousAt` variants give the ε–δ form.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Weierstrass and Jordan definitions (epsilon–delta) of continuous functions",
-          "snippet": "is said to be continuous at the point"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f\\left(x_{0}\\right)-\\varepsilon &lt;f(x)&lt;f(x_{0})+\\varepsilon .}"
-        }
-      ],
       "id": "570a69d81d5f"
     },
     {
@@ -390,16 +360,6 @@
       },
       "note": "No `CContinuous` predicate exists in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definition in terms of control of the remainder",
-          "snippet": "is C -continuous at"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle |f(x)-f(x_{0})|\\leq C\\left(\\left|x-x_{0}\\right|\\right){\\text{ for all }}x\\in D\\cap N(x_{0})}"
-        }
-      ],
       "id": "fbcabb4e5d0f"
     },
     {
@@ -545,25 +505,26 @@
         "section": "Rules for continuity",
         "snippet": "An example of a function for which the above rules are not sufficient is the sinc function"
       },
-      "status": "not_formalized",
+      "status": "formalized",
       "mathlib": {
-        "decl": null,
-        "module": null,
-        "match_kind": null
+        "decl": "Real.continuous_sinc",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Sinc",
+        "match_kind": "exact"
       },
-      "note": "No `sinc` function appears to be defined in Mathlib.",
+      "note": "Mathlib defines `Real.sinc` in `Mathlib.Analysis.SpecialFunctions.Trigonometric.Sinc` with a `continuous_sinc` lemma showing it is continuous everywhere.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Rules for continuity",
-          "snippet": "An example of a function for which the above rules are not sufficient is the sinc function"
+      "id": "9422f5f44dd0",
+      "moderation_proposal": {
+        "fields": {
+          "status": "formalized",
+          "mathlib": {
+            "decl": "Real.continuous_sinc",
+            "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Sinc",
+            "match_kind": "exact"
+          }
         },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\lim _{x\\to 0}{\\frac {\\sin x}{x}}=1.}"
-        }
-      ],
-      "id": "9422f5f44dd0"
+        "reason": "Verified: `Mathlib.Analysis.SpecialFunctions.Trigonometric.Sinc` defines `Real.sinc` and a `continuous_sinc` lemma."
+      }
     },
     {
       "kind": "example",
@@ -580,16 +541,6 @@
       },
       "note": "No Heaviside step function is defined in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Examples of discontinuous functions",
-          "snippet": "An example of a discontinuous function is the Heaviside step function"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle H(x)={\\begin{cases}1&amp;{\\text{ if }}x\\geq 0\\\\0&amp;{\\text{ if }}x&lt;0\\end{cases}}}"
-        }
-      ],
       "id": "6e984c9e5cf3"
     },
     {
@@ -607,20 +558,6 @@
       },
       "note": "Mathlib defines `SignType.sign`; discontinuity at 0 isn't stated as a named lemma.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Examples of discontinuous functions",
-          "snippet": "the signum or sign function"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\operatorname {sgn}(x)={\\begin{cases}\\;\\;\\ 1&amp;{\\text{ if }}x&gt;0\\\\\\;\\;\\ 0&amp;{\\text{ if }}x=0\\\\-1&amp;{\\text{ if }}x&lt;0\\end{cases}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f(x)={\\begin{cases}\\sin \\left(x^{-2}\\right)&amp;{\\text{ if }}x\\neq 0\\\\0&amp;{\\text{ if }}x=0\\end{cases}}}"
-        }
-      ],
       "id": "f7dd3d173c5e"
     },
     {
@@ -655,20 +592,6 @@
       },
       "note": "Dirichlet's indicator function is not formalized as a named example in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Examples of discontinuous functions",
-          "snippet": "Dirichlet's function , the indicator function for the set of rational numbers"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f(x)={\\begin{cases}1&amp;{\\text{ if }}x=0\\\\{\\frac {1}{q}}&amp;{\\text{ if }}x={\\frac {p}{q}}{\\text{(in lowest terms) is a rational number}}\\\\0&amp;{\\text{ if }}x{\\text{ is irrational}}.\\end{cases}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle D(x)={\\begin{cases}0&amp;{\\text{ if }}x{\\text{  is irrational }}(\\in \\mathbb {R} \\setminus \\mathbb {Q} )\\\\1&amp;{\\text{ if }}x{\\text{ is rational }}(\\in \\mathbb {Q} )\\end{cases}}}"
-        }
-      ],
       "id": "7ab0404ee622"
     },
     {
@@ -771,16 +694,6 @@
       },
       "note": "`Differentiable.continuous` is the standard statement.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Relation to differentiability and integrability",
-          "snippet": "Every differentiable function"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f:(a,b)\\to \\mathbb {R} }"
-        }
-      ],
       "id": "6e7db5aec80e"
     },
     {
@@ -798,16 +711,6 @@
       },
       "note": "`continuous_abs` is in Mathlib; non-differentiability at 0 isn't stated as a single named result.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Relation to differentiability and integrability",
-          "snippet": "the absolute value function"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f:(a,b)\\to \\mathbb {R} }"
-        }
-      ],
       "id": "312f4e51cf4f"
     },
     {
@@ -842,16 +745,6 @@
       },
       "note": "`ContDiff n f` formalizes the C^n class of functions.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Relation to differentiability and integrability",
-          "snippet": "If f′ ( x ) is continuous, f ( x ) is said to be continuously differentiable"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f:\\Omega \\to \\mathbb {R} }"
-        }
-      ],
       "id": "25b508d383db"
     },
     {
@@ -869,16 +762,6 @@
       },
       "note": "`ContinuousOn.intervalIntegrable` gives integrability of continuous functions on intervals.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Relation to differentiability and integrability",
-          "snippet": "Every continuous function"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f:[a,b]\\to \\mathbb {R} }"
-        }
-      ],
       "id": "ac6aa8971240"
     },
     {
@@ -896,20 +779,6 @@
       },
       "note": "Pointwise convergence is characterized by `tendsto_pi_nhds` on product topology.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Pointwise and uniform limits",
-          "snippet": "the resulting function"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f_{1},f_{2},\\dotsc :I\\to \\mathbb {R} }"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f(x):=\\lim _{n\\to \\infty }f_{n}(x)}"
-        }
-      ],
       "id": "29e1461c6349"
     },
     {
@@ -927,20 +796,6 @@
       },
       "note": "`TendstoUniformly.continuous` formalizes that uniform limits of continuous functions are continuous.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Pointwise and uniform limits",
-          "snippet": "f is continuous if all functions"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f_{1},f_{2},\\dotsc :I\\to \\mathbb {R} }"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f(x):=\\lim _{n\\to \\infty }f_{n}(x)}"
-        }
-      ],
       "id": "66952e8bf49c"
     },
     {
@@ -958,16 +813,6 @@
       },
       "note": "Right-continuity is expressed as `ContinuousWithinAt f (Ici c) c`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Directional Continuity",
-          "snippet": "f is said to be right-continuous at the point c if the following holds"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle |f(x)-f(c)|&lt;\\varepsilon }"
-        }
-      ],
       "id": "b387c0a274c9"
     },
     {
@@ -1002,16 +847,6 @@
       },
       "note": "`LowerSemicontinuous` and its `At`/`On`/`WithinAt` variants are in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Semicontinuity",
-          "snippet": "A function f is lower semi-continuous at the point c if, roughly, any jumps that might occur only go down"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f(x)\\geq f(c)-\\varepsilon .}"
-        }
-      ],
       "id": "51812a6de0c4"
     },
     {
@@ -1063,20 +898,6 @@
       },
       "note": "`Metric.continuous_iff` states the ε–δ characterization between metric spaces.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Continuous functions between metric spaces",
-          "snippet": "is continuous at the point"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d_{X}:X\\times X\\to \\mathbb {R} }"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f:X\\to Y}"
-        }
-      ],
       "id": "f4bc5f8d6a9e"
     },
     {
@@ -1111,20 +932,6 @@
       },
       "note": "`IsBoundedLinearMap` and `ContinuousLinearMap` plus `LinearMap.bound_of_continuous`/`mkContinuousOfExistsBound` formalize the bounded↔continuous equivalence for linear maps on normed spaces.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Continuous functions between metric spaces",
-          "snippet": "a linear operator"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle T:V\\to W}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\|T(x)\\|\\leq K\\|x\\|}"
-        }
-      ],
       "id": "cb7e1efb401e"
     },
     {
@@ -1193,20 +1000,6 @@
       },
       "note": "`HolderWith C r f` gives the standard Hölder condition.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Uniform, Hölder and Lipschitz continuity",
-          "snippet": "A function is Hölder continuous with exponent α"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d_{Y}(f(b),f(c))\\leq K\\cdot (d_{X}(b,c))^{\\alpha }}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d_{Y}(f(b),f(c))\\leq K\\cdot d_{X}(b,c)}"
-        }
-      ],
       "id": "9a97b5362753"
     },
     {
@@ -1224,20 +1017,6 @@
       },
       "note": "`LipschitzWith K f` is the standard Mathlib definition.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Uniform, Hölder and Lipschitz continuity",
-          "snippet": "a function is Lipschitz continuous if there is a constant K"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d_{Y}(f(b),f(c))\\leq K\\cdot (d_{X}(b,c))^{\\alpha }}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d_{Y}(f(b),f(c))\\leq K\\cdot d_{X}(b,c)}"
-        }
-      ],
       "id": "d59c7b29195d"
     },
     {
@@ -1289,20 +1068,6 @@
       },
       "note": "`Continuous` is defined by preimage of opens being open.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Continuous functions between topological spaces",
-          "snippet": "between two topological spaces X and Y is continuous if for every open set"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f:X\\to Y}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f^{-1}(V)=\\{x\\in X\\;|\\;f(x)\\in V\\}}"
-        }
-      ],
       "id": "3116b01d5d20"
     },
     {
@@ -1337,16 +1102,6 @@
       },
       "note": "`continuous_of_discreteTopology` covers exactly this fact.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Continuous functions between topological spaces",
-          "snippet": "if a set X is given the discrete topology"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f:X\\to T}"
-        }
-      ],
       "id": "d4492c505e5b"
     },
     {
@@ -1371,7 +1126,7 @@
       "label": "Continuous iff continuous at every point",
       "anchor": {
         "section": "Continuity at a point",
-        "snippet": "a function"
+        "snippet": "is continuous at every point of X if and only if it is a continuous function"
       },
       "status": "formalized",
       "mathlib": {
@@ -1380,7 +1135,7 @@
         "match_kind": "exact"
       },
       "note": "`continuous_iff_continuousAt` states the equivalence.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "7449a398647d"
     },
     {
@@ -1388,7 +1143,7 @@
       "label": "Filter characterization of continuity at a point",
       "anchor": {
         "section": "Continuity at a point",
-        "snippet": "is continuous at"
+        "snippet": "is a filter base for the neighborhood filter"
       },
       "status": "formalized",
       "mathlib": {
@@ -1397,7 +1152,7 @@
         "match_kind": "exact"
       },
       "note": "`ContinuousAt f x := Tendsto f (𝓝 x) (𝓝 (f x))` is exactly the neighborhood-filter form.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "536bfde24186"
     },
     {
@@ -1687,16 +1442,6 @@
       },
       "note": "`TopologicalSpace.coinduced` is the single-map version; `iSup` over a family yields the general final topology.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Defining topologies via continuous functions",
-          "snippet": "the final topology on S is defined by letting the open sets of S be those subsets A of S"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f:X\\to S,}"
-        }
-      ],
       "id": "b657b4c11fc7"
     },
     {
@@ -1884,20 +1629,6 @@
       },
       "note": "Mathlib formalizes continuous functors as functors preserving (small) limits via `PreservesLimits`, but I did not find a single decl named `ContinuousFunctor`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Related notions",
-          "snippet": "a functor"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle F:{\\mathcal {C}}\\to {\\mathcal {D}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\varprojlim _{i\\in I}F(C_{i})\\cong F\\left(\\varprojlim _{i\\in I}C_{i}\\right)}"
-        }
-      ],
       "id": "fb7fbad22cf7"
     },
     {
@@ -2007,7 +1738,7 @@
       "label": "Sequential continuity implies continuity in first-countable spaces",
       "anchor": {
         "section": "Sequences and nets",
-        "snippet": "If"
+        "snippet": "any function preserving sequential limits is continuous"
       },
       "status": "formalized",
       "mathlib": {
@@ -2016,8 +1747,72 @@
         "match_kind": "generalization"
       },
       "note": "In a first-countable (or sequential) space, sequential continuity implies continuity — `continuous_iff_seqContinuous` gives the equivalence.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "87a497831640"
+    },
+    {
+      "kind": "proposition",
+      "label": "Constant function is continuous",
+      "anchor": {
+        "section": "Rules for continuity",
+        "snippet": "Every constant function is continuous"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "continuous_const",
+        "module": "Mathlib.Topology.Continuous",
+        "match_kind": "exact"
+      },
+      "note": "`continuous_const` states that a constant function between any topological spaces is continuous.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Identity function is continuous",
+      "anchor": {
+        "section": "Rules for continuity",
+        "snippet": "The identity function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "continuous_id",
+        "module": "Mathlib.Topology.Continuous",
+        "match_kind": "exact"
+      },
+      "note": "`continuous_id` states continuity of the identity map on any topological space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cauchy-sequence characterization of continuity between metric spaces",
+      "anchor": {
+        "section": "Continuous functions between metric spaces",
+        "snippet": "the sequence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.continuousAt_iff",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has sequential characterizations of continuity in metric spaces via `Metric.tendsto_atTop`/`Metric.continuousAt_iff`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Coarser/finer comparison of topologies",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "a topology"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopologicalSpace.instLE",
+        "module": "Mathlib.Topology.Order",
+        "match_kind": "exact"
+      },
+      "note": "The `≤` order on `TopologicalSpace X` formalizes coarser-vs-finer comparison.",
+      "provenance": "ai"
     }
   ]
 }

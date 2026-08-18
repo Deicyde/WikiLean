@@ -18,7 +18,7 @@
         "module": "Mathlib.Computability.ContextFreeGrammar",
         "match_kind": "exact"
       },
-      "note": "ContextFreeGrammar is a structure with nonterminal type, initial symbol, and rules each rewriting a single nonterminal, matching the CFG definition.",
+      "note": "ContextFreeGrammar bundles a nonterminal type, initial symbol, and finite rule set, each rewriting a single nonterminal.",
       "provenance": "ai",
       "id": "28d3e7801ece"
     },
@@ -35,7 +35,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib only defines context-free grammars, not a general formal-grammar (arbitrary production system) structure.",
+      "note": "Mathlib defines context-free grammars but no general formal-grammar (arbitrary Type-0 production system) structure.",
       "provenance": "ai",
       "id": "287f76bbe6cc"
     },
@@ -52,7 +52,7 @@
         "module": "Mathlib.Computability.ContextFreeGrammar",
         "match_kind": "exact"
       },
-      "note": "ContextFreeGrammar.language is the set of terminal words derivable from the initial nonterminal.",
+      "note": "ContextFreeGrammar.language is the set of terminal words w with g.Generates (w.map Symbol.terminal).",
       "provenance": "ai",
       "id": "52f2520b617c"
     },
@@ -69,7 +69,7 @@
         "module": "Mathlib.Computability.ContextFreeGrammar",
         "match_kind": "exact"
       },
-      "note": "Language.IsContextFree L holds iff some context-free grammar generates L.",
+      "note": "Language.IsContextFree L asserts the existence of a ContextFreeGrammar g with g.language = L.",
       "provenance": "ai",
       "id": "cc152e598c76"
     },
@@ -86,7 +86,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No undecidability result about CFG language equivalence exists in Mathlib.",
+      "note": "No undecidability result about equivalence of CFGs exists in Mathlib.",
       "provenance": "ai",
       "id": "0e1c84ef9209"
     },
@@ -103,7 +103,7 @@
         "module": "Mathlib.Computability.ContextFreeGrammar",
         "match_kind": "exact"
       },
-      "note": "ContextFreeGrammar bundles terminals (type T), nonterminals (NT), rules, and the initial symbol, capturing the (V,Σ,R,S) tuple.",
+      "note": "ContextFreeGrammar bundles terminals (T), nonterminals (NT), rules, and the initial symbol, capturing the (V,Σ,R,S) tuple.",
       "provenance": "ai",
       "id": "1bebec028483"
     },
@@ -120,7 +120,7 @@
         "module": "Mathlib.Computability.Language",
         "match_kind": "exact"
       },
-      "note": "Symbol.nonterminal injects the nonterminal type into the grammar's symbol alphabet.",
+      "note": "The Symbol.nonterminal constructor injects the nonterminal type into the grammar's symbol alphabet.",
       "provenance": "ai",
       "id": "de2b01cb52d9"
     },
@@ -137,7 +137,7 @@
         "module": "Mathlib.Computability.Language",
         "match_kind": "exact"
       },
-      "note": "Symbol.terminal injects terminals, kept disjoint from nonterminals by the inductive Symbol type.",
+      "note": "Symbol.terminal injects terminals, kept disjoint from nonterminals by the two-constructor inductive Symbol type.",
       "provenance": "ai",
       "id": "df174e215d3b"
     },
@@ -154,7 +154,7 @@
         "module": "Mathlib.Computability.ContextFreeGrammar",
         "match_kind": "exact"
       },
-      "note": "ContextFreeRule represents a production with an input nonterminal and an output string, collected in g.rules.",
+      "note": "ContextFreeRule packages an input nonterminal and an output string of symbols, collected in g.rules.",
       "provenance": "ai",
       "id": "dfbb12d6f9a5"
     },
@@ -171,7 +171,7 @@
         "module": "Mathlib.Computability.ContextFreeGrammar",
         "match_kind": "exact"
       },
-      "note": "The initial field of ContextFreeGrammar is the start nonterminal.",
+      "note": "The initial field of a ContextFreeGrammar is the start nonterminal used by Generates.",
       "provenance": "ai",
       "id": "1f3d497724b4"
     },
@@ -188,7 +188,7 @@
         "module": "Mathlib.Computability.ContextFreeGrammar",
         "match_kind": "exact"
       },
-      "note": "ContextFreeRule is exactly a pair of an input nonterminal and an output string of symbols.",
+      "note": "ContextFreeRule is an input/output pair of a nonterminal and a list of symbols.",
       "provenance": "ai",
       "id": "b4b8f0628534"
     },
@@ -205,7 +205,7 @@
         "module": "Mathlib.Computability.ContextFreeGrammar",
         "match_kind": null
       },
-      "note": "An ε-production is expressible as a ContextFreeRule with empty output, but Mathlib has no named ε-production concept.",
+      "note": "An ε-production is a ContextFreeRule with empty output but Mathlib has no named ε-production predicate.",
       "provenance": "ai",
       "id": "9c45aa67dde2"
     },
@@ -222,7 +222,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib has no notion of bundled alternatives; each alternative is just a separate rule.",
+      "note": "Mathlib has no bundled rule-alternatives notion; each alternative is a separate ContextFreeRule.",
       "provenance": "ai",
       "id": "4ef8af31e9d9"
     },
@@ -239,7 +239,7 @@
         "module": "Mathlib.Computability.ContextFreeGrammar",
         "match_kind": "exact"
       },
-      "note": "ContextFreeGrammar.Produces u v is the one-step derivation relation via some rule of the grammar.",
+      "note": "ContextFreeGrammar.Produces u v holds iff some rule of g rewrites u to v in one step.",
       "provenance": "ai",
       "id": "ac42bd1ca268"
     },
@@ -256,7 +256,7 @@
         "module": "Mathlib.Computability.ContextFreeGrammar",
         "match_kind": "exact"
       },
-      "note": "ContextFreeRule.Rewrites r u v holds when the single rule r sends the string u to v by rewriting one occurrence of r.input.",
+      "note": "ContextFreeRule.Rewrites r u v is the inductive relation saying a single rule r sends string u to string v.",
       "provenance": "ai",
       "id": "046dedafb2da"
     },
@@ -273,7 +273,7 @@
         "module": "Mathlib.Computability.ContextFreeGrammar",
         "match_kind": "exact"
       },
-      "note": "ContextFreeGrammar.Derives is the reflexive-transitive closure of Produces, i.e. the multi-step derivation relation.",
+      "note": "ContextFreeGrammar.Derives is Relation.ReflTransGen g.Produces, i.e. multi-step derivation.",
       "provenance": "ai",
       "id": "0976406a598d"
     },
@@ -290,7 +290,7 @@
         "module": "Mathlib.Computability.ContextFreeGrammar",
         "match_kind": "exact"
       },
-      "note": "ContextFreeGrammar.language is exactly the set of terminal words derivable from the initial symbol.",
+      "note": "ContextFreeGrammar.language is exactly the set of terminal words derivable from the initial nonterminal.",
       "provenance": "ai",
       "id": "00f00ccf5fbf"
     },
@@ -307,7 +307,7 @@
         "module": "Mathlib.Computability.ContextFreeGrammar",
         "match_kind": "exact"
       },
-      "note": "Language.IsContextFree L is defined as the existence of a CFG whose language equals L.",
+      "note": "Language.IsContextFree L is defined as ∃ g : ContextFreeGrammar T, g.language = L.",
       "provenance": "ai",
       "id": "fdf4299b0733"
     },
@@ -324,7 +324,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib has no pushdown automaton definition and hence no equivalence with context-free languages.",
+      "note": "Mathlib has no pushdown automaton definition or equivalence with CFLs.",
       "provenance": "ai",
       "id": "2d0a48b991fe"
     },
@@ -341,7 +341,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "This specific grammar/language example is not present in Mathlib.",
+      "note": "This specific ww^R grammar example is not present in Mathlib.",
       "provenance": "ai",
       "id": "891ff5899a5b"
     },
@@ -375,7 +375,7 @@
         "module": "Mathlib.Combinatorics.Enumerative.DyckWord",
         "match_kind": null
       },
-      "note": "Mathlib's DyckWord formalizes the balanced-parenthesis language directly, but not via a context-free grammar.",
+      "note": "Mathlib's DyckWord captures the balanced-parenthesis language directly, but not as a ContextFreeGrammar example.",
       "provenance": "ai",
       "id": "5a0e816e18eb"
     },
@@ -392,7 +392,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No two-type nested-bracket grammar example exists in Mathlib.",
+      "note": "No two-kind nested-bracket grammar example exists in Mathlib.",
       "provenance": "ai",
       "id": "bd8493a06e6d"
     },
@@ -409,7 +409,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The a^n b^n grammar example is not formalized in Mathlib.",
+      "note": "The a^n b^n (n≥1) grammar example is not formalized in Mathlib.",
       "provenance": "ai",
       "id": "f469c6c11961"
     },
@@ -477,7 +477,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib defines first-order formulas (ModelTheory) inductively but not as a context-free grammar instance.",
+      "note": "Mathlib defines first-order formulas inductively (ModelTheory) but not as an instance of a context-free grammar.",
       "provenance": "ai",
       "id": "7c6e1a7c7447"
     },
@@ -497,6 +497,22 @@
       "note": "No non-context-freeness result (e.g. pumping lemma application) is formalized in Mathlib.",
       "provenance": "ai",
       "id": "72baeadeba71"
+    },
+    {
+      "kind": "proposition",
+      "label": "a^n b^n c^n not context-free",
+      "anchor": {
+        "section": "Examples of languages that are not context-free",
+        "snippet": "such as the language of all words of the form a n b n c n ."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classical non-context-freeness of {aⁿbⁿcⁿ} is not formalized in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -545,7 +561,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib has NFA but no regular-grammar definition or correspondence to it.",
+      "note": "Mathlib has NFA but no regular-grammar definition or correspondence.",
       "provenance": "ai",
       "id": "315a52bf16d7"
     },
@@ -562,7 +578,7 @@
         "module": "Mathlib.Computability.ContextFreeGrammar",
         "match_kind": "exact"
       },
-      "note": "ContextFreeGrammar.Derives (reflexive-transitive closure of Produces) captures derivation as a sequence of rule applications.",
+      "note": "ContextFreeGrammar.Derives (ReflTransGen of Produces) captures a derivation as a sequence of rule applications.",
       "provenance": "ai",
       "id": "da853296eb5a"
     },
@@ -579,7 +595,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib's derivation relation does not distinguish leftmost/rightmost rewriting.",
+      "note": "Mathlib's derivation relation does not distinguish leftmost vs rightmost rewriting.",
       "provenance": "ai",
       "id": "7f43809e81f0"
     },
@@ -953,7 +969,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The decidability of CFG emptiness (vs. context-sensitive) is not formalized in Mathlib.",
+      "note": "The decidability of CFG emptiness (vs context-sensitive) is not formalized in Mathlib.",
       "provenance": "ai",
       "id": "453b9e8dd98a"
     },

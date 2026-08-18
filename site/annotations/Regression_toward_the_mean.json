@@ -18,7 +18,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No notion of 'regression toward the mean' appears in Mathlib (grep finds no occurrences in any statistical sense).",
+      "note": "No notion of 'regression toward the mean' appears in Mathlib (semantic and grep searches turn up no relevant declarations).",
       "provenance": "ai",
       "id": "ac4ad5adf80c"
     },
@@ -108,6 +108,22 @@
       "id": "30f8a8f700bc"
     },
     {
+      "kind": "observation",
+      "label": "Galton's mid-parental deviations regression law",
+      "anchor": {
+        "section": "Discovery",
+        "snippet": "the average regression of the offspring is a constant fraction of their respective mid-parental deviations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Galton's empirical linear-regression law (offspring deviation ≈ (1-β)·parental deviation, β≈2/3 for height); no such statistical-genetics statement in Mathlib.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Regression toward the mean via simple linear regression",
       "anchor": {
@@ -120,7 +136,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib has no 'simple linear regression' or 'least squares' development (grep finds none).",
+      "note": "Mathlib has no 'simple linear regression' or 'least squares' development (semantic search only turns up unrelated affine-space `slope`).",
       "provenance": "ai",
       "id": "836f641128a3"
     },
@@ -188,7 +204,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No bivariate/multivariate Gaussian or linearity-of-conditional-mean result was found in Mathlib (only general `condexp` infrastructure).",
+      "note": "No bivariate/multivariate Gaussian or linearity-of-conditional-mean result was found in Mathlib (only general `condExp` infrastructure).",
       "provenance": "ai",
       "id": "7e86dd946ea8"
     },
@@ -208,6 +224,22 @@
       "note": "No 'reversion toward the mean' definition exists in Mathlib.",
       "provenance": "ai",
       "id": "0761357ac009"
+    },
+    {
+      "kind": "theorem",
+      "label": "Law of large numbers (referenced contrast)",
+      "anchor": {
+        "section": "Other statistical phenomena",
+        "snippet": "the law of large numbers states that in the long term, the average will tend toward the expected value, but makes no statement about individual trials"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.strong_law_ae",
+        "module": "Mathlib.Probability.StrongLaw",
+        "match_kind": "exact"
+      },
+      "note": "The article contrasts regression to the mean with the law of large numbers; the (strong) LLN is formalized in Mathlib as `ProbabilityTheory.strong_law_ae` (confirmed via decl_exists).",
+      "provenance": "ai"
     },
     {
       "kind": "definition",

@@ -18,7 +18,7 @@
         "module": "Mathlib.GroupTheory.Finiteness",
         "match_kind": null
       },
-      "note": "The field itself is not formalized, but its central object—finitely generated groups—is captured by the `Group.FG` typeclass.",
+      "note": "The field itself is not formalized, but its central object—finitely generated groups—is captured by the `Group.FG` typeclass (verified).",
       "provenance": "ai",
       "id": "797ca6d202a9"
     },
@@ -35,7 +35,7 @@
         "module": "Mathlib.Combinatorics.SimpleGraph.Cayley",
         "match_kind": "exact"
       },
-      "note": "`SimpleGraph.mulCayley s` defines the Cayley graph from a generating set, though the word metric is not separately packaged.",
+      "note": "`SimpleGraph.mulCayley s` (verified) defines the Cayley graph from a generating set; the word metric is not separately packaged.",
       "provenance": "ai",
       "id": "9cbd480ce7f3"
     },
@@ -52,7 +52,7 @@
         "module": "Mathlib.GroupTheory.PresentedGroup",
         "match_kind": "exact"
       },
-      "note": "`PresentedGroup rels` constructs the group with the given generators and relations as a quotient of the free group.",
+      "note": "`PresentedGroup rels` (verified) constructs the group with the given generators and relations as a quotient of the free group.",
       "provenance": "ai",
       "id": "2846f9441d80"
     },
@@ -69,7 +69,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib's only 'hyperbolic' references are to hyperbolic functions/geometry and `Matrix.IsHyperbolic`, not Gromov-hyperbolic groups.",
+      "note": "Mathlib's only 'hyperbolic' references are to hyperbolic functions/geometry and `Matrix.GeneralLinearGroup.IsHyperbolic`, not Gromov-hyperbolic groups.",
       "provenance": "ai",
       "id": "a9cb61ae7102"
     },
@@ -222,7 +222,7 @@
         "module": "Mathlib.GroupTheory.PushoutI",
         "match_kind": null
       },
-      "note": "The Bass–Serre building blocks—amalgamated free products (`Monoid.PushoutI`) and HNN extensions (`HNNExtension`)—are formalized, but the full graph-of-groups/tree-action framework is not.",
+      "note": "The Bass–Serre building blocks—amalgamated free products (`Monoid.PushoutI`, verified) and HNN extensions (`HNNExtension`, verified)—are formalized, but the full graph-of-groups/tree-action framework is not.",
       "provenance": "ai",
       "id": "5519795f7242"
     },
@@ -239,7 +239,7 @@
         "module": "Mathlib.MeasureTheory.Group.FoelnerFilter",
         "match_kind": null
       },
-      "note": "Mathlib has the Følner-filter amenability theorem (`IsFoelner.amenable`) but no standalone `Amenable` group typeclass.",
+      "note": "Mathlib has the Følner-filter amenability theorem (`IsFoelner.amenable`, verified) but no standalone `Amenable` group typeclass.",
       "provenance": "ai",
       "id": "53e3668e776c"
     },
@@ -273,7 +273,7 @@
         "module": "Mathlib.Algebra.Group.Int.Defs",
         "match_kind": "exact"
       },
-      "note": "The infinite cyclic group is exactly ℤ, whose additive group structure is `Int.instAddCommGroup`.",
+      "note": "The infinite cyclic group is exactly ℤ, whose additive group structure `Int.instAddCommGroup` is verified in Mathlib.",
       "provenance": "ai",
       "id": "c2ccd70ca542"
     },
@@ -290,7 +290,7 @@
         "module": "Mathlib.GroupTheory.FreeGroup.Basic",
         "match_kind": "exact"
       },
-      "note": "`FreeGroup α` is the free group on a generating type α.",
+      "note": "`FreeGroup α` (verified) is the free group on a generating type α.",
       "provenance": "ai",
       "id": "960d5ebcf528"
     },
@@ -307,7 +307,7 @@
         "module": "Mathlib.GroupTheory.CoprodI",
         "match_kind": "exact"
       },
-      "note": "`Monoid.CoprodI` is the free product (coproduct) of a family of groups.",
+      "note": "`Monoid.CoprodI` (verified) is the free product (coproduct) of a family of groups.",
       "provenance": "ai",
       "id": "ec8063f3611f"
     },
@@ -375,7 +375,7 @@
         "module": "Mathlib.Logic.Equiv.Defs",
         "match_kind": "exact"
       },
-      "note": "`Equiv.Perm α` is the symmetric group of permutations of α.",
+      "note": "`Equiv.Perm α` (verified) is the symmetric group of permutations of α.",
       "provenance": "ai",
       "id": "344da8d8a6ea"
     },
@@ -409,7 +409,7 @@
         "module": "Mathlib.GroupTheory.Coxeter.Basic",
         "match_kind": "exact"
       },
-      "note": "`CoxeterSystem` and the `IsCoxeterGroup` class formalize Coxeter groups.",
+      "note": "`CoxeterSystem` (verified) together with `IsCoxeterGroup` (verified) formalize Coxeter groups.",
       "provenance": "ai",
       "id": "eb46761186f6"
     },
@@ -545,7 +545,7 @@
         "module": "Mathlib.GroupTheory.HNNExtension",
         "match_kind": null
       },
-      "note": "Baumslag–Solitar groups are HNN extensions of ℤ; Mathlib has the general `HNNExtension` construction but not these specific groups.",
+      "note": "Baumslag–Solitar groups are HNN extensions of ℤ; Mathlib has the general `HNNExtension` construction (verified) but not these specific groups.",
       "provenance": "ai",
       "id": "f3939a5a2244"
     },
@@ -562,7 +562,7 @@
         "module": "Mathlib.GroupTheory.PushoutI",
         "match_kind": null
       },
-      "note": "The Bass–Serre building blocks—amalgamated products (`Monoid.PushoutI`) and HNN extensions—exist, but graph-of-groups fundamental groups are not formalized.",
+      "note": "The Bass–Serre building blocks—amalgamated products (`Monoid.PushoutI`, verified) and HNN extensions—exist, but graph-of-groups fundamental groups are not formalized.",
       "provenance": "ai",
       "id": "2483e92e4704"
     },
@@ -664,7 +664,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The Burnside problem on periodic finitely generated groups is not formalized in Mathlib.",
+      "note": "The Burnside problem on periodic finitely generated groups is not formalized in Mathlib (only the group exponent machinery `Monoid.exponent` exists).",
       "provenance": "ai",
       "id": "226d7c07edc2"
     },
@@ -718,6 +718,86 @@
       "note": "Gromov's asymptotic dimension of a metric space/group is not formalized in Mathlib.",
       "provenance": "ai",
       "id": "31feb705a4be"
+    },
+    {
+      "kind": "definition",
+      "label": "Finitely presented group",
+      "anchor": {
+        "section": "Modern themes and developments",
+        "snippet": "being finitely presentable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`Group.FP` does not exist in Mathlib (verified via decl_exists); only `Group.FG` and the raw `PresentedGroup` construction exist, so there is no finitely-presented-group typeclass.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cannon's conjecture",
+      "anchor": {
+        "section": "Modern themes and developments",
+        "snippet": "Cannon's conjecture about characterization of hyperbolic groups with Gromov boundary homeomorphic to the 2-sphere"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cannon's conjecture and the Gromov boundary of a hyperbolic group are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Poisson boundary",
+      "anchor": {
+        "section": "Modern themes and developments",
+        "snippet": "the notion of Poisson boundary"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Poisson boundary for random walks on groups is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Group actions on R-trees (Rips machine)",
+      "anchor": {
+        "section": "Modern themes and developments",
+        "snippet": "Development of the theory of group actions on"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "ℝ-trees and the Rips machine for analyzing group actions on them are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Subgroup growth",
+      "anchor": {
+        "section": "Modern themes and developments",
+        "snippet": "progress in the study of subgroup growth"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The counting function for finite-index subgroups (subgroup growth) is not formalized in Mathlib.",
+      "provenance": "ai"
     }
   ]
 }

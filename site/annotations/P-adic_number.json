@@ -1466,6 +1466,54 @@
       "note": "`Padic.adicCompletionEquiv` identifies ℚ_[p] with the (p)-adic completion of ℤ; together with `PadicInt.adicCompletionIntegersEquiv` this exactly formalizes 'ℚ_[p] = Frac(completion of ℤ_(p))'.",
       "provenance": "ai",
       "id": "0b738d7e93da"
+    },
+    {
+      "kind": "proposition",
+      "label": "p-adic distance is an ultrametric",
+      "anchor": {
+        "section": "Topological properties",
+        "snippet": "Moreover, if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Padic.add_eq_max_of_ne",
+        "module": "Mathlib.NumberTheory.Padics.PadicNumbers",
+        "match_kind": "generalization"
+      },
+      "note": "The strengthened ultrametric statement ‖x+y‖ = max ‖x‖ ‖y‖ when ‖x‖ ≠ ‖y‖ is captured by `Padic.add_eq_max_of_ne` / general `IsUltrametricDist.norm_add_eq_max_of_norm_ne_norm`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "p-adic valuation ring homomorphism to Z/p^n",
+      "anchor": {
+        "section": "Modular properties",
+        "snippet": "is congruent modulo"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PadicInt.toZModPow",
+        "module": "Mathlib.NumberTheory.Padics.RingHoms",
+        "match_kind": "exact"
+      },
+      "note": "`PadicInt.toZModPow n : ℤ_[p] →+* ZMod (p^n)` sends a p-adic integer to its residue class modulo p^n, matching the partial-sum truncation described here.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "C is algebraically closed",
+      "anchor": {
+        "section": "Algebraic closure",
+        "snippet": "this quadratic extension is already algebraically closed"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.isAlgClosed",
+        "module": "Mathlib.Analysis.Complex.Polynomial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `Complex.isAlgClosed` (fundamental theorem of algebra) formalizes that ℂ is algebraically closed; module corrected to `Mathlib.Analysis.Complex.Polynomial.Basic` where the decl actually lives.",
+      "provenance": "ai"
     }
   ]
 }

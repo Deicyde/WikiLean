@@ -990,6 +990,70 @@
       "note": "`QuadraticMap.radical Q` is the kernel of the polar bilinear form of Q — the submodule of vectors orthogonal to every vector under Q's associated bilinear form.",
       "provenance": "ai",
       "id": "2779ffaa65bd"
+    },
+    {
+      "kind": "definition",
+      "label": "Killing form",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Lie theory (the Killing form )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "killingForm",
+        "module": "Mathlib.Algebra.Lie.TraceForm",
+        "match_kind": "exact"
+      },
+      "note": "`killingForm R L` is the trace of the composition of adjoint actions, the standard Killing form on a Lie algebra; it is a symmetric bilinear form whose associated quadratic form fits the passage's example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Nondegenerate bilinear form",
+      "anchor": {
+        "section": "Real quadratic forms",
+        "snippet": "a nondegenerate quadratic form is one whose associated symmetric form is a nondegenerate bilinear form"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.Nondegenerate",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Properties",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.BilinForm.Nondegenerate B := ∀ x, (∀ y, B x y = 0) → x = 0` is the standard definition; combined with `QuadraticMap.associated` it captures the equivalence stated here.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Compact orthogonal group O(n)",
+      "anchor": {
+        "section": "Real quadratic forms",
+        "snippet": "Its isometry group is a compact orthogonal group , conventionally notated as O( n )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.orthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.orthogonalGroup n R` is the group of matrices M with Mᵀ * M = 1, i.e. the standard orthogonal group O(n) preserving the sum-of-squares form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pythagorean triples",
+      "anchor": {
+        "section": "History",
+        "snippet": "This problem is related to the problem of finding Pythagorean triples"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PythagoreanTriple",
+        "module": "Mathlib.NumberTheory.PythagoreanTriples",
+        "match_kind": "exact"
+      },
+      "note": "`PythagoreanTriple x y z := x^2 + y^2 = z^2` defines a Pythagorean triple; Mathlib includes the primitive-triple parametrization.",
+      "provenance": "ai"
     }
   ]
 }

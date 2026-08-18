@@ -41,7 +41,7 @@
     },
     {
       "kind": "proposition",
-      "label": "Determinant characterized by product and triangular rules",
+      "label": "Determinant of a product is product of determinants",
       "anchor": {
         "section": "(Lead)",
         "snippet": "the determinant of a product of matrices is the product of their determinants"
@@ -52,8 +52,8 @@
         "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
         "match_kind": "exact"
       },
-      "note": "`Matrix.det_mul` and `Matrix.det_of_upperTriangular` together give the product and triangular rules.",
-      "provenance": "ai",
+      "note": "`Matrix.det_mul` gives the product rule; `Matrix.det_of_upperTriangular` gives the triangular rule.",
+      "provenance": "ai-moderated",
       "id": "4674f4dffa49"
     },
     {
@@ -276,6 +276,38 @@
       "note": "`Equiv.Perm α := α ≃ α` formalizes permutations of any (finite) type.",
       "provenance": "ai",
       "id": "b3fb76b47ab7"
+    },
+    {
+      "kind": "definition",
+      "label": "Symmetric group",
+      "anchor": {
+        "section": "n × n matrices",
+        "snippet": "The set of all such permutations, called the symmetric group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm",
+        "module": "Mathlib.Logic.Equiv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Equiv.Perm (Fin n)` is the symmetric group `S_n` with its group instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Signature of a permutation",
+      "anchor": {
+        "section": "n × n matrices",
+        "snippet": "The signature"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.sign",
+        "module": "Mathlib.GroupTheory.Perm.Sign",
+        "match_kind": "exact"
+      },
+      "note": "`Equiv.Perm.sign : Equiv.Perm α →* ℤˣ` is the sign homomorphism.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -669,6 +701,22 @@
       "id": "4069469ff085"
     },
     {
+      "kind": "theorem",
+      "label": "Matrix determinant lemma",
+      "anchor": {
+        "section": "Sylvester's determinant theorem",
+        "snippet": "A generalization is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`det(A + UWVᵀ) = det(W⁻¹ + VᵀA⁻¹U) · det(W) · det(A)` (matrix determinant lemma) was not located as a Mathlib lemma.",
+      "provenance": "ai"
+    },
+    {
       "kind": "proposition",
       "label": "Determinant inequality for positive semidefinite matrices",
       "anchor": {
@@ -890,6 +938,22 @@
       "id": "295dbae7d8ea"
     },
     {
+      "kind": "definition",
+      "label": "Resultant of two polynomials",
+      "anchor": {
+        "section": "Linear independence",
+        "snippet": "the resultant , which gives a criterion when two polynomials have a common root"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.resultant",
+        "module": "Mathlib.RingTheory.Polynomial.Resultant.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Polynomial.resultant` is defined in Mathlib and vanishes iff the two polynomials share a common root over the algebraic closure.",
+      "provenance": "ai"
+    },
+    {
       "kind": "proposition",
       "label": "Cross product as a formal 3×3 determinant",
       "anchor": {
@@ -922,6 +986,22 @@
       "note": "`Module.Basis.orientation_eq_iff_det_pos` characterizes equality of orientations via positivity of the change-of-basis determinant.",
       "provenance": "ai",
       "id": "7a2ed7260344"
+    },
+    {
+      "kind": "proposition",
+      "label": "Basis criterion via nonzero determinant",
+      "anchor": {
+        "section": "Orientation of a basis",
+        "snippet": "The determinant will be nonzero if and only if the sequence of vectors is a basis"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.linearIndependent_cols_of_det_ne_zero",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Over a domain, `det ≠ 0` implies the columns are linearly independent, hence form a basis of `R^n` when the dimension matches.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -973,6 +1053,22 @@
       "note": "`integral_image_eq_integral_abs_det_fderiv_smul` is the n-dimensional change-of-variables formula.",
       "provenance": "ai",
       "id": "99e20414865b"
+    },
+    {
+      "kind": "theorem",
+      "label": "Inverse function theorem",
+      "anchor": {
+        "section": "Volume and Jacobian determinant",
+        "snippet": "The Jacobian also occurs in the inverse function theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasStrictFDerivAt.localInverse",
+        "module": "Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib formalizes the inverse function theorem via `HasStrictFDerivAt.localInverse`; nonzero Jacobian determinant corresponds to invertibility of the Fréchet derivative.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -1095,6 +1191,22 @@
     },
     {
       "kind": "definition",
+      "label": "Exterior power of a vector space",
+      "anchor": {
+        "section": "Exterior algebra",
+        "snippet": "the [MATH] -th exterior power"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ExteriorAlgebra.exteriorPower",
+        "module": "Mathlib.LinearAlgebra.ExteriorAlgebra.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ExteriorAlgebra.exteriorPower R n M` (notation `⋀[R]^n M`) is the n-th exterior power of a module.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Berezin integral expression for the determinant",
       "anchor": {
         "section": "Berezin integral",
@@ -1177,6 +1289,22 @@
       "note": "`Algebra.norm` is the determinant of multiplication-by-x on a finite free algebra; coincides with the algebra-norm determinant.",
       "provenance": "ai",
       "id": "820098ae0093"
+    },
+    {
+      "kind": "definition",
+      "label": "Field norm of a finite extension",
+      "anchor": {
+        "section": "Determinants for finite-dimensional algebras",
+        "snippet": "the norm"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebra.norm",
+        "module": "Mathlib.RingTheory.Norm.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The field-extension norm is the same `Algebra.norm` specialized to a finite field extension.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",

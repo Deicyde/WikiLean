@@ -35,7 +35,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib has neither Lucas sequences nor the Fibonacci–Lucas complementary-pair identity.",
+      "note": "Mathlib has neither Lucas sequences nor the Fibonacci–Lucas complementary-pair identity (only Lucas–Lehmer primality test).",
       "provenance": "ai",
       "id": "f2509f60b91a"
     },
@@ -1211,6 +1211,54 @@
       "note": "Not formalized.",
       "provenance": "ai",
       "id": "2cb944798948"
+    },
+    {
+      "kind": "proposition",
+      "label": "Golden ratio and its conjugate",
+      "anchor": {
+        "section": "Closed-form expression",
+        "snippet": "where ⁠"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.goldenRatio",
+        "module": "Mathlib.NumberTheory.Real.GoldenRatio",
+        "match_kind": "exact"
+      },
+      "note": "`Real.goldenRatio` and `Real.goldenConj` in Mathlib denote φ = (1+√5)/2 and ψ = (1-√5)/2, the two roots of x²=x+1 appearing in Binet's formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Identity F_{2n} = F_n(2F_{n+1} - F_n)",
+      "anchor": {
+        "section": "Matrix form",
+        "snippet": "In particular, with m = n"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.fib_two_mul",
+        "module": "Mathlib.Data.Nat.Fib.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.fib_two_mul : fib (2 * n) = fib n * (2 * fib (n + 1) - fib n)` gives the doubling identity used to compute Fibonacci in O(log n).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fast doubling identity F_{2n+1}",
+      "anchor": {
+        "section": "Matrix form",
+        "snippet": "These last two identities provide a way to compute Fibonacci numbers recursively in O (log n ) arithmetic operations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.fib_two_mul_add_one",
+        "module": "Mathlib.Data.Nat.Fib.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.fib_two_mul_add_one : fib (2 * n + 1) = fib (n + 1) ^ 2 + fib n ^ 2` supports the O(log n) recursive computation of Fibonacci numbers.",
+      "provenance": "ai"
     }
   ]
 }

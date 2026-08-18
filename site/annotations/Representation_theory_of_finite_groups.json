@@ -49,7 +49,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "Module.finrank",
-        "module": "Mathlib.LinearAlgebra.Dimension.Free",
+        "module": "Mathlib.LinearAlgebra.Dimension.Finrank",
         "match_kind": "invocation"
       },
       "note": "There is no specific `Representation.degree`, but the degree is just `Module.finrank k V` (used in `FDRep.char_one`).",
@@ -1925,6 +1925,134 @@
       "note": "Not formalized.",
       "provenance": "ai",
       "id": "808f1fdacd09"
+    },
+    {
+      "kind": "definition",
+      "label": "Group algebra",
+      "anchor": {
+        "section": "Representations, modules and the convolution algebra",
+        "snippet": "be the group algebra of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MonoidAlgebra",
+        "module": "Mathlib.Algebra.MonoidAlgebra.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`MonoidAlgebra k G` is the group algebra `k[G]` used throughout the section.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Kernel of a representation-map",
+      "anchor": {
+        "section": "Maps between representations",
+        "snippet": "The kernel , the image and the cokernel"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.ker",
+        "module": "Mathlib.Algebra.Module.Submodule.Ker",
+        "match_kind": "invocation"
+      },
+      "note": "Kernel/image/cokernel of an equivariant map are just the usual linear-map kernel/image/cokernel; there is no bundled version for `IntertwiningMap`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Trace of AB equals trace of BA",
+      "anchor": {
+        "section": "Properties (2)",
+        "snippet": "the trace of a product AB of two square matrices is the same as the trace of BA"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.trace_mul_comm",
+        "module": "Mathlib.LinearAlgebra.Matrix.Trace",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.trace_mul_comm` proves `trace (A * B) = trace (B * A)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Character at identity equals dimension",
+      "anchor": {
+        "section": "Properties (2)",
+        "snippet": "Since the trace of the identity matrix is the number of rows"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FDRep.char_one",
+        "module": "Mathlib.RepresentationTheory.Character",
+        "match_kind": "exact"
+      },
+      "note": "`FDRep.char_one` proves `χ V 1 = finrank k V`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Semidirect product",
+      "anchor": {
+        "section": "Classification of representations of a semidirect product",
+        "snippet": "be a semidirect product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SemidirectProduct",
+        "module": "Mathlib.GroupTheory.SemidirectProduct",
+        "match_kind": "exact"
+      },
+      "note": "`SemidirectProduct N H φ` is Mathlib's semidirect product construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dihedral group",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "be the dihedral group of order"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DihedralGroup",
+        "module": "Mathlib.GroupTheory.SpecificGroups.Dihedral",
+        "match_kind": "exact"
+      },
+      "note": "`DihedralGroup n` is the dihedral group of order `2n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complexification of a real vector space",
+      "anchor": {
+        "section": "Real representations",
+        "snippet": "is called the complexification of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No bundled `Complexification` type exists in Mathlib; grep and loogle return zero hits, and only ad-hoc `TensorProduct ℝ ℂ V` or `Complex.ofRealAm`-style extensions are available.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Young tableau",
+      "anchor": {
+        "section": "Symmetric groups",
+        "snippet": "a Young tableau is a graphical device depicting a partition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "YoungDiagram",
+        "module": "Mathlib.Combinatorics.Young.YoungDiagram",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has `YoungDiagram` and `SemistandardYoungTableau`/`StandardYoungTableau`.",
+      "provenance": "ai"
     }
   ]
 }

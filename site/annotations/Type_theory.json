@@ -373,10 +373,10 @@
       "status": "partial",
       "mathlib": {
         "decl": "Classical.byContradiction",
-        "module": "Mathlib.Logic.Basic",
+        "module": "Init.Classical",
         "match_kind": "invocation"
       },
-      "note": "Mathlib uses classical proof by contradiction via Lean core's `Classical.byContradiction` (referenced from `Mathlib.Logic.Basic`) but does not classify it as non-constructive.",
+      "note": "Mathlib uses classical proof by contradiction via Lean core's `Classical.byContradiction` (in `Init.Classical`) but does not classify it as non-constructive.",
       "id": "09a1ae547671"
     },
     {
@@ -406,11 +406,11 @@
       "provenance": "ai-agent1",
       "status": "partial",
       "mathlib": {
-        "decl": "CategoryTheory.CartesianClosed",
-        "module": "Mathlib.CategoryTheory.Closed.Cartesian",
+        "decl": "CategoryTheory.MonoidalClosed",
+        "module": "Mathlib.CategoryTheory.Monoidal.Closed.Basic",
         "match_kind": "invocation"
       },
-      "note": "Mathlib defines Cartesian closed categories but does not formalize the equivalence with simply typed λ-calculus.",
+      "note": "Mathlib defines cartesian closed categories through `MonoidalClosed` on a `CartesianMonoidalCategory` (the former `CartesianClosed` class was deprecated), but does not formalize the correspondence with the simply typed λ-calculus.",
       "id": "0bd29c97f2f7"
     },
     {
@@ -883,7 +883,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "List.Vector",
-        "module": "Mathlib.Data.Vector.Basic",
+        "module": "Mathlib.Data.Vector.Defs",
         "match_kind": "invocation"
       },
       "note": "Mathlib provides `List.Vector α n` (length-indexed vectors) illustrating the dependent-type pattern, though the specific dot-product example is not stated.",
@@ -1262,6 +1262,214 @@
       },
       "note": "TTR (Cooper) is a linguistic-semantics framework not formalized in Mathlib.",
       "id": "04a276e0a036"
+    },
+    {
+      "kind": "definition",
+      "label": "Kleene–Rosser paradox",
+      "anchor": {
+        "section": "History",
+        "snippet": "Church's theory of types [ 5 ] helped the formal system avoid the Kleene–Rosser paradox that afflicted the original untyped lambda calculus."
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Kleene–Rosser paradox for untyped λ-calculus is a metatheoretic result not formalized in Mathlib."
+    },
+    {
+      "kind": "definition",
+      "label": "Higher-order logic",
+      "anchor": {
+        "section": "History",
+        "snippet": "it could serve as a foundation of mathematics and it was referred to as a higher-order logic"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Higher-order logic as an object of study is not formalized inside Mathlib."
+    },
+    {
+      "kind": "definition",
+      "label": "Judgmental (definitional) equality",
+      "anchor": {
+        "section": "Judgments",
+        "snippet": "Some textbooks use a triple equal sign [MATH] to stress that this is judgmental equality and thus an extrinsic notion of equality."
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Judgmental (definitional) equality is a Lean kernel notion; Mathlib does not internalize it."
+    },
+    {
+      "kind": "definition",
+      "label": "Context weakening",
+      "anchor": {
+        "section": "Type inhabitation",
+        "snippet": "add an assumption to the context (context weakening"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Context weakening is a metatheoretic rule of type-theoretic derivations, not stated in Mathlib."
+    },
+    {
+      "kind": "definition",
+      "label": "Type universe hierarchy",
+      "anchor": {
+        "section": "Type inhabitation",
+        "snippet": "define a hierarchy of type universes"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lean's `Type u` universe hierarchy is a kernel feature; Mathlib does not formalize the metatheory of universes."
+    },
+    {
+      "kind": "definition",
+      "label": "Categorical logic (interplay of categories and type theory)",
+      "anchor": {
+        "section": "Category theory",
+        "snippet": "The interplay, known as categorical logic , has been a subject of active research since then"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Categorical logic as a general framework is not formalized in Mathlib."
+    },
+    {
+      "kind": "definition",
+      "label": "Anonymous function",
+      "anchor": {
+        "section": "Lambda terms",
+        "snippet": "A lambda term is an anonymous function"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Anonymous (nameless) function syntax is a Lean/λ-calculus notion, not a Mathlib definition."
+    },
+    {
+      "kind": "definition",
+      "label": "Successor function on ℕ",
+      "anchor": {
+        "section": "Natural numbers",
+        "snippet": "Canonical values larger than zero use iterated applications of a successor function"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.succ",
+        "module": "Init.Prelude",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.succ` is provided by Lean core (available throughout Mathlib) as the successor constructor of `Nat`."
+    },
+    {
+      "kind": "definition",
+      "label": "Length-indexed list (dependent list type)",
+      "anchor": {
+        "section": "Type constructors",
+        "snippet": "which should correspond to lists of terms, where each term must have type"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "List.Vector",
+        "module": "Mathlib.Data.Vector.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `List.Vector α n` implements the length-indexed list type constructor described here."
+    },
+    {
+      "kind": "definition",
+      "label": "Scott encoding of inductive types",
+      "anchor": {
+        "section": "Inductive types",
+        "snippet": "A method that only uses lambda terms is Scott encoding"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Scott encoding of inductive types via pure λ-terms is not formalized in Mathlib."
+    },
+    {
+      "kind": "definition",
+      "label": "Church encoding of numbers",
+      "anchor": {
+        "section": "Differences from set theory",
+        "snippet": "Type theory can encode numbers as functions using Church encoding"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Church numerals as λ-encoded natural numbers are not formalized in Mathlib."
+    },
+    {
+      "kind": "definition",
+      "label": "Subtyping",
+      "anchor": {
+        "section": "Properties of type theories",
+        "snippet": "However, there are type theories that define \"subtyping\"."
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Subtyping as a metatheoretic feature of type systems is not formalized in Mathlib (which uses coercions/instance search instead)."
+    },
+    {
+      "kind": "definition",
+      "label": "Categorial grammar",
+      "anchor": {
+        "section": "Linguistics",
+        "snippet": "categorial grammars and pregroup grammars extensively use type constructors to define the types"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Categorial and pregroup grammars are linguistic formalisms outside Mathlib's scope."
     }
   ]
 }

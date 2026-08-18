@@ -151,7 +151,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Nat.succ_ne_zero",
-        "module": "Init.Prelude",
+        "module": "Init.Data.Nat.Basic",
         "match_kind": "exact"
       },
       "note": "`Nat.succ_ne_zero : ∀ n, Nat.succ n ≠ 0` shows no natural has 0 as its successor, i.e. no natural precedes 0.",
@@ -248,7 +248,7 @@
       "label": "Subtraction with zero",
       "anchor": {
         "section": "Elementary algebra",
-        "snippet": "Subtraction"
+        "snippet": "x − 0 = x and 0 − x = − x"
       },
       "status": "formalized",
       "mathlib": {
@@ -257,7 +257,7 @@
         "match_kind": "generalization"
       },
       "note": "`sub_zero : a - 0 = a` (with `zero_sub : 0 - a = -a`) holds in any subtraction monoid.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "edced1cd07e0"
     },
     {
@@ -265,7 +265,7 @@
       "label": "Multiplication by zero rule",
       "anchor": {
         "section": "Elementary algebra",
-        "snippet": "Multiplication"
+        "snippet": "x · 0 = 0 · x = 0"
       },
       "status": "formalized",
       "mathlib": {
@@ -274,7 +274,7 @@
         "match_kind": "generalization"
       },
       "note": "`MulZeroClass.mul_zero`/`MulZeroClass.zero_mul` give the multiplication-by-zero rule in any `MulZeroClass`.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "48295336dd49"
     },
     {
@@ -299,7 +299,7 @@
       "label": "Exponentiation with zero",
       "anchor": {
         "section": "Elementary algebra",
-        "snippet": "Exponentiation"
+        "snippet": "x 0 = ⁠ x / x ⁠ = 1"
       },
       "status": "formalized",
       "mathlib": {
@@ -308,7 +308,7 @@
         "match_kind": "generalization"
       },
       "note": "`pow_zero : a ^ 0 = 1` (with `zero_pow` for `0 ^ n`) formalizes exponentiation involving zero.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "c30264ede67b"
     },
     {
@@ -752,6 +752,38 @@
       "note": "`MulZeroClass` axiomatizes that `0` is an absorbing element for multiplication: `0 * a = 0` and `a * 0 = 0`.",
       "provenance": "ai",
       "id": "1cc5dec7b343"
+    },
+    {
+      "kind": "proposition",
+      "label": "0/0 limit found by l'Hôpital's rule",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "must be found by another method, such as l'Hôpital's rule"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "deriv.lhopital_zero_atTop",
+        "module": "Mathlib.Analysis.Calculus.LHopital",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `deriv.lhopital_zero_*` lemmas formalize l'Hôpital's rule for `0/0` indeterminate limits.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zero is not a natural number (convention-dependent)",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "The number 0 may or may not be considered a natural number"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat",
+        "module": "Init.Prelude",
+        "match_kind": null
+      },
+      "note": "Mathlib takes `Nat` to include 0 (`0 : ℕ`); the alternative convention (`ℕ` starting at 1) is available via `PNat` / `ℕ+`.",
+      "provenance": "ai"
     }
   ]
 }

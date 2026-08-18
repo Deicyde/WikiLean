@@ -35,7 +35,7 @@
         "module": "Mathlib.Probability.Distributions.Uniform",
         "match_kind": "generalization"
       },
-      "note": "Verified `MeasureTheory.pdf.IsUniform` at Uniform.lean:63; general uniform-distribution infra exists but the Box–Muller setup itself is not formalized.",
+      "note": "Verified `MeasureTheory.pdf.IsUniform` in Mathlib.Probability.Distributions.Uniform; general uniform-distribution infra exists but the Box–Muller setup itself is not formalized.",
       "provenance": "ai",
       "id": "edd161932876"
     },
@@ -52,7 +52,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "`ProbabilityTheory.gaussianReal` (Real.lean:222) defines the normal law, but no Box–Muller output theorem was found.",
+      "note": "`ProbabilityTheory.gaussianReal` defines the normal law, but no Box–Muller output theorem was found.",
       "provenance": "ai",
       "id": "ddb3154004da"
     },
@@ -86,9 +86,25 @@
         "module": "Mathlib.Probability.Distributions.Exponential",
         "match_kind": "generalization"
       },
-      "note": "Verified `ProbabilityTheory.exponentialPDF` (Exponential.lean:46) and `expMeasure`; no chi-squared and no theorem identifying ‖(Z₀,Z₁)‖² with an exponential law were found.",
+      "note": "Verified `ProbabilityTheory.exponentialPDF` in Mathlib.Probability.Distributions.Exponential; no chi-squared and no theorem identifying ‖(Z₀,Z₁)‖² with an exponential law were found.",
       "provenance": "ai",
       "id": "de9168c6b2c1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chi-squared with two DoF equals exponential",
+      "anchor": {
+        "section": "Basic form",
+        "snippet": "In the special case of two degrees of freedom, the chi-squared distribution coincides with the exponential distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `chiSquared|ChiSquared|chi_squared` under `Mathlib/` returns nothing; the chi-squared distribution is not formalized, so its 2-DoF coincidence with the exponential is not either.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -157,6 +173,22 @@
       "note": "The polar-form algorithm and its correctness theorem are absent from Mathlib.",
       "provenance": "ai",
       "id": "289425398f76"
+    },
+    {
+      "kind": "definition",
+      "label": "Rejection sampling",
+      "anchor": {
+        "section": "Contrasting the two forms",
+        "snippet": "The polar method differs from the basic method in that it is a type of rejection sampling"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Rejection sampling as a general Monte Carlo construction is not formalized in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -248,7 +280,7 @@
       "label": "Affine transform of a standard normal is normal",
       "anchor": {
         "section": "C++",
-        "snippet": "If"
+        "snippet": "will have a normal distribution with mean"
       },
       "status": "partial",
       "mathlib": {
@@ -256,8 +288,8 @@
         "module": "Mathlib.Probability.Distributions.Gaussian.Real",
         "match_kind": "generalization"
       },
-      "note": "Verified `gaussianReal_map_mul_const` (Real.lean:356) and `gaussianReal_map_add_const` (line 309), whose composition gives σ·Z + μ ∼ N(μ,σ²), though no single-named lemma states the affine case directly.",
-      "provenance": "ai",
+      "note": "Verified `gaussianReal_map_mul_const` and `gaussianReal_map_add_const` in Mathlib.Probability.Distributions.Gaussian.Real, whose composition gives σ·Z + μ ∼ N(μ,σ²), though no single-named lemma states the affine case directly. Anchor tightened from bare 'If' during moderation.",
+      "provenance": "ai-moderated",
       "id": "12f219629af7"
     }
   ]

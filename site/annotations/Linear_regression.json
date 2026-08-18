@@ -837,6 +837,102 @@
       },
       "note": "The time-series trend line concept is not formalized in Mathlib.",
       "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inner product form x_i^T β",
+      "anchor": {
+        "section": "Formulation",
+        "snippet": "so that x i T β is the inner product between vectors x i and β"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Inner.inner",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "The inner product of two vectors is fully formalized in Mathlib via the Inner typeclass in the general inner-product-space setting.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Matrix transpose",
+      "anchor": {
+        "section": "Formulation",
+        "snippet": "where T denotes the transpose"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.transpose",
+        "module": "Mathlib.LinearAlgebra.Matrix.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Matrix transpose is defined in Mathlib as Matrix.transpose.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Partial derivative interpretation of coefficients",
+      "anchor": {
+        "section": "Notation and terminology",
+        "snippet": "The elements of this parameter vector are interpreted as the partial derivatives of the dependent variable with respect to the various independent variables."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "fderiv",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Fréchet/partial derivatives are fully formalized in Mathlib; the regression-specific interpretation of coefficients as partial derivatives is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ordinary least squares",
+      "anchor": {
+        "section": "General linear models",
+        "snippet": "Multivariate analogues of ordinary least squares (OLS) and generalized least squares (GLS) have been developed."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ordinary least squares as a statistical estimator is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dot product form of prediction",
+      "anchor": {
+        "section": "Least-squares estimation and related techniques",
+        "snippet": "would become a dot product of the parameter and the independent vectors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dotProduct",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "generalization"
+      },
+      "note": "The dot product of two vectors is formalized in Mathlib as `dotProduct`; the regression-specific use as a linear predictor is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Positive-definite Hessian at a minimum",
+      "anchor": {
+        "section": "Least-squares estimation and related techniques",
+        "snippet": "one needs to differentiate once more to obtain the Hessian matrix and show that it is positive definite"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.PosDef",
+        "module": "Mathlib.LinearAlgebra.Matrix.PosDef",
+        "match_kind": "generalization"
+      },
+      "note": "Positive-definite matrices are formalized in Mathlib; the specific second-order-sufficient-condition-for-a-minimum via a positive-definite Hessian is not stated in this regression form.",
+      "provenance": "ai"
     }
   ]
 }
